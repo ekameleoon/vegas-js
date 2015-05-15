@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Maashaack JS runner (V8)" default="main">
+
+    <target name="main">
+        <exec executable="../tools/v8/d8" failonerror="true" dir="../../src">
+            <arg line="main.js" />
+        </exec>
+    </target>
+
+</project>
