@@ -1,6 +1,6 @@
 # VEGAS #
 
-Vegas is an opensource framework based on ECMAScript and ActionScript. 
+Vegas is an opensource framework based on ECMAScript and ActionScript.
 
 This repository contains the Javascript version of the framework.
 
@@ -18,16 +18,11 @@ Under tree licences : **MPL 1.1/GPL 2.0/LGPL 2.1**
  * Mail : ekameleon@gmail.com
  * Link : http://www.ooopener.com
 
-### Editor ###
-
-FDT, the best ActionScript editor Forever !
-
-![FDT_Supported.png](https://bitbucket.org/repo/AEbB9b/images/525527175-FDT_Supported.png) 
-
 ### History ###
 
- * 1998 : Flash 
+ * 1998 : Flash
  * 2000 : First framework concept and first libraries (components, tools, design patterns)
- * 2004 : First official SVN repository 
+ * 2004 : First official SVN repository
  * 2007 : Fusion with the Maashaack framework (eden, etc.)
  * 2015 : Google Code must die - **VEGAS** move from an old Google Code SVN repository to this Bitbucket GIT repository and REBOOT this source code.
+ * 2016 : Begin the new JS architecture of the VEGAS JS library based on ES6
