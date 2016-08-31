@@ -1,10 +1,11 @@
 {
-    "name"     : "vegas.js",
-    "version"  : "master" ,
-    "main"     : "bin/vegas.js",
-    "private"  : false ,
-    "license"  : "MIT",
-    "keywords" :
+    "name"        : "vegas.js",
+    "version"     : "master" ,
+    "description" : "VEGAS the opensource Framework",
+    "main"        : "bin/vegas.js",
+    "private"     : false ,
+    "license"     : "MIT",
+    "keywords"    :
     [
         "vegas-js", "es6" , "logger" , "ioc" , "task" , "core" , "system"
     ],
