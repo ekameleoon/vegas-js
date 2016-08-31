@@ -1,9 +1,20 @@
 {
-    "name"    : "vegas.js",
-    "version" : "master" ,
-    "main"    : "bin/vegas.js",
-    "private" : false ,
-    "ignore"  :
+    "name"     : "vegas.js",
+    "version"  : "master" ,
+    "main"     : "bin/vegas.js",
+    "private"  : false ,
+    "license"  : "MIT",
+    "keywords" :
+    [
+        "vegas-js", "es6" , "logger" , "ioc" , "task" , "core" , "system"
+    ],
+    "license" :
+    [
+       "Licence MPL 1.1" ,
+       "Licence GPL 2" ,
+       "GPL-3.0+"
+    ],
+    "ignore" :
     [
         "**/.*",
         "docs",
