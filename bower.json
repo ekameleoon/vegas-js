@@ -1,0 +1,27 @@
+{
+    "name"    : "vegas.js",
+    "version" : "master" ,
+    "main"    : "bin/vegas.js",
+    "private" : false ,
+    "ignore"  :
+    [
+        "**/.*",
+        "docs",
+        "gulp",
+        "node_modules",
+        "bower_components",
+        "tests",
+        "bower.json",
+        "gulpfile.js",
+        "package.json"
+    ],
+    "dependencies":
+    {
+
+    }
+    ,
+    "devDependencies":
+    {
+
+    }
+}

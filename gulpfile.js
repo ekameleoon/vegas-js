@@ -23,7 +23,7 @@ log( 'Builds the VEGAS library' ) ;
 var name    = 'vegas' ;
 var sources = './src/**/*.js' ;
 var entry   = './src/index.js' ;
-var output  = './build' ;
+var output  = './bin' ;
 
 var globals =
 {
