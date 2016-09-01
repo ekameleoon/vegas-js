@@ -53,7 +53,7 @@ gulp.task('vegas-compile', function( done )
             [
                 babel
                 ({
-                    babelrc : false ,
+                    babelrc : true ,
                     presets : [ 'es2015-rollup' ],
                     exclude : 'node_modules/**'
                 })

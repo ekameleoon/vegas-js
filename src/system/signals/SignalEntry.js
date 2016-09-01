@@ -8,8 +8,19 @@
  */
 export function SignalEntry( receiver , priority /*uint*/ , auto /*Boolean*/ )
 {
-    this.auto     = Boolean( auto ) ;
-    this.receiver = receiver ;
+    /**
+     * Indicates if the receiver must be disconnected when handle the first time a signal.
+     */
+    this.auto = Boolean( auto ) ;
+
+    /**
+     * The receiver reference of this entry.
+     */
+    this.receiver = receiver || null ;
+
+    /**
+     * Determinates the priority value of the object.
+     */
     this.priority = priority > 0 ? Math.ceil( priority ) : 0 ;
 }
 
@@ -21,30 +32,11 @@ export function SignalEntry( receiver , priority /*uint*/ , auto /*Boolean*/ )
 SignalEntry.prototype = Object.create( Object.prototype );
 SignalEntry.prototype.constructor = SignalEntry;
 
-///////////////////
-
-/**
- * Indicates if the receiver must be disconnected when handle the first time a signal.
- */
-SignalEntry.prototype.auto = false ;
-
-/**
- * Determinates the priority value of the object.
- */
-SignalEntry.prototype.priority = 0 ;
-
-/**
- * The receiver reference of this entry.
- */
-SignalEntry.prototype.receiver = null ;
-
-///////////////////
-
 /**
  * Returns the String representation of the object.
  * @return the String representation of the object.
  */
 SignalEntry.prototype.toString = function() /*String*/
 {
-    return "[SignalEntry receiver:" + this.receiver + " priority:" + this.priority + " auto:" + this.auto + "]" ;
+    return '[SignalEntry]' ;
 }

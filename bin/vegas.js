@@ -77,293 +77,6 @@ function trace() {
 }
 
 /**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    indent = isNaN(indent) ? 0 : indent;
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    var source /*Array*/ = [];
-
-    var i /*int*/;
-    var l /*int*/ = value.length;
-
-    for (i = 0; i < l; i++) {
-        if (value[i] === undefined) {
-            source.push("undefined");
-            continue;
-        }
-        if (value[i] === null) {
-            source.push("null");
-            continue;
-        }
-        if (prettyprint) {
-            indent++;
-        }
-        source.push(dump(value[i], prettyprint, indent, indentor));
-        if (prettyprint) {
-            indent--;
-        }
-    }
-    if (prettyprint) {
-        var spaces /*Array*/ = [];
-        for (i = 0; i < indent; i++) {
-            spaces.push(indentor);
-        }
-        var decal /*String*/ = "\n" + spaces.join("");
-        return decal + "[" + decal + indentor + source.join("," + decal + indentor) + decal + "]";
-    } else {
-        return "[" + source.join(",") + "]";
-    }
-}
-
-/**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-
-function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
-{
-    timestamp = Boolean(timestamp);
-    if (timestamp) {
-        return "new Date(" + String(date.valueOf()) + ")";
-    } else {
-        var y = date.getFullYear();
-        var m = date.getMonth();
-        var d = date.getDate();
-        var h = date.getHours();
-        var mn = date.getMinutes();
-        var s = date.getSeconds();
-        var ms = date.getMilliseconds();
-        var data = [y, m, d, h, mn, s, ms];
-        data.reverse();
-        while (data[0] === 0) {
-            data.splice(0, 1);
-        }
-        data.reverse();
-        return "new Date(" + data.join(",") + ")";
-    }
-}
-
-/**
- * Dumps a string representation of an object.
- * @param value an object
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- */
-function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    ///////////
-
-    indent = isNaN(indent) ? 0 : indent;
-
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    ///////////
-
-    var source /*Array*/ = [];
-
-    for (var member /*String*/ in value) {
-        if (value.hasOwnProperty(member)) {
-            if (value[member] === undefined) {
-                source.push(member + ":" + "undefined");
-                continue;
-            }
-
-            if (value[member] === null) {
-                source.push(member + ":" + "null");
-                continue;
-            }
-
-            if (prettyprint) {
-                indent++;
-            }
-
-            source.push(member + ":" + dump(value[member], prettyprint, indent, indentor));
-
-            if (prettyprint) {
-                indent--;
-            }
-        }
-    }
-    source = source.sort();
-    if (prettyprint) {
-        var spaces /*Array*/ = [];
-        for (var i /*int*/; i < indent; i++) {
-            spaces.push(indentor);
-        }
-
-        var decal /*String*/ = "\n" + spaces.join("");
-        return decal + "{" + decal + indentor + source.join("," + decal + indentor) + decal + "}";
-    } else {
-        return "{" + source.join(",") + "}";
-    }
-}
-
-/**
- * Returns the unicode string notation of the specified numeric value.
- * @return the unicode string notation of the specified numeric value.
- */
-
-function toUnicodeNotation(num) {
-    var hex = num.toString(16);
-    while (hex.length < 4) {
-        hex = "0" + hex;
-    }
-    return hex;
-}
-
-/**
- * Dumps a string representation of any String value.
- * @param str a String to transform.
- * @return The dump string representation of any String value.
- */
-function dumpString(value /*String*/) /*String*/
-{
-    var code /*int*/;
-    var quote /*String*/ = "\"";
-    var str /*String*/ = "";
-    var ch /*String*/ = "";
-    var pos /*int*/ = 0;
-    var len /*int*/ = value.length;
-    while (pos < len) {
-        ch = value.charAt(pos);
-        code = value.charCodeAt(pos);
-        if (code > 0xFF) {
-            str += "\\u" + toUnicodeNotation(code);
-            pos++;
-            continue;
-        }
-        switch (ch) {
-            case "\b":
-                // backspace
-                {
-                    str += "\\b";
-                    break;
-                }
-            case "\t":
-                // horizontal tab
-                {
-                    str += "\\t";
-                    break;
-                }
-            case "\n":
-                // line feed
-                {
-                    str += "\\n";
-                    break;
-                }
-            case "\u000b":
-                // vertical tab /* TODO: check the VT bug */
-                {
-                    str += "\\v"; //str += "\\u000B" ;
-                    break;
-                }
-            case "\f":
-                // form feed
-                {
-                    str += "\\f";
-                    break;
-                }
-            case "\r":
-                // carriage return
-                {
-                    str += "\\r";
-                    break;
-                }
-            case "\"":
-                // double quote
-                {
-                    str += "\\\"";
-                    break;
-                }
-            case "'":
-                // single quote
-                {
-                    str += "\\\'";
-                    break;
-                }
-            case "\\":
-                // backslash
-                {
-                    str += "\\\\";
-                    break;
-                }
-            default:
-                {
-                    str += ch;
-                }
-        }
-        pos++;
-    }
-    return quote + str + quote;
-}
-
-/**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    ///////////
-
-    indent = isNaN(indent) ? 0 : indent;
-
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    ///////////
-
-    if (o === undefined) {
-        return "undefined";
-    } else if (o === null) {
-        return "null";
-    } else if (typeof o === "string" || o instanceof String) {
-        return dumpString(o);
-    } else if (typeof o === "boolean" || o instanceof Boolean) {
-        return o ? "true" : "false";
-    } else if (typeof o === "number" || o instanceof Number) {
-        return o.toString();
-    } else if (o instanceof Date) {
-        return dumpDate(o);
-    } else if (o instanceof Array) {
-        return dumpArray(o, prettyprint, indent, indentor);
-    } else if (o.constructor && o.constructor === Object) {
-        return dumpObject(o, prettyprint, indent, indentor);
-    } else if ("toSource" in o) {
-        return o.toSource(indent);
-    } else {
-        return "<unknown>";
-    }
-}
-
-/**
  * Determines whether the specified object exists as an element in an Array object.
  * <p><b>Example :</b></p>
  * <pre class="prettyprint">
@@ -771,6 +484,21 @@ function spliceInto(inserted /*Array*/, container /*Array*/, position /*Number*/
 }
 
 /**
+ * The VEGAS.js framework - The core.arrays library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var arrays = Object.assign({
+    contains: contains,
+    initialize: initialize,
+    pierce: pierce,
+    repeat: repeat,
+    shuffle: shuffle,
+    sortOn: sortOn,
+    spliceInto: spliceInto
+});
+
+/**
  * Returns 0 if the passed string is lower case else 1.
  * @return 0 if the passed string is lower case else 1.
  */
@@ -907,6 +635,311 @@ function isUnicode(c /*String*/) /*Boolean*/
 function isUpper(c /*String*/) /*Boolean*/
 {
   return "A" <= c && c <= "Z";
+}
+
+/**
+ * The VEGAS.js framework - The core.chars library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var chars = Object.assign({
+    compare: compare,
+    isAlpha: isAlpha,
+    isASCII: isASCII,
+    isDigit: isDigit,
+    isHexDigit: isHexDigit,
+    isLower: isLower,
+    isOctalDigit: isOctalDigit,
+    isOperator: isOperator,
+    isUnicode: isUnicode,
+    isUpper: isUpper
+});
+
+/**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    indent = isNaN(indent) ? 0 : indent;
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    var source /*Array*/ = [];
+
+    var i /*int*/;
+    var l /*int*/ = value.length;
+
+    for (i = 0; i < l; i++) {
+        if (value[i] === undefined) {
+            source.push("undefined");
+            continue;
+        }
+        if (value[i] === null) {
+            source.push("null");
+            continue;
+        }
+        if (prettyprint) {
+            indent++;
+        }
+        source.push(dump(value[i], prettyprint, indent, indentor));
+        if (prettyprint) {
+            indent--;
+        }
+    }
+    if (prettyprint) {
+        var spaces /*Array*/ = [];
+        for (i = 0; i < indent; i++) {
+            spaces.push(indentor);
+        }
+        var decal /*String*/ = "\n" + spaces.join("");
+        return decal + "[" + decal + indentor + source.join("," + decal + indentor) + decal + "]";
+    } else {
+        return "[" + source.join(",") + "]";
+    }
+}
+
+/**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+
+function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
+{
+    timestamp = Boolean(timestamp);
+    if (timestamp) {
+        return "new Date(" + String(date.valueOf()) + ")";
+    } else {
+        var y = date.getFullYear();
+        var m = date.getMonth();
+        var d = date.getDate();
+        var h = date.getHours();
+        var mn = date.getMinutes();
+        var s = date.getSeconds();
+        var ms = date.getMilliseconds();
+        var data = [y, m, d, h, mn, s, ms];
+        data.reverse();
+        while (data[0] === 0) {
+            data.splice(0, 1);
+        }
+        data.reverse();
+        return "new Date(" + data.join(",") + ")";
+    }
+}
+
+/**
+ * Dumps a string representation of an object.
+ * @param value an object
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ */
+function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    ///////////
+
+    indent = isNaN(indent) ? 0 : indent;
+
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    ///////////
+
+    var source /*Array*/ = [];
+
+    for (var member /*String*/ in value) {
+        if (value.hasOwnProperty(member)) {
+            if (value[member] === undefined) {
+                source.push(member + ":" + "undefined");
+                continue;
+            }
+
+            if (value[member] === null) {
+                source.push(member + ":" + "null");
+                continue;
+            }
+
+            if (prettyprint) {
+                indent++;
+            }
+
+            source.push(member + ":" + dump(value[member], prettyprint, indent, indentor));
+
+            if (prettyprint) {
+                indent--;
+            }
+        }
+    }
+    source = source.sort();
+    if (prettyprint) {
+        var spaces /*Array*/ = [];
+        for (var i /*int*/; i < indent; i++) {
+            spaces.push(indentor);
+        }
+
+        var decal /*String*/ = "\n" + spaces.join("");
+        return decal + "{" + decal + indentor + source.join("," + decal + indentor) + decal + "}";
+    } else {
+        return "{" + source.join(",") + "}";
+    }
+}
+
+/**
+ * Returns the unicode string notation of the specified numeric value.
+ * @return the unicode string notation of the specified numeric value.
+ */
+
+function toUnicodeNotation(num) {
+    var hex = num.toString(16);
+    while (hex.length < 4) {
+        hex = "0" + hex;
+    }
+    return hex;
+}
+
+/**
+ * Dumps a string representation of any String value.
+ * @param str a String to transform.
+ * @return The dump string representation of any String value.
+ */
+function dumpString(value /*String*/) /*String*/
+{
+    var code /*int*/;
+    var quote /*String*/ = "\"";
+    var str /*String*/ = "";
+    var ch /*String*/ = "";
+    var pos /*int*/ = 0;
+    var len /*int*/ = value.length;
+    while (pos < len) {
+        ch = value.charAt(pos);
+        code = value.charCodeAt(pos);
+        if (code > 0xFF) {
+            str += "\\u" + toUnicodeNotation(code);
+            pos++;
+            continue;
+        }
+        switch (ch) {
+            case "\b":
+                // backspace
+                {
+                    str += "\\b";
+                    break;
+                }
+            case "\t":
+                // horizontal tab
+                {
+                    str += "\\t";
+                    break;
+                }
+            case "\n":
+                // line feed
+                {
+                    str += "\\n";
+                    break;
+                }
+            case "\u000b":
+                // vertical tab /* TODO: check the VT bug */
+                {
+                    str += "\\v"; //str += "\\u000B" ;
+                    break;
+                }
+            case "\f":
+                // form feed
+                {
+                    str += "\\f";
+                    break;
+                }
+            case "\r":
+                // carriage return
+                {
+                    str += "\\r";
+                    break;
+                }
+            case "\"":
+                // double quote
+                {
+                    str += "\\\"";
+                    break;
+                }
+            case "'":
+                // single quote
+                {
+                    str += "\\\'";
+                    break;
+                }
+            case "\\":
+                // backslash
+                {
+                    str += "\\\\";
+                    break;
+                }
+            default:
+                {
+                    str += ch;
+                }
+        }
+        pos++;
+    }
+    return quote + str + quote;
+}
+
+/**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    ///////////
+
+    indent = isNaN(indent) ? 0 : indent;
+
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    ///////////
+
+    if (o === undefined) {
+        return "undefined";
+    } else if (o === null) {
+        return "null";
+    } else if (typeof o === "string" || o instanceof String) {
+        return dumpString(o);
+    } else if (typeof o === "boolean" || o instanceof Boolean) {
+        return o ? "true" : "false";
+    } else if (typeof o === "number" || o instanceof Number) {
+        return o.toString();
+    } else if (o instanceof Date) {
+        return dumpDate(o);
+    } else if (o instanceof Array) {
+        return dumpArray(o, prettyprint, indent, indentor);
+    } else if (o.constructor && o.constructor === Object) {
+        return dumpObject(o, prettyprint, indent, indentor);
+    } else if ("toSource" in o) {
+        return o.toSource(indent);
+    } else {
+        return "<unknown>";
+    }
 }
 
 /**
@@ -1910,6 +1943,82 @@ function vincenty(latitude1, longitude1, latitude2, longitude2) /*Number*/
 }
 
 /**
+ * The VEGAS.js framework - The core.maths library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var maths = Object.assign({
+    acosD: acosD,
+    acosHm: acosHm,
+    acosHp: acosHp,
+    angleOfLine: angleOfLine,
+    asinD: asinD,
+    asinH: asinH,
+    atan2D: atan2D,
+    atanD: atanD,
+    atanH: atanH,
+    bearing: bearing,
+    berp: berp,
+    bounce: bounce,
+    cartesianToPolar: cartesianToPolar,
+    ceil: ceil,
+    clamp: clamp,
+    clerp: clerp,
+    cosD: cosD,
+    coserp: coserp,
+    cosH: cosH,
+    DEG2RAD: DEG2RAD,
+    degreesToRadians: degreesToRadians,
+    distance: distance,
+    distanceByObject: distanceByObject,
+    EARTH_RADIUS_IN_METERS: EARTH_RADIUS_IN_METERS,
+    EPSILON: EPSILON,
+    fibonacci: fibonacci,
+    finalBearing: finalBearing,
+    fixAngle: fixAngle,
+    floor: floor,
+    gcd: gcd,
+    haversine: haversine,
+    hermite: hermite,
+    hypothenuse: hypothenuse,
+    interpolate: interpolate,
+    isEven: isEven,
+    isOdd: isOdd,
+    LAMBDA: LAMBDA,
+    lerp: lerp,
+    log10: log10,
+    logN: logN,
+    map: map,
+    midPoint: midPoint,
+    MILE_TO_METER: MILE_TO_METER,
+    modulo: modulo,
+    nearlyEquals: nearlyEquals,
+    normalize: normalize,
+    percentage: percentage,
+    PHI: PHI,
+    polarToCartesian: polarToCartesian,
+    RAD2DEG: RAD2DEG,
+    replaceNaN: replaceNaN,
+    round: round,
+    sign: sign,
+    sinD: sinD,
+    sinerp: sinerp,
+    sinH: sinH,
+    tanD: tanD,
+    tanH: tanH,
+    vincenty: vincenty
+});
+
+/**
+ * The VEGAS.js framework - The core.numbers library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var numbers = Object.assign({
+  toUnicodeNotation: toUnicodeNotation
+});
+
+/**
  * Returns all the public members of an object, either by key or by value.
  * @param o The target object to enumerate.
  * @param byValue The optional flag indicates if the function return an Array of strings (keys) or of values (default false).
@@ -1976,6 +2085,16 @@ function merge(target /*Object*/, source /*Object*/, overwrite /*Boolean*/) /*Ob
 }
 
 /**
+ * The VEGAS.js framework - The core.objects library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var objects = Object.assign({
+  members: members,
+  merge: merge
+});
+
+/**
  * Generates a variant 2, version 4 (randomly generated number) UUID as per RFC 4122.
  */
 
@@ -1986,6 +2105,15 @@ function generateUUID() /*String*/
     }
     return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 }
+
+/**
+ * The VEGAS.js framework - The core.random library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var random = Object.assign({
+  generateUUID: generateUUID
+});
 
 /**
  * Converts a hyphenated string to a camelcased string.
@@ -2752,148 +2880,646 @@ function ucWords(str /*String*/) /*String*/
 }
 
 /**
+ * The VEGAS.js framework - The core.strings library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var strings = Object.assign({
+    camelCase: camelCase,
+    capitalize: capitalize,
+    caseValue: caseValue,
+    center: center,
+    clean: clean,
+    endsWith: endsWith,
+    fastformat: fastformat,
+    format: format,
+    hyphenate: hyphenate,
+    indexOfAny: indexOfAny,
+    insert: insert,
+    lastIndexOfAny: lastIndexOfAny,
+    lineTerminatorChars: lineTerminatorChars,
+    pad: pad,
+    repeat: repeat$1,
+    startsWith: startsWith,
+    trim: trim,
+    trimEnd: trimEnd,
+    trimStart: trimStart,
+    ucFirst: ucFirst,
+    ucWords: ucWords,
+    whiteSpaceChars: whiteSpaceChars
+});
+
+/**
  * The VEGAS.js framework - The core library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
-
-// core
-// core.arrays
-// core.chars
-// core.maths
-// core.numbers
-// core.objects
-// core.random
-// core.strings
 var core = Object.assign({
     dump: dump,
-    arrays: {
-        contains: contains,
-        initialize: initialize,
-        pierce: pierce,
-        repeat: repeat,
-        shuffle: shuffle,
-        sortOn: sortOn,
-        spliceInto: spliceInto
-    },
-    chars: {
-        compare: compare,
-        isAlpha: isAlpha,
-        isASCII: isASCII,
-        isDigit: isDigit,
-        isHexDigit: isHexDigit,
-        isLower: isLower,
-        isOctalDigit: isOctalDigit,
-        isOperator: isOperator,
-        isUnicode: isUnicode,
-        isUpper: isUpper
-    },
-    maths: {
-        acosD: acosD,
-        acosHm: acosHm,
-        acosHp: acosHp,
-        angleOfLine: angleOfLine,
-        asinD: asinD,
-        asinH: asinH,
-        atan2D: atan2D,
-        atanD: atanD,
-        atanH: atanH,
-        bearing: bearing,
-        berp: berp,
-        bounce: bounce,
-        cartesianToPolar: cartesianToPolar,
-        ceil: ceil,
-        clamp: clamp,
-        clerp: clerp,
-        cosD: cosD,
-        coserp: coserp,
-        cosH: cosH,
-        DEG2RAD: DEG2RAD,
-        degreesToRadians: degreesToRadians,
-        distance: distance,
-        distanceByObject: distanceByObject,
-        EARTH_RADIUS_IN_METERS: EARTH_RADIUS_IN_METERS,
-        EPSILON: EPSILON,
-        fibonacci: fibonacci,
-        finalBearing: finalBearing,
-        fixAngle: fixAngle,
-        floor: floor,
-        gcd: gcd,
-        haversine: haversine,
-        hermite: hermite,
-        hypothenuse: hypothenuse,
-        interpolate: interpolate,
-        isEven: isEven,
-        isOdd: isOdd,
-        LAMBDA: LAMBDA,
-        lerp: lerp,
-        log10: log10,
-        logN: logN,
-        map: map,
-        midPoint: midPoint,
-        MILE_TO_METER: MILE_TO_METER,
-        modulo: modulo,
-        nearlyEquals: nearlyEquals,
-        normalize: normalize,
-        percentage: percentage,
-        PHI: PHI,
-        polarToCartesian: polarToCartesian,
-        RAD2DEG: RAD2DEG,
-        replaceNaN: replaceNaN,
-        round: round,
-        sign: sign,
-        sinD: sinD,
-        sinerp: sinerp,
-        sinH: sinH,
-        tanD: tanD,
-        tanH: tanH,
-        vincenty: vincenty
-    },
-    numbers: {
-        toUnicodeNotation: toUnicodeNotation
-    },
-    objects: {
-        members: members,
-        merge: merge
-    },
-    random: {
-        generateUUID: generateUUID
-    },
-    strings: {
-        camelCase: camelCase,
-        capitalize: capitalize,
-        caseValue: caseValue,
-        center: center,
-        clean: clean,
-        endsWith: endsWith,
-        fastformat: fastformat,
-        format: format,
-        hyphenate: hyphenate,
-        indexOfAny: indexOfAny,
-        insert: insert,
-        lastIndexOfAny: lastIndexOfAny,
-        lineTerminatorChars: lineTerminatorChars,
-        pad: pad,
-        repeat: repeat$1,
-        startsWith: startsWith,
-        trim: trim,
-        trimEnd: trimEnd,
-        trimStart: trimStart,
-        ucFirst: ucFirst,
-        ucWords: ucWords,
-        whiteSpaceChars: whiteSpaceChars
-    }
+    arrays: arrays,
+    chars: chars,
+    maths: maths,
+    numbers: numbers,
+    objects: objects,
+    random: random,
+    strings: strings
 });
 
 /**
- * The enumeration of all string expressions in the signal engine.
+ * This class determinates a basic implementation to creates enumeration objects.
+ * @param value The value of the enumeration.
+ * @param name The name key of the enumeration.
  */
 
-var strings = {
-    INVALID_PARAMETER_TYPE: "The parameter with the index {0} in the emit method is not valid.",
-    INVALID_PARAMETERS_LENGTH: "The number of arguments in the emit method is not valid, must be invoked with {0} argument(s) and you call it with {1} argument(s).",
-    INVALID_TYPES: "Invalid types representation, the Array of types failed at index {0} should be a constructor function but was:\"{1}\"."
+function Enum(value /*int*/, name /*String*/) {
+    Object.defineProperties(this, {
+        _name: {
+            value: typeof name === "string" || name instanceof String ? name : "",
+            enumerable: false,
+            writable: true,
+            configurable: true
+        },
+        _value: {
+            value: isNaN(value) ? 0 : value,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Enum.prototype = Object.create(Object.prototype);
+Enum.prototype.constructor = Enum;
+
+/**
+ * Compares the specified object with this object for equality.
+ * @return <code>true</code> if the the specified object is equal with this object.
+ */
+Enum.prototype.equals = function (object) /*Boolean*/
+{
+    if (object === this) {
+        return true;
+    }
+
+    if (object instanceof Enum) {
+        return object.toString() === this.toString() && object.valueOf() === this.valueOf();
+    }
+
+    return false;
 };
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+Enum.prototype.toString = function () /*String*/
+{
+    return this._name;
+};
+
+/**
+ * Returns the primitive value of the object.
+ * @return the primitive value of the object.
+ */
+Enum.prototype.valueOf = function () {
+    return this._value;
+};
+
+/**
+ * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
+ */
+
+function Map() {}
+//
+
+
+/**
+ * @extends Object
+ */
+Map.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns the number of key-value mappings in this map.
+   */
+  length: {
+    get: function get() {
+      return 0;
+    }
+  }
+});
+
+Map.prototype.constructor = Map;
+
+/**
+ * Removes all mappings from this map (optional operation).
+ */
+Map.prototype.clear = function () {}
+//
+
+
+/**
+ * Returns a shallow copy of the map.
+ * @return a shallow copy of the map.
+ */
+;Map.prototype.clone = function () {
+  return new Map();
+};
+
+/**
+ * Removes the mapping for this key from this map if it is present (optional operation).
+ */
+Map.prototype.delete = function (key) {}
+//
+
+
+/**
+ * Returns the value to which this map maps the specified key.
+ */
+;Map.prototype.get = function (key) {}
+//
+
+
+/**
+ * Returns {@code true} if this map contains a mapping for the specified key.
+ * @return {@code true} if this map contains a mapping for the specified key.
+ */
+;Map.prototype.has = function (key) /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns {@code true} if this map maps one or more keys to the specified value.
+ * @return {@code true} if this map maps one or more keys to the specified value.
+ */
+;Map.prototype.hasValue = function (value) /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns {@code true} if this map contains no key-value mappings.
+ * @return {@code true} if this map contains no key-value mappings.
+ */
+;Map.prototype.isEmpty = function () /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns the values iterator of this map.
+ * @return the values iterator of this map.
+ */
+;Map.prototype.iterator = function () /*Iterator*/
+{}
+//
+
+
+/**
+ * Returns the keys iterator of this map.
+ * @return the keys iterator of this map.
+ */
+;Map.prototype.keyIterator = function () /*Iterator*/
+{}
+//
+
+
+/**
+ * Returns an array of all the keys in the map.
+ */
+;Map.prototype.keys = function () /*Array*/
+{}
+//
+
+
+/**
+ * Associates the specified value with the specified key in this map (optional operation).
+ */
+;Map.prototype.set = function (key, value) {}
+//
+
+
+/**
+ * Copies all of the mappings from the specified map to this map (optional operation).
+ */
+;Map.prototype.setAll = function (map /*Map*/) {}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+;Map.prototype.toString = function () {
+  return '[Map]';
+};
+
+/**
+ * Returns an array of all the values in the map.
+ */
+Map.prototype.values = function () /*Array*/
+{
+  //
+};
+
+/**
+ * Represents a pair key/value entry in a Map.
+ * @param key The key representation of the entry.
+ * @param value The value representation of the entry.
+ */
+
+function MapEntry(key, value) {
+  this.key = key;
+  this.value = value;
+}
+
+/**
+ * @extends Object
+ */
+MapEntry.prototype = Object.create(Object.prototype);
+MapEntry.prototype.constructor = MapEntry;
+
+/**
+ * Creates and returns a shallow copy of the object.
+ * @return A new object that is a shallow copy of this instance.
+ */
+MapEntry.prototype.clone = function () {
+  return new MapEntry(this.key, this.value);
+};
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+MapEntry.prototype.toString = function () /*String*/
+{
+  return "[MapEntry key:" + this.key + " value:" + this.value + "]";
+};
+
+/**
+ * Converts a Map to a custom string representation.
+ */
+function MapFormatter() {}
+
+/**
+ * @extends Object
+ */
+MapFormatter.prototype = Object.create(Object.prototype);
+MapFormatter.prototype.constructor = MapFormatter;
+
+/**
+ * Formats the specified value.
+ * @param value The object to format.
+ * @return the string representation of the formatted value.
+ */
+MapFormatter.prototype.format = function (value) /*String*/
+{
+    if (value && value instanceof Map) {
+        var r = "{";
+        var keys = value.keys();
+        var len = keys.length;
+        if (len > 0) {
+            var values = value.values();
+            for (var i = 0; i < len; i++) {
+                r += keys[i] + ':' + values[i];
+                if (i < len - 1) {
+                    r += ",";
+                }
+            }
+        }
+        r += "}";
+        return r;
+    } else {
+        return "{}";
+    }
+};
+
+var formatter = new MapFormatter();
+
+/**
+ * Hash table based implementation of the Map interface.
+ * <p><b>Attention :</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
+ * @example
+ * <pre>
+ * var map = new system.data.maps.ArrayMap() ;
+ *
+ * map.set("key1", "value1") ;
+ * map.set("key2", "value2") ;
+ * map.set("key3", "value3") ;
+ *
+ * trace ("map : " + map) ;
+ *
+ * // trace ("------ iterator") ;
+ * //
+ * // var it = map.iterator() ;
+ * // while (it.hasNext())
+ * // {
+ * //     trace (it.next() + " : " + it.key()) ;
+ * // }
+ *
+ *
+ * trace( 'values : ' + map.values()) ;
+ * trace( map.has('key2')) ;
+ * trace( map.get('key2') ) ;
+ * trace( map.indexOfKey('key2')) ;
+ *
+ * map.delete( 'key2' ) ;
+ *
+ * trace ("map : " + map) ;
+ * </pre>
+ * @param keys An optional Array of all keys to fill in this Map.
+ * @param values An optional Array of all values to fill in this Map. This Array must have the same size like the 'keys' argument.
+ */
+function ArrayMap(keys /*Array*/, values /*Array*/) {
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _keys: {
+            value: [],
+            writable: true
+        },
+        /**
+         * @private
+         */
+        _values: {
+            value: [],
+            writable: true
+        }
+    });
+
+    if (keys === null || values === null) {
+        this._keys = [];
+        this._values = [];
+    } else {
+        var b = keys instanceof Array && values instanceof Array && keys.length > 0 && keys.length === values.length;
+        this._keys = b ? [].concat(keys) : [];
+        this._values = b ? [].concat(values) : [];
+    }
+}
+
+/**
+ * @extends Map
+ */
+ArrayMap.prototype = Object.create(Map.prototype, {
+    /**
+     * Returns the number of key-value mappings in this map.
+     */
+    length: {
+        get: function get() {
+            return this._keys.length;
+        }
+    }
+});
+
+ArrayMap.prototype.constructor = Map;
+
+/**
+ * Removes all mappings from this map (optional operation).
+ */
+ArrayMap.prototype.clear = function () {
+    this._keys = [];
+    this._values = [];
+};
+
+/**
+ * Returns a shallow copy of this ArrayMap instance: the keys and values themselves are not cloned.
+ * @return a shallow copy of this ArrayMap instance: the keys and values themselves are not cloned.
+ */
+ArrayMap.prototype.clone = function () {
+    return new ArrayMap(this._keys, this._values);
+};
+
+/**
+ * Removes the mapping for this key from this map if present.
+ * @param o The key whose mapping is to be removed from the map.
+ * @return previous value associated with specified key, or null if there was no mapping for key. A null return can also indicate that the map previously associated null with the specified key.
+ */
+ArrayMap.prototype.delete = function (key) {
+    var v = null;
+    var i = this.indexOfKey(key);
+    if (i > -1) {
+        v = this._values[i];
+        this._keys.splice(i, 1);
+        this._values.splice(i, 1);
+    }
+    return v;
+};
+
+/**
+ * Returns the value to which this map maps the specified key.
+ * @return the value to which this map maps the specified key.
+ */
+ArrayMap.prototype.get = function (key) {
+    return this._values[this.indexOfKey(key)];
+};
+
+/**
+ * Returns the value to which this map maps the specified key.
+ * @return the value to which this map maps the specified key.
+ */
+ArrayMap.prototype.getKeyAt = function (index /*uint*/) {
+    return this._keys[index];
+};
+
+/**
+ * Returns the value to which this map maps the specified key.
+ * @return the value to which this map maps the specified key.
+ */
+ArrayMap.prototype.getValueAt = function (index /*uint*/) {
+    return this._values[index];
+};
+
+/**
+ * Returns {@code true} if this map contains a mapping for the specified key.
+ * @return {@code true} if this map contains a mapping for the specified key.
+ */
+ArrayMap.prototype.has = function (key) /*Boolean*/
+{
+    return this.indexOfKey(key) > -1;
+};
+
+/**
+ * Returns {@code true} if this map maps one or more keys to the specified value.
+ * @return {@code true} if this map maps one or more keys to the specified value.
+ */
+ArrayMap.prototype.hasValue = function (value) /*Boolean*/
+{
+    return this.indexOfValue(value) > -1;
+};
+
+/**
+ * Returns the index of the specified key in argument.
+ * @param key the key in the map to search.
+ * @return the index of the specified key in argument.
+ */
+ArrayMap.prototype.indexOfKey = function (key) /*int*/
+{
+    var l = this._keys.length;
+    while (--l > -1) {
+        if (this._keys[l] === key) {
+            return l;
+        }
+    }
+    return -1;
+};
+
+/**
+ * Returns the index of the specified value in argument.
+ * @param value the value in the map to search.
+ * @return the index of the specified value in argument.
+ */
+ArrayMap.prototype.indexOfValue = function (value) /*int*/
+{
+    var l = this._values.length;
+    while (--l > -1) {
+        if (this._values[l] === value) {
+            return l;
+        }
+    }
+    return -1;
+};
+
+/**
+ * Returns true if this map contains no key-value mappings.
+ * @return true if this map contains no key-value mappings.
+ */
+ArrayMap.prototype.isEmpty = function () /*Boolean*/
+{
+    return this._keys.length === 0;
+};
+
+/**
+ * Returns the values iterator of this map.
+ * @return the values iterator of this map.
+ */
+ArrayMap.prototype.iterator = function () /*Iterator*/
+{}
+//return new MapIterator( this ) ;
+
+
+/**
+ * Returns the keys iterator of this map.
+ * @return the keys iterator of this map.
+ */
+;ArrayMap.prototype.keyIterator = function () /*Iterator*/
+{}
+//return new ArrayIterator( this._keys ) ;
+
+
+/**
+ * Returns an array representation of all keys in the map.
+ * @return an array representation of all keys in the map.
+ */
+;ArrayMap.prototype.keys = function () /*Array*/
+{
+    return this._keys.concat();
+};
+
+/**
+ * Associates the specified value with the specified key in this map.
+ * @param key the key to register the value.
+ * @param value the value to be mapped in the map.
+ */
+ArrayMap.prototype.set = function (key, value) {
+    var r = null;
+    var i /*Number*/ = this.indexOfKey(key);
+    if (i < 0) {
+        this._keys.push(key);
+        this._values.push(value);
+    } else {
+        r = this._values[i];
+        this._values[i] = value;
+    }
+    return r;
+};
+
+/**
+ * Copies all of the mappings from the specified map to this one.
+ */
+ArrayMap.prototype.setAll = function (map /*Map*/) {
+    if (!map || !(map instanceof Map)) {
+        return;
+    }
+    var keys = map.keys();
+    var values = map.values();
+    var l = keys.length;
+    for (var i = 0; i < l; i = i - -1) {
+        this.put(keys[i], values[i]);
+    }
+};
+
+/**
+ * Sets the value of the "key" in the ArrayMap with the specified index.
+ * @param index The position of the entry in the ArrayMap.
+ * @param value The value of the entry to change.
+ * @return A MapEntry who corresponding the old key/value entry or null if the key already exist or the specified index don't exist.
+ * @throws RangeError If the index is out of the range of the Map size.
+ */
+ArrayMap.prototype.setKeyAt = function (index /*uint*/, key) {
+    if (index >= this._keys.length) {
+        throw new RangeError("ArrayMap.setKeyAt(" + index + ") failed with an index out of the range.");
+    }
+    if (this.containsKey(key)) {
+        return null;
+    }
+    var k = this._keys[index];
+    if (k === undefined) {
+        return null;
+    }
+    var v = this._values[index];
+
+    this._keys[index] = key;
+    return new MapEntry(k, v);
+};
+
+/**
+ * Sets the value of the "value" in the HashMap (ArrayMap) with the specified index.
+ * @return the old value in the map if exist.
+ */
+ArrayMap.prototype.setValueAt = function (index /*Number*/, value) {
+    if (index >= this._keys.length) {
+        throw new RangeError("ArrayMap.setValueAt(" + index + ") failed with an index out of the range.");
+    }
+    var v = this._values[index]; // TODO refactoring
+    if (v === undefined) {
+        return null;
+    }
+    var k = this._keys[index];
+    this._values[index] = value;
+    return new MapEntry(k, v);
+};
+
+/**
+ * Returns the string representation of this map.
+ * @return the string representation of this map.
+ */
+ArrayMap.prototype.toString = function () {
+    return formatter.format(this);
+};
+
+/**
+ * Returns an array representation of all values in the map.
+ * @return an array representation of all values in the map.
+ */
+ArrayMap.prototype.values = function () /*Array*/
+{
+    return this._values.concat();
+};
+
+/**
+ * The VEGAS.js framework - The system.data library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var data = Object.assign({
+    Map: Map,
+    maps: {
+        ArrayMap: ArrayMap
+    }
+});
 
 /**
  * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
@@ -2901,12 +3527,11 @@ var strings = {
 
 function Receiver() {}
 
-///////////////////
-
+/**
+ * @extends Object
+ */
 Receiver.prototype = Object.create(Object.prototype);
 Receiver.prototype.constructor = Receiver;
-
-///////////////////
 
 /**
  * This method is called when the receiver is connected with a Signal object.
@@ -2915,52 +3540,12 @@ Receiver.prototype.constructor = Receiver;
 Receiver.prototype.receive = function () {};
 
 /**
- * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
- * @param receiver The receiver reference.
- * @param priority The priority value of the entry.
- * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
  */
-
-function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
-  this.auto = Boolean(auto);
-  this.receiver = receiver;
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
-}
-
-///////////////////
-
-/**
- * @extends Object
- */
-SignalEntry.prototype = Object.create(Object.prototype);
-SignalEntry.prototype.constructor = SignalEntry;
-
-///////////////////
-
-/**
- * Indicates if the receiver must be disconnected when handle the first time a signal.
- */
-SignalEntry.prototype.auto = false;
-
-/**
- * Determinates the priority value of the object.
- */
-SignalEntry.prototype.priority = 0;
-
-/**
- * The receiver reference of this entry.
- */
-SignalEntry.prototype.receiver = null;
-
-///////////////////
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-SignalEntry.prototype.toString = function () /*String*/
+Receiver.prototype.toString = function () /*String*/
 {
-  return "[SignalEntry receiver:" + this.receiver + " priority:" + this.priority + " auto:" + this.auto + "]";
+  return "[Receiver]";
 };
 
 /**
@@ -2969,8 +3554,9 @@ SignalEntry.prototype.toString = function () /*String*/
 
 function Signaler() {}
 
-///////////////////
-
+/**
+ * @extends Object
+ */
 Signaler.prototype = Object.create(Object.prototype, {
     /**
      * Indicates the number of receivers connected.
@@ -2983,8 +3569,6 @@ Signaler.prototype = Object.create(Object.prototype, {
 });
 
 Signaler.prototype.constructor = Signaler;
-
-///////////////////
 
 /**
  * Connects a Function or a Receiver object.
@@ -3043,6 +3627,47 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
 };
 
 /**
+ * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
+ * @param receiver The receiver reference.
+ * @param priority The priority value of the entry.
+ * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ */
+
+function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
+  /**
+   * Indicates if the receiver must be disconnected when handle the first time a signal.
+   */
+  this.auto = Boolean(auto);
+
+  /**
+   * The receiver reference of this entry.
+   */
+  this.receiver = receiver || null;
+
+  /**
+   * Determinates the priority value of the object.
+   */
+  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+}
+
+///////////////////
+
+/**
+ * @extends Object
+ */
+SignalEntry.prototype = Object.create(Object.prototype);
+SignalEntry.prototype.constructor = SignalEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+SignalEntry.prototype.toString = function () /*String*/
+{
+  return '[SignalEntry]';
+};
+
+/**
  * Creates a new Signal instance.
  * <p><b>Example :</b></p>
  * <pre>
@@ -3081,7 +3706,25 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
  * signal.emit( "hello world" ) ;
  * </pre>
  */
-function Signal() {}
+function Signal() {
+    Object.defineProperties(this, {
+        /**
+         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         */
+        proxy: {
+            value: null,
+            enumerable: false,
+            configurable: true,
+            writable: false
+        },
+        receivers: {
+            value: [],
+            enumerable: false,
+            configurable: false,
+            writable: true
+        }
+    });
+}
 
 ///////////////////
 
@@ -3090,26 +3733,9 @@ Signal.prototype = Object.create(Signaler.prototype, {
      * The number of receivers or slots register in the signal object.
      */
     length: {
-        enumerable: false,
-        configurable: true,
         get: function get() {
             return this.receivers.length;
         }
-    },
-    /**
-     * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
-     */
-    proxy: {
-        enumerable: false,
-        configurable: true,
-        writable: true,
-        value: null
-    },
-    receivers: {
-        enumerable: false,
-        configurable: true,
-        writable: true,
-        value: []
     }
 });
 
@@ -3305,18 +3931,1616 @@ Signal.prototype.toString = function () /*String*/
 };
 
 /**
+ * This interface should be implemented by any class whose instances are intended to be executed.
+ */
+
+function Runnable() {}
+///////////////////
+
+Runnable.prototype = Object.create(Object.prototype);
+Runnable.prototype.constructor = Runnable;
+
+///////////////////
+
+/**
+ * Run the process.
+ */
+Runnable.prototype.run = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Runnable.prototype.toString = function () /*String*/
+{
+  return "[Runnable]";
+};
+
+/**
+ * The enumeration of all phases in a task process.
+ */
+
+var TaskPhase = Object.defineProperties({}, {
+    DELAYED: { value: 'delayed', enumerable: true },
+    FINISHED: { value: 'finished', enumerable: true },
+    INACTIVE: { value: 'inactive', enumerable: true },
+    RUNNING: { value: 'running', enumerable: true },
+    STOPPED: { value: 'stopped', enumerable: true },
+    TIMEOUT: { value: 'timeout', enumerable: true }
+});
+
+/**
+ * Creates a new Action instance.
+ */
+function Action() {
+  Object.defineProperties(this, {
+    /**
+     * This signal emit when the action is finished.
+     */
+    finishIt: { value: new Signal() },
+
+    /**
+     * Indicates the current phase.
+     */
+    phase: { get: function get() {
+        return this._phase;
+      } },
+
+    /**
+     * Indicates action is running.
+     */
+    running: { get: function get() {
+        return this._running;
+      } },
+
+    /**
+     * This signal emit when the action is started.
+     */
+    startIt: { value: new Signal() },
+
+    __lock__: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _phase: {
+      value: TaskPhase.INACTIVE,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _running: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+}
+
+/**
+ * @extends Runnable
+ */
+Action.prototype = Object.create(Runnable.prototype);
+Action.prototype.constructor = Action;
+
+/**
+ * Creates a copy of the object.
+ */
+Action.prototype.clone = function () {
+  return new Action();
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the object is locked.
+ * @return <code class="prettyprint">true</code> if the object is locked.
+ */
+Action.prototype.isLocked = function () /*Boolean*/
+{
+  return this.__lock__;
+};
+
+/**
+ * Locks the object.
+ */
+Action.prototype.lock = function () /*void*/
+{
+  this.__lock__ = true;
+};
+
+/**
+ * Notify when the process is finished.
+ */
+Action.prototype.notifyFinished = function () /*Boolean*/
+{
+  this._running = false;
+  this._phase = TaskPhase.FINISHED;
+  this.finishIt.emit(this);
+  this._phase = TaskPhase.INACTIVE;
+};
+
+/**
+ * Notify when the process is started.
+ */
+Action.prototype.notifyStarted = function () /*void*/
+{
+  this._running = true;
+  this._phase = TaskPhase.RUNNING;
+  this.startIt.emit(this);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Action.prototype.toString = function () /*String*/
+{
+  return '[Action]';
+};
+
+/**
+ * Unlocks the object.
+ */
+Action.prototype.unlock = function () /*void*/
+{
+  this.__lock__ = false;
+};
+
+/**
+ * The ActionEntry objects contains all informations about an Action in a TaskGroup.
+ * @param action The Action reference.
+ * @param priority The priority value of the entry.
+ * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ */
+
+function ActionEntry(action, priority /*uint*/, auto /*Boolean*/) {
+  this.action = action;
+  this.auto = Boolean(auto);
+  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+}
+
+/**
+ * @extends Object
+ */
+ActionEntry.prototype = Object.create(Object.prototype);
+ActionEntry.prototype.constructor = ActionEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+ActionEntry.prototype.toString = function () /*String*/
+{
+  return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
+};
+
+/**
+ * Creates a new Batch instance.
+ * @param init The optional Array of Runnable objects to fill the batch.
+ * @example
+ * function Command( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Command.prototype = Object.create( system.process.Runnable.prototype ) ;
+ * Command.constructor = Command ;
+ *
+ * Command.prototype.run = function()
+ * {
+ *     trace( this.name + " run") ;
+ * }
+ *
+ * Command.prototype.toString = function()
+ * {
+ *     return '[Command ' + this.name + ']' ;
+ * }
+
+ * var batch = new system.process.Batch() ;
+ *
+ * batch.add( new Command( "command1" ) ) ;
+ * batch.add( new Command( "command2" ) ) ;
+ *
+ * console.info( batch.length ) ;
+ *
+ * batch.run() ;
+ */
+function Batch(init /*Array*/) {
+    var _this = this;
+
+    Object.defineProperties(this, {
+        _entries: {
+            value: [],
+            enumerable: false,
+            writable: true,
+            configurable: false
+        }
+    });
+
+    if (init && init instanceof Array && init.length > 0) {
+        init.forEach(function (element) {
+            if (element instanceof Runnable) {
+                _this.add(element);
+            }
+        });
+    }
+}
+
+/**
+ * @extends Runnable
+ */
+Batch.prototype = Object.create(Runnable.prototype, {
+    /**
+     * Retrieves the number of elements in this batch.
+     * @return the number of elements in this batch.
+     */
+    length: {
+        get: function get() {
+            return this._entries.length;
+        }
+    }
+});
+Batch.prototype.constructor = Batch;
+
+/**
+ * Adds the specified Runnable object in batch.
+ */
+Batch.prototype.add = function (command /*Runnable*/) /*Boolean*/
+{
+    if (command && command instanceof Runnable) {
+        this._entries.push(command);
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Removes all of the elements from this batch.
+ */
+Batch.prototype.clear = function () /*void*/
+{
+    this._entries.length = 0;
+};
+
+/**
+ * Returns a shallow copy of the object.
+ * @return a shallow copy of the object.
+ */
+Batch.prototype.clone = function () {
+    var b = new Batch();
+    var l = this._entries.length;
+    for (var i = 0; i < l; i++) {
+        b.add(this._entries[i]);
+    }
+    return b;
+};
+
+/**
+ * Returns {@code true} if this batch contains the specified element.
+ * @return {@code true} if this batch contains the specified element.
+ */
+Batch.prototype.contains = function (command /*Runnable*/) /*Boolean*/
+{
+    if (command instanceof Runnable) {
+        var l = this._entries.length;
+        while (--l > -1) {
+            if (this._entries[l] === command) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Returns the command from this batch at the passed index.
+ * @return the command from this batch at the passed index.
+ */
+Batch.prototype.get = function (key) {
+    return this._entries[key];
+};
+
+/**
+ * Returns the position of the passed object in the batch.
+ * @param command the Runnable object to search in the collection.
+ * @param fromIndex the index to begin the search in the collection.
+ * @return the index of the object or -1 if the object isn't find in the batch.
+ */
+Batch.prototype.indexOf = function (command, fromIndex /*uint*/) /*int*/
+{
+    if (isNaN(fromIndex)) {
+        fromIndex = 0;
+    }
+    fromIndex = fromIndex > 0 ? Math.round(fromIndex) : 0;
+    if (command instanceof Runnable) {
+        var l = this._entries.length;
+        var i = fromIndex;
+        for (i; i < l; i++) {
+            if (this._entries[i] === command) {
+                return i;
+            }
+        }
+    }
+    return -1;
+};
+
+/**
+ * Returns {@code true} if this batch contains no elements.
+ * @return {@code true} if this batch is empty else {@code false}.
+ */
+Batch.prototype.isEmpty = function () /*Boolean*/
+{
+    return this._entries.length === 0;
+};
+
+/**
+ * Removes a single instance of the specified element from this collection, if it is present (optional operation).
+ */
+Batch.prototype.remove = function (command /*Runnable*/) /*Boolean*/
+{
+    var index = this.indexOf(command);
+    if (index > -1) {
+        this._entries.splice(index, 1);
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Run the process.
+ */
+Batch.prototype.run = function () /*void*/
+{
+    var l = this._entries.length;
+    if (l > 0) {
+        var i = -1;
+        while (++i < l) {
+            this._entries[i].run();
+        }
+    }
+};
+
+/**
+ * Stops all commands in the batch.
+ */
+Batch.prototype.stop = function () /*void*/
+{
+    var l = this._entries.length;
+    if (l > 0) {
+        this._entries.forEach(function (element) {
+            if (element instanceof Runnable && 'stop' in element && element.stop instanceof Function) {
+                element.stop();
+            }
+        });
+    }
+};
+
+/**
+ * Returns an array containing all of the elements in this batch.
+ * @return an array containing all of the elements in this batch.
+ */
+Batch.prototype.toArray = function () /*Array*/
+{
+    return this._entries.slice();
+};
+
+/**
+ * Returns the source code string representation of the object.
+ * @return the source code string representation of the object.
+ */
+Batch.prototype.toString = function () /*Array*/
+{
+    var r = "[Batch";
+    var l = this._entries.length;
+    if (l > 0) {
+        r += '[';
+        this._entries.forEach(function (element, index) {
+            r += element;
+            if (index < l - 1) {
+                r += ",";
+            }
+        });
+        r += ']';
+    }
+    r += "]";
+    return r;
+};
+
+/**
+ * A Task object to create a set of complex commands or actions.
+ */
+function Task() {
+  Action.call(this);
+  Object.defineProperties(this, {
+    /**
+     * The signal emit when the task is changed.
+     */
+    changeIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is cleared.
+     */
+    clearIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task emit a message.
+     */
+    infoIt: { value: new Signal() },
+
+    /**
+     * The flag to determinate if the task must be looped.
+     */
+    looping: { value: false, enumerable: false, configurable: false, writable: true },
+
+    /**
+     * The signal emit when the task is looped.
+     */
+    loopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is paused.
+     */
+    pauseIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is in progress.
+     */
+    progressIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is resumed.
+     */
+    resumeIt: { value: new Signal() },
+
+    /**
+     * This signal emit when the task is stopped.
+     */
+    stopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is out of time.
+     */
+    timeoutIt: { value: new Signal() }
+  });
+}
+
+/**
+ * @extends Task
+ */
+Task.prototype = Object.create(Action.prototype);
+Task.prototype.constructor = Task;
+
+/**
+ * Creates a copy of the object.
+ */
+Task.prototype.clone = function () {
+  return new Task();
+};
+
+/**
+ * Notify when the process is changed.
+ */
+Task.prototype.notifyChanged = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.changeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is cleared.
+ */
+Task.prototype.notifyCleared = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.clearIt.emit(this);
+  }
+};
+
+/**
+ * Notify a specific information when the process is changed.
+ */
+Task.prototype.notifyInfo = function (info) /*void*/
+{
+  if (!this.__lock__) {
+    this.infoIt.emit(this, info);
+  }
+};
+
+/**
+ * Notify when the process is looped.
+ */
+Task.prototype.notifyLooped = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.loopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is paused.
+ */
+Task.prototype.notifyPaused = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.pauseIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is progress.
+ */
+Task.prototype.notifyProgress = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.progressIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is resumed.
+ */
+Task.prototype.notifyResumed = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.resumeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is stopped.
+ */
+Task.prototype.notifyStopped = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.stopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is out of time.
+ */
+Task.prototype.notifyTimeout = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.TIMEOUT;
+  if (!this.__lock__) {
+    this.timeoutIt.emit(this);
+  }
+};
+
+/**
+ * Resumes the task.
+ */
+Task.prototype.resume = function () /*void*/
+{}
+//
+
+
+/**
+ * Resets the task.
+ */
+;Task.prototype.reset = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the task.
+ */
+;Task.prototype.start = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the process.
+ */
+;Task.prototype.stop = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Task.prototype.toString = function () /*String*/
+{
+  return '[Task]';
+};
+
+/**
+ * A simple representation of the Action interface, to group some Action objects in one.
+ * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
+ * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @example
+ * var do1 = new system.process.Do() ;
+ * var do2 = new system.process.Do() ;
+ *
+ * do1.something = function()
+ * {
+ *     console.log( "#1 something" ) ;
+ * }
+ *
+ * do2.something = function()
+ * {
+ *     console.log( "#2 something" ) ;
+ * }
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * var batch = new system.process.BatchTask() ;
+ *
+ * batch.add( do1 ) ;
+ * batch.add( do2 ) ;
+ *
+ * batch.verbose = true ;
+ *
+ * trace( 'batch : ' + batch.toString(true) ) ; // batch : [TaskGroup[[Do],[Do]]]
+ * trace( 'running : ' + batch.running ) ; // running : false
+ * trace( 'length : ' + batch.length ) ; // length : 2
+ *
+ * batch.finishIt.connect(finish) ;
+ * batch.startIt.connect(start) ;
+ *
+ * batch.run() ;
+ *
+ * // start: [TaskGroup[[Do],[Do]]]
+ * // #1 something
+ * // #2 something
+ * // finish: [TaskGroup[[Do],[Do]]]
+ */
+function TaskGroup(mode /*String*/, actions /*Array*/) {
+    var _this = this;
+
+    Task.call(this);
+
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _actions: {
+            value: [],
+            writable: true
+        },
+        /**
+         * @private
+         */
+        _buffer: {
+            value: new ArrayMap(),
+            writable: true
+        },
+        /**
+         * @private
+         */
+        _stopped: {
+            value: false,
+            writable: true
+        },
+        /**
+         * @private
+         */
+        _mode: {
+            value: TaskGroup.NORMAL,
+            writable: true
+        }
+    });
+
+    this.verbose = false;
+
+    if (typeof mode === "string" || mode instanceof String) {
+        this.mode = mode;
+    }
+
+    if (actions && actions instanceof Array && actions.length > 0) {
+        actions.forEach(function (action) {
+            if (action instanceof Action) {
+                _this.add(action);
+            }
+        });
+    }
+}
+
+Object.defineProperties(TaskGroup, {
+    /**
+     * Determinates the "everlasting" mode of the group.
+     * In this mode the action register in the task-group can't be auto-remove.
+     */
+    EVERLASTING: { value: 'everlasting', enumerable: true },
+
+    /**
+     * Determinates the "normal" mode of the group.
+     * In this mode the task-group has a normal life cycle.
+     */
+    NORMAL: { value: 'normal', enumerable: true },
+
+    /**
+     * Determinates the "transient" mode of the group.
+     * In this mode all actions are strictly auto-remove in the task-group when are invoked.
+     */
+    TRANSIENT: { value: 'transient', enumerable: true }
+});
+
+/**
+ * @extends Task
+ */
+TaskGroup.prototype = Object.create(Task.prototype, {
+    /**
+     * Indicates the numbers of actions register in the group.
+     */
+    length: {
+        get: function get() {
+            return this._actions.length;
+        },
+        set: function set(value) {
+            if (this._running) {
+                throw new Error(this + " length property can't be changed, the batch process is in progress.");
+            }
+            this.dispose();
+            var old /*uint*/ = this._actions.length;
+            this._actions.length = value;
+            var l /*int*/ = this._actions.length;
+            if (l > 0) {
+                var slot;
+                var e /*ActionEntry*/;
+                while (--l > -1) {
+                    e = this._actions[l];
+                    if (e && e.action) {
+                        slot = this.next.bind(this);
+                        this._buffer.set(e, slot);
+                        e.action.finishIt.connect(slot);
+                    }
+                }
+            } else if (old > 0) {
+                this.notifyCleared(); // clear notification
+            }
+        }
+    },
+
+    /**
+     * Determinates the mode of the chain. The mode can be "normal", "transient" or "everlasting".
+     * @see TaskGroup.NORMAL, TaskGroup.EVERLASTING, TaskGroup.TRANSIENT
+     */
+    mode: {
+        get: function get() {
+            return this._mode;
+        },
+        set: function set(value) {
+            this._mode = value === TaskGroup.TRANSIENT || value === TaskGroup.EVERLASTING ? value : TaskGroup.NORMAL;
+        }
+    },
+
+    /**
+     * Indicates if the chain is stopped.
+     */
+    stopped: {
+        get: function get() {
+            return this._stopped;
+        }
+    }
+});
+
+TaskGroup.prototype.constructor = TaskGroup;
+TaskGroup.prototype.__className__ = 'TaskGroup';
+
+/**
+ * Adds an action in the chain.
+ * @param priority Determinates the priority level of the action in the chain.
+ * @param autoRemove Apply a removeAction after the first finish notification.
+ * @return <code>true</code> if the insert is success.
+ */
+TaskGroup.prototype.add = function (action /*Action*/, priority /*uint*/, autoRemove /*Boolean*/) /*Boolean*/
+{
+    if (this._running) {
+        throw new Error(this + " add failed, the process is in progress.");
+    }
+
+    if (action && action instanceof Action) {
+        autoRemove = Boolean(autoRemove);
+        priority = priority > 0 ? Math.round(priority) : 0;
+
+        var entry = new ActionEntry(action, priority, autoRemove);
+        var slot = this.next.bind(this);
+
+        action.finishIt.connect(slot);
+        this._buffer.set(entry, slot);
+        this._actions.push(entry);
+
+        /////// bubble sorting
+
+        var i;
+        var j;
+
+        var a = this._actions;
+
+        var swap = function swap(j, k) {
+            var temp = a[j];
+            a[j] = a[k];
+            a[k] = temp;
+            return true;
+        };
+
+        var swapped = false;
+
+        var l = a.length;
+
+        for (i = 1; i < l; i++) {
+            for (j = 0; j < l - i; j++) {
+                if (a[j + 1].priority > a[j].priority) {
+                    swapped = swap(j, j + 1);
+                }
+            }
+            if (!swapped) {
+                break;
+            }
+        }
+
+        //////
+
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+TaskGroup.prototype.clone = function () {
+    return new TaskGroup(this._mode, this._actions.length > 0 ? this._actions : null);
+};
+
+/**
+ * Dispose the chain and disconnect all actions but don't remove them.
+ */
+TaskGroup.prototype.dispose = function () /*void*/
+{
+    var _this2 = this;
+
+    if (this._actions.length > 0) {
+        var slot;
+        this._actions.forEach(function (entry) {
+            if (entry instanceof ActionEntry) {
+                slot = _this2._buffer.get(entry);
+                if (slot) {
+                    entry.action.finishIt.disconnect(slot);
+                    _this2._buffer.remove(entry);
+                }
+            }
+        });
+    }
+};
+
+/**
+ * Returns the action register in the chain at the specified index value or <code>null</code>.
+ * @return the action register in the chain at the specified index value or <code>null</code>.
+ */
+TaskGroup.prototype.get = function (index /*uint*/) /*Action*/
+{
+    if (this._actions.length > 0 && index < this._actions.length) {
+        var entry = this._actions[index];
+        if (entry) {
+            return entry.action;
+        }
+    }
+    return null;
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
+ * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
+ */
+TaskGroup.prototype.contains = function (action /*Action*/) /*Action*/
+{
+    if (action && action instanceof Action) {
+        if (this._actions.length > 0) {
+            var e /*ActionEntry*/;
+            var l /*int*/ = this._actions.length;
+            while (--l > -1) {
+                e = this._actions[l];
+                if (e && e.action === action) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Returns <code>true</code> if the chain is empty.
+ * @return <code>true</code> if the chain is empty.
+ */
+TaskGroup.prototype.isEmpty = function () /*Boolean*/
+{
+    return this._actions.length === 0;
+};
+
+/**
+ * Invoked when a task is finished.
+ */
+TaskGroup.prototype.next = function (action /*Action*/) /*void*/
+{}
+//
+
+
+/**
+ * Removes a specific action register in the chain and if the passed-in argument is null all actions register in the chain are removed.
+ * If the chain is running the stop() method is called.
+ * @return <code>true</code> if the method success.
+ */
+;TaskGroup.prototype.remove = function (action /*Action*/) /*Boolean*/
+{
+    var _this3 = this;
+
+    if (this._running) {
+        throw new Error(this + " remove failed, the process is in progress.");
+    }
+    this.stop();
+    if (this._actions.length > 0) {
+        if (action && action instanceof Action) {
+            var e /*ActionEntry*/;
+            var l /*int*/ = this._actions.length;
+
+            var slot;
+
+            this._actions.forEach(function (element) {
+                if (element && element instanceof ActionEntry && element.action === action) {
+                    slot = _this3._buffer.get(e);
+                    if (slot) {
+                        e.action.finishIt.disconnect(slot);
+                        _this3._buffer.remove(e);
+                    }
+                    _this3._actions.splice(l, 1);
+                    return true;
+                }
+            });
+        } else {
+            this.dispose();
+            this._actions.length = 0;
+            this._buffer.clear();
+            this.notifyCleared();
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+ * Returns the Array representation of the chain.
+ * @return the Array representation of the chain.
+ */
+TaskGroup.prototype.toArray = function () /*Array*/
+{
+    if (this._actions.length > 0) {
+        var output /*Array*/ = [];
+        if (this._actions.length > 0) {
+            this._actions.forEach(function (element) {
+                if (element && element instanceof ActionEntry && element.action) {
+                    output.push(element.action);
+                }
+            });
+        }
+        return output;
+    } else {
+        return [];
+    }
+};
+
+/**
+ * Returns the String representation of the chain.
+ * @return the String representation of the chain.
+ */
+TaskGroup.prototype.toString = function () /*String*/
+{
+    var s /*String*/ = "[" + this.__className__;
+    if (Boolean(this.verbose)) {
+        if (this._actions.length > 0) {
+            s += "[";
+            var i /*int*/;
+            var e /*ActionEntry*/;
+            var l /*int*/ = this._actions.length;
+            var r /*Array*/ = [];
+            for (i = 0; i < l; i++) {
+                e = this._actions[i];
+                r.push(e && e.action ? e.action : null);
+            }
+            s += r.toString();
+            s += "]";
+        }
+    }
+    s += "]";
+    return s;
+};
+
+/**
+ * Batchs a serie of Action and run it in the same time.
+ * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
+ * @param actions A dynamic object who contains Action references to initialize the chain.
+ */
+function BatchTask(mode /*String*/, actions /*Array*/) {
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _current: {
+            value: null,
+            writable: true
+        },
+        /**
+         * @private
+         */
+        _currents: {
+            value: new ArrayMap(),
+            writable: true
+        }
+    });
+    TaskGroup.call(this, mode, actions);
+}
+
+/**
+ * @extends TaskGroup
+ */
+BatchTask.prototype = Object.create(TaskGroup.prototype, {
+    /**
+     * Indicates the current Action reference when the batch is in progress.
+     */
+    current: {
+        get: function get() {
+            return this._current;
+        }
+    }
+});
+BatchTask.prototype.constructor = BatchTask;
+BatchTask.prototype.__className__ = 'TaskGroup';
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+BatchTask.prototype.clone = function () {
+    return new BatchTask(this._mode, this._actions.length > 0 ? this._actions : null);
+};
+
+/**
+ * Invoked when a task is finished.
+ */
+BatchTask.prototype.next = function (action /*Action*/) /*void*/
+{
+    if (action && this._currents.has(action)) {
+        var entry = this._currents.get(action);
+        if (this._mode !== TaskGroup.EVERLASTING) {
+            if (this._mode === TaskGroup.TRANSIENT || entry.auto && this._mode === TaskGroup.NORMAL) {
+                if (action) {
+                    var slot;
+                    var e /*ActionEntry*/;
+                    var l /*int*/ = this._actions.length;
+                    while (--l > -1) {
+                        e = this._actions[l];
+                        if (e && e.action === action) {
+                            slot = this._buffer.get(this._current);
+
+                            action.finishIt.disconnect(slot);
+
+                            this._actions.splice(l, 1);
+                            this._buffer.delete(e);
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        this._currents.delete(action);
+    }
+
+    if (this._current) {
+        this.notifyChanged();
+    }
+
+    this._current = action;
+
+    this.notifyProgress();
+
+    if (this._currents.length === 0) {
+        this._current = null;
+        this.notifyFinished();
+    }
+};
+
+/**
+ * Resume the chain.
+ */
+BatchTask.prototype.resume = function () /*void*/
+{
+    if (this._stopped) {
+        this._running = true;
+        this._stopped = false;
+        this.notifyResumed();
+        if (this._actions.length > 0) {
+            var a /*Action*/;
+            var e /*ActionEntry*/;
+            var l /*int*/ = this._actions.length;
+            while (--l > -1) {
+                e = this._actions[l];
+                if (e) {
+                    a = e.action;
+                    if (a) {
+                        if ("resume" in a) {
+                            a.resume();
+                        } else {
+                            this.next(a); // finalize the action to clean the batch
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        this.run();
+    }
+};
+
+/**
+ * Launchs the chain process.
+ */
+BatchTask.prototype.run = function () /*void*/
+{
+    var _this = this;
+
+    if (!this._running) {
+        this.notifyStarted();
+
+        this._currents.clear();
+        this._stopped = false;
+        this._current = null;
+
+        if (this._actions.length > 0) {
+            this._actions.forEach(function (entry) {
+                if (entry && entry.action) {
+                    _this._currents.set(entry.action, entry);
+                }
+            });
+
+            this._actions.forEach(function (entry) {
+                if (entry && entry.action) {
+                    entry.action.run();
+                }
+            });
+        } else {
+            this.notifyFinished();
+        }
+    }
+};
+
+/**
+ * Stops the task group.
+ */
+BatchTask.prototype.stop = function () /*void*/
+{
+    if (this._running) {
+        if (this._actions.length > 0) {
+            var a /*Action*/;
+            var e /*ActionEntry*/;
+            var l /*int*/ = this._actions.length;
+            while (--l > -1) {
+                e = this._actions[l];
+                if (e) {
+                    a = e.action;
+                    if (a) {
+                        if ("stop" in a) {
+                            a.stop();
+                        }
+                    }
+                }
+            }
+        }
+        this._running = false;
+        this._stopped = true;
+        this.notifyStopped();
+    }
+};
+
+/**
+ * A simple command to do something.
+ * @example
+ * var action = new system.process.Do() ;
+ *
+ * action.something = function()
+ * {
+ *     trace( "do something" ) ;
+ * }
+ *
+ * var finish = function( action )
+ * {
+ *     var message = "finish: " + action.toString() ;
+ *     trace( message ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     var message = "start: " + action.toString() ;
+ *     trace( message ) ;
+ * };
+ *
+ * action.finishIt.connect(finish) ;
+ * action.startIt.connect(start) ;
+ *
+ * action.run() ;
+ */
+function Do() {
+  Action.call(this);
+}
+
+/**
+ * @extends Task
+ */
+Do.prototype = Object.create(Action.prototype);
+Do.prototype.constructor = Do;
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+Do.prototype.clone = function () {
+  return new Do();
+};
+
+/**
+ * The something method to overrides.
+ */
+Do.prototype.something = function () {}
+// override
+
+
+/**
+ * Run the process.
+ */
+;Do.prototype.run = function () /*void*/
+{
+  this.notifyStarted();
+  this.something();
+  this.notifyFinished();
+};
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+Do.prototype.toString = function () /*String*/
+{
+  return '[Do]';
+};
+
+/**
+ * This interface is implemented by all objects lockable.
+ */
+
+function Lockable() {}
+
+///////////////////
+
+Lockable.prototype = Object.create(Object.prototype);
+Lockable.prototype.constructor = Lockable;
+
+///////////////////
+
+/**
+ * Returns <code>true</code> if the object is locked.
+ * @return <code>true</code> if the object is locked.
+ */
+Lockable.prototype.isLocked = function () /*void*/
+{
+  return this.__lock__;
+};
+
+/**
+ * Locks the object.
+ */
+Lockable.prototype.lock = function () /*void*/
+{
+  this.__lock__ = true;
+};
+
+/**
+ * Unlocks the object.
+ */
+Lockable.prototype.unlock = function () /*void*/
+{
+  this.__lock__ = false;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Lockable.prototype.toString = function () /*String*/
+{
+  return "[Lockable]";
+};
+
+/**
+ * @private
+ */
+Lockable.prototype.__lock__ = false;
+
+/**
+ * Creates a new Priority instance.
+ */
+
+function Priority() {
+    Object.defineProperties(this, {
+        /**
+         * Determinates the priority value.
+         */
+        priority: {
+            get: function get() {
+                return this._priority;
+            },
+            set: function set(value) {
+                this._priority = value > 0 || value < 0 ? value : 0;
+            }
+        },
+        _priority: {
+            value: 0,
+            enumerable: false,
+            writable: true,
+            configurable: false
+        }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Priority.prototype = Object.create(Object.prototype);
+Priority.prototype.constructor = Priority;
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be reseted.
+ */
+
+function Resetable() {}
+///////////////////
+
+Resetable.prototype = Object.create(Object.prototype);
+Resetable.prototype.constructor = Resetable;
+
+///////////////////
+
+/**
+ * Resets the process.
+ */
+Resetable.prototype.reset = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Resetable.prototype.toString = function () /*String*/
+{
+  return "[Resetable]";
+};
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be resumed.
+ */
+
+function Resumable() {}
+///////////////////
+
+Resumable.prototype = Object.create(Object.prototype);
+Resumable.prototype.constructor = Resumable;
+
+///////////////////
+
+/**
+ * Resumes the process.
+ */
+Resumable.prototype.resume = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Resumable.prototype.toString = function () /*String*/
+{
+  return "[Resumable]";
+};
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be started.
+ */
+
+function Startable() {}
+
+///////////////////
+
+Startable.prototype = Object.create(Object.prototype);
+Startable.prototype.constructor = Startable;
+
+///////////////////
+
+/**
+ * Starts the process.
+ */
+Startable.prototype.start = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Startable.prototype.toString = function () /*String*/
+{
+  return "[Startable]";
+};
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be stopped.
+ */
+
+function Stoppable() {}
+
+///////////////////
+
+Stoppable.prototype = Object.create(Object.prototype);
+Stoppable.prototype.constructor = Stoppable;
+
+///////////////////
+
+/**
+ * Stop the process.
+ */
+Stoppable.prototype.stop = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Stoppable.prototype.toString = function () /*String*/
+{
+  return "[Stoppable]";
+};
+
+/**
+ * Creates a new TimeoutPolicy instance.
+ * @example
+ * <pre>
+ * var TimeoutPolicy = system.process.TimeoutPolicy  ;
+ *
+ * trace( TimeoutPolicy.INFINITY ) ;
+ * trace( "infinity : " + TimeoutPolicy.INFINITY ) ;
+ * trace( "toString : " + TimeoutPolicy.INFINITY.toString() ) ;
+ * trace( "valueOf  : " + TimeoutPolicy.INFINITY.valueOf() ) ;
+ *
+ * trace( TimeoutPolicy.LIMIT ) ;
+ * trace( "limit : " + TimeoutPolicy.LIMIT ) ;
+ * trace( "toString : " + TimeoutPolicy.LIMIT.toString() ) ;
+ * trace( "valueOf  : " + TimeoutPolicy.LIMIT.valueOf() ) ;
+ * </pre>
+ * @param value The value of the enumeration.
+ * @param name The name key of the enumeration.
+ */
+function TimeoutPolicy(value /*int*/, name /*String*/) {
+  Enum.call(this, value, name);
+}
+
+/**
+ * @extends Object
+ */
+TimeoutPolicy.prototype = Object.create(Enum.prototype);
+TimeoutPolicy.prototype.constructor = TimeoutPolicy;
+
+Object.defineProperties(TimeoutPolicy, {
+  /**
+   * Designates the infinity timeout policy (0).
+   */
+  INFINITY: { value: new TimeoutPolicy(0, 'infinity'), enumerable: true },
+
+  /**
+   * Designates the limited timeout policy (1).
+   */
+  LIMIT: { value: new TimeoutPolicy(1, 'limit'), enumerable: true }
+});
+
+/**
+ * The VEGAS.js framework - The system.process library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var process = Object.assign({
+    Action: Action,
+    ActionEntry: ActionEntry,
+    Batch: Batch,
+    BatchTask: BatchTask,
+    Do: Do,
+    Lockable: Lockable,
+    Priority: Priority,
+    Resetable: Resetable,
+    Resumable: Resumable,
+    Runnable: Runnable,
+    Startable: Startable,
+    Stoppable: Stoppable,
+    Task: Task,
+    TaskGroup: TaskGroup,
+    TaskPhase: TaskPhase,
+    TimeoutPolicy: TimeoutPolicy
+});
+
+/**
+ * The enumeration of all string expressions in the signal engine.
+ */
+
+var strings$1 = Object.defineProperties({}, {
+    INVALID_PARAMETER_TYPE: {
+        value: "The parameter with the index {0} in the emit method is not valid.",
+        enumerable: true
+    },
+    INVALID_PARAMETERS_LENGTH: {
+        value: "The number of arguments in the emit method is not valid, must be invoked with {0} argument(s) and you call it with {1} argument(s).",
+        enumerable: true
+    },
+    INVALID_TYPES: {
+        value: "Invalid types representation, the Array of types failed at index {0} should be a constructor function but was:\"{1}\".",
+        enumerable: true
+    }
+});
+
+/**
+ * The VEGAS.js framework - The system.signals library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var signals = Object.assign({
+    strings: strings$1,
+    Receiver: Receiver,
+    SignalEntry: SignalEntry,
+    Signaler: Signaler,
+    Signal: Signal
+});
+
+/**
  * The VEGAS.js framework - The system library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var system = Object.assign({
-    signals: {
-        strings: strings,
-        Receiver: Receiver,
-        SignalEntry: SignalEntry,
-        Signaler: Signaler,
-        Signal: Signal
-    }
+  Enum: Enum,
+
+  data: data,
+  process: process,
+  signals: signals
 });
 
 /**

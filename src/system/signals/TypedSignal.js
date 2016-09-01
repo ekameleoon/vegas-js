@@ -67,10 +67,6 @@ export function TypedSignal( types /*Array*/ , receivers /*Array*/ )
 
 ///////////////////
 
-exports = TypedSignal ;
-
-///////////////////
-
 TypedSignal.prototype = Object.create( Signaler.prototype ,
 {
     /**
@@ -132,7 +128,7 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
     {
         enumerable   : false,
         configurable : false,
-        writeable    : false,
+        writable     : false,
         value : function( o , type ) /*Boolean*/
         {
             if ( type === String || type === "string" )

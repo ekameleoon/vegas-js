@@ -2,6 +2,10 @@
 
 import './polyfill.js' ;
 
+import { Enum } from './system/Enum.js' ;
+
+import { data }    from './system/data.js' ;
+import { process } from './system/process.js' ;
 import { signals } from './system/signals.js' ;
 
 /**
@@ -11,5 +15,9 @@ import { signals } from './system/signals.js' ;
  */
 export var system = Object.assign
 ({
+    Enum : Enum ,
+
+    data    : data ,
+    process : process ,
     signals : signals
 }) ;

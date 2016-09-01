@@ -9,8 +9,9 @@ export function Signaler()
 
 }
 
-///////////////////
-
+/**
+ * @extends Object
+ */
 Signaler.prototype = Object.create
 (
     Object.prototype,
@@ -29,8 +30,6 @@ Signaler.prototype = Object.create
 );
 
 Signaler.prototype.constructor = Signaler;
-
-///////////////////
 
 /**
  * Connects a Function or a Receiver object.

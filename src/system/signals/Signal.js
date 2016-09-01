@@ -43,7 +43,29 @@ import { SignalEntry } from './SignalEntry.js' ;
  * signal.emit( "hello world" ) ;
  * </pre>
  */
-export function Signal(){}
+export function Signal()
+{
+    Object.defineProperties( this ,
+    {
+        /**
+         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         */
+        proxy :
+        {
+            value        : null,
+            enumerable   : false,
+            configurable : true,
+            writable     : false
+        },
+        receivers :
+        {
+            value        : [] ,
+            enumerable   : false,
+            configurable : false,
+            writable     : true
+        }
+    }) ;
+}
 
 ///////////////////
 
@@ -54,26 +76,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      */
     length :
     {
-        enumerable   : false,
-        configurable : true,
-        get          : function() { return this.receivers.length ; },
-    },
-    /**
-     * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
-     */
-    proxy :
-    {
-        enumerable   : false,
-        configurable : true,
-        writable     : true,
-        value        : null
-    },
-    receivers :
-    {
-        enumerable   : false,
-        configurable : true,
-        writable     : true,
-        value        : []
+        get : function() { return this.receivers.length ; },
     }
 });
 
