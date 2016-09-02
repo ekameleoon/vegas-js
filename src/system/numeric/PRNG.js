@@ -12,7 +12,7 @@ export function PRNG( value = 0 )
 {
     Object.defineProperties( this ,
     {
-        _value : { value : 1 , writable : true } ,
+        _value : { value : 1 , writable : true }
     }) ;
 
     this.value = (value > 0) ? value : Math.random() * 0X7FFFFFFE ;

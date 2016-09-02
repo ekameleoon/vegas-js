@@ -2,12 +2,14 @@
 
 import './polyfill.js' ;
 
-import { Enum } from './system/Enum.js' ;
+import { Enum }      from './system/Enum.js' ;
+import { Evaluable } from './system/Evaluable.js' ;
 
-import { data }    from './system/data.js' ;
-import { numeric } from './system/numeric.js' ;
-import { process } from './system/process.js' ;
-import { signals } from './system/signals.js' ;
+import { data }       from './system/data.js' ;
+import { evaluators } from './system/evaluators.js' ;
+import { numeric }    from './system/numeric.js' ;
+import { process }    from './system/process.js' ;
+import { signals }    from './system/signals.js' ;
 
 /**
  * The VEGAS.js framework - The system library.
@@ -16,10 +18,12 @@ import { signals } from './system/signals.js' ;
  */
 export var system = Object.assign
 ({
-    Enum : Enum ,
+    Enum      : Enum ,
+    Evaluable : Evaluable ,
 
-    data    : data ,
-    numeric : numeric ,
-    process : process ,
-    signals : signals
+    data       : data ,
+    evaluators : evaluators ,
+    numeric    : numeric ,
+    process    : process ,
+    signals    : signals
 }) ;
