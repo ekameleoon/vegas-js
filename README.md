@@ -12,6 +12,15 @@ Under tree licences : **MPL 1.1/GPL 2.0/LGPL 2.1**
  * Licence GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
  * Licence LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
 
+### Install ###
+
+#### Bower ####
+
+```
+#!shell
+bower install vegas-js
+```
+
 ### About ###
 
  * Author : Marc ALCARAZ (aka eKameleon)
