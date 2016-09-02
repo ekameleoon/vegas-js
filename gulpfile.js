@@ -98,5 +98,8 @@ gulp.task( 'watch', function()
 
 // ------------ default
 
-gulp.task( 'default', gulp.series( 'watch' ) );
+gulp.task( 'default', gulp.series
+(
+    'vegas-compile' , 'vegas-compress' , 'watch'
+));
 

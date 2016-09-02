@@ -205,7 +205,7 @@ TaskGroup.prototype.constructor = TaskGroup;
 /**
  * Adds an action in the chain.
  * @param priority Determinates the priority level of the action in the chain.
- * @param autoRemove Apply a removeAction after the first finish notification.
+ * @param autoRemove Apply a remove after the first finish notification.
  * @return <code>true</code> if the insert is success.
  */
 TaskGroup.prototype.add = function( action /*Action*/ , priority /*uint*/ , autoRemove /*Boolean*/ ) /*Boolean*/
