@@ -3860,6 +3860,201 @@ var evaluators = Object.assign({
 });
 
 /**
+ * This object register formattable expression and format a String with all expressions register in this internal dictionnary.
+ * <p><b>Example :</b></p>
+ * <pre>
+ * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
+ *
+ * var formatter = new ExpressionFormatter() ;
+ *
+ * formatter.expressions.set( "root"      , "c:"                     ) ;
+ * formatter.expressions.set( "system"    , "{root}/project/system"  ) ;
+ * formatter.expressions.set( "data.maps" , "{system}/data/maps"     ) ;
+ * formatter.expressions.set( "map"       , "{data.maps}/HashMap.as" ) ;
+ *
+ * source = "the root : {root} - the class : {map}" ;
+ * // the root : c: - the class : c:/project/system/data/maps/HashMap.as
+ *
+ * trace( formatter.length ) ;
+ * trace( formatter.format( source ) ) ;
+ *
+ * trace( "----" ) ;
+ *
+ * formatter.clear() ;
+ *
+ * formatter.expressions.set( "system"    , "%root%/project/system" ) ;
+ * formatter.expressions.set( "data.maps" , "%system%/data/maps" ) ;
+ * formatter.expressions.set( "HashMap"   , "%data.maps%/HashMap.as" ) ;
+ *
+ * formatter.beginSeparator = "%" ;
+ * formatter.endSeparator   = "%" ;
+ *
+ * source = "the root : %root% - the class : %HashMap%" ;
+ *
+ * trace( formatter.format( source ) ) ;
+ * // the root : c: - the class : c:/project/system/data/maps/HashMap.as
+ * </pre>
+ */
+function ExpressionFormatter() {
+
+    Object.defineProperties(this, {
+        /**
+         * The expressions reference
+         */
+        expressions: {
+            value: new ArrayMap()
+        },
+
+        /**
+         * @private
+         */
+        _beginSeparator: { value: '{', writable: true },
+
+        /**
+         * @private
+         */
+        _endSeparator: { value: '}', writable: true },
+
+        /**
+         * @private
+         */
+        _pattern: { value: "{0}((\\w+\)|(\\w+)((.\\w)+|(.\\w+))){1}" },
+
+        /**
+         * @private
+         */
+        _reg: { value: null, writable: true }
+    });
+
+    this._reset();
+}
+
+Object.defineProperties(ExpressionFormatter, {
+    /**
+     * The limit of the recursions in the formatter.
+     */
+    MAX_RECURSION: { value: '200', enumerable: true }
+});
+
+/**
+ * @extends Formattable
+ */
+ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
+    /**
+     * The begin separator of the expression to format (default "{").
+     */
+    beginSeparator: {
+        get: function get() {
+            return this._beginSeparator;
+        },
+        set: function set(str) {
+            this._beginSeparator = str || "{";
+            this._reset();
+        }
+    },
+
+    /**
+     * The end separator of the expression to format (default "}" ).
+     */
+    endSeparator: {
+        get: function get() {
+            return this._endSeparator;
+        },
+        set: function set(str) {
+            this._endSeparator = str || "}";
+            this._reset();
+        }
+    },
+
+    /**
+     * Indicates the size of the expression dictionary.
+     */
+    length: {
+        get: function get() {
+            return this.expressions.length;
+        }
+    },
+
+    /**
+     * Clear the expression formatter dictionary.
+     * @param value The object to format.
+     * @return the string representation of the formatted value.
+     */
+    clear: {
+        value: function value() {
+            this.expressions.clear();
+        }
+    },
+
+    /**
+     * Formats the specified value.
+     * @param value The object to format.
+     * @return the string representation of the formatted value.
+     */
+    format: {
+        value: function value(_value) /*String*/
+        {
+            return this._format(_value.toString(), 0);
+        }
+    },
+
+    /**
+     * @private
+     */
+    _reset: {
+        value: function value() {
+            this._reg = new RegExp(fastformat(this._pattern, this.beginSeparator, this.endSeparator), "g");
+        }
+    },
+
+    /**
+     * @private
+     */
+    _format: {
+        value: function value(str, depth) {
+            if (depth >= ExpressionFormatter.MAX_RECURSION) {
+                return str;
+            }
+
+            var m /*Array*/ = str.match(this._reg);
+
+            if (m === null) {
+                return str;
+            }
+
+            var l = m.length;
+
+            if (l > 0) {
+                var exp;
+                var key;
+                for (var i = 0; i < l; i++) {
+                    key = m[i].substr(1);
+                    key = key.substr(0, key.length - 1);
+
+                    if (this.expressions.has(key)) {
+                        exp = this._format(this.expressions.get(key), depth + 1);
+                        this.expressions.set(key, exp);
+                        str = str.replace(m[i], exp) || exp;
+                    }
+                }
+            }
+            return str;
+        }
+    }
+});
+
+ExpressionFormatter.prototype.constructor = ExpressionFormatter;
+
+/**
+ * The VEGAS.js framework - The system.formatters library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var formatters = Object.assign({
+  ExpressionFormatter: ExpressionFormatter
+});
+
+/**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
  * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
@@ -7225,6 +7420,7 @@ var system = Object.assign({
     data: data,
     errors: errors,
     evaluators: evaluators,
+    formatters: formatters,
     numeric: numeric,
     process: process,
     signals: signals
