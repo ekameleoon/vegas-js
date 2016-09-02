@@ -8,6 +8,8 @@ import { Batch }         from './process/Batch.js' ;
 import { BatchTask }     from './process/BatchTask.js' ;
 import { Chain }         from './process/Chain.js' ;
 import { Do }            from './process/Do.js' ;
+import { isLockable }    from './process/Lockable.js' ;
+import { Lock }          from './process/Lock.js' ;
 import { Lockable }      from './process/Lockable.js' ;
 import { Priority }      from './process/Priority.js' ;
 import { Resetable }     from './process/Resetable.js' ;
@@ -19,6 +21,7 @@ import { Task }          from './process/Task.js' ;
 import { TaskGroup }     from './process/TaskGroup.js' ;
 import { TaskPhase }     from './process/TaskPhase.js' ;
 import { TimeoutPolicy } from './process/TimeoutPolicy.js' ;
+import { Unlock }        from './process/Unlock.js' ;
 
 /**
  * The VEGAS.js framework - The system.process library.
@@ -33,6 +36,8 @@ export var process = Object.assign
     BatchTask     : BatchTask ,
     Chain         : Chain ,
     Do            : Do,
+    isLockable    : isLockable ,
+    Lock          : Lock ,
     Lockable      : Lockable ,
     Priority      : Priority ,
     Resetable     : Resetable ,
@@ -43,5 +48,6 @@ export var process = Object.assign
     Task          : Task ,
     TaskGroup     : TaskGroup ,
     TaskPhase     : TaskPhase ,
-    TimeoutPolicy : TimeoutPolicy
+    TimeoutPolicy : TimeoutPolicy,
+    Unlock        : Unlock
 }) ;

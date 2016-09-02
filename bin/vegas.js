@@ -5538,9 +5538,23 @@ Do.prototype.toString = function () /*String*/
 };
 
 /**
- * This interface is implemented by all objects lockable.
+ * Indicates if the specific objet is Lockable.
  */
 
+function isLockable(target) {
+  if (target) {
+    var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
+    var lock = 'lock' in target && target.lock instanceof Function;
+    var unlock = 'unlock' in target && target.unlock instanceof Function;
+    return isLocked && lock && unlock;
+  }
+
+  return false;
+}
+
+/**
+ * This interface is implemented by all objects lockable.
+ */
 function Lockable() {}
 
 ///////////////////
@@ -5588,6 +5602,72 @@ Lockable.prototype.toString = function () /*String*/
  * @private
  */
 Lockable.prototype.__lock__ = false;
+
+/**
+ * Invoked to lock a specific Lockable object.
+ * @example
+ * var chain = new system.process.Chain() ;
+ * var lock  = new system.process.Lock( chain ) ;
+ *
+ * lock.run() ;
+ *
+ * trace( chain.isLocked() ) ;
+ */
+function Lock(target) {
+    Action.call(this);
+    this.target = target;
+}
+
+/**
+ * @extends Task
+ */
+Lock.prototype = Object.create(Action.prototype);
+Lock.prototype.constructor = Lock;
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+Lock.prototype.clone = function () {
+    return new Lock(this.target);
+};
+
+/**
+ * Indicates if the specific objet is Lockable.
+ */
+Lock.prototype.isLockable = function (target) {
+    target = target || this.target;
+
+    if (target) {
+        var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
+        var lock = 'lock' in target && target.lock instanceof Function;
+        var unlock = 'unlock' in target && target.unlock instanceof Function;
+        return isLocked && lock && unlock;
+    }
+
+    return false;
+};
+
+/**
+ * Run the process.
+ */
+Lock.prototype.run = function () /*void*/
+{
+    this.notifyStarted();
+    if (isLockable(this.target) && !this.target.isLocked()) {
+        this.target.lock();
+    }
+    this.notifyFinished();
+};
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+Lock.prototype.toString = function () /*String*/
+{
+    return '[Lock]';
+};
 
 /**
  * Creates a new Priority instance.
@@ -5781,6 +5861,58 @@ Object.defineProperties(TimeoutPolicy, {
 });
 
 /**
+ * Invoked to Unlock a specific Unlockable object.
+ * @example
+ * var chain  = new system.process.Chain() ;
+ * var unlock = new system.process.Unlock( chain ) ;
+ *
+ * chain.lock() ;
+ *
+ * unlock.run() ;
+ *
+ * trace( chain.isLocked() ) ;
+ */
+function Unlock(target) {
+  Action.call(this);
+  this.target = target;
+}
+
+/**
+ * @extends Task
+ */
+Unlock.prototype = Object.create(Action.prototype);
+Unlock.prototype.constructor = Unlock;
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+Unlock.prototype.clone = function () {
+  return new Unlock(this.target);
+};
+
+/**
+ * Run the process.
+ */
+Unlock.prototype.run = function () /*void*/
+{
+  this.notifyStarted();
+  if (isLockable(this.target) && this.target.isLocked()) {
+    this.target.unlock();
+  }
+  this.notifyFinished();
+};
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+Unlock.prototype.toString = function () /*String*/
+{
+  return '[Unlock]';
+};
+
+/**
  * The VEGAS.js framework - The system.process library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -5792,6 +5924,8 @@ var process = Object.assign({
     BatchTask: BatchTask,
     Chain: Chain,
     Do: Do,
+    isLockable: isLockable,
+    Lock: Lock,
     Lockable: Lockable,
     Priority: Priority,
     Resetable: Resetable,
@@ -5802,7 +5936,8 @@ var process = Object.assign({
     Task: Task,
     TaskGroup: TaskGroup,
     TaskPhase: TaskPhase,
-    TimeoutPolicy: TimeoutPolicy
+    TimeoutPolicy: TimeoutPolicy,
+    Unlock: Unlock
 });
 
 /**
