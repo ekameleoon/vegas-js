@@ -5,6 +5,7 @@ import './polyfill.js' ;
 import { Enum } from './system/Enum.js' ;
 
 import { data }    from './system/data.js' ;
+import { numeric } from './system/numeric.js' ;
 import { process } from './system/process.js' ;
 import { signals } from './system/signals.js' ;
 
@@ -18,6 +19,7 @@ export var system = Object.assign
     Enum : Enum ,
 
     data    : data ,
+    numeric : numeric ,
     process : process ,
     signals : signals
 }) ;

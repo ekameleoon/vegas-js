@@ -3522,6 +3522,565 @@ var data = Object.assign({
 });
 
 /**
+ * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
+ * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
+ * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
+ * The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
+ * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.
+ * @param value The optional default value of the PRNG object, if the passed-in value is >=1 a random value is generated with the Math.random() static method (default 0).
+ */
+
+function PRNG() {
+    var value = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+    Object.defineProperties(this, {
+        _value: { value: 1, writable: true }
+    });
+
+    this.value = value > 0 ? value : Math.random() * 0X7FFFFFFE;
+}
+
+/**
+ * @extends Object
+ */
+PRNG.prototype = Object.create(Object.prototype, {
+    /**
+     * Sets the current random value with a 31 bit unsigned integer between 1 and 0X7FFFFFFE inclusive (don't use 0).
+     */
+    value: {
+        get: function get() {
+            return this._value;
+        },
+        set: function set(value) {
+            value = value > 1 ? value : 1;
+            value = value > 0X7FFFFFFE ? 0X7FFFFFFE : value;
+            this._value = value;
+        }
+    }
+});
+PRNG.prototype.constructor = PRNG;
+
+/**
+ * Provides the next pseudorandom number as an unsigned integer (31 bits)
+ */
+PRNG.prototype.randomInt = function () /*int*/
+{
+    this._value = this._value * 16807 % 2147483647;
+    return this._value;
+};
+
+/**
+ * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a minimum value and maximum value.
+ */
+PRNG.prototype.randomIntByMinMax = function (min /*Number*/, max /*Number*/) /*int*/
+{
+    if (isNaN(min)) {
+        min = 0;
+    }
+    if (isNaN(max)) {
+        max = 1;
+    }
+    min -= 0.4999;
+    max += 0.4999;
+    this._value = this._value * 16807 % 2147483647;
+    return Math.round(min + (max - min) * this._value / 2147483647);
+};
+
+/**
+ * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a given range.
+ */
+PRNG.prototype.randomIntByRange = function (r /*Range*/) /*int*/
+{
+    var min /*Number*/ = r.min - 0.4999;
+    var max /*Number*/ = r.max + 0.4999;
+    this._value = this._value * 16807 % 2147483647;
+    return Math.round(min + (max - min) * this._value / 2147483647);
+};
+
+/**
+ * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
+ */
+PRNG.prototype.randomNumber = function () /*Number*/
+{
+    this._value = this._value * 16807 % 2147483647;
+    return this._value / 2147483647;
+};
+
+/**
+ * Provides the next pseudo random number as a float between a minimum value and maximum value.
+ */
+PRNG.prototype.randomNumberByMinMax = function (min /*Number*/, max /*Number*/) /*Number*/
+{
+    if (isNaN(min)) {
+        min = 0;
+    }
+    if (isNaN(max)) {
+        max = 1;
+    }
+    this._value = this._value * 16807 % 2147483647;
+    return min + (max - min) * this._value / 2147483647;
+};
+
+/**
+ * Provides the next pseudo random number as a float between a given range.
+ */
+PRNG.prototype.randomNumberByRange = function (r /*Range*/) /*Number*/
+{
+    this._value = this._value * 16807 % 2147483647;
+    return r.min + (r.max - r.min) * this._value / 2147483647;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+PRNG.prototype.toString = function () /*String*/
+{
+    return String(this._value);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+PRNG.prototype.valueOf = function () /*int*/
+{
+    return this._value;
+};
+
+/**
+ * Represents an immutable range of values.
+ * @example
+ * Range = system.numeric.Range ;
+ *
+ * var r1 = new Range(10, 120) ;
+ * var r2 = new Range(100, 150) ;
+ *
+ * trace ("r1 : " + r1) ; // r1 : [Range min:10 max:120]
+ * trace ("r2 : " + r2) ; // r2 : [Range min:100 max:150]
+ *
+ * trace ("r1 contains 50    : " + r1.contains(50)) ; // r1 contains 50 : true
+ * trace ("r1 isOutOfRange 5 : " + r1.isOutOfRange(5)) ; // r1 isOutOfRange 5 : true
+ * trace ("r1 overlap r2     : " + r1.overlap(r2)) ; // r1 overlap r2 : true
+ * trace ("r1 clamp 5        : " + r1.clamp(5)) ; // r1 clamp 5 : 10
+ * trace ("r1 clamp 121      : " + r1.clamp(121)) ; // r1 clamp 121 : 120
+ */
+
+function Range() {
+    var min = arguments.length <= 0 || arguments[0] === undefined ? NaN : arguments[0];
+    var max = arguments.length <= 1 || arguments[1] === undefined ? NaN : arguments[1];
+
+    if (max < min) {
+        throw new RangeError("The Range constructor failed, the 'max' argument is < of 'min' argument");
+    }
+    this.min = min;
+    this.max = max;
+}
+
+Object.defineProperties(Range, {
+    /**
+     * Range between -255 and 255.
+     */
+    COLOR: { value: new Range(-255, 255), enumerable: true },
+
+    /**
+     * Range between 0 and 360.
+     */
+    DEGREE: { value: new Range(0, 360), enumerable: true },
+
+    /**
+     * Range between 0 and 100.
+     */
+    PERCENT: { value: new Range(0, 100), enumerable: true },
+
+    /**
+     * Range between 0 and 1.
+     */
+    UNITY: { value: new Range(0, 1), enumerable: true },
+
+    /**
+     * Filters the passed-in Number value, if the value is NaN the return value is the default value in second argument.
+     * @param value The Number value to filter, if this value is NaN the value is changed.
+     * @param defaultValue The default value to apply over the specified value if this value is NaN (default 0).
+     * @return The filter Number value.
+     */
+    filterNaNValue: {
+        value: function value(_value) {
+            var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+            return isNaN(_value) ? defaultValue : _value;
+        }
+    }
+});
+
+/**
+ * @extends Object
+ */
+Range.prototype = Object.create(Object.prototype);
+Range.prototype.constructor = Range;
+
+/**
+ * Clamps a specific value in the current range.
+ */
+Range.prototype.clamp = function (value) {
+    if (isNaN(value)) {
+        return NaN;
+    }
+    var mi = this.min;
+    var ma = this.max;
+    if (isNaN(mi)) {
+        mi = value;
+    }
+    if (isNaN(ma)) {
+        ma = value;
+    }
+    return Math.max(Math.min(value, ma), mi);
+};
+
+/**
+ * Returns a shallow copy of the object.
+ * @return a shallow copy of the object.
+ */
+Range.prototype.clone = function () {
+    return new Range(this.min, this.max);
+};
+
+/**
+ * Creates a new range by combining two existing ranges.
+ * @param range the range to combine, <code class="prettyprint">null</code> permitted.
+ */
+Range.prototype.combine = function (range) /*Range*/
+{
+    if (!range) {
+        return this.clone();
+    } else {
+        var lower = Math.min(this.min, range.min);
+        var upper = Math.max(this.max, range.max);
+        return new Range(lower, upper);
+    }
+};
+
+/**
+ * Returns {@code true} if the Range instance contains the value passed in argument.
+ * @return {@code true} if the Range instance contains the value passed in argument.
+ */
+Range.prototype.contains = function (value) {
+    return !this.isOutOfRange(value);
+};
+
+/**
+ * Indicates whether some other object is "equal to" this one.
+ */
+Range.prototype.equals = function (o) /*Boolean*/
+{
+    if (o instanceof Range) {
+        return o.min === this.min && o.max === this.max;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Creates a new range by adding margins to an existing range.
+ * @param range the range {@code null} not permitted.
+ * @param lowerMargin the lower margin (expressed as a percentage of the range length).
+ * @param upperMargin the upper margin (expressed as a percentage of the range length).
+ * @return The expanded range.
+ * @throws IllegalArgumentError if the range argument is {@code null}
+ */
+Range.prototype.expand = function (lowerMargin /*Number*/, upperMargin /*Number*/) /*Range*/
+{
+    if (isNaN(lowerMargin)) {
+        lowerMargin = 1;
+    }
+    if (isNaN(upperMargin)) {
+        upperMargin = 1;
+    }
+    var delta = this.max - this.min;
+    var lower = delta * lowerMargin;
+    var upper = delta * upperMargin;
+    return new Range(this.min - lower, this.max + upper);
+};
+
+/**
+ * Returns the central value for the range.
+ * @return The central value.
+ */
+Range.prototype.getCentralValue = function () /*Number*/
+{
+    return (this.min + this.max) / 2;
+};
+
+/**
+ * Returns a random floating-point number between two numbers.
+ * @return a random floating-point number between two numbers.
+ */
+Range.prototype.getRandomFloat = function () /*Number*/
+{
+    return Math.random() * (this.max - this.min) + this.min;
+};
+
+/**
+ * Returns a random floating-point number between two numbers.
+ * @return a random floating-point number between two numbers.
+ */
+Range.prototype.getRandomInteger = function () /*Number*/
+{
+    return Math.floor(this.getRandomFloat());
+};
+
+/**
+ * Returns {@code true} if the value is out of the range.
+ * @return {@code true} if the value is out of the range.
+ */
+Range.prototype.isOutOfRange = function (value /*Number*/) {
+    return value > this.max || value < this.min;
+};
+
+/**
+ * Returns {@code true} if the range in argument overlap the current range.
+ * @return {@code true} if the range in argument overlap the current range.
+ */
+Range.prototype.overlap = function (r /*Range*/) /*Boolean*/
+{
+    return this.max >= r.min && r.max >= this.min;
+};
+
+/**
+ * Returns the length of the range.
+ * @return the length of the range.
+ */
+Range.prototype.size = function () /*Number*/
+{
+    return this.max - this.min;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Range.prototype.toString = function () /*String*/
+{
+    return "[Range min:" + this.min + " max:" + this.max + "]";
+};
+
+/**
+ * Roman numerals are a numeral system originating in ancient Rome, adapted from Etruscan numerals.
+ * <p>Roman numerals are commonly used in numbered lists (in outline format), clock faces, pages preceding the main body of a book, chord triads in music analysis, the numbering of movie publication dates, successive political leaders or children with identical names, and the numbering of some annual sport events.</p>
+ * <p><b>Links :</b>
+ * <li><a href="http://en.wikipedia.org/wiki/Roman_numerals">http://en.wikipedia.org/wiki/Roman_numerals</a></li>
+ * <li><a href="http://netzreport.googlepages.com/online_converter_for_dec_roman.html">http://netzreport.googlepages.com/online_converter_for_dec_roman.html</a></li>
+ * </p>
+ * @param value The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
+ * @example
+ * var RomanNumber = system.numeric.RomanNumber ;
+ * trace( RomanNumber.parse(12) ) ; // XII
+ * trace( RomanNumber.parseRomanString('II') ) ; // 2
+ */
+
+function RomanNumber() {
+    var value = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+    Object.defineProperties(this, {
+        _num: { value: 0, writable: true }
+    });
+
+    if (typeof value === "string" || value instanceof String) {
+        this._num = RomanNumber.parseRomanString(value);
+    } else if (typeof value === "number" || value instanceof Number) {
+        if (value > RomanNumber.MAX) {
+            throw new RangeError("Max value for a RomanNumber is " + RomanNumber.MAX);
+        }
+        if (value < RomanNumber.MIN) {
+            throw new RangeError("Min value for a RomanNumber is " + RomanNumber.MIN);
+        }
+        this._num = value;
+    }
+}
+
+Object.defineProperties(RomanNumber, {
+    /**
+     * The maximum parsing value.
+     */
+    MAX: { value: 3999, enumerable: true },
+
+    /**
+     * The minimum parsing value.
+     */
+    MIN: { value: 0, enumerable: true },
+
+    /**
+     * The array representation of all numeric values.
+     */
+    NUMERIC: { value: [1000, 500, 100, 50, 10, 5, 1], enumerable: true },
+
+    /**
+     * The array representation of all roman expressions.
+     */
+    ROMAN: { value: ["M", "D", "C", "L", "X", "V", "I"], enumerable: true },
+
+    /**
+     * Parse the specified value and return this roman numerals String representation.
+     */
+    parse: {
+        value: function value(num) /*String*/
+        {
+            var MAX = RomanNumber.MAX;
+            var MIN = RomanNumber.MIN;
+
+            var NUMERIC = RomanNumber.NUMERIC;
+            var ROMAN = RomanNumber.ROMAN;
+
+            var n /*uint*/ = 0;
+            var r /*String*/ = "";
+
+            if (typeof num === "number" || num instanceof Number) {
+                if (num > RomanNumber.MAX) {
+                    throw new RangeError("Max value for a RomanNumber is " + MAX);
+                } else if (num < RomanNumber.MIN) {
+                    throw new RangeError("Min value for a RomanNumber is " + MIN);
+                }
+                n = num;
+            }
+
+            var i /*int*/;
+            var rank /*uint*/;
+            var bellow /*uint*/;
+            var roman /*String*/;
+            var romansub /*String*/;
+
+            var size /*int*/ = NUMERIC.length;
+
+            for (i = 0; i < size; i++) {
+                if (n === 0) {
+                    break;
+                }
+
+                rank = NUMERIC[i];
+                roman = ROMAN[i];
+
+                if (String(rank).charAt(0) === "5") {
+                    bellow = rank - NUMERIC[i + 1];
+                    romansub = ROMAN[i + 1];
+                } else {
+                    bellow = rank - NUMERIC[i + 2];
+                    romansub = ROMAN[i + 2];
+                }
+
+                if (n >= rank || n >= bellow) {
+                    while (n >= rank) {
+                        r += roman;
+                        n -= rank;
+                    }
+                }
+
+                if (n > 0 && n >= bellow) {
+                    r += romansub + roman;
+                    n -= bellow;
+                }
+            }
+
+            return r;
+        }
+    },
+
+    /**
+     * Parses a roman String representation in this uint decimal representation.
+     */
+    parseRomanString: {
+        value: function value(roman /*String*/) /*uint*/
+        {
+            var NUMERIC = RomanNumber.NUMERIC;
+            var ROMAN = RomanNumber.ROMAN;
+
+            if (roman === null || roman === "") {
+                return 0;
+            }
+
+            roman = roman.toUpperCase();
+
+            var n /*uint*/ = 0;
+
+            var pos /*int*/ = 0;
+            var ch /*String*/ = "";
+            var next /*String*/ = "";
+
+            var ich /*uint*/;
+            var inext /*uint*/;
+
+            while (pos >= 0) {
+                ch = roman.charAt(pos);
+                next = roman.charAt(pos + 1);
+
+                if (ch === "") {
+                    break;
+                }
+
+                ich = ROMAN.indexOf(ch);
+                inext = ROMAN.indexOf(next);
+
+                if (ich < 0) {
+                    return 0;
+                } else if (ich <= inext || inext === -1) {
+                    n += NUMERIC[ich];
+                } else {
+                    n += NUMERIC[inext] - NUMERIC[ich];
+                    pos++;
+                }
+
+                pos++;
+            }
+
+            return n;
+        }
+    }
+});
+
+/**
+ * @extends Object
+ */
+RomanNumber.prototype = Object.create(Object.prototype);
+RomanNumber.prototype.constructor = RomanNumber;
+
+/**
+ * Parse the specified value.
+ */
+RomanNumber.prototype.parse = function (value) /*String*/
+{
+    value = typeof value === "number" || value instanceof Number ? value : this._num;
+    return RomanNumber.parse(value);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+RomanNumber.prototype.toString = function () /*String*/
+{
+    return this.parse(this._num);
+};
+
+/**
+ * Returns the primitive value of this object.
+ * @return the primitive value of this object.
+ */
+RomanNumber.prototype.valueOf = function () /*uint*/
+{
+    return this._num;
+};
+
+/**
+ * The VEGAS.js framework - The system.numeric library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var numeric = Object.assign({
+  PRNG: PRNG,
+  Range: Range,
+  RomanNumber: RomanNumber
+});
+
+/**
  * This interface should be implemented by any properties definition object.
  */
 
@@ -6315,11 +6874,12 @@ var signals = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var system = Object.assign({
-  Enum: Enum,
+    Enum: Enum,
 
-  data: data,
-  process: process,
-  signals: signals
+    data: data,
+    numeric: numeric,
+    process: process,
+    signals: signals
 });
 
 /**
