@@ -2,10 +2,12 @@
 
 import './polyfill.js' ;
 
-import { Enum }      from './system/Enum.js' ;
-import { Evaluable } from './system/Evaluable.js' ;
+import { Enum }        from './system/Enum.js' ;
+import { Evaluable }   from './system/Evaluable.js' ;
+import { Formattable } from './system/Formattable.js' ;
 
-import { isEvaluable } from './system/Evaluable.js' ;
+import { isEvaluable   } from './system/Evaluable.js' ;
+import { isFormattable } from './system/Formattable.js' ;
 
 import { data }       from './system/data.js' ;
 import { errors }     from './system/errors.js' ;
@@ -22,11 +24,13 @@ import { signals }    from './system/signals.js' ;
 export var system = Object.assign
 ({
     // interfaces
-    Enum      : Enum ,
-    Evaluable : Evaluable ,
+    Enum        : Enum ,
+    Evaluable   : Evaluable ,
+    Formattable : Formattable ,
 
     // functions
-    isEvaluable : isEvaluable ,
+    isEvaluable   : isEvaluable ,
+    isFormattable : isFormattable ,
 
     // packages
     data       : data ,
