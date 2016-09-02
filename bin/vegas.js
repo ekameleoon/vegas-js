@@ -4616,36 +4616,30 @@ function TaskGroup(mode /*String*/, actions /*Array*/) {
 
     Object.defineProperties(this, {
         /**
-         * @private
+         * Indicates if the toString method must be verbose or not.
          */
-        _actions: {
-            value: [],
-            writable: true
-        },
-        /**
-         * @private
-         */
-        _buffer: {
-            value: new ArrayMap(),
-            writable: true
-        },
-        /**
-         * @private
-         */
-        _stopped: {
-            value: false,
-            writable: true
-        },
-        /**
-         * @private
-         */
-        _mode: {
-            value: TaskGroup.NORMAL,
-            writable: true
-        }
-    });
+        verbose: { value: false, writable: true },
 
-    this.verbose = false;
+        /**
+         * @private
+         */
+        _actions: { value: [], writable: true },
+
+        /**
+         * @private
+         */
+        _next: { value: null, writable: true, configurable: true },
+
+        /**
+         * @private
+         */
+        _stopped: { value: false, writable: true },
+
+        /**
+         * @private
+         */
+        _mode: { value: TaskGroup.NORMAL, writable: true }
+    });
 
     if (typeof mode === "string" || mode instanceof String) {
         this.mode = mode;
@@ -4684,6 +4678,8 @@ Object.defineProperties(TaskGroup, {
  * @extends Task
  */
 TaskGroup.prototype = Object.create(Task.prototype, {
+    __className__: { value: 'TaskGroup', configurable: true },
+
     /**
      * Indicates the numbers of actions register in the group.
      */
@@ -4704,10 +4700,8 @@ TaskGroup.prototype = Object.create(Task.prototype, {
                 var e /*ActionEntry*/;
                 while (--l > -1) {
                     e = this._actions[l];
-                    if (e && e.action) {
-                        slot = this.next.bind(this);
-                        this._buffer.set(e, slot);
-                        e.action.finishIt.connect(slot);
+                    if (e && e.action && this._next) {
+                        e.action.finishIt.connect(this._next);
                     }
                 }
             } else if (old > 0) {
@@ -4740,7 +4734,6 @@ TaskGroup.prototype = Object.create(Task.prototype, {
 });
 
 TaskGroup.prototype.constructor = TaskGroup;
-TaskGroup.prototype.__className__ = 'TaskGroup';
 
 /**
  * Adds an action in the chain.
@@ -4756,14 +4749,14 @@ TaskGroup.prototype.add = function (action /*Action*/, priority /*uint*/, autoRe
 
     if (action && action instanceof Action) {
         autoRemove = Boolean(autoRemove);
+
         priority = priority > 0 ? Math.round(priority) : 0;
 
-        var entry = new ActionEntry(action, priority, autoRemove);
-        var slot = this.next.bind(this);
+        if (this._next) {
+            action.finishIt.connect(this._next);
+        }
 
-        action.finishIt.connect(slot);
-        this._buffer.set(entry, slot);
-        this._actions.push(entry);
+        this._actions.push(new ActionEntry(action, priority, autoRemove));
 
         /////// bubble sorting
 
@@ -4820,11 +4813,7 @@ TaskGroup.prototype.dispose = function () /*void*/
         var slot;
         this._actions.forEach(function (entry) {
             if (entry instanceof ActionEntry) {
-                slot = _this2._buffer.get(entry);
-                if (slot) {
-                    entry.action.finishIt.disconnect(slot);
-                    _this2._buffer.remove(entry);
-                }
+                entry.action.finishIt.disconnect(_this2._next);
             }
         });
     }
@@ -4905,10 +4894,8 @@ TaskGroup.prototype.next = function (action /*Action*/) /*void*/
 
             this._actions.forEach(function (element) {
                 if (element && element instanceof ActionEntry && element.action === action) {
-                    slot = _this3._buffer.get(e);
-                    if (slot) {
-                        e.action.finishIt.disconnect(slot);
-                        _this3._buffer.remove(e);
+                    if (_this3._next) {
+                        e.action.finishIt.disconnect(_this3._next);
                     }
                     _this3._actions.splice(l, 1);
                     return true;
@@ -4917,7 +4904,6 @@ TaskGroup.prototype.next = function (action /*Action*/) /*void*/
         } else {
             this.dispose();
             this._actions.length = 0;
-            this._buffer.clear();
             this.notifyCleared();
             return true;
         }
@@ -4973,28 +4959,125 @@ TaskGroup.prototype.toString = function () /*String*/
 };
 
 /**
+ * The internal BatchTaskNext Receiver.
+ */
+function BatchTaskNext(batch) {
+    this.batch = batch;
+}
+
+/**
+ * @extends TaskGroup
+ */
+BatchTaskNext.prototype = Object.create(Receiver.prototype);
+BatchTaskNext.prototype.constructor = BatchTaskNext;
+
+/**
+ * Receive the signal message.
+ */
+BatchTaskNext.prototype.receive = function (action) {
+    var batch = this.batch;
+    var mode = batch.mode;
+    var actions = batch._actions;
+    var currents = batch._currents;
+
+    if (action && currents.has(action)) {
+        var entry = currents.get(action);
+
+        if (mode !== TaskGroup.EVERLASTING) {
+            if (mode === TaskGroup.TRANSIENT || entry.auto && mode === TaskGroup.NORMAL) {
+                var e;
+                var l = actions.length;
+                while (--l > -1) {
+                    e = actions[l];
+                    if (e && e.action === action) {
+                        action.finishIt.disconnect(this);
+                        actions.splice(l, 1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        currents.delete(action);
+    }
+
+    if (batch._current !== null) {
+        batch.notifyChanged();
+    }
+
+    batch._current = action;
+
+    batch.notifyProgress();
+
+    if (currents.length === 0) {
+        batch._current = null;
+        batch.notifyFinished();
+    }
+};
+
+/**
  * Batchs a serie of Action and run it in the same time.
  * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
  * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @example
+ * var do1 = new system.process.Do() ;
+ * var do2 = new system.process.Do() ;
+ *
+ * do1.something = function()
+ * {
+ *     console.log( "do1 something" ) ;
+ * }
+ *
+ * do2.something = function()
+ * {
+ *     console.log( "do2 something" ) ;
+ * }
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * var batch = new system.process.BatchTask() ;
+ *
+ * batch.add( do1 ) ;
+ * batch.add( do2 ) ;
+ *
+ * batch.verbose = true ;
+ *
+ * trace( 'batch   : ' + batch.toString(true) ) ;
+ * trace( 'running : ' + batch.running ) ;
+ * trace( 'length  : ' + batch.length ) ;
+ *
+ * batch.finishIt.connect(finish) ;
+ * batch.startIt.connect(start) ;
+ *
+ * batch.run() ;
  */
 function BatchTask(mode /*String*/, actions /*Array*/) {
+    TaskGroup.call(this, mode, actions);
+
     Object.defineProperties(this, {
         /**
          * @private
          */
-        _current: {
-            value: null,
-            writable: true
-        },
+        _current: { value: null, writable: true },
+
         /**
          * @private
          */
-        _currents: {
-            value: new ArrayMap(),
-            writable: true
-        }
+        _currents: { value: new ArrayMap(), writable: true },
+
+        /**
+         * @private
+         */
+        _next: { value: new BatchTaskNext(this) }
     });
-    TaskGroup.call(this, mode, actions);
 }
 
 /**
@@ -5004,14 +5087,17 @@ BatchTask.prototype = Object.create(TaskGroup.prototype, {
     /**
      * Indicates the current Action reference when the batch is in progress.
      */
-    current: {
-        get: function get() {
+    current: { get: function get() {
             return this._current;
-        }
-    }
+        } },
+
+    /**
+     * @private
+     */
+    __className__: { value: 'BatchTask', configurable: true }
 });
+
 BatchTask.prototype.constructor = BatchTask;
-BatchTask.prototype.__className__ = 'TaskGroup';
 
 /**
  * Returns a shallow copy of this object.
@@ -5019,53 +5105,6 @@ BatchTask.prototype.__className__ = 'TaskGroup';
  */
 BatchTask.prototype.clone = function () {
     return new BatchTask(this._mode, this._actions.length > 0 ? this._actions : null);
-};
-
-/**
- * Invoked when a task is finished.
- */
-BatchTask.prototype.next = function (action /*Action*/) /*void*/
-{
-    if (action && this._currents.has(action)) {
-        var entry = this._currents.get(action);
-        if (this._mode !== TaskGroup.EVERLASTING) {
-            if (this._mode === TaskGroup.TRANSIENT || entry.auto && this._mode === TaskGroup.NORMAL) {
-                if (action) {
-                    var slot;
-                    var e /*ActionEntry*/;
-                    var l /*int*/ = this._actions.length;
-                    while (--l > -1) {
-                        e = this._actions[l];
-                        if (e && e.action === action) {
-                            slot = this._buffer.get(this._current);
-
-                            action.finishIt.disconnect(slot);
-
-                            this._actions.splice(l, 1);
-                            this._buffer.delete(e);
-
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        this._currents.delete(action);
-    }
-
-    if (this._current) {
-        this.notifyChanged();
-    }
-
-    this._current = action;
-
-    this.notifyProgress();
-
-    if (this._currents.length === 0) {
-        this._current = null;
-        this.notifyFinished();
-    }
 };
 
 /**
@@ -5115,16 +5154,17 @@ BatchTask.prototype.run = function () /*void*/
         this._current = null;
 
         if (this._actions.length > 0) {
+            var actions = [];
+
             this._actions.forEach(function (entry) {
                 if (entry && entry.action) {
+                    actions.push(entry.action);
                     _this._currents.set(entry.action, entry);
                 }
             });
 
-            this._actions.forEach(function (entry) {
-                if (entry && entry.action) {
-                    entry.action.run();
-                }
+            actions.forEach(function (action) {
+                action.run();
             });
         } else {
             this.notifyFinished();
@@ -5157,6 +5197,272 @@ BatchTask.prototype.stop = function () /*void*/
         this._running = false;
         this._stopped = true;
         this.notifyStopped();
+    }
+};
+
+/**
+ * The internal ChainNext Receiver.
+ */
+function ChainNext(chain) {
+    this.chain = chain;
+}
+
+/**
+ * @extends TaskGroup
+ */
+ChainNext.prototype = Object.create(Receiver.prototype);
+ChainNext.prototype.constructor = ChainNext;
+
+/**
+ * Receive the signal message.
+ */
+ChainNext.prototype.receive = function () {
+    var chain = this.chain;
+    var mode = chain._mode;
+
+    if (chain._current) {
+        if (mode !== TaskGroup.EVERLASTING) {
+            if (mode === TaskGroup.TRANSIENT || chain._current.auto && mode === TaskGroup.NORMAL) {
+                chain._current.action.finishIt.disconnect(this);
+                chain._position--;
+                chain._actions.splice(this._position, 1);
+            }
+        }
+        chain.notifyChanged();
+        chain._current = null;
+    }
+
+    if (chain._actions.length > 0) {
+        if (chain.hasNext()) {
+            chain._current = chain._actions[chain._position++];
+
+            chain.notifyProgress();
+
+            if (chain._current && chain._current.action) {
+                chain._current.action.run();
+            } else {
+                this.receive();
+            }
+        } else if (this.looping) {
+            chain._position = 0;
+            if (chain.numLoop === 0) {
+                chain.notifyLooped();
+                chain._currentLoop = 0;
+                this.receive();
+            } else if (chain._currentLoop < chain.numLoop) {
+                chain._currentLoop++;
+                chain.notifyLooped();
+                this.receive();
+            } else {
+                chain._currentLoop = 0;
+                chain.notifyFinished();
+            }
+        } else {
+            chain._currentLoop = 0;
+            chain._position = 0;
+            chain.notifyFinished();
+        }
+    } else {
+        chain.notifyFinished();
+    }
+};
+
+/**
+ * Creates a new Chain instance.
+ * @param looping Specifies whether playback of the clip should continue, or loop (default false).
+ * @param numLoop Specifies the number of the times the presentation should loop during playback.
+ * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
+ * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @example
+ * var do1 = new system.process.Do() ;
+ * var do2 = new system.process.Do() ;
+ *
+ * do1.something = function()
+ * {
+ *     console.log( "do1 something" ) ;
+ * }
+ *
+ * do2.something = function()
+ * {
+ *     console.log( "do2 something" ) ;
+ * }
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var progress = function( action )
+ * {
+ *     trace( "progress: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * var chain = new system.process.Chain() ;
+ *
+ * chain.finishIt.connect(finish) ;
+ * chain.progressIt.connect(progress) ;
+ * chain.startIt.connect(start) ;
+ *
+ * chain.add( do1 , 0 ) ;
+ * chain.add( do2 , 2 , true) ;
+ *
+ * chain.verbose = true ;
+ *
+ * trace('---------') ;
+ *
+ * trace( 'batch   : ' + chain.toString(true) ) ;
+ * trace( 'running : ' + chain.running ) ;
+ * trace( 'length  : ' + chain.length ) ;
+ *
+ * trace('---------') ;
+ *
+ * chain.run() ;
+ *
+ * trace('---------') ;
+ *
+ * chain.run() ;
+ */
+function Chain(looping /*Boolean*/, numLoop /*uint*/, mode /*String*/, actions /*Array*/) {
+    TaskGroup.call(this, mode, actions);
+
+    Object.defineProperties(this, {
+        /**
+         * Indicates if the chain loop when is finished.
+         */
+        looping: { value: Boolean(looping), writable: true },
+
+        /**
+         * The number of loops.
+         */
+        numLoop: {
+            value: numLoop > 0 ? Math.round(numLoop) : 0,
+            writable: true
+        },
+
+        /**
+         * @private
+         */
+        _current: { value: null, writable: true },
+        _currentLoop: { value: 0, writable: true },
+        _position: { value: 0, writable: true },
+        _next: { value: new ChainNext(this) }
+    });
+}
+
+/**
+ * @extends TaskGroup
+ */
+Chain.prototype = Object.create(TaskGroup.prototype, {
+    /**
+     * Indicates the current Action reference when the batch is in progress.
+     */
+    current: { get: function get() {
+            return this._current ? this._current.action : null;
+        } },
+
+    /**
+     * Indicates the current countdown loop value.
+     */
+    currentLoop: { get: function get() {
+            return this._currentLoop;
+        } },
+
+    /**
+     * Indicates the current numeric position of the chain when is running.
+     */
+    position: { get: function get() {
+            return this._position;
+        } },
+
+    /**
+     * @private
+     */
+    __className__: { value: 'Chain', configurable: true }
+});
+
+Chain.prototype.constructor = Chain;
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+Chain.prototype.clone = function () {
+    return new Chain(this.looping, this.numLoop, this._mode, this._actions.length > 0 ? this._actions : null);
+};
+
+/**
+ * Retrieves the next action reference in the chain with the current position.
+ */
+Chain.prototype.element = function () {
+    return this.hasNext() ? this._actions[this._position].action : null;
+};
+
+/**
+ * Retrieves the next action reference in the chain with the current position.
+ */
+Chain.prototype.hasNext = function () {
+    return this._position < this._actions.length;
+};
+
+/**
+ * Resume the chain.
+ */
+Chain.prototype.resume = function () /*void*/
+{
+    if (this._stopped) {
+        this._running = true;
+        this._stopped = false;
+
+        this.notifyResumed();
+
+        if (this._current && this._current.action) {
+            if ("resume" in this._current.action) {
+                this._current.action.resume();
+            }
+        } else {
+            this._next.receive();
+        }
+    } else {
+        this.run();
+    }
+};
+
+/**
+ * Launchs the chain process.
+ */
+Chain.prototype.run = function () /*void*/
+{
+    if (!this._running) {
+        this.notifyStarted();
+
+        this._current = null;
+        this._stopped = false;
+        this._position = 0;
+        this._currentLoop = 0;
+
+        this._next.receive();
+    }
+};
+
+/**
+ * Stops the task group.
+ */
+Chain.prototype.stop = function () /*void*/
+{
+    if (this._running) {
+        if (this._current && this._current.action) {
+            if ('stop' in this._current.action && this._current.action instanceof Function) {
+                this._current.action.stop();
+                this._running = false;
+                this._stopped = true;
+                this.notifyStopped();
+            }
+        }
     }
 };
 
@@ -5484,6 +5790,7 @@ var process = Object.assign({
     ActionEntry: ActionEntry,
     Batch: Batch,
     BatchTask: BatchTask,
+    Chain: Chain,
     Do: Do,
     Lockable: Lockable,
     Priority: Priority,

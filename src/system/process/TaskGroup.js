@@ -63,40 +63,30 @@ export function TaskGroup( mode /*String*/ , actions /*Array*/)
     Object.defineProperties( this ,
     {
         /**
-         * @private
+         * Indicates if the toString method must be verbose or not.
          */
-        _actions :
-        {
-            value : [] ,
-            writable : true
-        },
-        /**
-         * @private
-         */
-        _buffer :
-        {
-            value : new ArrayMap() ,
-            writable : true
-        },
-        /**
-         * @private
-         */
-        _stopped :
-        {
-            value : false ,
-            writable : true
-        },
-        /**
-         * @private
-         */
-        _mode :
-        {
-            value : TaskGroup.NORMAL ,
-            writable : true
-        }
-    }) ;
+        verbose : { value : false , writable : true },
 
-    this.verbose = false ;
+        /**
+         * @private
+         */
+        _actions : { value : [] , writable : true },
+
+        /**
+         * @private
+         */
+        _next : { value : null , writable : true , configurable : true },
+
+        /**
+         * @private
+         */
+        _stopped : { value : false , writable : true } ,
+
+        /**
+         * @private
+         */
+        _mode : { value : TaskGroup.NORMAL , writable : true }
+    }) ;
 
     if( typeof(mode) === "string" || ( mode instanceof String ) )
     {
@@ -141,6 +131,8 @@ Object.defineProperties( TaskGroup ,
  */
 TaskGroup.prototype = Object.create( Task.prototype ,
 {
+    __className__ : { value : 'TaskGroup' , configurable : true } ,
+
     /**
      * Indicates the numbers of actions register in the group.
      */
@@ -167,11 +159,9 @@ TaskGroup.prototype = Object.create( Task.prototype ,
                 while( --l > -1 )
                 {
                     e = this._actions[l] ;
-                    if ( e && e.action )
+                    if ( e && e.action && this._next )
                     {
-                        slot = this.next.bind(this) ;
-                        this._buffer.set( e , slot ) ;
-                        e.action.finishIt.connect( slot ) ;
+                        e.action.finishIt.connect( this._next ) ;
                     }
                 }
             }
@@ -211,7 +201,6 @@ TaskGroup.prototype = Object.create( Task.prototype ,
 });
 
 TaskGroup.prototype.constructor = TaskGroup;
-TaskGroup.prototype.__className__ = 'TaskGroup' ;
 
 /**
  * Adds an action in the chain.
@@ -229,14 +218,15 @@ TaskGroup.prototype.add = function( action /*Action*/ , priority /*uint*/ , auto
     if ( action && ( action instanceof Action ) )
     {
         autoRemove = Boolean( autoRemove ) ;
+
         priority   = ( priority > 0 ) ? Math.round(priority) : 0 ;
 
-        var entry = new ActionEntry( action , priority , autoRemove ) ;
-        var slot  = this.next.bind( this ) ;
+        if( this._next )
+        {
+            action.finishIt.connect( this._next ) ;
+        }
 
-        action.finishIt.connect( slot ) ;
-        this._buffer.set( entry , slot ) ;
-        this._actions.push( entry ) ;
+        this._actions.push( new ActionEntry( action , priority , autoRemove ) ) ;
 
         /////// bubble sorting
 
@@ -300,12 +290,7 @@ TaskGroup.prototype.dispose = function() /*void*/
         {
             if ( entry instanceof ActionEntry )
             {
-                slot = this._buffer.get( entry ) ;
-                if ( slot )
-                {
-                    entry.action.finishIt.disconnect( slot ) ;
-                    this._buffer.remove( entry ) ;
-                }
+                entry.action.finishIt.disconnect( this._next ) ;
             }
         });
     }
@@ -395,11 +380,9 @@ TaskGroup.prototype.remove = function( action /*Action*/ ) /*Boolean*/
             {
                 if ( element && (element instanceof ActionEntry) && element.action === action )
                 {
-                    slot = this._buffer.get( e ) ;
-                    if ( slot )
+                    if ( this._next )
                     {
-                        e.action.finishIt.disconnect( slot ) ;
-                        this._buffer.remove( e ) ;
+                        e.action.finishIt.disconnect( this._next ) ;
                     }
                     this._actions.splice( l , 1 ) ;
                     return true ;
@@ -410,7 +393,6 @@ TaskGroup.prototype.remove = function( action /*Action*/ ) /*Boolean*/
         {
             this.dispose() ;
             this._actions.length = 0 ;
-            this._buffer.clear() ;
             this.notifyCleared() ;
             return true ;
         }

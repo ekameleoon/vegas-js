@@ -6,6 +6,7 @@ import { Action }        from './process/Action.js' ;
 import { ActionEntry }   from './process/ActionEntry.js' ;
 import { Batch }         from './process/Batch.js' ;
 import { BatchTask }     from './process/BatchTask.js' ;
+import { Chain }         from './process/Chain.js' ;
 import { Do }            from './process/Do.js' ;
 import { Lockable }      from './process/Lockable.js' ;
 import { Priority }      from './process/Priority.js' ;
@@ -30,6 +31,7 @@ export var process = Object.assign
     ActionEntry   : ActionEntry ,
     Batch         : Batch ,
     BatchTask     : BatchTask ,
+    Chain         : Chain ,
     Do            : Do,
     Lockable      : Lockable ,
     Priority      : Priority ,

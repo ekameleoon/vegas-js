@@ -72,7 +72,7 @@ gulp.task ('vegas-compress', function( done )
         gulp.src( [ output + '/' + name + '.js' ] ) ,
         uglify(),
         rename( name + '.min.js'),
-        gulp.dest( output ) ,
+        gulp.dest( output )
         //livereload()
     ] , done );
 });
@@ -88,19 +88,15 @@ gulp.task ('vegas-map', function( done )
     ] , done );
 });
 
-var tasks = gulp.series( 'vegas-compile' , 'vegas-compress' ) ;
-
-gulp.task( 'vegas-save' , tasks ) ;
-
 // ------------ watch
 
 gulp.task( 'watch', function()
 {
-    livereload.listen();
-    gulp.watch( 'src/js/**/*.js', gulp.series( 'vegas-save' ) );
+    //livereload.listen();
+    gulp.watch( 'src/**/*.js', gulp.series( 'vegas-compile' , 'vegas-compress' ) );
 });
 
 // ------------ default
 
-gulp.task( 'default', tasks );
+gulp.task( 'default', gulp.series( 'watch' ) );
 

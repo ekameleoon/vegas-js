@@ -31,26 +31,40 @@
         trace( "finish: " + action ) ;
     };
 
+    var progress = function( action )
+    {
+        trace( "progress: " + action.current ) ;
+    };
+
     var start = function( action )
     {
         trace( "start: " + action ) ;
     };
 
-    var batch = new system.process.BatchTask() ;
+    var chain = new system.process.Chain() ;
 
-    batch.add( do1 ) ;
-    batch.add( do2 ) ;
+    chain.finishIt.connect(finish) ;
+    chain.progressIt.connect(progress) ;
+    chain.startIt.connect(start) ;
 
-    batch.verbose = true ;
+    chain.add( do1 , 0 ) ;
+    chain.add( do2 , 2 , true) ;
 
-    trace( 'batch   : ' + batch.toString(true) ) ;
-    trace( 'running : ' + batch.running ) ;
-    trace( 'length  : ' + batch.length ) ;
+    chain.verbose = true ;
 
-    batch.finishIt.connect(finish) ;
-    batch.startIt.connect(start) ;
+    trace('---------') ;
 
-    batch.run() ;
+    trace( 'batch   : ' + chain.toString(true) ) ;
+    trace( 'running : ' + chain.running ) ;
+    trace( 'length  : ' + chain.length ) ;
+
+    trace('---------') ;
+
+    chain.run() ;
+
+    trace('---------') ;
+
+    chain.run() ;
 
 })( vegas );
 

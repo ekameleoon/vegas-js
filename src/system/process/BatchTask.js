@@ -1,35 +1,74 @@
 "use strict" ;
 
-import { TaskGroup } from './TaskGroup.js' ;
-import { ArrayMap }  from '../data/maps/ArrayMap.js' ;
+import { ArrayMap }      from '../data/maps/ArrayMap.js' ;
+import { BatchTaskNext } from './BatchTaskNext.js' ;
+import { TaskGroup }     from './TaskGroup.js' ;
 
 /**
  * Batchs a serie of Action and run it in the same time.
  * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
  * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @example
+ * var do1 = new system.process.Do() ;
+ * var do2 = new system.process.Do() ;
+ *
+ * do1.something = function()
+ * {
+ *     console.log( "do1 something" ) ;
+ * }
+ *
+ * do2.something = function()
+ * {
+ *     console.log( "do2 something" ) ;
+ * }
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * var batch = new system.process.BatchTask() ;
+ *
+ * batch.add( do1 ) ;
+ * batch.add( do2 ) ;
+ *
+ * batch.verbose = true ;
+ *
+ * trace( 'batch   : ' + batch.toString(true) ) ;
+ * trace( 'running : ' + batch.running ) ;
+ * trace( 'length  : ' + batch.length ) ;
+ *
+ * batch.finishIt.connect(finish) ;
+ * batch.startIt.connect(start) ;
+ *
+ * batch.run() ;
  */
 export function BatchTask ( mode /*String*/ , actions /*Array*/)
 {
+    TaskGroup.call( this , mode , actions ) ;
+
     Object.defineProperties( this ,
     {
         /**
          * @private
          */
-        _current :
-        {
-            value    : null ,
-            writable : true
-        },
+        _current : { value : null , writable : true },
+
         /**
          * @private
          */
-        _currents :
-        {
-            value    : new ArrayMap() ,
-            writable : true
-        }
+        _currents : { value : new ArrayMap() , writable : true },
+
+        /**
+         * @private
+         */
+        _next : { value : new BatchTaskNext(this) }
     }) ;
-    TaskGroup.call( this , mode , actions ) ;
 }
 
 /**
@@ -40,16 +79,15 @@ BatchTask.prototype = Object.create( TaskGroup.prototype ,
     /**
      * Indicates the current Action reference when the batch is in progress.
      */
-    current :
-    {
-        get : function()
-        {
-            return this._current ;
-        }
-    }
+    current : { get   : function() { return this._current ; } } ,
+
+    /**
+     * @private
+     */
+    __className__ : { value : 'BatchTask' , configurable : true }
 }) ;
+
 BatchTask.prototype.constructor = BatchTask;
-BatchTask.prototype.__className__ = 'TaskGroup' ;
 
 /**
  * Returns a shallow copy of this object.
@@ -58,61 +96,6 @@ BatchTask.prototype.__className__ = 'TaskGroup' ;
 BatchTask.prototype.clone = function()
 {
     return new BatchTask( this._mode , ( this._actions.length > 0 ? this._actions : null ) ) ;
-}
-
-/**
- * Invoked when a task is finished.
- */
-BatchTask.prototype.next = function( action /*Action*/ ) /*void*/
-{
-    if ( action && this._currents.has( action ) )
-    {
-        var entry = this._currents.get( action ) ;
-        if ( this._mode !== TaskGroup.EVERLASTING )
-        {
-            if ( this._mode === TaskGroup.TRANSIENT || (entry.auto && this._mode === TaskGroup.NORMAL) )
-            {
-                if ( action )
-                {
-                    var slot ;
-                    var e /*ActionEntry*/ ;
-                    var l /*int*/ = this._actions.length ;
-                    while( --l > -1 )
-                    {
-                        e = this._actions[l] ;
-                        if ( e && e.action === action )
-                        {
-                            slot = this._buffer.get( this._current ) ;
-
-                            action.finishIt.disconnect( slot ) ;
-
-                            this._actions.splice( l , 1 ) ;
-                            this._buffer.delete( e ) ;
-
-                            break ;
-                        }
-                    }
-                }
-            }
-        }
-
-        this._currents.delete( action ) ;
-    }
-
-    if ( this._current )
-    {
-        this.notifyChanged() ;
-    }
-
-    this._current = action ;
-
-    this.notifyProgress() ;
-
-    if ( this._currents.length === 0 )
-    {
-        this._current = null ;
-        this.notifyFinished() ;
-    }
 }
 
 /**
@@ -172,20 +155,20 @@ BatchTask.prototype.run = function() /*void*/
 
         if ( this._actions.length > 0 )
         {
-            this._actions.forEach( ( entry ) =>
-            {
-                if ( entry && entry.action )
-                {
-                    this._currents.set( entry.action , entry ) ;
-                }
-            });
+            var actions = [] ;
 
             this._actions.forEach( ( entry ) =>
             {
                 if ( entry && entry.action )
                 {
-                    entry.action.run() ;
+                    actions.push( entry.action ) ;
+                    this._currents.set( entry.action , entry ) ;
                 }
+            });
+
+            actions.forEach( ( action ) =>
+            {
+                action.run() ;
             });
         }
         else
