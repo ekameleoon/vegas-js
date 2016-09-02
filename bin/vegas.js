@@ -3931,9 +3931,20 @@ Signal.prototype.toString = function () /*String*/
 };
 
 /**
- * This interface should be implemented by any class whose instances are intended to be executed.
+ * Indicates if the specific objet is Runnable.
  */
 
+function isRunnable(target) {
+  if (target) {
+    return 'run' in target && target.run instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be executed.
+ */
 function Runnable() {}
 ///////////////////
 
@@ -5702,9 +5713,20 @@ Priority.prototype = Object.create(Object.prototype);
 Priority.prototype.constructor = Priority;
 
 /**
- * This interface should be implemented by any class whose instances are intended to be reseted.
+ * Indicates if the specific objet is Resetable.
  */
 
+function isResetable(target) {
+  if (target) {
+    return 'reset' in target && target.reset instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be reseted.
+ */
 function Resetable() {}
 ///////////////////
 
@@ -5731,9 +5753,20 @@ Resetable.prototype.reset = function () /*void*/
 };
 
 /**
- * This interface should be implemented by any class whose instances are intended to be resumed.
+ * Indicates if the specific objet is Resumable.
  */
 
+function isResumable(target) {
+  if (target) {
+    return 'resume' in target && target.resume instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be resumed.
+ */
 function Resumable() {}
 ///////////////////
 
@@ -5760,9 +5793,20 @@ Resumable.prototype.resume = function () /*void*/
 };
 
 /**
- * This interface should be implemented by any class whose instances are intended to be started.
+ * Indicates if the specific objet is Startable.
  */
 
+function isStartable(target) {
+  if (target) {
+    return 'start' in target && target.start instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be started.
+ */
 function Startable() {}
 
 ///////////////////
@@ -5790,9 +5834,20 @@ Startable.prototype.start = function () /*void*/
 };
 
 /**
- * This interface should be implemented by any class whose instances are intended to be stopped.
+ * Indicates if the specific objet is Stoppable.
  */
 
+function isStoppable(target) {
+  if (target) {
+    return 'stop' in target && target.stop instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be stopped.
+ */
 function Stoppable() {}
 
 ///////////////////
@@ -5918,13 +5973,19 @@ Unlock.prototype.toString = function () /*String*/
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var process = Object.assign({
+    isLockable: isLockable,
+    isResetable: isResetable,
+    isResumable: isResumable,
+    isRunnable: isRunnable,
+    isStartable: isStartable,
+    isStoppable: isStoppable,
+
     Action: Action,
     ActionEntry: ActionEntry,
     Batch: Batch,
     BatchTask: BatchTask,
     Chain: Chain,
     Do: Do,
-    isLockable: isLockable,
     Lock: Lock,
     Lockable: Lockable,
     Priority: Priority,

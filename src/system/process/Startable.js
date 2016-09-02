@@ -1,6 +1,19 @@
 "use strict" ;
 
 /**
+ * Indicates if the specific objet is Startable.
+ */
+export function isStartable( target )
+{
+    if( target )
+    {
+        return ( 'start' in target ) && ( target.start instanceof Function )  ;
+    }
+
+    return false ;
+}
+
+/**
  * This interface should be implemented by any class whose instances are intended to be started.
  */
 export function Startable()

@@ -1,6 +1,19 @@
 "use strict" ;
 
 /**
+ * Indicates if the specific objet is Stoppable.
+ */
+export function isStoppable( target )
+{
+    if( target )
+    {
+        return ( 'stop' in target ) && ( target.stop instanceof Function )  ;
+    }
+
+    return false ;
+}
+
+/**
  * This interface should be implemented by any class whose instances are intended to be stopped.
  */
 export function Stoppable()

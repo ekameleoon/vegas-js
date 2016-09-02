@@ -1,6 +1,19 @@
 "use strict" ;
 
 /**
+ * Indicates if the specific objet is Resetable.
+ */
+export function isResetable( target )
+{
+    if( target )
+    {
+        return ( 'reset' in target ) && ( target.reset instanceof Function )  ;
+    }
+
+    return false ;
+}
+
+/**
  * This interface should be implemented by any class whose instances are intended to be reseted.
  */
 export function Resetable()

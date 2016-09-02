@@ -1,6 +1,19 @@
 "use strict" ;
 
 /**
+ * Indicates if the specific objet is Resumable.
+ */
+export function isResumable( target )
+{
+    if( target )
+    {
+        return ( 'resume' in target ) && ( target.resume instanceof Function )  ;
+    }
+
+    return false ;
+}
+
+/**
  * This interface should be implemented by any class whose instances are intended to be resumed.
  */
 export function Resumable()
