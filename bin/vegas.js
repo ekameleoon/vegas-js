@@ -2342,7 +2342,10 @@ function fastformat(pattern /*String*/) /*String*/
         return "";
     }
 
-    var args /*Array*/ = Array.fromArguments(arguments);
+    Object.setPrototypeOf(arguments, Array.prototype);
+
+    var args = arguments;
+
     args.shift();
 
     var len /*int*/ = args.length;
@@ -2465,7 +2468,10 @@ function format(pattern /*String*/) /*String*/
         return "";
     }
 
-    var args /*Array*/ = Array.fromArguments(arguments);
+    Object.setPrototypeOf(arguments, Array.prototype);
+
+    var args /*Array*/ = arguments;
+
     args.shift();
 
     var formatted /*String*/ = pattern;
@@ -2987,6 +2993,18 @@ Enum.prototype.toString = function () /*String*/
 Enum.prototype.valueOf = function () {
     return this._value;
 };
+
+/**
+ * Indicates if the specific objet is Evaluable.
+ */
+
+function isEvaluable(target) {
+  if (target) {
+    return 'eval' in target && target.eval instanceof Function;
+  }
+
+  return false;
+}
 
 /**
  * An Evaluable class can interpret an object to another object.
@@ -3549,6 +3567,126 @@ var data = Object.assign({
     maps: {
         ArrayMap: ArrayMap
     }
+});
+
+/**
+ * The error throws when methods that have detected concurrent modification of an object when such modification is not permissible.
+ * @param message Optional. Human-readable description of the error.
+ * @param fileName Optional. Human-readable description of the error.
+ * @param lineNumber Optional. Human-readable description of the error.
+ */
+function ConcurrencyError(message, fileName, lineNumber) {
+  this.name = 'ConcurrencyError';
+  this.message = message || 'concurrency error';
+  this.fileName = fileName;
+  this.lineNumber = lineNumber;
+  this.stack = new Error().stack;
+}
+
+/**
+ * @extends Error
+ */
+ConcurrencyError.prototype = Object.create(Error.prototype);
+ConcurrencyError.prototype.constructor = ConcurrencyError;
+
+/**
+ * The error throws when an invalid channel is find.
+ * @param message Optional. Human-readable description of the error.
+ * @param fileName Optional. Human-readable description of the error.
+ * @param lineNumber Optional. Human-readable description of the error.
+ */
+function InvalidChannelError(message, fileName, lineNumber) {
+  this.name = 'InvalidChannelError';
+  this.message = message || 'invalid channel error';
+  this.fileName = fileName;
+  this.lineNumber = lineNumber;
+  this.stack = new Error().stack;
+}
+
+/**
+ * @extends Error
+ */
+InvalidChannelError.prototype = Object.create(Error.prototype);
+InvalidChannelError.prototype.constructor = InvalidChannelError;
+
+/**
+ * The error throws when an invalid filter is find.
+ * @param message Optional. Human-readable description of the error.
+ * @param fileName Optional. Human-readable description of the error.
+ * @param lineNumber Optional. Human-readable description of the error.
+ */
+function InvalidFilterError(message, fileName, lineNumber) {
+  this.name = 'InvalidFilterError';
+  this.message = message || 'invalid filter error';
+  this.fileName = fileName;
+  this.lineNumber = lineNumber;
+  this.stack = new Error().stack;
+}
+
+/**
+ * @extends Error
+ */
+InvalidFilterError.prototype = Object.create(Error.prototype);
+InvalidFilterError.prototype.constructor = InvalidFilterError;
+
+/**
+ * The error throws when a key is non unique.
+ * @param message Optional. Human-readable description of the error.
+ * @param fileName Optional. Human-readable description of the error.
+ * @param lineNumber Optional. Human-readable description of the error.
+ */
+function NonUniqueKeyError(key, pattern, fileName, lineNumber) {
+  this.name = 'NonUniqueKeyError';
+  this.key = key;
+  this.pattern = pattern || NonUniqueKeyError.PATTERN;
+  this.message = fastformat(this.pattern, key);
+  this.fileName = fileName;
+  this.lineNumber = lineNumber;
+  this.stack = new Error().stack;
+}
+
+/**
+ * The localizable or changeable expression to defines the pattern of the error message.
+ */
+NonUniqueKeyError.PATTERN = "attempting to insert the key '{0}'";
+
+/**
+ * @extends Error
+ */
+NonUniqueKeyError.prototype = Object.create(Error.prototype);
+NonUniqueKeyError.prototype.constructor = NonUniqueKeyError;
+
+/**
+ * Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
+ * @param message Optional. Human-readable description of the error.
+ * @param fileName Optional. Human-readable description of the error.
+ * @param lineNumber Optional. Human-readable description of the error.
+ */
+function NoSuchElementError(message, fileName, lineNumber) {
+  this.name = 'NoSuchElementError';
+  this.message = message || 'no such element error';
+  this.fileName = fileName;
+  this.lineNumber = lineNumber;
+  this.stack = new Error().stack;
+}
+
+/**
+ * @extends Error
+ */
+NoSuchElementError.prototype = Object.create(Error.prototype);
+NoSuchElementError.prototype.constructor = NoSuchElementError;
+
+/**
+ * The VEGAS.js framework - The system.errors library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var errors = Object.assign({
+    ConcurrencyError: ConcurrencyError,
+    InvalidChannelError: InvalidChannelError,
+    InvalidFilterError: InvalidFilterError,
+    NonUniqueKeyError: NonUniqueKeyError,
+    NoSuchElementError: NoSuchElementError
 });
 
 /**
@@ -7032,10 +7170,16 @@ var signals = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var system = Object.assign({
+    // interfaces
     Enum: Enum,
     Evaluable: Evaluable,
 
+    // functions
+    isEvaluable: isEvaluable,
+
+    // packages
     data: data,
+    errors: errors,
     evaluators: evaluators,
     numeric: numeric,
     process: process,

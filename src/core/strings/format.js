@@ -28,7 +28,10 @@ export function format( pattern /*String*/ ) /*String*/
         return "";
     }
 
-    var args /*Array*/ = Array.fromArguments( arguments ) ;
+    Object.setPrototypeOf( arguments , Array.prototype ) ;
+
+    var args /*Array*/ = arguments ;
+
     args.shift() ;
 
     var formatted /*String*/ = pattern;

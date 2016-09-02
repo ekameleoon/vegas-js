@@ -24,7 +24,10 @@ export function fastformat( pattern /*String*/ ) /*String*/
         return "";
     }
 
-    var args /*Array*/ = Array.fromArguments(arguments) ;
+    Object.setPrototypeOf( arguments , Array.prototype ) ;
+
+    var args = arguments ;
+
     args.shift() ;
 
     var len /*int*/ = args.length;
