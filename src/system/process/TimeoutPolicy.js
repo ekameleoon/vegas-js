@@ -42,6 +42,6 @@ Object.defineProperties( TimeoutPolicy ,
     /**
      * Designates the limited timeout policy (1).
      */
-    LIMIT    : { value : new TimeoutPolicy( 1 , 'limit' ) , enumerable : true }
+    LIMIT : { value : new TimeoutPolicy( 1 , 'limit' ) , enumerable : true }
 })
 
