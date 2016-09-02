@@ -3522,6 +3522,76 @@ var data = Object.assign({
 });
 
 /**
+ * This interface should be implemented by any properties definition object.
+ */
+
+function Property() {}
+/**
+ * @extends Object
+ */
+Property.prototype = Object.create(Object.prototype);
+Property.prototype.constructor = Property;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Property.prototype.toString = function () /*String*/
+{
+  return "[Property]";
+};
+
+/**
+ * Determinates an "attribute" value object.
+ * @param name The name of the attribute.
+ * @param value The value of the attribute.
+ */
+function Attribute(name, value) {
+  this.name = name;
+  this.value = value;
+}
+
+/**
+ * @extends Object
+ */
+Attribute.prototype = Object.create(Property.prototype);
+Attribute.prototype.constructor = Attribute;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Attribute.prototype.toString = function () /*String*/
+{
+  return "[Attribute]";
+};
+
+/**
+ * Determinates a "method" value object.
+ * @param name The name of the method.
+ * @param arg The optional array of arguments of the method.
+ */
+function Method(name, args) {
+  this.name = name;
+  this.args = args;
+}
+
+/**
+ * @extends Object
+ */
+Method.prototype = Object.create(Property.prototype);
+Method.prototype.constructor = Method;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Method.prototype.toString = function () /*String*/
+{
+  return "[Method]";
+};
+
+/**
  * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
  */
 
@@ -5212,76 +5282,6 @@ BatchTask.prototype.stop = function () /*void*/
 };
 
 /**
- * This interface should be implemented by any properties definition object.
- */
-
-function Property() {}
-/**
- * @extends Object
- */
-Property.prototype = Object.create(Object.prototype);
-Property.prototype.constructor = Property;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Property.prototype.toString = function () /*String*/
-{
-  return "[Property]";
-};
-
-/**
- * Determinates an "attribute" value object.
- * @param name The name of the attribute.
- * @param value The value of the attribute.
- */
-function Attribute(name, value) {
-  this.name = name;
-  this.value = value;
-}
-
-/**
- * @extends Object
- */
-Attribute.prototype = Object.create(Property.prototype);
-Attribute.prototype.constructor = Attribute;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Attribute.prototype.toString = function () /*String*/
-{
-  return "[Attribute]";
-};
-
-/**
- * Determinates a "method" value object.
- * @param name The name of the method.
- * @param arg The optional array of arguments of the method.
- */
-function Method(name, args) {
-  this.name = name;
-  this.args = args;
-}
-
-/**
- * @extends Object
- */
-Method.prototype = Object.create(Property.prototype);
-Method.prototype.constructor = Method;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Method.prototype.toString = function () /*String*/
-{
-  return "[Method]";
-};
-
-/**
  * Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
  * @example
  * var Cache = system.process.Cache ;
@@ -6248,6 +6248,12 @@ var process = Object.assign({
     isRunnable: isRunnable,
     isStartable: isStartable,
     isStoppable: isStoppable,
+
+    caches: Object.assign({
+        Attribute: Attribute,
+        Method: Method,
+        Property: Property
+    }),
 
     Action: Action,
     ActionEntry: ActionEntry,

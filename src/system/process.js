@@ -2,6 +2,10 @@
 
 import '../polyfill.js' ;
 
+import { Attribute }    from './process/caches/Attribute.js' ;
+import { Method    }    from './process/caches/Method.js' ;
+import { Property  }    from './process/caches/Property.js' ;
+
 import { Action }        from './process/Action.js' ;
 import { ActionEntry }   from './process/ActionEntry.js' ;
 import { Batch }         from './process/Batch.js' ;
@@ -43,6 +47,13 @@ export var process = Object.assign
     isRunnable    : isRunnable ,
     isStartable   : isStartable ,
     isStoppable   : isStoppable ,
+
+    caches : Object.assign
+    ({
+        Attribute : Attribute ,
+        Method    : Method ,
+        Property  : Property
+    }),
 
     Action        : Action ,
     ActionEntry   : ActionEntry ,

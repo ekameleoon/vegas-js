@@ -1,9 +1,6 @@
 {
-    "presets" : ["es2015"] ,
     "plugins" :
     [
-        "transform-es2015-typeof-symbol" ,
-        "transform-es2015-block-scoping" ,
-        "transform-es2015-parameters"
+
     ]
 }
