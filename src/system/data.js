@@ -2,7 +2,11 @@
 
 import '../polyfill.js' ;
 
-import { Map } from './data/Map.js' ;
+import { Iterator } from './data/Iterator.js' ;
+import { Map }      from './data/Map.js' ;
+
+import { ArrayIterator } from './data/iterators/ArrayIterator.js' ;
+import { MapIterator }   from './data/iterators/MapIterator.js' ;
 
 import { ArrayMap } from './data/maps/ArrayMap.js' ;
 
@@ -13,7 +17,16 @@ import { ArrayMap } from './data/maps/ArrayMap.js' ;
  */
 export var data = Object.assign
 ({
-    Map  : Map ,
+    // interfaces
+    Iterator : Iterator ,
+    Map      : Map ,
+
+    // packages
+    iterators :
+    {
+        ArrayIterator,
+        MapIterator
+    },
     maps :
     {
         ArrayMap

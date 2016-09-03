@@ -4,6 +4,9 @@ import { Map }       from '../Map.js' ;
 import { MapEntry }  from './MapEntry.js' ;
 import { formatter } from './MapFormatter.js' ;
 
+import { ArrayIterator } from '../iterators/ArrayIterator.js' ;
+import { MapIterator }   from '../iterators/MapIterator.js' ;
+
 /**
  * Hash table based implementation of the Map interface.
  * <p><b>Attention :</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
@@ -17,13 +20,13 @@ import { formatter } from './MapFormatter.js' ;
  *
  * trace ("map : " + map) ;
  *
- * // trace ("------ iterator") ;
- * //
- * // var it = map.iterator() ;
- * // while (it.hasNext())
- * // {
- * //     trace (it.next() + " : " + it.key()) ;
- * // }
+ * trace ("------ iterator") ;
+ *
+ * var it = map.iterator() ;
+ * while (it.hasNext())
+ * {
+ *     trace (it.next() + " : " + it.key()) ;
+ * }
  *
  *
  * trace( 'values : ' + map.values()) ;
@@ -221,7 +224,7 @@ ArrayMap.prototype.isEmpty = function () /*Boolean*/
  */
 ArrayMap.prototype.iterator = function () /*Iterator*/
 {
-    //return new MapIterator( this ) ;
+    return new MapIterator( this ) ;
 }
 
 /**
@@ -230,7 +233,7 @@ ArrayMap.prototype.iterator = function () /*Iterator*/
  */
 ArrayMap.prototype.keyIterator = function () /*Iterator*/
 {
-    //return new ArrayIterator( this._keys ) ;
+    return new ArrayIterator( this._keys ) ;
 }
 
 /**

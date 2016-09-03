@@ -3079,6 +3079,61 @@ Formattable.prototype.format = function (value) /*String*/
 };
 
 /**
+ * This interface defines the iterator pattern over a collection.
+ */
+
+function Iterator() {}
+//
+
+
+/**
+ * @extends Object
+ */
+Iterator.prototype = Object.create(Object.prototype);
+Iterator.prototype.constructor = Iterator;
+
+/**
+ * Returns <code>true</code> if the iteration has more elements.
+ * @return <code>true</code> if the iteration has more elements.
+ */
+Iterator.prototype.hasNext = function () {};
+
+/**
+ * Returns the current key of the internal pointer of the iterator (optional operation).
+ * @return the current key of the internal pointer of the iterator (optional operation).
+ */
+Iterator.prototype.key = function () {};
+
+/**
+ * Returns the next element in the iteration.
+ * @return the next element in the iteration.
+ */
+Iterator.prototype.next = function () {};
+
+/**
+ * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ */
+Iterator.prototype.remove = function () {};
+
+/**
+ * Reset the internal pointer of the iterator (optional operation).
+ */
+Iterator.prototype.reset = function () {};
+
+/**
+ * Changes the position of the internal pointer of the iterator (optional operation).
+ */
+Iterator.prototype.seek = function (position) {};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+Iterator.prototype.toString = function () {
+  return '[Iterator]';
+};
+
+/**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  */
 
@@ -3215,6 +3270,185 @@ Map.prototype.values = function () /*Array*/
 };
 
 /**
+ * Converts a <code>Array</code> to an iterator.
+ * @example
+ * var ArrayIterator = system.data.iterators.ArrayIterator ;
+ *
+ * var ar = ["item1", "item2", "item3", "item4"] ;
+ *
+ * var it = new ArrayIterator(ar) ;
+ *
+ * while (it.hasNext())
+ * {
+ *     trace (it.next()) ;
+ * }
+ *
+ * trace ("--- it reset") ;
+ *
+ * it.reset() ;
+ *
+ * while (it.hasNext())
+ * {
+ *     trace (it.next() + " : " + it.key()) ;
+ * }
+ *
+ * trace ("--- it seek 2") ;
+ *
+ * it.seek(2) ;
+ * while (it.hasNext())
+ * {
+ *     trace (it.next()) ;
+ * }
+ *
+ * trace ("---") ;
+ */
+function ArrayIterator(array) {
+    if (!(array instanceof Array)) {
+        throw new ReferenceError(this + " constructor failed, the passed-in Array argument not must be 'null'.");
+    }
+    Object.defineProperties(this, {
+        _a: { value: array, writable: true },
+        _k: { value: -1, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+ArrayIterator.prototype = Object.create(Iterator.prototype);
+ArrayIterator.prototype.constructor = ArrayIterator;
+
+/**
+ * Returns <code>true</code> if the iteration has more elements.
+ * @return <code>true</code> if the iteration has more elements.
+ */
+ArrayIterator.prototype.hasNext = function () {
+    return this._k < this._a.length - 1;
+};
+
+/**
+ * Returns the current key of the internal pointer of the iterator (optional operation).
+ * @return the current key of the internal pointer of the iterator (optional operation).
+ */
+ArrayIterator.prototype.key = function () {
+    return this._k;
+};
+
+/**
+ * Returns the next element in the iteration.
+ * @return the next element in the iteration.
+ */
+ArrayIterator.prototype.next = function () {
+    return this._a[++this._k];
+};
+
+/**
+ * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ */
+ArrayIterator.prototype.remove = function () {
+    return this._a.splice(this._k--, 1)[0];
+};
+
+/**
+ * Reset the internal pointer of the iterator (optional operation).
+ */
+ArrayIterator.prototype.reset = function () {
+    this._k = -1;
+};
+
+/**
+ * Changes the position of the internal pointer of the iterator (optional operation).
+ */
+ArrayIterator.prototype.seek = function (position) {
+    position = Math.max(Math.min(position - 1, this._a.length), -1);
+    this._k = isNaN(position) ? -1 : position;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+ArrayIterator.prototype.toString = function () {
+    return '[ArrayIterator]';
+};
+
+/**
+ * Converts a <code>Map</code> to an iterator.
+ */
+function MapIterator(map) {
+    if (map && map instanceof Map) {
+        Object.defineProperties(this, {
+            _m: { value: map, writable: true },
+            _i: { value: new ArrayIterator(map.keys()), writable: true },
+            _k: { value: null, writable: true }
+        });
+    } else {
+        throw new ReferenceError(this + " constructor failed, the passed-in Map argument not must be 'null'.");
+    }
+}
+
+/**
+ * @extends Object
+ */
+MapIterator.prototype = Object.create(Iterator.prototype);
+MapIterator.prototype.constructor = MapIterator;
+
+/**
+ * Returns <code>true</code> if the iteration has more elements.
+ * @return <code>true</code> if the iteration has more elements.
+ */
+MapIterator.prototype.hasNext = function () {
+    return this._i.hasNext();
+};
+
+/**
+ * Returns the current key of the internal pointer of the iterator (optional operation).
+ * @return the current key of the internal pointer of the iterator (optional operation).
+ */
+MapIterator.prototype.key = function () {
+    return this._k;
+};
+
+/**
+ * Returns the next element in the iteration.
+ * @return the next element in the iteration.
+ */
+MapIterator.prototype.next = function () {
+    this._k = this._i.next();
+    return this._m.get(this._k);
+};
+
+/**
+ * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ */
+MapIterator.prototype.remove = function () {
+    this._i.remove();
+    return this._m.remove(this._k);
+};
+
+/**
+ * Reset the internal pointer of the iterator (optional operation).
+ */
+MapIterator.prototype.reset = function () {
+    this._i.reset();
+};
+
+/**
+ * Changes the position of the internal pointer of the iterator (optional operation).
+ */
+MapIterator.prototype.seek = function (position) {
+    throw new Error("This Iterator does not support the seek() method.");
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+MapIterator.prototype.toString = function () {
+    return '[MapIterator]';
+};
+
+/**
  * Represents a pair key/value entry in a Map.
  * @param key The key representation of the entry.
  * @param value The value representation of the entry.
@@ -3301,13 +3535,13 @@ var formatter = new MapFormatter();
  *
  * trace ("map : " + map) ;
  *
- * // trace ("------ iterator") ;
- * //
- * // var it = map.iterator() ;
- * // while (it.hasNext())
- * // {
- * //     trace (it.next() + " : " + it.key()) ;
- * // }
+ * trace ("------ iterator") ;
+ *
+ * var it = map.iterator() ;
+ * while (it.hasNext())
+ * {
+ *     trace (it.next() + " : " + it.key()) ;
+ * }
  *
  *
  * trace( 'values : ' + map.values()) ;
@@ -3486,24 +3720,24 @@ ArrayMap.prototype.isEmpty = function () /*Boolean*/
  * @return the values iterator of this map.
  */
 ArrayMap.prototype.iterator = function () /*Iterator*/
-{}
-//return new MapIterator( this ) ;
-
+{
+    return new MapIterator(this);
+};
 
 /**
  * Returns the keys iterator of this map.
  * @return the keys iterator of this map.
  */
-;ArrayMap.prototype.keyIterator = function () /*Iterator*/
-{}
-//return new ArrayIterator( this._keys ) ;
-
+ArrayMap.prototype.keyIterator = function () /*Iterator*/
+{
+    return new ArrayIterator(this._keys);
+};
 
 /**
  * Returns an array representation of all keys in the map.
  * @return an array representation of all keys in the map.
  */
-;ArrayMap.prototype.keys = function () /*Array*/
+ArrayMap.prototype.keys = function () /*Array*/
 {
     return this._keys.concat();
 };
@@ -3605,7 +3839,15 @@ ArrayMap.prototype.values = function () /*Array*/
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var data = Object.assign({
+    // interfaces
+    Iterator: Iterator,
     Map: Map,
+
+    // packages
+    iterators: {
+        ArrayIterator: ArrayIterator,
+        MapIterator: MapIterator
+    },
     maps: {
         ArrayMap: ArrayMap
     }

@@ -12,22 +12,40 @@
     var system = vegas.system ; // jshint ignore:line
     var core   = vegas.core   ; // jshint ignore:line
 
-    var MultiEvaluator    = system.evaluators.MultiEvaluator ;
-    var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
-    var RomanEvaluator    =  system.evaluators.RomanEvaluator ;
+var map = new system.data.maps.ArrayMap() ;
 
-    var obj = { id  : "XII" , count : 100 } ;
+map.set("key1", "value1") ;
+map.set("key2", "value2") ;
+map.set("key3", "value3") ;
 
-    var evaluator1 = new PropertyEvaluator( obj ) ;
-    var evaluator2 = new RomanEvaluator() ;
+trace ("map : " + map) ;
 
-    var evaluator = new MultiEvaluator() ;
+trace ("------ iterator") ;
 
-    evaluator.add( evaluator1 ) ;
-    evaluator.add( evaluator2 ) ;
+var it ;
 
-    trace( evaluator.eval( 'id' ) ) ; // 12
-    trace( evaluator.eval( 'count' ) ) ; // C
+it = map.iterator() ;
+while (it.hasNext())
+{
+    trace ( "it > " + it.next() + " : " + it.key()) ;
+}
 
+it = map.keyIterator() ;
+while (it.hasNext())
+{
+    trace ( "it > " + it.next() + " : " + it.key()) ;
+}
+
+trace ("------ ") ;
+
+
+trace( 'values : ' + map.values()) ;
+trace( map.has('key2')) ;
+trace( map.get('key2') ) ;
+trace( map.indexOfKey('key2')) ;
+
+map.delete( 'key2' ) ;
+
+trace ("map : " + map) ;
 })( vegas );
 
