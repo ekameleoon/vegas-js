@@ -4727,6 +4727,730 @@ var formatters = Object.assign({
 });
 
 /**
+ * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ */
+
+function Receiver() {}
+
+/**
+ * @extends Object
+ */
+Receiver.prototype = Object.create(Object.prototype);
+Receiver.prototype.constructor = Receiver;
+
+/**
+ * This method is called when the receiver is connected with a Signal object.
+ * @param ...values All the values emitting by the signals connected with this object.
+ */
+Receiver.prototype.receive = function () {};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Receiver.prototype.toString = function () /*String*/
+{
+  return "[Receiver]";
+};
+
+/**
+ * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ */
+
+function Signaler() {}
+
+/**
+ * @extends Object
+ */
+Signaler.prototype = Object.create(Object.prototype, {
+    /**
+     * Indicates the number of receivers connected.
+     */
+    length: {
+        get: function get() {
+            return 0;
+        }
+    }
+});
+
+Signaler.prototype.constructor = Signaler;
+
+/**
+ * Connects a Function or a Receiver object.
+ * @param receiver The receiver to connect : a Function reference or a Receiver object.
+ * @param priority Determinates the priority level of the receiver.
+ * @param autoDisconnect Apply a disconnect after the first trigger
+ * @return <code>true</code> If the receiver is connected with the signal emitter.
+ */
+Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*uint*/
+{}
+//
+
+
+/**
+ * Returns <code>true</code> if one or more receivers are connected.
+ * @return <code>true</code> if one or more receivers are connected.
+ */
+;Signaler.prototype.connected = function () /*Boolean*/
+{}
+//
+
+
+/**
+ * Disconnect the specified object or all objects if the parameter is null.
+ * @return <code>true</code> if the specified receiver exist and can be unregister.
+ */
+;Signaler.prototype.disconnect = function (receiver) /*Boolean*/
+{}
+//
+
+
+/**
+ * Emit the specified values to the receivers.
+ * @param ...values All values to emit to the receivers.
+ */
+;Signaler.prototype.emit = function () /*void*/
+{}
+//
+
+
+/**
+ * Indicates the number of receivers connected.
+ */
+;Signaler.prototype.getLength = function () /*uint*/
+{}
+//
+
+
+/**
+ * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ */
+;Signaler.prototype.hasReceiver = function (receiver) /*Boolean*/
+{
+    //
+};
+
+/**
+ * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
+ * @param receiver The receiver reference.
+ * @param priority The priority value of the entry.
+ * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ */
+
+function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
+  /**
+   * Indicates if the receiver must be disconnected when handle the first time a signal.
+   */
+  this.auto = Boolean(auto);
+
+  /**
+   * The receiver reference of this entry.
+   */
+  this.receiver = receiver || null;
+
+  /**
+   * Determinates the priority value of the object.
+   */
+  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+}
+
+///////////////////
+
+/**
+ * @extends Object
+ */
+SignalEntry.prototype = Object.create(Object.prototype);
+SignalEntry.prototype.constructor = SignalEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+SignalEntry.prototype.toString = function () /*String*/
+{
+  return '[SignalEntry]';
+};
+
+/**
+ * Creates a new Signal instance.
+ * <p><b>Example :</b></p>
+ * <pre>
+ * function Slot( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Slot.prototype = Object.create( system.signals.Receiver.prototype );
+ * Slot.prototype.constructor = Slot;
+ *
+ * Slot.prototype.receive = function ( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * Slot.prototype.toString = function ()
+ * {
+ *     return "[Slot name:" + this.name + "]" ;
+ * }
+ *
+ * var slot1 = new Slot("slot1") ;
+ *
+ * var slot2 = function( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * var signal = new system.signals.Signal() ;
+ *
+ * //signal.proxy = slot1 ;
+ *
+ * signal.connect( slot1 , 0 ) ;
+ * signal.connect( slot2 , 2 ) ;
+ *
+ * signal.emit( "hello world" ) ;
+ * </pre>
+ */
+function Signal() {
+    Object.defineProperties(this, {
+        /**
+         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         */
+        proxy: {
+            value: null,
+            enumerable: false,
+            configurable: true,
+            writable: false
+        },
+        receivers: {
+            value: [],
+            enumerable: false,
+            configurable: false,
+            writable: true
+        }
+    });
+}
+
+///////////////////
+
+Signal.prototype = Object.create(Signaler.prototype, {
+    /**
+     * The number of receivers or slots register in the signal object.
+     */
+    length: {
+        get: function get() {
+            return this.receivers.length;
+        }
+    }
+});
+
+Signal.prototype.constructor = Signal;
+
+///////////////////
+
+/**
+ * Connects a Function or a Receiver object.
+ * @param receiver The receiver to connect : a Function reference or a Receiver object.
+ * @param priority Determinates the priority level of the receiver.
+ * @param autoDisconnect Apply a disconnect after the first trigger
+ * @return <code>true</code> If the receiver is connected with the signal emitter.
+ */
+Signal.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
+{
+    if (receiver === null) {
+        return false;
+    }
+
+    autoDisconnect = Boolean(autoDisconnect);
+    priority = priority > 0 ? Math.ceil(priority) : 0;
+
+    if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
+        if (this.hasReceiver(receiver)) {
+            return false;
+        }
+
+        this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+
+        /////// bubble sorting
+
+        var i;
+        var j;
+
+        var a = this.receivers;
+
+        var swap = function swap(j, k) {
+            var temp = a[j];
+            a[j] = a[k];
+            a[k] = temp;
+            return true;
+        };
+
+        var swapped = false;
+
+        var l = a.length;
+
+        for (i = 1; i < l; i++) {
+            for (j = 0; j < l - i; j++) {
+                if (a[j + 1].priority > a[j].priority) {
+                    swapped = swap(j, j + 1);
+                }
+            }
+            if (!swapped) {
+                break;
+            }
+        }
+
+        ///////
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * Returns <code>true</code> if one or more receivers are connected.
+ * @return <code>true</code> if one or more receivers are connected.
+ */
+Signal.prototype.connected = function () /*Boolean*/
+{
+    return this.receivers.length > 0;
+};
+
+/**
+ * Disconnect the specified object or all objects if the parameter is null.
+ * @return <code>true</code> if the specified receiver exist and can be unregister.
+ */
+Signal.prototype.disconnect = function (receiver) /*Boolean*/
+{
+    if (receiver === null) {
+        if (this.receivers.length > 0) {
+            this.receivers = [];
+            return true;
+        } else {
+            return false;
+        }
+    }
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        while (--l > -1) {
+            if (this.receivers[l].receiver === receiver) {
+                this.receivers.splice(l, 1);
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Emit the specified values to the receivers.
+ * @param ...values All values to emit to the receivers.
+ */
+Signal.prototype.emit = function () /*Arguments*/ /*void*/
+{
+    var values = Object.setPrototypeOf(arguments, Array.prototype);
+
+    if (this.receivers.length === 0) {
+        return;
+    }
+
+    var i /*int*/;
+    var l /*int*/ = this.receivers.length;
+    var r /*Array*/ = [];
+    var a /*Array*/ = this.receivers.slice();
+    var e /*SignalEntry*/;
+
+    var slot;
+
+    for (i = 0; i < l; i++) {
+        e = a[i];
+        if (e.auto) {
+            r.push(e);
+        }
+    }
+    if (r.length > 0) {
+        l = r.length;
+        while (--l > -1) {
+            i = this.receivers.indexOf(r[l]);
+            if (i > -1) {
+                this.receivers.splice(i, 1);
+            }
+        }
+    }
+    l = a.length;
+    for (i = 0; i < l; i++) {
+        slot = a[i].receiver;
+
+        if (slot instanceof Function || typeof receiver === "function") {
+            slot.apply(this.proxy || this, values);
+        } else if (slot instanceof Receiver || "receive" in slot) {
+            slot.receive.apply(this.proxy || slot, values);
+        }
+    }
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ */
+Signal.prototype.hasReceiver = function (receiver) /*Boolean*/
+{
+    if (receiver === null) {
+        return false;
+    }
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        while (--l > -1) {
+            if (this.receivers[l].receiver === receiver) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Returns the Array representation of all receivers connected with the signal.
+ * @return the Array representation of all receivers connected with the signal.
+ */
+Signal.prototype.toArray = function () /*Array*/
+{
+    var r /*Array*/ = [];
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        for (var i /*int*/ = 0; i < l; i++) {
+            r.push(this.receivers[i].receiver);
+        }
+    }
+    return r;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Signal.prototype.toString = function () /*String*/
+{
+    return "[Signal]";
+};
+
+/**
+ * The logger levels that is used within the logging framework.
+ * @param value The value of the enumeration.
+ * @param name The name key of the enumeration.
+ * @example
+ * var LoggerLevel = system.logging.LoggerLevel ;
+ *
+ * for( var level in LoggerLevel )
+ * {
+ *     if( LoggerLevel.hasOwnProperty(level) )
+ *     {
+ *        trace( level + ' ' + LoggerLevel.getLevelString(LoggerLevel[level]) ) ;
+ *     }
+ * }
+ */
+function LoggerLevel(value /*int*/, name /*String*/) {
+  Enum.call(this, value, name);
+}
+
+/**
+ * @extends Object
+ */
+LoggerLevel.prototype = Object.create(Enum.prototype);
+LoggerLevel.prototype.constructor = LoggerLevel;
+
+Object.defineProperties(LoggerLevel, {
+  /**
+   * Intended to force a target to process all messages (1).
+   */
+  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+
+  /**
+   * Designates events that are very harmful and will eventually lead to application failure (16).
+   */
+  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+
+  /**
+   * Designates informational level messages that are fine grained and most helpful when debugging an application (2).
+   */
+  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+
+  /**
+   * The default string level value in the getLevelString() method.
+   */
+  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+
+  /**
+   * Designates error events that might still allow the application to continue running (8).
+   */
+  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+
+  /**
+   * Designates informational messages that highlight the progress of the application at coarse-grained level (4).
+   */
+  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+
+  /**
+   * A special level that can be used to turn off logging (0).
+   */
+  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+
+  /**
+   * Designates events that could be harmful to the application operation (6).
+   */
+  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+
+  /**
+   * What a Terrible Failure: designates an exception that should never happen. (32).
+   */
+  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+
+  /**
+   * Returns <code>true</code> if the number level passed in argument is valid.
+   * @return <code>true</code> if the number level passed in argument is valid.
+   */
+  get: {
+    value: function value(_value /*int*/) /*LoggerLevel*/
+    {
+      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      var l = levels.length;
+      while (--l > -1) {
+        if (levels[l]._value === _value) {
+          return levels[l];
+        }
+      }
+      return null;
+    }
+  },
+
+  /**
+   * Returns a String value representing the specific level.
+   * @return a String value representing the specific level.
+   */
+  getLevelString: {
+    value: function value(_value2 /*LoggerLevel*/) /*String*/
+    {
+      if (LoggerLevel.validate(_value2)) {
+        return _value2.toString();
+      } else {
+        return LoggerLevel.DEFAULT_LEVEL_STRING;
+      }
+    }
+  },
+
+  /**
+   * Returns <code>true</code> if the number level passed in argument is valid.
+   * @return <code>true</code> if the number level passed in argument is valid.
+   */
+  validate: {
+    value: function value(level /*LoggerLevel*/) /*Boolean*/
+    {
+      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      return levels.indexOf(level) > -1;
+    }
+  }
+});
+
+/**
+ * Represents the log information for a single logging notification.
+ * The loging system dispatches a single message each time a process requests information be logged.
+ * This entry can be captured by any object for storage or formatting.
+ * @param message The context or message of the log.
+ * @param level The level of the log.
+ * @param logger The Logger reference of this entry.
+ */
+function LoggerEntry(logger /*Logger*/, message, level /*LoggerLevel*/) {
+  this.logger = logger;
+  this.message = message;
+  this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
+}
+
+///////////////////
+
+/**
+ * @extends Object
+ */
+LoggerEntry.prototype = Object.create(Object.prototype);
+LoggerEntry.prototype.constructor = LoggerEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+LoggerEntry.prototype.toString = function () /*String*/
+{
+  return '[LoggerEntry]';
+};
+
+/**
+ * API for sending log output.
+ */
+function Logger(channel) {
+    Signal.call(this);
+
+    Object.defineProperties(this, {
+        _channel: { value: channel, writable: true },
+        _entry: { value: new LoggerEntry(this), writable: true }
+    });
+}
+
+///////////////////
+
+/**
+ * @extends Object
+ */
+Logger.prototype = Object.create(Signal.prototype, {
+    /**
+     * Logs the specified data using the LogEventLevel.CRITICAL level.
+     */
+    critical: {
+        value: function value(context) {
+            for (var _len = arguments.length, options = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                options[_key - 1] = arguments[_key];
+            }
+
+            this._log.apply(this, [LoggerLevel.CRITICAL, context].concat(options));
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.DEBUG level.
+     */
+    debug: {
+        value: function value(context) {
+            for (var _len2 = arguments.length, options = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                options[_key2 - 1] = arguments[_key2];
+            }
+
+            this._log.apply(this, [LoggerLevel.DEBUG, context].concat(options));
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.ERROR level.
+     */
+    error: {
+        value: function value(context) {
+            for (var _len3 = arguments.length, options = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+                options[_key3 - 1] = arguments[_key3];
+            }
+
+            this._log.apply(this, [LoggerLevel.ERROR, context].concat(options));
+        }
+    },
+
+    /**
+     * Indicates the channel value for the logger.
+     */
+    channel: {
+        get: function get() {
+            return this._channel;
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEvent.INFO level.
+     */
+    info: {
+        value: function value(context) {
+            for (var _len4 = arguments.length, options = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                options[_key4 - 1] = arguments[_key4];
+            }
+
+            this._log.apply(this, [LoggerLevel.INFO, context].concat(options));
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEvent.ALL level.
+     * @param ...args The information to log. This string can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param ... Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     */
+    log: {
+        value: function value(context) {
+            for (var _len5 = arguments.length, options = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+                options[_key5 - 1] = arguments[_key5];
+            }
+
+            this._log.apply(this, [LoggerLevel.ALL, context].concat(options));
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.WARN level.
+     */
+    warning: {
+        value: function value(context) {
+            for (var _len6 = arguments.length, options = Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
+                options[_key6 - 1] = arguments[_key6];
+            }
+
+            this._log.apply(this, [LoggerLevel.WARNING, context].concat(options));
+        }
+    },
+
+    /**
+     * What a Terrible Failure: Report an exception that should never happen.
+     */
+    wtf: {
+        value: function value(context) {
+            for (var _len7 = arguments.length, options = Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
+                options[_key7 - 1] = arguments[_key7];
+            }
+
+            this._log.apply(this, [LoggerLevel.WTF, context].concat(options));
+        }
+    },
+
+    /**
+     * What a Terrible Failure: Report an exception that should never happen.
+     */
+    _log: {
+        value: function value(level /*LoggerLevel*/, context) /*void*/
+        {
+            if (this.connected()) {
+                if (typeof level === "string" || level instanceof String) {
+                    for (var _len8 = arguments.length, options = Array(_len8 > 2 ? _len8 - 2 : 0), _key8 = 2; _key8 < _len8; _key8++) {
+                        options[_key8 - 2] = arguments[_key8];
+                    }
+
+                    var len = options.length;
+                    for (var i = 0; i < len; i++) {
+                        context = String(context).replace(new RegExp("\\{" + i + "\\}", "g"), options[i]);
+                    }
+                }
+                this._entry.message = context;
+                this._entry.level = level;
+                this.emit(this._entry);
+            }
+        }
+    }
+});
+
+Logger.prototype.constructor = Logger;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+LoggerEntry.prototype.toString = function () /*String*/
+{
+    return '[Logger]';
+};
+
+/**
+ * The VEGAS.js framework - The system.logging library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var logging = Object.assign({
+  Logger: Logger,
+  LoggerEntry: LoggerEntry,
+  LoggerLevel: LoggerLevel
+});
+
+/**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
  * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
@@ -5148,415 +5872,6 @@ Method.prototype.constructor = Method;
 Method.prototype.toString = function () /*String*/
 {
   return "[Method]";
-};
-
-/**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
- */
-
-function Receiver() {}
-
-/**
- * @extends Object
- */
-Receiver.prototype = Object.create(Object.prototype);
-Receiver.prototype.constructor = Receiver;
-
-/**
- * This method is called when the receiver is connected with a Signal object.
- * @param ...values All the values emitting by the signals connected with this object.
- */
-Receiver.prototype.receive = function () {};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Receiver.prototype.toString = function () /*String*/
-{
-  return "[Receiver]";
-};
-
-/**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
- */
-
-function Signaler() {}
-
-/**
- * @extends Object
- */
-Signaler.prototype = Object.create(Object.prototype, {
-    /**
-     * Indicates the number of receivers connected.
-     */
-    length: {
-        get: function get() {
-            return 0;
-        }
-    }
-});
-
-Signaler.prototype.constructor = Signaler;
-
-/**
- * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
- * @return <code>true</code> If the receiver is connected with the signal emitter.
- */
-Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*uint*/
-{}
-//
-
-
-/**
- * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
- */
-;Signaler.prototype.connected = function () /*Boolean*/
-{}
-//
-
-
-/**
- * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
- */
-;Signaler.prototype.disconnect = function (receiver) /*Boolean*/
-{}
-//
-
-
-/**
- * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
- */
-;Signaler.prototype.emit = function () /*void*/
-{}
-//
-
-
-/**
- * Indicates the number of receivers connected.
- */
-;Signaler.prototype.getLength = function () /*uint*/
-{}
-//
-
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
- * @return <code class="prettyprint">true</code> if the specified receiver is connected.
- */
-;Signaler.prototype.hasReceiver = function (receiver) /*Boolean*/
-{
-    //
-};
-
-/**
- * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
- * @param receiver The receiver reference.
- * @param priority The priority value of the entry.
- * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
- */
-
-function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
-  /**
-   * Indicates if the receiver must be disconnected when handle the first time a signal.
-   */
-  this.auto = Boolean(auto);
-
-  /**
-   * The receiver reference of this entry.
-   */
-  this.receiver = receiver || null;
-
-  /**
-   * Determinates the priority value of the object.
-   */
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
-}
-
-///////////////////
-
-/**
- * @extends Object
- */
-SignalEntry.prototype = Object.create(Object.prototype);
-SignalEntry.prototype.constructor = SignalEntry;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-SignalEntry.prototype.toString = function () /*String*/
-{
-  return '[SignalEntry]';
-};
-
-/**
- * Creates a new Signal instance.
- * <p><b>Example :</b></p>
- * <pre>
- * function Slot( name )
- * {
- *     this.name = name ;
- * }
- *
- * Slot.prototype = Object.create( system.signals.Receiver.prototype );
- * Slot.prototype.constructor = Slot;
- *
- * Slot.prototype.receive = function ( message )
- * {
- *     trace( this + " : " + message ) ;
- * }
- *
- * Slot.prototype.toString = function ()
- * {
- *     return "[Slot name:" + this.name + "]" ;
- * }
- *
- * var slot1 = new Slot("slot1") ;
- *
- * var slot2 = function( message )
- * {
- *     trace( this + " : " + message ) ;
- * }
- *
- * var signal = new system.signals.Signal() ;
- *
- * //signal.proxy = slot1 ;
- *
- * signal.connect( slot1 , 0 ) ;
- * signal.connect( slot2 , 2 ) ;
- *
- * signal.emit( "hello world" ) ;
- * </pre>
- */
-function Signal() {
-    Object.defineProperties(this, {
-        /**
-         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
-         */
-        proxy: {
-            value: null,
-            enumerable: false,
-            configurable: true,
-            writable: false
-        },
-        receivers: {
-            value: [],
-            enumerable: false,
-            configurable: false,
-            writable: true
-        }
-    });
-}
-
-///////////////////
-
-Signal.prototype = Object.create(Signaler.prototype, {
-    /**
-     * The number of receivers or slots register in the signal object.
-     */
-    length: {
-        get: function get() {
-            return this.receivers.length;
-        }
-    }
-});
-
-Signal.prototype.constructor = Signal;
-
-///////////////////
-
-/**
- * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
- * @return <code>true</code> If the receiver is connected with the signal emitter.
- */
-Signal.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
-
-    autoDisconnect = Boolean(autoDisconnect);
-    priority = priority > 0 ? Math.ceil(priority) : 0;
-
-    if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-        if (this.hasReceiver(receiver)) {
-            return false;
-        }
-
-        this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
-
-        /////// bubble sorting
-
-        var i;
-        var j;
-
-        var a = this.receivers;
-
-        var swap = function swap(j, k) {
-            var temp = a[j];
-            a[j] = a[k];
-            a[k] = temp;
-            return true;
-        };
-
-        var swapped = false;
-
-        var l = a.length;
-
-        for (i = 1; i < l; i++) {
-            for (j = 0; j < l - i; j++) {
-                if (a[j + 1].priority > a[j].priority) {
-                    swapped = swap(j, j + 1);
-                }
-            }
-            if (!swapped) {
-                break;
-            }
-        }
-
-        ///////
-
-        return true;
-    }
-
-    return false;
-};
-
-/**
- * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
- */
-Signal.prototype.connected = function () /*Boolean*/
-{
-    return this.receivers.length > 0;
-};
-
-/**
- * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
- */
-Signal.prototype.disconnect = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        if (this.receivers.length > 0) {
-            this.receivers = [];
-            return true;
-        } else {
-            return false;
-        }
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                this.receivers.splice(l, 1);
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
-/**
- * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
- */
-Signal.prototype.emit = function () /*Arguments*/ /*void*/
-{
-    var values = Object.setPrototypeOf(arguments, Array.prototype);
-
-    if (this.receivers.length === 0) {
-        return;
-    }
-
-    var i /*int*/;
-    var l /*int*/ = this.receivers.length;
-    var r /*Array*/ = [];
-    var a /*Array*/ = this.receivers.slice();
-    var e /*SignalEntry*/;
-
-    var slot;
-
-    for (i = 0; i < l; i++) {
-        e = a[i];
-        if (e.auto) {
-            r.push(e);
-        }
-    }
-    if (r.length > 0) {
-        l = r.length;
-        while (--l > -1) {
-            i = this.receivers.indexOf(r[l]);
-            if (i > -1) {
-                this.receivers.splice(i, 1);
-            }
-        }
-    }
-    l = a.length;
-    for (i = 0; i < l; i++) {
-        slot = a[i].receiver;
-
-        if (slot instanceof Function || typeof receiver === "function") {
-            slot.apply(this.proxy || this, values);
-        } else if (slot instanceof Receiver || "receive" in slot) {
-            slot.receive.apply(this.proxy || slot, values);
-        }
-    }
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
- * @return <code class="prettyprint">true</code> if the specified receiver is connected.
- */
-Signal.prototype.hasReceiver = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
-/**
- * Returns the Array representation of all receivers connected with the signal.
- * @return the Array representation of all receivers connected with the signal.
- */
-Signal.prototype.toArray = function () /*Array*/
-{
-    var r /*Array*/ = [];
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        for (var i /*int*/ = 0; i < l; i++) {
-            r.push(this.receivers[i].receiver);
-        }
-    }
-    return r;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Signal.prototype.toString = function () /*String*/
-{
-    return "[Signal]";
 };
 
 /**
@@ -7888,6 +8203,7 @@ var system = Object.assign({
     errors: errors,
     evaluators: evaluators,
     formatters: formatters,
+    logging: logging,
     numeric: numeric,
     process: process,
     signals: signals

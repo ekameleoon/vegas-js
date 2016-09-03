@@ -13,6 +13,7 @@ import { data }       from './system/data.js' ;
 import { errors }     from './system/errors.js' ;
 import { evaluators } from './system/evaluators.js' ;
 import { formatters } from './system/formatters.js' ;
+import { logging }    from './system/logging.js' ;
 import { numeric }    from './system/numeric.js' ;
 import { process }    from './system/process.js' ;
 import { signals }    from './system/signals.js' ;
@@ -38,6 +39,7 @@ export var system = Object.assign
     errors     : errors ,
     evaluators : evaluators ,
     formatters : formatters ,
+    logging    : logging ,
     numeric    : numeric ,
     process    : process ,
     signals    : signals
