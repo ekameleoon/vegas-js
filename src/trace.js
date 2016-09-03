@@ -2,5 +2,8 @@
 
 export function trace( context )
 {
-    console.log( context ) ;
+    if( console )
+    {
+        console.log( context ) ;
+    }
 }
