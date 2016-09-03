@@ -2,7 +2,9 @@
 
 import '../polyfill.js' ;
 
-import { PropertyEvaluator  } from './evaluators/PropertyEvaluator.js' ;
+import { MultiEvaluator    } from './evaluators/MultiEvaluator.js' ;
+import { PropertyEvaluator } from './evaluators/PropertyEvaluator.js' ;
+import { RomanEvaluator    } from './evaluators/RomanEvaluator.js' ;
 
 /**
  * The VEGAS.js framework - The system.evaluators library.
@@ -11,5 +13,7 @@ import { PropertyEvaluator  } from './evaluators/PropertyEvaluator.js' ;
  */
 export var evaluators = Object.assign
 ({
-    PropertyEvaluator : PropertyEvaluator
+    MultiEvaluator    : MultiEvaluator,
+    PropertyEvaluator : PropertyEvaluator,
+    RomanEvaluator    : RomanEvaluator
 }) ;

@@ -13,38 +13,22 @@
     var core   = vegas.core   ; // jshint ignore:line
 
 
-    var ExpressionFormatter = system.formatters.ExpressionFormatter ;
+    var MultiEvaluator    = system.evaluators.MultiEvaluator ;
+    var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
+    var RomanEvaluator    =  system.evaluators.RomanEvaluator ;
 
-    var formatter = new ExpressionFormatter() ;
+    var obj = { id  : "XII" , count : 100 } ;
 
-    formatter.expressions.set( "root"      , "c:"                     ) ;
-    formatter.expressions.set( "system"    , "{root}/project/system"  ) ;
-    formatter.expressions.set( "data.maps" , "{system}/data/maps"     ) ;
-    formatter.expressions.set( "map"       , "{data.maps}/HashMap.as" ) ;
+    var evaluator1 = new PropertyEvaluator( obj ) ;
+    var evaluator2 = new RomanEvaluator() ;
 
-    var source = "the root : {root} - the class : {map}" ;
-    // the root : c: - the class : c:/project/system/data/maps/HashMap.as
+    var evaluator = new MultiEvaluator() ;
 
-    trace( formatter.length ) ;
-    trace( formatter.format( source ) ) ;
+    evaluator.add( evaluator1 ) ;
+    evaluator.add( evaluator2 ) ;
 
-    trace( "----" ) ;
-
-    formatter.clear() ;
-
-    formatter.expressions.set( "root"      , "c:"                     ) ;
-    formatter.expressions.set( "system"    , "%root%/project/system" ) ;
-    formatter.expressions.set( "data.maps" , "%system%/data/maps" ) ;
-    formatter.expressions.set( "HashMap"   , "%data.maps%/HashMap.as" ) ;
-
-    formatter.beginSeparator = "%" ;
-    formatter.endSeparator   = "%" ;
-
-    source = "the root : %root% - the class : %HashMap%" ;
-
-    trace( formatter.length ) ;
-    trace( formatter.format( source ) ) ;
-    // the root : c: - the class : c:/project/system/data/maps/HashMap.as
+    trace( evaluator.eval( 'id' ) ) ; // 12
+    trace( evaluator.eval( 'count' ) ) ; // C
 
 })( vegas );
 

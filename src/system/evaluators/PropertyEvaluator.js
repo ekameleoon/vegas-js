@@ -6,7 +6,7 @@ import { Evaluable } from '../Evaluable.js' ;
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
  * <p><b>Example :</b></p>
  * <pre>
- * PropertyEvaluator = system.evaluators.PropertyEvaluator ;
+ * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
  *
  * var obj =
  * {
