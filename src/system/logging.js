@@ -2,12 +2,13 @@
 
 import '../polyfill.js' ;
 
-import { Log }          from './logging/LoggerFactory.js' ;
-import { Loggable }     from './logging/Loggable.js' ;
-import { Logger }       from './logging/Logger.js' ;
-import { LoggerEntry }  from './logging/LoggerEntry.js' ;
-import { LoggerLevel }  from './logging/LoggerLevel.js' ;
-import { LoggerTarget } from './logging/LoggerTarget.js' ;
+import { Log }           from './logging/LoggerFactory.js' ;
+import { Loggable }      from './logging/Loggable.js' ;
+import { Logger }        from './logging/Logger.js' ;
+import { LoggerEntry }   from './logging/LoggerEntry.js' ;
+import { LoggerFactory } from './logging/LoggerFactory.js' ;
+import { LoggerLevel }   from './logging/LoggerLevel.js' ;
+import { LoggerTarget }  from './logging/LoggerTarget.js' ;
 
 /**
  * The VEGAS.js framework - The system.logging library.
@@ -16,10 +17,11 @@ import { LoggerTarget } from './logging/LoggerTarget.js' ;
  */
 export var logging = Object.assign
 ({
-    Log          : Log ,
-    Loggable     : Loggable ,
-    Logger       : Logger ,
-    LoggerEntry  : LoggerEntry ,
-    LoggerLevel  : LoggerLevel ,
-    LoggerTarget : LoggerTarget
+    Log           : Log ,
+    Loggable      : Loggable ,
+    Logger        : Logger ,
+    LoggerEntry   : LoggerEntry ,
+    LoggerFactory : LoggerFactory ,
+    LoggerLevel   : LoggerLevel ,
+    LoggerTarget  : LoggerTarget
 }) ;
