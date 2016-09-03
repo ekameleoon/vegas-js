@@ -72,7 +72,9 @@ if (Function.prototype.name === undefined) {
 }
 
 function trace(context) {
-    console.log(context);
+    if (console) {
+        console.log(context);
+    }
 }
 
 /**
@@ -5265,8 +5267,6 @@ function LoggerEntry(logger /*Logger*/, message, level /*LoggerLevel*/) {
   this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
 }
 
-///////////////////
-
 /**
  * @extends Object
  */
@@ -5439,14 +5439,585 @@ LoggerEntry.prototype.toString = function () /*String*/
 };
 
 /**
+ * The enumeration of all string expressions in the logging engine.
+ */
+
+var strings$1 = Object.defineProperties({}, {
+  // LoggerTarget
+
+  /**
+   * The static field used when throws an Error when a character is invalid.
+   */
+  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the character placement failed.
+   */
+  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error if the filter is empty or null.
+   */
+  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when filter failed.
+   */
+  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+
+  // Log
+
+  /**
+   * The default channel of the <code class="prettyprint">Logger</code> instances returns with the <code class="prettyprint">getLogger</code> method.
+   */
+  DEFAULT_CHANNEL: { value: "", enumerable: true },
+
+  /**
+   * The string representation of all the illegal characters.
+   */
+  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when a character is invalid.
+   */
+  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the length of one character is invalid.
+   */
+  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the specified target is invalid.
+   */
+  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+
+});
+
+/**
+ * Represents the log information for a single logging notification.
+ * The loging system dispatches a single message each time a process requests information be logged.
+ * This entry can be captured by any object for storage or formatting.
+ * @param message The context or message of the log.
+ * @param level The level of the log.
+ * @param logger The Logger reference of this entry.
+ */
+function LoggerTarget() {
+    this._count = 0;
+    this._factory = Log;
+    this._filters = ["*"];
+    this._level = LoggerLevel.ALL;
+}
+
+/**
+ * @extends Object
+ */
+LoggerTarget.prototype = Object.create(Receiver.prototype, {
+    ////////////////////////////////////
+
+    constructor: { value: LoggerTarget },
+
+    ////////////////////////////////////
+
+    /**
+     * Determinates the LoggerFactory reference of the target,
+     * by default the target use the <code>system.logging.Log</code> singleton.
+     */
+    factory: {
+        get: function get() {
+            return this._factory;
+        },
+        set: function set(factory) {
+            if (this._factory) {
+                this._factory.removeTarget(this);
+            }
+            this._factory = factory || Log;
+            this._factory.addTarget(this);
+        }
+    },
+
+    /**
+     * Determinates the filters array representation of the target.
+     */
+    filters: {
+        get: function get() {
+            return [].concat(this._filters);
+        },
+        set: function set(value /*Array*/) /*void*/
+        {
+            var filters /*Array*/ = [];
+
+            if (value && value instanceof Array && value.length > 0) {
+                var filter;
+                var length = value.length;
+                for (var i = 0; i < length; i++) {
+                    filter = value[i];
+                    if (filters.indexOf(filter) === -1) {
+                        this._checkFilter(filter);
+                        filters.push(filter);
+                    }
+                }
+            } else {
+                filters.push('*');
+            }
+
+            if (this._count > 0) {
+                this._factory.removeTarget(this);
+            }
+
+            this._filters = filters;
+
+            if (this._count > 0) {
+                this._factory.addTarget(this);
+            }
+        }
+    },
+
+    /**
+     * Determinates the level (LoggerLevel of this target.
+     */
+    level: {
+        get: function get() {
+            return this._level;
+        },
+        set: function set(value /*LoggerLevel*/) /*void*/
+        {
+            this._factory.removeTarget(this);
+            this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
+            this._factory.addTarget(this);
+        }
+    },
+
+    ////////////////////////////////////
+
+    /**
+     * Inserts a channel in the fllters if this channel don't exist.
+     * Returns a boolean if the channel is add in the list.
+     */
+    addFilter: {
+        value: function value(channel /*String*/) /*Boolean*/
+        {
+            this._checkFilter(channel);
+            var index = this._filters.indexOf(channel);
+            if (index === -1) {
+                this._filters.push(channel);
+                return true;
+            }
+            return false;
+        }
+    },
+
+    /**
+     * Sets up this target with the specified logger.
+     * Note : this method is called by the framework and should not be called by the developer.
+     */
+    addLogger: {
+        value: function value(logger /*Logger*/) /*void*/
+        {
+            if (logger instanceof Logger) {
+                this._count++;
+                logger.connect(this);
+            }
+        }
+    },
+
+    /**
+     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
+     *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
+     *  This method will be called only if the event's level is in range of the target's level.
+     *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     */
+    logEntry: {
+        value: function value(entry /*LoggerEntry*/) /*void*/ //jshint ignore:line
+        {
+            // override
+        }
+    },
+
+    /**
+     * This method is called when the receiver is connected with a Signal object.
+     * @param ...values All the values emitting by the signals connected with this object.
+     */
+    receive: {
+        value: function value(entry /*LoggerEntry*/) /*void*/
+        {
+            if (entry) {
+                if (this._level === LoggerLevel.NONE) {
+                    return; // logging off
+                } else if (entry.level.valueOf() >= this._level.valueOf()) {
+                    this.logEntry(entry);
+                }
+            }
+        }
+    },
+
+    /**
+     * Remove a channel in the fllters if this channel exist.
+     * @return a boolean if the channel is removed.
+     */
+    removeFilter: {
+        value: function value(channel /*String*/) /*Boolean*/
+        {
+            if (channel && (typeof channel === "string" || channel instanceof String) && channel !== "") {
+                var index /*int*/ = this._filters.indexOf(channel);
+                if (index > -1) {
+                    this._filters.splice(index, 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    /**
+     * Stops this target from receiving events from the specified logger.
+     */
+    removeLogger: {
+        value: function value(logger /*Logger*/) /*void*/
+        {
+            if (logger) {
+                this._count--;
+                logger.disconnect(this);
+            }
+        }
+    },
+
+    /**
+     * @private
+     */
+    _checkFilter: {
+        value: function value(filter /*String*/) /*void*/
+        {
+            if (filter === null) {
+                throw new InvalidFilterError(strings$1.EMPTY_FILTER);
+            }
+
+            if (this._factory.hasIllegalCharacters(filter)) {
+                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHARS_INVALID);
+            }
+
+            var index /*int*/ = filter.indexOf("*");
+
+            if (index >= 0 && index !== filter.length - 1) {
+                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHAR_PLACEMENT);
+            }
+        }
+    },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LoggerTarget]';
+        } }
+});
+
+/**
+ * This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
+ * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
+ */
+function LoggerFactory() {
+    this._loggers = new ArrayMap();
+    this._targetLevel = LoggerLevel.NONE;
+    this._targets = [];
+}
+
+/**
+ * @extends Object
+ */
+LoggerFactory.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: LoggerFactory },
+
+    /**
+     * Allows the specified target to begin receiving notification of log events.
+     * @param target The specific target that should capture log events.
+     * @throws Error If the target is invalid.
+     */
+    addTarget: {
+        value: function value(target /*LoggerTarget*/) /*void*/
+        {
+            if (target && target instanceof LoggerTarget) {
+                var channel /*String*/;
+                var log /*Logger*/;
+                var filters /*Array*/ = target.filters;
+                var it /*Iterator*/ = this._loggers.iterator();
+                while (it.hasNext()) {
+                    log = it.next();
+                    channel = it.key();
+                    if (this._channelMatchInFilterList(channel, filters)) {
+                        target.addLogger(log);
+                    }
+                }
+                this._targets.push(target);
+                if (this._targetLevel === LoggerLevel.NONE || target.level.valueOf() < this._targetLevel.valueOf()) {
+                    this._targetLevel = target.level;
+                }
+            } else {
+                throw new Error(strings$1.INVALID_TARGET);
+            }
+        }
+    },
+
+    /**
+     * This method removes all of the current loggers from the cache of the factory.
+     * Subsquent calls to the <code>getLogger()</code> method return new instances of loggers rather than any previous instances with the same category.
+     * This method is intended for use in debugging only.
+     */
+    flush: {
+        value: function value() /*void*/
+        {
+            this._loggers.clear();
+            this._targets = [];
+            this._targetLevel = LoggerLevel.NONE;
+        }
+    },
+
+    /**
+     * Returns the logger associated with the specified channel.
+     * If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.
+     * Channels must be at least one character in length and may not contain any blanks or any of the following characters:
+     * []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.
+     * @param channel The channel of the logger that should be returned.
+     * @return An instance of a logger object for the specified name.
+     * If the name doesn't exist, a new instance with the specified name is returned.
+     */
+    getLogger: {
+        value: function value(channel /*String*/) /*Logger*/
+        {
+            this._checkChannel(channel);
+            var result /*Logger*/ = this._loggers.get(channel);
+            if (!result) {
+                result = new Logger(channel);
+                this._loggers.put(channel, result);
+            }
+            var target /*LoggerTarget*/;
+            var len /*int*/ = this._targets.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                target = this._targets[i];
+                if (this._channelMatchInFilterList(channel, target.filters)) {
+                    target.addLogger(result);
+                }
+            }
+            return result;
+        }
+    },
+
+    /**
+     * This method checks the specified string value for illegal characters.
+     * @param value The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * @return <code>true</code> if there are any illegal characters found, <code>false</code> otherwise.
+     */
+    hasIllegalCharacters: {
+        value: function value(_value /*String*/) /*Boolean*/
+        {
+            return indexOfAny(_value, strings$1.ILLEGALCHARACTERS.split("")) !== -1;
+        }
+    },
+
+    /**
+     * Indicates whether a 'all' level log event will be processed by a log target.
+     * @return true if a 'all' level log event will be logged; otherwise false.
+     */
+    isAll: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.ALL;
+        }
+    },
+
+    /**
+     * Indicates whether a 'critical' level log event will be processed by a log target.
+     * @return true if a 'critical' level log event will be logged; otherwise false.
+     */
+    isCritical: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.CRITICAL;
+        }
+    },
+
+    /**
+     * Indicates whether a 'debug' level log event will be processed by a log target.
+     * @return true if a 'debug' level log event will be logged; otherwise false.
+     */
+    isDebug: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.DEBUG;
+        }
+    },
+
+    /**
+     * Indicates whether a 'error' level log event will be processed by a log target.
+     * @return true if a 'error' level log event will be logged; otherwise false.
+     */
+    isError: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.ERROR;
+        }
+    },
+
+    /**
+     * Indicates whether a 'info' level log event will be processed by a log target.
+     * @return true if a 'info' level log event will be logged; otherwise false.
+     */
+    isInfo: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.INFO;
+        }
+    },
+
+    /**
+     * Indicates whether a 'warn' level log event will be processed by a log target.
+     * @return true if a 'warn' level log event will be logged; otherwise false.
+     */
+    isWarning: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.WARNING;
+        }
+    },
+
+    /**
+     * Indicates whether a 'wtf' level log event will be processed by a log target.
+     * @return true if a 'wtf' level log event will be logged; otherwise false.
+     */
+    isWtf: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.WTF;
+        }
+    },
+
+    /**
+     * Stops the specified target from receiving notification of log events.
+     * @param target The specific target that should capture log events.
+     * @throws Error If the target is invalid.
+     */
+    removeTarget: {
+        value: function value(target /*LoggerTarget*/) /*void*/
+        {
+            if (target && target instanceof LoggerTarget) {
+                var log;
+                var filters = target.filters;
+                var it = this._loggers.iterator();
+                while (it.hasNext()) {
+                    log = it.next();
+                    var c = it.key();
+                    if (this._channelMatchInFilterList(c, filters)) {
+                        target.removeLogger(log);
+                    }
+                }
+                var len = this._targets.length;
+                for (var i = 0; i < len; i++) {
+                    if (target === this._targets[i]) {
+                        this._targets.splice(i, 1);
+                        i--;
+                    }
+                }
+                this._resetTargetLevel();
+            } else {
+                throw new Error(strings$1.INVALID_TARGET);
+            }
+        }
+    },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: {
+        value: function value() {
+            return '[LoggerFactory]';
+        }
+    },
+
+    /**
+     * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
+     * @param category The category to match against.
+     * @param filters A list of Strings to check category against.
+     * @return <code>true</code> if the specified category matches any of the filter expressions found in the filters list, <code>false</code> otherwise.
+     * @private
+     */
+    _channelMatchInFilterList: {
+        value: function value(channel /*String*/, filters /*Array*/) /*Boolean*/
+        {
+            var filter /*String*/;
+            var index /*int*/ = -1;
+            var len /*int*/ = filters.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                filter = filters[i];
+                index = filter.indexOf("*");
+                if (index === 0) {
+                    return true;
+                }
+                index = index < 0 ? index = channel.length : index - 1;
+                if (channel.substring(0, index) === filter.substring(0, index)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    /**
+     * This method will ensure that a valid category string has been specified.
+     * If the category is not valid an <code>InvalidCategoryError</code> will be thrown.
+     * Categories can not contain any blanks or any of the following characters: []`*~,!#$%^&amp;()]{}+=\|'";?&gt;&lt;./&#64; or be less than 1 character in length.
+     * @private
+     */
+    _checkChannel: {
+        value: function value(channel /*String*/) /*void*/
+        {
+            if (channel === null || channel.length === 0) {
+                throw new InvalidChannelError(strings$1.INVALID_LENGTH);
+            }
+            if (this.hasIllegalCharacters(channel) || channel.indexOf("*") !== -1) {
+                throw new InvalidChannelError(strings$1.INVALID_CHARS);
+            }
+        }
+    },
+
+    /**
+     * This method resets the Log's target level to the most verbose log level for the currently registered targets.
+     * @private
+     */
+    _resetTargetLevel: {
+        value: function value() /*void*/
+        {
+            var t /*LoggerTarget*/;
+            var min /*LoggerLevel*/ = LoggerLevel.NONE;
+            var len /*int*/ = this._targets.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                t = this._targets[i];
+                if (min === LoggerLevel.NONE || t.level.valueOf() < min.valueOf()) {
+                    min = t.level;
+                }
+            }
+            this._targetLevel = min;
+        }
+    }
+});
+
+/////////////////
+
+var Log = new LoggerFactory();
+
+/**
  * The VEGAS.js framework - The system.logging library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var logging = Object.assign({
-  Logger: Logger,
-  LoggerEntry: LoggerEntry,
-  LoggerLevel: LoggerLevel
+    Log: Log,
+    Logger: Logger,
+    LoggerEntry: LoggerEntry,
+    LoggerLevel: LoggerLevel,
+    LoggerTarget: LoggerTarget
 });
 
 /**
@@ -8154,7 +8725,7 @@ var process = Object.assign({
  * The enumeration of all string expressions in the signal engine.
  */
 
-var strings$1 = Object.defineProperties({}, {
+var strings$2 = Object.defineProperties({}, {
     INVALID_PARAMETER_TYPE: {
         value: "The parameter with the index {0} in the emit method is not valid.",
         enumerable: true
@@ -8175,7 +8746,7 @@ var strings$1 = Object.defineProperties({}, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var signals = Object.assign({
-    strings: strings$1,
+    strings: strings$2,
     Receiver: Receiver,
     SignalEntry: SignalEntry,
     Signaler: Signaler,

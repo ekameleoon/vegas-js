@@ -2,9 +2,11 @@
 
 import '../polyfill.js' ;
 
-import { Logger }      from './logging/Logger.js' ;
-import { LoggerEntry } from './logging/LoggerEntry.js' ;
-import { LoggerLevel } from './logging/LoggerLevel.js' ;
+import { Log }          from './logging/LoggerFactory.js' ;
+import { Logger }       from './logging/Logger.js' ;
+import { LoggerEntry }  from './logging/LoggerEntry.js' ;
+import { LoggerLevel }  from './logging/LoggerLevel.js' ;
+import { LoggerTarget } from './logging/LoggerTarget.js' ;
 
 /**
  * The VEGAS.js framework - The system.logging library.
@@ -13,7 +15,9 @@ import { LoggerLevel } from './logging/LoggerLevel.js' ;
  */
 export var logging = Object.assign
 ({
-    Logger      : Logger ,
-    LoggerEntry : LoggerEntry ,
-    LoggerLevel : LoggerLevel
+    Log          : Log ,
+    Logger       : Logger ,
+    LoggerEntry  : LoggerEntry ,
+    LoggerLevel  : LoggerLevel ,
+    LoggerTarget : LoggerTarget
 }) ;

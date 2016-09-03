@@ -17,8 +17,6 @@ export function LoggerEntry( logger /*Logger*/ , message , level /*LoggerLevel*/
     this.level   = level instanceof LoggerLevel ? level : LoggerLevel.ALL ;
 }
 
-///////////////////
-
 /**
  * @extends Object
  */
