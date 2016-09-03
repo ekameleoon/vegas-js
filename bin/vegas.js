@@ -6008,12 +6008,49 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
 var Log = new LoggerFactory();
 
 /**
+ * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
+ */
+function Loggable() {
+    Object.defineProperties(this, {
+        _logger: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Loggable.prototype = Object.create(Object.prototype, {
+    /**
+     * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
+     */
+    logger: {
+        get: function get() {
+            return this._logger;
+        },
+        set: function set(logger) {
+            this._logger = logger instanceof Logger ? logger : null;
+        }
+    }
+});
+Loggable.prototype.constructor = Loggable;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+Loggable.prototype.toString = function () /*String*/
+{
+    return '[Loggable]';
+};
+
+/**
  * The VEGAS.js framework - The system.logging library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var logging = Object.assign({
     Log: Log,
+    Loggable: Loggable,
     Logger: Logger,
     LoggerEntry: LoggerEntry,
     LoggerLevel: LoggerLevel,
