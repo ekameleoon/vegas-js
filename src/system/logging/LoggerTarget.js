@@ -18,10 +18,13 @@ import { strings }            from './strings.js' ;
  */
 export function LoggerTarget()
 {
-    this._count   = 0 ;
-    this._factory = Log ;
-    this._filters = ["*"] ;
-    this._level   = LoggerLevel.ALL;
+    Object.defineProperties( this ,
+    {
+        _count   : { value : 0 , writable : true } ,
+        _factory : { value : Log , writable : true } ,
+        _filters : { value : ["*"] , writable : true } ,
+        _level   : { value : LoggerLevel.ALL , writable : true }
+    }) ;
 }
 
 /**
