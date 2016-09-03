@@ -12,7 +12,6 @@
     var system = vegas.system ; // jshint ignore:line
     var core   = vegas.core   ; // jshint ignore:line
 
-
     var MultiEvaluator    = system.evaluators.MultiEvaluator ;
     var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
     var RomanEvaluator    =  system.evaluators.RomanEvaluator ;
