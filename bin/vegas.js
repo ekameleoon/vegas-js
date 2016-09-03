@@ -71,9 +71,8 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-function trace() {
-    Object.setPrototypeOf(arguments, Array.prototype);
-    console.log.apply(null, arguments);
+function trace(context) {
+    console.log(context);
 }
 
 /**

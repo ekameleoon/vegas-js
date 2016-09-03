@@ -1,7 +1,6 @@
 'use strict' ;
 
-export function trace()
+export function trace( context )
 {
-    Object.setPrototypeOf( arguments , Array.prototype ) ;
-    console.log.apply( null , arguments ) ;
+    console.log( context ) ;
 }

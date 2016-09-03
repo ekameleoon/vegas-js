@@ -18,7 +18,7 @@
     {
         if( LoggerLevel.hasOwnProperty(level) )
         {
-            trace( level + ' ' + LoggerLevel.getLevelString(LoggerLevel[level]) ) ;
+            trace( level + ' ' + LoggerLevel[level] + ' ' + LoggerLevel.getLevelString(LoggerLevel[level]) ) ;
         }
     }
 
