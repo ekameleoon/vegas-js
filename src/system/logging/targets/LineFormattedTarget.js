@@ -76,7 +76,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * Returns the String representation of the object.
      * @return the String representation of the object.
      */
-     toString : { value : function() { return '[LineFormattedTarget]' ; } ,
+     toString : { value : function() { return '[LineFormattedTarget]' ; } } ,
 
     /**
      *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
