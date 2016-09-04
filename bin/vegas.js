@@ -4540,10 +4540,10 @@ var evaluators = Object.assign({
  *
  * var formatter = new ExpressionFormatter() ;
  *
- * formatter.expressions.set( "root"      , "c:"                     ) ;
- * formatter.expressions.set( "system"    , "{root}/project/system"  ) ;
- * formatter.expressions.set( "data.maps" , "{system}/data/maps"     ) ;
- * formatter.expressions.set( "map"       , "{data.maps}/HashMap.as" ) ;
+ * formatter.set( "root"      , "c:"                     ) ;
+ * formatter.set( "system"    , "{root}/project/system"  ) ;
+ * formatter.set( "data.maps" , "{system}/data/maps"     ) ;
+ * formatter.set( "map"       , "{data.maps}/HashMap.as" ) ;
  *
  * source = "the root : {root} - the class : {map}" ;
  * // the root : c: - the class : c:/project/system/data/maps/HashMap.as
@@ -4555,9 +4555,10 @@ var evaluators = Object.assign({
  *
  * formatter.clear() ;
  *
- * formatter.expressions.set( "system"    , "%root%/project/system" ) ;
- * formatter.expressions.set( "data.maps" , "%system%/data/maps" ) ;
- * formatter.expressions.set( "HashMap"   , "%data.maps%/HashMap.as" ) ;
+ * formatter.set( "root"      , "c:"                     ) ;
+ * formatter.set( "system"    , "%root%/project/system" ) ;
+ * formatter.set( "data.maps" , "%system%/data/maps" ) ;
+ * formatter.set( "HashMap"   , "%data.maps%/HashMap.as" ) ;
  *
  * formatter.beginSeparator = "%" ;
  * formatter.endSeparator   = "%" ;
@@ -4569,14 +4570,11 @@ var evaluators = Object.assign({
  * </pre>
  */
 function ExpressionFormatter() {
-
     Object.defineProperties(this, {
         /**
          * The expressions reference
          */
-        expressions: {
-            value: new ArrayMap()
-        },
+        expressions: { value: new ArrayMap() },
 
         /**
          * @private
@@ -4613,6 +4611,16 @@ Object.defineProperties(ExpressionFormatter, {
  * @extends Formattable
  */
 ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
+    constructor: { value: ExpressionFormatter },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[ExpressionFormatter]';
+        } },
+
     /**
      * The begin separator of the expression to format (default "{").
      */
@@ -4672,6 +4680,27 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     },
 
     /**
+     * Sets a new expression in the formatter. If the expression already exist, the value in the collector is replaced.
+     * @param value The object to format.
+     * @return the string representation of the formatted value.
+     */
+    set: {
+        value: function value(key /*String*/, _value2 /*String*/) /*Boolean*/
+        {
+            if (key === '' || !(key instanceof String || typeof key === 'string')) {
+                return false;
+            }
+
+            if (_value2 === '' || !(_value2 instanceof String || typeof _value2 === 'string')) {
+                return false;
+            }
+
+            this.expressions.set(key, _value2);
+            return true;
+        }
+    },
+
+    /**
      * @private
      */
     _reset: {
@@ -4715,8 +4744,6 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
         }
     }
 });
-
-ExpressionFormatter.prototype.constructor = ExpressionFormatter;
 
 /**
  * The VEGAS.js framework - The system.formatters library.

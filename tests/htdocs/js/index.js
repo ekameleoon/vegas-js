@@ -29,22 +29,39 @@
     target.filters = ['*'] ;
     target.level   = LoggerLevel.ALL ;
 
-    var logger = Log.getLogger('channel1') ;
-    var log    = Log.getLogger('channel2') ;
+    var logger = Log.getLogger('channel') ;
 
-    logger.log( "Here is some myDebug info : {0} and {1}", 2.25 , true ) ;
-    logger.debug( "Here is some debug message." ) ;
-    logger.info( "Here is some info message." ) ;
-    logger.warning( "Here is some warn message." ) ;
-    logger.error( "Here is some error message." ) ;
-    logger.critical( "Here is some critical error..." ) ;
+    var ExpressionFormatter = system.formatters.ExpressionFormatter ;
 
-    target.includeDate    = false ;
-    target.includeTime    = false ;
-    target.includeChannel = true ;
+    var formatter = new ExpressionFormatter() ;
 
-    logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
-    log.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
+    formatter.set( "root"      , "c:"                     ) ;
+    formatter.set( "system"    , "{root}/project/system"  ) ;
+    formatter.set( "data.maps" , "{system}/data/maps"     ) ;
+    formatter.set( "map"       , "{data.maps}/HashMap.as" ) ;
+
+    var source = "the root : {root} - the class : {map}" ;
+    // the root : c: - the class : c:/project/system/data/maps/HashMap.as
+
+    logger.debug( formatter.length ) ;
+    logger.debug( formatter.format( source ) ) ;
+
+    logger.debug( "----" ) ;
+
+    formatter.clear() ;
+
+    formatter.set( "root"      , "c:"                     ) ;
+    formatter.set( "system"    , "%root%/project/system" ) ;
+    formatter.set( "data.maps" , "%system%/data/maps" ) ;
+    formatter.set( "HashMap"   , "%data.maps%/HashMap.as" ) ;
+
+    formatter.beginSeparator = "%" ;
+    formatter.endSeparator   = "%" ;
+
+    source = "the root : %root% - the class : %HashMap%" ;
+
+    logger.debug( formatter.format( source ) ) ;
+    // the root : c: - the class : c:/project/system/data/maps/HashMap.as
 
 })( vegas );
 
