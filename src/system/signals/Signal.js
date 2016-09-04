@@ -53,16 +53,13 @@ export function Signal()
         proxy :
         {
             value        : null,
-            enumerable   : false,
             configurable : true,
-            writable     : false
+            writable     : true
         },
         receivers :
         {
-            value        : [] ,
-            enumerable   : false,
-            configurable : false,
-            writable     : true
+            value    : [] ,
+            writable : true
         }
     }) ;
 }
@@ -300,5 +297,5 @@ Signal.prototype.toArray = function() /*Array*/
  */
 Signal.prototype.toString = function () /*String*/
 {
-    return "[Signal]" ;
+    return '[Signal]' ;
 }

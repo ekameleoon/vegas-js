@@ -26,10 +26,11 @@
         includeTime         : true
     }) ;
 
-    target.filters = ["*"] ;
+    target.filters = ['*'] ;
     target.level   = LoggerLevel.ALL ;
 
-    var logger = Log.getLogger('test') ;
+    var logger = Log.getLogger('channel1') ;
+    var log    = Log.getLogger('channel2') ;
 
     logger.log( "Here is some myDebug info : {0} and {1}", 2.25 , true ) ;
     logger.debug( "Here is some debug message." ) ;
@@ -40,9 +41,10 @@
 
     target.includeDate    = false ;
     target.includeTime    = false ;
-    target.includeChannel = false ;
+    target.includeChannel = true ;
 
     logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
+    log.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
 
 })( vegas );
 

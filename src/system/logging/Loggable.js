@@ -1,6 +1,20 @@
+/*jshint laxbreak: true*/
 "use strict" ;
 
 import { Logger } from './Logger.js' ;
+
+/**
+ * Indicates if the specific objet is Loggable.
+ */
+export function isLoggable( target )
+{
+    if( target )
+    {
+        return ( 'logger' in target )
+            && ((target.logger === null ) || ( target.logger instanceof Logger ))  ;
+    }
+    return false ;
+}
 
 /**
  * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
@@ -18,6 +32,14 @@ export function Loggable()
  */
 Loggable.prototype = Object.create( Object.prototype ,
 {
+    constructor : { value : Loggable } ,
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString : { value : function() { return '[Loggable]' ; } } ,
+
     /**
      * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
      */
@@ -33,13 +55,3 @@ Loggable.prototype = Object.create( Object.prototype ,
         }
     }
 });
-Loggable.prototype.constructor = Loggable;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Loggable.prototype.toString = function() /*String*/
-{
-    return '[Loggable]' ;
-}

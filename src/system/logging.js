@@ -2,6 +2,8 @@
 
 import '../polyfill.js' ;
 
+import { isLoggable } from './logging/Loggable.js' ;
+
 import { Log }           from './logging/LoggerFactory.js' ;
 import { Loggable }      from './logging/Loggable.js' ;
 import { Logger }        from './logging/Logger.js' ;
@@ -21,6 +23,8 @@ import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
  */
 export var logging = Object.assign
 ({
+    isLoggable : isLoggable ,
+
     Log           : Log ,
     Loggable      : Loggable ,
     Logger        : Logger ,

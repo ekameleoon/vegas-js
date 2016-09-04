@@ -4919,14 +4919,11 @@ function Signal() {
          */
         proxy: {
             value: null,
-            enumerable: false,
             configurable: true,
-            writable: false
+            writable: true
         },
         receivers: {
             value: [],
-            enumerable: false,
-            configurable: false,
             writable: true
         }
     });
@@ -5133,7 +5130,7 @@ Signal.prototype.toArray = function () /*Array*/
  */
 Signal.prototype.toString = function () /*String*/
 {
-    return "[Signal]";
+    return '[Signal]';
 };
 
 /**
@@ -5430,6 +5427,52 @@ Logger.prototype = Object.create(Signal.prototype, {
                 this._entry.level = level;
                 this.emit(this._entry);
             }
+        }
+    }
+});
+
+/**
+ * Indicates if the specific objet is Loggable.
+ */
+function isLoggable(target) {
+    if (target) {
+        return 'logger' in target && (target.logger === null || target.logger instanceof Logger);
+    }
+    return false;
+}
+
+/**
+ * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
+ */
+function Loggable() {
+    Object.defineProperties(this, {
+        _logger: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Loggable.prototype = Object.create(Object.prototype, {
+    constructor: { value: Loggable },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[Loggable]';
+        } },
+
+    /**
+     * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
+     */
+    logger: {
+        get: function get() {
+            return this._logger;
+        },
+        set: function set(logger) {
+            this._logger = logger instanceof Logger ? logger : null;
         }
     }
 });
@@ -6017,42 +6060,6 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
 var Log = new LoggerFactory();
 
 /**
- * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
- */
-function Loggable() {
-    Object.defineProperties(this, {
-        _logger: { value: null, writable: true }
-    });
-}
-
-/**
- * @extends Object
- */
-Loggable.prototype = Object.create(Object.prototype, {
-    /**
-     * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
-     */
-    logger: {
-        get: function get() {
-            return this._logger;
-        },
-        set: function set(logger) {
-            this._logger = logger instanceof Logger ? logger : null;
-        }
-    }
-});
-Loggable.prototype.constructor = Loggable;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Loggable.prototype.toString = function () /*String*/
-{
-    return '[Loggable]';
-};
-
-/**
  * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.
  * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
  */
@@ -6441,6 +6448,8 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var logging = Object.assign({
+    isLoggable: isLoggable,
+
     Log: Log,
     Loggable: Loggable,
     Logger: Logger,
