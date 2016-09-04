@@ -10,8 +10,9 @@ import { LoggerFactory } from './logging/LoggerFactory.js' ;
 import { LoggerLevel }   from './logging/LoggerLevel.js' ;
 import { LoggerTarget }  from './logging/LoggerTarget.js' ;
 
-import { LineFormattedTarget }  from './logging/targets/LineFormattedTarget.js' ;
-import { TraceTarget }          from './logging/targets/TraceTarget.js' ;
+import { ConsoleTarget }       from './logging/targets/ConsoleTarget.js' ;
+import { LineFormattedTarget } from './logging/targets/LineFormattedTarget.js' ;
+import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
 
 /**
  * The VEGAS.js framework - The system.logging library.
@@ -30,6 +31,7 @@ export var logging = Object.assign
 
     targets : Object.assign
     ({
+        ConsoleTarget,
         LineFormattedTarget,
         TraceTarget
     })

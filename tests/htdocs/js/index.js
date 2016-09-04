@@ -12,11 +12,11 @@
     var system = vegas.system ; // jshint ignore:line
     var core   = vegas.core   ; // jshint ignore:line
 
-    var Log         = system.logging.Log ;
-    var LoggerLevel = system.logging.LoggerLevel ;
-    var TraceTarget = system.logging.targets.TraceTarget ;
+    var Log           = system.logging.Log ;
+    var LoggerLevel   = system.logging.LoggerLevel ;
+    var ConsoleTarget = system.logging.targets.ConsoleTarget ;
 
-    var target = new TraceTarget
+    var target = new ConsoleTarget
     ({
         includeChannel      : true  ,
         includeDate         : false  ,
