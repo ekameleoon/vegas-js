@@ -4,12 +4,12 @@ import { LoggerLevel }  from '../LoggerLevel.js' ;
 import { LoggerTarget } from '../LoggerTarget.js' ;
 
 /**
- * All logger target implementations that have a formatted line style output should extend this class.
- * It provides default behavior for including date, time, channel, and level within the output.
+ * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.
+ * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
  */
-export function LineFormattedTarget()
+export function LineFormattedTarget( init /*Object*/ )
 {
-    LoggerTarget.call(this) ;
+    LoggerTarget.call( this ) ;
 
     Object.defineProperties( this ,
     {
@@ -50,6 +50,17 @@ export function LineFormattedTarget()
      * The separator string.
      */
     this.separator /*String*/ = " " ;
+
+    if( init )
+    {
+        for( var prop in init )
+        {
+            if ( this.hasOwnProperty(prop) )
+            {
+                this[prop] = init[prop] ;
+            }
+        }
+    }
 }
 
 /**
@@ -70,7 +81,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
         }
     },
 
-    constructor : { value : LineFormattedTarget } ,
+    constructor : { value : LineFormattedTarget , enumerable : true , writable : true , configurable : true } ,
 
     /**
      * Returns the String representation of the object.
@@ -92,7 +103,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
             (
                 entry.message,
                 LoggerLevel.getLevelString( entry.level ),
-                entry.logger.channel ,
+                entry.channel ,
                 new Date()
             ) ;
             this.internalLog( message , entry.level ) ;

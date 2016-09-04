@@ -4,6 +4,8 @@ import { fastformat }         from '../../core/strings/fastformat.js' ;
 import { InvalidFilterError } from '../errors/InvalidFilterError.js' ;
 import { Log }                from './LoggerFactory.js' ;
 import { Logger }             from './Logger.js' ;
+import { LoggerEntry }        from './LoggerEntry.js' ;
+import { LoggerFactory }      from './LoggerFactory.js' ;
 import { LoggerLevel }        from './LoggerLevel.js' ;
 import { Receiver }           from '../signals/Receiver.js' ;
 import { strings }            from './strings.js' ;
@@ -20,107 +22,108 @@ export function LoggerTarget()
 {
     Object.defineProperties( this ,
     {
+        /**
+         * Determinates the LoggerFactory reference of the target,
+         * by default the target use the <code>system.logging.Log</code> singleton.
+         */
+        factory :
+        {
+            get : function()
+            {
+                return this._factory ;
+            },
+            set : function( factory )
+            {
+                if ( this._factory )
+                {
+                    this._factory.removeTarget( this ) ;
+                }
+                this._factory = ( factory instanceof LoggerFactory ) ? factory : Log ;
+                this._factory.addTarget( this ) ;
+            }
+        },
+
+        /**
+         * Determinates the filters array representation of the target.
+         */
+        filters :
+        {
+            get : function()
+            {
+                return [].concat( this._filters ) ;
+            },
+            set : function( value /*Array*/ ) /*void*/
+            {
+                var filters  = [] ;
+                if ( value && value instanceof Array && value.length > 0 )
+                {
+                    var filter ;
+                    var length = value.length ;
+                    for ( var i = 0 ; i < length ; i++ )
+                    {
+                        filter = value[i] ;
+                        if ( filters.indexOf( filter ) === -1 )
+                        {
+                            this._checkFilter( filter ) ;
+                            filters.push( filter ) ;
+                        }
+                    }
+                }
+                else
+                {
+                    filters.push( '*' ) ;
+                }
+
+                if ( this._count > 0 )
+                {
+                    this._factory.removeTarget( this ) ;
+                }
+
+                this._filters = filters ;
+
+                if( this._count > 0 )
+                {
+                    this._factory.addTarget( this ) ;
+                }
+            }
+        },
+
+        /**
+         * Determinates the level (LoggerLevel of this target.
+         */
+        level :
+        {
+            get : function()
+            {
+                return this._level ;
+            },
+            set : function( value /*LoggerLevel*/ ) /*void*/
+            {
+                this._factory.removeTarget( this ) ;
+                this._level = value || LoggerLevel.ALL ; // FIXME filter and validate the level
+                this._factory.addTarget( this ) ;
+            }
+        },
+
         _count   : { value : 0 , writable : true } ,
-        _factory : { value : Log , writable : true } ,
+        _factory : { value : null , writable : true } ,
         _filters : { value : ["*"] , writable : true } ,
         _level   : { value : LoggerLevel.ALL , writable : true }
     }) ;
+
+    this.factory = Log ;
 }
 
 /**
  * @extends Object
  */
-LoggerTarget.prototype = Object.create( Receiver.prototype ,
+LoggerTarget.prototype = Object.create( Receiver.prototype ) ;
+
+Object.defineProperties( LoggerTarget.prototype ,
 {
     ////////////////////////////////////
 
-    constructor : { value : LoggerTarget } ,
-
-    ////////////////////////////////////
-
-    /**
-     * Determinates the LoggerFactory reference of the target,
-     * by default the target use the <code>system.logging.Log</code> singleton.
-     */
-    factory :
-    {
-        get : function()
-        {
-            return this._factory ;
-        },
-        set : function( factory )
-        {
-            if ( this._factory )
-            {
-                this._factory.removeTarget( this ) ;
-            }
-            this._factory = factory || Log ;
-            this._factory.addTarget( this ) ;
-        }
-    },
-
-    /**
-     * Determinates the filters array representation of the target.
-     */
-    filters :
-    {
-        get : function()
-        {
-            return [].concat( this._filters ) ;
-        },
-        set : function( value /*Array*/ ) /*void*/
-        {
-            var filters /*Array*/ = [] ;
-
-            if ( value && value instanceof Array && value.length > 0 )
-            {
-                var filter ;
-                var length = value.length ;
-                for ( var i = 0 ; i < length ; i++ )
-                {
-                    filter = value[i] ;
-                    if ( filters.indexOf( filter ) === -1 )
-                    {
-                        this._checkFilter( filter ) ;
-                        filters.push( filter ) ;
-                    }
-                }
-            }
-            else
-            {
-                filters.push( '*' ) ;
-            }
-
-            if ( this._count > 0 )
-            {
-                this._factory.removeTarget( this ) ;
-            }
-
-            this._filters = filters ;
-
-            if( this._count > 0 )
-            {
-                this._factory.addTarget( this ) ;
-            }
-        }
-    },
-
-    /**
-     * Determinates the level (LoggerLevel of this target.
-     */
-    level :
-    {
-        get : function()
-        {
-            return this._level ;
-        },
-        set : function( value /*LoggerLevel*/ ) /*void*/
-        {
-            this._factory.removeTarget( this ) ;
-            this._level = value || LoggerLevel.ALL ; // FIXME filter and validate the level
-            this._factory.addTarget( this ) ;
-        }
-    },
+    constructor : { value : LoggerTarget , enumerable : true , writable : true , configurable : true } ,
 
     ////////////////////////////////////
 
@@ -151,7 +154,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
     {
         value : function ( logger /*Logger*/ ) /*void*/
         {
-            if ( logger instanceof Logger )
+            if ( logger && logger instanceof Logger )
             {
                 this._count ++ ;
                 logger.connect( this ) ;
@@ -179,9 +182,9 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      */
     receive :
     {
-        value : function( entry /*LoggerEntry*/ ) /*void*/
+        value : function( entry )
         {
-            if ( entry )
+            if ( entry instanceof LoggerEntry )
             {
                 if ( this._level === LoggerLevel.NONE )
                 {
@@ -223,7 +226,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
     {
         value : function( logger /*Logger*/ ) /*void*/
         {
-            if ( logger )
+            if ( logger instanceof Logger )
             {
                 this._count-- ;
                 logger.disconnect( this ) ;

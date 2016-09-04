@@ -5259,12 +5259,12 @@ Object.defineProperties(LoggerLevel, {
  * This entry can be captured by any object for storage or formatting.
  * @param message The context or message of the log.
  * @param level The level of the log.
- * @param logger The Logger reference of this entry.
+ * @param channel The Logger reference of this entry.
  */
-function LoggerEntry(logger /*Logger*/, message, level /*LoggerLevel*/) {
-  this.logger = logger;
-  this.message = message;
+function LoggerEntry(message, level /*LoggerLevel*/, channel /*String*/) {
+  this.channel = channel;
   this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
+  this.message = message;
 }
 
 /**
@@ -5289,17 +5289,37 @@ function Logger(channel) {
     Signal.call(this);
 
     Object.defineProperties(this, {
-        _channel: { value: channel, writable: true },
-        _entry: { value: new LoggerEntry(this), writable: true }
+        _entry: { value: new LoggerEntry(null, null, channel), writable: true }
     });
 }
-
-///////////////////
 
 /**
  * @extends Object
  */
 Logger.prototype = Object.create(Signal.prototype, {
+    ///////////
+
+    constructor: { value: Logger },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[Logger]';
+        } },
+
+    ///////////
+
+    /**
+     * Indicates the channel value for the logger.
+     */
+    channel: {
+        get: function get() {
+            return this._entry.channel;
+        }
+    },
+
     /**
      * Logs the specified data using the LogEventLevel.CRITICAL level.
      */
@@ -5309,7 +5329,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key - 1] = arguments[_key];
             }
 
-            this._log.apply(this, [LoggerLevel.CRITICAL, context].concat(options));
+            this._log(LoggerLevel.CRITICAL, context, options);
         }
     },
 
@@ -5322,7 +5342,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key2 - 1] = arguments[_key2];
             }
 
-            this._log.apply(this, [LoggerLevel.DEBUG, context].concat(options));
+            this._log(LoggerLevel.DEBUG, context, options);
         }
     },
 
@@ -5335,16 +5355,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key3 - 1] = arguments[_key3];
             }
 
-            this._log.apply(this, [LoggerLevel.ERROR, context].concat(options));
-        }
-    },
-
-    /**
-     * Indicates the channel value for the logger.
-     */
-    channel: {
-        get: function get() {
-            return this._channel;
+            this._log(LoggerLevel.ERROR, context, options);
         }
     },
 
@@ -5357,7 +5368,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key4 - 1] = arguments[_key4];
             }
 
-            this._log.apply(this, [LoggerLevel.INFO, context].concat(options));
+            this._log(LoggerLevel.INFO, context, options);
         }
     },
 
@@ -5372,7 +5383,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key5 - 1] = arguments[_key5];
             }
 
-            this._log.apply(this, [LoggerLevel.ALL, context].concat(options));
+            this._log(LoggerLevel.ALL, context, options);
         }
     },
 
@@ -5385,7 +5396,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key6 - 1] = arguments[_key6];
             }
 
-            this._log.apply(this, [LoggerLevel.WARNING, context].concat(options));
+            this._log(LoggerLevel.WARNING, context, options);
         }
     },
 
@@ -5398,7 +5409,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 options[_key7 - 1] = arguments[_key7];
             }
 
-            this._log.apply(this, [LoggerLevel.WTF, context].concat(options));
+            this._log(LoggerLevel.WTF, context, options);
         }
     },
 
@@ -5406,14 +5417,10 @@ Logger.prototype = Object.create(Signal.prototype, {
      * What a Terrible Failure: Report an exception that should never happen.
      */
     _log: {
-        value: function value(level /*LoggerLevel*/, context) /*void*/
+        value: function value(level /*LoggerLevel*/, context, options /*Array*/) /*void*/
         {
             if (this.connected()) {
-                if (typeof level === "string" || level instanceof String) {
-                    for (var _len8 = arguments.length, options = Array(_len8 > 2 ? _len8 - 2 : 0), _key8 = 2; _key8 < _len8; _key8++) {
-                        options[_key8 - 2] = arguments[_key8];
-                    }
-
+                if ((typeof context === "string" || context instanceof String) && options instanceof Array) {
                     var len = options.length;
                     for (var i = 0; i < len; i++) {
                         context = String(context).replace(new RegExp("\\{" + i + "\\}", "g"), options[i]);
@@ -5426,17 +5433,6 @@ Logger.prototype = Object.create(Signal.prototype, {
         }
     }
 });
-
-Logger.prototype.constructor = Logger;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-LoggerEntry.prototype.toString = function () /*String*/
-{
-    return '[Logger]';
-};
 
 /**
  * The enumeration of all string expressions in the logging engine.
@@ -5503,90 +5499,93 @@ var strings$1 = Object.defineProperties({}, {
  * @param logger The Logger reference of this entry.
  */
 function LoggerTarget() {
-    this._count = 0;
-    this._factory = Log;
-    this._filters = ["*"];
-    this._level = LoggerLevel.ALL;
+    Object.defineProperties(this, {
+        /**
+         * Determinates the LoggerFactory reference of the target,
+         * by default the target use the <code>system.logging.Log</code> singleton.
+         */
+        factory: {
+            get: function get() {
+                return this._factory;
+            },
+            set: function set(factory) {
+                if (this._factory) {
+                    this._factory.removeTarget(this);
+                }
+                this._factory = factory instanceof LoggerFactory ? factory : Log;
+                this._factory.addTarget(this);
+            }
+        },
+
+        /**
+         * Determinates the filters array representation of the target.
+         */
+        filters: {
+            get: function get() {
+                return [].concat(this._filters);
+            },
+            set: function set(value /*Array*/) /*void*/
+            {
+                var filters = [];
+                if (value && value instanceof Array && value.length > 0) {
+                    var filter;
+                    var length = value.length;
+                    for (var i = 0; i < length; i++) {
+                        filter = value[i];
+                        if (filters.indexOf(filter) === -1) {
+                            this._checkFilter(filter);
+                            filters.push(filter);
+                        }
+                    }
+                } else {
+                    filters.push('*');
+                }
+
+                if (this._count > 0) {
+                    this._factory.removeTarget(this);
+                }
+
+                this._filters = filters;
+
+                if (this._count > 0) {
+                    this._factory.addTarget(this);
+                }
+            }
+        },
+
+        /**
+         * Determinates the level (LoggerLevel of this target.
+         */
+        level: {
+            get: function get() {
+                return this._level;
+            },
+            set: function set(value /*LoggerLevel*/) /*void*/
+            {
+                this._factory.removeTarget(this);
+                this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
+                this._factory.addTarget(this);
+            }
+        },
+
+        _count: { value: 0, writable: true },
+        _factory: { value: null, writable: true },
+        _filters: { value: ["*"], writable: true },
+        _level: { value: LoggerLevel.ALL, writable: true }
+    });
+
+    this.factory = Log;
 }
 
 /**
  * @extends Object
  */
-LoggerTarget.prototype = Object.create(Receiver.prototype, {
+LoggerTarget.prototype = Object.create(Receiver.prototype);
+
+Object.defineProperties(LoggerTarget.prototype, {
     ////////////////////////////////////
 
-    constructor: { value: LoggerTarget },
-
-    ////////////////////////////////////
-
-    /**
-     * Determinates the LoggerFactory reference of the target,
-     * by default the target use the <code>system.logging.Log</code> singleton.
-     */
-    factory: {
-        get: function get() {
-            return this._factory;
-        },
-        set: function set(factory) {
-            if (this._factory) {
-                this._factory.removeTarget(this);
-            }
-            this._factory = factory || Log;
-            this._factory.addTarget(this);
-        }
-    },
-
-    /**
-     * Determinates the filters array representation of the target.
-     */
-    filters: {
-        get: function get() {
-            return [].concat(this._filters);
-        },
-        set: function set(value /*Array*/) /*void*/
-        {
-            var filters /*Array*/ = [];
-
-            if (value && value instanceof Array && value.length > 0) {
-                var filter;
-                var length = value.length;
-                for (var i = 0; i < length; i++) {
-                    filter = value[i];
-                    if (filters.indexOf(filter) === -1) {
-                        this._checkFilter(filter);
-                        filters.push(filter);
-                    }
-                }
-            } else {
-                filters.push('*');
-            }
-
-            if (this._count > 0) {
-                this._factory.removeTarget(this);
-            }
-
-            this._filters = filters;
-
-            if (this._count > 0) {
-                this._factory.addTarget(this);
-            }
-        }
-    },
-
-    /**
-     * Determinates the level (LoggerLevel of this target.
-     */
-    level: {
-        get: function get() {
-            return this._level;
-        },
-        set: function set(value /*LoggerLevel*/) /*void*/
-        {
-            this._factory.removeTarget(this);
-            this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
-            this._factory.addTarget(this);
-        }
-    },
+    constructor: { value: LoggerTarget, enumerable: true, writable: true, configurable: true },
 
     ////////////////////////////////////
 
@@ -5614,7 +5613,7 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
     addLogger: {
         value: function value(logger /*Logger*/) /*void*/
         {
-            if (logger instanceof Logger) {
+            if (logger && logger instanceof Logger) {
                 this._count++;
                 logger.connect(this);
             }
@@ -5639,9 +5638,8 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
      * @param ...values All the values emitting by the signals connected with this object.
      */
     receive: {
-        value: function value(entry /*LoggerEntry*/) /*void*/
-        {
-            if (entry) {
+        value: function value(entry) {
+            if (entry instanceof LoggerEntry) {
                 if (this._level === LoggerLevel.NONE) {
                     return; // logging off
                 } else if (entry.level.valueOf() >= this._level.valueOf()) {
@@ -5675,7 +5673,7 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
     removeLogger: {
         value: function value(logger /*Logger*/) /*void*/
         {
-            if (logger) {
+            if (logger instanceof Logger) {
                 this._count--;
                 logger.disconnect(this);
             }
@@ -5718,16 +5716,30 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
  * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
  */
 function LoggerFactory() {
-    this._loggers = new ArrayMap();
-    this._targetLevel = LoggerLevel.NONE;
-    this._targets = [];
+    Object.defineProperties(this, {
+        _loggers: { value: new ArrayMap(), writable: true },
+        _targetLevel: { value: LoggerLevel.NONE, writable: true },
+        _targets: { value: [], writable: true }
+    });
 }
 
 /**
  * @extends Object
  */
 LoggerFactory.prototype = Object.create(Receiver.prototype, {
+    ///////////
+
     constructor: { value: LoggerFactory },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LoggerFactory]';
+        } },
+
+    ///////////
 
     /**
      * Allows the specified target to begin receiving notification of log events.
@@ -5740,6 +5752,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
             if (target && target instanceof LoggerTarget) {
                 var channel /*String*/;
                 var log /*Logger*/;
+
                 var filters /*Array*/ = target.filters;
                 var it /*Iterator*/ = this._loggers.iterator();
                 while (it.hasNext()) {
@@ -5749,7 +5762,9 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
                         target.addLogger(log);
                     }
                 }
+
                 this._targets.push(target);
+
                 if (this._targetLevel === LoggerLevel.NONE || target.level.valueOf() < this._targetLevel.valueOf()) {
                     this._targetLevel = target.level;
                 }
@@ -5787,20 +5802,24 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
         value: function value(channel /*String*/) /*Logger*/
         {
             this._checkChannel(channel);
-            var result /*Logger*/ = this._loggers.get(channel);
-            if (!result) {
-                result = new Logger(channel);
-                this._loggers.put(channel, result);
+
+            var logger /*Logger*/ = this._loggers.get(channel);
+            if (!logger) {
+                logger = new Logger(channel);
+                this._loggers.set(channel, logger);
             }
+
             var target /*LoggerTarget*/;
+
             var len /*int*/ = this._targets.length;
             for (var i /*int*/ = 0; i < len; i++) {
                 target = this._targets[i];
                 if (this._channelMatchInFilterList(channel, target.filters)) {
-                    target.addLogger(result);
+                    target.addLogger(logger);
                 }
             }
-            return result;
+
+            return logger;
         }
     },
 
@@ -5927,16 +5946,6 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: {
-        value: function value() {
-            return '[LoggerFactory]';
-        }
-    },
-
-    /**
      * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
      * @param category The category to match against.
      * @param filters A list of Strings to check category against.
@@ -6044,6 +6053,278 @@ Loggable.prototype.toString = function () /*String*/
 };
 
 /**
+ * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.
+ * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ */
+function LineFormattedTarget(init /*Object*/) {
+    LoggerTarget.call(this);
+
+    Object.defineProperties(this, {
+        _lineNumber: { value: 1, writable: true }
+    });
+
+    /**
+     * Indicates if the channel for this target should added to the trace.
+     */
+    this.includeChannel /*Boolean*/ = false;
+
+    /**
+     * Indicates if the date should be added to the trace.
+     */
+    this.includeDate /*Boolean*/ = false;
+
+    /**
+     * Indicates if the level for the event should added to the trace.
+     */
+    this.includeLevel /*Boolean*/ = false;
+
+    /**
+     * Indicates if the line for the event should added to the trace.
+     */
+    this.includeLines /*Boolean*/ = false;
+
+    /**
+     * Indicates if the milliseconds should be added to the trace. Only relevant when includeTime is <code class="prettyprint">true</code>.
+     */
+    this.includeMilliseconds /*Boolean*/ = false;
+
+    /**
+     * Indicates if the time should be added to the trace.
+     */
+    this.includeTime /*Boolean*/ = false;
+
+    /**
+     * The separator string.
+     */
+    this.separator /*String*/ = " ";
+
+    if (init) {
+        for (var prop in init) {
+            if (this.hasOwnProperty(prop)) {
+                this[prop] = init[prop];
+            }
+        }
+    }
+}
+
+/**
+ * @extends Object
+ */
+LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
+    /**
+     * Descendants of this class should override this method to direct the specified message to the desired output.
+     * @param message String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+     */
+    internalLog: {
+        value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
+        {
+            // override this method
+        }
+    },
+
+    constructor: { value: LineFormattedTarget, enumerable: true, writable: true, configurable: true },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LineFormattedTarget]';
+        } },
+
+    /**
+     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
+     *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
+     *  This method will be called only if the event's level is in range of the target's level.
+     *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     */
+    logEntry: {
+        value: function value(entry /*LoggerEntry*/) /*void*/
+        {
+            var message = this.formatMessage(entry.message, LoggerLevel.getLevelString(entry.level), entry.channel, new Date());
+            this.internalLog(message, entry.level);
+        }
+    },
+
+    /**
+     * Resets the internal line number value (set to 1).
+     */
+    resetLineNumber: {
+        value: function value() /*void*/
+        {
+            this._lineNumber = 1;
+        }
+    },
+
+    /////////
+
+    /**
+     * This method format the passed Date in arguments.
+     */
+    formatDate: {
+        value: function value(d /*Date*/) /*String*/
+        {
+            var date /*String*/ = "";
+            date += this.getDigit(d.getDate());
+            date += "/" + this.getDigit(d.getMonth() + 1);
+            date += "/" + d.getFullYear();
+            return date;
+        }
+    },
+
+    /**
+     * This method format the passed level in arguments.
+     */
+    formatLevel: {
+        value: function value(level /*String*/) /*String*/
+        {
+            return '[' + level + ']';
+        }
+    },
+
+    /**
+     * This method format the current line value.
+     */
+    formatLines: {
+        value: function value() /*String*/
+        {
+            return "[" + this._lineNumber++ + "]";
+        }
+    },
+
+    /**
+     * This method format the log message.
+     */
+    formatMessage: {
+        value: function value(message, level /*String*/, channel /*String*/, date /*Date*/) /*String*/
+        {
+            var msg /*String*/ = "";
+            var d /*Date*/ = date || new Date();
+            if (this.includeLines) {
+                msg += this.formatLines() + this.separator;
+            }
+            if (this.includeDate) {
+                msg += this.formatDate(d) + this.separator;
+            }
+            if (this.includeTime) {
+                msg += this.formatTime(d) + this.separator;
+            }
+            if (this.includeLevel) {
+                msg += this.formatLevel(level || "") + this.separator;
+            }
+            if (this.includeChannel) {
+                msg += (channel || "") + this.separator;
+            }
+            msg += message.toString();
+            return msg;
+        }
+    },
+
+    /**
+     * This method format the current Date passed in argument.
+     */
+    formatTime: {
+        value: function value(d /*Date*/) /*String*/
+        {
+            var time /*String*/ = "";
+            time += this.getDigit(d.getHours());
+            time += ":" + this.getDigit(d.getMinutes());
+            time += ":" + this.getDigit(d.getSeconds());
+            if (this.includeMilliseconds) {
+                time += ":" + this.getDigit(d.getMilliseconds());
+            }
+            return time;
+        }
+    },
+
+    /**
+     * Returns the string representation of a number and use digit conversion.
+     * @return the string representation of a number and use digit conversion.
+     */
+    getDigit: {
+        value: function value(n /*Number*/) /*String*/
+        {
+            if (isNaN(n)) {
+                return "00";
+            }
+            return (n < 10 ? "0" : "") + n;
+        }
+    }
+});
+
+/**
+ * Provides a logger target that uses the global trace() method to output log messages.
+ * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @example
+ * var Log         = system.logging.Log ;
+ * var LoggerLevel = system.logging.LoggerLevel ;
+ * var TraceTarget = system.logging.targets.TraceTarget ;
+ *
+ * var target = new TraceTarget
+ * ({
+ *     includeChannel      : true  ,
+ *     includeDate         : false  ,
+ *     includeLevel        : true  ,
+ *     includeLines        : true  ,
+ *     includeMilliseconds : true  ,
+ *     includeTime         : true
+ * }) ;
+ *
+ * target.filters = ["*"] ;
+ * target.level   = LoggerLevel.ALL ;
+ *
+ * var logger = Log.getLogger('test') ;
+ *
+ * logger.log( "Here is some myDebug info : {0} and {1}", 2.25 , true ) ;
+ * logger.debug( "Here is some debug message." ) ;
+ * logger.info( "Here is some info message." ) ;
+ * logger.warning( "Here is some warn message." ) ;
+ * logger.error( "Here is some error message." ) ;
+ * logger.critical( "Here is some critical error..." ) ;
+ *
+ * target.includeDate    = false ;
+ * target.includeTime    = false ;
+ * target.includeChannel = false ;
+ *
+ * logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
+ */
+function TraceTarget(init) {
+  LineFormattedTarget.call(this, init);
+}
+
+/**
+ * @extends Object
+ */
+TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
+  ///////////
+
+  constructor: { value: TraceTarget },
+
+  /**
+   * Returns the String representation of the object.
+   * @return the String representation of the object.
+   */
+  toString: { value: function value() {
+      return '[TraceTarget]';
+    } },
+
+  ///////////
+
+  /**
+   * Descendants of this class should override this method to direct the specified message to the desired output.
+   * @param message String containing preprocessed log message which may include time, date, channel, etc.
+   * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+   */
+  internalLog: {
+    value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
+    {
+      trace(message);
+    }
+  }
+});
+
+/**
  * The VEGAS.js framework - The system.logging library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -6053,8 +6334,14 @@ var logging = Object.assign({
     Loggable: Loggable,
     Logger: Logger,
     LoggerEntry: LoggerEntry,
+    LoggerFactory: LoggerFactory,
     LoggerLevel: LoggerLevel,
-    LoggerTarget: LoggerTarget
+    LoggerTarget: LoggerTarget,
+
+    targets: Object.assign({
+        LineFormattedTarget: LineFormattedTarget,
+        TraceTarget: TraceTarget
+    })
 });
 
 /**

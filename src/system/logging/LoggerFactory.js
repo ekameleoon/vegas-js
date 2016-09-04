@@ -15,9 +15,12 @@ import { strings }             from './strings.js' ;
  */
 export function LoggerFactory()
 {
-    this._loggers     = new ArrayMap() ;
-    this._targetLevel = LoggerLevel.NONE ;
-    this._targets     = [] ;
+    Object.defineProperties( this ,
+    {
+        _loggers     : { value : new ArrayMap()    , writable : true } ,
+        _targetLevel : { value : LoggerLevel.NONE  , writable : true } ,
+        _targets     : { value : []                , writable : true }
+    }) ;
 }
 
 /**
@@ -25,7 +28,17 @@ export function LoggerFactory()
  */
 LoggerFactory.prototype = Object.create( Receiver.prototype ,
 {
+    ///////////
+
     constructor : { value : LoggerFactory } ,
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString : { value : function() { return '[LoggerFactory]' ; } },
+
+    ///////////
 
     /**
      * Allows the specified target to begin receiving notification of log events.
@@ -36,10 +49,11 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
     {
         value : function( target /*LoggerTarget*/ ) /*void*/
         {
-            if( target && target instanceof LoggerTarget )
+            if( target && (target instanceof LoggerTarget) )
             {
                 var channel /*String*/ ;
                 var log /*Logger*/ ;
+
                 var filters /*Array*/ = target.filters ;
                 var it /*Iterator*/   = this._loggers.iterator() ;
                 while ( it.hasNext() )
@@ -51,7 +65,9 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
                         target.addLogger( log ) ;
                     }
                 }
+
                 this._targets.push( target );
+
                 if ( ( this._targetLevel === LoggerLevel.NONE ) || ( target.level.valueOf() < this._targetLevel.valueOf() ) )
                 {
                     this._targetLevel = target.level ;
@@ -94,23 +110,27 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
         value : function ( channel /*String*/ ) /*Logger*/
         {
             this._checkChannel( channel ) ;
-            var result /*Logger*/ = this._loggers.get( channel ) ;
-            if( !result )
+
+            var logger /*Logger*/ = this._loggers.get( channel ) ;
+            if( !logger )
             {
-                result = new Logger( channel ) ;
-                this._loggers.put( channel , result ) ;
+                logger = new Logger( channel ) ;
+                this._loggers.set( channel , logger ) ;
             }
+
             var target /*LoggerTarget*/ ;
+
             var len /*int*/ = this._targets.length ;
             for( var i /*int*/ = 0 ; i<len ; i++ )
             {
                 target = this._targets[i] ;
                 if( this._channelMatchInFilterList( channel , target.filters ) )
                 {
-                    target.addLogger( result ) ;
+                    target.addLogger( logger ) ;
                 }
             }
-            return result ;
+
+            return logger ;
         }
     },
 
@@ -249,18 +269,6 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
             {
                 throw new Error( strings.INVALID_TARGET );
             }
-        }
-    },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString :
-    {
-        value : function()
-        {
-            return '[LoggerFactory]' ;
         }
     },
 

@@ -14,18 +14,38 @@ export function Logger( channel )
 
     Object.defineProperties( this ,
     {
-        _channel : { value : channel , writable : true } ,
-        _entry   : { value : new LoggerEntry( this ) , writable : true }
+        _entry : { value : new LoggerEntry(null,null,channel) , writable : true }
     }) ;
 }
-
-///////////////////
 
 /**
  * @extends Object
  */
 Logger.prototype = Object.create( Signal.prototype ,
 {
+    ///////////
+
+    constructor : { value : Logger } ,
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString : { value : function() { return '[Logger]' ; } } ,
+
+    ///////////
+
+    /**
+     * Indicates the channel value for the logger.
+     */
+    channel :
+    {
+        get : function()
+        {
+            return this._entry.channel ;
+        }
+    },
+
     /**
      * Logs the specified data using the LogEventLevel.CRITICAL level.
      */
@@ -33,7 +53,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.CRITICAL , context ].concat( options ) ) ;
+            this._log( LoggerLevel.CRITICAL , context , options ) ;
         }
     },
 
@@ -44,7 +64,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.DEBUG , context ].concat( options ) ) ;
+            this._log( LoggerLevel.DEBUG , context , options ) ;
         }
     },
 
@@ -55,18 +75,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.ERROR , context ].concat( options ) ) ;
-        }
-    },
-
-    /**
-     * Indicates the channel value for the logger.
-     */
-    channel :
-    {
-        get : function()
-        {
-            return this._channel ;
+            this._log( LoggerLevel.ERROR , context , options ) ;
         }
     },
 
@@ -77,7 +86,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.INFO , context ].concat( options ) ) ;
+            this._log( LoggerLevel.INFO , context , options ) ;
         }
     },
 
@@ -90,7 +99,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.ALL , context ].concat( options ) ) ;
+            this._log( LoggerLevel.ALL , context , options ) ;
         }
     },
 
@@ -101,7 +110,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.WARNING , context ].concat( options ) ) ;
+            this._log( LoggerLevel.WARNING , context , options ) ;
         }
     },
 
@@ -112,7 +121,7 @@ Logger.prototype = Object.create( Signal.prototype ,
     {
         value : function ( context , ...options )
         {
-            this._log.apply( this , [ LoggerLevel.WTF , context ].concat( options ) ) ;
+            this._log( LoggerLevel.WTF , context , options ) ;
         }
     },
 
@@ -121,11 +130,11 @@ Logger.prototype = Object.create( Signal.prototype ,
      */
     _log :
     {
-        value : function ( level /*LoggerLevel*/ , context , ...options ) /*void*/
+        value : function ( level /*LoggerLevel*/ , context , options /*Array*/ ) /*void*/
         {
             if( this.connected() )
             {
-                if ( ( typeof(level) === "string" || level instanceof String ) )
+                if ( ( typeof(context) === "string" || context instanceof String ) && options instanceof Array )
                 {
                     var len = options.length ;
                     for( var i = 0 ; i<len ; i++ )
@@ -140,14 +149,3 @@ Logger.prototype = Object.create( Signal.prototype ,
         }
     }
 });
-
-Logger.prototype.constructor = Logger;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-LoggerEntry.prototype.toString = function() /*String*/
-{
-    return '[Logger]' ;
-}

@@ -8,13 +8,13 @@ import { LoggerLevel } from './LoggerLevel.js' ;
  * This entry can be captured by any object for storage or formatting.
  * @param message The context or message of the log.
  * @param level The level of the log.
- * @param logger The Logger reference of this entry.
+ * @param channel The Logger reference of this entry.
  */
-export function LoggerEntry( logger /*Logger*/ , message , level /*LoggerLevel*/ )
+export function LoggerEntry( message , level /*LoggerLevel*/ , channel /*String*/ )
 {
-    this.logger  = logger ;
-    this.message = message ;
+    this.channel = channel ;
     this.level   = level instanceof LoggerLevel ? level : LoggerLevel.ALL ;
+    this.message = message ;
 }
 
 /**
