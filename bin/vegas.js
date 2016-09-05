@@ -3090,9 +3090,14 @@ function isIdentifiable(target) {
 /**
  * This interface defines a common structure for identifiable classes (has an "id" property).
  */
-function Identifiable() {}
-//
-
+function Identifiable() {
+  Object.defineProperties(this, {
+    /**
+     * Indicates the unique identifier value of this object.
+     */
+    id: { value: null, enumerable: true, writable: true }
+  });
+}
 
 /**
  * @extends Object
@@ -3101,12 +3106,15 @@ Identifiable.prototype = Object.create(Object.prototype, {
   /**
    * Returns a reference to the Object function that created the instance's prototype.
    */
-  constructor: { value: Identifiable },
+  constructor: { value: Identifiable, writable: true },
 
   /**
-   * Indicates the unique identifier value of this object.
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
    */
-  id: { value: null, enumerable: true, writable: true }
+  toString: { value: function value() {
+      return "[Identifiable]";
+    }, writable: true }
 });
 
 /**
@@ -6494,153 +6502,6 @@ ObjectListener.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * This object defines a method definition with a method name and this arguments.
- * @param name The name of the method to invoke.
- * @param arguments The array of the arguments to passed-in the method.
- */
-
-function ObjectMethod(name /*String*/, args /*Array*/) {
-  Object.defineProperties(this, {
-    /**
-     * The optional Array representation of all evaluators to transform the value of this object.
-     */
-    arguments: { value: args, writable: true },
-
-    /**
-     * The name of the property.
-     */
-    name: { value: name, writable: true }
-  });
-}
-
-/**
- * @extends Object
- */
-ObjectMethod.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectMethod },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return '[ObjectMethod]';
-    } }
-});
-
-/**
- * The static enumeration list of all object scopes.
- */
-
-var ObjectScope = Object.defineProperties({}, {
-  /**
-   * Defines the scope of a single object definition to any number of object instances.
-   */
-  PROTOTYPE: { value: "prototype", enumerable: true },
-
-  /**
-   * Defines the scope of a single object definition to a single object instance per IoC container.
-   */
-  SINGLETON: { value: "singleton", enumerable: true },
-
-  /**
-   * The Array representation of all object scopes constants.
-   */
-  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
-
-  /**
-   * Returns true if the passed value is a valid scope reference.
-   * @return true if the passed value is a valid scope reference.
-   */
-  validate: { value: function value(scope /*String*/) /*Boolean*/
-    {
-      return ObjectScope.SCOPES.indexOf(scope) > -1;
-    } }
-});
-
-/**
- * This object defines a property definition in the object definitions.
- * @param name The name of the property.
- * @param value The value of the property.
- * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
- * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
- */
-function ObjectProperty(name /*String*/, value) {
-  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
-  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-  Object.defineProperties(this, {
-    /**
-     * The optional Array representation of all evaluators to transform the value of this object.
-     */
-    evaluators: { value: evaluators, writable: true },
-
-    /**
-     * The name of the property.
-     */
-    name: { value: name, writable: true },
-
-    /**
-     * Determinates the order of the receiver registration ('after' or by default 'before').
-     */
-    policy: {
-      get: function get() {
-        return this._policy;
-      },
-      set: function set(str) {
-        switch (str) {
-          case ObjectAttribute.ARGUMENTS:
-          case ObjectAttribute.REFERENCE:
-          case ObjectAttribute.CONFIG:
-          case ObjectAttribute.LOCALE:
-            {
-              this._policy = str;
-              break;
-            }
-          default:
-            {
-              this._policy = ObjectAttribute.VALUE;
-            }
-        }
-      }
-    },
-
-    /**
-     * The value of the property.
-     */
-    value: { value: value, writable: true },
-
-    /**
-     * @private
-     */
-    _policy: { value: null, writable: true }
-  });
-
-  this.policy = policy;
-}
-
-/**
- * @extends Object
- */
-ObjectProperty.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectProperty },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return '[ObjectProperty]';
-    } }
-});
-
-/**
  * This object defines a receiver definition in an object definition.
  * @param signal The id of the signal in the IoC factory.
  * @param slot The id of the receiver of function to connect in the IoC factory.
@@ -6748,6 +6609,939 @@ ObjectReceiver.prototype = Object.create(Object.prototype, {
       s += ']';
       return s;
     } }
+});
+
+/**
+ * The static enumeration list of all object scopes.
+ */
+
+var ObjectScope = Object.defineProperties({}, {
+  /**
+   * Defines the scope of a single object definition to any number of object instances.
+   */
+  PROTOTYPE: { value: "prototype", enumerable: true },
+
+  /**
+   * Defines the scope of a single object definition to a single object instance per IoC container.
+   */
+  SINGLETON: { value: "singleton", enumerable: true },
+
+  /**
+   * The Array representation of all object scopes constants.
+   */
+  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
+
+  /**
+   * Returns true if the passed value is a valid scope reference.
+   * @return true if the passed value is a valid scope reference.
+   */
+  validate: { value: function value(scope /*String*/) /*Boolean*/
+    {
+      return ObjectScope.SCOPES.indexOf(scope) > -1;
+    } }
+});
+
+/**
+ * Defines factory strategies in the factory.
+ */
+
+function ObjectStrategy() {}
+
+/**
+ * @extends Object
+ */
+ObjectStrategy.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectStrategy, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return "[ObjectStrategy]";
+    }, writable: true }
+});
+
+function ObjectDefinition(id, type) {
+    var singleton = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var lazyInit = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+    if (id === null || id === undefined) {
+        throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
+    }
+    if (type === null || type === undefined) {
+        throw new ReferenceError(this + " constructor failed, the string 'type' passed in argument not must be empty or 'null' or 'undefined'.");
+    }
+
+    Object.defineProperties(this, {
+        /**
+         * Returns the Array of all listener definitions of this object definition register after the object initialization.
+         * @return the Array of all listener definitions of this object definition register after the object initialization.
+         */
+        afterListeners: {
+            get: function get() {
+                return this._afterListeners;
+            }
+        },
+
+        /**
+         * Returns the Array of all receiver definitions of this object definition register after the object initialization.
+         * @return the Array of all receiver definitions of this object definition register after the object initialization.
+         */
+        afterReceivers: {
+            get: function get() {
+                return this._afterReceivers;
+            }
+        },
+
+        /**
+         * Returns the Array of all listener definitions of this object definition register before the object initialization.
+         * @return the Array of all listener definitions of this object definition register before the object initialization.
+         */
+        beforeListeners: {
+            get: function get() {
+                return this._beforeListeners;
+            }
+        },
+
+        /**
+         * Returns the Array of all receiver definitions of this object definition register before the object initialization.
+         * @return the Array of all receiver definitions of this object definition register before the object initialization.
+         */
+        beforeReceivers: {
+            get: function get() {
+                return this._beforeReceivers;
+            }
+        },
+
+        /**
+         * Returns the constructor arguments values of this object in a Array list.
+         * @return the constructor arguments values of this object in a Array list.
+         */
+        constructorArguments: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Defines the "dependsOn" collection.
+         */
+        dependsOn: {
+            enumerable: true,
+            get: function get() {
+                return this._dependsOn;
+            },
+            set: function set(ar) {
+                this._dependsOn = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+            }
+        },
+
+        /**
+         * Determinates the name of the method invoked when the object is destroyed.
+         */
+        destroyMethodName: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Defines the "generates" collection.
+         */
+        generates: {
+            enumerable: true,
+            get: function get() {
+                return this._generates;
+            },
+            set: function set(ar) {
+                this._generates = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+            }
+        },
+
+        /**
+         * Indicates the unique identifier value of this object.
+         */
+        id: { value: id, enumerable: true, writable: true },
+
+        /**
+         * Indicates if the object definition is a singleton and the type of the object is Identifiable if the object must be populated with the id of the definition when is instanciated.
+         */
+        identify: { value: false, enumerable: true, writable: true },
+
+        /**
+         * Determinates the name of the method invoked when the object is created.
+         */
+        initMethodName: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Indicates if the object lazily initialized. Only applicable to a singleton object.
+         * If false, it will get instantiated on startup by object factories that perform eager initialization of singletons.
+         * @return A boolean who indicates if the object lazily initialized.
+         */
+        lazyInit: {
+            get: function get() /*Boolean*/
+            {
+                return this._lazyInit;
+            },
+            set: function set(flag) {
+                this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
+            }
+        },
+
+        /**
+         * Sets the Array of all receiver definition of this object definition.
+         * @param ar the Array of all receiver definitions of the object.
+         */
+        listeners: {
+            set: function set(ar) {
+                this._afterListeners = [];
+                this._beforeListeners = [];
+                if (ar === null || !(ar instanceof Array)) {
+                    return;
+                }
+                var r /*ObjectListener*/;
+                var l = ar.length;
+                if (l > 0) {
+                    for (var i = 0; i < l; i++) {
+                        r = ar[i];
+                        if (r instanceof ObjectListener) {
+                            if (r.order === ObjectOrder.AFTER) {
+                                this._afterListeners.push(r);
+                            } else {
+                                this._beforeListeners.push(r);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Indicates if the object definition lock this Lockable object during the population of the properties and the initialization of the methods defines in the object definition.
+         */
+        lock: { value: false, enumerable: true, writable: true },
+
+        /**
+         * Sets the Array representation of all properties of this definition.
+         */
+        properties: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Sets the Array of all receiver definition of this object definition.
+         * @param ar the Array of all receiver definitions of the object.
+         */
+        receivers: {
+            set: function set(ar) {
+                this._afterReceivers = [];
+                this._beforeReceivers = [];
+                if (ar === null || !(ar instanceof Array)) {
+                    return;
+                }
+                var r /*ObjectReceiver*/;
+                var l = ar.length;
+                if (l > 0) {
+                    for (var i = 0; i < l; i++) {
+                        r = ar[i];
+                        if (r instanceof ObjectReceiver) {
+                            if (r.order === ObjectOrder.AFTER) {
+                                this._afterReceivers.push(r);
+                            } else {
+                                this._beforeReceivers.push(r);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Indicates if the object in a Sigleton else the object is a prototype (read only, use the scope property to change it).
+         */
+        singleton: {
+            get: function get() /*Boolean*/
+            {
+                return this._singleton;
+            }
+        },
+
+        /**
+         * Determinates the scope of the object.
+         */
+        scope: {
+            get: function get() {
+                return this._scope;
+            },
+            set: function set(scope) {
+                this._scope = ObjectScope.validate(scope) ? scope : ObjectScope.PROTOTYPE;
+                this._singleton = Boolean(this._scope === ObjectScope.SINGLETON);
+            }
+        },
+
+        /**
+         * Determinates the factory stategy of this definition to create the object.
+         */
+        strategy: {
+            enumerable: true,
+            get: function get() {
+                return this._strategy;
+            },
+            set: function set(strategy) {
+                this._strategy = strategy instanceof ObjectStrategy ? strategy : null;
+            }
+        },
+
+        /**
+         * Indicates the type of the object (the function reference of the class name).
+         */
+        type: { value: type, enumerable: true, writable: true },
+
+        /**
+         * @private
+         */
+        _afterListeners: { value: null, writable: true },
+        _beforeListeners: { value: null, writable: true },
+        _dependsOn: { value: null, writable: true },
+        _generates: { value: null, writable: true },
+        _lazyInit: { value: lazyInit && singleton, writable: true },
+        _singleton: { value: Boolean(singleton), writable: true },
+        _scope: { value: Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
+        _strategy: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Evaluable
+ */
+ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: Identifiable, enumerable: true, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return "[ObjectDefinition]";
+        } },
+
+    /**
+     * @private
+     */
+    _filterStrings: {
+        value: function value(item) /*Boolean*/
+        {
+            return (typeof item === 'string' || item instanceof String) && item.length > 0;
+        }
+    }
+});
+
+/**
+ * Indicates if the specific objet is Runnable.
+ */
+
+function isRunnable(target) {
+  if (target) {
+    return 'run' in target && target.run instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be executed.
+ */
+function Runnable() {}
+///////////////////
+
+Runnable.prototype = Object.create(Object.prototype);
+Runnable.prototype.constructor = Runnable;
+
+///////////////////
+
+/**
+ * Run the process.
+ */
+Runnable.prototype.run = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Runnable.prototype.toString = function () /*String*/
+{
+  return "[Runnable]";
+};
+
+/**
+ * The enumeration of all phases in a task process.
+ */
+
+var TaskPhase = Object.defineProperties({}, {
+    DELAYED: { value: 'delayed', enumerable: true },
+    FINISHED: { value: 'finished', enumerable: true },
+    INACTIVE: { value: 'inactive', enumerable: true },
+    RUNNING: { value: 'running', enumerable: true },
+    STOPPED: { value: 'stopped', enumerable: true },
+    TIMEOUT: { value: 'timeout', enumerable: true }
+});
+
+/**
+ * Creates a new Action instance.
+ */
+function Action() {
+  Object.defineProperties(this, {
+    /**
+     * This signal emit when the action is finished.
+     */
+    finishIt: { value: new Signal() },
+
+    /**
+     * Indicates the current phase.
+     */
+    phase: { get: function get() {
+        return this._phase;
+      } },
+
+    /**
+     * Indicates action is running.
+     */
+    running: { get: function get() {
+        return this._running;
+      } },
+
+    /**
+     * This signal emit when the action is started.
+     */
+    startIt: { value: new Signal() },
+
+    __lock__: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _phase: {
+      value: TaskPhase.INACTIVE,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _running: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+}
+
+/**
+ * @extends Runnable
+ */
+Action.prototype = Object.create(Runnable.prototype);
+Action.prototype.constructor = Action;
+
+/**
+ * Creates a copy of the object.
+ */
+Action.prototype.clone = function () {
+  return new Action();
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the object is locked.
+ * @return <code class="prettyprint">true</code> if the object is locked.
+ */
+Action.prototype.isLocked = function () /*Boolean*/
+{
+  return this.__lock__;
+};
+
+/**
+ * Locks the object.
+ */
+Action.prototype.lock = function () /*void*/
+{
+  this.__lock__ = true;
+};
+
+/**
+ * Notify when the process is finished.
+ */
+Action.prototype.notifyFinished = function () /*Boolean*/
+{
+  this._running = false;
+  this._phase = TaskPhase.FINISHED;
+  this.finishIt.emit(this);
+  this._phase = TaskPhase.INACTIVE;
+};
+
+/**
+ * Notify when the process is started.
+ */
+Action.prototype.notifyStarted = function () /*void*/
+{
+  this._running = true;
+  this._phase = TaskPhase.RUNNING;
+  this.startIt.emit(this);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Action.prototype.toString = function () /*String*/
+{
+  return '[Action]';
+};
+
+/**
+ * Unlocks the object.
+ */
+Action.prototype.unlock = function () /*void*/
+{
+  this.__lock__ = false;
+};
+
+/**
+ * A Task object to create a set of complex commands or actions.
+ */
+function Task() {
+  Action.call(this);
+  Object.defineProperties(this, {
+    /**
+     * The signal emit when the task is changed.
+     */
+    changeIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is cleared.
+     */
+    clearIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task emit a message.
+     */
+    infoIt: { value: new Signal() },
+
+    /**
+     * The flag to determinate if the task must be looped.
+     */
+    looping: { value: false, enumerable: false, configurable: false, writable: true },
+
+    /**
+     * The signal emit when the task is looped.
+     */
+    loopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is paused.
+     */
+    pauseIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is in progress.
+     */
+    progressIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is resumed.
+     */
+    resumeIt: { value: new Signal() },
+
+    /**
+     * This signal emit when the task is stopped.
+     */
+    stopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is out of time.
+     */
+    timeoutIt: { value: new Signal() }
+  });
+}
+
+/**
+ * @extends Task
+ */
+Task.prototype = Object.create(Action.prototype);
+
+Task.prototype.constructor = Task;
+
+/**
+ * Creates a copy of the object.
+ */
+Task.prototype.clone = function () {
+  return new Task();
+};
+
+/**
+ * Notify when the process is changed.
+ */
+Task.prototype.notifyChanged = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.changeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is cleared.
+ */
+Task.prototype.notifyCleared = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.clearIt.emit(this);
+  }
+};
+
+/**
+ * Notify a specific information when the process is changed.
+ */
+Task.prototype.notifyInfo = function (info) /*void*/
+{
+  if (!this.__lock__) {
+    this.infoIt.emit(this, info);
+  }
+};
+
+/**
+ * Notify when the process is looped.
+ */
+Task.prototype.notifyLooped = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.loopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is paused.
+ */
+Task.prototype.notifyPaused = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.pauseIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is progress.
+ */
+Task.prototype.notifyProgress = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.progressIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is resumed.
+ */
+Task.prototype.notifyResumed = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.resumeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is stopped.
+ */
+Task.prototype.notifyStopped = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.stopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is out of time.
+ */
+Task.prototype.notifyTimeout = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.TIMEOUT;
+  if (!this.__lock__) {
+    this.timeoutIt.emit(this);
+  }
+};
+
+/**
+ * Resumes the task.
+ */
+Task.prototype.resume = function () /*void*/
+{}
+//
+
+
+/**
+ * Resets the task.
+ */
+;Task.prototype.reset = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the task.
+ */
+;Task.prototype.start = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the process.
+ */
+;Task.prototype.stop = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Task.prototype.toString = function () /*String*/
+{
+  return '[Task]';
+};
+
+/**
+ * Creates a container to register all the Object define by the corresponding IObjectDefinition objects.
+ */
+function ObjectDefinitionContainer() {
+    Task.call(this);
+    Object.defineProperties(this, {
+        /**
+         * Indicates the numbers of object definitions registered in the container.
+         */
+        numObjectDefinition: { get: function get() {
+                return this._map.length;
+            } },
+
+        /**
+         * Registers a new object definition in the container.
+         * @param definition The Identifiable ObjectDefinition reference to register in the container.
+         * @throws ArgumentError If the specified object definition is null or if this id attribut is null.
+         */
+        addObjectDefinition: {
+            value: function value(definition) {
+                if (definition instanceof ObjectDefinition) {
+                    this._map.set(definition.id, definition);
+                } else {
+                    throw new ReferenceError(this + " addObjectDefinition failed, the specified object definition must be an ObjectDefinition object.");
+                }
+            }
+        },
+
+        /**
+         * Removes all the object definitions register in the container.
+         */
+        clearObjectDefinition: {
+            value: function value() {
+                this._map.clear();
+            }
+        },
+
+        /**
+         * Returns a shallow copy of this object.
+         * @return a shallow copy of this object.
+         */
+        clone: {
+            value: function value() {
+                return new ObjectDefinitionContainer();
+            }
+        },
+
+        /**
+         * Returns the IObjectDefinition object register in the container with the specified id.
+         * @param id the id name of the ObjectDefinition to return.
+         * @return the IObjectDefinition object register in the container with the specified id.
+         * @throws ArgumentError If the specified object definition don't exist in the container.
+         */
+        getObjectDefinition: {
+            value: function value(id) /*ObjectDefinition*/
+            {
+                if (this.has(id)) {
+                    return this._map.get(id);
+                } else {
+                    throw new ReferenceError(this + " getObjectDefinition failed, the specified object definition don't exist : " + id);
+                }
+            }
+        },
+
+        /**
+         * Returns <code class="prettyprint">true</code> if the object defines with the specified id is register in the container.
+         * @param id The id of the ObjectDefinition to search.
+         * @return <code class="prettyprint">true</code> if the object defines with the specified id is register in the container.
+         */
+        has: {
+            value: function value(id) /*Boolean*/
+            {
+                return this._map.has(id);
+            }
+        },
+
+        /**
+         * Unregisters an object definition in the container.
+         * @param id The id of the object definition to remove.
+         * @throws ArgumentError If the specified object definition don't exist in the container.
+         */
+        removeObjectDefinition: {
+            value: function value(id) {
+                if (this.has(id)) {
+                    this._map.delete(id);
+                } else {
+                    throw new ReferenceError(this + " removeObjectDefinition failed, the specified object definition don't exist : " + id);
+                }
+            }
+        },
+
+        /**
+         * @private
+         */
+        _map: { value: new ArrayMap() }
+    });
+}
+
+/**
+ * @extends Object
+ */
+ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
+    constructor: { value: ObjectDefinitionContainer, writable: true },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[ObjectDefinitionContainer]';
+        }, writable: true }
+});
+
+/**
+ * This object defines a method definition with a method name and this arguments.
+ * @param name The name of the method to invoke.
+ * @param arguments The array of the arguments to passed-in the method.
+ */
+function ObjectMethod(name /*String*/, args /*Array*/) {
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    arguments: { value: args, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true }
+  });
+}
+
+/**
+ * @extends Object
+ */
+ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectMethod, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectMethod]';
+    }, writable: true }
+});
+
+/**
+ * This object defines a property definition in the object definitions.
+ * @param name The name of the property.
+ * @param value The value of the property.
+ * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
+ * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
+ */
+function ObjectProperty(name /*String*/, value) {
+  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
+  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    policy: {
+      get: function get() {
+        return this._policy;
+      },
+      set: function set(str) {
+        switch (str) {
+          case ObjectAttribute.ARGUMENTS:
+          case ObjectAttribute.REFERENCE:
+          case ObjectAttribute.CONFIG:
+          case ObjectAttribute.LOCALE:
+            {
+              this._policy = str;
+              break;
+            }
+          default:
+            {
+              this._policy = ObjectAttribute.VALUE;
+            }
+        }
+      }
+    },
+
+    /**
+     * The value of the property.
+     */
+    value: { value: value, writable: true },
+
+    /**
+     * @private
+     */
+    _policy: { value: null, writable: true }
+  });
+
+  this.policy = policy;
+}
+
+/**
+ * @extends Object
+ */
+ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectProperty, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectProperty]';
+    }, writable: true }
 });
 
 /**
@@ -6873,6 +7667,8 @@ var ioc = Object.assign({
     MagicReference: MagicReference,
     ObjectArgument: ObjectArgument,
     ObjectAttribute: ObjectAttribute,
+    ObjectDefinition: ObjectDefinition,
+    ObjectDefinitionContainer: ObjectDefinitionContainer,
     ObjectListener: ObjectListener,
     ObjectMethod: ObjectMethod,
     ObjectOrder: ObjectOrder,
@@ -7760,177 +8556,6 @@ Method.prototype.toString = function () /*String*/
 };
 
 /**
- * Indicates if the specific objet is Runnable.
- */
-
-function isRunnable(target) {
-  if (target) {
-    return 'run' in target && target.run instanceof Function;
-  }
-
-  return false;
-}
-
-/**
- * This interface should be implemented by any class whose instances are intended to be executed.
- */
-function Runnable() {}
-///////////////////
-
-Runnable.prototype = Object.create(Object.prototype);
-Runnable.prototype.constructor = Runnable;
-
-///////////////////
-
-/**
- * Run the process.
- */
-Runnable.prototype.run = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Runnable.prototype.toString = function () /*String*/
-{
-  return "[Runnable]";
-};
-
-/**
- * The enumeration of all phases in a task process.
- */
-
-var TaskPhase = Object.defineProperties({}, {
-    DELAYED: { value: 'delayed', enumerable: true },
-    FINISHED: { value: 'finished', enumerable: true },
-    INACTIVE: { value: 'inactive', enumerable: true },
-    RUNNING: { value: 'running', enumerable: true },
-    STOPPED: { value: 'stopped', enumerable: true },
-    TIMEOUT: { value: 'timeout', enumerable: true }
-});
-
-/**
- * Creates a new Action instance.
- */
-function Action() {
-  Object.defineProperties(this, {
-    /**
-     * This signal emit when the action is finished.
-     */
-    finishIt: { value: new Signal() },
-
-    /**
-     * Indicates the current phase.
-     */
-    phase: { get: function get() {
-        return this._phase;
-      } },
-
-    /**
-     * Indicates action is running.
-     */
-    running: { get: function get() {
-        return this._running;
-      } },
-
-    /**
-     * This signal emit when the action is started.
-     */
-    startIt: { value: new Signal() },
-
-    __lock__: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _phase: {
-      value: TaskPhase.INACTIVE,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _running: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-}
-
-/**
- * @extends Runnable
- */
-Action.prototype = Object.create(Runnable.prototype);
-Action.prototype.constructor = Action;
-
-/**
- * Creates a copy of the object.
- */
-Action.prototype.clone = function () {
-  return new Action();
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the object is locked.
- * @return <code class="prettyprint">true</code> if the object is locked.
- */
-Action.prototype.isLocked = function () /*Boolean*/
-{
-  return this.__lock__;
-};
-
-/**
- * Locks the object.
- */
-Action.prototype.lock = function () /*void*/
-{
-  this.__lock__ = true;
-};
-
-/**
- * Notify when the process is finished.
- */
-Action.prototype.notifyFinished = function () /*Boolean*/
-{
-  this._running = false;
-  this._phase = TaskPhase.FINISHED;
-  this.finishIt.emit(this);
-  this._phase = TaskPhase.INACTIVE;
-};
-
-/**
- * Notify when the process is started.
- */
-Action.prototype.notifyStarted = function () /*void*/
-{
-  this._running = true;
-  this._phase = TaskPhase.RUNNING;
-  this.startIt.emit(this);
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Action.prototype.toString = function () /*String*/
-{
-  return '[Action]';
-};
-
-/**
- * Unlocks the object.
- */
-Action.prototype.unlock = function () /*void*/
-{
-  this.__lock__ = false;
-};
-
-/**
  * The ActionEntry objects contains all informations about an Action in a TaskGroup.
  * @param action The Action reference.
  * @param priority The priority value of the entry.
@@ -8188,216 +8813,6 @@ Batch.prototype.toString = function () /*Array*/
     }
     r += "]";
     return r;
-};
-
-/**
- * A Task object to create a set of complex commands or actions.
- */
-function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    /**
-     * The signal emit when the task is changed.
-     */
-    changeIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is cleared.
-     */
-    clearIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task emit a message.
-     */
-    infoIt: { value: new Signal() },
-
-    /**
-     * The flag to determinate if the task must be looped.
-     */
-    looping: { value: false, enumerable: false, configurable: false, writable: true },
-
-    /**
-     * The signal emit when the task is looped.
-     */
-    loopIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is paused.
-     */
-    pauseIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is in progress.
-     */
-    progressIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is resumed.
-     */
-    resumeIt: { value: new Signal() },
-
-    /**
-     * This signal emit when the task is stopped.
-     */
-    stopIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is out of time.
-     */
-    timeoutIt: { value: new Signal() }
-  });
-}
-
-/**
- * @extends Task
- */
-Task.prototype = Object.create(Action.prototype);
-Task.prototype.constructor = Task;
-
-/**
- * Creates a copy of the object.
- */
-Task.prototype.clone = function () {
-  return new Task();
-};
-
-/**
- * Notify when the process is changed.
- */
-Task.prototype.notifyChanged = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.changeIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is cleared.
- */
-Task.prototype.notifyCleared = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.clearIt.emit(this);
-  }
-};
-
-/**
- * Notify a specific information when the process is changed.
- */
-Task.prototype.notifyInfo = function (info) /*void*/
-{
-  if (!this.__lock__) {
-    this.infoIt.emit(this, info);
-  }
-};
-
-/**
- * Notify when the process is looped.
- */
-Task.prototype.notifyLooped = function () /*void*/
-{
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.loopIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is paused.
- */
-Task.prototype.notifyPaused = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.pauseIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is progress.
- */
-Task.prototype.notifyProgress = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.progressIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is resumed.
- */
-Task.prototype.notifyResumed = function () /*void*/
-{
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.resumeIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is stopped.
- */
-Task.prototype.notifyStopped = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.stopIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is out of time.
- */
-Task.prototype.notifyTimeout = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.TIMEOUT;
-  if (!this.__lock__) {
-    this.timeoutIt.emit(this);
-  }
-};
-
-/**
- * Resumes the task.
- */
-Task.prototype.resume = function () /*void*/
-{}
-//
-
-
-/**
- * Resets the task.
- */
-;Task.prototype.reset = function () /*void*/
-{}
-//
-
-
-/**
- * Starts the task.
- */
-;Task.prototype.start = function () /*void*/
-{}
-//
-
-
-/**
- * Starts the process.
- */
-;Task.prototype.stop = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Task.prototype.toString = function () /*String*/
-{
-  return '[Task]';
 };
 
 /**

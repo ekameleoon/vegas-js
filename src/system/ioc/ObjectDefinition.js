@@ -6,6 +6,7 @@ import { ObjectOrder }    from './ObjectOrder.js' ;
 import { ObjectListener } from './ObjectListener.js' ;
 import { ObjectReceiver } from './ObjectReceiver.js' ;
 import { ObjectScope }    from './ObjectScope.js' ;
+import { ObjectStrategy } from './ObjectStrategy.js' ;
 
 export function ObjectDefinition( id , type , singleton = false , lazyInit = false )
 {
@@ -221,6 +222,18 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
             }
         },
 
+
+        /**
+         * Indicates if the object in a Sigleton else the object is a prototype (read only, use the scope property to change it).
+         */
+        singleton :
+        {
+            get : function() /*Boolean*/
+            {
+                return this._singleton;
+            }
+        },
+
         /**
          * Determinates the scope of the object.
          */
@@ -243,7 +256,7 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
             get : function() { return this._strategy ; } ,
             set : function( strategy )
             {
-                this._strategy = (strategy instanceof ObjectFactoryStrategy) ? strategy : null ;
+                this._strategy = (strategy instanceof ObjectStrategy) ? strategy : null ;
             }
         },
 
@@ -275,15 +288,6 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      * Returns a reference to the Object function that created the instance's prototype.
      */
     constructor : { value :  Identifiable , enumerable : true , writable : true },
-
-    /**
-     * Returns <code class="prettyprint">true</code> if the object in a Sigleton else the object is a prototype.
-     * @return <code class="prettyprint">true</code> if the object in a Sigleton else the object is a prototype.
-     */
-    isSingleton : { value : function() /*Boolean*/
-    {
-        return this._singleton;
-    }},
 
     /**
      * Returns the string representation of this instance.
