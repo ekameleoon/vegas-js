@@ -4773,6 +4773,1294 @@ var formatters = Object.assign({
 });
 
 /**
+ * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ */
+
+function Receiver() {}
+
+/**
+ * @extends Object
+ */
+Receiver.prototype = Object.create(Object.prototype);
+Receiver.prototype.constructor = Receiver;
+
+/**
+ * This method is called when the receiver is connected with a Signal object.
+ * @param ...values All the values emitting by the signals connected with this object.
+ */
+Receiver.prototype.receive = function () {};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Receiver.prototype.toString = function () /*String*/
+{
+  return "[Receiver]";
+};
+
+/**
+ * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ */
+
+function Signaler() {}
+
+/**
+ * @extends Object
+ */
+Signaler.prototype = Object.create(Object.prototype, {
+    /**
+     * Indicates the number of receivers connected.
+     */
+    length: {
+        get: function get() {
+            return 0;
+        }
+    }
+});
+
+Signaler.prototype.constructor = Signaler;
+
+/**
+ * Connects a Function or a Receiver object.
+ * @param receiver The receiver to connect : a Function reference or a Receiver object.
+ * @param priority Determinates the priority level of the receiver.
+ * @param autoDisconnect Apply a disconnect after the first trigger
+ * @return <code>true</code> If the receiver is connected with the signal emitter.
+ */
+Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*uint*/
+{}
+//
+
+
+/**
+ * Returns <code>true</code> if one or more receivers are connected.
+ * @return <code>true</code> if one or more receivers are connected.
+ */
+;Signaler.prototype.connected = function () /*Boolean*/
+{}
+//
+
+
+/**
+ * Disconnect the specified object or all objects if the parameter is null.
+ * @return <code>true</code> if the specified receiver exist and can be unregister.
+ */
+;Signaler.prototype.disconnect = function (receiver) /*Boolean*/
+{}
+//
+
+
+/**
+ * Emit the specified values to the receivers.
+ * @param ...values All values to emit to the receivers.
+ */
+;Signaler.prototype.emit = function () /*void*/
+{}
+//
+
+
+/**
+ * Indicates the number of receivers connected.
+ */
+;Signaler.prototype.getLength = function () /*uint*/
+{}
+//
+
+
+/**
+ * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ */
+;Signaler.prototype.hasReceiver = function (receiver) /*Boolean*/
+{
+    //
+};
+
+/**
+ * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
+ * @param receiver The receiver reference.
+ * @param priority The priority value of the entry.
+ * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ */
+
+function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
+  /**
+   * Indicates if the receiver must be disconnected when handle the first time a signal.
+   */
+  this.auto = Boolean(auto);
+
+  /**
+   * The receiver reference of this entry.
+   */
+  this.receiver = receiver || null;
+
+  /**
+   * Determinates the priority value of the object.
+   */
+  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+}
+
+///////////////////
+
+/**
+ * @extends Object
+ */
+SignalEntry.prototype = Object.create(Object.prototype);
+SignalEntry.prototype.constructor = SignalEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+SignalEntry.prototype.toString = function () /*String*/
+{
+  return '[SignalEntry]';
+};
+
+/**
+ * Creates a new Signal instance.
+ * <p><b>Example :</b></p>
+ * <pre>
+ * function Slot( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Slot.prototype = Object.create( system.signals.Receiver.prototype );
+ * Slot.prototype.constructor = Slot;
+ *
+ * Slot.prototype.receive = function ( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * Slot.prototype.toString = function ()
+ * {
+ *     return "[Slot name:" + this.name + "]" ;
+ * }
+ *
+ * var slot1 = new Slot("slot1") ;
+ *
+ * var slot2 = function( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * var signal = new system.signals.Signal() ;
+ *
+ * //signal.proxy = slot1 ;
+ *
+ * signal.connect( slot1 , 0 ) ;
+ * signal.connect( slot2 , 2 ) ;
+ *
+ * signal.emit( "hello world" ) ;
+ * </pre>
+ */
+function Signal() {
+    Object.defineProperties(this, {
+        /**
+         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         */
+        proxy: {
+            value: null,
+            configurable: true,
+            writable: true
+        },
+        receivers: {
+            value: [],
+            writable: true
+        }
+    });
+}
+
+///////////////////
+
+Signal.prototype = Object.create(Signaler.prototype, {
+    /**
+     * The number of receivers or slots register in the signal object.
+     */
+    length: {
+        get: function get() {
+            return this.receivers.length;
+        }
+    }
+});
+
+Signal.prototype.constructor = Signal;
+
+///////////////////
+
+/**
+ * Connects a Function or a Receiver object.
+ * @param receiver The receiver to connect : a Function reference or a Receiver object.
+ * @param priority Determinates the priority level of the receiver.
+ * @param autoDisconnect Apply a disconnect after the first trigger
+ * @return <code>true</code> If the receiver is connected with the signal emitter.
+ */
+Signal.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
+{
+    if (receiver === null) {
+        return false;
+    }
+
+    autoDisconnect = Boolean(autoDisconnect);
+    priority = priority > 0 ? Math.ceil(priority) : 0;
+
+    if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
+        if (this.hasReceiver(receiver)) {
+            return false;
+        }
+
+        this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+
+        /////// bubble sorting
+
+        var i;
+        var j;
+
+        var a = this.receivers;
+
+        var swap = function swap(j, k) {
+            var temp = a[j];
+            a[j] = a[k];
+            a[k] = temp;
+            return true;
+        };
+
+        var swapped = false;
+
+        var l = a.length;
+
+        for (i = 1; i < l; i++) {
+            for (j = 0; j < l - i; j++) {
+                if (a[j + 1].priority > a[j].priority) {
+                    swapped = swap(j, j + 1);
+                }
+            }
+            if (!swapped) {
+                break;
+            }
+        }
+
+        ///////
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * Returns <code>true</code> if one or more receivers are connected.
+ * @return <code>true</code> if one or more receivers are connected.
+ */
+Signal.prototype.connected = function () /*Boolean*/
+{
+    return this.receivers.length > 0;
+};
+
+/**
+ * Disconnect the specified object or all objects if the parameter is null.
+ * @return <code>true</code> if the specified receiver exist and can be unregister.
+ */
+Signal.prototype.disconnect = function (receiver) /*Boolean*/
+{
+    if (receiver === null) {
+        if (this.receivers.length > 0) {
+            this.receivers = [];
+            return true;
+        } else {
+            return false;
+        }
+    }
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        while (--l > -1) {
+            if (this.receivers[l].receiver === receiver) {
+                this.receivers.splice(l, 1);
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Emit the specified values to the receivers.
+ * @param ...values All values to emit to the receivers.
+ */
+Signal.prototype.emit = function () /*Arguments*/ /*void*/
+{
+    var values = Object.setPrototypeOf(arguments, Array.prototype);
+
+    if (this.receivers.length === 0) {
+        return;
+    }
+
+    var i /*int*/;
+    var l /*int*/ = this.receivers.length;
+    var r /*Array*/ = [];
+    var a /*Array*/ = this.receivers.slice();
+    var e /*SignalEntry*/;
+
+    var slot;
+
+    for (i = 0; i < l; i++) {
+        e = a[i];
+        if (e.auto) {
+            r.push(e);
+        }
+    }
+    if (r.length > 0) {
+        l = r.length;
+        while (--l > -1) {
+            i = this.receivers.indexOf(r[l]);
+            if (i > -1) {
+                this.receivers.splice(i, 1);
+            }
+        }
+    }
+    l = a.length;
+    for (i = 0; i < l; i++) {
+        slot = a[i].receiver;
+
+        if (slot instanceof Function || typeof receiver === "function") {
+            slot.apply(this.proxy || this, values);
+        } else if (slot instanceof Receiver || "receive" in slot) {
+            slot.receive.apply(this.proxy || slot, values);
+        }
+    }
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ */
+Signal.prototype.hasReceiver = function (receiver) /*Boolean*/
+{
+    if (receiver === null) {
+        return false;
+    }
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        while (--l > -1) {
+            if (this.receivers[l].receiver === receiver) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+ * Returns the Array representation of all receivers connected with the signal.
+ * @return the Array representation of all receivers connected with the signal.
+ */
+Signal.prototype.toArray = function () /*Array*/
+{
+    var r /*Array*/ = [];
+    if (this.receivers.length > 0) {
+        var l /*int*/ = this.receivers.length;
+        for (var i /*int*/ = 0; i < l; i++) {
+            r.push(this.receivers[i].receiver);
+        }
+    }
+    return r;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Signal.prototype.toString = function () /*String*/
+{
+    return '[Signal]';
+};
+
+/**
+ * The logger levels that is used within the logging framework.
+ * @param value The value of the enumeration.
+ * @param name The name key of the enumeration.
+ * @example
+ * var LoggerLevel = system.logging.LoggerLevel ;
+ *
+ * for( var level in LoggerLevel )
+ * {
+ *     if( LoggerLevel.hasOwnProperty(level) )
+ *     {
+ *        trace( level + ' ' + LoggerLevel.getLevelString(LoggerLevel[level]) ) ;
+ *     }
+ * }
+ */
+function LoggerLevel(value /*int*/, name /*String*/) {
+  Enum.call(this, value, name);
+}
+
+/**
+ * @extends Object
+ */
+LoggerLevel.prototype = Object.create(Enum.prototype);
+LoggerLevel.prototype.constructor = LoggerLevel;
+
+Object.defineProperties(LoggerLevel, {
+  /**
+   * Intended to force a target to process all messages (1).
+   */
+  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+
+  /**
+   * Designates events that are very harmful and will eventually lead to application failure (16).
+   */
+  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+
+  /**
+   * Designates informational level messages that are fine grained and most helpful when debugging an application (2).
+   */
+  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+
+  /**
+   * The default string level value in the getLevelString() method.
+   */
+  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+
+  /**
+   * Designates error events that might still allow the application to continue running (8).
+   */
+  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+
+  /**
+   * Designates informational messages that highlight the progress of the application at coarse-grained level (4).
+   */
+  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+
+  /**
+   * A special level that can be used to turn off logging (0).
+   */
+  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+
+  /**
+   * Designates events that could be harmful to the application operation (6).
+   */
+  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+
+  /**
+   * What a Terrible Failure: designates an exception that should never happen. (32).
+   */
+  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+
+  /**
+   * Returns <code>true</code> if the number level passed in argument is valid.
+   * @return <code>true</code> if the number level passed in argument is valid.
+   */
+  get: {
+    value: function value(_value /*int*/) /*LoggerLevel*/
+    {
+      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      var l = levels.length;
+      while (--l > -1) {
+        if (levels[l]._value === _value) {
+          return levels[l];
+        }
+      }
+      return null;
+    }
+  },
+
+  /**
+   * Returns a String value representing the specific level.
+   * @return a String value representing the specific level.
+   */
+  getLevelString: {
+    value: function value(_value2 /*LoggerLevel*/) /*String*/
+    {
+      if (LoggerLevel.validate(_value2)) {
+        return _value2.toString();
+      } else {
+        return LoggerLevel.DEFAULT_LEVEL_STRING;
+      }
+    }
+  },
+
+  /**
+   * Returns <code>true</code> if the number level passed in argument is valid.
+   * @return <code>true</code> if the number level passed in argument is valid.
+   */
+  validate: {
+    value: function value(level /*LoggerLevel*/) /*Boolean*/
+    {
+      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      return levels.indexOf(level) > -1;
+    }
+  }
+});
+
+/**
+ * Represents the log information for a single logging notification.
+ * The loging system dispatches a single message each time a process requests information be logged.
+ * This entry can be captured by any object for storage or formatting.
+ * @param message The context or message of the log.
+ * @param level The level of the log.
+ * @param channel The Logger reference of this entry.
+ */
+function LoggerEntry(message, level /*LoggerLevel*/, channel /*String*/) {
+  this.channel = channel;
+  this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
+  this.message = message;
+}
+
+/**
+ * @extends Object
+ */
+LoggerEntry.prototype = Object.create(Object.prototype);
+LoggerEntry.prototype.constructor = LoggerEntry;
+
+/**
+ * Returns the String representation of the object.
+ * @return the String representation of the object.
+ */
+LoggerEntry.prototype.toString = function () /*String*/
+{
+  return '[LoggerEntry]';
+};
+
+/**
+ * API for sending log output.
+ */
+function Logger(channel) {
+    Signal.call(this);
+
+    Object.defineProperties(this, {
+        _entry: { value: new LoggerEntry(null, null, channel), writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Logger.prototype = Object.create(Signal.prototype, {
+    ///////////
+
+    constructor: { value: Logger },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[Logger]';
+        } },
+
+    ///////////
+
+    /**
+     * Indicates the channel value for the logger.
+     */
+    channel: {
+        get: function get() {
+            return this._entry.channel;
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.CRITICAL level.
+     */
+    critical: {
+        value: function value(context) {
+            for (var _len = arguments.length, options = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                options[_key - 1] = arguments[_key];
+            }
+
+            this._log(LoggerLevel.CRITICAL, context, options);
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.DEBUG level.
+     */
+    debug: {
+        value: function value(context) {
+            for (var _len2 = arguments.length, options = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                options[_key2 - 1] = arguments[_key2];
+            }
+
+            this._log(LoggerLevel.DEBUG, context, options);
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.ERROR level.
+     */
+    error: {
+        value: function value(context) {
+            for (var _len3 = arguments.length, options = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+                options[_key3 - 1] = arguments[_key3];
+            }
+
+            this._log(LoggerLevel.ERROR, context, options);
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEvent.INFO level.
+     */
+    info: {
+        value: function value(context) {
+            for (var _len4 = arguments.length, options = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                options[_key4 - 1] = arguments[_key4];
+            }
+
+            this._log(LoggerLevel.INFO, context, options);
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEvent.ALL level.
+     * @param ...args The information to log. This string can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param ... Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     */
+    log: {
+        value: function value(context) {
+            for (var _len5 = arguments.length, options = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+                options[_key5 - 1] = arguments[_key5];
+            }
+
+            this._log(LoggerLevel.ALL, context, options);
+        }
+    },
+
+    /**
+     * Logs the specified data using the LogEventLevel.WARN level.
+     */
+    warning: {
+        value: function value(context) {
+            for (var _len6 = arguments.length, options = Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
+                options[_key6 - 1] = arguments[_key6];
+            }
+
+            this._log(LoggerLevel.WARNING, context, options);
+        }
+    },
+
+    /**
+     * What a Terrible Failure: Report an exception that should never happen.
+     */
+    wtf: {
+        value: function value(context) {
+            for (var _len7 = arguments.length, options = Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
+                options[_key7 - 1] = arguments[_key7];
+            }
+
+            this._log(LoggerLevel.WTF, context, options);
+        }
+    },
+
+    /**
+     * What a Terrible Failure: Report an exception that should never happen.
+     */
+    _log: {
+        value: function value(level /*LoggerLevel*/, context, options /*Array*/) /*void*/
+        {
+            if (this.connected()) {
+                if ((typeof context === "string" || context instanceof String) && options instanceof Array) {
+                    var len = options.length;
+                    for (var i = 0; i < len; i++) {
+                        context = String(context).replace(new RegExp("\\{" + i + "\\}", "g"), options[i]);
+                    }
+                }
+                this._entry.message = context;
+                this._entry.level = level;
+                this.emit(this._entry);
+            }
+        }
+    }
+});
+
+/**
+ * The enumeration of all string expressions in the logging engine.
+ */
+
+var strings$1 = Object.defineProperties({}, {
+  // LoggerTarget
+
+  /**
+   * The static field used when throws an Error when a character is invalid.
+   */
+  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the character placement failed.
+   */
+  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error if the filter is empty or null.
+   */
+  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when filter failed.
+   */
+  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+
+  // Log
+
+  /**
+   * The default channel of the <code class="prettyprint">Logger</code> instances returns with the <code class="prettyprint">getLogger</code> method.
+   */
+  DEFAULT_CHANNEL: { value: "", enumerable: true },
+
+  /**
+   * The string representation of all the illegal characters.
+   */
+  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when a character is invalid.
+   */
+  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the length of one character is invalid.
+   */
+  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+
+  /**
+   * The static field used when throws an Error when the specified target is invalid.
+   */
+  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+
+});
+
+/**
+ * Represents the log information for a single logging notification.
+ * The loging system dispatches a single message each time a process requests information be logged.
+ * This entry can be captured by any object for storage or formatting.
+ * @param message The context or message of the log.
+ * @param level The level of the log.
+ * @param logger The Logger reference of this entry.
+ */
+function LoggerTarget() {
+    Object.defineProperties(this, {
+        /**
+         * Determinates the LoggerFactory reference of the target,
+         * by default the target use the <code>system.logging.Log</code> singleton.
+         */
+        factory: {
+            get: function get() {
+                return this._factory;
+            },
+            set: function set(factory) {
+                if (this._factory) {
+                    this._factory.removeTarget(this);
+                }
+                this._factory = factory instanceof LoggerFactory ? factory : Log;
+                this._factory.addTarget(this);
+            }
+        },
+
+        /**
+         * Determinates the filters array representation of the target.
+         */
+        filters: {
+            get: function get() {
+                return [].concat(this._filters);
+            },
+            set: function set(value /*Array*/) /*void*/
+            {
+                var filters = [];
+                if (value && value instanceof Array && value.length > 0) {
+                    var filter;
+                    var length = value.length;
+                    for (var i = 0; i < length; i++) {
+                        filter = value[i];
+                        if (filters.indexOf(filter) === -1) {
+                            this._checkFilter(filter);
+                            filters.push(filter);
+                        }
+                    }
+                } else {
+                    filters.push('*');
+                }
+
+                if (this._count > 0) {
+                    this._factory.removeTarget(this);
+                }
+
+                this._filters = filters;
+
+                if (this._count > 0) {
+                    this._factory.addTarget(this);
+                }
+            }
+        },
+
+        /**
+         * Determinates the level (LoggerLevel of this target.
+         */
+        level: {
+            get: function get() {
+                return this._level;
+            },
+            set: function set(value /*LoggerLevel*/) /*void*/
+            {
+                this._factory.removeTarget(this);
+                this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
+                this._factory.addTarget(this);
+            }
+        },
+
+        _count: { value: 0, writable: true },
+        _factory: { value: null, writable: true },
+        _filters: { value: ["*"], writable: true },
+        _level: { value: LoggerLevel.ALL, writable: true }
+    });
+
+    this.factory = Log;
+}
+
+/**
+ * @extends Object
+ */
+LoggerTarget.prototype = Object.create(Receiver.prototype);
+
+Object.defineProperties(LoggerTarget.prototype, {
+    ////////////////////////////////////
+
+    constructor: { value: LoggerTarget, enumerable: true, writable: true, configurable: true },
+
+    ////////////////////////////////////
+
+    /**
+     * Inserts a channel in the fllters if this channel don't exist.
+     * Returns a boolean if the channel is add in the list.
+     */
+    addFilter: {
+        value: function value(channel /*String*/) /*Boolean*/
+        {
+            this._checkFilter(channel);
+            var index = this._filters.indexOf(channel);
+            if (index === -1) {
+                this._filters.push(channel);
+                return true;
+            }
+            return false;
+        }
+    },
+
+    /**
+     * Sets up this target with the specified logger.
+     * Note : this method is called by the framework and should not be called by the developer.
+     */
+    addLogger: {
+        value: function value(logger /*Logger*/) /*void*/
+        {
+            if (logger && logger instanceof Logger) {
+                this._count++;
+                logger.connect(this);
+            }
+        }
+    },
+
+    /**
+     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
+     *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
+     *  This method will be called only if the event's level is in range of the target's level.
+     *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     */
+    logEntry: {
+        value: function value(entry /*LoggerEntry*/) /*void*/ //jshint ignore:line
+        {
+            // override
+        }
+    },
+
+    /**
+     * This method is called when the receiver is connected with a Signal object.
+     * @param ...values All the values emitting by the signals connected with this object.
+     */
+    receive: {
+        value: function value(entry) {
+            if (entry instanceof LoggerEntry) {
+                if (this._level === LoggerLevel.NONE) {
+                    return; // logging off
+                } else if (entry.level.valueOf() >= this._level.valueOf()) {
+                    this.logEntry(entry);
+                }
+            }
+        }
+    },
+
+    /**
+     * Remove a channel in the fllters if this channel exist.
+     * @return a boolean if the channel is removed.
+     */
+    removeFilter: {
+        value: function value(channel /*String*/) /*Boolean*/
+        {
+            if (channel && (typeof channel === "string" || channel instanceof String) && channel !== "") {
+                var index /*int*/ = this._filters.indexOf(channel);
+                if (index > -1) {
+                    this._filters.splice(index, 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    /**
+     * Stops this target from receiving events from the specified logger.
+     */
+    removeLogger: {
+        value: function value(logger /*Logger*/) /*void*/
+        {
+            if (logger instanceof Logger) {
+                this._count--;
+                logger.disconnect(this);
+            }
+        }
+    },
+
+    /**
+     * @private
+     */
+    _checkFilter: {
+        value: function value(filter /*String*/) /*void*/
+        {
+            if (filter === null) {
+                throw new InvalidFilterError(strings$1.EMPTY_FILTER);
+            }
+
+            if (this._factory.hasIllegalCharacters(filter)) {
+                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHARS_INVALID);
+            }
+
+            var index /*int*/ = filter.indexOf("*");
+
+            if (index >= 0 && index !== filter.length - 1) {
+                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHAR_PLACEMENT);
+            }
+        }
+    },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LoggerTarget]';
+        } }
+});
+
+/**
+ * This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
+ * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
+ */
+function LoggerFactory() {
+    Object.defineProperties(this, {
+        _loggers: { value: new ArrayMap(), writable: true },
+        _targetLevel: { value: LoggerLevel.NONE, writable: true },
+        _targets: { value: [], writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+LoggerFactory.prototype = Object.create(Receiver.prototype, {
+    ///////////
+
+    constructor: { value: LoggerFactory },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LoggerFactory]';
+        } },
+
+    ///////////
+
+    /**
+     * Allows the specified target to begin receiving notification of log events.
+     * @param target The specific target that should capture log events.
+     * @throws Error If the target is invalid.
+     */
+    addTarget: {
+        value: function value(target /*LoggerTarget*/) /*void*/
+        {
+            if (target && target instanceof LoggerTarget) {
+                var channel /*String*/;
+                var log /*Logger*/;
+
+                var filters /*Array*/ = target.filters;
+                var it /*Iterator*/ = this._loggers.iterator();
+                while (it.hasNext()) {
+                    log = it.next();
+                    channel = it.key();
+                    if (this._channelMatchInFilterList(channel, filters)) {
+                        target.addLogger(log);
+                    }
+                }
+
+                this._targets.push(target);
+
+                if (this._targetLevel === LoggerLevel.NONE || target.level.valueOf() < this._targetLevel.valueOf()) {
+                    this._targetLevel = target.level;
+                }
+            } else {
+                throw new Error(strings$1.INVALID_TARGET);
+            }
+        }
+    },
+
+    /**
+     * This method removes all of the current loggers from the cache of the factory.
+     * Subsquent calls to the <code>getLogger()</code> method return new instances of loggers rather than any previous instances with the same category.
+     * This method is intended for use in debugging only.
+     */
+    flush: {
+        value: function value() /*void*/
+        {
+            this._loggers.clear();
+            this._targets = [];
+            this._targetLevel = LoggerLevel.NONE;
+        }
+    },
+
+    /**
+     * Returns the logger associated with the specified channel.
+     * If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.
+     * Channels must be at least one character in length and may not contain any blanks or any of the following characters:
+     * []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.
+     * @param channel The channel of the logger that should be returned.
+     * @return An instance of a logger object for the specified name.
+     * If the name doesn't exist, a new instance with the specified name is returned.
+     */
+    getLogger: {
+        value: function value(channel /*String*/) /*Logger*/
+        {
+            this._checkChannel(channel);
+
+            var logger /*Logger*/ = this._loggers.get(channel);
+            if (!logger) {
+                logger = new Logger(channel);
+                this._loggers.set(channel, logger);
+            }
+
+            var target /*LoggerTarget*/;
+
+            var len /*int*/ = this._targets.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                target = this._targets[i];
+                if (this._channelMatchInFilterList(channel, target.filters)) {
+                    target.addLogger(logger);
+                }
+            }
+
+            return logger;
+        }
+    },
+
+    /**
+     * This method checks the specified string value for illegal characters.
+     * @param value The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * @return <code>true</code> if there are any illegal characters found, <code>false</code> otherwise.
+     */
+    hasIllegalCharacters: {
+        value: function value(_value /*String*/) /*Boolean*/
+        {
+            return indexOfAny(_value, strings$1.ILLEGALCHARACTERS.split("")) !== -1;
+        }
+    },
+
+    /**
+     * Indicates whether a 'all' level log event will be processed by a log target.
+     * @return true if a 'all' level log event will be logged; otherwise false.
+     */
+    isAll: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.ALL;
+        }
+    },
+
+    /**
+     * Indicates whether a 'critical' level log event will be processed by a log target.
+     * @return true if a 'critical' level log event will be logged; otherwise false.
+     */
+    isCritical: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.CRITICAL;
+        }
+    },
+
+    /**
+     * Indicates whether a 'debug' level log event will be processed by a log target.
+     * @return true if a 'debug' level log event will be logged; otherwise false.
+     */
+    isDebug: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.DEBUG;
+        }
+    },
+
+    /**
+     * Indicates whether a 'error' level log event will be processed by a log target.
+     * @return true if a 'error' level log event will be logged; otherwise false.
+     */
+    isError: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.ERROR;
+        }
+    },
+
+    /**
+     * Indicates whether a 'info' level log event will be processed by a log target.
+     * @return true if a 'info' level log event will be logged; otherwise false.
+     */
+    isInfo: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.INFO;
+        }
+    },
+
+    /**
+     * Indicates whether a 'warn' level log event will be processed by a log target.
+     * @return true if a 'warn' level log event will be logged; otherwise false.
+     */
+    isWarning: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.WARNING;
+        }
+    },
+
+    /**
+     * Indicates whether a 'wtf' level log event will be processed by a log target.
+     * @return true if a 'wtf' level log event will be logged; otherwise false.
+     */
+    isWtf: {
+        value: function value() /*Boolean*/
+        {
+            return this._targetLevel === LoggerLevel.WTF;
+        }
+    },
+
+    /**
+     * Stops the specified target from receiving notification of log events.
+     * @param target The specific target that should capture log events.
+     * @throws Error If the target is invalid.
+     */
+    removeTarget: {
+        value: function value(target /*LoggerTarget*/) /*void*/
+        {
+            if (target && target instanceof LoggerTarget) {
+                var log;
+                var filters = target.filters;
+                var it = this._loggers.iterator();
+                while (it.hasNext()) {
+                    log = it.next();
+                    var c = it.key();
+                    if (this._channelMatchInFilterList(c, filters)) {
+                        target.removeLogger(log);
+                    }
+                }
+                var len = this._targets.length;
+                for (var i = 0; i < len; i++) {
+                    if (target === this._targets[i]) {
+                        this._targets.splice(i, 1);
+                        i--;
+                    }
+                }
+                this._resetTargetLevel();
+            } else {
+                throw new Error(strings$1.INVALID_TARGET);
+            }
+        }
+    },
+
+    /**
+     * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
+     * @param category The category to match against.
+     * @param filters A list of Strings to check category against.
+     * @return <code>true</code> if the specified category matches any of the filter expressions found in the filters list, <code>false</code> otherwise.
+     * @private
+     */
+    _channelMatchInFilterList: {
+        value: function value(channel /*String*/, filters /*Array*/) /*Boolean*/
+        {
+            var filter /*String*/;
+            var index /*int*/ = -1;
+            var len /*int*/ = filters.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                filter = filters[i];
+                index = filter.indexOf("*");
+                if (index === 0) {
+                    return true;
+                }
+                index = index < 0 ? index = channel.length : index - 1;
+                if (channel.substring(0, index) === filter.substring(0, index)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    /**
+     * This method will ensure that a valid category string has been specified.
+     * If the category is not valid an <code>InvalidCategoryError</code> will be thrown.
+     * Categories can not contain any blanks or any of the following characters: []`*~,!#$%^&amp;()]{}+=\|'";?&gt;&lt;./&#64; or be less than 1 character in length.
+     * @private
+     */
+    _checkChannel: {
+        value: function value(channel /*String*/) /*void*/
+        {
+            if (channel === null || channel.length === 0) {
+                throw new InvalidChannelError(strings$1.INVALID_LENGTH);
+            }
+            if (this.hasIllegalCharacters(channel) || channel.indexOf("*") !== -1) {
+                throw new InvalidChannelError(strings$1.INVALID_CHARS);
+            }
+        }
+    },
+
+    /**
+     * This method resets the Log's target level to the most verbose log level for the currently registered targets.
+     * @private
+     */
+    _resetTargetLevel: {
+        value: function value() /*void*/
+        {
+            var t /*LoggerTarget*/;
+            var min /*LoggerLevel*/ = LoggerLevel.NONE;
+            var len /*int*/ = this._targets.length;
+            for (var i /*int*/ = 0; i < len; i++) {
+                t = this._targets[i];
+                if (min === LoggerLevel.NONE || t.level.valueOf() < min.valueOf()) {
+                    min = t.level;
+                }
+            }
+            this._targetLevel = min;
+        }
+    }
+});
+
+/////////////////
+
+var Log = new LoggerFactory();
+
+var logger = Log.getLogger("system.ioc.logger");
+
+/**
  * Enumeration of all "magic reference patterns" id can be use in the object definition to create a dependency with special object reference in the factory.
  */
 
@@ -5578,6 +6866,10 @@ var TypePolicy = Object.defineProperties({}, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var ioc = Object.assign({
+    // singleton
+    logger: logger,
+
+    // classes
     MagicReference: MagicReference,
     ObjectArgument: ObjectArgument,
     ObjectAttribute: ObjectAttribute,
@@ -5589,710 +6881,6 @@ var ioc = Object.assign({
     ObjectScope: ObjectScope,
     Parameters: Parameters,
     TypePolicy: TypePolicy
-});
-
-/**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
- */
-
-function Receiver() {}
-
-/**
- * @extends Object
- */
-Receiver.prototype = Object.create(Object.prototype);
-Receiver.prototype.constructor = Receiver;
-
-/**
- * This method is called when the receiver is connected with a Signal object.
- * @param ...values All the values emitting by the signals connected with this object.
- */
-Receiver.prototype.receive = function () {};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Receiver.prototype.toString = function () /*String*/
-{
-  return "[Receiver]";
-};
-
-/**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
- */
-
-function Signaler() {}
-
-/**
- * @extends Object
- */
-Signaler.prototype = Object.create(Object.prototype, {
-    /**
-     * Indicates the number of receivers connected.
-     */
-    length: {
-        get: function get() {
-            return 0;
-        }
-    }
-});
-
-Signaler.prototype.constructor = Signaler;
-
-/**
- * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
- * @return <code>true</code> If the receiver is connected with the signal emitter.
- */
-Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*uint*/
-{}
-//
-
-
-/**
- * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
- */
-;Signaler.prototype.connected = function () /*Boolean*/
-{}
-//
-
-
-/**
- * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
- */
-;Signaler.prototype.disconnect = function (receiver) /*Boolean*/
-{}
-//
-
-
-/**
- * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
- */
-;Signaler.prototype.emit = function () /*void*/
-{}
-//
-
-
-/**
- * Indicates the number of receivers connected.
- */
-;Signaler.prototype.getLength = function () /*uint*/
-{}
-//
-
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
- * @return <code class="prettyprint">true</code> if the specified receiver is connected.
- */
-;Signaler.prototype.hasReceiver = function (receiver) /*Boolean*/
-{
-    //
-};
-
-/**
- * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
- * @param receiver The receiver reference.
- * @param priority The priority value of the entry.
- * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
- */
-
-function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
-  /**
-   * Indicates if the receiver must be disconnected when handle the first time a signal.
-   */
-  this.auto = Boolean(auto);
-
-  /**
-   * The receiver reference of this entry.
-   */
-  this.receiver = receiver || null;
-
-  /**
-   * Determinates the priority value of the object.
-   */
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
-}
-
-///////////////////
-
-/**
- * @extends Object
- */
-SignalEntry.prototype = Object.create(Object.prototype);
-SignalEntry.prototype.constructor = SignalEntry;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-SignalEntry.prototype.toString = function () /*String*/
-{
-  return '[SignalEntry]';
-};
-
-/**
- * Creates a new Signal instance.
- * <p><b>Example :</b></p>
- * <pre>
- * function Slot( name )
- * {
- *     this.name = name ;
- * }
- *
- * Slot.prototype = Object.create( system.signals.Receiver.prototype );
- * Slot.prototype.constructor = Slot;
- *
- * Slot.prototype.receive = function ( message )
- * {
- *     trace( this + " : " + message ) ;
- * }
- *
- * Slot.prototype.toString = function ()
- * {
- *     return "[Slot name:" + this.name + "]" ;
- * }
- *
- * var slot1 = new Slot("slot1") ;
- *
- * var slot2 = function( message )
- * {
- *     trace( this + " : " + message ) ;
- * }
- *
- * var signal = new system.signals.Signal() ;
- *
- * //signal.proxy = slot1 ;
- *
- * signal.connect( slot1 , 0 ) ;
- * signal.connect( slot2 , 2 ) ;
- *
- * signal.emit( "hello world" ) ;
- * </pre>
- */
-function Signal() {
-    Object.defineProperties(this, {
-        /**
-         * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
-         */
-        proxy: {
-            value: null,
-            configurable: true,
-            writable: true
-        },
-        receivers: {
-            value: [],
-            writable: true
-        }
-    });
-}
-
-///////////////////
-
-Signal.prototype = Object.create(Signaler.prototype, {
-    /**
-     * The number of receivers or slots register in the signal object.
-     */
-    length: {
-        get: function get() {
-            return this.receivers.length;
-        }
-    }
-});
-
-Signal.prototype.constructor = Signal;
-
-///////////////////
-
-/**
- * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
- * @return <code>true</code> If the receiver is connected with the signal emitter.
- */
-Signal.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
-
-    autoDisconnect = Boolean(autoDisconnect);
-    priority = priority > 0 ? Math.ceil(priority) : 0;
-
-    if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-        if (this.hasReceiver(receiver)) {
-            return false;
-        }
-
-        this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
-
-        /////// bubble sorting
-
-        var i;
-        var j;
-
-        var a = this.receivers;
-
-        var swap = function swap(j, k) {
-            var temp = a[j];
-            a[j] = a[k];
-            a[k] = temp;
-            return true;
-        };
-
-        var swapped = false;
-
-        var l = a.length;
-
-        for (i = 1; i < l; i++) {
-            for (j = 0; j < l - i; j++) {
-                if (a[j + 1].priority > a[j].priority) {
-                    swapped = swap(j, j + 1);
-                }
-            }
-            if (!swapped) {
-                break;
-            }
-        }
-
-        ///////
-
-        return true;
-    }
-
-    return false;
-};
-
-/**
- * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
- */
-Signal.prototype.connected = function () /*Boolean*/
-{
-    return this.receivers.length > 0;
-};
-
-/**
- * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
- */
-Signal.prototype.disconnect = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        if (this.receivers.length > 0) {
-            this.receivers = [];
-            return true;
-        } else {
-            return false;
-        }
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                this.receivers.splice(l, 1);
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
-/**
- * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
- */
-Signal.prototype.emit = function () /*Arguments*/ /*void*/
-{
-    var values = Object.setPrototypeOf(arguments, Array.prototype);
-
-    if (this.receivers.length === 0) {
-        return;
-    }
-
-    var i /*int*/;
-    var l /*int*/ = this.receivers.length;
-    var r /*Array*/ = [];
-    var a /*Array*/ = this.receivers.slice();
-    var e /*SignalEntry*/;
-
-    var slot;
-
-    for (i = 0; i < l; i++) {
-        e = a[i];
-        if (e.auto) {
-            r.push(e);
-        }
-    }
-    if (r.length > 0) {
-        l = r.length;
-        while (--l > -1) {
-            i = this.receivers.indexOf(r[l]);
-            if (i > -1) {
-                this.receivers.splice(i, 1);
-            }
-        }
-    }
-    l = a.length;
-    for (i = 0; i < l; i++) {
-        slot = a[i].receiver;
-
-        if (slot instanceof Function || typeof receiver === "function") {
-            slot.apply(this.proxy || this, values);
-        } else if (slot instanceof Receiver || "receive" in slot) {
-            slot.receive.apply(this.proxy || slot, values);
-        }
-    }
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
- * @return <code class="prettyprint">true</code> if the specified receiver is connected.
- */
-Signal.prototype.hasReceiver = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
-/**
- * Returns the Array representation of all receivers connected with the signal.
- * @return the Array representation of all receivers connected with the signal.
- */
-Signal.prototype.toArray = function () /*Array*/
-{
-    var r /*Array*/ = [];
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        for (var i /*int*/ = 0; i < l; i++) {
-            r.push(this.receivers[i].receiver);
-        }
-    }
-    return r;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Signal.prototype.toString = function () /*String*/
-{
-    return '[Signal]';
-};
-
-/**
- * The logger levels that is used within the logging framework.
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
- * @example
- * var LoggerLevel = system.logging.LoggerLevel ;
- *
- * for( var level in LoggerLevel )
- * {
- *     if( LoggerLevel.hasOwnProperty(level) )
- *     {
- *        trace( level + ' ' + LoggerLevel.getLevelString(LoggerLevel[level]) ) ;
- *     }
- * }
- */
-function LoggerLevel(value /*int*/, name /*String*/) {
-  Enum.call(this, value, name);
-}
-
-/**
- * @extends Object
- */
-LoggerLevel.prototype = Object.create(Enum.prototype);
-LoggerLevel.prototype.constructor = LoggerLevel;
-
-Object.defineProperties(LoggerLevel, {
-  /**
-   * Intended to force a target to process all messages (1).
-   */
-  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
-
-  /**
-   * Designates events that are very harmful and will eventually lead to application failure (16).
-   */
-  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
-
-  /**
-   * Designates informational level messages that are fine grained and most helpful when debugging an application (2).
-   */
-  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
-
-  /**
-   * The default string level value in the getLevelString() method.
-   */
-  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
-
-  /**
-   * Designates error events that might still allow the application to continue running (8).
-   */
-  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
-
-  /**
-   * Designates informational messages that highlight the progress of the application at coarse-grained level (4).
-   */
-  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
-
-  /**
-   * A special level that can be used to turn off logging (0).
-   */
-  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
-
-  /**
-   * Designates events that could be harmful to the application operation (6).
-   */
-  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
-
-  /**
-   * What a Terrible Failure: designates an exception that should never happen. (32).
-   */
-  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
-
-  /**
-   * Returns <code>true</code> if the number level passed in argument is valid.
-   * @return <code>true</code> if the number level passed in argument is valid.
-   */
-  get: {
-    value: function value(_value /*int*/) /*LoggerLevel*/
-    {
-      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      var l = levels.length;
-      while (--l > -1) {
-        if (levels[l]._value === _value) {
-          return levels[l];
-        }
-      }
-      return null;
-    }
-  },
-
-  /**
-   * Returns a String value representing the specific level.
-   * @return a String value representing the specific level.
-   */
-  getLevelString: {
-    value: function value(_value2 /*LoggerLevel*/) /*String*/
-    {
-      if (LoggerLevel.validate(_value2)) {
-        return _value2.toString();
-      } else {
-        return LoggerLevel.DEFAULT_LEVEL_STRING;
-      }
-    }
-  },
-
-  /**
-   * Returns <code>true</code> if the number level passed in argument is valid.
-   * @return <code>true</code> if the number level passed in argument is valid.
-   */
-  validate: {
-    value: function value(level /*LoggerLevel*/) /*Boolean*/
-    {
-      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      return levels.indexOf(level) > -1;
-    }
-  }
-});
-
-/**
- * Represents the log information for a single logging notification.
- * The loging system dispatches a single message each time a process requests information be logged.
- * This entry can be captured by any object for storage or formatting.
- * @param message The context or message of the log.
- * @param level The level of the log.
- * @param channel The Logger reference of this entry.
- */
-function LoggerEntry(message, level /*LoggerLevel*/, channel /*String*/) {
-  this.channel = channel;
-  this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
-  this.message = message;
-}
-
-/**
- * @extends Object
- */
-LoggerEntry.prototype = Object.create(Object.prototype);
-LoggerEntry.prototype.constructor = LoggerEntry;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-LoggerEntry.prototype.toString = function () /*String*/
-{
-  return '[LoggerEntry]';
-};
-
-/**
- * API for sending log output.
- */
-function Logger(channel) {
-    Signal.call(this);
-
-    Object.defineProperties(this, {
-        _entry: { value: new LoggerEntry(null, null, channel), writable: true }
-    });
-}
-
-/**
- * @extends Object
- */
-Logger.prototype = Object.create(Signal.prototype, {
-    ///////////
-
-    constructor: { value: Logger },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[Logger]';
-        } },
-
-    ///////////
-
-    /**
-     * Indicates the channel value for the logger.
-     */
-    channel: {
-        get: function get() {
-            return this._entry.channel;
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEventLevel.CRITICAL level.
-     */
-    critical: {
-        value: function value(context) {
-            for (var _len = arguments.length, options = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                options[_key - 1] = arguments[_key];
-            }
-
-            this._log(LoggerLevel.CRITICAL, context, options);
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEventLevel.DEBUG level.
-     */
-    debug: {
-        value: function value(context) {
-            for (var _len2 = arguments.length, options = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-                options[_key2 - 1] = arguments[_key2];
-            }
-
-            this._log(LoggerLevel.DEBUG, context, options);
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEventLevel.ERROR level.
-     */
-    error: {
-        value: function value(context) {
-            for (var _len3 = arguments.length, options = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-                options[_key3 - 1] = arguments[_key3];
-            }
-
-            this._log(LoggerLevel.ERROR, context, options);
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEvent.INFO level.
-     */
-    info: {
-        value: function value(context) {
-            for (var _len4 = arguments.length, options = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-                options[_key4 - 1] = arguments[_key4];
-            }
-
-            this._log(LoggerLevel.INFO, context, options);
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEvent.ALL level.
-     * @param ...args The information to log. This string can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
-     * @param ... Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
-     */
-    log: {
-        value: function value(context) {
-            for (var _len5 = arguments.length, options = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-                options[_key5 - 1] = arguments[_key5];
-            }
-
-            this._log(LoggerLevel.ALL, context, options);
-        }
-    },
-
-    /**
-     * Logs the specified data using the LogEventLevel.WARN level.
-     */
-    warning: {
-        value: function value(context) {
-            for (var _len6 = arguments.length, options = Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
-                options[_key6 - 1] = arguments[_key6];
-            }
-
-            this._log(LoggerLevel.WARNING, context, options);
-        }
-    },
-
-    /**
-     * What a Terrible Failure: Report an exception that should never happen.
-     */
-    wtf: {
-        value: function value(context) {
-            for (var _len7 = arguments.length, options = Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
-                options[_key7 - 1] = arguments[_key7];
-            }
-
-            this._log(LoggerLevel.WTF, context, options);
-        }
-    },
-
-    /**
-     * What a Terrible Failure: Report an exception that should never happen.
-     */
-    _log: {
-        value: function value(level /*LoggerLevel*/, context, options /*Array*/) /*void*/
-        {
-            if (this.connected()) {
-                if ((typeof context === "string" || context instanceof String) && options instanceof Array) {
-                    var len = options.length;
-                    for (var i = 0; i < len; i++) {
-                        context = String(context).replace(new RegExp("\\{" + i + "\\}", "g"), options[i]);
-                    }
-                }
-                this._entry.message = context;
-                this._entry.level = level;
-                this.emit(this._entry);
-            }
-        }
-    }
 });
 
 /**
@@ -6340,588 +6928,6 @@ Loggable.prototype = Object.create(Object.prototype, {
         }
     }
 });
-
-/**
- * The enumeration of all string expressions in the logging engine.
- */
-
-var strings$1 = Object.defineProperties({}, {
-  // LoggerTarget
-
-  /**
-   * The static field used when throws an Error when a character is invalid.
-   */
-  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
-
-  /**
-   * The static field used when throws an Error when the character placement failed.
-   */
-  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
-
-  /**
-   * The static field used when throws an Error if the filter is empty or null.
-   */
-  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
-
-  /**
-   * The static field used when throws an Error when filter failed.
-   */
-  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
-
-  // Log
-
-  /**
-   * The default channel of the <code class="prettyprint">Logger</code> instances returns with the <code class="prettyprint">getLogger</code> method.
-   */
-  DEFAULT_CHANNEL: { value: "", enumerable: true },
-
-  /**
-   * The string representation of all the illegal characters.
-   */
-  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-
-  /**
-   * The static field used when throws an Error when a character is invalid.
-   */
-  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-
-  /**
-   * The static field used when throws an Error when the length of one character is invalid.
-   */
-  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
-
-  /**
-   * The static field used when throws an Error when the specified target is invalid.
-   */
-  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
-
-});
-
-/**
- * Represents the log information for a single logging notification.
- * The loging system dispatches a single message each time a process requests information be logged.
- * This entry can be captured by any object for storage or formatting.
- * @param message The context or message of the log.
- * @param level The level of the log.
- * @param logger The Logger reference of this entry.
- */
-function LoggerTarget() {
-    Object.defineProperties(this, {
-        /**
-         * Determinates the LoggerFactory reference of the target,
-         * by default the target use the <code>system.logging.Log</code> singleton.
-         */
-        factory: {
-            get: function get() {
-                return this._factory;
-            },
-            set: function set(factory) {
-                if (this._factory) {
-                    this._factory.removeTarget(this);
-                }
-                this._factory = factory instanceof LoggerFactory ? factory : Log;
-                this._factory.addTarget(this);
-            }
-        },
-
-        /**
-         * Determinates the filters array representation of the target.
-         */
-        filters: {
-            get: function get() {
-                return [].concat(this._filters);
-            },
-            set: function set(value /*Array*/) /*void*/
-            {
-                var filters = [];
-                if (value && value instanceof Array && value.length > 0) {
-                    var filter;
-                    var length = value.length;
-                    for (var i = 0; i < length; i++) {
-                        filter = value[i];
-                        if (filters.indexOf(filter) === -1) {
-                            this._checkFilter(filter);
-                            filters.push(filter);
-                        }
-                    }
-                } else {
-                    filters.push('*');
-                }
-
-                if (this._count > 0) {
-                    this._factory.removeTarget(this);
-                }
-
-                this._filters = filters;
-
-                if (this._count > 0) {
-                    this._factory.addTarget(this);
-                }
-            }
-        },
-
-        /**
-         * Determinates the level (LoggerLevel of this target.
-         */
-        level: {
-            get: function get() {
-                return this._level;
-            },
-            set: function set(value /*LoggerLevel*/) /*void*/
-            {
-                this._factory.removeTarget(this);
-                this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
-                this._factory.addTarget(this);
-            }
-        },
-
-        _count: { value: 0, writable: true },
-        _factory: { value: null, writable: true },
-        _filters: { value: ["*"], writable: true },
-        _level: { value: LoggerLevel.ALL, writable: true }
-    });
-
-    this.factory = Log;
-}
-
-/**
- * @extends Object
- */
-LoggerTarget.prototype = Object.create(Receiver.prototype);
-
-Object.defineProperties(LoggerTarget.prototype, {
-    ////////////////////////////////////
-
-    constructor: { value: LoggerTarget, enumerable: true, writable: true, configurable: true },
-
-    ////////////////////////////////////
-
-    /**
-     * Inserts a channel in the fllters if this channel don't exist.
-     * Returns a boolean if the channel is add in the list.
-     */
-    addFilter: {
-        value: function value(channel /*String*/) /*Boolean*/
-        {
-            this._checkFilter(channel);
-            var index = this._filters.indexOf(channel);
-            if (index === -1) {
-                this._filters.push(channel);
-                return true;
-            }
-            return false;
-        }
-    },
-
-    /**
-     * Sets up this target with the specified logger.
-     * Note : this method is called by the framework and should not be called by the developer.
-     */
-    addLogger: {
-        value: function value(logger /*Logger*/) /*void*/
-        {
-            if (logger && logger instanceof Logger) {
-                this._count++;
-                logger.connect(this);
-            }
-        }
-    },
-
-    /**
-     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
-     *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
-     *  This method will be called only if the event's level is in range of the target's level.
-     *  <b><i>Descendants need to override this method to make it useful.</i></b>
-     */
-    logEntry: {
-        value: function value(entry /*LoggerEntry*/) /*void*/ //jshint ignore:line
-        {
-            // override
-        }
-    },
-
-    /**
-     * This method is called when the receiver is connected with a Signal object.
-     * @param ...values All the values emitting by the signals connected with this object.
-     */
-    receive: {
-        value: function value(entry) {
-            if (entry instanceof LoggerEntry) {
-                if (this._level === LoggerLevel.NONE) {
-                    return; // logging off
-                } else if (entry.level.valueOf() >= this._level.valueOf()) {
-                    this.logEntry(entry);
-                }
-            }
-        }
-    },
-
-    /**
-     * Remove a channel in the fllters if this channel exist.
-     * @return a boolean if the channel is removed.
-     */
-    removeFilter: {
-        value: function value(channel /*String*/) /*Boolean*/
-        {
-            if (channel && (typeof channel === "string" || channel instanceof String) && channel !== "") {
-                var index /*int*/ = this._filters.indexOf(channel);
-                if (index > -1) {
-                    this._filters.splice(index, 1);
-                    return true;
-                }
-            }
-            return false;
-        }
-    },
-
-    /**
-     * Stops this target from receiving events from the specified logger.
-     */
-    removeLogger: {
-        value: function value(logger /*Logger*/) /*void*/
-        {
-            if (logger instanceof Logger) {
-                this._count--;
-                logger.disconnect(this);
-            }
-        }
-    },
-
-    /**
-     * @private
-     */
-    _checkFilter: {
-        value: function value(filter /*String*/) /*void*/
-        {
-            if (filter === null) {
-                throw new InvalidFilterError(strings$1.EMPTY_FILTER);
-            }
-
-            if (this._factory.hasIllegalCharacters(filter)) {
-                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHARS_INVALID);
-            }
-
-            var index /*int*/ = filter.indexOf("*");
-
-            if (index >= 0 && index !== filter.length - 1) {
-                throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHAR_PLACEMENT);
-            }
-        }
-    },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[LoggerTarget]';
-        } }
-});
-
-/**
- * This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
- * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
- */
-function LoggerFactory() {
-    Object.defineProperties(this, {
-        _loggers: { value: new ArrayMap(), writable: true },
-        _targetLevel: { value: LoggerLevel.NONE, writable: true },
-        _targets: { value: [], writable: true }
-    });
-}
-
-/**
- * @extends Object
- */
-LoggerFactory.prototype = Object.create(Receiver.prototype, {
-    ///////////
-
-    constructor: { value: LoggerFactory },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[LoggerFactory]';
-        } },
-
-    ///////////
-
-    /**
-     * Allows the specified target to begin receiving notification of log events.
-     * @param target The specific target that should capture log events.
-     * @throws Error If the target is invalid.
-     */
-    addTarget: {
-        value: function value(target /*LoggerTarget*/) /*void*/
-        {
-            if (target && target instanceof LoggerTarget) {
-                var channel /*String*/;
-                var log /*Logger*/;
-
-                var filters /*Array*/ = target.filters;
-                var it /*Iterator*/ = this._loggers.iterator();
-                while (it.hasNext()) {
-                    log = it.next();
-                    channel = it.key();
-                    if (this._channelMatchInFilterList(channel, filters)) {
-                        target.addLogger(log);
-                    }
-                }
-
-                this._targets.push(target);
-
-                if (this._targetLevel === LoggerLevel.NONE || target.level.valueOf() < this._targetLevel.valueOf()) {
-                    this._targetLevel = target.level;
-                }
-            } else {
-                throw new Error(strings$1.INVALID_TARGET);
-            }
-        }
-    },
-
-    /**
-     * This method removes all of the current loggers from the cache of the factory.
-     * Subsquent calls to the <code>getLogger()</code> method return new instances of loggers rather than any previous instances with the same category.
-     * This method is intended for use in debugging only.
-     */
-    flush: {
-        value: function value() /*void*/
-        {
-            this._loggers.clear();
-            this._targets = [];
-            this._targetLevel = LoggerLevel.NONE;
-        }
-    },
-
-    /**
-     * Returns the logger associated with the specified channel.
-     * If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.
-     * Channels must be at least one character in length and may not contain any blanks or any of the following characters:
-     * []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
-     * This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.
-     * @param channel The channel of the logger that should be returned.
-     * @return An instance of a logger object for the specified name.
-     * If the name doesn't exist, a new instance with the specified name is returned.
-     */
-    getLogger: {
-        value: function value(channel /*String*/) /*Logger*/
-        {
-            this._checkChannel(channel);
-
-            var logger /*Logger*/ = this._loggers.get(channel);
-            if (!logger) {
-                logger = new Logger(channel);
-                this._loggers.set(channel, logger);
-            }
-
-            var target /*LoggerTarget*/;
-
-            var len /*int*/ = this._targets.length;
-            for (var i /*int*/ = 0; i < len; i++) {
-                target = this._targets[i];
-                if (this._channelMatchInFilterList(channel, target.filters)) {
-                    target.addLogger(logger);
-                }
-            }
-
-            return logger;
-        }
-    },
-
-    /**
-     * This method checks the specified string value for illegal characters.
-     * @param value The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
-     * @return <code>true</code> if there are any illegal characters found, <code>false</code> otherwise.
-     */
-    hasIllegalCharacters: {
-        value: function value(_value /*String*/) /*Boolean*/
-        {
-            return indexOfAny(_value, strings$1.ILLEGALCHARACTERS.split("")) !== -1;
-        }
-    },
-
-    /**
-     * Indicates whether a 'all' level log event will be processed by a log target.
-     * @return true if a 'all' level log event will be logged; otherwise false.
-     */
-    isAll: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.ALL;
-        }
-    },
-
-    /**
-     * Indicates whether a 'critical' level log event will be processed by a log target.
-     * @return true if a 'critical' level log event will be logged; otherwise false.
-     */
-    isCritical: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.CRITICAL;
-        }
-    },
-
-    /**
-     * Indicates whether a 'debug' level log event will be processed by a log target.
-     * @return true if a 'debug' level log event will be logged; otherwise false.
-     */
-    isDebug: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.DEBUG;
-        }
-    },
-
-    /**
-     * Indicates whether a 'error' level log event will be processed by a log target.
-     * @return true if a 'error' level log event will be logged; otherwise false.
-     */
-    isError: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.ERROR;
-        }
-    },
-
-    /**
-     * Indicates whether a 'info' level log event will be processed by a log target.
-     * @return true if a 'info' level log event will be logged; otherwise false.
-     */
-    isInfo: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.INFO;
-        }
-    },
-
-    /**
-     * Indicates whether a 'warn' level log event will be processed by a log target.
-     * @return true if a 'warn' level log event will be logged; otherwise false.
-     */
-    isWarning: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.WARNING;
-        }
-    },
-
-    /**
-     * Indicates whether a 'wtf' level log event will be processed by a log target.
-     * @return true if a 'wtf' level log event will be logged; otherwise false.
-     */
-    isWtf: {
-        value: function value() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.WTF;
-        }
-    },
-
-    /**
-     * Stops the specified target from receiving notification of log events.
-     * @param target The specific target that should capture log events.
-     * @throws Error If the target is invalid.
-     */
-    removeTarget: {
-        value: function value(target /*LoggerTarget*/) /*void*/
-        {
-            if (target && target instanceof LoggerTarget) {
-                var log;
-                var filters = target.filters;
-                var it = this._loggers.iterator();
-                while (it.hasNext()) {
-                    log = it.next();
-                    var c = it.key();
-                    if (this._channelMatchInFilterList(c, filters)) {
-                        target.removeLogger(log);
-                    }
-                }
-                var len = this._targets.length;
-                for (var i = 0; i < len; i++) {
-                    if (target === this._targets[i]) {
-                        this._targets.splice(i, 1);
-                        i--;
-                    }
-                }
-                this._resetTargetLevel();
-            } else {
-                throw new Error(strings$1.INVALID_TARGET);
-            }
-        }
-    },
-
-    /**
-     * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
-     * @param category The category to match against.
-     * @param filters A list of Strings to check category against.
-     * @return <code>true</code> if the specified category matches any of the filter expressions found in the filters list, <code>false</code> otherwise.
-     * @private
-     */
-    _channelMatchInFilterList: {
-        value: function value(channel /*String*/, filters /*Array*/) /*Boolean*/
-        {
-            var filter /*String*/;
-            var index /*int*/ = -1;
-            var len /*int*/ = filters.length;
-            for (var i /*int*/ = 0; i < len; i++) {
-                filter = filters[i];
-                index = filter.indexOf("*");
-                if (index === 0) {
-                    return true;
-                }
-                index = index < 0 ? index = channel.length : index - 1;
-                if (channel.substring(0, index) === filter.substring(0, index)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    },
-
-    /**
-     * This method will ensure that a valid category string has been specified.
-     * If the category is not valid an <code>InvalidCategoryError</code> will be thrown.
-     * Categories can not contain any blanks or any of the following characters: []`*~,!#$%^&amp;()]{}+=\|'";?&gt;&lt;./&#64; or be less than 1 character in length.
-     * @private
-     */
-    _checkChannel: {
-        value: function value(channel /*String*/) /*void*/
-        {
-            if (channel === null || channel.length === 0) {
-                throw new InvalidChannelError(strings$1.INVALID_LENGTH);
-            }
-            if (this.hasIllegalCharacters(channel) || channel.indexOf("*") !== -1) {
-                throw new InvalidChannelError(strings$1.INVALID_CHARS);
-            }
-        }
-    },
-
-    /**
-     * This method resets the Log's target level to the most verbose log level for the currently registered targets.
-     * @private
-     */
-    _resetTargetLevel: {
-        value: function value() /*void*/
-        {
-            var t /*LoggerTarget*/;
-            var min /*LoggerLevel*/ = LoggerLevel.NONE;
-            var len /*int*/ = this._targets.length;
-            for (var i /*int*/ = 0; i < len; i++) {
-                t = this._targets[i];
-                if (min === LoggerLevel.NONE || t.level.valueOf() < min.valueOf()) {
-                    min = t.level;
-                }
-            }
-            this._targetLevel = min;
-        }
-    }
-});
-
-/////////////////
-
-var Log = new LoggerFactory();
 
 /**
  * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.

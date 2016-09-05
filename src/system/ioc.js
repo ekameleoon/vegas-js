@@ -2,6 +2,8 @@
 
 import '../polyfill.js' ;
 
+import { logger } from './ioc/logger.js' ;
+
 import { MagicReference }  from './ioc/MagicReference.js' ;
 import { ObjectArgument }  from './ioc/ObjectArgument.js' ;
 import { ObjectAttribute } from './ioc/ObjectAttribute.js' ;
@@ -21,6 +23,10 @@ import { TypePolicy }      from './ioc/TypePolicy.js' ;
  */
 export var ioc = Object.assign
 ({
+    // singleton
+    logger : logger ,
+
+    // classes
     MagicReference  : MagicReference,
     ObjectArgument  : ObjectArgument,
     ObjectAttribute : ObjectAttribute,
