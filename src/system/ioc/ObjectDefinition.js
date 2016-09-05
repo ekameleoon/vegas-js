@@ -134,7 +134,7 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
             },
             set : function( flag )
             {
-                this._lazyInit = flag instanceof Boolean || typeof(flag) === 'boolean' ? flag : false ;
+                this._lazyInit = ((flag instanceof Boolean) || (typeof(flag) === 'boolean')) ? flag : false ;
             }
         },
 

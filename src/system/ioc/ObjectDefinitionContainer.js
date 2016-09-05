@@ -123,7 +123,7 @@ export function ObjectDefinitionContainer()
 }
 
 /**
- * @extends Object
+ * @extends Task
  */
 ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
 {

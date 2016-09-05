@@ -7,10 +7,17 @@ export function isLockable( target )
 {
     if( target )
     {
-        let isLocked = ( 'isLocked' in target ) && ( target.isLocked instanceof Function )  ;
-        let lock     = ( 'lock'     in target ) && ( target.lock     instanceof Function )  ;
-        let unlock   = ( 'unlock'   in target ) && ( target.unlock   instanceof Function )  ;
-        return isLocked && lock && unlock ;
+        if( target instanceof Lockable )
+        {
+            return true ;
+        }
+        else
+        {
+            let isLocked = ( 'isLocked' in target ) && ( target.isLocked instanceof Function )  ;
+            let lock     = ( 'lock'     in target ) && ( target.lock     instanceof Function )  ;
+            let unlock   = ( 'unlock'   in target ) && ( target.unlock   instanceof Function )  ;
+            return isLocked && lock && unlock ;
+        }
     }
 
     return false ;

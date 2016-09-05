@@ -7,6 +7,10 @@ export function isResetable( target )
 {
     if( target )
     {
+        if( target instanceof Resetable )
+        {
+            return true ;
+        }
         return ( 'reset' in target ) && ( target.reset instanceof Function )  ;
     }
 

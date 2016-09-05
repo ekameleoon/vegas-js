@@ -7,6 +7,10 @@ export function isRunnable( target )
 {
     if( target )
     {
+        if( target instanceof Runnable )
+        {
+            return true ;
+        }
         return ( 'run' in target ) && ( target.run instanceof Function )  ;
     }
 

@@ -7,6 +7,10 @@ export function isStoppable( target )
 {
     if( target )
     {
+        if( target instanceof Stoppable )
+        {
+            return true ;
+        }
         return ( 'stop' in target ) && ( target.stop instanceof Function )  ;
     }
 

@@ -7,6 +7,10 @@ export function isResumable( target )
 {
     if( target )
     {
+        if( target instanceof Resumable )
+        {
+            return true ;
+        }
         return ( 'resume' in target ) && ( target.resume instanceof Function )  ;
     }
 

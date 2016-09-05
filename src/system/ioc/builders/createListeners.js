@@ -2,6 +2,7 @@
 
 import { dump } from '../../core/dump.js' ;
 import { logger } from '../logger.js' ;
+import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectListener } from '../ObjectListener.js' ;
 import { ObjectOrder } from '../ObjectOrder.js' ;
@@ -68,13 +69,16 @@ export function createListeners( factory ) /*Array*/
         }
         else
         {
-            logger.warn
-            (
-                "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                id ,
-                i ,
-                dump( def )
-            ) ;
+            if( logger instanceof Logger)
+            {
+                logger.warn
+                (
+                    "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                    id ,
+                    i ,
+                    dump( def )
+                ) ;
+            }
         }
     }
     return ( listeners.length > 0 ) ? listeners : null ;

@@ -1,6 +1,8 @@
 "use strict" ;
 /* jshint evil: true*/
 
+import { getDefinitionByName } from '../../../core/reflect/getDefinitionByName.js' ;
+
 import { ArrayMap } from '../../data/maps/ArrayMap.js' ;
 import { Evaluable } from '../../Evaluable.js' ;
 import { ExpressionFormatter } from '../../formatters/ExpressionFormatter.js' ;
@@ -103,10 +105,10 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
 
             try
             {
-                var clazz = eval(type) ; // find the Function (class)
-                if( clazz instanceof Function )
+                var func = getDefinitionByName(type) ;
+                if( func instanceof Function )
                 {
-                    return clazz ;
+                    return func ;
                 }
             }
             catch( e)

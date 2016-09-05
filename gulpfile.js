@@ -29,6 +29,7 @@ var globals =
 {
     core   : 'core',
     system : 'system',
+    global : 'global' ,
     trace  : 'trace'
 };
 

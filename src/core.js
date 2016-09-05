@@ -9,6 +9,7 @@ import { maths   } from './core/maths.js' ;
 import { numbers } from './core/numbers.js' ;
 import { objects } from './core/objects.js' ;
 import { random  } from './core/random.js' ;
+import { reflect } from './core/reflect.js' ;
 import { strings } from './core/strings.js' ;
 
 /**
@@ -25,5 +26,6 @@ export var core = Object.assign
     numbers : numbers,
     objects : objects ,
     random  : random ,
+    reflect : reflect ,
     strings : strings
 }) ;

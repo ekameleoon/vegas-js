@@ -31,9 +31,7 @@
 
     var logger = Log.getLogger('channel') ;
 
-    var method = new system.ioc.ObjectMethod( 'test' , [1,2,3]) ;
-
-    logger.info( method.arguments ) ;
+    logger.info('hello info');
 
 })( vegas );
 

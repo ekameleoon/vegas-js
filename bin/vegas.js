@@ -1,8 +1,8 @@
 /* VEGAS version 1.0.0 */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.vegas = global.vegas || {})));
+        typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+        typeof define === 'function' && define.amd ? define(['exports'], factory) :
+        (factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
 
 if (!Function.prototype.bind) {
@@ -69,6 +69,12 @@ if (Function.prototype.name === undefined) {
             return this.toString().match(/^\s*function\s*(\S*)\s*\(/)[1];
         }
     });
+}
+
+exports.global = exports.global || window || document;
+
+if (exports.global.hasOwnProperty('vegas')) {
+  exports.global = exports.global.vegas; // hook to target the vegas global domain
 }
 
 function trace(context) {
@@ -2117,6 +2123,181 @@ var random = Object.assign({
 });
 
 /**
+ * Returns the instance of a public definition in a specific <code>domain</code>.
+ * @param name a string of the full qualified path of a definition.
+ * @example (optional) the global scope object where to find the reference, default is <code>global</code>.
+ * <pre class="prettyprint">
+ * var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
+ * trace( definition ) ;
+ * </pre>
+ */
+function getDefinitionByName(name /*String*/) {
+    var domain = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    if (name instanceof String || typeof name === 'string') {
+        name = name.split('.');
+        if (name.length > 0) {
+            try {
+                var o = domain || exports.global;
+                name.forEach(function (element) {
+                    if (o.hasOwnProperty(element)) {
+                        o = o[element];
+                    } else {
+                        return undefined;
+                    }
+                });
+                return o;
+            } catch (e) {
+                //
+            }
+        }
+    }
+    return undefined;
+}
+
+/**
+ * Invokes dynamically a class constructor.
+ * @example
+ * <pre class="prettyprint">
+ * var dump   = core.dump ;
+ * var invoke = core.reflect.invoke ;
+ *
+ * var ar = invoke( Array , [1,2,3]) ;
+ *
+ * trace( dump( ar ) ) ;
+ * </pre>
+ * @param c the Function (class) to invoke.
+ * @param args (optional) the arguments to pass to the constructor (max 32).
+ * @return an instance of the class, or null if class can not construct.
+ */
+
+function invoke(c /*Function*/) {
+        var a /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+        if (args === null || !(a instanceof Array) || a.length === 0) {
+                return new c();
+        }
+
+        /* note:
+           if we ever need more than 32 args
+           will use CC for that special case
+        */
+        switch (a.length) {
+                case 0:
+                        return new c();
+
+                case 1:
+                        return new c(a[0]);
+
+                case 2:
+                        return new c(a[0], a[1]);
+
+                case 3:
+                        return new c(a[0], a[1], a[2]);
+
+                case 4:
+                        return new c(a[0], a[1], a[2], a[3]);
+
+                case 5:
+                        return new c(a[0], a[1], a[2], a[3], a[4]);
+
+                case 6:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5]);
+
+                case 7:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6]);
+
+                case 8:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]);
+
+                case 9:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
+
+                case 10:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]);
+
+                case 11:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10]);
+
+                case 12:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11]);
+
+                case 13:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12]);
+
+                case 14:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13]);
+
+                case 15:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14]);
+
+                case 16:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15]);
+
+                case 17:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16]);
+
+                case 18:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17]);
+
+                case 19:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18]);
+
+                case 20:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19]);
+
+                case 21:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20]);
+
+                case 22:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21]);
+
+                case 23:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22]);
+
+                case 24:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23]);
+
+                case 25:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24]);
+
+                case 26:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25]);
+
+                case 27:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26]);
+
+                case 28:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27]);
+
+                case 29:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28]);
+
+                case 30:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29]);
+
+                case 31:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30]);
+
+                case 32:
+                        return new c(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31]);
+
+                default:
+                        return null;
+        }
+}
+
+/**
+ * The VEGAS.js framework - The core.reflect library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var reflect = Object.assign({
+  getDefinitionByName: getDefinitionByName,
+  invoke: invoke
+});
+
+/**
  * Converts a hyphenated string to a camelcased string.
  * @param source The string to transform.
  * @example
@@ -2929,6 +3110,7 @@ var core = Object.assign({
     numbers: numbers,
     objects: objects,
     random: random,
+    reflect: reflect,
     strings: strings
 });
 
@@ -6364,6 +6546,630 @@ ObjectArgument.prototype = Object.create(Object.prototype, {
 });
 
 /**
+ * Evaluates a type string expression and return the value who corresponding in the config of the factory.
+ * @example
+ * <pre>
+ * var ConfigEvaluator = system.ioc.evaluators.ConfigEvaluator ;
+ * var ObjectConfig = system.ioc.ObjectConfig ;
+ *
+ * var init =
+ * {
+ *     message : "hello world" ,
+ *     menu    :
+ *     {
+ *         title : "my title" ,
+ *         count : 10 ,
+ *         data  : [ "item1" , "item2", "item3" ]
+ *     }
+ * }
+ *
+ * var configurator = new ObjectConfig() ;
+ *
+ * configurator.config = init ;
+ *
+ * var evaluator = new ConfigEvaluator( configurator ) ;
+ *
+ * trace( evaluator.eval( "test"       ) ) ; // null
+ * trace( evaluator.eval( "message"    ) ) ; // hello world
+ * trace( evaluator.eval( "menu"       ) ) ; // [object Object]
+ * trace( evaluator.eval( "menu.title" ) ) ; // my title
+ * trace( evaluator.eval( "menu.count" ) ) ; // 10
+ * trace( evaluator.eval( "menu.data"  ) ) ; // item1,item2,item3
+ * trace( evaluator.eval( "menu.test"  ) ) ; // null
+ * </pre>
+ */
+function ConfigEvaluator(config /*ObjectConfig*/) {
+  this.config = config instanceof ObjectConfig ? config : null;
+}
+
+/**
+ * @extends Object
+ */
+ConfigEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
+  constructor: { value: ConfigEvaluator },
+
+  /**
+   * The config object reference used in the factory to register values and expressions.
+   */
+  target: {
+    get: function get() {
+      return this.config !== null ? this.config.config : null;
+    }
+  },
+
+  /**
+   * Returns the String representation of the object.
+   * @return the String representation of the object.
+   */
+  toString: { value: function value() {
+      return '[ConfigEvaluator]';
+    } }
+});
+
+/**
+ * Evaluates a type string expression and return the value who corresponding in the config of the factory.
+ * @example
+ * <pre>
+ * var LocaleEvaluator = system.ioc.evaluators.LocaleEvaluator ;
+ * var ObjectConfig = system.ioc.ObjectConfig ;
+ *
+ * var i18n =
+ * {
+ *     message : "hello world" ,
+ *     title   : "my title"    ,
+ *     menu    :
+ *     {
+ *         title : "my menu title" ,
+ *         label : "my label"
+ *     }
+ * }
+ *
+ * var configurator = new ObjectConfig() ;
+ *
+ * configurator.locale = i18n ;
+ *
+ * var evaluator = new LocaleEvaluator( configurator ) ;
+ *
+ * trace( evaluator.eval( "test"       ) ) ; // null
+ * trace( evaluator.eval( "message"    ) ) ; // hello world
+ * trace( evaluator.eval( "title"      ) ) ; // my title
+ * trace( evaluator.eval( "menu.title" ) ) ; // my menu title
+ * trace( evaluator.eval( "menu.label" ) ) ; // my label
+ * </pre>
+ */
+function LocaleEvaluator(config /*ObjectConfig*/) {
+  this.config = config instanceof ObjectConfig ? config : null;
+}
+
+/**
+ * @extends Object
+ */
+LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
+  constructor: { value: LocaleEvaluator },
+
+  /**
+   * The config object reference used in the factory to register values and expressions.
+   */
+  target: {
+    get: function get() {
+      return this.config !== null ? this.config.locale : null;
+    }
+  },
+
+  /**
+   * Returns the String representation of the object.
+   * @return the String representation of the object.
+   */
+  toString: { value: function value() {
+      return '[LocaleEvaluator]';
+    } }
+});
+
+/**
+ * Indicates if the specific objet is Lockable.
+ */
+
+function isLockable(target) {
+    if (target) {
+        if (target instanceof Lockable) {
+            return true;
+        } else {
+            var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
+            var lock = 'lock' in target && target.lock instanceof Function;
+            var unlock = 'unlock' in target && target.unlock instanceof Function;
+            return isLocked && lock && unlock;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * This interface is implemented by all objects lockable.
+ */
+function Lockable() {}
+
+///////////////////
+
+Lockable.prototype = Object.create(Object.prototype);
+Lockable.prototype.constructor = Lockable;
+
+///////////////////
+
+/**
+ * Returns <code>true</code> if the object is locked.
+ * @return <code>true</code> if the object is locked.
+ */
+Lockable.prototype.isLocked = function () /*void*/
+{
+    return this.__lock__;
+};
+
+/**
+ * Locks the object.
+ */
+Lockable.prototype.lock = function () /*void*/
+{
+    this.__lock__ = true;
+};
+
+/**
+ * Unlocks the object.
+ */
+Lockable.prototype.unlock = function () /*void*/
+{
+    this.__lock__ = false;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Lockable.prototype.toString = function () /*String*/
+{
+    return "[Lockable]";
+};
+
+/**
+ * @private
+ */
+Lockable.prototype.__lock__ = false;
+
+/**
+ * Creates the Array of all arguments.
+ * @return the Array of all arguments.
+ */
+function createArguments(a /*Array*/) /*Array*/
+{
+    if (!(a instanceof Array) || a.length === 0) {
+        return null;
+    } else {
+        var args = [];
+
+        var o;
+        var i;
+
+        var evaluators;
+
+        var conf;
+        var i18n;
+        var ref;
+
+        var value;
+
+        var l = a.length;
+
+        for (i; i < l; i++) {
+            o = a[i];
+            if (o !== null) {
+                conf = ObjectAttribute.CONFIG in o ? String(o[ObjectAttribute.CONFIG]) : null;
+                i18n = ObjectAttribute.LOCALE in o ? String(o[ObjectAttribute.LOCALE]) : null;
+                ref = ObjectAttribute.REFERENCE in o ? String(o[ObjectAttribute.REFERENCE]) : null;
+                value = ObjectAttribute.VALUE in o ? o[ObjectAttribute.VALUE] : null;
+                evaluators = ObjectAttribute.EVALUATORS in o ? o[ObjectAttribute.EVALUATORS] : null;
+
+                if (ref !== null && ref.length > 0) {
+                    args.push(new ObjectArgument(ref, ObjectAttribute.REFERENCE, evaluators)); // ref argument
+                } else if (conf !== null && conf.length > 0) {
+                    args.push(new ObjectArgument(conf, ObjectAttribute.CONFIG, evaluators)); // config argument
+                } else if (i18n !== null && i18n.length > 0) {
+                    args.push(new ObjectArgument(i18n, ObjectAttribute.LOCALE, evaluators)); // locale argument
+                } else {
+                    args.push(new ObjectArgument(value, ObjectAttribute.VALUE, evaluators)); // value argument
+                }
+            }
+        }
+
+        return args.length > 0 ? args : null;
+    }
+}
+
+/**
+ * Indicates if the specific objet is Runnable.
+ */
+
+function isRunnable(target) {
+    if (target) {
+        if (target instanceof Runnable) {
+            return true;
+        }
+        return 'run' in target && target.run instanceof Function;
+    }
+
+    return false;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be executed.
+ */
+function Runnable() {}
+///////////////////
+
+Runnable.prototype = Object.create(Object.prototype);
+Runnable.prototype.constructor = Runnable;
+
+///////////////////
+
+/**
+ * Run the process.
+ */
+Runnable.prototype.run = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Runnable.prototype.toString = function () /*String*/
+{
+    return "[Runnable]";
+};
+
+/**
+ * The enumeration of all phases in a task process.
+ */
+
+var TaskPhase = Object.defineProperties({}, {
+    DELAYED: { value: 'delayed', enumerable: true },
+    FINISHED: { value: 'finished', enumerable: true },
+    INACTIVE: { value: 'inactive', enumerable: true },
+    RUNNING: { value: 'running', enumerable: true },
+    STOPPED: { value: 'stopped', enumerable: true },
+    TIMEOUT: { value: 'timeout', enumerable: true }
+});
+
+/**
+ * Creates a new Action instance.
+ */
+function Action() {
+  Object.defineProperties(this, {
+    /**
+     * This signal emit when the action is finished.
+     */
+    finishIt: { value: new Signal() },
+
+    /**
+     * Indicates the current phase.
+     */
+    phase: { get: function get() {
+        return this._phase;
+      } },
+
+    /**
+     * Indicates action is running.
+     */
+    running: { get: function get() {
+        return this._running;
+      } },
+
+    /**
+     * This signal emit when the action is started.
+     */
+    startIt: { value: new Signal() },
+
+    __lock__: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _phase: {
+      value: TaskPhase.INACTIVE,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    },
+    _running: {
+      value: false,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+}
+
+/**
+ * @extends Runnable
+ */
+Action.prototype = Object.create(Runnable.prototype);
+Action.prototype.constructor = Action;
+
+/**
+ * Creates a copy of the object.
+ */
+Action.prototype.clone = function () {
+  return new Action();
+};
+
+/**
+ * Returns <code class="prettyprint">true</code> if the object is locked.
+ * @return <code class="prettyprint">true</code> if the object is locked.
+ */
+Action.prototype.isLocked = function () /*Boolean*/
+{
+  return this.__lock__;
+};
+
+/**
+ * Locks the object.
+ */
+Action.prototype.lock = function () /*void*/
+{
+  this.__lock__ = true;
+};
+
+/**
+ * Notify when the process is finished.
+ */
+Action.prototype.notifyFinished = function () /*Boolean*/
+{
+  this._running = false;
+  this._phase = TaskPhase.FINISHED;
+  this.finishIt.emit(this);
+  this._phase = TaskPhase.INACTIVE;
+};
+
+/**
+ * Notify when the process is started.
+ */
+Action.prototype.notifyStarted = function () /*void*/
+{
+  this._running = true;
+  this._phase = TaskPhase.RUNNING;
+  this.startIt.emit(this);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Action.prototype.toString = function () /*String*/
+{
+  return '[Action]';
+};
+
+/**
+ * Unlocks the object.
+ */
+Action.prototype.unlock = function () /*void*/
+{
+  this.__lock__ = false;
+};
+
+/**
+ * A Task object to create a set of complex commands or actions.
+ */
+function Task() {
+  Action.call(this);
+  Object.defineProperties(this, {
+    /**
+     * The signal emit when the task is changed.
+     */
+    changeIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is cleared.
+     */
+    clearIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task emit a message.
+     */
+    infoIt: { value: new Signal() },
+
+    /**
+     * The flag to determinate if the task must be looped.
+     */
+    looping: { value: false, enumerable: false, configurable: false, writable: true },
+
+    /**
+     * The signal emit when the task is looped.
+     */
+    loopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is paused.
+     */
+    pauseIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is in progress.
+     */
+    progressIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is resumed.
+     */
+    resumeIt: { value: new Signal() },
+
+    /**
+     * This signal emit when the task is stopped.
+     */
+    stopIt: { value: new Signal() },
+
+    /**
+     * The signal emit when the task is out of time.
+     */
+    timeoutIt: { value: new Signal() }
+  });
+}
+
+/**
+ * @extends Task
+ */
+Task.prototype = Object.create(Action.prototype);
+
+Task.prototype.constructor = Task;
+
+/**
+ * Creates a copy of the object.
+ */
+Task.prototype.clone = function () {
+  return new Task();
+};
+
+/**
+ * Notify when the process is changed.
+ */
+Task.prototype.notifyChanged = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.changeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is cleared.
+ */
+Task.prototype.notifyCleared = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.clearIt.emit(this);
+  }
+};
+
+/**
+ * Notify a specific information when the process is changed.
+ */
+Task.prototype.notifyInfo = function (info) /*void*/
+{
+  if (!this.__lock__) {
+    this.infoIt.emit(this, info);
+  }
+};
+
+/**
+ * Notify when the process is looped.
+ */
+Task.prototype.notifyLooped = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.loopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is paused.
+ */
+Task.prototype.notifyPaused = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.pauseIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is progress.
+ */
+Task.prototype.notifyProgress = function () /*void*/
+{
+  if (!this.__lock__) {
+    this.progressIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is resumed.
+ */
+Task.prototype.notifyResumed = function () /*void*/
+{
+  this._phase = TaskPhase.RUNNING;
+  if (!this.__lock__) {
+    this.resumeIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is stopped.
+ */
+Task.prototype.notifyStopped = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.STOPPED;
+  if (!this.__lock__) {
+    this.stopIt.emit(this);
+  }
+};
+
+/**
+ * Notify when the process is out of time.
+ */
+Task.prototype.notifyTimeout = function () /*void*/
+{
+  this._running = false;
+  this._phase = TaskPhase.TIMEOUT;
+  if (!this.__lock__) {
+    this.timeoutIt.emit(this);
+  }
+};
+
+/**
+ * Resumes the task.
+ */
+Task.prototype.resume = function () /*void*/
+{}
+//
+
+
+/**
+ * Resets the task.
+ */
+;Task.prototype.reset = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the task.
+ */
+;Task.prototype.start = function () /*void*/
+{}
+//
+
+
+/**
+ * Starts the process.
+ */
+;Task.prototype.stop = function () /*void*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Task.prototype.toString = function () /*String*/
+{
+  return '[Task]';
+};
+
+/**
  * Enumeration of all sort of "orders" can be use in the object definitions.
  */
 
@@ -6934,388 +7740,6 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
 });
 
 /**
- * Indicates if the specific objet is Runnable.
- */
-
-function isRunnable(target) {
-  if (target) {
-    return 'run' in target && target.run instanceof Function;
-  }
-
-  return false;
-}
-
-/**
- * This interface should be implemented by any class whose instances are intended to be executed.
- */
-function Runnable() {}
-///////////////////
-
-Runnable.prototype = Object.create(Object.prototype);
-Runnable.prototype.constructor = Runnable;
-
-///////////////////
-
-/**
- * Run the process.
- */
-Runnable.prototype.run = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Runnable.prototype.toString = function () /*String*/
-{
-  return "[Runnable]";
-};
-
-/**
- * The enumeration of all phases in a task process.
- */
-
-var TaskPhase = Object.defineProperties({}, {
-    DELAYED: { value: 'delayed', enumerable: true },
-    FINISHED: { value: 'finished', enumerable: true },
-    INACTIVE: { value: 'inactive', enumerable: true },
-    RUNNING: { value: 'running', enumerable: true },
-    STOPPED: { value: 'stopped', enumerable: true },
-    TIMEOUT: { value: 'timeout', enumerable: true }
-});
-
-/**
- * Creates a new Action instance.
- */
-function Action() {
-  Object.defineProperties(this, {
-    /**
-     * This signal emit when the action is finished.
-     */
-    finishIt: { value: new Signal() },
-
-    /**
-     * Indicates the current phase.
-     */
-    phase: { get: function get() {
-        return this._phase;
-      } },
-
-    /**
-     * Indicates action is running.
-     */
-    running: { get: function get() {
-        return this._running;
-      } },
-
-    /**
-     * This signal emit when the action is started.
-     */
-    startIt: { value: new Signal() },
-
-    __lock__: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _phase: {
-      value: TaskPhase.INACTIVE,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _running: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-}
-
-/**
- * @extends Runnable
- */
-Action.prototype = Object.create(Runnable.prototype);
-Action.prototype.constructor = Action;
-
-/**
- * Creates a copy of the object.
- */
-Action.prototype.clone = function () {
-  return new Action();
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the object is locked.
- * @return <code class="prettyprint">true</code> if the object is locked.
- */
-Action.prototype.isLocked = function () /*Boolean*/
-{
-  return this.__lock__;
-};
-
-/**
- * Locks the object.
- */
-Action.prototype.lock = function () /*void*/
-{
-  this.__lock__ = true;
-};
-
-/**
- * Notify when the process is finished.
- */
-Action.prototype.notifyFinished = function () /*Boolean*/
-{
-  this._running = false;
-  this._phase = TaskPhase.FINISHED;
-  this.finishIt.emit(this);
-  this._phase = TaskPhase.INACTIVE;
-};
-
-/**
- * Notify when the process is started.
- */
-Action.prototype.notifyStarted = function () /*void*/
-{
-  this._running = true;
-  this._phase = TaskPhase.RUNNING;
-  this.startIt.emit(this);
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Action.prototype.toString = function () /*String*/
-{
-  return '[Action]';
-};
-
-/**
- * Unlocks the object.
- */
-Action.prototype.unlock = function () /*void*/
-{
-  this.__lock__ = false;
-};
-
-/**
- * A Task object to create a set of complex commands or actions.
- */
-function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    /**
-     * The signal emit when the task is changed.
-     */
-    changeIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is cleared.
-     */
-    clearIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task emit a message.
-     */
-    infoIt: { value: new Signal() },
-
-    /**
-     * The flag to determinate if the task must be looped.
-     */
-    looping: { value: false, enumerable: false, configurable: false, writable: true },
-
-    /**
-     * The signal emit when the task is looped.
-     */
-    loopIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is paused.
-     */
-    pauseIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is in progress.
-     */
-    progressIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is resumed.
-     */
-    resumeIt: { value: new Signal() },
-
-    /**
-     * This signal emit when the task is stopped.
-     */
-    stopIt: { value: new Signal() },
-
-    /**
-     * The signal emit when the task is out of time.
-     */
-    timeoutIt: { value: new Signal() }
-  });
-}
-
-/**
- * @extends Task
- */
-Task.prototype = Object.create(Action.prototype);
-
-Task.prototype.constructor = Task;
-
-/**
- * Creates a copy of the object.
- */
-Task.prototype.clone = function () {
-  return new Task();
-};
-
-/**
- * Notify when the process is changed.
- */
-Task.prototype.notifyChanged = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.changeIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is cleared.
- */
-Task.prototype.notifyCleared = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.clearIt.emit(this);
-  }
-};
-
-/**
- * Notify a specific information when the process is changed.
- */
-Task.prototype.notifyInfo = function (info) /*void*/
-{
-  if (!this.__lock__) {
-    this.infoIt.emit(this, info);
-  }
-};
-
-/**
- * Notify when the process is looped.
- */
-Task.prototype.notifyLooped = function () /*void*/
-{
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.loopIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is paused.
- */
-Task.prototype.notifyPaused = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.pauseIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is progress.
- */
-Task.prototype.notifyProgress = function () /*void*/
-{
-  if (!this.__lock__) {
-    this.progressIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is resumed.
- */
-Task.prototype.notifyResumed = function () /*void*/
-{
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.resumeIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is stopped.
- */
-Task.prototype.notifyStopped = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.stopIt.emit(this);
-  }
-};
-
-/**
- * Notify when the process is out of time.
- */
-Task.prototype.notifyTimeout = function () /*void*/
-{
-  this._running = false;
-  this._phase = TaskPhase.TIMEOUT;
-  if (!this.__lock__) {
-    this.timeoutIt.emit(this);
-  }
-};
-
-/**
- * Resumes the task.
- */
-Task.prototype.resume = function () /*void*/
-{}
-//
-
-
-/**
- * Resets the task.
- */
-;Task.prototype.reset = function () /*void*/
-{}
-//
-
-
-/**
- * Starts the task.
- */
-;Task.prototype.start = function () /*void*/
-{}
-//
-
-
-/**
- * Starts the process.
- */
-;Task.prototype.stop = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Task.prototype.toString = function () /*String*/
-{
-  return '[Task]';
-};
-
-/**
  * Creates a container to register all the Object define by the corresponding IObjectDefinition objects.
  */
 function ObjectDefinitionContainer() {
@@ -7414,7 +7838,7 @@ function ObjectDefinitionContainer() {
 }
 
 /**
- * @extends Object
+ * @extends Task
  */
 ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
     constructor: { value: ObjectDefinitionContainer, writable: true },
@@ -7426,6 +7850,800 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
     toString: { value: function value() {
             return '[ObjectDefinitionContainer]';
         }, writable: true }
+});
+
+/**
+ * This object defines a listener definition in an object definition.
+ * @param dispatcher The dispatcher expression reference of the listener.
+ * @param type type name of the event dispatched by the dispatcher of this listener.
+ * @param method The name of the method to invoke when the event is handle.
+ * @param useCapture Determinates if the event flow use capture or not.
+ * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ */
+function ObjectFactory() {
+    var config /*ObjectConfig*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var objects /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    Object.defineProperties(this, {
+        /**
+         * The dispatcher expression reference of the listener.
+         */
+        config: {
+            get: function get() {
+                return this._config;
+            },
+            set: function set(config) {
+                if (this._config) {
+                    this._config.referenceEvaluator.factory = null;
+                }
+                this._config = config instanceof ObjectConfig ? config : new ObjectConfig();
+                this._config.referenceEvaluator.factory = this;
+            }
+        },
+
+        /**
+         * This array contains objects to fill this factory with the run or create method.
+         */
+        objects: { value: objects instanceof Array ? objects : null, writable: true },
+
+        /**
+         * Returns the Map representation of all singletons register in this factory.
+         * @return the Map representation of all singletons register in this factory.
+         */
+        singletons: { get: function get() {
+                return this._singletons;
+            } },
+
+        /**
+         * @private
+         */
+        bufferSingletons: { value: [], writable: true },
+
+        /**
+         * @private
+         */
+        _config: { value: null, writable: true },
+
+        /**
+         * @private
+         */
+        _evaluator: { value: new MultiEvaluator() },
+
+        /**
+         * @private
+         */
+        _singletons: { value: new ArrayMap() }
+    });
+
+    this.config = config;
+}
+
+/**
+ * @extends Object
+ */
+ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ObjectFactory },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: {
+        value: function value() {
+            return new ObjectFactory(this.config, [].concat(this.objects));
+        }
+    },
+
+    /**
+     * Indicates if a singleton reference is register in the factory with the specified id.
+     * @param The 'id' of the singleton.
+     * @return <code class="prettyprint">true</code> if the singleton reference exist in the factory.
+     */
+    containsSingleton: {
+        value: function value(id) /*Boolean*/
+        {
+            return this._singletons.has(id);
+        }
+    },
+
+    /**
+     * This method returns an object with the specified id in argument.
+     * @param id The 'id' of the object to return.
+     * @return the instance of the object with the id passed in argument.
+     */
+    getObject: {
+        value: function value(id) {
+            if (id === null) {
+                return null;
+            }
+
+            var instance;
+
+            try {
+                var definition = this.getObjectDefinition(id);
+
+                if (!definition) {
+                    throw new Error(this + " getObject( " + id + " ) method failed, the object isn't register in the container.");
+                }
+
+                if (definition.singleton) {
+                    instance = this._singletons.get(id) || null;
+                }
+
+                if (instance === null) {
+                    try {
+                        var clazz = this.config.typeEvaluator.eval(definition.type);
+                        var strategy = definition.strategy;
+                        if (strategy) {
+                            instance = this.createObjectWithStrategy(strategy);
+                        } else {
+                            instance = invoke(clazz, createArguments(definition.constructorArguments));
+                        }
+                    } catch (e) {
+                        this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.");
+                    }
+
+                    if (instance) {
+                        if (definition.singleton) {
+                            this._singletons.set(id, instance);
+                        }
+
+                        this.dependsOn(definition); // dependencies
+
+                        this.populateIdentifiable(instance, definition); // identify
+
+                        var flag = isLockable(instance) && (definition.lock === true || this.config.lock === true && definition.lock !== false);
+
+                        if (flag) {
+                            instance.lock(); // lock
+                        }
+
+                        this.registerListeners(instance, definition.getBeforeListeners());
+                        this.registerReceivers(instance, definition.getBeforeReceivers());
+
+                        this.populateProperties(instance, definition); // init properties
+
+                        this.registerListeners(instance, definition.getAfterListeners());
+                        this.registerReceivers(instance, definition.getAfterReceivers());
+
+                        if (flag) {
+                            instance.unlock(); // unlock
+                        }
+
+                        this.invokeInitMethod(instance, definition); // init
+
+                        this.generates(definition); // generates
+                    }
+                }
+            } catch (e) {
+                this.warn(this + " getObject failed with the id '" + id + "' : " + e.toString());
+            }
+
+            return instance || null;
+        }
+    },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[ObjectFactory]';
+        } },
+
+    /**
+     * The custom warn method of this factory to log a warning message in the application.
+     * You can overrides this method, the prototype object is dynamic.
+     */
+    warn: { value: function value() {
+            if (this.config.useLogger) {
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+
+                logger.warning.apply(null, args);
+            }
+        } }
+});
+
+/**
+ * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ */
+function ReferenceEvaluator(factory) {
+    Object.defineProperties(this, {
+        /**
+         * The factory reference.
+         */
+        factory: { value: factory instanceof ObjectFactory ? factory : null, writable: true },
+
+        /**
+         * The separator of the expression evaluator.
+         */
+        separator: { value: ".", writable: true },
+
+        /**
+         * The undefineable value returns in the eval method if the expression can't be evaluate.
+         */
+        undefineable: { value: null, writable: true },
+
+        /**
+         * Indicates if the class throws errors or return null when an error is throwing.
+         */
+        throwError: {
+            get: function get() {
+                return this._propEvaluator.throwError;
+            },
+            set: function set(flag) {
+                this._propEvaluator.throwError = flag;
+            }
+        },
+
+        /**
+         * @private
+         */
+        _propEvaluator: { value: new PropertyEvaluator(), writable: true }
+    });
+}
+
+/**
+ * @extends Evaluable
+ */
+ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ReferenceEvaluator },
+
+    /**
+     * Evaluates the specified object.
+     */
+    eval: { value: function value(o) {
+            if (this.factory instanceof ObjectFactory && (o instanceof String || typeof o === 'string')) {
+                var exp = String(o);
+                if (exp.length > 0) {
+                    var root;
+
+                    try {
+                        root = this.factory.config.root;
+                    } catch (e) {}
+
+                    switch (exp) {
+                        case MagicReference.CONFIG:
+                            {
+                                return this.factory.config.config;
+                            }
+                        case MagicReference.LOCALE:
+                            {
+                                return this.factory.config.locale;
+                            }
+                        case MagicReference.PARAMS:
+                            {
+                                return this.factory.config.parameters;
+                            }
+                        case MagicReference.THIS:
+                            {
+                                return this.factory;
+                            }
+                        case MagicReference.ROOT:
+                            {
+                                return root;
+                            }
+                        case MagicReference.STAGE:
+                            {
+                                var stage = this.factory.config.stage;
+                                if (stage !== null) {
+                                    return stage;
+                                } else if (root && "stage" in root && root.stage !== null) {
+                                    return root.stage;
+                                } else {
+                                    return this.undefineable;
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                var members = exp.split(this.separator);
+                                if (members.length > 0) {
+                                    var ref = members.shift();
+                                    var value = this.factory.get(ref);
+                                    if (value && members.length > 0) {
+                                        this._propEvaluator.target = value;
+                                        value = this._propEvaluator.eval(members.join("."));
+                                        this._propEvaluator.target = null;
+                                    }
+                                    return value;
+                                }
+                            }
+                    }
+                }
+            }
+            return this.undefineable;
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return "[ReferenceEvaluator]";
+        } }
+});
+
+/**
+ * The enumeration of all type policies in the ObjectConfig object of the ioc factory.
+ */
+
+var TypePolicy = Object.defineProperties({}, {
+  /**
+   * Defines the 'alias' TypePolicy value.
+   * Use it if you want use only type "alias" evaluation when a new object is created in the factory.
+   */
+  ALIAS: { value: "alias", enumerable: true },
+
+  /**
+   * Defines the 'all' TypePolicy value.
+   * Use it if you want use only all evaluation filters when a new object is created in the factory.
+   */
+  ALL: { value: "all", enumerable: true },
+
+  /**
+   * Defines the 'expression' TypePolicy value.
+   * Use it if you want use only type "expression" evaluation when a new object is created in the factory.
+   */
+  EXPRESSION: { value: "expression", enumerable: true },
+
+  /**
+   * Defines the 'none' TypePolicy value.
+   * Use it if you want no evaluation filter when a new object is created in the factory.
+   */
+  NONE: { value: "none", enumerable: true }
+});
+
+/* jshint evil: true*/
+
+/**
+ * Evaluates a type string expression and return the type Class who corresponding in the application.
+ * @example
+ * <pre>
+ * var TypeEvaluator = system.ioc.evaluators.TypeEvaluator ;
+ * var ObjectConfig  = system.ioc.ObjectConfig ;
+ * var TypePolicy    = system.ioc.TypePolicy ;
+ *
+ * var conf = new ObjectConfig() ;
+ *
+ * conf.typePolicy  = TypePolicy.ALL ; // TypePolicy.NONE, TypePolicy.ALIAS, TypePolicy.EXPRESSION
+ * conf.typeAliases =
+ * [
+ *     { alias : "Signal" , type : "system.signals.Signal" }
+ * ] ;
+ *
+ * conf.typeExpression =
+ * [
+ *     { name:"map"     , value:"system.data.maps" } ,
+ *     { name:"ArrayMap" , value:"{map}.ArrayMap"  }
+ * ] ;
+ *
+ * var evaluator = new TypeEvaluator( conf );
+ *
+ * trace( evaluator.eval( "Signal"      ) ) ; // [class MovieClip]
+ * trace( evaluator.eval( "{ArrayMap}"  ) ) ; // [class ArrayMap]
+ * trace( evaluator.eval( "test"        ) ) ; // null
+ * trace( evaluator.eval( "{map}.Test"  ) ) ; // null
+ * </pre>
+ */
+function TypeEvaluator() {
+    var config = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+    Object.defineProperties(this, {
+        /**
+         * The ObjectConfig reference.
+         */
+        config: { value: config instanceof ObjectConfig ? config : null, writable: true },
+
+        /**
+         * Indicates if the class throws errors or return null when an error is throwing.
+         */
+        throwError: { value: false, writable: true }
+    });
+}
+
+/**
+ * @extends Evaluable
+ */
+TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: TypeEvaluator },
+
+    /**
+     * Evaluates the specified object.
+     */
+    eval: { value: function value(o) {
+            if (o instanceof Function) {
+                return o;
+            } else if (o instanceof String || typeof o === 'string') {
+                var type = String(o);
+                var config = this.config;
+                if (config && config instanceof ObjectConfig) {
+                    var policy = config.typePolicy;
+                    if (policy !== TypePolicy.NONE) {
+                        if (policy === TypePolicy.ALL || policy === TypePolicy.EXPRESSION) {
+                            var exp = config.typeExpression;
+                            if (exp instanceof ExpressionFormatter) {
+                                type = exp.format(type);
+                            }
+                        }
+                        if (policy === TypePolicy.ALL || policy === TypePolicy.ALIAS) {
+                            var aliases = config.typeAliases;
+                            if (aliases instanceof ArrayMap && aliases.has(type)) {
+                                type = aliases.get(type);
+                            }
+                        }
+                    }
+                }
+
+                try {
+                    var func = getDefinitionByName(type);
+                    if (func instanceof Function) {
+                        return func;
+                    }
+                } catch (e) {
+                    if (this.throwError) {
+                        throw new EvalError(this + " eval failed : " + e.toString());
+                    }
+                }
+            }
+
+            return null;
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return "[TypeEvaluator]";
+        } }
+});
+
+/**
+ * This object contains the configuration of the IoC object factory.
+ */
+function ObjectConfig(init) {
+    Object.defineProperties(this, {
+        /**
+         * The config object reference used in the factory to register values and expressions.
+         */
+        config: {
+            get: function get() {
+                return this._config;
+            },
+            set: function set(init) {
+                for (var prop in init) {
+                    if (init.hasOwnProperty(prop)) {
+                        this._config[prop] = init[prop];
+                    }
+                }
+            }
+        },
+
+        /**
+         * Returns the config evaluator reference.
+         */
+        configEvaluator: {
+            get: function get() {
+                return this._configEvaluator;
+            }
+        },
+
+        /**
+         * The default name of destroy callback method to invoke with object definition in the ObjectFactory.
+         */
+        defaultDestroyMethod: { value: null, writable: true, enumerable: true },
+
+        /**
+         * The default name of init callback method to invoke with object definition in the ObjectFactory.
+         */
+        defaultInitMethod: { value: null, writable: true, enumerable: true },
+
+        /**
+         * Indicates if the singleton objects in the ObjectFactory are identifiy if the type of the object implements the Identifiable interface.
+         */
+        identify: { value: false, writable: true, enumerable: true },
+
+        /**
+         * Indicates if the factory lock this "run" method and allow the flush of the singletons buffer who must be initialized when the process is finished.
+         */
+        lazyInit: { value: false, writable: true, enumerable: true },
+
+        /**
+         * The locale object of the factory. To evaluate locale expression in the object definitions.
+         */
+        locale: {
+            get: function get() {
+                return this._locale;
+            },
+            set: function set(init) {
+                for (var prop in init) {
+                    if (init.hasOwnProperty(prop)) {
+                        this._locale[prop] = init[prop];
+                    }
+                }
+            }
+        },
+
+        /**
+         * Returns the local evaluator reference.
+         */
+        localeEvaluator: {
+            get: function get() {
+                return this._localeEvaluator;
+            }
+        },
+
+        /**
+         * Indicates if all the Lockable objects initialized in the object definitions in the factory must be locked during the invokation of this methods and the initialization of this properties.
+         */
+        lock: { value: false, writable: true, enumerable: true },
+
+        /**
+         * The optional parameters object reference.
+         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#params".
+         */
+        parameters: { value: null, writable: true, enumerable: true },
+
+        /**
+         * Indicates the reference evaluator object.
+         */
+        referenceEvaluator: {
+            get: function get() {
+                return this._referenceEvaluator;
+            }
+        },
+
+        /**
+         * The root reference of the application.
+         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#root".
+         */
+        root: { value: null, writable: true, enumerable: true },
+
+        /**
+         * The stage reference of the application.
+         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#stage".
+         */
+        stage: { value: null, writable: true, enumerable: true },
+
+        /**
+         * Indicates if the class throws errors or return null when an error is throwing.
+         */
+        throwError: {
+            get: function get() {
+                return this._configEvaluator.throwError && this._localeEvaluator.throwError && this._typeEvaluator.throwError && this._referenceEvaluator.throwError;
+            },
+            set: function set(flag /*Boolean*/) {
+                this._configEvaluator.throwError = flag;
+                this._localeEvaluator.throwError = flag;
+                this._referenceEvaluator.throwError = flag;
+                this._typeEvaluator.throwError = flag;
+            }
+        },
+
+        /**
+         * Determinates the typeAliases reference of this config object.
+         * <p>The setter of this virtual property can be populated with a TypeAliases instance or an Array of typeAliases items.</p>
+         * <p>This setter attribute don't remove the old TypeAliases instance but fill it with new aliases.
+         * If you want cleanup the aliases of this configuration object you must use the <code class="prettyprint">typeAliases.clear()</code> method.</p>
+         * <p>The typeAliases items are generic objects with 2 attributes <b>alias</b> (the alias String expression) and <b>type</b> (the type String expression).</p>
+         * @example
+         * <pre>
+         * var ObjectConfig = system.ioc.ObjectConfig ;
+         *
+         * var config  = new ObjectConfig() ;
+         *
+         * config.typeAliases =
+         * [
+         *     { alias : "Sprite" , type : "flash.display.Sprite" }
+         * ] ;
+         * </pre>
+         */
+        typeAliases: {
+            get: function get() {
+                return this._typeAliases;
+            },
+            set: function set(aliases) {
+                if (aliases instanceof ArrayMap) {
+                    var next;
+                    var key;
+                    var it = aliases.iterator();
+                    while (it.hasNext()) {
+                        next = it.next();
+                        key = it.key();
+                        this._typeAliases.set(key, next);
+                    }
+                } else if (aliases instanceof Array) {
+                    var item;
+                    var len = aliases.length;
+                    if (len > 0) {
+                        while (--len > -1) {
+                            item = aliases[len];
+                            if (item !== null && ObjectAttribute.TYPE_ALIAS in item && ObjectAttribute.TYPE in item) {
+                                this._typeAliases.set(String(item[ObjectAttribute.TYPE_ALIAS]), String(item[ObjectAttribute.TYPE]));
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Indicates the type evaluator reference.
+         */
+        typeEvaluator: {
+            get: function get() {
+                return this._typeEvaluator;
+            }
+        },
+
+        /**
+         * Determinates the content of the typeExpression reference in this config object.
+         * @example Example 1 : basic usage
+         * <pre>
+         * var ObjectConfig = system.ioc.ObjectConfig ;
+         * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
+         *
+         * var exp = new ExpressionFormatter() ;
+         *
+         * exp.set( "data"    , "system.data" ) ;
+         * exp.set( "maps"    , "{data}.maps" ) ;
+         * exp.set( "HashMap" , "{maps}.HashMap" ) ;
+         *
+         * var config  = new ObjectConfig() ;
+         *
+         * config.typeExpression = exp ;
+         * </pre>
+         * @example Example 2 : Use an Array of entries with the name/value members
+         * <pre>
+         * var ObjectConfig = system.ioc.ObjectConfig ;
+         *
+         * var expressions =
+         * [
+         *     { name : "data"    , value : "system.data"    } ,
+         *     { name : "maps"    , value : "{data}.maps"    } ,
+         *     { name : "HashMap" , value : "{maps}.HashMap" }
+         * ];
+         *
+         * var config = new ObjectConfig() ;
+         *
+         * config.typeExpression = expressions ;
+         * </pre>
+         */
+        typeExpression: {
+            get: function get() {
+                return this._typeExpression;
+            },
+            set: function set(expressions /*ExpressionFormatter|Array*/) {
+                if (expressions instanceof ExpressionFormatter) {
+                    this._typeExpression = expressions;
+                } else if (expressions instanceof Array) {
+                    if (this._typeExpression === null) {
+                        this._typeExpression = new ExpressionFormatter();
+                    }
+                    var item;
+                    var len = expressions.length;
+                    if (len > 0) {
+                        while (--len > -1) {
+                            item = expressions[len];
+                            if (item !== null && ObjectAttribute.NAME in item && ObjectAttribute.VALUE in item) {
+                                this._typeExpression.set(String(item[ObjectAttribute.NAME]), String(item[ObjectAttribute.VALUE]));
+                            }
+                        }
+                    }
+                } else {
+                    this._typeExpression = new ExpressionFormatter();
+                }
+            }
+        },
+
+        /**
+         * Indicates the type policy of the object factory who use this configuration object.
+         * The default value of this attribute is <code>TypePolicy.NONE</code>.
+         * <p>You can use the TypePolicy.NONE, TypePolicy.ALL, TypePolicy.ALIAS, TypePolicy.EXPRESSION values.</p>
+         * @see system.ioc.TypePolicy
+         */
+        typePolicy: {
+            get: function get() {
+                return this._typePolicy;
+            },
+            set: function set(policy) {
+                switch (policy) {
+                    case TypePolicy.ALIAS:
+                    case TypePolicy.EXPRESSION:
+                    case TypePolicy.ALL:
+                        {
+                            this._typePolicy = policy;
+                            break;
+                        }
+                    default:
+                        {
+                            this._typePolicy = TypePolicy.NONE;
+                        }
+                }
+            }
+        },
+
+        /**
+         * Indicates if the logger model is used in the IoC factory to log the warning and errors.
+         */
+        useLogger: { value: false, writable: true, enumerable: true },
+
+        /**
+         * @private
+         */
+        _config: { value: {}, writable: true },
+        _configEvaluator: { value: new ConfigEvaluator(this), writable: true },
+        _locale: { value: {}, writable: true },
+        _localeEvaluator: { value: new LocaleEvaluator(this), writable: true },
+        _referenceEvaluator: { value: new ReferenceEvaluator(), writable: true },
+        _typeAliases: { value: new ArrayMap(), writable: true },
+        _typeEvaluator: { value: new TypeEvaluator(this), writable: true },
+        _typeExpression: { value: new ExpressionFormatter(), writable: true },
+        _typePolicy: { value: TypePolicy.NONE, writable: true }
+    });
+
+    this.throwError = false;
+    this.initialize(init);
+}
+
+/**
+ * @extends Object
+ */
+ObjectConfig.prototype = Object.create(Object.prototype, {
+    constructor: { value: ObjectConfig },
+
+    /**
+     * Initialize the config object.
+     * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+     */
+    initialize: { value: function value(init) {
+            if (init === null) {
+                return;
+            }
+            for (var prop in init) {
+                if (this.hasOwnProperty(prop)) {
+                    this[prop] = init[prop];
+                }
+            }
+        } },
+
+    /**
+     * This method is used to change the target of the internal config dynamic object.
+     */
+    setConfigTarget: { value: function value() {
+            var o = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+            this._config = o || {};
+        } },
+
+    /**
+     * This method is used to change the target of the internal local dynamic object.
+     */
+    setLocaleTarget: { value: function value() {
+            var o = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+            this._locale = o || {};
+        } },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[ObjectConfig]';
+        } }
 });
 
 /**
@@ -7625,36 +8843,6 @@ Parameters.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The enumeration of all type policies in the ObjectConfig object of the ioc factory.
- */
-
-var TypePolicy = Object.defineProperties({}, {
-  /**
-   * Defines the 'alias' TypePolicy value.
-   * Use it if you want use only type "alias" evaluation when a new object is created in the factory.
-   */
-  ALIAS: { value: "alias", enumerable: true },
-
-  /**
-   * Defines the 'all' TypePolicy value.
-   * Use it if you want use only all evaluation filters when a new object is created in the factory.
-   */
-  ALL: { value: "all", enumerable: true },
-
-  /**
-   * Defines the 'expression' TypePolicy value.
-   * Use it if you want use only type "expression" evaluation when a new object is created in the factory.
-   */
-  EXPRESSION: { value: "expression", enumerable: true },
-
-  /**
-   * Defines the 'none' TypePolicy value.
-   * Use it if you want no evaluation filter when a new object is created in the factory.
-   */
-  NONE: { value: "none", enumerable: true }
-});
-
-/**
  * The VEGAS.js framework - The system.errors library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -7667,6 +8855,7 @@ var ioc = Object.assign({
     MagicReference: MagicReference,
     ObjectArgument: ObjectArgument,
     ObjectAttribute: ObjectAttribute,
+    ObjectConfig: ObjectConfig,
     ObjectDefinition: ObjectDefinition,
     ObjectDefinitionContainer: ObjectDefinitionContainer,
     ObjectListener: ObjectListener,
@@ -9992,72 +11181,6 @@ Do.prototype.toString = function () /*String*/
 };
 
 /**
- * Indicates if the specific objet is Lockable.
- */
-
-function isLockable(target) {
-  if (target) {
-    var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
-    var lock = 'lock' in target && target.lock instanceof Function;
-    var unlock = 'unlock' in target && target.unlock instanceof Function;
-    return isLocked && lock && unlock;
-  }
-
-  return false;
-}
-
-/**
- * This interface is implemented by all objects lockable.
- */
-function Lockable() {}
-
-///////////////////
-
-Lockable.prototype = Object.create(Object.prototype);
-Lockable.prototype.constructor = Lockable;
-
-///////////////////
-
-/**
- * Returns <code>true</code> if the object is locked.
- * @return <code>true</code> if the object is locked.
- */
-Lockable.prototype.isLocked = function () /*void*/
-{
-  return this.__lock__;
-};
-
-/**
- * Locks the object.
- */
-Lockable.prototype.lock = function () /*void*/
-{
-  this.__lock__ = true;
-};
-
-/**
- * Unlocks the object.
- */
-Lockable.prototype.unlock = function () /*void*/
-{
-  this.__lock__ = false;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Lockable.prototype.toString = function () /*String*/
-{
-  return "[Lockable]";
-};
-
-/**
- * @private
- */
-Lockable.prototype.__lock__ = false;
-
-/**
  * Invoked to lock a specific Lockable object.
  * @example
  * var chain = new system.process.Chain() ;
@@ -10160,11 +11283,14 @@ Priority.prototype.constructor = Priority;
  */
 
 function isResetable(target) {
-  if (target) {
-    return 'reset' in target && target.reset instanceof Function;
-  }
+    if (target) {
+        if (target instanceof Resetable) {
+            return true;
+        }
+        return 'reset' in target && target.reset instanceof Function;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -10192,7 +11318,7 @@ Resetable.prototype.reset = function () /*void*/
  */
 ;Resetable.prototype.toString = function () /*String*/
 {
-  return "[Resetable]";
+    return "[Resetable]";
 };
 
 /**
@@ -10200,11 +11326,14 @@ Resetable.prototype.reset = function () /*void*/
  */
 
 function isResumable(target) {
-  if (target) {
-    return 'resume' in target && target.resume instanceof Function;
-  }
+    if (target) {
+        if (target instanceof Resumable) {
+            return true;
+        }
+        return 'resume' in target && target.resume instanceof Function;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -10232,7 +11361,7 @@ Resumable.prototype.resume = function () /*void*/
  */
 ;Resumable.prototype.toString = function () /*String*/
 {
-  return "[Resumable]";
+    return "[Resumable]";
 };
 
 /**
@@ -10240,11 +11369,14 @@ Resumable.prototype.resume = function () /*void*/
  */
 
 function isStartable(target) {
-  if (target) {
-    return 'start' in target && target.start instanceof Function;
-  }
+    if (target) {
+        if (target instanceof Startable) {
+            return true;
+        }
+        return 'start' in target && target.start instanceof Function;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -10273,7 +11405,7 @@ Startable.prototype.start = function () /*void*/
  */
 ;Startable.prototype.toString = function () /*String*/
 {
-  return "[Startable]";
+    return "[Startable]";
 };
 
 /**
@@ -10281,11 +11413,14 @@ Startable.prototype.start = function () /*void*/
  */
 
 function isStoppable(target) {
-  if (target) {
-    return 'stop' in target && target.stop instanceof Function;
-  }
+    if (target) {
+        if (target instanceof Stoppable) {
+            return true;
+        }
+        return 'stop' in target && target.stop instanceof Function;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -10314,7 +11449,7 @@ Stoppable.prototype.stop = function () /*void*/
  */
 ;Stoppable.prototype.toString = function () /*String*/
 {
-  return "[Stoppable]";
+    return "[Stoppable]";
 };
 
 /**
@@ -10509,12 +11644,6 @@ var system = Object.assign({
     process: process,
     signals: signals
 });
-
-/**
- * The VEGAS.js framework.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
- */
 
 exports.trace = trace;
 exports.core = core;

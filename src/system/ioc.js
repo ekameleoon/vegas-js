@@ -7,6 +7,7 @@ import { logger } from './ioc/logger.js' ;
 import { MagicReference }   from './ioc/MagicReference.js' ;
 import { ObjectArgument }   from './ioc/ObjectArgument.js' ;
 import { ObjectAttribute }  from './ioc/ObjectAttribute.js' ;
+import { ObjectConfig }     from './ioc/ObjectConfig.js' ;
 import { ObjectDefinition } from './ioc/ObjectDefinition.js' ;
 import { ObjectDefinitionContainer } from './ioc/ObjectDefinitionContainer.js' ;
 import { ObjectListener }   from './ioc/ObjectListener.js' ;
@@ -32,6 +33,7 @@ export var ioc = Object.assign
     MagicReference   : MagicReference,
     ObjectArgument   : ObjectArgument,
     ObjectAttribute  : ObjectAttribute,
+    ObjectConfig     : ObjectConfig,
     ObjectDefinition : ObjectDefinition,
     ObjectDefinitionContainer : ObjectDefinitionContainer,
     ObjectListener   : ObjectListener,

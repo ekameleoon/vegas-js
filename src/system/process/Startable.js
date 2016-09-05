@@ -7,6 +7,10 @@ export function isStartable( target )
 {
     if( target )
     {
+        if( target instanceof Startable )
+        {
+            return true ;
+        }
         return ( 'start' in target ) && ( target.start instanceof Function )  ;
     }
 
