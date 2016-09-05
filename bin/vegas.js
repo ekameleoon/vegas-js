@@ -8461,7 +8461,7 @@ function ObjectDefinitionContainer() {
         getObjectDefinition: {
             value: function value(id) /*ObjectDefinition*/
             {
-                if (this.has(id)) {
+                if (this._map.has(id)) {
                     return this._map.get(id);
                 } else {
                     throw new ReferenceError(this + " getObjectDefinition failed, the specified object definition don't exist : " + id);
@@ -8474,7 +8474,7 @@ function ObjectDefinitionContainer() {
          * @param id The id of the ObjectDefinition to search.
          * @return <code class="prettyprint">true</code> if the object defines with the specified id is register in the container.
          */
-        has: {
+        hasObjectDefinition: {
             value: function value(id) /*Boolean*/
             {
                 return this._map.has(id);
@@ -8488,7 +8488,7 @@ function ObjectDefinitionContainer() {
          */
         removeObjectDefinition: {
             value: function value(id) {
-                if (this.has(id)) {
+                if (this._map.has(id)) {
                     this._map.delete(id);
                 } else {
                     throw new ReferenceError(this + " removeObjectDefinition failed, the specified object definition don't exist : " + id);
@@ -8499,7 +8499,7 @@ function ObjectDefinitionContainer() {
         /**
          * @private
          */
-        _map: { value: new ArrayMap() }
+        _map: { value: new ArrayMap(), writable: true }
     });
 }
 
@@ -8530,6 +8530,7 @@ function ObjectFactory() {
     var config /*ObjectConfig*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
     var objects /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
+    ObjectDefinitionContainer.call(this);
     Object.defineProperties(this, {
         /**
          * The dispatcher expression reference of the listener.
@@ -8608,7 +8609,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * @param The 'id' of the singleton.
      * @return <code class="prettyprint">true</code> if the singleton reference exist in the factory.
      */
-    containsSingleton: {
+    hasSingleton: {
         value: function value(id) /*Boolean*/
         {
             return this._singletons.has(id);
@@ -8622,7 +8623,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      */
     getObject: {
         value: function value(id) {
-            if (id === null) {
+            if (!(id instanceof String || typeof id === 'string')) {
                 return null;
             }
 
@@ -8631,7 +8632,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             try {
                 var definition = this.getObjectDefinition(id);
 
-                if (!definition) {
+                if (!(definition instanceof ObjectDefinition)) {
                     throw new Error(this + " getObject( " + id + " ) method failed, the object isn't register in the container.");
                 }
 
@@ -8639,7 +8640,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     instance = this._singletons.get(id) || null;
                 }
 
-                if (instance === null) {
+                if (!instance) {
                     try {
                         var clazz = this.config.typeEvaluator.eval(definition.type);
                         var strategy = definition.strategy;
@@ -8664,19 +8665,19 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         var flag = isLockable(instance) && (definition.lock === true || this.config.lock === true && definition.lock !== false);
 
                         if (flag) {
-                            instance.lock(); // lock
+                            instance.lock();
                         }
 
-                        this.registerListeners(instance, definition.getBeforeListeners());
-                        this.registerReceivers(instance, definition.getBeforeReceivers());
+                        this.registerListeners(instance, definition.beforeListeners);
+                        this.registerReceivers(instance, definition.beforeReceivers);
 
                         this.populateProperties(instance, definition); // init properties
 
-                        this.registerListeners(instance, definition.getAfterListeners());
-                        this.registerReceivers(instance, definition.getAfterReceivers());
+                        this.registerListeners(instance, definition.afterListeners);
+                        this.registerReceivers(instance, definition.afterReceivers);
 
                         if (flag) {
-                            instance.unlock(); // unlock
+                            instance.unlock();
                         }
 
                         this.invokeInitMethod(instance, definition); // init
@@ -8685,6 +8686,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     }
                 }
             } catch (e) {
+                console.warn(e);
                 this.warn(this + " getObject failed with the id '" + id + "' : " + e.toString());
             }
 
@@ -8708,7 +8710,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      */
     isLazyInit: { value: function value(id) /*Boolean*/
         {
-            if (this.containsObjectDefinition(id)) {
+            if (this.hasObjectDefinition(id)) {
                 return this.getObjectDefinition(id).lazyInit;
             } else {
                 return false;
@@ -8722,7 +8724,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      */
     isSingleton: { value: function value(id) /*Boolean*/
         {
-            if (this.containsObjectDefinition(id)) {
+            if (this.hasObjectDefinition(id)) {
                 return this.getObjectDefinition(id).singleton;
             } else {
                 return false;
@@ -8805,7 +8807,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         this.addObjectDefinition(definition);
 
                         if (definition.singleton && !definition.lazyInit) {
-                            if (this.containsObjectDefinition(definition.id)) {
+                            if (this.hasObjectDefinition(definition.id)) {
                                 this.bufferSingletons.push(String(definition.id));
                             }
                         }
@@ -8941,7 +8943,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     }
                 } else if (factoryProperty instanceof ObjectFactoryProperty) {
                     factory = factoryProperty.factory;
-                    if (factory !== null && this.containsObjectDefinition(factory)) {
+                    if (factory !== null && this.hasObjectDefinition(factory)) {
                         ref = this.getObject(factory);
                         if (ref !== null && name !== null && ref.hasOwnProperty(name)) {
                             instance = ref[name];
@@ -8968,7 +8970,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 if (len > 0) {
                     for (var i = 0; i < len; i++) {
                         id = ar[i];
-                        if (this.containsObjectDefinition(id)) {
+                        if (this.hasObjectDefinition(id)) {
                             this.getObject(id); // not keep in memory
                         }
                     }
@@ -9026,7 +9028,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 if (len > 0) {
                     for (var i = 0; i < len; i++) {
                         id = ar[i];
-                        if (this.containsObjectDefinition(id)) {
+                        if (this.hasObjectDefinition(id)) {
                             this.getObject(id); // not keep in memory
                         }
                     }
@@ -9099,8 +9101,149 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     }
                 }
             }
-        } }
+        } },
 
+    /**
+     * Populates a property in the specified object with the passed-in ObjectProperty object.
+     * @param o The object to populate.
+     * @param prop The ObjectProperty used to populate the object.
+     * @param id The id of the current IObjectDefinition.
+     */
+    populateProperty: { value: function value(o, prop /*ObjectProperty*/, id) {
+            if (o === null) {
+                this.warn(this + " populate a new property failed, the object not must be 'null' or 'undefined', see the factory with the object definition '" + id + "'.");
+                return;
+            }
+
+            var name = prop.name;
+            var value = prop.value;
+
+            //////////// #init magic strategy to populate the property
+
+            if (name === MagicReference.INIT) {
+                if (prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof value === 'string')) {
+                    value = _config.referenceEvaluator.eval(value);
+                } else if (prop.policy === ObjectAttribute.CONFIG) {
+                    value = config.configEvaluator.eval(value);
+                } else if (prop.policy === ObjectAttribute.LOCALE) {
+                    value = config.localeEvaluator.eval(value);
+                }
+                if (prop.evaluators && prop.evaluators.length > 0) {
+                    value = this.eval(value, prop.evaluators);
+                }
+                if (value) {
+                    for (var member in value) {
+                        if (value.hasOwnProperty(member)) {
+                            o[member] = value[member];
+                        }
+                    }
+                } else {
+                    this.warn(this + " populate a new property failed with the magic name #init, the object to enumerate not must be null, see the factory with the object definition '" + id + "'.");
+                }
+                return;
+            }
+
+            //////////// default strategy to populate the property
+
+            if (!o.hasOwnProperty(name)) {
+                this.warn(this + " populate a new property failed with the name:" + name + ", this property don't exist in the object:" + o + ", see the factory with the object definition '" + id + "'.");
+                return;
+            }
+            if (o[name] instanceof Function) {
+                if (prop.policy === ObjectAttribute.ARGUMENTS) {
+                    o[name].apply(o, this.createArguments(value));
+                    return;
+                } else if (prop.policy === ObjectAttribute.VALUE && prop.value === undefined) {
+                    o[name]();
+                    return;
+                }
+            }
+            try {
+                if (prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof value === 'string')) {
+                    value = this._config.referenceEvaluator.eval(value);
+                } else if (prop.policy === ObjectAttribute.CONFIG) {
+                    value = this.config.configEvaluator.eval(value);
+                } else if (prop.policy === ObjectAttribute.LOCALE) {
+                    value = this.config.localeEvaluator.eval(value);
+                }
+                if (prop.evaluators && prop.evaluators.length > 0) {
+                    value = this.eval(value, prop.evaluators);
+                }
+                o[name] = value;
+            } catch (e) {
+                this.warn(this + " populateProperty failed with the name '" + name + "' in the object '" + o + ", see the factory with the object definition '" + id + "' error: " + e.toString());
+            }
+        } },
+
+    /**
+     * Initialize the listener callback of the specified object.
+     */
+    registerListeners: { value: function value(o, listeners /*Array*/) {
+            if (o === null || listeners === null) {
+                return;
+            }
+            var size = listeners.length;
+            if (size > 0) {
+                var dispatcher;
+                var method;
+                var listener;
+                for (var i = 0; i < size; i++) {
+                    try {
+                        method = null;
+                        listener = listeners[i];
+                        dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
+                        if (dispatcher !== null && listener.type !== null) {
+                            if (listener.method !== null && o.hasOwnProperty(listener.method) && o[listener.method] instanceof Function) {
+                                method = o[listener.method];
+                            } else if (o.hasOwnProperty('handleEvent') && o.handleEvent instanceof Function) {
+                                method = o.handleEvent;
+                            }
+                            if (method !== null) {
+                                dispatcher.addEventListener(listener.type, method, listener.useCapture);
+                            }
+                        }
+                    } catch (e) {
+                        this.warn(this + " registerListeners failed with the target '" + o + "' , in the collection of this listeners at {" + i + "} : " + e.toString());
+                    }
+                }
+            }
+        } },
+
+    /**
+     * Initialize the receiver callback of the specified object.
+     */
+    registerReceivers: { value: function value(o) {
+            var receivers /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (o === null || receivers === null) {
+                return;
+            }
+            var size = receivers.length;
+            if (size > 0) {
+                var signaler;
+                var receiver;
+                var slot;
+                for (var i = 0; i < size; i++) {
+                    try {
+                        receiver = receivers[i];
+                        signaler = this._config.referenceEvaluator.eval(receiver.signal);
+                        slot = null;
+                        if (signaler instanceof Signaler) {
+                            if (o.hasOwnProperty(receiver.slot) && o[receiver.slot] instanceof Function) {
+                                slot = o[receiver.slot];
+                            } else if (o instanceof Receiver) {
+                                slot = o.receive;
+                            }
+                            if (slot !== null) {
+                                signaler.connect(slot, receiver.priority, receiver.autoDisconnect);
+                            }
+                        }
+                    } catch (e) {
+                        this.warn(this + " registerReceivers failed with the target '" + o + "' , in the collection of this receivers at {" + i + "} : " + e.toString());
+                    }
+                }
+            }
+        } }
 });
 
 /**
@@ -9796,6 +9939,7 @@ var ioc = Object.assign({
     ObjectConfig: ObjectConfig,
     ObjectDefinition: ObjectDefinition,
     ObjectDefinitionContainer: ObjectDefinitionContainer,
+    ObjectFactory: ObjectFactory,
     ObjectListener: ObjectListener,
     ObjectMethod: ObjectMethod,
     ObjectOrder: ObjectOrder,

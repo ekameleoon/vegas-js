@@ -37,9 +37,33 @@ var core   ; // jshint ignore:line
 
     logger.info('hello info');
 
-    var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
+    var ObjectFactory = system.ioc.ObjectFactory ;
 
-    var signal = core.reflect.invoke( definition ) ;
-    trace( signal ) ;
+var factory = new ObjectFactory();
+
+var objects =
+[
+    {
+        id         : "signal" ,
+        type       : "system.signals.Signal" ,
+        singleton  : true,
+        lazyInit   : true ,
+        properties :
+        [
+            // { name:"defaultTextFormat" , value:new TextFormat("Verdana", 11) } ,
+            // { name:"selectable"        , value:false                         } ,
+            // { name:"text"              , value:"hello world"                 } ,
+            // { name:"textColor"         , value:0xF7F744                      } ,
+            // { name:"x"                 , value:100                           } ,
+            // { name:"y"                 , value:100                           }
+        ]
+    }
+];
+
+factory.run( objects );
+
+var signal = factory.getObject('signal') ;
+
+console.log( signal ) ;
 
 })( vegas );

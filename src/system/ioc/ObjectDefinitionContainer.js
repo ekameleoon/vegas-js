@@ -71,7 +71,7 @@ export function ObjectDefinitionContainer()
         {
             value : function( id ) /*ObjectDefinition*/
             {
-                if ( this.has( id ) )
+                if ( this._map.has( id ) )
                 {
                     return this._map.get( id ) ;
                 }
@@ -87,7 +87,7 @@ export function ObjectDefinitionContainer()
          * @param id The id of the ObjectDefinition to search.
          * @return <code class="prettyprint">true</code> if the object defines with the specified id is register in the container.
          */
-        has :
+        hasObjectDefinition :
         {
             value : function( id ) /*Boolean*/
             {
@@ -104,7 +104,7 @@ export function ObjectDefinitionContainer()
         {
             value : function( id )
             {
-                if ( this.has( id ) )
+                if ( this._map.has( id ) )
                 {
                     this._map.delete( id ) ;
                 }
@@ -118,7 +118,7 @@ export function ObjectDefinitionContainer()
         /**
          * @private
          */
-        _map : { value : new ArrayMap() }
+        _map : { value : new ArrayMap() , writable : true }
     });
 }
 

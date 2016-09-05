@@ -10,6 +10,7 @@ import { ObjectAttribute }  from './ioc/ObjectAttribute.js' ;
 import { ObjectConfig }     from './ioc/ObjectConfig.js' ;
 import { ObjectDefinition } from './ioc/ObjectDefinition.js' ;
 import { ObjectDefinitionContainer } from './ioc/ObjectDefinitionContainer.js' ;
+import { ObjectFactory }    from './ioc/ObjectFactory.js' ;
 import { ObjectListener }   from './ioc/ObjectListener.js' ;
 import { ObjectMethod }     from './ioc/ObjectMethod.js' ;
 import { ObjectOrder }      from './ioc/ObjectOrder.js' ;
@@ -36,6 +37,7 @@ export var ioc = Object.assign
     ObjectConfig     : ObjectConfig,
     ObjectDefinition : ObjectDefinition,
     ObjectDefinitionContainer : ObjectDefinitionContainer,
+    ObjectFactory    : ObjectFactory,
     ObjectListener   : ObjectListener,
     ObjectMethod     : ObjectMethod,
     ObjectOrder      : ObjectOrder,
