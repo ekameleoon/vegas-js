@@ -15,7 +15,13 @@ export function isIdentifiable( target )
  */
 export function Identifiable()
 {
-    //
+    Object.defineProperties( this ,
+    {
+        /**
+         * Indicates the unique identifier value of this object.
+         */
+        id : { value : null , enumerable : true , writable : true }
+    }) ;
 }
 
 /**
@@ -26,10 +32,11 @@ Identifiable.prototype = Object.create( Object.prototype ,
     /**
      * Returns a reference to the Object function that created the instance's prototype.
      */
-    constructor : { value :  Identifiable },
+    constructor : { value :  Identifiable , writable : true },
 
     /**
-     * Indicates the unique identifier value of this object.
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
      */
-    id : { value : null , enumerable : true , writable : true }
+    toString : { value : function () { return "[Identifiable]" ; } , writable : true }
 }) ;

@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { ObjectAttribute } from './ObjectAttribute.js' ;
+import { ObjectStrategy }  from './ObjectStrategy.js' ;
 
 /**
  * This object defines a property definition in the object definitions.
@@ -16,7 +17,7 @@ export function ObjectProperty( name /*String*/ , value , policy /*String*/ = "v
         /**
          * The optional Array representation of all evaluators to transform the value of this object.
          */
-        evaluators : { value : evaluators , writable : true } ,
+        evaluators : { value : evaluators instanceof Array ? evaluators : null, writable : true } ,
 
         /**
          * The name of the property.
@@ -66,16 +67,16 @@ export function ObjectProperty( name /*String*/ , value , policy /*String*/ = "v
 /**
  * @extends Object
  */
-ObjectProperty.prototype = Object.create( Object.prototype ,
+ObjectProperty.prototype = Object.create( ObjectStrategy.prototype ,
 {
     /**
      * Returns a reference to the Object function that created the instance's prototype.
      */
-    constructor : { value : ObjectProperty },
+    constructor : { value : ObjectProperty , writable : true },
 
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      */
-    toString : { value : function () { return '[ObjectProperty]' ; }}
+    toString : { value : function () { return '[ObjectProperty]' ; } , writable : true  }
 }) ;
