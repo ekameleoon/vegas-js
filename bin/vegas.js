@@ -5074,6 +5074,156 @@ var ObjectOrder = Object.defineProperties({}, {
 });
 
 /**
+ * This object defines a listener definition in an object definition.
+ * @param dispatcher The dispatcher expression reference of the listener.
+ * @param type type name of the event dispatched by the dispatcher of this listener.
+ * @param method The name of the method to invoke when the event is handle.
+ * @param useCapture Determinates if the event flow use capture or not.
+ * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ */
+function ObjectListener(dispatcher /*String*/, type /*String*/) {
+  var method /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+  var useCapture /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+
+  Object.defineProperties(this, {
+    /**
+     * The dispatcher expression reference of the listener.
+     */
+    dispatcher: { value: dispatcher, writable: true },
+
+    /**
+     * The name of the method to invoke when the event is handle.
+     */
+    method: { value: method, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    order: {
+      get: function get() {
+        return this._order;
+      },
+      set: function set(value) {
+        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+      }
+    },
+
+    /**
+     * The type name of the event dispatched by the dispatcher.
+     */
+    type: { value: type, writable: true },
+
+    /**
+     * Determinates if the event flow use capture or not.
+     */
+    useCapture: { value: Boolean(useCapture), writable: true },
+
+    /**
+     * @private
+     */
+    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+  });
+}
+
+Object.defineProperties(ObjectListener, {
+  /**
+   * Defines the "dispatcher" attribute in a listener object definition.
+   */
+  DISPATCHER: { value: "dispatcher", enumerable: true },
+
+  /**
+   * Defines the "method" attribute in a listener object definition.
+   */
+  METHOD: { value: "method", enumerable: true },
+
+  /**
+   * Defines the "order" attribute in a listener object definition.
+   */
+  ORDER: { value: "order", enumerable: true },
+
+  /**
+   * Defines the "useCapture" attribute in a listener object definition.
+   */
+  USE_CAPTURE: { value: "useCapture", enumerable: true },
+
+  /**
+   * Defines the "type" attribute in a listener object definition.
+   */
+  TYPE: { value: "type", enumerable: true }
+});
+
+/**
+ * @extends Object
+ */
+ObjectListener.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectListener },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      var s = '[ObjectListener';
+      if (this.signal) {
+        s += ' dispatcher:"' + this.dispatcher + '"';
+      }
+      if (this.slot) {
+        s += ' type:"' + this.type + '"';
+      }
+      if (this.method) {
+        s += ' method:"' + this.method + '"';
+      }
+      if (this._order) {
+        s += ' order:"' + this._order + '"';
+      }
+      s += ']';
+      return s;
+    } }
+});
+
+/**
+ * This object defines a method definition with a method name and this arguments.
+ * @param name The name of the method to invoke.
+ * @param arguments The array of the arguments to passed-in the method.
+ */
+
+function ObjectMethod(name /*String*/, args /*Array*/) {
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    arguments: { value: args, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true }
+  });
+}
+
+/**
+ * @extends Object
+ */
+ObjectMethod.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectMethod },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectMethod]';
+    } }
+});
+
+/**
  * The static enumeration list of all object scopes.
  */
 
@@ -5100,6 +5250,195 @@ var ObjectScope = Object.defineProperties({}, {
   validate: { value: function value(scope /*String*/) /*Boolean*/
     {
       return ObjectScope.SCOPES.indexOf(scope) > -1;
+    } }
+});
+
+/**
+ * This object defines a property definition in the object definitions.
+ * @param name The name of the property.
+ * @param value The value of the property.
+ * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
+ * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
+ */
+function ObjectProperty(name /*String*/, value) {
+  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
+  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    evaluators: { value: evaluators, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    policy: {
+      get: function get() {
+        return this._policy;
+      },
+      set: function set(str) {
+        switch (str) {
+          case ObjectAttribute.ARGUMENTS:
+          case ObjectAttribute.REFERENCE:
+          case ObjectAttribute.CONFIG:
+          case ObjectAttribute.LOCALE:
+            {
+              this._policy = str;
+              break;
+            }
+          default:
+            {
+              this._policy = ObjectAttribute.VALUE;
+            }
+        }
+      }
+    },
+
+    /**
+     * The value of the property.
+     */
+    value: { value: value, writable: true },
+
+    /**
+     * @private
+     */
+    _policy: { value: null, writable: true }
+  });
+
+  this.policy = policy;
+}
+
+/**
+ * @extends Object
+ */
+ObjectProperty.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectProperty },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectProperty]';
+    } }
+});
+
+/**
+ * This object defines a receiver definition in an object definition.
+ * @param signal The id of the signal in the IoC factory.
+ * @param slot The id of the receiver of function to connect in the IoC factory.
+ * @param priority Determines the priority level of the receiver.
+ * @param autoDisconnect Indicate if the receiver is auto disconnect in the signal when is used.
+ * @param order Indicates the order to connect the receiver "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ */
+function ObjectReceiver(signal /*String*/) {
+  var slot /*String*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var priority /*int*/ = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+  var autoDisconnect /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+
+  Object.defineProperties(this, {
+    /**
+     * Indicates if the receiver (slot) is auto disconnect by the signal.
+     */
+    autoDisconnect: { value: autoDisconnect, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    order: {
+      get: function get() {
+        return this._order;
+      },
+      set: function set(value) {
+        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+      }
+    },
+
+    /**
+     * Determines the priority level of the signal connection.
+     */
+    priority: { value: priority, writable: true },
+
+    /**
+     * The identifier of the signal to connect in the IoC factory.
+     */
+    signal: { value: signal, writable: true },
+
+    /**
+     * The identifier of the receiver of function to connect in the IoC factory.
+     */
+    slot: { value: slot, writable: true },
+
+    /**
+     * @private
+     */
+    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+  });
+}
+
+Object.defineProperties(ObjectReceiver, {
+  /**
+   * Defines the "autoDisconnect" attribute in a receiver object definition.
+   */
+  AUTO_DISCONNECT: { value: "autoDisconnect", enumerable: true },
+
+  /**
+   * Defines the "order" attribute in a receiver object definition.
+   */
+  ORDER: { value: "order", enumerable: true },
+
+  /**
+   * Defines the "priority" attribute in a receiver object definition.
+   */
+  PRIORITY: { value: "priority", enumerable: true },
+
+  /**
+   * Defines the "signal" attribute in a receiver object definition.
+   */
+  SIGNAL: { value: "signal", enumerable: true },
+
+  /**
+   * Defines the "slot" attribute in a receiver object definition.
+   */
+  SLOT: { value: "slot", enumerable: true }
+});
+
+/**
+ * @extends Object
+ */
+ObjectReceiver.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectReceiver },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      var s = '[ObjectReceiver';
+      if (this.signal) {
+        s += ' signal:"' + this.signal + '"';
+      }
+      if (this.slot) {
+        s += ' slot:"' + this.slot + '"';
+      }
+      if (this._order) {
+        s += ' order:"' + this._order + '"';
+      }
+      s += ']';
+      return s;
     } }
 });
 
@@ -5222,7 +5561,11 @@ var ioc = Object.assign({
     MagicReference: MagicReference,
     ObjectArgument: ObjectArgument,
     ObjectAttribute: ObjectAttribute,
+    ObjectListener: ObjectListener,
+    ObjectMethod: ObjectMethod,
     ObjectOrder: ObjectOrder,
+    ObjectProperty: ObjectProperty,
+    ObjectReceiver: ObjectReceiver,
     ObjectScope: ObjectScope,
     Parameters: Parameters,
     TypePolicy: TypePolicy

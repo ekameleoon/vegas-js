@@ -3,7 +3,12 @@
 import { ObjectOrder } from './ObjectOrder.js' ;
 
 /**
- * This collector register a <code>parameters</code> object reference, this object can be use to configurate the application with externals values.
+ * This object defines a receiver definition in an object definition.
+ * @param signal The id of the signal in the IoC factory.
+ * @param slot The id of the receiver of function to connect in the IoC factory.
+ * @param priority Determines the priority level of the receiver.
+ * @param autoDisconnect Indicate if the receiver is auto disconnect in the signal when is used.
+ * @param order Indicates the order to connect the receiver "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
 export function ObjectReceiver( signal /*String*/ , slot /*String*/ = null , priority /*int*/ = 0 , autoDisconnect /*Boolean*/ = false , order /*String*/ = "after" )
 {
@@ -48,6 +53,34 @@ export function ObjectReceiver( signal /*String*/ , slot /*String*/ = null , pri
     }) ;
 }
 
+Object.defineProperties( ObjectReceiver ,
+{
+    /**
+     * Defines the "autoDisconnect" attribute in a receiver object definition.
+     */
+    AUTO_DISCONNECT : { value : "autoDisconnect" , enumerable : true } ,
+
+    /**
+     * Defines the "order" attribute in a receiver object definition.
+     */
+    ORDER : { value : "order" , enumerable : true } ,
+
+    /**
+     * Defines the "priority" attribute in a receiver object definition.
+     */
+    PRIORITY : { value : "priority" , enumerable : true } ,
+
+    /**
+     * Defines the "signal" attribute in a receiver object definition.
+     */
+    SIGNAL : { value : "signal" , enumerable : true } ,
+
+    /**
+     * Defines the "slot" attribute in a receiver object definition.
+     */
+    SLOT : { value : "slot" , enumerable : true }
+});
+
 /**
  * @extends Object
  */
@@ -63,7 +96,7 @@ ObjectReceiver.prototype = Object.create( Object.prototype ,
      * @return the string representation of this instance.
      */
     toString : { value : function ()
-        {
+    {
         var s = '[ObjectReceiver' ;
         if ( this.signal )
         {
