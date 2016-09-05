@@ -3079,6 +3079,36 @@ Formattable.prototype.format = function (value) /*String*/
   return "[Formattable]";
 };
 
+function isIdentifiable(target) {
+  if (target) {
+    return target.hasOwnProperty('id');
+  }
+
+  return false;
+}
+
+/**
+ * This interface defines a common structure for identifiable classes (has an "id" property).
+ */
+function Identifiable() {}
+//
+
+
+/**
+ * @extends Object
+ */
+Identifiable.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: Identifiable },
+
+  /**
+   * Indicates the unique identifier value of this object.
+   */
+  id: { value: null, enumerable: true, writable: true }
+});
+
 /**
  * This interface defines the iterator pattern over a collection.
  */
@@ -3147,126 +3177,112 @@ function Map() {}
  */
 Map.prototype = Object.create(Object.prototype, {
   /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: Map, writable: true, configurable: true },
+
+  /**
    * Returns the number of key-value mappings in this map.
    */
   length: { get: function get() {
       return 0;
-    } }
+    } },
+
+  /**
+   * Removes all mappings from this map (optional operation).
+   */
+  clear: { value: function value() {}, writable: true },
+
+  /**
+   * Returns a shallow copy of the map.
+   * @return a shallow copy of the map.
+   */
+  clone: { value: function value() {
+      return new Map();
+    }, writable: true },
+
+  /**
+   * Removes the mapping for this key from this map if it is present (optional operation).
+   */
+  delete: { value: function value(key) {}, writable: true },
+
+  /**
+   * Returns the value to which this map maps the specified key.
+   */
+  get: { value: function value(key) {
+      return null;
+    }, writable: true },
+
+  /**
+   * Returns {@code true} if this map contains a mapping for the specified key.
+   * @return {@code true} if this map contains a mapping for the specified key.
+   */
+  has: { value: function value(key) /*Boolean*/{
+      return false;
+    }, writable: true },
+
+  /**
+   * Returns {@code true} if this map maps one or more keys to the specified value.
+   * @return {@code true} if this map maps one or more keys to the specified value.
+   */
+  hasValue: { value: function value(_value) /*Boolean*/{
+      return false;
+    }, writable: true },
+
+  /**
+   * Returns {@code true} if this map contains no key-value mappings.
+   * @return {@code true} if this map contains no key-value mappings.
+   */
+  isEmpty: { value: function value() /*Boolean*/{
+      return false;
+    }, writable: true },
+
+  /**
+   * Returns the values iterator of this map.
+   * @return the values iterator of this map.
+   */
+  iterator: { value: function value() /*Iterator*/{
+      return null;
+    }, writable: true },
+
+  /**
+   * Returns the keys iterator of this map.
+   * @return the keys iterator of this map.
+   */
+  keyIterator: { value: function value() /*Iterator*/{
+      return null;
+    }, writable: true },
+
+  /**
+   * Returns an array of all the keys in the map.
+   */
+  keys: { value: function value() /*Array*/{
+      return null;
+    }, writable: true },
+
+  /**
+   * Associates the specified value with the specified key in this map (optional operation).
+   */
+  set: { value: function value(key, _value2) {}, writable: true },
+
+  /**
+   * Copies all of the mappings from the specified map to this map (optional operation).
+   */
+  setAll: { value: function value(map /*Map*/) {}, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance
+   */
+  toString: { value: function value() {
+      return '[Map]';
+    }, writable: true },
+
+  /**
+   * Returns an array of all the values in the map.
+   */
+  values: { value: function value() /*Array*/{}, writable: true }
 });
-
-Map.prototype.constructor = Map;
-
-/**
- * Removes all mappings from this map (optional operation).
- */
-Map.prototype.clear = function () {}
-//
-
-
-/**
- * Returns a shallow copy of the map.
- * @return a shallow copy of the map.
- */
-;Map.prototype.clone = function () {
-  return new Map();
-};
-
-/**
- * Removes the mapping for this key from this map if it is present (optional operation).
- */
-Map.prototype.delete = function (key) {}
-//
-
-
-/**
- * Returns the value to which this map maps the specified key.
- */
-;Map.prototype.get = function (key) {}
-//
-
-
-/**
- * Returns {@code true} if this map contains a mapping for the specified key.
- * @return {@code true} if this map contains a mapping for the specified key.
- */
-;Map.prototype.has = function (key) /*Boolean*/
-{}
-//
-
-
-/**
- * Returns {@code true} if this map maps one or more keys to the specified value.
- * @return {@code true} if this map maps one or more keys to the specified value.
- */
-;Map.prototype.hasValue = function (value) /*Boolean*/
-{}
-//
-
-
-/**
- * Returns {@code true} if this map contains no key-value mappings.
- * @return {@code true} if this map contains no key-value mappings.
- */
-;Map.prototype.isEmpty = function () /*Boolean*/
-{}
-//
-
-
-/**
- * Returns the values iterator of this map.
- * @return the values iterator of this map.
- */
-;Map.prototype.iterator = function () /*Iterator*/
-{}
-//
-
-
-/**
- * Returns the keys iterator of this map.
- * @return the keys iterator of this map.
- */
-;Map.prototype.keyIterator = function () /*Iterator*/
-{}
-//
-
-
-/**
- * Returns an array of all the keys in the map.
- */
-;Map.prototype.keys = function () /*Array*/
-{}
-//
-
-
-/**
- * Associates the specified value with the specified key in this map (optional operation).
- */
-;Map.prototype.set = function (key, value) {}
-//
-
-
-/**
- * Copies all of the mappings from the specified map to this map (optional operation).
- */
-;Map.prototype.setAll = function (map /*Map*/) {}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-;Map.prototype.toString = function () {
-  return '[Map]';
-};
-
-/**
- * Returns an array of all the values in the map.
- */
-Map.prototype.values = function () /*Array*/
-{
-  //
-};
 
 /**
  * Converts a <code>Array</code> to an iterator.
@@ -3597,7 +3613,7 @@ ArrayMap.prototype = Object.create(Map.prototype, {
     }
 });
 
-ArrayMap.prototype.constructor = Map;
+ArrayMap.prototype.constructor = ArrayMap;
 
 /**
  * Removes all mappings from this map (optional operation).
@@ -3838,7 +3854,11 @@ ArrayMap.prototype.values = function () /*Array*/
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var data = Object.assign({
+    // singletons
+    isIdentifiable: isIdentifiable,
+
     // interfaces
+    Identifiable: Identifiable,
     Iterator: Iterator,
     Map: Map,
 

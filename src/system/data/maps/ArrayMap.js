@@ -90,7 +90,7 @@ ArrayMap.prototype = Object.create( Map.prototype ,
     }
 }) ;
 
-ArrayMap.prototype.constructor = Map ;
+ArrayMap.prototype.constructor = ArrayMap ;
 
 /**
  * Removes all mappings from this map (optional operation).
