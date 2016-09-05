@@ -7,6 +7,7 @@ import { ObjectArgument }  from './ioc/ObjectArgument.js' ;
 import { ObjectAttribute } from './ioc/ObjectAttribute.js' ;
 import { ObjectOrder }     from './ioc/ObjectOrder.js' ;
 import { ObjectScope }     from './ioc/ObjectScope.js' ;
+import { ObjectReceiver }  from './ioc/ObjectReceiver.js' ;
 import { Parameters }      from './ioc/Parameters.js' ;
 import { TypePolicy }      from './ioc/TypePolicy.js' ;
 
@@ -21,6 +22,7 @@ export var ioc = Object.assign
     ObjectArgument  : ObjectArgument,
     ObjectAttribute : ObjectAttribute,
     ObjectOrder     : ObjectOrder,
+    ObjectReceiver  : ObjectReceiver,
     ObjectScope     : ObjectScope,
     Parameters      : Parameters,
     TypePolicy      : TypePolicy
