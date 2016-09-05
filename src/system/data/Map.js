@@ -1,4 +1,4 @@
-/*jshint unused: true*/
+/*jshint unused: false*/
 "use strict" ;
 
 /**
@@ -17,10 +17,7 @@ Map.prototype = Object.create( Object.prototype ,
     /**
      * Returns the number of key-value mappings in this map.
      */
-    length :
-    {
-        get : () => 0
-    }
+    length : { get : () => 0 }
 }) ;
 
 Map.prototype.constructor = Map ;

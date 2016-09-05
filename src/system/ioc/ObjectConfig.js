@@ -3,10 +3,12 @@
 import { ArrayMap }            from '../data/maps/ArrayMap.js' ;
 import { ExpressionFormatter } from '../formatters/ExpressionFormatter.js' ;
 
-import { ConfigEvaluator } from './evaluators/ConfigEvaluator.js' ;
-import { LocaleEvaluator } from './evaluators/LocaleEvaluator.js' ;
-import { ObjectAttribute } from './ObjectAttribute.js' ;
-import { TypePolicy }      from './TypePolicy.js' ;
+import { ConfigEvaluator }    from './evaluators/ConfigEvaluator.js' ;
+import { LocaleEvaluator }    from './evaluators/LocaleEvaluator.js' ;
+import { ReferenceEvaluator } from './evaluators/ReferenceEvaluator.js' ;
+import { TypeEvaluator }      from './evaluators/TypeEvaluator.js' ;
+import { ObjectAttribute }    from './ObjectAttribute.js' ;
+import { TypePolicy }         from './TypePolicy.js' ;
 
 /**
  * This object contains the configuration of the IoC object factory.

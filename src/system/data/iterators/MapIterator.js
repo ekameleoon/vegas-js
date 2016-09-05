@@ -65,7 +65,7 @@ MapIterator.prototype.next = function()
 MapIterator.prototype.remove = function()
 {
     this._i.remove() ;
-    return this._m.remove( this._k ) ;
+    return this._m.delete( this._k ) ;
 }
 
 /**

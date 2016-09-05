@@ -3,7 +3,11 @@
 import '../polyfill.js' ;
 
 import { MagicReference }  from './ioc/MagicReference.js' ;
+import { ObjectArgument }  from './ioc/ObjectArgument.js' ;
 import { ObjectAttribute } from './ioc/ObjectAttribute.js' ;
+import { ObjectOrder }     from './ioc/ObjectOrder.js' ;
+import { ObjectScope }     from './ioc/ObjectScope.js' ;
+import { Parameters }      from './ioc/Parameters.js' ;
 import { TypePolicy }      from './ioc/TypePolicy.js' ;
 
 /**
@@ -14,6 +18,10 @@ import { TypePolicy }      from './ioc/TypePolicy.js' ;
 export var ioc = Object.assign
 ({
     MagicReference  : MagicReference,
+    ObjectArgument  : ObjectArgument,
     ObjectAttribute : ObjectAttribute,
+    ObjectOrder     : ObjectOrder,
+    ObjectScope     : ObjectScope,
+    Parameters      : Parameters,
     TypePolicy      : TypePolicy
 }) ;

@@ -3149,11 +3149,9 @@ Map.prototype = Object.create(Object.prototype, {
   /**
    * Returns the number of key-value mappings in this map.
    */
-  length: {
-    get: function get() {
+  length: { get: function get() {
       return 0;
-    }
-  }
+    } }
 });
 
 Map.prototype.constructor = Map;
@@ -3424,7 +3422,7 @@ MapIterator.prototype.next = function () {
  */
 MapIterator.prototype.remove = function () {
     this._i.remove();
-    return this._m.remove(this._k);
+    return this._m.delete(this._k);
 };
 
 /**
@@ -4752,6 +4750,482 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
  */
 var formatters = Object.assign({
   ExpressionFormatter: ExpressionFormatter
+});
+
+/**
+ * Enumeration of all "magic reference patterns" id can be use in the object definition to create a dependency with special object reference in the factory.
+ */
+
+var MagicReference = Object.defineProperties({}, {
+  /**
+   * The reference pattern who represents the current config reference of the application defines in the config object in the factory.
+   */
+  CONFIG: { value: "#config", enumerable: true },
+
+  /**
+   * The reference pattern who represents the init magic name used in the property definitions to change the strategy of the current member initialisation.
+   */
+  INIT: { value: "#init", enumerable: true },
+
+  /**
+   * The reference pattern who represents the current locale reference of the application defines in the config object in the factory.
+   */
+  LOCALE: { value: "#locale", enumerable: true },
+
+  /**
+   * The reference pattern who represents the current Parameters reference of the application defines in the config object in the factory.
+   */
+  PARAMS: { value: "#params", enumerable: true },
+
+  /**
+   * The reference pattern who represents the current root reference of the application defines in the config object in the factory.
+   */
+  ROOT: { value: "#root", enumerable: true },
+
+  /**
+   * The reference pattern who represents the current stage reference of the application defines in the config object in the factory.
+   */
+  STAGE: { value: "#stage", enumerable: true },
+
+  /**
+   * The reference pattern who represents the current factory.
+   */
+  THIS: { value: "#this", enumerable: true }
+});
+
+/**
+ * The static enumeration list of all object attributes.
+ */
+
+var ObjectAttribute = Object.defineProperties({}, {
+  /**
+   * Defines the label of the arguments in a method or a constructor object.
+   */
+  ARGUMENTS: { value: "arguments", enumerable: true },
+
+  /**
+   * Defines the attribute name of the "config" object in the configuration of the ioc factory.
+   */
+  CONFIG: { value: "config", enumerable: true },
+
+  /**
+   * Defines the label of the 'configuration' top-level attribute.
+   */
+  CONFIGURATION: { value: "configuration", enumerable: true },
+
+  /**
+   * Defines the label of the 'evaluators' attribure.
+   */
+  EVALUATORS: { value: "evaluators", enumerable: true },
+
+  /**
+   * Defines the label of the 'factory' attribure.
+   */
+  FACTORY: { value: "factory", enumerable: true },
+
+  /**
+   * Defines the label of the 'identify' property of the object.
+   */
+  IDENTIFY: { value: "identify", enumerable: true },
+
+  /**
+   * Defines the label of the 'i18n' top-level attribute.
+   */
+  I18N: { value: "i18n", enumerable: true },
+
+  /**
+   * Defines the label of the 'imports' top-level attribute.
+   */
+  IMPORTS: { value: "imports", enumerable: true },
+
+  /**
+   * Defines the label of the lazyInit name property of the object.
+   */
+  LAZY_INIT: { value: "lazyInit", enumerable: true },
+
+  /**
+   * Defines the attribute name of the "locale" object in the configuration of the ioc factory and the object definition "arguments" and "properties".
+   */
+  LOCALE: { value: "locale", enumerable: true },
+
+  /**
+   * Defines the label of the 'lock' property of the object.
+   */
+  LOCK: { value: "lock", enumerable: true },
+
+  /**
+   * Defines the label of the name in a property object.
+   */
+  NAME: { value: "name", enumerable: true },
+
+  /**
+   * The name of the "dependsOn" object definition attribute.
+   */
+  OBJECT_DEPENDS_ON: { value: "dependsOn", enumerable: true },
+
+  /**
+   * The name of the external object property to register the destroy method name.
+   */
+  OBJECT_DESTROY_METHOD_NAME: { value: "destroy", enumerable: true },
+
+  /**
+   * The name of the "factoryLogic" object definition attribute.
+   */
+  OBJECT_FACTORY_LOGIC: { value: "factoryLogic", enumerable: true },
+
+  /**
+   * The name of the "factoryMethod" object definition attribute.
+   */
+  OBJECT_FACTORY_METHOD: { value: "factoryMethod", enumerable: true },
+
+  /**
+   * The name of the "factoryProperty" object definition attribute.
+   */
+  OBJECT_FACTORY_PROPERTY: { value: "factoryProperty", enumerable: true },
+
+  /**
+   * The name of the "factoryReference" object definition attribute.
+   */
+  OBJECT_FACTORY_REFERENCE: { value: "factoryReference", enumerable: true },
+
+  /**
+   * The name of the "factoryValue" object definition attribute.
+   */
+  OBJECT_FACTORY_VALUE: { value: "factoryValue", enumerable: true },
+
+  /**
+   * The name of the "generates" object definition attribute.
+   */
+  OBJECT_GENERATES: { value: "generates", enumerable: true },
+
+  /**
+   * The name of the external object property to define the identifier of the object.
+   */
+  OBJECT_ID: { value: "id", enumerable: true },
+
+  /**
+   * The name of the external object property to register the init method name.
+   */
+  OBJECT_INIT_METHOD_NAME: { value: "init", enumerable: true },
+
+  /**
+   * Defines the label of the "listeners" name property of the object.
+   */
+  OBJECT_LISTENERS: { value: "listeners", enumerable: true },
+
+  /**
+   * The name of the external object property to register the properties.
+   */
+  OBJECT_PROPERTIES: { value: "properties", enumerable: true },
+
+  /**
+   * Defines the label of the "receivers" name property of the object.
+   */
+  OBJECT_RECEIVERS: { value: "receivers", enumerable: true },
+
+  /**
+   * The name of the external object property to define the scope flag of the object.
+   */
+  OBJECT_SCOPE: { value: "scope", enumerable: true },
+
+  /**
+   * The name of the external object property to define the singleton flag of the object.
+   */
+  OBJECT_SINGLETON: { value: "singleton", enumerable: true },
+
+  /**
+   * The name of the external object property to define the static factory flag of the object.
+   */
+  OBJECT_STATIC_FACTORY_METHOD: { value: "staticFactoryMethod", enumerable: true },
+
+  /**
+   * The name of the external object property to define the static property flag of the object.
+   */
+  OBJECT_STATIC_FACTORY_PROPERTY: { value: "staticFactoryProperty", enumerable: true },
+
+  /**
+   * Defines the label of the 'objects' top-level attribute.
+   */
+  OBJECTS: { value: "objects", enumerable: true },
+
+  /**
+   * Defines the label of the 'resource' attribute in the imports objects.
+   */
+  RESOURCE: { value: "resource", enumerable: true },
+
+  /**
+   * Defines the label of the type of the object.
+   */
+  TYPE: { value: "type", enumerable: true },
+
+  /**
+   * Defines the attribute name of the alias expression in a typeAlias object in the configuration of the ioc factory.
+   */
+  TYPE_ALIAS: { value: "alias", enumerable: true },
+
+  /**
+   * Defines the attribute name of the 'typeAliases' Array in the configuration of the ioc factory.
+   */
+  TYPE_ALIASES: { value: "typeAliases", enumerable: true },
+
+  /**
+   * Defines the attribute name of the 'typeExpression' Array in the configuration of the ioc factory.
+   */
+  TYPE_EXPRESSION: { value: "typeExpression", enumerable: true },
+
+  /**
+   * Defines the label of the reference in a property object.
+   */
+  REFERENCE: { value: "ref", enumerable: true },
+
+  /**
+   * Defines the label of the value in a property object.
+   */
+  VALUE: { value: "value", enumerable: true }
+});
+
+/**
+ * Represents the log information for a single logging notification.
+ * The loging system dispatches a single message each time a process requests information be logged.
+ * This entry can be captured by any object for storage or formatting.
+ * @param message The context or message of the log.
+ * @param level The level of the log.
+ * @param channel The Logger reference of this entry.
+ */
+function ObjectArgument(value) {
+    var policy = arguments.length <= 1 || arguments[1] === undefined ? "value" : arguments[1];
+    var evaluators = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _policy: { value: null, writable: true },
+
+        /**
+         * Defines the policy of the property.
+         */
+        policy: {
+            get: function policy() {
+                return this._policy;
+            },
+            set: function set(str) {
+                switch (str) {
+                    case ObjectAttribute.REFERENCE:
+                    case ObjectAttribute.CONFIG:
+                    case ObjectAttribute.LOCALE:
+                        {
+                            this._policy = str;
+                            break;
+                        }
+                    default:
+                        {
+                            this._policy = ObjectAttribute.VALUE;
+                        }
+                }
+            }
+        }
+    });
+
+    this.policy = policy;
+    this.value = value;
+    this.evaluators = evaluators instanceof Array ? [].concat(evaluators) : null;
+}
+
+/**
+ * @extends Object
+ */
+ObjectArgument.prototype = Object.create(Object.prototype, {
+    constructor: { value: ObjectArgument },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[ObjectArgument]';
+        } }
+});
+
+/**
+ * Enumeration of all sort of "orders" can be use in the object definitions.
+ */
+
+var ObjectOrder = Object.defineProperties({}, {
+  /**
+   * The "after" order value.
+   */
+  AFTER: { value: "after", enumerable: true },
+
+  /**
+   * The "before" order value.
+   */
+  BEFORE: { value: "before", enumerable: true },
+
+  /**
+   * The "none" order value.
+   */
+  NONE: { value: "none", enumerable: true },
+
+  /**
+   * The "now" order value.
+   */
+  NOW: { value: "now", enumerable: true }
+});
+
+/**
+ * The static enumeration list of all object scopes.
+ */
+
+var ObjectScope = Object.defineProperties({}, {
+  /**
+   * Defines the scope of a single object definition to any number of object instances.
+   */
+  PROTOTYPE: { value: "prototype", enumerable: true },
+
+  /**
+   * Defines the scope of a single object definition to a single object instance per IoC container.
+   */
+  SINGLETON: { value: "singleton", enumerable: true },
+
+  /**
+   * The Array representation of all object scopes constants.
+   */
+  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
+
+  /**
+   * Returns true if the passed value is a valid scope reference.
+   * @return true if the passed value is a valid scope reference.
+   */
+  validate: { value: function value(scope /*String*/) /*Boolean*/
+    {
+      return ObjectScope.SCOPES.indexOf(scope) > -1;
+    } }
+});
+
+/**
+ * This collector register a <code>parameters</code> object reference, this object can be use to configurate the application with externals values.
+ */
+function Parameters(parameters /*Object*/) {
+    Object.defineProperties(this, {
+        /**
+         * Defines the parameters object reference of the application.
+         */
+        parameters: { value: parameters, writable: true },
+
+        /**
+         * Indicates if the class throws errors or return null when an error is throwing.
+         */
+        _evaluators: { value: new MultiEvaluator(), writable: true }
+    });
+
+    this._evaluators.autoClear = true;
+}
+
+/**
+ * @extends Object
+ */
+Parameters.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: Parameters },
+
+    /**
+     * Indicates if the parameters object contains the specified variable.
+     */
+    contains: { value: function value(name) /*Boolean*/
+        {
+            return this.parameters && this.parameters.hasOwnProperty(name) && this.parameters.name !== null;
+        } },
+
+    /**
+     * Returns the value of the specified variable in the parameters reference.
+     * @param name The name of the variable to resolve in the parameters reference.
+     * @param ...rest (optional) All <code class="prettyprint">IEvaluator</code> objects used to evaluate and initialize the value of the specified FlashVars.
+     * @example
+     * <pre>
+     * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
+     * var RomanEvaluator    = system.evaluators.RomanEvaluator ;
+     * var Parameters        = system.ioc.Parameters ;
+     *
+     * var obj = { id  : "XII" , metas : { count : 100 } } ;
+     *
+     * var params = new Parameters( { value : "metas.count" } ) ;
+     * var value  = params.get( "value" , new PropertyEvaluator(obj), new RomanEvaluator()) ;
+     * trace( "result : " + value ) ;
+     * </pre>
+     * @return the value of the specified variable in the Parameters object.
+     */
+    get: { value: function value(name /*String*/) {
+            if (this.parameters && this.contains(name)) {
+                for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                    rest[_key - 1] = arguments[_key];
+                }
+
+                if (rest.length === 0) {
+                    return this.parameters[name];
+                } else {
+                    this._evaluators.add(rest);
+                    return this._evaluators.eval(this.parameters[name]);
+                }
+            } else {
+                return null;
+            }
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[Parameters]';
+        } }
+});
+
+/**
+ * The enumeration of all type policies in the ObjectConfig object of the ioc factory.
+ */
+
+var TypePolicy = Object.defineProperties({}, {
+  /**
+   * Defines the 'alias' TypePolicy value.
+   * Use it if you want use only type "alias" evaluation when a new object is created in the factory.
+   */
+  ALIAS: { value: "alias", enumerable: true },
+
+  /**
+   * Defines the 'all' TypePolicy value.
+   * Use it if you want use only all evaluation filters when a new object is created in the factory.
+   */
+  ALL: { value: "all", enumerable: true },
+
+  /**
+   * Defines the 'expression' TypePolicy value.
+   * Use it if you want use only type "expression" evaluation when a new object is created in the factory.
+   */
+  EXPRESSION: { value: "expression", enumerable: true },
+
+  /**
+   * Defines the 'none' TypePolicy value.
+   * Use it if you want no evaluation filter when a new object is created in the factory.
+   */
+  NONE: { value: "none", enumerable: true }
+});
+
+/**
+ * The VEGAS.js framework - The system.errors library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var ioc = Object.assign({
+    MagicReference: MagicReference,
+    ObjectArgument: ObjectArgument,
+    ObjectAttribute: ObjectAttribute,
+    ObjectOrder: ObjectOrder,
+    ObjectScope: ObjectScope,
+    Parameters: Parameters,
+    TypePolicy: TypePolicy
 });
 
 /**
@@ -9245,6 +9719,7 @@ var system = Object.assign({
     errors: errors,
     evaluators: evaluators,
     formatters: formatters,
+    ioc: ioc,
     logging: logging,
     numeric: numeric,
     process: process,
