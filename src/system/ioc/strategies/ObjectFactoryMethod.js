@@ -3,7 +3,7 @@
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectMethod } from '../ObjectMethod.js' ;
 
-import { createArguments } from './createArguments.js' ;
+import { createArguments } from '../builders/createArguments.js' ;
 
 /**
  * This object defines a property definition in the object definitions.

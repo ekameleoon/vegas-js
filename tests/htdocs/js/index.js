@@ -1,3 +1,7 @@
+var trace  ; // jshint ignore:line
+var system ; // jshint ignore:line
+var core   ; // jshint ignore:line
+
 /* globals vegas */
 ( function( vegas )
 {
@@ -8,9 +12,9 @@
         throw new Error("The VEGAS library is not found.") ;
     }
 
-    var trace  = vegas.trace  ; // jshint ignore:line
-    var system = vegas.system ; // jshint ignore:line
-    var core   = vegas.core   ; // jshint ignore:line
+    trace  = vegas.trace  ; // jshint ignore:line
+    system = vegas.system ; // jshint ignore:line
+    core   = vegas.core   ; // jshint ignore:line
 
     var Log           = system.logging.Log ;
     var LoggerLevel   = system.logging.LoggerLevel ;
@@ -19,7 +23,7 @@
     var target = new ConsoleTarget
     ({
         includeChannel      : true  ,
-        includeDate         : false  ,
+        includeDate         : false ,
         includeLevel        : true  ,
         includeLines        : true  ,
         includeMilliseconds : true  ,
@@ -33,5 +37,9 @@
 
     logger.info('hello info');
 
-})( vegas );
+    var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
 
+    var signal = core.reflect.invoke( definition ) ;
+    trace( signal ) ;
+
+})( vegas );

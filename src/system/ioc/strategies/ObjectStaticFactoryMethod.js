@@ -3,7 +3,7 @@
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectMethod } from '../ObjectMethod.js' ;
 
-import { createArguments } from './createArguments.js' ;
+import { createArguments } from '../builders/createArguments.js' ;
 
 /**
  * This object create a static proxy factory configured in the ObjectDefinition and replace the natural factory of the ObjectFactory.

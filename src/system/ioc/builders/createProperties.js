@@ -1,7 +1,8 @@
 "use strict" ;
 
-import { dump } from '../../core/dump.js' ;
+import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
+import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectProperty } from '../ObjectProperty.js' ;
 
@@ -91,13 +92,16 @@ export function createProperties( factory ) /*Array*/
         }
         else
         {
-            logger.warn
-            (
-                "ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                id ,
-                i ,
-                dump( prop )
-            ) ;
+            if( logger && (logger instanceof Logger) )
+            {
+                logger.warn
+                (
+                    "ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                    id ,
+                    i ,
+                    dump( prop )
+                ) ;
+            }
         }
     }
     return ( properties.length > 0 ) ? properties : null ;

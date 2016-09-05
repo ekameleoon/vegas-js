@@ -7,9 +7,9 @@
  */
 var global = global || window || document ;
 
-if( global.hasOwnProperty('vegas') )
-{
-    global = global.vegas ; // hook to target the vegas global domain
-}
+// if( global.hasOwnProperty('vegas') )
+// {
+//     global = global.vegas ; // hook to target the vegas global domain
+// }
 
 export { global } ;

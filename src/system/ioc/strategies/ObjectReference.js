@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectStrategy }  from './ObjectStrategy.js' ;
+import { ObjectStrategy }  from '../ObjectStrategy.js' ;
 
 /**
  * This stategy get a reference in the IoC factory if the "factoryReference" attribute is used in the object definition.

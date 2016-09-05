@@ -18,7 +18,7 @@
  */
 export function invoke( c /*Function*/ , a /*Array*/ = null )
 {
-    if( args === null || !(a instanceof Array) || (a.length === 0)  )
+    if( a === null || !(a instanceof Array) || (a.length === 0)  )
     {
         return new c();
     }

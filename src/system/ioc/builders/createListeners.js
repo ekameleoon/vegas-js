@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { dump } from '../../core/dump.js' ;
+import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
 import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;

@@ -1,7 +1,8 @@
 "use strict" ;
 
-import { dump } from '../../core/dump.js' ;
+import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
+import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectReceiver } from '../ObjectReceiver.js' ;
 import { ObjectOrder } from '../ObjectOrder.js' ;
@@ -64,13 +65,16 @@ export function createReceivers( factory ) /*Array*/
         }
         else
         {
-            logger.warn
-            (
-                "ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                id ,
-                i ,
-                dump( def )
-            ) ;
+            if( logger && (logger instanceof Logger) )
+            {
+                logger.warn
+                (
+                    "ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                    id ,
+                    i ,
+                    dump( def )
+                ) ;
+            }
         }
     }
     return ( receivers.length > 0 ) ? receivers : null ;

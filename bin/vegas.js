@@ -71,11 +71,13 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-exports.global = exports.global || window || document;
+/**
+ * The VEGAS.js framework - The core.reflect library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
 
-if (exports.global.hasOwnProperty('vegas')) {
-  exports.global = exports.global.vegas; // hook to target the vegas global domain
-}
+var global = global || window || document;
 
 function trace(context) {
     if (console) {
@@ -2138,7 +2140,7 @@ function getDefinitionByName(name /*String*/) {
         name = name.split('.');
         if (name.length > 0) {
             try {
-                var o = domain || exports.global;
+                var o = domain || global;
                 name.forEach(function (element) {
                     if (o.hasOwnProperty(element)) {
                         o = o[element];
@@ -2174,7 +2176,7 @@ function getDefinitionByName(name /*String*/) {
 function invoke(c /*Function*/) {
         var a /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-        if (args === null || !(a instanceof Array) || a.length === 0) {
+        if (a === null || !(a instanceof Array) || a.length === 0) {
                 return new c();
         }
 
@@ -6785,6 +6787,1240 @@ function createArguments(a /*Array*/) /*Array*/
 }
 
 /**
+ * Enumeration of all sort of "orders" can be use in the object definitions.
+ */
+
+var ObjectOrder = Object.defineProperties({}, {
+  /**
+   * The "after" order value.
+   */
+  AFTER: { value: "after", enumerable: true },
+
+  /**
+   * The "before" order value.
+   */
+  BEFORE: { value: "before", enumerable: true },
+
+  /**
+   * The "none" order value.
+   */
+  NONE: { value: "none", enumerable: true },
+
+  /**
+   * The "now" order value.
+   */
+  NOW: { value: "now", enumerable: true }
+});
+
+/**
+ * This object defines a listener definition in an object definition.
+ * @param dispatcher The dispatcher expression reference of the listener.
+ * @param type type name of the event dispatched by the dispatcher of this listener.
+ * @param method The name of the method to invoke when the event is handle.
+ * @param useCapture Determinates if the event flow use capture or not.
+ * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ */
+function ObjectListener(dispatcher /*String*/, type /*String*/) {
+  var method /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+  var useCapture /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+
+  Object.defineProperties(this, {
+    /**
+     * The dispatcher expression reference of the listener.
+     */
+    dispatcher: { value: dispatcher, writable: true },
+
+    /**
+     * The name of the method to invoke when the event is handle.
+     */
+    method: { value: method, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    order: {
+      get: function get() {
+        return this._order;
+      },
+      set: function set(value) {
+        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+      }
+    },
+
+    /**
+     * The type name of the event dispatched by the dispatcher.
+     */
+    type: { value: type, writable: true },
+
+    /**
+     * Determinates if the event flow use capture or not.
+     */
+    useCapture: { value: Boolean(useCapture), writable: true },
+
+    /**
+     * @private
+     */
+    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+  });
+}
+
+Object.defineProperties(ObjectListener, {
+  /**
+   * Defines the "dispatcher" attribute in a listener object definition.
+   */
+  DISPATCHER: { value: "dispatcher", enumerable: true },
+
+  /**
+   * Defines the "method" attribute in a listener object definition.
+   */
+  METHOD: { value: "method", enumerable: true },
+
+  /**
+   * Defines the "order" attribute in a listener object definition.
+   */
+  ORDER: { value: "order", enumerable: true },
+
+  /**
+   * Defines the "useCapture" attribute in a listener object definition.
+   */
+  USE_CAPTURE: { value: "useCapture", enumerable: true },
+
+  /**
+   * Defines the "type" attribute in a listener object definition.
+   */
+  TYPE: { value: "type", enumerable: true }
+});
+
+/**
+ * @extends Object
+ */
+ObjectListener.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectListener },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      var s = '[ObjectListener';
+      if (this.signal) {
+        s += ' dispatcher:"' + this.dispatcher + '"';
+      }
+      if (this.slot) {
+        s += ' type:"' + this.type + '"';
+      }
+      if (this.method) {
+        s += ' method:"' + this.method + '"';
+      }
+      if (this._order) {
+        s += ' order:"' + this._order + '"';
+      }
+      s += ']';
+      return s;
+    } }
+});
+
+/**
+ * Creates the Array of all listeners defines in the passed-in factory object definition.
+ * @return the Array of all listeners defines in the passed-in factory object definition.
+ */
+function createListeners(factory) /*Array*/
+{
+    if (!factory) {
+        return null;
+    }
+
+    var a = null;
+
+    if (factory instanceof Array) {
+        a = factory;
+    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_LISTENERS) && factory[ObjectAttribute.OBJECT_LISTENERS] instanceof Array) {
+        a = factory[ObjectAttribute.OBJECT_LISTENERS];
+    }
+
+    if (a === null || a.length === 0) {
+        return null;
+    }
+
+    var def;
+    var dispatcher;
+    var type;
+
+    var listeners = [];
+
+    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var len = a.length;
+
+    for (var i = 0; i < len; i++) {
+        def = a[i];
+        if (def !== null && def.hasOwnProperty(ObjectListener.DISPATCHER) && def.hasOwnProperty(ObjectListener.TYPE)) {
+            dispatcher = def[ObjectListener.DISPATCHER];
+            if (dispatcher === null || dispatcher.length === 0) {
+                continue;
+            }
+            type = def[ObjectListener.TYPE];
+            if (type === null || type.length === 0) {
+                continue;
+            }
+            listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
+        } else {
+            if (logger instanceof Logger) {
+                logger.warn("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+            }
+        }
+    }
+    return listeners.length > 0 ? listeners : null;
+}
+
+/**
+ * Defines factory strategies in the factory.
+ */
+
+function ObjectStrategy() {}
+
+/**
+ * @extends Object
+ */
+ObjectStrategy.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectStrategy, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return "[ObjectStrategy]";
+    }, writable: true }
+});
+
+/**
+ * This object defines a property definition in the object definitions.
+ * @param name The name of the property.
+ * @param value The value of the property.
+ * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
+ * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
+ */
+function ObjectProperty(name /*String*/, value) {
+  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
+  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    policy: {
+      get: function get() {
+        return this._policy;
+      },
+      set: function set(str) {
+        switch (str) {
+          case ObjectAttribute.ARGUMENTS:
+          case ObjectAttribute.REFERENCE:
+          case ObjectAttribute.CONFIG:
+          case ObjectAttribute.LOCALE:
+            {
+              this._policy = str;
+              break;
+            }
+          default:
+            {
+              this._policy = ObjectAttribute.VALUE;
+            }
+        }
+      }
+    },
+
+    /**
+     * The value of the property.
+     */
+    value: { value: value, writable: true },
+
+    /**
+     * @private
+     */
+    _policy: { value: null, writable: true }
+  });
+
+  this.policy = policy;
+}
+
+/**
+ * @extends Object
+ */
+ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectProperty, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectProperty]';
+    }, writable: true }
+});
+
+/**
+ * Creates the Array of all properties defines in the passed-in factory object definition.
+ * @return the Array of all properties defines in the passed-in factory object definition.
+ */
+function createProperties(factory) /*Array*/
+{
+    if (!factory) {
+        return null;
+    }
+
+    var a = null;
+
+    if (factory instanceof Array) {
+        a = factory;
+    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_PROPERTIES) && factory[ObjectAttribute.OBJECT_PROPERTIES] instanceof Array) {
+        a = factory[ObjectAttribute.OBJECT_PROPERTIES];
+    }
+
+    if (a === null || a.length === 0) {
+        return null;
+    }
+
+    var properties = [];
+
+    var args;
+    var conf;
+    var i18n;
+    var prop;
+    var name;
+    var ref;
+    var value;
+    var evaluators;
+
+    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var len = a.length;
+
+    for (var i = 0; i < len; i++) {
+        prop = a[i];
+
+        if (prop !== null && prop.hasOwnProperty(ObjectAttribute.NAME)) {
+            name = prop[ObjectAttribute.NAME];
+
+            if (name === null || name.length === 0) {
+                continue;
+            }
+
+            args = prop[ObjectAttribute.ARGUMENTS];
+            evaluators = prop[ObjectAttribute.EVALUATORS];
+            conf = prop[ObjectAttribute.CONFIG];
+            i18n = prop[ObjectAttribute.LOCALE];
+            ref = prop[ObjectAttribute.REFERENCE];
+            value = prop[ObjectAttribute.VALUE];
+
+            if (args !== null) {
+                properties.push(new ObjectProperty(name, createArguments(args), ObjectAttribute.ARGUMENTS)); // arguments property
+            } else if (ref !== null) {
+                properties.push(new ObjectProperty(name, ref, ObjectAttribute.REFERENCE, evaluators)); // ref property
+            } else if (conf !== null && conf.length > 0) {
+                properties.push(new ObjectProperty(name, conf, ObjectAttribute.CONFIG, evaluators)); // config property
+            } else if (i18n !== null && i18n.length > 0) {
+                properties.push(new ObjectProperty(name, i18n, ObjectAttribute.LOCALE, evaluators)); // locale property
+            } else {
+                properties.push(new ObjectProperty(name, value, ObjectAttribute.VALUE, evaluators)); // value property
+            }
+        } else {
+            if (logger && logger instanceof Logger) {
+                logger.warn("ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
+            }
+        }
+    }
+    return properties.length > 0 ? properties : null;
+}
+
+/**
+ * This object defines a receiver definition in an object definition.
+ * @param signal The id of the signal in the IoC factory.
+ * @param slot The id of the receiver of function to connect in the IoC factory.
+ * @param priority Determines the priority level of the receiver.
+ * @param autoDisconnect Indicate if the receiver is auto disconnect in the signal when is used.
+ * @param order Indicates the order to connect the receiver "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ */
+function ObjectReceiver(signal /*String*/) {
+  var slot /*String*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var priority /*int*/ = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+  var autoDisconnect /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+
+  Object.defineProperties(this, {
+    /**
+     * Indicates if the receiver (slot) is auto disconnect by the signal.
+     */
+    autoDisconnect: { value: autoDisconnect, writable: true },
+
+    /**
+     * Determinates the order of the receiver registration ('after' or by default 'before').
+     */
+    order: {
+      get: function get() {
+        return this._order;
+      },
+      set: function set(value) {
+        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+      }
+    },
+
+    /**
+     * Determines the priority level of the signal connection.
+     */
+    priority: { value: priority, writable: true },
+
+    /**
+     * The identifier of the signal to connect in the IoC factory.
+     */
+    signal: { value: signal, writable: true },
+
+    /**
+     * The identifier of the receiver of function to connect in the IoC factory.
+     */
+    slot: { value: slot, writable: true },
+
+    /**
+     * @private
+     */
+    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+  });
+}
+
+Object.defineProperties(ObjectReceiver, {
+  /**
+   * Defines the "autoDisconnect" attribute in a receiver object definition.
+   */
+  AUTO_DISCONNECT: { value: "autoDisconnect", enumerable: true },
+
+  /**
+   * Defines the "order" attribute in a receiver object definition.
+   */
+  ORDER: { value: "order", enumerable: true },
+
+  /**
+   * Defines the "priority" attribute in a receiver object definition.
+   */
+  PRIORITY: { value: "priority", enumerable: true },
+
+  /**
+   * Defines the "signal" attribute in a receiver object definition.
+   */
+  SIGNAL: { value: "signal", enumerable: true },
+
+  /**
+   * Defines the "slot" attribute in a receiver object definition.
+   */
+  SLOT: { value: "slot", enumerable: true }
+});
+
+/**
+ * @extends Object
+ */
+ObjectReceiver.prototype = Object.create(Object.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectReceiver },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      var s = '[ObjectReceiver';
+      if (this.signal) {
+        s += ' signal:"' + this.signal + '"';
+      }
+      if (this.slot) {
+        s += ' slot:"' + this.slot + '"';
+      }
+      if (this._order) {
+        s += ' order:"' + this._order + '"';
+      }
+      s += ']';
+      return s;
+    } }
+});
+
+/**
+ * Creates the Array of all receivers defines in the passed-in factory object definition.
+ * @return the Array of all receivers defines in the passed-in factory object definition.
+ */
+function createReceivers(factory) /*Array*/
+{
+    if (!factory) {
+        return null;
+    }
+
+    var a = null;
+
+    if (factory instanceof Array) {
+        a = factory;
+    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_RECEIVERS) && factory[ObjectAttribute.OBJECT_RECEIVERS] instanceof Array) {
+        a = factory[ObjectAttribute.OBJECT_RECEIVERS];
+    }
+
+    if (a === null || a.length === 0) {
+        return null;
+    }
+
+    var def;
+    var receivers = [];
+    var signal;
+
+    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var len = a.length;
+
+    for (var i = 0; i < len; i++) {
+        def = a[i];
+        if (def !== null && def.hasOwnProperty(ObjectReceiver.SIGNAL)) {
+            signal = def[ObjectReceiver.SIGNAL];
+            if (!(signal instanceof String || typeof signal === 'string') || signal.length === 0) {
+                continue;
+            }
+            receivers.push(new ObjectReceiver(signal, def[ObjectReceiver.SLOT], isNaN(def[ObjectReceiver.PRIORITY]) ? 0 : def[ObjectReceiver.PRIORITY], def[ObjectReceiver.AUTO_DISCONNECT] === true, def[ObjectReceiver.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
+        } else {
+            if (logger && logger instanceof Logger) {
+                logger.warn("ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+            }
+        }
+    }
+    return receivers.length > 0 ? receivers : null;
+}
+
+/**
+ * This object defines a method definition with a method name and this arguments.
+ * @param name The name of the method to invoke.
+ * @param arguments The array of the arguments to passed-in the method.
+ */
+function ObjectMethod(name /*String*/, args /*Array*/) {
+  Object.defineProperties(this, {
+    /**
+     * The optional Array representation of all evaluators to transform the value of this object.
+     */
+    arguments: { value: args, writable: true },
+
+    /**
+     * The name of the property.
+     */
+    name: { value: name, writable: true }
+  });
+}
+
+/**
+ * @extends Object
+ */
+ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectMethod, writable: true },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectMethod]';
+    }, writable: true }
+});
+
+/**
+ * This object defines a property definition in the object definitions.
+ * @param factory The string name of the reference in the factory used to create the object.
+ * @param name The name of the static method to invoke to create the object.
+ * @param arguments The array of the arguments to passed-in the factory method.
+ */
+function ObjectFactoryMethod(factory /*String*/, name /*String*/, args /*Array*/) {
+    ObjectMethod.call(name, args);
+    Object.defineProperties(this, {
+        /**
+         * The factory string representation of the reference of this factory method object.
+         */
+        factory: { value: factory, writable: true }
+    });
+}
+
+Object.defineProperties(ObjectFactoryMethod, {
+    /**
+     * Returns the ObjectFactoryMethod representation of the specified generic object or null.
+     * @return the ObjectFactoryMethod representation of the specified generic object or null.
+     */
+    build: {
+        value: function value(o) /*ObjectFactoryMethod*/
+        {
+            if (o === null) {
+                return null;
+            }
+            if (o.hasOwnProperty(ObjectAttribute.FACTORY) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+                return new ObjectFactoryMethod(o[ObjectAttribute.FACTORY || null], o[ObjectAttribute.NAME || null], createArguments(o[ObjectAttribute.ARGUMENTS] || null));
+            } else {
+                return null;
+            }
+        }
+    }
+});
+
+/**
+ * @extends ObjectMethod
+ */
+ObjectFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ObjectFactoryMethod, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[ObjectFactoryMethod]';
+        }, writable: true }
+});
+
+/**
+ * This object defines a property definition in the object definitions.
+ * @param factory The string name of the reference in the factory used to create the object.
+ * @param name The name of the property.
+ * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
+ */
+function ObjectFactoryProperty(factory /*String*/, name /*String*/) {
+    var evaluators /*Array*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    ObjectProperty.call(name, null, null, evaluators);
+    Object.defineProperties(this, {
+        /**
+         * The factory string representation of the reference of this factory method object.
+         */
+        factory: { value: factory, writable: true }
+    });
+}
+
+Object.defineProperties(ObjectFactoryProperty, {
+    /**
+     * Returns the ObjectFactoryProperty representation of the specified generic object or null.
+     * @return the ObjectFactoryProperty representation of the specified generic object or null.
+     */
+    build: {
+        value: function value(o) /*ObjectFactoryProperty*/
+        {
+            if (o === null) {
+                return null;
+            }
+            if (o.hasOwnProperty(ObjectAttribute.FACTORY) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+                return new ObjectFactoryProperty(o[ObjectAttribute.FACTORY] || null, o[ObjectAttribute.NAME] || null, o[ObjectAttribute.EVALUATORS] || null);
+            } else {
+                return null;
+            }
+        }
+    }
+});
+
+/**
+ * @extends ObjectProperty
+ */
+ObjectFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ObjectFactoryProperty, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[ObjectFactoryProperty]';
+        }, writable: true }
+});
+
+/**
+ * This stategy get a reference in the IoC factory if the "factoryReference" attribute is used in the object definition.
+ * @param ref {String] The reference id String representation of an objet definition in the factory.
+ */
+function ObjectReference(ref) {
+  Object.defineProperties(this, {
+    ref: { value: ref instanceof String || typeof ref === 'string' ? ref : null, writable: true }
+  });
+}
+
+/**
+ * @extends ObjectStrategy
+ */
+ObjectReference.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectReference },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectReference]';
+    } }
+});
+
+/**
+ * This object create a static proxy factory configured in the ObjectDefinition and replace the natural factory of the ObjectFactory.
+ * @param type The type of the static class use to create the object with a static method.
+ * @param name The name of the static method to invoke to create the object.
+ * @param arguments The array of the arguments to passed-in the factory method.
+ */
+function ObjectStaticFactoryMethod(type /*String*/, name /*String*/, args /*Array*/) {
+    ObjectMethod.call(name, args);
+    Object.defineProperties(this, {
+        /**
+         * The factory string representation of the reference of this factory method object.
+         */
+        type: { value: type, writable: true }
+    });
+}
+
+Object.defineProperties(ObjectStaticFactoryMethod, {
+    /**
+     * Returns the ObjectStaticFactoryMethod representation of the specified generic object or null.
+     * @return the ObjectStaticFactoryMethod representation of the specified generic object or null.
+     */
+    build: {
+        value: function value(o) /*ObjectStaticFactoryMethod*/
+        {
+            if (o === null) {
+                return null;
+            }
+            if (o.hasOwnProperty(ObjectAttribute.TYPE) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+                return new ObjectStaticFactoryMethod(o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.NAME] || null, createArguments(o[ObjectAttribute.ARGUMENTS] || null));
+            } else {
+                return null;
+            }
+        }
+    }
+});
+
+/**
+ * @extends ObjectMethod
+ */
+ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ObjectStaticFactoryMethod, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[ObjectStaticFactoryMethod]';
+        }, writable: true }
+});
+
+/**
+ * This object create a static proxy factory configured in the IObjectDefinition and replace the natural factory of the ObjectFactory.
+ * @param type The type of the static class use to create the object reference with a static property or constant.
+ * @param name The name of the static property or constant to invoke to create the object "reference".
+ * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
+ */
+function ObjectStaticFactoryProperty(name /*String*/, type /*String*/) {
+    var evaluators /*Array*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    ObjectProperty.call(name, null, null, evaluators);
+    Object.defineProperties(this, {
+        /**
+         * The string representation of the type name of the static factory class.
+         */
+        type: { value: type, writable: true }
+    });
+}
+
+Object.defineProperties(ObjectStaticFactoryProperty, {
+    /**
+     * Returns the ObjectStaticFactoryProperty representation of the specified generic object or null.
+     * @return the ObjectStaticFactoryProperty representation of the specified generic object or null.
+     */
+    build: {
+        value: function value(o) /*ObjectStaticFactoryProperty*/
+        {
+            if (o === null) {
+                return null;
+            }
+            if (o.hasOwnProperty(ObjectAttribute.TYPE) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+                return new ObjectStaticFactoryProperty(o[ObjectAttribute.NAME] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.EVALUATORS] || null);
+            } else {
+                return null;
+            }
+        }
+    }
+});
+
+/**
+ * @extends ObjectProperty
+ */
+ObjectStaticFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: ObjectStaticFactoryProperty, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[ObjectStaticFactoryProperty]';
+        }, writable: true }
+});
+
+/**
+ * This stategy object set an object in the IoC factory with an easy value if the attribute "factoryValue" is used in the object definition.
+ * @param value The value object.
+ */
+function ObjectValue(value) {
+  Object.defineProperties(this, {
+    value: { value: value, writable: true }
+  });
+}
+
+/**
+ * @extends Object
+ */
+ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
+  /**
+   * Returns a reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: ObjectValue },
+
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[ObjectValue]';
+    } }
+});
+
+/**
+ * This helper create an ObjectStrategy object with a generic object in the IoC context.
+ */
+function createStrategy(o) /*ObjectStrategy*/
+{
+    switch (true) {
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_METHOD):
+            {
+                return ObjectFactoryMethod.build(o[ObjectAttribute.OBJECT_FACTORY_METHOD]);
+            }
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_PROPERTY):
+            {
+                return ObjectFactoryProperty.build(o[ObjectAttribute.OBJECT_FACTORY_PROPERTY]);
+            }
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD):
+            {
+                return ObjectStaticFactoryMethod.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD]);
+            }
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY):
+            {
+                return ObjectStaticFactoryProperty.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY]);
+            }
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_REFERENCE):
+            {
+                return ObjectReference.build(o[ObjectAttribute.OBJECT_FACTORY_REFERENCE]);
+            }
+        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_VALUE):
+            {
+                return ObjectValue.build(o[ObjectAttribute.OBJECT_FACTORY_VALUE]);
+            }
+        default:
+            {
+                return null;
+            }
+    }
+}
+
+/**
+ * The static enumeration list of all object scopes.
+ */
+
+var ObjectScope = Object.defineProperties({}, {
+  /**
+   * Defines the scope of a single object definition to any number of object instances.
+   */
+  PROTOTYPE: { value: "prototype", enumerable: true },
+
+  /**
+   * Defines the scope of a single object definition to a single object instance per IoC container.
+   */
+  SINGLETON: { value: "singleton", enumerable: true },
+
+  /**
+   * The Array representation of all object scopes constants.
+   */
+  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
+
+  /**
+   * Returns true if the passed value is a valid scope reference.
+   * @return true if the passed value is a valid scope reference.
+   */
+  validate: { value: function value(scope /*String*/) /*Boolean*/
+    {
+      return ObjectScope.SCOPES.indexOf(scope) > -1;
+    } }
+});
+
+function ObjectDefinition(id, type) {
+    var singleton = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var lazyInit = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+    if (id === null || id === undefined) {
+        throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
+    }
+    if (type === null || type === undefined) {
+        throw new ReferenceError(this + " constructor failed, the string 'type' passed in argument not must be empty or 'null' or 'undefined'.");
+    }
+
+    Object.defineProperties(this, {
+        /**
+         * Returns the Array of all listener definitions of this object definition register after the object initialization.
+         * @return the Array of all listener definitions of this object definition register after the object initialization.
+         */
+        afterListeners: {
+            get: function get() {
+                return this._afterListeners;
+            }
+        },
+
+        /**
+         * Returns the Array of all receiver definitions of this object definition register after the object initialization.
+         * @return the Array of all receiver definitions of this object definition register after the object initialization.
+         */
+        afterReceivers: {
+            get: function get() {
+                return this._afterReceivers;
+            }
+        },
+
+        /**
+         * Returns the Array of all listener definitions of this object definition register before the object initialization.
+         * @return the Array of all listener definitions of this object definition register before the object initialization.
+         */
+        beforeListeners: {
+            get: function get() {
+                return this._beforeListeners;
+            }
+        },
+
+        /**
+         * Returns the Array of all receiver definitions of this object definition register before the object initialization.
+         * @return the Array of all receiver definitions of this object definition register before the object initialization.
+         */
+        beforeReceivers: {
+            get: function get() {
+                return this._beforeReceivers;
+            }
+        },
+
+        /**
+         * Returns the constructor arguments values of this object in a Array list.
+         * @return the constructor arguments values of this object in a Array list.
+         */
+        constructorArguments: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Defines the "dependsOn" collection.
+         */
+        dependsOn: {
+            enumerable: true,
+            get: function get() {
+                return this._dependsOn;
+            },
+            set: function set(ar) {
+                this._dependsOn = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+            }
+        },
+
+        /**
+         * Determinates the name of the method invoked when the object is destroyed.
+         */
+        destroyMethodName: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Defines the "generates" collection.
+         */
+        generates: {
+            enumerable: true,
+            get: function get() {
+                return this._generates;
+            },
+            set: function set(ar) {
+                this._generates = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+            }
+        },
+
+        /**
+         * Indicates the unique identifier value of this object.
+         */
+        id: { value: id, enumerable: true, writable: true },
+
+        /**
+         * Indicates if the object definition is a singleton and the type of the object is Identifiable if the object must be populated with the id of the definition when is instanciated.
+         */
+        identify: { value: false, enumerable: true, writable: true },
+
+        /**
+         * Determinates the name of the method invoked when the object is created.
+         */
+        initMethodName: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Indicates if the object lazily initialized. Only applicable to a singleton object.
+         * If false, it will get instantiated on startup by object factories that perform eager initialization of singletons.
+         * @return A boolean who indicates if the object lazily initialized.
+         */
+        lazyInit: {
+            get: function get() /*Boolean*/
+            {
+                return this._lazyInit;
+            },
+            set: function set(flag) {
+                this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
+            }
+        },
+
+        /**
+         * Sets the Array of all receiver definition of this object definition.
+         * @param ar the Array of all receiver definitions of the object.
+         */
+        listeners: {
+            set: function set(ar) {
+                this._afterListeners = [];
+                this._beforeListeners = [];
+                if (ar === null || !(ar instanceof Array)) {
+                    return;
+                }
+                var r /*ObjectListener*/;
+                var l = ar.length;
+                if (l > 0) {
+                    for (var i = 0; i < l; i++) {
+                        r = ar[i];
+                        if (r instanceof ObjectListener) {
+                            if (r.order === ObjectOrder.AFTER) {
+                                this._afterListeners.push(r);
+                            } else {
+                                this._beforeListeners.push(r);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Indicates if the object definition lock this Lockable object during the population of the properties and the initialization of the methods defines in the object definition.
+         */
+        lock: { value: false, enumerable: true, writable: true },
+
+        /**
+         * Sets the Array representation of all properties of this definition.
+         */
+        properties: { value: null, enumerable: true, writable: true },
+
+        /**
+         * Sets the Array of all receiver definition of this object definition.
+         * @param ar the Array of all receiver definitions of the object.
+         */
+        receivers: {
+            set: function set(ar) {
+                this._afterReceivers = [];
+                this._beforeReceivers = [];
+                if (ar === null || !(ar instanceof Array)) {
+                    return;
+                }
+                var r /*ObjectReceiver*/;
+                var l = ar.length;
+                if (l > 0) {
+                    for (var i = 0; i < l; i++) {
+                        r = ar[i];
+                        if (r instanceof ObjectReceiver) {
+                            if (r.order === ObjectOrder.AFTER) {
+                                this._afterReceivers.push(r);
+                            } else {
+                                this._beforeReceivers.push(r);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Indicates if the object in a Sigleton else the object is a prototype (read only, use the scope property to change it).
+         */
+        singleton: {
+            get: function get() /*Boolean*/
+            {
+                return this._singleton;
+            }
+        },
+
+        /**
+         * Determinates the scope of the object.
+         */
+        scope: {
+            get: function get() {
+                return this._scope;
+            },
+            set: function set(scope) {
+                this._scope = ObjectScope.validate(scope) ? scope : ObjectScope.PROTOTYPE;
+                this._singleton = Boolean(this._scope === ObjectScope.SINGLETON);
+            }
+        },
+
+        /**
+         * Determinates the factory stategy of this definition to create the object.
+         */
+        strategy: {
+            enumerable: true,
+            get: function get() {
+                return this._strategy;
+            },
+            set: function set(strategy) {
+                this._strategy = strategy instanceof ObjectStrategy ? strategy : null;
+            }
+        },
+
+        /**
+         * Indicates the type of the object (the function reference of the class name).
+         */
+        type: { value: type, enumerable: true, writable: true },
+
+        /**
+         * @private
+         */
+        _afterListeners: { value: null, writable: true },
+        _beforeListeners: { value: null, writable: true },
+        _dependsOn: { value: null, writable: true },
+        _generates: { value: null, writable: true },
+        _lazyInit: { value: lazyInit && singleton, writable: true },
+        _singleton: { value: Boolean(singleton), writable: true },
+        _scope: { value: Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
+        _strategy: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Evaluable
+ */
+ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: Identifiable, enumerable: true, writable: true },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return "[ObjectDefinition]";
+        } },
+
+    /**
+     * @private
+     */
+    _filterStrings: {
+        value: function value(item) /*Boolean*/
+        {
+            return (typeof item === 'string' || item instanceof String) && item.length > 0;
+        }
+    }
+});
+
+/**
+ * Creates a new ObjectDefinition instance and populated it with the specified init object in argument.
+ * @param o A generic object to populate the new ObjectDefinition instance.
+ * @return An ObjectDefinition instance.
+ */
+function createObjectDefinition(o) /*ObjectDefinition*/
+{
+    var definition = new ObjectDefinition(o[ObjectAttribute.OBJECT_ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.OBJECT_SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
+
+    if (o.hasOwnProperty(ObjectAttribute.IDENTIFY) && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
+        definition.identify = o[ObjectAttribute.IDENTIFY];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.LOCK) && (o[ObjectAttribute.LOCK] instanceof Boolean || typeof o[ObjectAttribute.LOCK] === 'boolean')) {
+        definition.lock = o[ObjectAttribute.LOCK];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.ARGUMENTS) && o[ObjectAttribute.ARGUMENTS] instanceof Array) {
+        definition.constructorArguments = createArguments(o[ObjectAttribute.ARGUMENTS]);
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.OBJECT_DESTROY_METHOD_NAME)) {
+        definition.destroyMethodName = o[ObjectAttribute.OBJECT_DESTROY_METHOD_NAME];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.OBJECT_INIT_METHOD_NAME)) {
+        definition.initMethodName = o[ObjectAttribute.OBJECT_INIT_METHOD_NAME];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.OBJECT_SCOPE)) {
+        definition.scope = o[ObjectAttribute.OBJECT_SCOPE];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.OBJECT_DEPENDS_ON) && o[ObjectAttribute.OBJECT_DEPENDS_ON] instanceof Array) {
+        definition.dependsOn = o[ObjectAttribute.OBJECT_DEPENDS_ON];
+    }
+
+    if (o.hasOwnProperty(ObjectAttribute.OBJECT_GENERATES) && o[ObjectAttribute.OBJECT_GENERATES] instanceof Array) {
+        definition.generates = o[ObjectAttribute.OBJECT_GENERATES];
+    }
+
+    var listeners = createListeners(o);
+    if (listeners) {
+        definition.listeners = listeners;
+    }
+
+    var properties = createProperties(o);
+    if (properties) {
+        definition.properties = properties;
+    }
+
+    var receivers = createReceivers(o);
+    if (receivers) {
+        definition.receivers = receivers;
+    }
+
+    var strategy = createStrategy(o);
+    if (strategy) {
+        definition.factoryStrategy = strategy;
+    }
+
+    return definition;
+}
+
+/**
  * Indicates if the specific objet is Runnable.
  */
 
@@ -7170,576 +8406,6 @@ Task.prototype.resume = function () /*void*/
 };
 
 /**
- * Enumeration of all sort of "orders" can be use in the object definitions.
- */
-
-var ObjectOrder = Object.defineProperties({}, {
-  /**
-   * The "after" order value.
-   */
-  AFTER: { value: "after", enumerable: true },
-
-  /**
-   * The "before" order value.
-   */
-  BEFORE: { value: "before", enumerable: true },
-
-  /**
-   * The "none" order value.
-   */
-  NONE: { value: "none", enumerable: true },
-
-  /**
-   * The "now" order value.
-   */
-  NOW: { value: "now", enumerable: true }
-});
-
-/**
- * This object defines a listener definition in an object definition.
- * @param dispatcher The dispatcher expression reference of the listener.
- * @param type type name of the event dispatched by the dispatcher of this listener.
- * @param method The name of the method to invoke when the event is handle.
- * @param useCapture Determinates if the event flow use capture or not.
- * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
- */
-function ObjectListener(dispatcher /*String*/, type /*String*/) {
-  var method /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-  var useCapture /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
-
-  Object.defineProperties(this, {
-    /**
-     * The dispatcher expression reference of the listener.
-     */
-    dispatcher: { value: dispatcher, writable: true },
-
-    /**
-     * The name of the method to invoke when the event is handle.
-     */
-    method: { value: method, writable: true },
-
-    /**
-     * Determinates the order of the receiver registration ('after' or by default 'before').
-     */
-    order: {
-      get: function get() {
-        return this._order;
-      },
-      set: function set(value) {
-        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
-      }
-    },
-
-    /**
-     * The type name of the event dispatched by the dispatcher.
-     */
-    type: { value: type, writable: true },
-
-    /**
-     * Determinates if the event flow use capture or not.
-     */
-    useCapture: { value: Boolean(useCapture), writable: true },
-
-    /**
-     * @private
-     */
-    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
-  });
-}
-
-Object.defineProperties(ObjectListener, {
-  /**
-   * Defines the "dispatcher" attribute in a listener object definition.
-   */
-  DISPATCHER: { value: "dispatcher", enumerable: true },
-
-  /**
-   * Defines the "method" attribute in a listener object definition.
-   */
-  METHOD: { value: "method", enumerable: true },
-
-  /**
-   * Defines the "order" attribute in a listener object definition.
-   */
-  ORDER: { value: "order", enumerable: true },
-
-  /**
-   * Defines the "useCapture" attribute in a listener object definition.
-   */
-  USE_CAPTURE: { value: "useCapture", enumerable: true },
-
-  /**
-   * Defines the "type" attribute in a listener object definition.
-   */
-  TYPE: { value: "type", enumerable: true }
-});
-
-/**
- * @extends Object
- */
-ObjectListener.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectListener },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      var s = '[ObjectListener';
-      if (this.signal) {
-        s += ' dispatcher:"' + this.dispatcher + '"';
-      }
-      if (this.slot) {
-        s += ' type:"' + this.type + '"';
-      }
-      if (this.method) {
-        s += ' method:"' + this.method + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
-});
-
-/**
- * This object defines a receiver definition in an object definition.
- * @param signal The id of the signal in the IoC factory.
- * @param slot The id of the receiver of function to connect in the IoC factory.
- * @param priority Determines the priority level of the receiver.
- * @param autoDisconnect Indicate if the receiver is auto disconnect in the signal when is used.
- * @param order Indicates the order to connect the receiver "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
- */
-function ObjectReceiver(signal /*String*/) {
-  var slot /*String*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-  var priority /*int*/ = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-  var autoDisconnect /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
-
-  Object.defineProperties(this, {
-    /**
-     * Indicates if the receiver (slot) is auto disconnect by the signal.
-     */
-    autoDisconnect: { value: autoDisconnect, writable: true },
-
-    /**
-     * Determinates the order of the receiver registration ('after' or by default 'before').
-     */
-    order: {
-      get: function get() {
-        return this._order;
-      },
-      set: function set(value) {
-        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
-      }
-    },
-
-    /**
-     * Determines the priority level of the signal connection.
-     */
-    priority: { value: priority, writable: true },
-
-    /**
-     * The identifier of the signal to connect in the IoC factory.
-     */
-    signal: { value: signal, writable: true },
-
-    /**
-     * The identifier of the receiver of function to connect in the IoC factory.
-     */
-    slot: { value: slot, writable: true },
-
-    /**
-     * @private
-     */
-    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
-  });
-}
-
-Object.defineProperties(ObjectReceiver, {
-  /**
-   * Defines the "autoDisconnect" attribute in a receiver object definition.
-   */
-  AUTO_DISCONNECT: { value: "autoDisconnect", enumerable: true },
-
-  /**
-   * Defines the "order" attribute in a receiver object definition.
-   */
-  ORDER: { value: "order", enumerable: true },
-
-  /**
-   * Defines the "priority" attribute in a receiver object definition.
-   */
-  PRIORITY: { value: "priority", enumerable: true },
-
-  /**
-   * Defines the "signal" attribute in a receiver object definition.
-   */
-  SIGNAL: { value: "signal", enumerable: true },
-
-  /**
-   * Defines the "slot" attribute in a receiver object definition.
-   */
-  SLOT: { value: "slot", enumerable: true }
-});
-
-/**
- * @extends Object
- */
-ObjectReceiver.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectReceiver },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      var s = '[ObjectReceiver';
-      if (this.signal) {
-        s += ' signal:"' + this.signal + '"';
-      }
-      if (this.slot) {
-        s += ' slot:"' + this.slot + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
-});
-
-/**
- * The static enumeration list of all object scopes.
- */
-
-var ObjectScope = Object.defineProperties({}, {
-  /**
-   * Defines the scope of a single object definition to any number of object instances.
-   */
-  PROTOTYPE: { value: "prototype", enumerable: true },
-
-  /**
-   * Defines the scope of a single object definition to a single object instance per IoC container.
-   */
-  SINGLETON: { value: "singleton", enumerable: true },
-
-  /**
-   * The Array representation of all object scopes constants.
-   */
-  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
-
-  /**
-   * Returns true if the passed value is a valid scope reference.
-   * @return true if the passed value is a valid scope reference.
-   */
-  validate: { value: function value(scope /*String*/) /*Boolean*/
-    {
-      return ObjectScope.SCOPES.indexOf(scope) > -1;
-    } }
-});
-
-/**
- * Defines factory strategies in the factory.
- */
-
-function ObjectStrategy() {}
-
-/**
- * @extends Object
- */
-ObjectStrategy.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectStrategy, writable: true },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return "[ObjectStrategy]";
-    }, writable: true }
-});
-
-function ObjectDefinition(id, type) {
-    var singleton = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-    var lazyInit = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-
-    if (id === null || id === undefined) {
-        throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
-    }
-    if (type === null || type === undefined) {
-        throw new ReferenceError(this + " constructor failed, the string 'type' passed in argument not must be empty or 'null' or 'undefined'.");
-    }
-
-    Object.defineProperties(this, {
-        /**
-         * Returns the Array of all listener definitions of this object definition register after the object initialization.
-         * @return the Array of all listener definitions of this object definition register after the object initialization.
-         */
-        afterListeners: {
-            get: function get() {
-                return this._afterListeners;
-            }
-        },
-
-        /**
-         * Returns the Array of all receiver definitions of this object definition register after the object initialization.
-         * @return the Array of all receiver definitions of this object definition register after the object initialization.
-         */
-        afterReceivers: {
-            get: function get() {
-                return this._afterReceivers;
-            }
-        },
-
-        /**
-         * Returns the Array of all listener definitions of this object definition register before the object initialization.
-         * @return the Array of all listener definitions of this object definition register before the object initialization.
-         */
-        beforeListeners: {
-            get: function get() {
-                return this._beforeListeners;
-            }
-        },
-
-        /**
-         * Returns the Array of all receiver definitions of this object definition register before the object initialization.
-         * @return the Array of all receiver definitions of this object definition register before the object initialization.
-         */
-        beforeReceivers: {
-            get: function get() {
-                return this._beforeReceivers;
-            }
-        },
-
-        /**
-         * Returns the constructor arguments values of this object in a Array list.
-         * @return the constructor arguments values of this object in a Array list.
-         */
-        constructorArguments: { value: null, enumerable: true, writable: true },
-
-        /**
-         * Defines the "dependsOn" collection.
-         */
-        dependsOn: {
-            enumerable: true,
-            get: function get() {
-                return this._dependsOn;
-            },
-            set: function set(ar) {
-                this._dependsOn = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
-            }
-        },
-
-        /**
-         * Determinates the name of the method invoked when the object is destroyed.
-         */
-        destroyMethodName: { value: null, enumerable: true, writable: true },
-
-        /**
-         * Defines the "generates" collection.
-         */
-        generates: {
-            enumerable: true,
-            get: function get() {
-                return this._generates;
-            },
-            set: function set(ar) {
-                this._generates = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
-            }
-        },
-
-        /**
-         * Indicates the unique identifier value of this object.
-         */
-        id: { value: id, enumerable: true, writable: true },
-
-        /**
-         * Indicates if the object definition is a singleton and the type of the object is Identifiable if the object must be populated with the id of the definition when is instanciated.
-         */
-        identify: { value: false, enumerable: true, writable: true },
-
-        /**
-         * Determinates the name of the method invoked when the object is created.
-         */
-        initMethodName: { value: null, enumerable: true, writable: true },
-
-        /**
-         * Indicates if the object lazily initialized. Only applicable to a singleton object.
-         * If false, it will get instantiated on startup by object factories that perform eager initialization of singletons.
-         * @return A boolean who indicates if the object lazily initialized.
-         */
-        lazyInit: {
-            get: function get() /*Boolean*/
-            {
-                return this._lazyInit;
-            },
-            set: function set(flag) {
-                this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
-            }
-        },
-
-        /**
-         * Sets the Array of all receiver definition of this object definition.
-         * @param ar the Array of all receiver definitions of the object.
-         */
-        listeners: {
-            set: function set(ar) {
-                this._afterListeners = [];
-                this._beforeListeners = [];
-                if (ar === null || !(ar instanceof Array)) {
-                    return;
-                }
-                var r /*ObjectListener*/;
-                var l = ar.length;
-                if (l > 0) {
-                    for (var i = 0; i < l; i++) {
-                        r = ar[i];
-                        if (r instanceof ObjectListener) {
-                            if (r.order === ObjectOrder.AFTER) {
-                                this._afterListeners.push(r);
-                            } else {
-                                this._beforeListeners.push(r);
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        /**
-         * Indicates if the object definition lock this Lockable object during the population of the properties and the initialization of the methods defines in the object definition.
-         */
-        lock: { value: false, enumerable: true, writable: true },
-
-        /**
-         * Sets the Array representation of all properties of this definition.
-         */
-        properties: { value: null, enumerable: true, writable: true },
-
-        /**
-         * Sets the Array of all receiver definition of this object definition.
-         * @param ar the Array of all receiver definitions of the object.
-         */
-        receivers: {
-            set: function set(ar) {
-                this._afterReceivers = [];
-                this._beforeReceivers = [];
-                if (ar === null || !(ar instanceof Array)) {
-                    return;
-                }
-                var r /*ObjectReceiver*/;
-                var l = ar.length;
-                if (l > 0) {
-                    for (var i = 0; i < l; i++) {
-                        r = ar[i];
-                        if (r instanceof ObjectReceiver) {
-                            if (r.order === ObjectOrder.AFTER) {
-                                this._afterReceivers.push(r);
-                            } else {
-                                this._beforeReceivers.push(r);
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        /**
-         * Indicates if the object in a Sigleton else the object is a prototype (read only, use the scope property to change it).
-         */
-        singleton: {
-            get: function get() /*Boolean*/
-            {
-                return this._singleton;
-            }
-        },
-
-        /**
-         * Determinates the scope of the object.
-         */
-        scope: {
-            get: function get() {
-                return this._scope;
-            },
-            set: function set(scope) {
-                this._scope = ObjectScope.validate(scope) ? scope : ObjectScope.PROTOTYPE;
-                this._singleton = Boolean(this._scope === ObjectScope.SINGLETON);
-            }
-        },
-
-        /**
-         * Determinates the factory stategy of this definition to create the object.
-         */
-        strategy: {
-            enumerable: true,
-            get: function get() {
-                return this._strategy;
-            },
-            set: function set(strategy) {
-                this._strategy = strategy instanceof ObjectStrategy ? strategy : null;
-            }
-        },
-
-        /**
-         * Indicates the type of the object (the function reference of the class name).
-         */
-        type: { value: type, enumerable: true, writable: true },
-
-        /**
-         * @private
-         */
-        _afterListeners: { value: null, writable: true },
-        _beforeListeners: { value: null, writable: true },
-        _dependsOn: { value: null, writable: true },
-        _generates: { value: null, writable: true },
-        _lazyInit: { value: lazyInit && singleton, writable: true },
-        _singleton: { value: Boolean(singleton), writable: true },
-        _scope: { value: Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
-        _strategy: { value: null, writable: true }
-    });
-}
-
-/**
- * @extends Evaluable
- */
-ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
-    constructor: { value: Identifiable, enumerable: true, writable: true },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { value: function value() {
-            return "[ObjectDefinition]";
-        } },
-
-    /**
-     * @private
-     */
-    _filterStrings: {
-        value: function value(item) /*Boolean*/
-        {
-            return (typeof item === 'string' || item instanceof String) && item.length > 0;
-        }
-    }
-});
-
-/**
  * Creates a container to register all the Object define by the corresponding IObjectDefinition objects.
  */
 function ObjectDefinitionContainer() {
@@ -7980,7 +8646,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         if (strategy) {
                             instance = this.createObjectWithStrategy(strategy);
                         } else {
-                            instance = invoke(clazz, createArguments(definition.constructorArguments));
+                            instance = invoke(clazz, this.createArguments(definition.constructorArguments));
                         }
                     } catch (e) {
                         this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.");
@@ -8027,6 +8693,142 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     },
 
     /**
+     * Indicates if the factory is dirty, must flush this buffer of not lazy-init singleton object definitions.
+     * The user must execute the run or create methods to flush this buffer.
+     */
+    isDirty: { value: function value() /*Boolean*/
+        {
+            return this.bufferSingletons && this.bufferSingletons instanceof Array && this.bufferSingletons.length > 0;
+        } },
+
+    /**
+     * This method indicates if the specified object definition is lazy init.
+     * @param id The 'id' of the object definition to check..
+     * @return <code class="prettyprint">true</code> if the specified object definition is lazy init.
+     */
+    isLazyInit: { value: function value(id) /*Boolean*/
+        {
+            if (this.containsObjectDefinition(id)) {
+                return this.getObjectDefinition(id).lazyInit;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * This method defined if the scope of the specified object definition is "singleton".
+     * @param The 'id' of the object.
+     * @return <code class="prettyprint">true</code> if the object is a singleton.
+     */
+    isSingleton: { value: function value(id) /*Boolean*/
+        {
+            if (this.containsObjectDefinition(id)) {
+                return this.getObjectDefinition(id).singleton;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Removes and destroy a singleton in the container.
+     * Invoke the <b>'destroy'</b> method of this object is it's define in the <code class="prettyprint">IObjectDefinition</code> of this singleton.
+     * @param id The id of the singleton to remove.
+      */
+    removeSingleton: { value: function value(id) {
+            if (this.isSingleton(id) && this._singletons.has(id)) {
+                this.invokeDestroyMethod(this._singletons.get(id), this.getObjectDefinition(id));
+                this._singletons.delete(id);
+            }
+        } },
+
+    /**
+     * Run the initialization of the factory with new object definitions and create the not lazy-init singleton objects.
+     * <p><b>Example :</b></p>
+     * <pre class="prettyprint">
+     * import flash.text.TextField ;
+     * import flash.text.TextFormat ;
+     *
+     * import system.ioc.ObjectFactory ;
+     *
+     * var factory:ObjectFactory = new ObjectFactory();
+     *
+     * factory.objects =
+     * [
+     *     {
+     *         id         : "my_field" ,
+     *         type       : "flash.text.TextField" ,
+     *         properties :
+     *         [
+     *             { name:"defaultTextFormat" , value:new TextFormat("Verdana", 11) } ,
+     *             { name:"selectable"        , value:false                         } ,
+     *             { name:"text"              , value:"hello world"                 } ,
+     *             { name:"textColor"         , value:0xF7F744                      } ,
+     *             { name:"x"                 , value:100                           } ,
+     *             { name:"y"                 , value:100                           }
+     *         ]
+     *     }
+     * ];
+     *
+     * factory.run();
+     *
+     * var field:TextField = factory.getObject("my_field") as TextField ;
+     *
+     * addChild(field) ;
+     * </pre>
+     */
+    run: { value: function value() {
+            if (this.running) {
+                return;
+            }
+
+            this.notifyStarted();
+
+            if (arguments.length > 0 && (arguments.length <= 0 ? undefined : arguments[0]) instanceof Array) {
+                this.objects = arguments.length <= 0 ? undefined : arguments[0];
+            }
+
+            if (this.bufferSingletons === null) {
+                this.bufferSingletons = [];
+            }
+
+            if (this.objects instanceof Array && this.objects.length > 0) {
+                var definition /*ObjectDefinition*/;
+
+                var init;
+
+                while (this.objects.length > 0) {
+                    init = this.objects.shift();
+
+                    if (init !== null) {
+                        definition = createObjectDefinition(init);
+
+                        this.addObjectDefinition(definition);
+
+                        if (definition.singleton && !definition.lazyInit) {
+                            if (this.containsObjectDefinition(definition.id)) {
+                                this.bufferSingletons.push(String(definition.id));
+                            }
+                        }
+                    } else {
+                        this.warn(this + " create new object definition failed with a 'null' or 'undefined' object.");
+                    }
+                }
+            }
+
+            // flush the buffer of singletons to initialize (no lazyInit)
+
+            if (this.bufferSingletons instanceof Array && this.bufferSingletons.length > 0 && !this._config.lazyInit && !this.isLocked()) {
+                var size = this.bufferSingletons.length;
+                for (var i = 0; i < size; i++) {
+                    this.getObject(this.bufferSingletons[i]);
+                }
+                this.bufferSingletons = null;
+            }
+
+            this.notifyFinished();
+        } },
+
+    /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      */
@@ -8046,7 +8848,259 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
                 logger.warning.apply(null, args);
             }
+        } },
+
+    /**
+     * Creates the arguments Array representation of the specified definition.
+     * @return the arguments Array representation of the specified definition.
+     */
+    createArguments: { value: function value() {
+            var args = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+            if (!(args instanceof Array)) {
+                return null;
+            }
+            var len = args.length;
+            if (len > 0) {
+                var i;
+                var stack = [];
+                var item /*ObjectArgument*/;
+                var value;
+                for (i = 0; i < len; i++) {
+                    item = args[i];
+                    if (item instanceof ObjectArgument) {
+                        value = item.value;
+                        try {
+                            if (item.policy === ObjectAttribute.REFERENCE) {
+                                value = this._config.referenceEvaluator.eval(value);
+                            } else if (item.policy === ObjectAttribute.CONFIG) {
+                                value = this._config.configEvaluator.eval(value);
+                            } else if (item.policy === ObjectAttribute.LOCALE) {
+                                value = this._config.localeEvaluator.eval(value);
+                            }
+
+                            if (item.evaluators !== null && item.evaluators.length > 0) {
+                                value = this.eval(value, item.evaluators);
+                            }
+
+                            stack.push(value);
+                        } catch (e) {
+                            this.warn(this + " createArguments failed : " + e.toString());
+                        }
+                    }
+                }
+                return stack;
+            } else {
+                return null;
+            }
+        } },
+
+    /**
+     * Creates a new Object with a specified IObjectFactoryStrategy instance.
+     * @return A new Object with a specified IObjectFactoryStrategy instance.
+     */
+    createObjectWithStrategy: { value: function value(strategy) {
+            if (strategy instanceof ObjectStrategy) {
+                return null;
+            }
+            var args;
+            var instance = null;
+            var clazz;
+            var factory;
+            var ref;
+            var name;
+            var factoryMethod;
+
+            if (strategy instanceof ObjectMethod) {
+                factoryMethod = strategy;
+
+                name = factoryMethod.name;
+                args = this.createArguments(factoryMethod.arguments);
+
+                if (factoryMethod instanceof ObjectStaticFactoryMethod) {
+                    clazz = this.config.typeEvaluator.eval(factoryMethod.type);
+                    if (clazz !== null && clazz.hasOwnProperty(name)) {
+                        instance = clazz[name].apply(null, args);
+                    }
+                } else if (factoryMethod instanceof ObjectFactoryMethod) {
+                    factory = factoryMethod.factory;
+                    ref = this.getObject(factory);
+                    if (ref !== null && name !== null && ref.hasOwnProperty(name)) {
+                        instance = ref[name].apply(null, args);
+                    }
+                }
+            } else if (strategy instanceof ObjectProperty) {
+                var factoryProperty = strategy;
+
+                name = factoryProperty.name;
+
+                if (factoryProperty instanceof ObjectStaticFactoryProperty) {
+                    clazz = this.config.typeEvaluator.eval(factoryProperty.type);
+                    if (clazz !== null && clazz.hasOwnProperty(name)) {
+                        instance = clazz[name];
+                    }
+                } else if (factoryProperty instanceof ObjectFactoryProperty) {
+                    factory = factoryProperty.factory;
+                    if (factory !== null && this.containsObjectDefinition(factory)) {
+                        ref = this.getObject(factory);
+                        if (ref !== null && name !== null && ref.hasOwnProperty(name)) {
+                            instance = ref[name];
+                        }
+                    }
+                }
+            } else if (strategy instanceof ObjectValue) {
+                instance = strategy.value;
+            } else if (strategy instanceof ObjectReference) {
+                instance = this._config.referenceEvaluator.eval(strategy.ref);
+            }
+            return instance;
+        } },
+
+    /**
+     * Invoked to creates all object in the factory register in the dependsOn collection.
+     * <p>All objects in the dependsOn collection are initialized before the initialization of the current object build in the factory.</p>
+     */
+    dependsOn: { value: function value(definition /*ObjectDefinition*/) {
+            if (definition instanceof ObjectDefinition && definition.dependsOn !== null) {
+                var id;
+                var ar = definition.dependsOn;
+                var len = ar.length;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        id = ar[i];
+                        if (this.containsObjectDefinition(id)) {
+                            this.getObject(id); // not keep in memory
+                        }
+                    }
+                }
+            }
+        } },
+
+    /**
+     * Evaluates a value with an Array of evaluators or Evaluable references in the factory.
+     * @param value The value to evaluate.
+     * @param evaluators The Array who contains IEvaluator objects or String ids who representing a IEvaluator in the factory.
+     * @return The new value after evaluation.
+     */
+    eval: { value: function value(_value) {
+            var evaluators /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (!(evaluators instanceof Array) || evaluators.length === 0) {
+                return _value;
+            }
+            this._evaluator.clear();
+            var o;
+            var s = evaluators.length;
+            var a = [];
+            for (var i = 0; i < s; i++) {
+                o = evaluators[i];
+                if (o === null) {
+                    continue;
+                }
+
+                if (o instanceof String || typeof o === 'string') {
+                    o = this.getObject(o);
+                }
+
+                if (o instanceof Evaluable) {
+                    a.push(o);
+                }
+            }
+            if (a.length > 0) {
+                this._evaluator.add(a);
+                _value = this._evaluator.eval(_value);
+                this._evaluator.clear();
+            }
+            return _value;
+        } },
+
+    /**
+     * Invoked to creates all object in the factory register in the generates collection.
+     * <p>All objects in the generates collection are initialized after the initialization of the current object build in the factory.</p>
+     */
+    generates: { value: function value(definition /*ObjectDefinition*/) {
+            if (definition instanceof ObjectDefinition && definition.generates !== null) {
+                var id;
+                var ar = definition.generates;
+                var len = ar.length;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        id = ar[i];
+                        if (this.containsObjectDefinition(id)) {
+                            this.getObject(id); // not keep in memory
+                        }
+                    }
+                }
+            }
+        } },
+
+    /**
+     * Invokes the destroy method of the specified object, if the init method is define in the IDefinition object.
+     */
+    invokeDestroyMethod: { value: function value(o) {
+            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (definition && definition instanceof ObjectDefinition) {
+                var name = definition.destroyMethodName;
+                if (name === null && this.config !== null) {
+                    name = this.config.defaultDestroyMethod;
+                }
+                if (name !== null && o.hasOwnProperty(name) && o[name] instanceof Function) {
+                    o[name].call(o);
+                }
+            }
+        } },
+
+    /**
+     * Invokes the init method of the specified object, if the init method is define in the IDefinition object.
+     */
+    invokeInitMethod: { value: function value(o) {
+            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (definition && definition instanceof ObjectDefinition) {
+                var name = definition.initMethodName;
+                if (name === null && this.config !== null) {
+                    name = this.config.defaultInitMethod;
+                }
+                if (name !== null && o.hasOwnProperty(name) && o[name] instanceof Function) {
+                    o[name].call(o);
+                }
+            }
+        } },
+
+    /**
+     * Populates the <code class="prettyprint">Identifiable</code> singleton object, if the 'identify' flag is true the config of this factory and if specified the <code class="prettyprint">IObjectDefinition</code> object scope is singleton.
+     */
+    populateIdentifiable: { value: function value(o) {
+            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (definition && definition instanceof ObjectDefinition) {
+                if (definition.singleton && o instanceof Identifiable) {
+                    if (definition.identify === true || this.config.identify === true && definition.identify !== false) {
+                        o.id = definition.id;
+                    }
+                }
+            }
+        } },
+
+    /**
+     * Populates all properties in the Map passed in argument.
+     */
+    populateProperties: { value: function value(o) {
+            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (definition && definition instanceof ObjectDefinition) {
+                var properties = definition.properties;
+                if (properties && properties instanceof Array && properties.length > 0) {
+                    var id = definition.id;
+                    var size = properties.length;
+                    for (var i = 0; i < size; i++) {
+                        this.populateProperty(o, properties[i], id);
+                    }
+                }
+            }
         } }
+
 });
 
 /**
@@ -8644,122 +9698,6 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
     toString: { value: function value() {
             return '[ObjectConfig]';
         } }
-});
-
-/**
- * This object defines a method definition with a method name and this arguments.
- * @param name The name of the method to invoke.
- * @param arguments The array of the arguments to passed-in the method.
- */
-function ObjectMethod(name /*String*/, args /*Array*/) {
-  Object.defineProperties(this, {
-    /**
-     * The optional Array representation of all evaluators to transform the value of this object.
-     */
-    arguments: { value: args, writable: true },
-
-    /**
-     * The name of the property.
-     */
-    name: { value: name, writable: true }
-  });
-}
-
-/**
- * @extends Object
- */
-ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectMethod, writable: true },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return '[ObjectMethod]';
-    }, writable: true }
-});
-
-/**
- * This object defines a property definition in the object definitions.
- * @param name The name of the property.
- * @param value The value of the property.
- * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
- * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
- */
-function ObjectProperty(name /*String*/, value) {
-  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
-  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-  Object.defineProperties(this, {
-    /**
-     * The optional Array representation of all evaluators to transform the value of this object.
-     */
-    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
-
-    /**
-     * The name of the property.
-     */
-    name: { value: name, writable: true },
-
-    /**
-     * Determinates the order of the receiver registration ('after' or by default 'before').
-     */
-    policy: {
-      get: function get() {
-        return this._policy;
-      },
-      set: function set(str) {
-        switch (str) {
-          case ObjectAttribute.ARGUMENTS:
-          case ObjectAttribute.REFERENCE:
-          case ObjectAttribute.CONFIG:
-          case ObjectAttribute.LOCALE:
-            {
-              this._policy = str;
-              break;
-            }
-          default:
-            {
-              this._policy = ObjectAttribute.VALUE;
-            }
-        }
-      }
-    },
-
-    /**
-     * The value of the property.
-     */
-    value: { value: value, writable: true },
-
-    /**
-     * @private
-     */
-    _policy: { value: null, writable: true }
-  });
-
-  this.policy = policy;
-}
-
-/**
- * @extends Object
- */
-ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: ObjectProperty, writable: true },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return '[ObjectProperty]';
-    }, writable: true }
 });
 
 /**
@@ -11645,6 +12583,7 @@ var system = Object.assign({
     signals: signals
 });
 
+exports.global = global;
 exports.trace = trace;
 exports.core = core;
 exports.system = system;

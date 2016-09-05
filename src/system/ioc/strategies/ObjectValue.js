@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectStrategy }  from './ObjectStrategy.js' ;
+import { ObjectStrategy }  from '../ObjectStrategy.js' ;
 
 /**
  * This stategy object set an object in the IoC factory with an easy value if the attribute "factoryValue" is used in the object definition.
