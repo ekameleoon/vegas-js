@@ -446,7 +446,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     warn : { value : function( ...args )
     {
-        if ( this.config.useLogger )
+        if ( this.config.useLogger && logger )
         {
             logger.warning.apply( null , args ) ;
         }
