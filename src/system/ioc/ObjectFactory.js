@@ -278,7 +278,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             }
             catch( e )
             {
-                console.warn(e) ;
                 this.warn( this + " getObject failed with the id '" + id + "' : " + e.toString() ) ;
             }
 

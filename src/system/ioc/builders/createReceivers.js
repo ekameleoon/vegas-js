@@ -67,7 +67,7 @@ export function createReceivers( factory ) /*Array*/
         {
             if( logger && (logger instanceof Logger) )
             {
-                logger.warn
+                logger.warning
                 (
                     "ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
                     id ,

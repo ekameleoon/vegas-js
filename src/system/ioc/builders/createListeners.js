@@ -71,7 +71,7 @@ export function createListeners( factory ) /*Array*/
         {
             if( logger instanceof Logger)
             {
-                logger.warn
+                logger.warning
                 (
                     "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
                     id ,

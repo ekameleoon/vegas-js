@@ -6965,7 +6965,7 @@ function createListeners(factory) /*Array*/
             listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
         } else {
             if (logger instanceof Logger) {
-                logger.warn("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+                logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
             }
         }
     }
@@ -7157,7 +7157,7 @@ function createProperties(factory) /*Array*/
             }
         } else {
             if (logger && logger instanceof Logger) {
-                logger.warn("ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
+                logger.warning("ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
             }
         }
     }
@@ -7314,7 +7314,7 @@ function createReceivers(factory) /*Array*/
             receivers.push(new ObjectReceiver(signal, def[ObjectReceiver.SLOT], isNaN(def[ObjectReceiver.PRIORITY]) ? 0 : def[ObjectReceiver.PRIORITY], def[ObjectReceiver.AUTO_DISCONNECT] === true, def[ObjectReceiver.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
         } else {
             if (logger && logger instanceof Logger) {
-                logger.warn("ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+                logger.warning("ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
             }
         }
     }
@@ -8762,7 +8762,6 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     }
                 }
             } catch (e) {
-                console.warn(e);
                 this.warn(this + " getObject failed with the id '" + id + "' : " + e.toString());
             }
 

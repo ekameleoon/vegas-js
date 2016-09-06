@@ -116,7 +116,7 @@ export function createProperties( factory ) /*Array*/
         {
             if( logger && (logger instanceof Logger) )
             {
-                logger.warn
+                logger.warning
                 (
                     "ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
                     id ,
