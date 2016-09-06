@@ -65,7 +65,7 @@ Point.prototype.toString = function()
     config.setConfigTarget({
 
         'origin' : { x : 10 , y : 20 }
-    })
+    });
 
     config.setLocaleTarget({
 
@@ -73,7 +73,7 @@ Point.prototype.toString = function()
         {
             test : 'test'
         }
-    })
+    });
 
     var objects =
     [
