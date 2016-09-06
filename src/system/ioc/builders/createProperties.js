@@ -25,63 +25,85 @@ export function createProperties( factory ) /*Array*/
     {
         a = factory ;
     }
-    else if( factory.hasOwnProperty( ObjectAttribute.OBJECT_PROPERTIES ) && (factory[ ObjectAttribute.OBJECT_PROPERTIES ] instanceof Array ) )
+    else if( (ObjectAttribute.OBJECT_PROPERTIES in factory) && (factory[ ObjectAttribute.OBJECT_PROPERTIES ] instanceof Array ) )
     {
         a = factory[ ObjectAttribute.OBJECT_PROPERTIES ] ;
     }
 
-    if ( a === null || a.length === 0 )
+    if ( !(a instanceof Array) || (a.length === 0) )
     {
         return null ;
     }
 
-    var properties = [] ;
+    let properties = [] ;
+    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let len = a.length ;
+    let prop = null ;
 
-    var args  ;
-    var conf ;
-    var i18n ;
-    var prop ;
-    var name ;
-    var ref  ;
-    var value ;
-    var evaluators ;
-
-    var id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
-    var len = a.length ;
-
-    for ( var i = 0 ; i<len ; i++ )
+    for ( let i = 0 ; i<len ; i++ )
     {
         prop = a[i] ;
 
-        if ( prop !== null && prop.hasOwnProperty( ObjectAttribute.NAME ) )
+        let args = null ;
+        let conf = null ;
+        let i18n = null ;
+        let name = null ;
+        let ref  = null ;
+        let value = null ;
+        let evaluators = null ;
+
+        if ( prop && (ObjectAttribute.NAME in prop) )
         {
             name = prop[ ObjectAttribute.NAME ] ;
 
-            if ( name === null || name.length === 0 )
+            if ( !(name instanceof String || typeof(name) === 'string') || (name.length === '') )
             {
                 continue ;
             }
 
-            args       = prop[ ObjectAttribute.ARGUMENTS  ] ;
-            evaluators = prop[ ObjectAttribute.EVALUATORS ] ;
-            conf       = prop[ ObjectAttribute.CONFIG     ] ;
-            i18n       = prop[ ObjectAttribute.LOCALE     ] ;
-            ref        = prop[ ObjectAttribute.REFERENCE  ] ;
-            value      = prop[ ObjectAttribute.VALUE      ] ;
+            if( ObjectAttribute.EVALUATORS in prop )
+            {
+                evaluators = (prop[ ObjectAttribute.EVALUATORS ] instanceof Array) ? prop[ ObjectAttribute.EVALUATORS ] : null ;
+            }
 
-            if ( args !== null )
+            if( ObjectAttribute.ARGUMENTS in prop )
+            {
+                args = prop[ ObjectAttribute.ARGUMENTS  ] || null ;
+            }
+
+            if( ObjectAttribute.CONFIG in prop )
+            {
+                conf = prop[ ObjectAttribute.CONFIG ] || null ;
+            }
+
+            if( ObjectAttribute.LOCALE in prop )
+            {
+                i18n = prop[ ObjectAttribute.LOCALE ] || null ;
+            }
+
+            if( ObjectAttribute.REFERENCE in prop )
+            {
+                ref = prop[ ObjectAttribute.REFERENCE  ] || null ;
+            }
+
+            if( ObjectAttribute.VALUE in prop )
+            {
+                value = prop[ ObjectAttribute.VALUE ] ;
+            }
+
+            if ( args && (args instanceof Array) )
             {
                 properties.push( new ObjectProperty( name , createArguments( args ) , ObjectAttribute.ARGUMENTS ) ) ; // arguments property
             }
-            else if ( ref !== null )
+            else if ( (ref instanceof String || typeof(ref) === 'string') && (ref !== '') )
             {
                 properties.push( new ObjectProperty( name , ref , ObjectAttribute.REFERENCE , evaluators ) ) ; // ref property
             }
-            else if ( conf !== null && conf.length > 0 )
+            else if ( (conf instanceof String || typeof(conf) === 'string') && (conf !== '') )
             {
                 properties.push( new ObjectProperty( name, conf , ObjectAttribute.CONFIG , evaluators ) ) ; // config property
             }
-            else if ( i18n !== null && i18n.length > 0 )
+            else if ( (i18n instanceof String || typeof(i18n) === 'string') && (i18n !== '') )
             {
                 properties.push( new ObjectProperty( name, i18n , ObjectAttribute.LOCALE , evaluators ) ) ; // locale property
             }
@@ -104,5 +126,6 @@ export function createProperties( factory ) /*Array*/
             }
         }
     }
+
     return ( properties.length > 0 ) ? properties : null ;
 }

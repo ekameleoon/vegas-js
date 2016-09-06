@@ -38,6 +38,54 @@ import { ObjectStrategy } from './ObjectStrategy.js' ;
  * @param method The name of the method to invoke when the event is handle.
  * @param useCapture Determinates if the event flow use capture or not.
  * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * @example
+ * var ObjectFactory = system.ioc.ObjectFactory ;
+ *
+ * var factory = new ObjectFactory();
+ * var config  = factory.config ;
+ *
+ * config.setConfigTarget
+ * ({
+ *     origin : { x : 10 , y : 20 }
+ * })
+ *
+ * config.setLocaleTarget
+ * ({
+ *     messages :
+ *     {
+ *         test : 'test'
+ *     }
+ * })
+ *
+ * var objects =
+ * [
+ *  {
+ *      id   : "position" ,
+ *      type : "Point" ,
+ *      args : [ { value : 2 } , { ref : 'origin.y' }],
+ *      properties :
+ *      [
+ *          { name : "x" , ref   :'origin.x' } ,
+ *          { name : "y" , value : 100       }
+ *      ]
+ *  },
+ *  {
+ *      id         : "origin" ,
+ *      type       : "Point" ,
+ *      singleton  : true ,
+ *      args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *      properties :
+ *      [
+ *          { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *      ]
+ *  }
+ * ];
+ *
+ * factory.run( objects );
+ *
+ * var pos = factory.getObject('position') ;
+ *
+ * trace( pos ) ;
  */
 export function ObjectFactory( config /*ObjectConfig*/ = null , objects /*Array*/ = null )
 {
@@ -410,57 +458,52 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     createArguments : { value : function( args = null )
     {
-        if ( !(args instanceof Array) )
+        if ( args === null || !(args instanceof Array) || args.length === 0 )
         {
             return null ;
         }
+
         var len = args.length ;
-        if ( len > 0 )
+        var i ;
+        var stack = [] ;
+        var item /*ObjectArgument*/ ;
+        var value ;
+        for ( i = 0 ; i<len ; i++)
         {
-            var i ;
-            var stack = [] ;
-            var item /*ObjectArgument*/ ;
-            var value ;
-            for ( i = 0 ; i<len ; i++)
+            item  = args[i] ;
+            if( item instanceof ObjectArgument )
             {
-                item  = args[i] ;
-                if( item instanceof ObjectArgument )
+                value = item.value ;
+                try
                 {
-                    value = item.value ;
-                    try
+                    if ( item.policy === ObjectAttribute.REFERENCE )
                     {
-                        if ( item.policy === ObjectAttribute.REFERENCE )
-                        {
-                            value = this._config.referenceEvaluator.eval( value ) ;
-                        }
-                        else if ( item.policy === ObjectAttribute.CONFIG )
-                        {
-                            value = this._config.configEvaluator.eval( value ) ;
-                        }
-                        else if ( item.policy === ObjectAttribute.LOCALE )
-                        {
-                            value = this._config.localeEvaluator.eval( value ) ;
-                        }
-
-                        if ( item.evaluators !== null && item.evaluators.length > 0 )
-                        {
-                            value = this.eval( value , item.evaluators  ) ;
-                        }
-
-                        stack.push( value ) ;
+                        value = this._config.referenceEvaluator.eval( value ) ;
                     }
-                    catch( e )
+                    else if ( item.policy === ObjectAttribute.CONFIG )
                     {
-                        this.warn( this + " createArguments failed : " + e.toString() ) ;
+                        value = this._config.configEvaluator.eval( value ) ;
                     }
+                    else if ( item.policy === ObjectAttribute.LOCALE )
+                    {
+                        value = this._config.localeEvaluator.eval( value ) ;
+                    }
+
+                    if ( item.evaluators !== null && item.evaluators.length > 0 )
+                    {
+                        value = this.eval( value , item.evaluators  ) ;
+                    }
+
+                    stack.push( value ) ;
+                }
+                catch( e )
+                {
+                    this.warn( this + " createArguments failed : " + e.toString() ) ;
                 }
             }
-            return stack ;
         }
-        else
-        {
-            return null ;
-        }
+
+        return stack ;
     }},
 
     /**
@@ -734,22 +777,24 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         if( name === MagicReference.INIT )
         {
-            if ( prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof(value) === 'string' ))
+            if ( (prop.policy === ObjectAttribute.REFERENCE) && (value instanceof String || typeof(value) === 'string' ))
             {
-                value = _config.referenceEvaluator.eval( value ) ;
+                value = this._config.referenceEvaluator.eval( value ) ;
             }
             else if ( prop.policy === ObjectAttribute.CONFIG )
             {
-                value = config.configEvaluator.eval( value ) ;
+                value = this.config.configEvaluator.eval( value ) ;
             }
             else if ( prop.policy === ObjectAttribute.LOCALE )
             {
-                value = config.localeEvaluator.eval( value) ;
+                value = this.config.localeEvaluator.eval( value) ;
             }
+
             if ( prop.evaluators && prop.evaluators.length > 0 )
             {
                 value = this.eval( value , prop.evaluators ) ;
             }
+
             if ( value )
             {
                 for( var member in value )
@@ -764,16 +809,18 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 this.warn( this + " populate a new property failed with the magic name #init, the object to enumerate not must be null, see the factory with the object definition '" + id + "'." ) ;
             }
+
             return ;
         }
 
         //////////// default strategy to populate the property
 
-        if ( !( o.hasOwnProperty(name) ) )
+        if ( !( name in o ) )
         {
             this.warn( this + " populate a new property failed with the name:" + name + ", this property don't exist in the object:" + o + ", see the factory with the object definition '" + id + "'." ) ;
             return ;
         }
+
         if ( o[name] instanceof Function )
         {
             if( prop.policy === ObjectAttribute.ARGUMENTS )
@@ -781,15 +828,16 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 o[ name ].apply( o , this.createArguments( value  ) ) ;
                 return ;
             }
-            else if ( prop.policy === ObjectAttribute.VALUE && prop.value === undefined )
+            else if ( (prop.policy === ObjectAttribute.VALUE) )
             {
                 o[ name ]() ;
                 return ;
             }
         }
+
         try
         {
-            if ( prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof(value) === 'string' ) )
+            if ( (prop.policy === ObjectAttribute.REFERENCE) )
             {
                 value = this._config.referenceEvaluator.eval( value ) ;
             }

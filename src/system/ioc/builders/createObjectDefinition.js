@@ -16,6 +16,11 @@ import { ObjectAttribute } from '../ObjectAttribute.js' ;
  */
 export function createObjectDefinition( o ) /*ObjectDefinition*/
 {
+    // console.log( 'createObjectDefinition ------' ) ;
+    // console.info( o ) ;
+    // console.info( ObjectAttribute.ARGUMENTS ) ;
+    // console.info( ObjectAttribute.ARGUMENTS in o ) ;
+    // console.log( '----------------------' ) ;
     var definition = new ObjectDefinition
     (
         o[ ObjectAttribute.OBJECT_ID ]        || null ,
@@ -34,7 +39,7 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         definition.lock = o[ ObjectAttribute.LOCK ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.ARGUMENTS) && o[ ObjectAttribute.ARGUMENTS ] instanceof Array )
+    if( (ObjectAttribute.ARGUMENTS in o ) && ( o[ ObjectAttribute.ARGUMENTS ] instanceof Array ) )
     {
         definition.constructorArguments = createArguments( o[ ObjectAttribute.ARGUMENTS ] );
     }
@@ -54,12 +59,12 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         definition.scope = o[ ObjectAttribute.OBJECT_SCOPE ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_DEPENDS_ON) && o[ ObjectAttribute.OBJECT_DEPENDS_ON ] instanceof Array )
+    if( o.hasOwnProperty(ObjectAttribute.OBJECT_DEPENDS_ON) && (o[ ObjectAttribute.OBJECT_DEPENDS_ON ] instanceof Array) )
     {
         definition.dependsOn = o[ ObjectAttribute.OBJECT_DEPENDS_ON ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_GENERATES) && o[ ObjectAttribute.OBJECT_GENERATES ] instanceof Array )
+    if( o.hasOwnProperty(ObjectAttribute.OBJECT_GENERATES) && (o[ ObjectAttribute.OBJECT_GENERATES ] instanceof Array) )
     {
         definition.generates = o[ ObjectAttribute.OBJECT_GENERATES ] ;
     }

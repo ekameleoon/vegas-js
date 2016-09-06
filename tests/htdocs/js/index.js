@@ -1,11 +1,31 @@
+"use strict" ;
+
 var trace  ; // jshint ignore:line
 var system ; // jshint ignore:line
 var core   ; // jshint ignore:line
+var global ; // jshint ignore:line
+
+var Point = function( x , y )
+{
+    this.x = x ;
+    this.y = y ;
+    console.log("constructor:" + this.toString() ) ;
+};
+
+Point.prototype.test = function( message = null )
+{
+    console.log( 'test:' + this.toString() + " message:" + message ) ;
+}
+
+Point.prototype.toString = function()
+{
+    return "[Point x:" + this.x + " y:" + this.y + "]" ;
+} ;
 
 /* globals vegas */
 ( function( vegas )
 {
-    "use strict" ;
+    //"use strict" ;
 
     if( !vegas )
     {
@@ -39,31 +59,50 @@ var core   ; // jshint ignore:line
 
     var ObjectFactory = system.ioc.ObjectFactory ;
 
-var factory = new ObjectFactory();
+    var factory = new ObjectFactory();
+    var config  = factory.config ;
 
-var objects =
-[
-    {
-        id         : "signal" ,
-        type       : "system.signals.Signal" ,
-        singleton  : true,
-        lazyInit   : true ,
-        properties :
-        [
-            // { name:"defaultTextFormat" , value:new TextFormat("Verdana", 11) } ,
-            // { name:"selectable"        , value:false                         } ,
-            // { name:"text"              , value:"hello world"                 } ,
-            // { name:"textColor"         , value:0xF7F744                      } ,
-            // { name:"x"                 , value:100                           } ,
-            // { name:"y"                 , value:100                           }
-        ]
-    }
-];
+    config.setConfigTarget({
 
-factory.run( objects );
+        'origin' : { x : 10 , y : 20 }
+    })
 
-var signal = factory.getObject('signal') ;
+    config.setLocaleTarget({
 
-console.log( signal ) ;
+        messages :
+        {
+            test : 'test'
+        }
+    })
+
+    var objects =
+    [
+        {
+            id   : "position" ,
+            type : "Point" ,
+            args : [ { value : 2 } , { ref : 'origin.y' }],
+            properties :
+            [
+                { name : "x" , ref   :'origin.x' } ,
+                { name : "y" , value : 100       }
+            ]
+        },
+        {
+            id         : "origin" ,
+            type       : "Point" ,
+            singleton  : true ,
+            args       : [ { config : 'origin.x' } , { value : 20 }] ,
+            properties :
+            [
+                { name : 'test' , args : [ { locale : 'messages.test' } ] }
+            ]
+        }
+    ];
+
+    factory.run( objects );
+
+    var pos = factory.getObject('position') ;
+
+    logger.info( pos ) ;
 
 })( vegas );

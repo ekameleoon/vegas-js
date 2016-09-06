@@ -38,7 +38,15 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  */
 export function ConfigEvaluator( config /*ObjectConfig*/ )
 {
+    PropertyEvaluator.call(this) ;
     this.config = (config instanceof ObjectConfig) ? config : null ;
+    Object.defineProperties( this ,
+    {
+        target :
+        {
+            get : function() { return this.config !== null ? this.config.config : null ; }
+        }
+    }) ;
 }
 
 /**
@@ -47,14 +55,6 @@ export function ConfigEvaluator( config /*ObjectConfig*/ )
 ConfigEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
 {
     constructor : { value : ConfigEvaluator } ,
-
-    /**
-     * The config object reference used in the factory to register values and expressions.
-     */
-    target :
-    {
-        get : function() { return this.config !== null ? this.config.config : null ; }
-    },
 
     /**
      * Returns the String representation of the object.

@@ -16,10 +16,7 @@ export function createArguments( a /*Array*/ ) /*Array*/
     else
     {
         var args = [] ;
-
         var o ;
-        var i;
-
         var evaluators ;
 
         var conf ;
@@ -30,7 +27,7 @@ export function createArguments( a /*Array*/ ) /*Array*/
 
         var l = a.length ;
 
-        for ( i ; i<l ; i++ )
+        for ( var i = 0 ; i<l ; i++ )
         {
             o = a[i] ;
             if ( o !== null )

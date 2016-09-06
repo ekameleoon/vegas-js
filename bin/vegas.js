@@ -4390,7 +4390,7 @@ function PropertyEvaluator(target) {
         /**
          * The target reference use in the evaluator.
          */
-        target: { value: target, writable: true },
+        target: { value: target, writable: true, configurable: true },
 
         /**
          * Indicates if the eval() method throws errors or return null when an error is throwing.
@@ -4418,8 +4418,8 @@ PropertyEvaluator.prototype.eval = function (o) {
         var exp /*String*/ = String(o);
         if (exp.length > 0) {
             var value = this.target;
-            var members /*Array*/ = exp.split(this.separator);
-            var len /*int*/ = members.length;
+            var members = exp.split(this.separator);
+            var len = members.length;
             for (var i /*int*/ = 0; i < len; i++) {
                 if (members[i] in value) {
                     value = value[members[i]];
@@ -6301,187 +6301,187 @@ var ObjectAttribute = Object.defineProperties({}, {
   /**
    * Defines the label of the arguments in a method or a constructor object.
    */
-  ARGUMENTS: { value: "arguments", enumerable: true },
+  ARGUMENTS: { value: 'args', enumerable: true }, // The Javascript keyword 'arguments' is reserved, use 'args' !
 
   /**
-   * Defines the attribute name of the "config" object in the configuration of the ioc factory.
+   * Defines the attribute name of the 'config' object in the configuration of the ioc factory.
    */
-  CONFIG: { value: "config", enumerable: true },
+  CONFIG: { value: 'config', enumerable: true },
 
   /**
    * Defines the label of the 'configuration' top-level attribute.
    */
-  CONFIGURATION: { value: "configuration", enumerable: true },
+  CONFIGURATION: { value: 'configuration', enumerable: true },
 
   /**
    * Defines the label of the 'evaluators' attribure.
    */
-  EVALUATORS: { value: "evaluators", enumerable: true },
+  EVALUATORS: { value: 'evaluators', enumerable: true },
 
   /**
    * Defines the label of the 'factory' attribure.
    */
-  FACTORY: { value: "factory", enumerable: true },
+  FACTORY: { value: 'factory', enumerable: true },
 
   /**
    * Defines the label of the 'identify' property of the object.
    */
-  IDENTIFY: { value: "identify", enumerable: true },
+  IDENTIFY: { value: 'identify', enumerable: true },
 
   /**
    * Defines the label of the 'i18n' top-level attribute.
    */
-  I18N: { value: "i18n", enumerable: true },
+  I18N: { value: 'i18n', enumerable: true },
 
   /**
    * Defines the label of the 'imports' top-level attribute.
    */
-  IMPORTS: { value: "imports", enumerable: true },
+  IMPORTS: { value: 'imports', enumerable: true },
 
   /**
    * Defines the label of the lazyInit name property of the object.
    */
-  LAZY_INIT: { value: "lazyInit", enumerable: true },
+  LAZY_INIT: { value: 'lazyInit', enumerable: true },
 
   /**
-   * Defines the attribute name of the "locale" object in the configuration of the ioc factory and the object definition "arguments" and "properties".
+   * Defines the attribute name of the 'locale' object in the configuration of the ioc factory and the object definition 'arguments' and 'properties'.
    */
-  LOCALE: { value: "locale", enumerable: true },
+  LOCALE: { value: 'locale', enumerable: true },
 
   /**
    * Defines the label of the 'lock' property of the object.
    */
-  LOCK: { value: "lock", enumerable: true },
+  LOCK: { value: 'lock', enumerable: true },
 
   /**
    * Defines the label of the name in a property object.
    */
-  NAME: { value: "name", enumerable: true },
+  NAME: { value: 'name', enumerable: true },
 
   /**
-   * The name of the "dependsOn" object definition attribute.
+   * The name of the 'dependsOn' object definition attribute.
    */
-  OBJECT_DEPENDS_ON: { value: "dependsOn", enumerable: true },
+  OBJECT_DEPENDS_ON: { value: 'dependsOn', enumerable: true },
 
   /**
    * The name of the external object property to register the destroy method name.
    */
-  OBJECT_DESTROY_METHOD_NAME: { value: "destroy", enumerable: true },
+  OBJECT_DESTROY_METHOD_NAME: { value: 'destroy', enumerable: true },
 
   /**
-   * The name of the "factoryLogic" object definition attribute.
+   * The name of the 'factoryLogic' object definition attribute.
    */
-  OBJECT_FACTORY_LOGIC: { value: "factoryLogic", enumerable: true },
+  OBJECT_FACTORY_LOGIC: { value: 'factoryLogic', enumerable: true },
 
   /**
-   * The name of the "factoryMethod" object definition attribute.
+   * The name of the 'factoryMethod' object definition attribute.
    */
-  OBJECT_FACTORY_METHOD: { value: "factoryMethod", enumerable: true },
+  OBJECT_FACTORY_METHOD: { value: 'factoryMethod', enumerable: true },
 
   /**
-   * The name of the "factoryProperty" object definition attribute.
+   * The name of the 'factoryProperty' object definition attribute.
    */
-  OBJECT_FACTORY_PROPERTY: { value: "factoryProperty", enumerable: true },
+  OBJECT_FACTORY_PROPERTY: { value: 'factoryProperty', enumerable: true },
 
   /**
-   * The name of the "factoryReference" object definition attribute.
+   * The name of the 'factoryReference' object definition attribute.
    */
-  OBJECT_FACTORY_REFERENCE: { value: "factoryReference", enumerable: true },
+  OBJECT_FACTORY_REFERENCE: { value: 'factoryReference', enumerable: true },
 
   /**
-   * The name of the "factoryValue" object definition attribute.
+   * The name of the 'factoryValue' object definition attribute.
    */
-  OBJECT_FACTORY_VALUE: { value: "factoryValue", enumerable: true },
+  OBJECT_FACTORY_VALUE: { value: 'factoryValue', enumerable: true },
 
   /**
-   * The name of the "generates" object definition attribute.
+   * The name of the 'generates' object definition attribute.
    */
-  OBJECT_GENERATES: { value: "generates", enumerable: true },
+  OBJECT_GENERATES: { value: 'generates', enumerable: true },
 
   /**
    * The name of the external object property to define the identifier of the object.
    */
-  OBJECT_ID: { value: "id", enumerable: true },
+  OBJECT_ID: { value: 'id', enumerable: true },
 
   /**
    * The name of the external object property to register the init method name.
    */
-  OBJECT_INIT_METHOD_NAME: { value: "init", enumerable: true },
+  OBJECT_INIT_METHOD_NAME: { value: 'init', enumerable: true },
 
   /**
-   * Defines the label of the "listeners" name property of the object.
+   * Defines the label of the 'listeners' name property of the object.
    */
-  OBJECT_LISTENERS: { value: "listeners", enumerable: true },
+  OBJECT_LISTENERS: { value: 'listeners', enumerable: true },
 
   /**
    * The name of the external object property to register the properties.
    */
-  OBJECT_PROPERTIES: { value: "properties", enumerable: true },
+  OBJECT_PROPERTIES: { value: 'properties', enumerable: true },
 
   /**
-   * Defines the label of the "receivers" name property of the object.
+   * Defines the label of the 'receivers' name property of the object.
    */
-  OBJECT_RECEIVERS: { value: "receivers", enumerable: true },
+  OBJECT_RECEIVERS: { value: 'receivers', enumerable: true },
 
   /**
    * The name of the external object property to define the scope flag of the object.
    */
-  OBJECT_SCOPE: { value: "scope", enumerable: true },
+  OBJECT_SCOPE: { value: 'scope', enumerable: true },
 
   /**
    * The name of the external object property to define the singleton flag of the object.
    */
-  OBJECT_SINGLETON: { value: "singleton", enumerable: true },
+  OBJECT_SINGLETON: { value: 'singleton', enumerable: true },
 
   /**
    * The name of the external object property to define the static factory flag of the object.
    */
-  OBJECT_STATIC_FACTORY_METHOD: { value: "staticFactoryMethod", enumerable: true },
+  OBJECT_STATIC_FACTORY_METHOD: { value: 'staticFactoryMethod', enumerable: true },
 
   /**
    * The name of the external object property to define the static property flag of the object.
    */
-  OBJECT_STATIC_FACTORY_PROPERTY: { value: "staticFactoryProperty", enumerable: true },
+  OBJECT_STATIC_FACTORY_PROPERTY: { value: 'staticFactoryProperty', enumerable: true },
 
   /**
    * Defines the label of the 'objects' top-level attribute.
    */
-  OBJECTS: { value: "objects", enumerable: true },
+  OBJECTS: { value: 'objects', enumerable: true },
 
   /**
    * Defines the label of the 'resource' attribute in the imports objects.
    */
-  RESOURCE: { value: "resource", enumerable: true },
+  RESOURCE: { value: 'resource', enumerable: true },
 
   /**
    * Defines the label of the type of the object.
    */
-  TYPE: { value: "type", enumerable: true },
+  TYPE: { value: 'type', enumerable: true },
 
   /**
    * Defines the attribute name of the alias expression in a typeAlias object in the configuration of the ioc factory.
    */
-  TYPE_ALIAS: { value: "alias", enumerable: true },
+  TYPE_ALIAS: { value: 'alias', enumerable: true },
 
   /**
    * Defines the attribute name of the 'typeAliases' Array in the configuration of the ioc factory.
    */
-  TYPE_ALIASES: { value: "typeAliases", enumerable: true },
+  TYPE_ALIASES: { value: 'typeAliases', enumerable: true },
 
   /**
    * Defines the attribute name of the 'typeExpression' Array in the configuration of the ioc factory.
    */
-  TYPE_EXPRESSION: { value: "typeExpression", enumerable: true },
+  TYPE_EXPRESSION: { value: 'typeExpression', enumerable: true },
 
   /**
    * Defines the label of the reference in a property object.
    */
-  REFERENCE: { value: "ref", enumerable: true },
+  REFERENCE: { value: 'ref', enumerable: true },
 
   /**
    * Defines the label of the value in a property object.
    */
-  VALUE: { value: "value", enumerable: true }
+  VALUE: { value: 'value', enumerable: true }
 });
 
 /**
@@ -6581,31 +6581,30 @@ ObjectArgument.prototype = Object.create(Object.prototype, {
  * </pre>
  */
 function ConfigEvaluator(config /*ObjectConfig*/) {
-  this.config = config instanceof ObjectConfig ? config : null;
+    PropertyEvaluator.call(this);
+    this.config = config instanceof ObjectConfig ? config : null;
+    Object.defineProperties(this, {
+        target: {
+            get: function get() {
+                return this.config !== null ? this.config.config : null;
+            }
+        }
+    });
 }
 
 /**
  * @extends Object
  */
 ConfigEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
-  constructor: { value: ConfigEvaluator },
+    constructor: { value: ConfigEvaluator },
 
-  /**
-   * The config object reference used in the factory to register values and expressions.
-   */
-  target: {
-    get: function get() {
-      return this.config !== null ? this.config.config : null;
-    }
-  },
-
-  /**
-   * Returns the String representation of the object.
-   * @return the String representation of the object.
-   */
-  toString: { value: function value() {
-      return '[ConfigEvaluator]';
-    } }
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[ConfigEvaluator]';
+        } }
 });
 
 /**
@@ -6640,31 +6639,30 @@ ConfigEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
  * </pre>
  */
 function LocaleEvaluator(config /*ObjectConfig*/) {
-  this.config = config instanceof ObjectConfig ? config : null;
+    PropertyEvaluator.call(this);
+    this.config = config instanceof ObjectConfig ? config : null;
+    Object.defineProperties(this, {
+        target: {
+            get: function get() {
+                return this.config !== null ? this.config.locale : null;
+            }
+        }
+    });
 }
 
 /**
  * @extends Object
  */
 LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
-  constructor: { value: LocaleEvaluator },
+    constructor: { value: LocaleEvaluator },
 
-  /**
-   * The config object reference used in the factory to register values and expressions.
-   */
-  target: {
-    get: function get() {
-      return this.config !== null ? this.config.locale : null;
-    }
-  },
-
-  /**
-   * Returns the String representation of the object.
-   * @return the String representation of the object.
-   */
-  toString: { value: function value() {
-      return '[LocaleEvaluator]';
-    } }
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[LocaleEvaluator]';
+        } }
 });
 
 /**
@@ -6747,10 +6745,7 @@ function createArguments(a /*Array*/) /*Array*/
         return null;
     } else {
         var args = [];
-
         var o;
-        var i;
-
         var evaluators;
 
         var conf;
@@ -6761,7 +6756,7 @@ function createArguments(a /*Array*/) /*Array*/
 
         var l = a.length;
 
-        for (i; i < l; i++) {
+        for (var i = 0; i < l; i++) {
             o = a[i];
             if (o !== null) {
                 conf = ObjectAttribute.CONFIG in o ? String(o[ObjectAttribute.CONFIG]) : null;
@@ -7093,52 +7088,68 @@ function createProperties(factory) /*Array*/
 
     if (factory instanceof Array) {
         a = factory;
-    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_PROPERTIES) && factory[ObjectAttribute.OBJECT_PROPERTIES] instanceof Array) {
+    } else if (ObjectAttribute.OBJECT_PROPERTIES in factory && factory[ObjectAttribute.OBJECT_PROPERTIES] instanceof Array) {
         a = factory[ObjectAttribute.OBJECT_PROPERTIES];
     }
 
-    if (a === null || a.length === 0) {
+    if (!(a instanceof Array) || a.length === 0) {
         return null;
     }
 
     var properties = [];
-
-    var args;
-    var conf;
-    var i18n;
-    var prop;
-    var name;
-    var ref;
-    var value;
-    var evaluators;
-
     var id = String(factory[ObjectAttribute.OBJECT_ID]);
     var len = a.length;
+    var prop = null;
 
     for (var i = 0; i < len; i++) {
         prop = a[i];
 
-        if (prop !== null && prop.hasOwnProperty(ObjectAttribute.NAME)) {
+        var args = null;
+        var conf = null;
+        var i18n = null;
+        var name = null;
+        var ref = null;
+        var value = null;
+        var evaluators = null;
+
+        if (prop && ObjectAttribute.NAME in prop) {
             name = prop[ObjectAttribute.NAME];
 
-            if (name === null || name.length === 0) {
+            if (!(name instanceof String || typeof name === 'string') || name.length === '') {
                 continue;
             }
 
-            args = prop[ObjectAttribute.ARGUMENTS];
-            evaluators = prop[ObjectAttribute.EVALUATORS];
-            conf = prop[ObjectAttribute.CONFIG];
-            i18n = prop[ObjectAttribute.LOCALE];
-            ref = prop[ObjectAttribute.REFERENCE];
-            value = prop[ObjectAttribute.VALUE];
+            if (ObjectAttribute.EVALUATORS in prop) {
+                evaluators = prop[ObjectAttribute.EVALUATORS] instanceof Array ? prop[ObjectAttribute.EVALUATORS] : null;
+            }
 
-            if (args !== null) {
+            if (ObjectAttribute.ARGUMENTS in prop) {
+                args = prop[ObjectAttribute.ARGUMENTS] || null;
+            }
+
+            if (ObjectAttribute.CONFIG in prop) {
+                conf = prop[ObjectAttribute.CONFIG] || null;
+            }
+
+            if (ObjectAttribute.LOCALE in prop) {
+                i18n = prop[ObjectAttribute.LOCALE] || null;
+            }
+
+            if (ObjectAttribute.REFERENCE in prop) {
+                ref = prop[ObjectAttribute.REFERENCE] || null;
+            }
+
+            if (ObjectAttribute.VALUE in prop) {
+                value = prop[ObjectAttribute.VALUE];
+            }
+
+            if (args && args instanceof Array) {
                 properties.push(new ObjectProperty(name, createArguments(args), ObjectAttribute.ARGUMENTS)); // arguments property
-            } else if (ref !== null) {
+            } else if ((ref instanceof String || typeof ref === 'string') && ref !== '') {
                 properties.push(new ObjectProperty(name, ref, ObjectAttribute.REFERENCE, evaluators)); // ref property
-            } else if (conf !== null && conf.length > 0) {
+            } else if ((conf instanceof String || typeof conf === 'string') && conf !== '') {
                 properties.push(new ObjectProperty(name, conf, ObjectAttribute.CONFIG, evaluators)); // config property
-            } else if (i18n !== null && i18n.length > 0) {
+            } else if ((i18n instanceof String || typeof i18n === 'string') && i18n !== '') {
                 properties.push(new ObjectProperty(name, i18n, ObjectAttribute.LOCALE, evaluators)); // locale property
             } else {
                 properties.push(new ObjectProperty(name, value, ObjectAttribute.VALUE, evaluators)); // value property
@@ -7149,6 +7160,7 @@ function createProperties(factory) /*Array*/
             }
         }
     }
+
     return properties.length > 0 ? properties : null;
 }
 
@@ -7963,6 +7975,11 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
  */
 function createObjectDefinition(o) /*ObjectDefinition*/
 {
+    // console.log( 'createObjectDefinition ------' ) ;
+    // console.info( o ) ;
+    // console.info( ObjectAttribute.ARGUMENTS ) ;
+    // console.info( ObjectAttribute.ARGUMENTS in o ) ;
+    // console.log( '----------------------' ) ;
     var definition = new ObjectDefinition(o[ObjectAttribute.OBJECT_ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.OBJECT_SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
 
     if (o.hasOwnProperty(ObjectAttribute.IDENTIFY) && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
@@ -7973,7 +7990,7 @@ function createObjectDefinition(o) /*ObjectDefinition*/
         definition.lock = o[ObjectAttribute.LOCK];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.ARGUMENTS) && o[ObjectAttribute.ARGUMENTS] instanceof Array) {
+    if (ObjectAttribute.ARGUMENTS in o && o[ObjectAttribute.ARGUMENTS] instanceof Array) {
         definition.constructorArguments = createArguments(o[ObjectAttribute.ARGUMENTS]);
     }
 
@@ -8525,6 +8542,54 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
  * @param method The name of the method to invoke when the event is handle.
  * @param useCapture Determinates if the event flow use capture or not.
  * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * @example
+ * var ObjectFactory = system.ioc.ObjectFactory ;
+ *
+ * var factory = new ObjectFactory();
+ * var config  = factory.config ;
+ *
+ * config.setConfigTarget
+ * ({
+ *     origin : { x : 10 , y : 20 }
+ * })
+ *
+ * config.setLocaleTarget
+ * ({
+ *     messages :
+ *     {
+ *         test : 'test'
+ *     }
+ * })
+ *
+ * var objects =
+ * [
+ *  {
+ *      id   : "position" ,
+ *      type : "Point" ,
+ *      args : [ { value : 2 } , { ref : 'origin.y' }],
+ *      properties :
+ *      [
+ *          { name : "x" , ref   :'origin.x' } ,
+ *          { name : "y" , value : 100       }
+ *      ]
+ *  },
+ *  {
+ *      id         : "origin" ,
+ *      type       : "Point" ,
+ *      singleton  : true ,
+ *      args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *      properties :
+ *      [
+ *          { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *      ]
+ *  }
+ * ];
+ *
+ * factory.run( objects );
+ *
+ * var pos = factory.getObject('position') ;
+ *
+ * trace( pos ) ;
  */
 function ObjectFactory() {
     var config /*ObjectConfig*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
@@ -8859,42 +8924,40 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     createArguments: { value: function value() {
             var args = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-            if (!(args instanceof Array)) {
+            if (args === null || !(args instanceof Array) || args.length === 0) {
                 return null;
             }
+
             var len = args.length;
-            if (len > 0) {
-                var i;
-                var stack = [];
-                var item /*ObjectArgument*/;
-                var value;
-                for (i = 0; i < len; i++) {
-                    item = args[i];
-                    if (item instanceof ObjectArgument) {
-                        value = item.value;
-                        try {
-                            if (item.policy === ObjectAttribute.REFERENCE) {
-                                value = this._config.referenceEvaluator.eval(value);
-                            } else if (item.policy === ObjectAttribute.CONFIG) {
-                                value = this._config.configEvaluator.eval(value);
-                            } else if (item.policy === ObjectAttribute.LOCALE) {
-                                value = this._config.localeEvaluator.eval(value);
-                            }
-
-                            if (item.evaluators !== null && item.evaluators.length > 0) {
-                                value = this.eval(value, item.evaluators);
-                            }
-
-                            stack.push(value);
-                        } catch (e) {
-                            this.warn(this + " createArguments failed : " + e.toString());
+            var i;
+            var stack = [];
+            var item /*ObjectArgument*/;
+            var value;
+            for (i = 0; i < len; i++) {
+                item = args[i];
+                if (item instanceof ObjectArgument) {
+                    value = item.value;
+                    try {
+                        if (item.policy === ObjectAttribute.REFERENCE) {
+                            value = this._config.referenceEvaluator.eval(value);
+                        } else if (item.policy === ObjectAttribute.CONFIG) {
+                            value = this._config.configEvaluator.eval(value);
+                        } else if (item.policy === ObjectAttribute.LOCALE) {
+                            value = this._config.localeEvaluator.eval(value);
                         }
+
+                        if (item.evaluators !== null && item.evaluators.length > 0) {
+                            value = this.eval(value, item.evaluators);
+                        }
+
+                        stack.push(value);
+                    } catch (e) {
+                        this.warn(this + " createArguments failed : " + e.toString());
                     }
                 }
-                return stack;
-            } else {
-                return null;
             }
+
+            return stack;
         } },
 
     /**
@@ -9122,15 +9185,17 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
             if (name === MagicReference.INIT) {
                 if (prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof value === 'string')) {
-                    value = _config.referenceEvaluator.eval(value);
+                    value = this._config.referenceEvaluator.eval(value);
                 } else if (prop.policy === ObjectAttribute.CONFIG) {
-                    value = config.configEvaluator.eval(value);
+                    value = this.config.configEvaluator.eval(value);
                 } else if (prop.policy === ObjectAttribute.LOCALE) {
-                    value = config.localeEvaluator.eval(value);
+                    value = this.config.localeEvaluator.eval(value);
                 }
+
                 if (prop.evaluators && prop.evaluators.length > 0) {
                     value = this.eval(value, prop.evaluators);
                 }
+
                 if (value) {
                     for (var member in value) {
                         if (value.hasOwnProperty(member)) {
@@ -9140,26 +9205,29 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 } else {
                     this.warn(this + " populate a new property failed with the magic name #init, the object to enumerate not must be null, see the factory with the object definition '" + id + "'.");
                 }
+
                 return;
             }
 
             //////////// default strategy to populate the property
 
-            if (!o.hasOwnProperty(name)) {
+            if (!(name in o)) {
                 this.warn(this + " populate a new property failed with the name:" + name + ", this property don't exist in the object:" + o + ", see the factory with the object definition '" + id + "'.");
                 return;
             }
+
             if (o[name] instanceof Function) {
                 if (prop.policy === ObjectAttribute.ARGUMENTS) {
                     o[name].apply(o, this.createArguments(value));
                     return;
-                } else if (prop.policy === ObjectAttribute.VALUE && prop.value === undefined) {
+                } else if (prop.policy === ObjectAttribute.VALUE) {
                     o[name]();
                     return;
                 }
             }
+
             try {
-                if (prop.policy === ObjectAttribute.REFERENCE && (value instanceof String || typeof value === 'string')) {
+                if (prop.policy === ObjectAttribute.REFERENCE) {
                     value = this._config.referenceEvaluator.eval(value);
                 } else if (prop.policy === ObjectAttribute.CONFIG) {
                     value = this.config.configEvaluator.eval(value);
@@ -9305,7 +9373,9 @@ ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
 
                     try {
                         root = this.factory.config.root;
-                    } catch (e) {}
+                    } catch (e) {
+                        //
+                    }
 
                     switch (exp) {
                         case MagicReference.CONFIG:
@@ -9345,7 +9415,7 @@ ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
                                 var members = exp.split(this.separator);
                                 if (members.length > 0) {
                                     var ref = members.shift();
-                                    var value = this.factory.get(ref);
+                                    var value = this.factory.getObject(ref);
                                     if (value && members.length > 0) {
                                         this._propEvaluator.target = value;
                                         value = this._propEvaluator.eval(members.join("."));

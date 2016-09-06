@@ -72,7 +72,7 @@ ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
                 }
                 catch (e)
                 {
-
+                    //
                 }
 
                 switch( exp )
@@ -120,7 +120,7 @@ ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
                         if ( members.length > 0 )
                         {
                             var ref   = members.shift() ;
-                            var value = this.factory.get( ref ) ;
+                            var value = this.factory.getObject( ref ) ;
                             if ( value && members.length > 0 )
                             {
                                 this._propEvaluator.target = value ;

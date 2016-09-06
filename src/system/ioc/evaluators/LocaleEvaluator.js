@@ -36,7 +36,15 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  */
 export function LocaleEvaluator( config /*ObjectConfig*/ )
 {
+    PropertyEvaluator.call(this) ;
     this.config = (config instanceof ObjectConfig) ? config : null ;
+    Object.defineProperties( this ,
+    {
+        target :
+        {
+            get : function() { return this.config !== null ? this.config.locale : null ; }
+        }
+    }) ;
 }
 
 /**
@@ -45,14 +53,6 @@ export function LocaleEvaluator( config /*ObjectConfig*/ )
 LocaleEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
 {
     constructor : { value : LocaleEvaluator } ,
-
-    /**
-     * The config object reference used in the factory to register values and expressions.
-     */
-    target :
-    {
-        get : function() { return this.config !== null ? this.config.locale : null ; }
-    },
 
     /**
      * Returns the String representation of the object.

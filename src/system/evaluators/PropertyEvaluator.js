@@ -68,7 +68,7 @@ export function PropertyEvaluator( target )
         /**
          * The target reference use in the evaluator.
          */
-        target : { value : target , writable : true } ,
+        target : { value : target , writable : true , configurable : true } ,
 
         /**
          * Indicates if the eval() method throws errors or return null when an error is throwing.
@@ -93,14 +93,14 @@ PropertyEvaluator.prototype.constructor = PropertyEvaluator;
  */
 PropertyEvaluator.prototype.eval = function ( o )
 {
-    if ( o !== null && ( typeof(o) === "string" || o instanceof String ) && this.target !== null )
+    if ( o !== null && ( typeof(o) === "string" || o instanceof String ) && (this.target !== null) )
     {
         var exp /*String*/ = String(o) ;
         if ( exp.length > 0 )
         {
             var value = this.target ;
-            var members /*Array*/ = exp.split( this.separator ) ;
-            var len /*int*/ = members.length ;
+            var members = exp.split( this.separator ) ;
+            var len = members.length ;
             for ( var i /*int*/ = 0 ; i < len ; i++ )
             {
                 if ( members[i] in value )
