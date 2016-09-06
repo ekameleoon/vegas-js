@@ -14,7 +14,7 @@ export function ObjectMethod( name /*String*/ , args /*Array*/ )
         /**
          * The optional Array representation of all evaluators to transform the value of this object.
          */
-        arguments : { value : args , writable : true } ,
+        args : { value : args , writable : true } ,
 
         /**
          * The name of the property.

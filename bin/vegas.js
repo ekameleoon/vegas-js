@@ -3105,6 +3105,7 @@ var strings = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var core = Object.assign({
+    global: global,
     dump: dump,
     arrays: arrays,
     chars: chars,
@@ -7330,7 +7331,7 @@ function ObjectMethod(name /*String*/, args /*Array*/) {
     /**
      * The optional Array representation of all evaluators to transform the value of this object.
      */
-    arguments: { value: args, writable: true },
+    args: { value: args, writable: true },
 
     /**
      * The name of the property.
@@ -7499,7 +7500,7 @@ ObjectReference.prototype = Object.create(ObjectStrategy.prototype, {
  * This object create a static proxy factory configured in the ObjectDefinition and replace the natural factory of the ObjectFactory.
  * @param type The type of the static class use to create the object with a static method.
  * @param name The name of the static method to invoke to create the object.
- * @param arguments The array of the arguments to passed-in the factory method.
+ * @param args The array representation of allt the arguments to call with the object method.
  */
 function ObjectStaticFactoryMethod(type /*String*/, name /*String*/, args /*Array*/) {
     ObjectMethod.call(name, args);
@@ -8536,13 +8537,25 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
 });
 
 /**
- * This object defines a listener definition in an object definition.
- * @param dispatcher The dispatcher expression reference of the listener.
- * @param type type name of the event dispatched by the dispatcher of this listener.
- * @param method The name of the method to invoke when the event is handle.
- * @param useCapture Determinates if the event flow use capture or not.
- * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * The basic Inversion of Control container/factory class.
  * @example
+ * var Point = function( x , y )
+ * {
+ *     this.x = x ;
+ *     this.y = y ;
+ *     console.log("constructor:" + this.toString() ) ;
+ * };
+ *
+ * Point.prototype.test = function( message = null )
+ * {
+ *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+ * }
+ *
+ * Point.prototype.toString = function()
+ * {
+ *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+ * } ;
+ *
  * var ObjectFactory = system.ioc.ObjectFactory ;
  *
  * var factory = new ObjectFactory();
@@ -8563,33 +8576,31 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
  *
  * var objects =
  * [
- *  {
- *      id   : "position" ,
- *      type : "Point" ,
- *      args : [ { value : 2 } , { ref : 'origin.y' }],
- *      properties :
- *      [
- *          { name : "x" , ref   :'origin.x' } ,
- *          { name : "y" , value : 100       }
- *      ]
- *  },
- *  {
- *      id         : "origin" ,
- *      type       : "Point" ,
- *      singleton  : true ,
- *      args       : [ { config : 'origin.x' } , { value : 20 }] ,
- *      properties :
- *      [
- *          { name : 'test' , args : [ { locale : 'messages.test' } ] }
- *      ]
- *  }
+ *     {
+ *         id   : "position" ,
+ *         type : "Point" ,
+ *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         properties :
+ *         [
+ *             { name : "x" , ref   :'origin.x' } ,
+ *             { name : "y" , value : 100       }
+ *         ]
+ *     },
+ *     {
+ *         id         : "origin" ,
+ *         type       : "Point" ,
+ *         singleton  : true ,
+ *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *         properties :
+ *         [
+ *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *         ]
+ *     }
  * ];
  *
  * factory.run( objects );
  *
- * var pos = factory.getObject('position') ;
- *
- * trace( pos ) ;
+ * trace( factory.getObject('position') ) ;
  */
 function ObjectFactory() {
     var config /*ObjectConfig*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
@@ -8908,7 +8919,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * You can overrides this method, the prototype object is dynamic.
      */
     warn: { value: function value() {
-            if (this.config.useLogger) {
+            if (this.config.useLogger && logger) {
                 for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
                     args[_key] = arguments[_key];
                 }
@@ -8980,7 +8991,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 factoryMethod = strategy;
 
                 name = factoryMethod.name;
-                args = this.createArguments(factoryMethod.arguments);
+                args = this.createArguments(factoryMethod.args);
 
                 if (factoryMethod instanceof ObjectStaticFactoryMethod) {
                     clazz = this.config.typeEvaluator.eval(factoryMethod.type);
@@ -9554,7 +9565,7 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
                 }
 
                 try {
-                    var func = getDefinitionByName(type);
+                    var func = getDefinitionByName(type, config.domain);
                     if (func instanceof Function) {
                         return func;
                     }
@@ -9616,6 +9627,11 @@ function ObjectConfig(init) {
          * The default name of init callback method to invoke with object definition in the ObjectFactory.
          */
         defaultInitMethod: { value: null, writable: true, enumerable: true },
+
+        /**
+         * The optional domain used in the factory to creates the objects (by default use core.global if this property is not defined).
+         */
+        domain: { value: null, writable: true, enumerable: true },
 
         /**
          * Indicates if the singleton objects in the ObjectFactory are identifiy if the type of the object implements the Identifiable interface.

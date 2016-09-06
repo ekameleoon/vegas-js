@@ -5,6 +5,7 @@ import './polyfill.js' ;
 import { arrays  } from './core/arrays.js' ;
 import { chars   } from './core/chars.js' ;
 import { dump    } from './core/dump.js' ;
+import { global  } from './core/global.js' ;
 import { maths   } from './core/maths.js' ;
 import { numbers } from './core/numbers.js' ;
 import { objects } from './core/objects.js' ;
@@ -19,6 +20,7 @@ import { strings } from './core/strings.js' ;
  */
 export var core = Object.assign
 ({
+    global  : global ,
     dump    : dump ,
     arrays  : arrays ,
     chars   : chars ,

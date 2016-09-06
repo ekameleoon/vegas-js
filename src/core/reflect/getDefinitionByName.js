@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { global } from '../../global.js' ;
+import { global } from '../global.js' ;
 
 /**
  * Returns the instance of a public definition in a specific <code>domain</code>.

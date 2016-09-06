@@ -32,13 +32,25 @@ import { ObjectMethod } from './ObjectMethod.js' ;
 import { ObjectStrategy } from './ObjectStrategy.js' ;
 
 /**
- * This object defines a listener definition in an object definition.
- * @param dispatcher The dispatcher expression reference of the listener.
- * @param type type name of the event dispatched by the dispatcher of this listener.
- * @param method The name of the method to invoke when the event is handle.
- * @param useCapture Determinates if the event flow use capture or not.
- * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * The basic Inversion of Control container/factory class.
  * @example
+ * var Point = function( x , y )
+ * {
+ *     this.x = x ;
+ *     this.y = y ;
+ *     console.log("constructor:" + this.toString() ) ;
+ * };
+ *
+ * Point.prototype.test = function( message = null )
+ * {
+ *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+ * }
+ *
+ * Point.prototype.toString = function()
+ * {
+ *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+ * } ;
+ *
  * var ObjectFactory = system.ioc.ObjectFactory ;
  *
  * var factory = new ObjectFactory();
@@ -59,33 +71,31 @@ import { ObjectStrategy } from './ObjectStrategy.js' ;
  *
  * var objects =
  * [
- *  {
- *      id   : "position" ,
- *      type : "Point" ,
- *      args : [ { value : 2 } , { ref : 'origin.y' }],
- *      properties :
- *      [
- *          { name : "x" , ref   :'origin.x' } ,
- *          { name : "y" , value : 100       }
- *      ]
- *  },
- *  {
- *      id         : "origin" ,
- *      type       : "Point" ,
- *      singleton  : true ,
- *      args       : [ { config : 'origin.x' } , { value : 20 }] ,
- *      properties :
- *      [
- *          { name : 'test' , args : [ { locale : 'messages.test' } ] }
- *      ]
- *  }
+ *     {
+ *         id   : "position" ,
+ *         type : "Point" ,
+ *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         properties :
+ *         [
+ *             { name : "x" , ref   :'origin.x' } ,
+ *             { name : "y" , value : 100       }
+ *         ]
+ *     },
+ *     {
+ *         id         : "origin" ,
+ *         type       : "Point" ,
+ *         singleton  : true ,
+ *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *         properties :
+ *         [
+ *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *         ]
+ *     }
  * ];
  *
  * factory.run( objects );
  *
- * var pos = factory.getObject('position') ;
- *
- * trace( pos ) ;
+ * trace( factory.getObject('position') ) ;
  */
 export function ObjectFactory( config /*ObjectConfig*/ = null , objects /*Array*/ = null )
 {
@@ -529,7 +539,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             factoryMethod = strategy ;
 
             name = factoryMethod.name ;
-            args = this.createArguments( factoryMethod.arguments ) ;
+            args = this.createArguments( factoryMethod.args ) ;
 
             if ( factoryMethod instanceof ObjectStaticFactoryMethod )
             {

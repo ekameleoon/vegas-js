@@ -9,7 +9,7 @@ import { createArguments } from '../builders/createArguments.js' ;
  * This object create a static proxy factory configured in the ObjectDefinition and replace the natural factory of the ObjectFactory.
  * @param type The type of the static class use to create the object with a static method.
  * @param name The name of the static method to invoke to create the object.
- * @param arguments The array of the arguments to passed-in the factory method.
+ * @param args The array representation of allt the arguments to call with the object method.
  */
 export function ObjectStaticFactoryMethod( type /*String*/ , name /*String*/ , args /*Array*/ )
 {

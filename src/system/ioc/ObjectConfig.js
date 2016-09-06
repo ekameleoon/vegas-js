@@ -54,6 +54,11 @@ export function ObjectConfig( init )
         defaultInitMethod : { value : null , writable : true , enumerable : true } ,
 
         /**
+         * The optional domain used in the factory to creates the objects (by default use core.global if this property is not defined).
+         */
+        domain : { value : null , writable : true , enumerable : true } ,
+
+        /**
          * Indicates if the singleton objects in the ObjectFactory are identifiy if the type of the object implements the Identifiable interface.
          */
         identify : { value : false , writable : true , enumerable : true } ,

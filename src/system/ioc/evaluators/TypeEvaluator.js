@@ -105,7 +105,7 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
 
             try
             {
-                var func = getDefinitionByName(type) ;
+                var func = getDefinitionByName( type , config.domain ) ;
                 if( func instanceof Function )
                 {
                     return func ;
