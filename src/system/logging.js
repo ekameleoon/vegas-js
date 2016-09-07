@@ -4,7 +4,7 @@ import '../polyfill.js' ;
 
 import { isLoggable } from './logging/Loggable.js' ;
 
-import { Log }           from './logging/LoggerFactory.js' ;
+import { Log }           from './logging/Log.js' ;
 import { Loggable }      from './logging/Loggable.js' ;
 import { Logger }        from './logging/Logger.js' ;
 import { LoggerEntry }   from './logging/LoggerEntry.js' ;

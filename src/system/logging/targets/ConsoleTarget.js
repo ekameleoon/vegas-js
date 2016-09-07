@@ -1,6 +1,5 @@
 "use strict" ;
 
-import { trace } from '../../../trace.js' ;
 import { LoggerLevel } from '../LoggerLevel.js' ;
 import { LineFormattedTarget } from './LineFormattedTarget.js' ;
 

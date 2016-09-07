@@ -1,5 +1,5 @@
 "use strict" ;
 
-import { Log } from '../logging/LoggerFactory.js' ;
+import { Log } from '../logging/Log.js' ;
 
 export var logger = Log.getLogger( "system.ioc.logger" ) ;

@@ -195,10 +195,12 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
             {
                 this._afterReceivers  = [] ;
                 this._beforeReceivers = [] ;
+
                 if ( ar === null || !(ar instanceof Array) )
                 {
                     return ;
                 }
+
                 var r /*ObjectReceiver*/ ;
                 var l = ar.length ;
                 if ( l > 0 )
@@ -221,7 +223,6 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
                 }
             }
         },
-
 
         /**
          * Indicates if the object in a Sigleton else the object is a prototype (read only, use the scope property to change it).

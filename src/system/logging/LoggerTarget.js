@@ -2,7 +2,8 @@
 
 import { fastformat }         from '../../core/strings/fastformat.js' ;
 import { InvalidFilterError } from '../errors/InvalidFilterError.js' ;
-import { Log }                from './LoggerFactory.js' ;
+
+import { Log }                from './Log.js' ;
 import { Logger }             from './Logger.js' ;
 import { LoggerEntry }        from './LoggerEntry.js' ;
 import { LoggerFactory }      from './LoggerFactory.js' ;

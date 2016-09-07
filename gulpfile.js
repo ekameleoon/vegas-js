@@ -38,32 +38,33 @@ var globals =
 gulp.task('vegas-compile', function( done )
 {
     pump
-    ([
-        gulp.src( sources ) ,
-        rollup
-        ({
-            moduleName : name ,
-            entry      : entry ,
-            banner     : '/* VEGAS version ' + version + ' */' ,
-            footer     : '/* follow me on Twitter! @ekameleon */' ,
-            format     : 'umd' ,
-            sourceMap  : true ,
-            useStrict  : true ,
-            globals    : globals,
-            plugins :
-            [
-                babel
-                ({
-                    babelrc : true ,
-                    presets : [ 'es2015-rollup' ],
-                    exclude : 'node_modules/**'
-                })
-            ]
-        }),
-        rename( name + '.js' ),
-        gulp.dest( output )
-    ],
-    done
+    (
+        [
+            gulp.src( sources ) ,
+            rollup
+            ({
+                moduleName : name ,
+                entry      : entry ,
+                banner     : '/* VEGAS version ' + version + ' */' ,
+                footer     : '/* follow me on Twitter! @ekameleon */' ,
+                format     : 'umd' ,
+                sourceMap  : true ,
+                useStrict  : true ,
+                globals    : globals,
+                plugins :
+                [
+                    babel
+                    ({
+                        babelrc : false ,
+                        presets : [ 'es2015-rollup' ],
+                        exclude : 'node_modules/**'
+                    })
+                ]
+            }),
+            rename( name + '.js' ),
+            gulp.dest( output )
+        ],
+        done
     );
 });
 

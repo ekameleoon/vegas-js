@@ -167,19 +167,22 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
     {
         value : function( message , level /*String*/ , channel /*String*/ , date /*Date*/ ) /*String*/
         {
-            var msg /*String*/ = "" ;
-            var d /*Date*/ = date || new Date() ;
+            var msg = "" ;
             if (this.includeLines)
             {
                 msg += this.formatLines() + this.separator ;
             }
-            if (this.includeDate)
+            if( this.includeDate || this.includeTime )
             {
-                msg += this.formatDate(d) + this.separator ;
-            }
-            if (this.includeTime)
-            {
-                msg += this.formatTime(d) + this.separator ;
+                date = date || new Date() ;
+                if (this.includeDate)
+                {
+                    msg += this.formatDate(date) + this.separator ;
+                }
+                if (this.includeTime)
+                {
+                    msg += this.formatTime(date) + this.separator ;
+                }
             }
             if (this.includeLevel)
             {
@@ -189,7 +192,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
             {
                 msg += ( channel || "" ) + this.separator ;
             }
-            msg += message.toString() ;
+            msg += message ;
             return msg ;
         }
     },

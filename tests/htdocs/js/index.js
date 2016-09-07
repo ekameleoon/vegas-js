@@ -1,23 +1,6 @@
 /* globals vegas */
 "use strict" ;
 
-var Point = function( x , y )
-{
-    this.x = x ;
-    this.y = y ;
-    console.log("constructor:" + this.toString() ) ;
-};
-
-Point.prototype.test = function( message = null )
-{
-    console.log( 'test:' + this.toString() + " message:" + message ) ;
-}
-
-Point.prototype.toString = function()
-{
-    return "[Point x:" + this.x + " y:" + this.y + "]" ;
-} ;
-
 if( !vegas )
 {
     throw new Error("The VEGAS library is not found.") ;
@@ -47,7 +30,45 @@ target.level   = LoggerLevel.ALL ;
 
 var logger = Log.getLogger('channel') ;
 
-logger.info('hello info');
+logger.info('---------- Start Example');
+
+// -----------------------
+
+var Point = function( x , y )
+{
+    this.x = x ;
+    this.y = y ;
+    logger.debug( this + ' constructor invoked') ;
+};
+
+Point.prototype.test = function( message = null )
+{
+    logger.info( this + ' test message: ' + message ) ;
+}
+
+Point.prototype.toString = function()
+{
+    return "[Point x:" + this.x + " y:" + this.y + "]" ;
+} ;
+
+// -----------------------
+
+var Slot = function()
+{
+    logger.debug( this + ' constructor invoked') ;
+}
+
+Slot.prototype = Object.create( system.signals.Receiver.prototype ,
+{
+    constructor : { value : Slot } ,
+    receive     : { value : function( message )
+    {
+        logger.info( 'slot receive ' + (message || 'an unknow message...') ) ;
+    }},
+    toString : { value : function() { return '[Slot]' ; } }
+})
+
+// -----------------------
 
 var ObjectFactory = system.ioc.ObjectFactory ;
 
@@ -72,16 +93,25 @@ config.setLocaleTarget({
 var objects =
 [
     {
-        id   : "signal" ,
-        type : "system.signals.Signal" ,
-        properties :
-        [
-        ]
+        id        : "signal" ,
+        type      : "system.signals.Signal" ,
+        dependsOn : [ 'slot' ] ,
+        singleton : true ,
+        lazyInit  : true
+    },
+    {
+        id        : "slot" ,
+        type      : "Slot" ,
+        singleton : true ,
+        lazyInit  : true ,
+        receivers : [ { signal : "signal" } ]
     },
     {
         id   : "position" ,
         type : "Point" ,
         args : [ { value : 2 } , { ref : 'origin.y' }],
+        sigleton   : true ,
+        lazyInit   : true ,
         properties :
         [
             { name : "x" , ref   :'origin.x' } ,
@@ -92,6 +122,7 @@ var objects =
         id         : "origin" ,
         type       : "Point" ,
         singleton  : true ,
+        lazyInit   : true ,
         args       : [ { config : 'origin.x' } , { value : 20 }] ,
         properties :
         [
@@ -102,6 +133,17 @@ var objects =
 
 factory.run( objects );
 
-console.log( factory.getObject('position') ) ;
-console.log( factory.getObject('signal') ) ;
-//logger.info( pos ) ;
+logger.info( factory.getObject('position') ) ;
+
+var signal = factory.getObject('signal') ;
+if( signal )
+{
+    signal.emit( 'hello world' ) ;
+}
+else
+{
+    logger.warning( 'The slot reference not must be null or undefined.' );
+}
+
+logger.warning( undefined ) ;
+logger.warning( null ) ;

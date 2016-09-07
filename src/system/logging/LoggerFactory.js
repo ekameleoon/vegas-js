@@ -348,7 +348,3 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
         }
     }
 });
-
-/////////////////
-
-export var Log = new LoggerFactory() ;

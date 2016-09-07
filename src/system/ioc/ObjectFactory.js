@@ -257,13 +257,27 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                             instance.lock() ;
                         }
 
-                        this.registerListeners( instance , definition.beforeListeners ) ;
-                        this.registerReceivers( instance , definition.beforeReceivers ) ;
+                        if( (definition.beforeListeners instanceof Array) && (definition.beforeListeners.length > 0) )
+                        {
+                            this.registerListeners( instance , definition.beforeListeners ) ;
+                        }
+
+                        if( (definition.beforeReceivers instanceof Array) && (definition.beforeReceivers.length > 0) )
+                        {
+                            this.registerReceivers( instance , definition.beforeReceivers ) ;
+                        }
 
                         this.populateProperties( instance , definition ) ; // init properties
 
-                        this.registerListeners( instance , definition.afterListeners ) ;
-                        this.registerReceivers( instance , definition.afterReceivers ) ;
+                        if( (definition.afterListeners instanceof Array) && (definition.afterListeners.length > 0) )
+                        {
+                            this.registerListeners( instance , definition.afterListeners ) ;
+                        }
+
+                        if( (definition.afterReceivers instanceof Array) && (definition.afterReceivers.length > 0) )
+                        {
+                            this.registerReceivers( instance , definition.afterReceivers ) ;
+                        }
 
                         if ( flag )
                         {
@@ -603,20 +617,16 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     dependsOn : { value : function( definition /*ObjectDefinition*/ )
     {
-        if ( (definition instanceof ObjectDefinition) && definition.dependsOn !== null )
+        if ( (definition instanceof ObjectDefinition) && (definition.dependsOn instanceof Array) && (definition.dependsOn.length > 0 ) )
         {
             var id ;
-            var ar = definition.dependsOn ;
-            var len = ar.length ;
-            if ( len > 0 )
+            var len = definition.dependsOn.length ;
+            for ( var i = 0 ; i<len ; i++ )
             {
-                for ( var i = 0 ; i<len ; i++ )
+                id = definition.dependsOn[i] ;
+                if ( this.hasObjectDefinition(id) )
                 {
-                    id = ar[i] ;
-                    if ( this.hasObjectDefinition(id))
-                    {
-                        this.getObject(id) ; // not keep in memory
-                    }
+                    this.getObject(id) ; // not keep in memory
                 }
             }
         }
@@ -921,43 +931,42 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     registerReceivers : { value : function( o , receivers /*Array*/ = null )
     {
-        if ( o === null || receivers === null )
+        if ( !(receivers instanceof Array) || (receivers.length === 0) )
         {
             return ;
         }
-        var size = receivers.length ;
-        if ( size > 0 )
+
+        var slot , signaler , receiver ;
+        var len = receivers.length ;
+
+        for (var i = 0 ; i<len ; i++ )
         {
-            var signaler ;
-            var receiver ;
-            var slot ;
-            for (var i = 0 ; i<size ; i++ )
+            try
             {
-                try
+                receiver = receivers[i] ;
+                signaler = this._config.referenceEvaluator.eval( receiver.signal ) ;
+                slot     = null ;
+
+                if ( signaler instanceof Signaler )
                 {
-                    receiver = receivers[i] ;
-                    signaler = this._config.referenceEvaluator.eval( receiver.signal ) ;
-                    slot     = null ;
-                    if ( signaler instanceof Signaler )
+                    if ( (receiver.slot instanceof String || typeof(receiver.slot) === 'string') && (receiver.slot in o) && ( o[receiver.slot] instanceof Function ) )
                     {
-                        if ( o.hasOwnProperty(receiver.slot) && ( o[receiver.slot] instanceof Function ) )
-                        {
-                            slot = o[receiver.slot] ;
-                        }
-                        else if ( o instanceof Receiver )
-                        {
-                            slot = o.receive ;
-                        }
-                        if ( slot !== null )
-                        {
-                            signaler.connect( slot , receiver.priority, receiver.autoDisconnect ) ;
-                        }
+                        slot = o[receiver.slot] ;
+                    }
+                    else if ( o instanceof Receiver )
+                    {
+                        slot = o.receive ;
+                    }
+
+                    if ( (slot instanceof Receiver) || (slot instanceof Function) )
+                    {
+                        signaler.connect( slot , receiver.priority, receiver.autoDisconnect ) ;
                     }
                 }
-                catch( e )
-                {
-                    this.warn( this + " registerReceivers failed with the target '" + o + "' , in the collection of this receivers at {" + i + "} : " + e.toString() ) ;
-                }
+            }
+            catch( e )
+            {
+                this.warn( this + " registerReceivers failed with the target '" + o + "' , in the collection of this receivers at {" + i + "} : " + e.toString() ) ;
             }
         }
     }}

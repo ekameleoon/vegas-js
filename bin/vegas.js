@@ -6247,8 +6247,6 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     }
 });
 
-/////////////////
-
 var Log = new LoggerFactory();
 
 var logger = Log.getLogger("system.ioc.logger");
@@ -7866,9 +7864,11 @@ function ObjectDefinition(id, type) {
             set: function set(ar) {
                 this._afterReceivers = [];
                 this._beforeReceivers = [];
+
                 if (ar === null || !(ar instanceof Array)) {
                     return;
                 }
+
                 var r /*ObjectReceiver*/;
                 var l = ar.length;
                 if (l > 0) {
@@ -8007,7 +8007,7 @@ function createObjectDefinition(o) /*ObjectDefinition*/
         definition.scope = o[ObjectAttribute.OBJECT_SCOPE];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.OBJECT_DEPENDS_ON) && o[ObjectAttribute.OBJECT_DEPENDS_ON] instanceof Array) {
+    if (ObjectAttribute.OBJECT_DEPENDS_ON in o && o[ObjectAttribute.OBJECT_DEPENDS_ON] instanceof Array) {
         definition.dependsOn = o[ObjectAttribute.OBJECT_DEPENDS_ON];
     }
 
@@ -8744,13 +8744,23 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                             instance.lock();
                         }
 
-                        this.registerListeners(instance, definition.beforeListeners);
-                        this.registerReceivers(instance, definition.beforeReceivers);
+                        if (definition.beforeListeners instanceof Array && definition.beforeListeners.length > 0) {
+                            this.registerListeners(instance, definition.beforeListeners);
+                        }
+
+                        if (definition.beforeReceivers instanceof Array && definition.beforeReceivers.length > 0) {
+                            this.registerReceivers(instance, definition.beforeReceivers);
+                        }
 
                         this.populateProperties(instance, definition); // init properties
 
-                        this.registerListeners(instance, definition.afterListeners);
-                        this.registerReceivers(instance, definition.afterReceivers);
+                        if (definition.afterListeners instanceof Array && definition.afterListeners.length > 0) {
+                            this.registerListeners(instance, definition.afterListeners);
+                        }
+
+                        if (definition.afterReceivers instanceof Array && definition.afterReceivers.length > 0) {
+                            this.registerReceivers(instance, definition.afterReceivers);
+                        }
 
                         if (flag) {
                             instance.unlock();
@@ -9036,16 +9046,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * <p>All objects in the dependsOn collection are initialized before the initialization of the current object build in the factory.</p>
      */
     dependsOn: { value: function value(definition /*ObjectDefinition*/) {
-            if (definition instanceof ObjectDefinition && definition.dependsOn !== null) {
+            if (definition instanceof ObjectDefinition && definition.dependsOn instanceof Array && definition.dependsOn.length > 0) {
                 var id;
-                var ar = definition.dependsOn;
-                var len = ar.length;
-                if (len > 0) {
-                    for (var i = 0; i < len; i++) {
-                        id = ar[i];
-                        if (this.hasObjectDefinition(id)) {
-                            this.getObject(id); // not keep in memory
-                        }
+                var len = definition.dependsOn.length;
+                for (var i = 0; i < len; i++) {
+                    id = definition.dependsOn[i];
+                    if (this.hasObjectDefinition(id)) {
+                        this.getObject(id); // not keep in memory
                     }
                 }
             }
@@ -9293,32 +9300,32 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     registerReceivers: { value: function value(o) {
             var receivers /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-            if (o === null || receivers === null) {
+            if (!(receivers instanceof Array) || receivers.length === 0) {
                 return;
             }
-            var size = receivers.length;
-            if (size > 0) {
-                var signaler;
-                var receiver;
-                var slot;
-                for (var i = 0; i < size; i++) {
-                    try {
-                        receiver = receivers[i];
-                        signaler = this._config.referenceEvaluator.eval(receiver.signal);
-                        slot = null;
-                        if (signaler instanceof Signaler) {
-                            if (o.hasOwnProperty(receiver.slot) && o[receiver.slot] instanceof Function) {
-                                slot = o[receiver.slot];
-                            } else if (o instanceof Receiver) {
-                                slot = o.receive;
-                            }
-                            if (slot !== null) {
-                                signaler.connect(slot, receiver.priority, receiver.autoDisconnect);
-                            }
+
+            var slot, signaler, receiver;
+            var len = receivers.length;
+
+            for (var i = 0; i < len; i++) {
+                try {
+                    receiver = receivers[i];
+                    signaler = this._config.referenceEvaluator.eval(receiver.signal);
+                    slot = null;
+
+                    if (signaler instanceof Signaler) {
+                        if ((receiver.slot instanceof String || typeof receiver.slot === 'string') && receiver.slot in o && o[receiver.slot] instanceof Function) {
+                            slot = o[receiver.slot];
+                        } else if (o instanceof Receiver) {
+                            slot = o.receive;
                         }
-                    } catch (e) {
-                        this.warn(this + " registerReceivers failed with the target '" + o + "' , in the collection of this receivers at {" + i + "} : " + e.toString());
+
+                        if (slot instanceof Receiver || slot instanceof Function) {
+                            signaler.connect(slot, receiver.priority, receiver.autoDisconnect);
+                        }
                     }
+                } catch (e) {
+                    this.warn(this + " registerReceivers failed with the target '" + o + "' , in the collection of this receivers at {" + i + "} : " + e.toString());
                 }
             }
         } }
@@ -10228,16 +10235,18 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
     formatMessage: {
         value: function value(message, level /*String*/, channel /*String*/, date /*Date*/) /*String*/
         {
-            var msg /*String*/ = "";
-            var d /*Date*/ = date || new Date();
+            var msg = "";
             if (this.includeLines) {
                 msg += this.formatLines() + this.separator;
             }
-            if (this.includeDate) {
-                msg += this.formatDate(d) + this.separator;
-            }
-            if (this.includeTime) {
-                msg += this.formatTime(d) + this.separator;
+            if (this.includeDate || this.includeTime) {
+                date = date || new Date();
+                if (this.includeDate) {
+                    msg += this.formatDate(date) + this.separator;
+                }
+                if (this.includeTime) {
+                    msg += this.formatTime(date) + this.separator;
+                }
             }
             if (this.includeLevel) {
                 msg += this.formatLevel(level || "") + this.separator;
@@ -10245,7 +10254,7 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
             if (this.includeChannel) {
                 msg += (channel || "") + this.separator;
             }
-            msg += message.toString();
+            msg += message;
             return msg;
         }
     },

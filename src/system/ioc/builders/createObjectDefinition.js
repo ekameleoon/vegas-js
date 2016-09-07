@@ -59,7 +59,7 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         definition.scope = o[ ObjectAttribute.OBJECT_SCOPE ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_DEPENDS_ON) && (o[ ObjectAttribute.OBJECT_DEPENDS_ON ] instanceof Array) )
+    if( (ObjectAttribute.OBJECT_DEPENDS_ON in o) && ( o[ ObjectAttribute.OBJECT_DEPENDS_ON ] instanceof Array ) )
     {
         definition.dependsOn = o[ ObjectAttribute.OBJECT_DEPENDS_ON ] ;
     }
