@@ -16,6 +16,8 @@ Under tree licences : **MPL 1.1/GPL 2.0/LGPL 2.1**
 
 #### npm ####
 
+You can install VEGAS with [https://www.npmjs.com/package/vegas-js](NPM).
+
 ```
 #!shell
 npm install vegas-js --save-dev
