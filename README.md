@@ -4,13 +4,13 @@ Vegas is an opensource framework based on ECMAScript and ActionScript.
 
 This repository contains the Javascript version of the framework.
 
-### Licences ###
+### Licenses ###
 
-Under tree licences : **MPL 1.1/GPL 2.0/LGPL 2.1**
+Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
 
- * Licence MPL 1.1 : http://www.mozilla.org/MPL/MPL-1.1.html
- * Licence GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
- * Licence LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
+ * License MPL 1.1 : http://www.mozilla.org/MPL/MPL-1.1.html
+ * License GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
+ * License LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
 
 ### Install ###
 
