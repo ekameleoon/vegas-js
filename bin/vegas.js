@@ -86,6 +86,317 @@ function trace(context) {
 }
 
 /**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    indent = isNaN(indent) ? 0 : indent;
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    var source /*Array*/ = [];
+
+    var i /*int*/;
+    var l /*int*/ = value.length;
+
+    for (i = 0; i < l; i++) {
+        if (value[i] === undefined) {
+            source.push("undefined");
+            continue;
+        }
+        if (value[i] === null) {
+            source.push("null");
+            continue;
+        }
+        if (prettyprint) {
+            indent++;
+        }
+        source.push(dump(value[i], prettyprint, indent, indentor));
+        if (prettyprint) {
+            indent--;
+        }
+    }
+    if (prettyprint) {
+        var spaces /*Array*/ = [];
+        for (i = 0; i < indent; i++) {
+            spaces.push(indentor);
+        }
+        var decal /*String*/ = "\n" + spaces.join("");
+        return decal + "[" + decal + indentor + source.join("," + decal + indentor) + decal + "]";
+    } else {
+        return "[" + source.join(",") + "]";
+    }
+}
+
+/**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+
+function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
+{
+    timestamp = Boolean(timestamp);
+    if (timestamp) {
+        return "new Date(" + String(date.valueOf()) + ")";
+    } else {
+        var y = date.getFullYear();
+        var m = date.getMonth();
+        var d = date.getDate();
+        var h = date.getHours();
+        var mn = date.getMinutes();
+        var s = date.getSeconds();
+        var ms = date.getMilliseconds();
+        var data = [y, m, d, h, mn, s, ms];
+        data.reverse();
+        while (data[0] === 0) {
+            data.splice(0, 1);
+        }
+        data.reverse();
+        return "new Date(" + data.join(",") + ")";
+    }
+}
+
+/**
+ * Dumps a string representation of an object.
+ * @param value an object
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ */
+function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    ///////////
+
+    indent = isNaN(indent) ? 0 : indent;
+
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    ///////////
+
+    var source /*Array*/ = [];
+
+    for (var member /*String*/ in value) {
+        if (value.hasOwnProperty(member)) {
+            if (value[member] === undefined) {
+                source.push(member + ":" + "undefined");
+                continue;
+            }
+
+            if (value[member] === null) {
+                source.push(member + ":" + "null");
+                continue;
+            }
+
+            if (prettyprint) {
+                indent++;
+            }
+
+            source.push(member + ":" + dump(value[member], prettyprint, indent, indentor));
+
+            if (prettyprint) {
+                indent--;
+            }
+        }
+    }
+    source = source.sort();
+    if (prettyprint) {
+        var spaces /*Array*/ = [];
+        for (var i /*int*/; i < indent; i++) {
+            spaces.push(indentor);
+        }
+
+        var decal /*String*/ = "\n" + spaces.join("");
+        return decal + "{" + decal + indentor + source.join("," + decal + indentor) + decal + "}";
+    } else {
+        return "{" + source.join(",") + "}";
+    }
+}
+
+/**
+ * Returns the unicode string notation of the specified numeric value.
+ * @return the unicode string notation of the specified numeric value.
+ */
+
+function toUnicodeNotation(num) {
+    var hex = num.toString(16);
+    while (hex.length < 4) {
+        hex = "0" + hex;
+    }
+    return hex;
+}
+
+/**
+ * Dumps a string representation of any String value.
+ * @param str a String to transform.
+ * @return The dump string representation of any String value.
+ */
+function dumpString(value /*String*/) /*String*/
+{
+    var code /*int*/;
+    var quote /*String*/ = "\"";
+    var str /*String*/ = "";
+    var ch /*String*/ = "";
+    var pos /*int*/ = 0;
+    var len /*int*/ = value.length;
+    while (pos < len) {
+        ch = value.charAt(pos);
+        code = value.charCodeAt(pos);
+        if (code > 0xFF) {
+            str += "\\u" + toUnicodeNotation(code);
+            pos++;
+            continue;
+        }
+        switch (ch) {
+            case "\b":
+                // backspace
+                {
+                    str += "\\b";
+                    break;
+                }
+            case "\t":
+                // horizontal tab
+                {
+                    str += "\\t";
+                    break;
+                }
+            case "\n":
+                // line feed
+                {
+                    str += "\\n";
+                    break;
+                }
+            case "\u000b":
+                // vertical tab /* TODO: check the VT bug */
+                {
+                    str += "\\v"; //str += "\\u000B" ;
+                    break;
+                }
+            case "\f":
+                // form feed
+                {
+                    str += "\\f";
+                    break;
+                }
+            case "\r":
+                // carriage return
+                {
+                    str += "\\r";
+                    break;
+                }
+            case "\"":
+                // double quote
+                {
+                    str += "\\\"";
+                    break;
+                }
+            case "'":
+                // single quote
+                {
+                    str += "\\\'";
+                    break;
+                }
+            case "\\":
+                // backslash
+                {
+                    str += "\\\\";
+                    break;
+                }
+            default:
+                {
+                    str += ch;
+                }
+        }
+        pos++;
+    }
+    return quote + str + quote;
+}
+
+/**
+ * Dumps a string representation of any Array reference.
+ * @param value an Array to dump.
+ * @param prettyprint (optional) boolean option to output a pretty printed string
+ * @param indent (optional) initial indentation
+ * @param indentor (optional) initial string used for the indent
+ * @return The dump string representation of any Array reference.
+ */
+function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
+{
+    ///////////
+
+    indent = isNaN(indent) ? 0 : indent;
+
+    prettyprint = Boolean(prettyprint);
+
+    if (!indentor) {
+        indentor = "    ";
+    }
+
+    ///////////
+
+    if (o === undefined) {
+        return "undefined";
+    } else if (o === null) {
+        return "null";
+    } else if (typeof o === "string" || o instanceof String) {
+        return dumpString(o);
+    } else if (typeof o === "boolean" || o instanceof Boolean) {
+        return o ? "true" : "false";
+    } else if (typeof o === "number" || o instanceof Number) {
+        return o.toString();
+    } else if (o instanceof Date) {
+        return dumpDate(o);
+    } else if (o instanceof Array) {
+        return dumpArray(o, prettyprint, indent, indentor);
+    } else if (o.constructor && o.constructor === Object) {
+        return dumpObject(o, prettyprint, indent, indentor);
+    } else if ("toSource" in o) {
+        return o.toSource(indent);
+    } else {
+        return "<unknown>";
+    }
+}
+
+/**
+ * Indicates if the specific object is a Boolean.
+ */
+
+function isBoolean(o) {
+  return typeof o === 'boolean' || o instanceof Boolean;
+}
+
+/**
+ * Indicates if the specific object is a Number.
+ */
+
+function isNumber(o) {
+  return typeof o === 'number' || o instanceof Number;
+}
+
+/**
+ * Indicates if the specific object is a String.
+ */
+
+function isString(o) {
+  return typeof o === 'string' || o instanceof String;
+}
+
+/**
  * Determines whether the specified object exists as an element in an Array object.
  * <p><b>Example :</b></p>
  * <pre class="prettyprint">
@@ -663,293 +974,6 @@ var chars = Object.assign({
     isUnicode: isUnicode,
     isUpper: isUpper
 });
-
-/**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    indent = isNaN(indent) ? 0 : indent;
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    var source /*Array*/ = [];
-
-    var i /*int*/;
-    var l /*int*/ = value.length;
-
-    for (i = 0; i < l; i++) {
-        if (value[i] === undefined) {
-            source.push("undefined");
-            continue;
-        }
-        if (value[i] === null) {
-            source.push("null");
-            continue;
-        }
-        if (prettyprint) {
-            indent++;
-        }
-        source.push(dump(value[i], prettyprint, indent, indentor));
-        if (prettyprint) {
-            indent--;
-        }
-    }
-    if (prettyprint) {
-        var spaces /*Array*/ = [];
-        for (i = 0; i < indent; i++) {
-            spaces.push(indentor);
-        }
-        var decal /*String*/ = "\n" + spaces.join("");
-        return decal + "[" + decal + indentor + source.join("," + decal + indentor) + decal + "]";
-    } else {
-        return "[" + source.join(",") + "]";
-    }
-}
-
-/**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-
-function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
-{
-    timestamp = Boolean(timestamp);
-    if (timestamp) {
-        return "new Date(" + String(date.valueOf()) + ")";
-    } else {
-        var y = date.getFullYear();
-        var m = date.getMonth();
-        var d = date.getDate();
-        var h = date.getHours();
-        var mn = date.getMinutes();
-        var s = date.getSeconds();
-        var ms = date.getMilliseconds();
-        var data = [y, m, d, h, mn, s, ms];
-        data.reverse();
-        while (data[0] === 0) {
-            data.splice(0, 1);
-        }
-        data.reverse();
-        return "new Date(" + data.join(",") + ")";
-    }
-}
-
-/**
- * Dumps a string representation of an object.
- * @param value an object
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- */
-function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    ///////////
-
-    indent = isNaN(indent) ? 0 : indent;
-
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    ///////////
-
-    var source /*Array*/ = [];
-
-    for (var member /*String*/ in value) {
-        if (value.hasOwnProperty(member)) {
-            if (value[member] === undefined) {
-                source.push(member + ":" + "undefined");
-                continue;
-            }
-
-            if (value[member] === null) {
-                source.push(member + ":" + "null");
-                continue;
-            }
-
-            if (prettyprint) {
-                indent++;
-            }
-
-            source.push(member + ":" + dump(value[member], prettyprint, indent, indentor));
-
-            if (prettyprint) {
-                indent--;
-            }
-        }
-    }
-    source = source.sort();
-    if (prettyprint) {
-        var spaces /*Array*/ = [];
-        for (var i /*int*/; i < indent; i++) {
-            spaces.push(indentor);
-        }
-
-        var decal /*String*/ = "\n" + spaces.join("");
-        return decal + "{" + decal + indentor + source.join("," + decal + indentor) + decal + "}";
-    } else {
-        return "{" + source.join(",") + "}";
-    }
-}
-
-/**
- * Returns the unicode string notation of the specified numeric value.
- * @return the unicode string notation of the specified numeric value.
- */
-
-function toUnicodeNotation(num) {
-    var hex = num.toString(16);
-    while (hex.length < 4) {
-        hex = "0" + hex;
-    }
-    return hex;
-}
-
-/**
- * Dumps a string representation of any String value.
- * @param str a String to transform.
- * @return The dump string representation of any String value.
- */
-function dumpString(value /*String*/) /*String*/
-{
-    var code /*int*/;
-    var quote /*String*/ = "\"";
-    var str /*String*/ = "";
-    var ch /*String*/ = "";
-    var pos /*int*/ = 0;
-    var len /*int*/ = value.length;
-    while (pos < len) {
-        ch = value.charAt(pos);
-        code = value.charCodeAt(pos);
-        if (code > 0xFF) {
-            str += "\\u" + toUnicodeNotation(code);
-            pos++;
-            continue;
-        }
-        switch (ch) {
-            case "\b":
-                // backspace
-                {
-                    str += "\\b";
-                    break;
-                }
-            case "\t":
-                // horizontal tab
-                {
-                    str += "\\t";
-                    break;
-                }
-            case "\n":
-                // line feed
-                {
-                    str += "\\n";
-                    break;
-                }
-            case "\u000b":
-                // vertical tab /* TODO: check the VT bug */
-                {
-                    str += "\\v"; //str += "\\u000B" ;
-                    break;
-                }
-            case "\f":
-                // form feed
-                {
-                    str += "\\f";
-                    break;
-                }
-            case "\r":
-                // carriage return
-                {
-                    str += "\\r";
-                    break;
-                }
-            case "\"":
-                // double quote
-                {
-                    str += "\\\"";
-                    break;
-                }
-            case "'":
-                // single quote
-                {
-                    str += "\\\'";
-                    break;
-                }
-            case "\\":
-                // backslash
-                {
-                    str += "\\\\";
-                    break;
-                }
-            default:
-                {
-                    str += ch;
-                }
-        }
-        pos++;
-    }
-    return quote + str + quote;
-}
-
-/**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
- */
-function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    ///////////
-
-    indent = isNaN(indent) ? 0 : indent;
-
-    prettyprint = Boolean(prettyprint);
-
-    if (!indentor) {
-        indentor = "    ";
-    }
-
-    ///////////
-
-    if (o === undefined) {
-        return "undefined";
-    } else if (o === null) {
-        return "null";
-    } else if (typeof o === "string" || o instanceof String) {
-        return dumpString(o);
-    } else if (typeof o === "boolean" || o instanceof Boolean) {
-        return o ? "true" : "false";
-    } else if (typeof o === "number" || o instanceof Number) {
-        return o.toString();
-    } else if (o instanceof Date) {
-        return dumpDate(o);
-    } else if (o instanceof Array) {
-        return dumpArray(o, prettyprint, indent, indentor);
-    } else if (o.constructor && o.constructor === Object) {
-        return dumpObject(o, prettyprint, indent, indentor);
-    } else if ("toSource" in o) {
-        return o.toSource(indent);
-    } else {
-        return "<unknown>";
-    }
-}
 
 /**
  * This constant change radians to degrees : <b>180/Math.PI</b>.
@@ -3107,6 +3131,11 @@ var strings = Object.assign({
 var core = Object.assign({
     global: global,
     dump: dump,
+
+    isBoolean: isBoolean,
+    isNumber: isNumber,
+    isString: isString,
+
     arrays: arrays,
     chars: chars,
     maths: maths,
@@ -3266,7 +3295,7 @@ Formattable.prototype.format = function (value) /*String*/
 
 function isIdentifiable(target) {
   if (target) {
-    return target.hasOwnProperty('id');
+    return target instanceof Identifiable || 'id' in target;
   }
 
   return false;
@@ -4886,7 +4915,7 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     format: {
         value: function value(_value) /*String*/
         {
-            return this._format(_value.toString(), 0);
+            return this._format(String(_value), 0);
         }
     },
 
@@ -6932,7 +6961,7 @@ function createListeners(factory) /*Array*/
 
     if (factory instanceof Array) {
         a = factory;
-    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_LISTENERS) && factory[ObjectAttribute.OBJECT_LISTENERS] instanceof Array) {
+    } else if (ObjectAttribute.OBJECT_LISTENERS in factory && factory[ObjectAttribute.OBJECT_LISTENERS] instanceof Array) {
         a = factory[ObjectAttribute.OBJECT_LISTENERS];
     }
 
@@ -6951,18 +6980,18 @@ function createListeners(factory) /*Array*/
 
     for (var i = 0; i < len; i++) {
         def = a[i];
-        if (def !== null && def.hasOwnProperty(ObjectListener.DISPATCHER) && def.hasOwnProperty(ObjectListener.TYPE)) {
+        if (def !== null && ObjectListener.DISPATCHER in def && ObjectListener.TYPE in def) {
             dispatcher = def[ObjectListener.DISPATCHER];
-            if (dispatcher === null || dispatcher.length === 0) {
+            if (!(dispatcher instanceof String || typeof dispatcher === 'string') || dispatcher.length === 0) {
                 continue;
             }
             type = def[ObjectListener.TYPE];
-            if (type === null || type.length === 0) {
+            if (!(type instanceof String || typeof type === 'string') || type.length === 0) {
                 continue;
             }
             listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
         } else {
-            if (logger instanceof Logger) {
+            if (logger && logger instanceof Logger) {
                 logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
             }
         }
@@ -7287,7 +7316,7 @@ function createReceivers(factory) /*Array*/
 
     if (factory instanceof Array) {
         a = factory;
-    } else if (factory.hasOwnProperty(ObjectAttribute.OBJECT_RECEIVERS) && factory[ObjectAttribute.OBJECT_RECEIVERS] instanceof Array) {
+    } else if (ObjectAttribute.OBJECT_RECEIVERS in factory && factory[ObjectAttribute.OBJECT_RECEIVERS] instanceof Array) {
         a = factory[ObjectAttribute.OBJECT_RECEIVERS];
     }
 
@@ -7304,7 +7333,7 @@ function createReceivers(factory) /*Array*/
 
     for (var i = 0; i < len; i++) {
         def = a[i];
-        if (def !== null && def.hasOwnProperty(ObjectReceiver.SIGNAL)) {
+        if (def !== null && ObjectReceiver.SIGNAL in def) {
             signal = def[ObjectReceiver.SIGNAL];
             if (!(signal instanceof String || typeof signal === 'string') || signal.length === 0) {
                 continue;
@@ -7638,27 +7667,27 @@ ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
 function createStrategy(o) /*ObjectStrategy*/
 {
     switch (true) {
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_METHOD):
+        case ObjectAttribute.OBJECT_FACTORY_METHOD in o:
             {
                 return ObjectFactoryMethod.build(o[ObjectAttribute.OBJECT_FACTORY_METHOD]);
             }
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_PROPERTY):
+        case ObjectAttribute.OBJECT_FACTORY_PROPERTY in o:
             {
                 return ObjectFactoryProperty.build(o[ObjectAttribute.OBJECT_FACTORY_PROPERTY]);
             }
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD):
+        case ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD in o:
             {
                 return ObjectStaticFactoryMethod.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD]);
             }
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY):
+        case ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY in o:
             {
                 return ObjectStaticFactoryProperty.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY]);
             }
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_REFERENCE):
+        case ObjectAttribute.OBJECT_FACTORY_REFERENCE in o:
             {
                 return ObjectReference.build(o[ObjectAttribute.OBJECT_FACTORY_REFERENCE]);
             }
-        case o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_VALUE):
+        case ObjectAttribute.OBJECT_FACTORY_VALUE in o:
             {
                 return ObjectValue.build(o[ObjectAttribute.OBJECT_FACTORY_VALUE]);
             }
@@ -7983,11 +8012,11 @@ function createObjectDefinition(o) /*ObjectDefinition*/
     // console.log( '----------------------' ) ;
     var definition = new ObjectDefinition(o[ObjectAttribute.OBJECT_ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.OBJECT_SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
 
-    if (o.hasOwnProperty(ObjectAttribute.IDENTIFY) && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
+    if (ObjectAttribute.IDENTIFY in o && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
         definition.identify = o[ObjectAttribute.IDENTIFY];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.LOCK) && (o[ObjectAttribute.LOCK] instanceof Boolean || typeof o[ObjectAttribute.LOCK] === 'boolean')) {
+    if (ObjectAttribute.LOCK in o && (o[ObjectAttribute.LOCK] instanceof Boolean || typeof o[ObjectAttribute.LOCK] === 'boolean')) {
         definition.lock = o[ObjectAttribute.LOCK];
     }
 
@@ -7995,15 +8024,15 @@ function createObjectDefinition(o) /*ObjectDefinition*/
         definition.constructorArguments = createArguments(o[ObjectAttribute.ARGUMENTS]);
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.OBJECT_DESTROY_METHOD_NAME)) {
+    if (ObjectAttribute.OBJECT_DESTROY_METHOD_NAME in o) {
         definition.destroyMethodName = o[ObjectAttribute.OBJECT_DESTROY_METHOD_NAME];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.OBJECT_INIT_METHOD_NAME)) {
+    if (ObjectAttribute.OBJECT_INIT_METHOD_NAME in o) {
         definition.initMethodName = o[ObjectAttribute.OBJECT_INIT_METHOD_NAME];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.OBJECT_SCOPE)) {
+    if (ObjectAttribute.OBJECT_SCOPE in o) {
         definition.scope = o[ObjectAttribute.OBJECT_SCOPE];
     }
 
@@ -8011,7 +8040,7 @@ function createObjectDefinition(o) /*ObjectDefinition*/
         definition.dependsOn = o[ObjectAttribute.OBJECT_DEPENDS_ON];
     }
 
-    if (o.hasOwnProperty(ObjectAttribute.OBJECT_GENERATES) && o[ObjectAttribute.OBJECT_GENERATES] instanceof Array) {
+    if (ObjectAttribute.OBJECT_GENERATES in o && o[ObjectAttribute.OBJECT_GENERATES] instanceof Array) {
         definition.generates = o[ObjectAttribute.OBJECT_GENERATES];
     }
 
@@ -8718,12 +8747,12 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
                 if (!instance) {
                     try {
-                        var clazz = this.config.typeEvaluator.eval(definition.type);
-                        var strategy = definition.strategy;
-                        if (strategy) {
-                            instance = this.createObjectWithStrategy(strategy);
-                        } else {
-                            instance = invoke(clazz, this.createArguments(definition.constructorArguments));
+                        var type = this.config.typeEvaluator.eval(definition.type);
+
+                        if (definition.strategy) {
+                            instance = this.createObjectWithStrategy(definition.strategy);
+                        } else if (type instanceof Function) {
+                            instance = invoke(type, this.createArguments(definition.constructorArguments));
                         }
                     } catch (e) {
                         this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.");
@@ -9140,11 +9169,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
             if (definition && definition instanceof ObjectDefinition) {
-                var name = definition.initMethodName;
-                if (name === null && this.config !== null) {
-                    name = this.config.defaultInitMethod;
+                var name = definition.initMethodName || null;
+                if (name === null && this.config) {
+                    name = this.config.defaultInitMethod || null;
                 }
-                if (name !== null && o.hasOwnProperty(name) && o[name] instanceof Function) {
+                if (name !== null && name in o && o[name] instanceof Function) {
                     o[name].call(o);
                 }
             }
@@ -9157,7 +9186,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
             if (definition && definition instanceof ObjectDefinition) {
-                if (definition.singleton && o instanceof Identifiable) {
+                if (definition.singleton && isIdentifiable(o)) {
                     if (definition.identify === true || this.config.identify === true && definition.identify !== false) {
                         o.id = definition.id;
                     }
@@ -9555,16 +9584,16 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
                 if (config && config instanceof ObjectConfig) {
                     var policy = config.typePolicy;
                     if (policy !== TypePolicy.NONE) {
-                        if (policy === TypePolicy.ALL || policy === TypePolicy.EXPRESSION) {
-                            var exp = config.typeExpression;
-                            if (exp instanceof ExpressionFormatter) {
-                                type = exp.format(type);
-                            }
-                        }
                         if (policy === TypePolicy.ALL || policy === TypePolicy.ALIAS) {
                             var aliases = config.typeAliases;
                             if (aliases instanceof ArrayMap && aliases.has(type)) {
                                 type = aliases.get(type);
+                            }
+                        }
+
+                        if (policy === TypePolicy.ALL || policy === TypePolicy.EXPRESSION) {
+                            if (config.typeExpression instanceof ExpressionFormatter) {
+                                type = config.typeExpression.format(type);
                             }
                         }
                     }

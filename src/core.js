@@ -2,10 +2,15 @@
 
 import './polyfill.js' ;
 
-import { arrays  } from './core/arrays.js' ;
-import { chars   } from './core/chars.js' ;
 import { dump    } from './core/dump.js' ;
 import { global  } from './core/global.js' ;
+
+import { isBoolean } from './core/isBoolean.js' ;
+import { isNumber  } from './core/isNumber.js' ;
+import { isString  } from './core/isString.js' ;
+
+import { arrays  } from './core/arrays.js' ;
+import { chars   } from './core/chars.js' ;
 import { maths   } from './core/maths.js' ;
 import { numbers } from './core/numbers.js' ;
 import { objects } from './core/objects.js' ;
@@ -22,6 +27,11 @@ export var core = Object.assign
 ({
     global  : global ,
     dump    : dump ,
+
+    isBoolean : isBoolean ,
+    isNumber  : isNumber ,
+    isString  : isString ,
+
     arrays  : arrays ,
     chars   : chars ,
     maths   : maths ,

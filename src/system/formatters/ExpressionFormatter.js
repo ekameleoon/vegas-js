@@ -160,7 +160,7 @@ ExpressionFormatter.prototype = Object.create( Formattable.prototype ,
     {
         value : function ( value ) /*String*/
         {
-            return this._format( value.toString() , 0 ) ;
+            return this._format( String(value) , 0 ) ;
         }
     },
 

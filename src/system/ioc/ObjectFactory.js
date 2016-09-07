@@ -4,7 +4,7 @@ import { invoke } from '../../core/reflect/invoke.js' ;
 
 import { Evaluable } from '../Evaluable.js' ;
 import { ArrayMap } from '../data/maps/ArrayMap.js' ;
-import { Identifiable } from '../data/Identifiable.js' ;
+import { isIdentifiable } from '../data/Identifiable.js' ;
 import { MultiEvaluator } from '../evaluators/MultiEvaluator.js' ;
 import { Receiver } from '../signals/Receiver.js' ;
 import { Signaler } from '../signals/Signaler.js' ;
@@ -223,15 +223,15 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 {
                     try
                     {
-                        var clazz    = this.config.typeEvaluator.eval( definition.type )  ;
-                        var strategy = definition.strategy ;
-                        if ( strategy )
+                        var type = this.config.typeEvaluator.eval( definition.type )  ;
+
+                        if ( definition.strategy )
                         {
-                            instance = this.createObjectWithStrategy( strategy ) ;
+                            instance = this.createObjectWithStrategy( definition.strategy ) ;
                         }
-                        else
+                        else if ( type instanceof Function )
                         {
-                            instance = invoke( clazz , this.createArguments( definition.constructorArguments ) );
+                            instance = invoke( type , this.createArguments( definition.constructorArguments ) );
                         }
                     }
                     catch( e )
@@ -724,14 +724,14 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     invokeInitMethod : { value : function( o , definition /*ObjectDefinition*/ = null )
     {
-        if( definition && definition instanceof ObjectDefinition )
+        if( definition && (definition instanceof ObjectDefinition) )
         {
-            var name = definition.initMethodName ;
-            if ( name === null && this.config !== null )
+            var name = definition.initMethodName || null ;
+            if ( (name === null) && this.config )
             {
-                name = this.config.defaultInitMethod ;
+                name = this.config.defaultInitMethod || null ;
             }
-            if( (name !== null) && o.hasOwnProperty(name) && (o[name] instanceof Function) )
+            if( (name !== null) && (name in o) && (o[name] instanceof Function) )
             {
                 o[name].call(o) ;
             }
@@ -743,9 +743,9 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     populateIdentifiable : { value : function( o , definition /*ObjectDefinition*/ = null )
     {
-        if( definition && definition instanceof ObjectDefinition )
+        if( definition && (definition instanceof ObjectDefinition) )
         {
-            if ( definition.singleton && (o instanceof Identifiable) )
+            if ( definition.singleton && isIdentifiable(o) )
             {
                 if ( ( definition.identify === true ) || ( this.config.identify === true && definition.identify !== false ) )
                 {

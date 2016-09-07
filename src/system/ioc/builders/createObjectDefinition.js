@@ -29,12 +29,12 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         o[ ObjectAttribute.LAZY_INIT ]        || false
     ) ;
 
-    if( o.hasOwnProperty(ObjectAttribute.IDENTIFY) && (o[ ObjectAttribute.IDENTIFY ] instanceof Boolean || typeof(o[ ObjectAttribute.IDENTIFY ]) === 'boolean') )
+    if( (ObjectAttribute.IDENTIFY in o) && (o[ ObjectAttribute.IDENTIFY ] instanceof Boolean || typeof(o[ ObjectAttribute.IDENTIFY ]) === 'boolean') )
     {
         definition.identify = o[ ObjectAttribute.IDENTIFY ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.LOCK) && (o[ ObjectAttribute.LOCK ] instanceof Boolean || typeof(o[ ObjectAttribute.LOCK ]) === 'boolean') )
+    if( (ObjectAttribute.LOCK in o) && (o[ ObjectAttribute.LOCK ] instanceof Boolean || typeof(o[ ObjectAttribute.LOCK ]) === 'boolean') )
     {
         definition.lock = o[ ObjectAttribute.LOCK ] ;
     }
@@ -44,17 +44,17 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         definition.constructorArguments = createArguments( o[ ObjectAttribute.ARGUMENTS ] );
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_DESTROY_METHOD_NAME) )
+    if( ObjectAttribute.OBJECT_DESTROY_METHOD_NAME in o )
     {
         definition.destroyMethodName = o[ ObjectAttribute.OBJECT_DESTROY_METHOD_NAME ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_INIT_METHOD_NAME) )
+    if( ObjectAttribute.OBJECT_INIT_METHOD_NAME in o )
     {
         definition.initMethodName = o[ ObjectAttribute.OBJECT_INIT_METHOD_NAME ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_SCOPE) )
+    if( ObjectAttribute.OBJECT_SCOPE in o )
     {
         definition.scope = o[ ObjectAttribute.OBJECT_SCOPE ] ;
     }
@@ -64,7 +64,7 @@ export function createObjectDefinition( o ) /*ObjectDefinition*/
         definition.dependsOn = o[ ObjectAttribute.OBJECT_DEPENDS_ON ] ;
     }
 
-    if( o.hasOwnProperty(ObjectAttribute.OBJECT_GENERATES) && (o[ ObjectAttribute.OBJECT_GENERATES ] instanceof Array) )
+    if( (ObjectAttribute.OBJECT_GENERATES in o) && (o[ ObjectAttribute.OBJECT_GENERATES ] instanceof Array) )
     {
         definition.generates = o[ ObjectAttribute.OBJECT_GENERATES ] ;
     }

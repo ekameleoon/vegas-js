@@ -24,7 +24,7 @@ export function createListeners( factory ) /*Array*/
     {
         a = factory ;
     }
-    else if( factory.hasOwnProperty( ObjectAttribute.OBJECT_LISTENERS ) && (factory[ ObjectAttribute.OBJECT_LISTENERS ] instanceof Array ) )
+    else if( ( ObjectAttribute.OBJECT_LISTENERS in factory ) && (factory[ ObjectAttribute.OBJECT_LISTENERS ] instanceof Array ) )
     {
         a = factory[ ObjectAttribute.OBJECT_LISTENERS ] ;
     }
@@ -46,15 +46,15 @@ export function createListeners( factory ) /*Array*/
     for ( var i = 0 ; i<len ; i++ )
     {
         def = a[i] ;
-        if ( def !== null && def.hasOwnProperty(ObjectListener.DISPATCHER) && def.hasOwnProperty(ObjectListener.TYPE) )
+        if ( def !== null && (ObjectListener.DISPATCHER in def) && (ObjectListener.TYPE in def) )
         {
             dispatcher = def[ ObjectListener.DISPATCHER ] ;
-            if ( dispatcher === null || dispatcher.length === 0 )
+            if ( !(dispatcher instanceof String || typeof(dispatcher) === 'string') || dispatcher.length === 0 )
             {
                 continue ;
             }
             type = def[ ObjectListener.TYPE ] ;
-            if ( type === null || type.length === 0 )
+            if ( !(type instanceof String || typeof(type) === 'string') || type.length === 0 )
             {
                 continue ;
             }
@@ -63,13 +63,14 @@ export function createListeners( factory ) /*Array*/
                 new ObjectListener
                 (
                     dispatcher , type , def[ ObjectListener.METHOD ] ,
-                    def[ ObjectListener.USE_CAPTURE ] === true , def[ ObjectListener.ORDER ] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER
+                    def[ ObjectListener.USE_CAPTURE ] === true ,
+                    (def[ ObjectListener.ORDER ] === ObjectOrder.BEFORE) ? ObjectOrder.BEFORE : ObjectOrder.AFTER
                 )
             ) ;
         }
         else
         {
-            if( logger instanceof Logger)
+            if( logger && (logger instanceof Logger) )
             {
                 logger.warning
                 (

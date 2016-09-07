@@ -4,7 +4,7 @@ export function isIdentifiable( target )
 {
     if( target )
     {
-        return target.hasOwnProperty('id') ;
+        return (target instanceof Identifiable) || ('id' in target) ;
     }
 
     return false ;

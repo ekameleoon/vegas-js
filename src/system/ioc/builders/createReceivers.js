@@ -24,7 +24,7 @@ export function createReceivers( factory ) /*Array*/
     {
         a = factory ;
     }
-    else if( factory.hasOwnProperty( ObjectAttribute.OBJECT_RECEIVERS ) && (factory[ ObjectAttribute.OBJECT_RECEIVERS ] instanceof Array ) )
+    else if( ( ObjectAttribute.OBJECT_RECEIVERS in factory ) && (factory[ ObjectAttribute.OBJECT_RECEIVERS ] instanceof Array ) )
     {
         a = factory[ ObjectAttribute.OBJECT_RECEIVERS ] ;
     }
@@ -44,7 +44,7 @@ export function createReceivers( factory ) /*Array*/
     for ( var i = 0 ; i<len ; i++ )
     {
         def = a[i] ;
-        if ( def !== null && def.hasOwnProperty( ObjectReceiver.SIGNAL ) )
+        if ( def !== null && ( ObjectReceiver.SIGNAL in def ) )
         {
             signal = def[ ObjectReceiver.SIGNAL ] ;
             if ( !(signal instanceof String || typeof(signal) === 'string') || signal.length === 0 )
@@ -57,7 +57,7 @@ export function createReceivers( factory ) /*Array*/
                 (
                     signal ,
                     def[ ObjectReceiver.SLOT ] ,
-                    isNaN(def[ ObjectReceiver.PRIORITY ])? 0 : def[ ObjectReceiver.PRIORITY ] ,
+                    isNaN(def[ ObjectReceiver.PRIORITY ]) ? 0 : def[ ObjectReceiver.PRIORITY ] ,
                     def[ ObjectReceiver.AUTO_DISCONNECT ] === true ,
                     ( def[ ObjectReceiver.ORDER ] === ObjectOrder.BEFORE ) ? ObjectOrder.BEFORE : ObjectOrder.AFTER
                 )

@@ -84,14 +84,6 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
                 var policy = config.typePolicy ;
                 if ( policy !== TypePolicy.NONE )
                 {
-                    if ( policy === TypePolicy.ALL || policy === TypePolicy.EXPRESSION )
-                    {
-                       var exp = config.typeExpression ;
-                       if ( exp instanceof ExpressionFormatter )
-                       {
-                           type = exp.format(type) ;
-                       }
-                    }
                     if ( policy === TypePolicy.ALL || policy === TypePolicy.ALIAS )
                     {
                         var aliases = config.typeAliases ;
@@ -99,6 +91,14 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
                         {
                             type = aliases.get(type) ;
                         }
+                    }
+
+                    if ( policy === TypePolicy.ALL || policy === TypePolicy.EXPRESSION )
+                    {
+                       if ( config.typeExpression instanceof ExpressionFormatter )
+                       {
+                           type = config.typeExpression.format(type) ;
+                       }
                     }
                 }
             }

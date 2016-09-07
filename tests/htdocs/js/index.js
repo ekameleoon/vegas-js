@@ -38,8 +38,17 @@ var Point = function( x , y )
 {
     this.x = x ;
     this.y = y ;
-    logger.debug( this + ' constructor invoked') ;
 };
+
+Point.prototype.destroy = function()
+{
+    logger.info( this + " destroy" ) ;
+}
+
+Point.prototype.init = function()
+{
+    logger.info( this + " init" ) ;
+}
 
 Point.prototype.test = function( message = null )
 {
@@ -79,7 +88,8 @@ var config  = factory.config ;
 
 config.setConfigTarget({
 
-    'origin' : { x : 10 , y : 20 }
+    'origin'  : { x : 10 , y : 20 } ,
+    'nirvana' : { x : 0  , y : 0  }
 });
 
 config.setLocaleTarget({
@@ -90,11 +100,24 @@ config.setLocaleTarget({
     }
 });
 
+config.typePolicy = system.ioc.TypePolicy.ALL ;
+
+config.typeAliases =
+[
+    { alias : "Signal" , type : "{signals}.Signal" }
+];
+
+config.typeExpression =
+[
+    { name : "system"  , value : "system"           } ,
+    { name : "signals" , value : "{system}.signals" }
+];
+
 var objects =
 [
     {
         id        : "signal" ,
-        type      : "system.signals.Signal" ,
+        type      : "Signal" ,
         dependsOn : [ 'slot' ] ,
         singleton : true ,
         lazyInit  : true
@@ -112,10 +135,12 @@ var objects =
         args : [ { value : 2 } , { ref : 'origin.y' }],
         sigleton   : true ,
         lazyInit   : true ,
+        init       : 'init' ,
         properties :
         [
             { name : "x" , ref   :'origin.x' } ,
-            { name : "y" , value : 100       }
+            { name : "y" , value : 100       } ,
+            { name : '#init' , config : 'nirvana' }
         ]
     },
     {
@@ -133,7 +158,7 @@ var objects =
 
 factory.run( objects );
 
-logger.info( factory.getObject('position') ) ;
+var position = factory.getObject('position') ;
 
 var signal = factory.getObject('signal') ;
 if( signal )
@@ -144,6 +169,3 @@ else
 {
     logger.warning( 'The slot reference not must be null or undefined.' );
 }
-
-logger.warning( undefined ) ;
-logger.warning( null ) ;

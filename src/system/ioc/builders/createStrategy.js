@@ -16,27 +16,27 @@ export function createStrategy( o ) /*ObjectStrategy*/
 {
     switch( true )
     {
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_METHOD))  :
+        case ( ObjectAttribute.OBJECT_FACTORY_METHOD in o )  :
         {
             return ObjectFactoryMethod.build( o[ ObjectAttribute.OBJECT_FACTORY_METHOD ] ) ;
         }
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_PROPERTY))  :
+        case ( ObjectAttribute.OBJECT_FACTORY_PROPERTY  in o )  :
         {
             return ObjectFactoryProperty.build( o[ ObjectAttribute.OBJECT_FACTORY_PROPERTY ] ) ;
         }
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD))  :
+        case ( ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD  in o )  :
         {
             return ObjectStaticFactoryMethod.build( o[ ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD ] ) ;
         }
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY))  :
+        case ( ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY in o )  :
         {
             return ObjectStaticFactoryProperty.build( o[ ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY ] ) ;
         }
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_REFERENCE))  :
+        case ( ObjectAttribute.OBJECT_FACTORY_REFERENCE in o )  :
         {
             return ObjectReference.build( o[ ObjectAttribute.OBJECT_FACTORY_REFERENCE ] ) ;
         }
-        case (o.hasOwnProperty(ObjectAttribute.OBJECT_FACTORY_VALUE))  :
+        case ( ObjectAttribute.OBJECT_FACTORY_VALUE in o )  :
         {
             return ObjectValue.build( o[ ObjectAttribute.OBJECT_FACTORY_VALUE ] ) ;
         }
