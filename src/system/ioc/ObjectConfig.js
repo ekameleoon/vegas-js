@@ -27,7 +27,7 @@ export function ObjectConfig( init )
             {
                 for( var prop in init )
                 {
-                    if( init.hasOwnProperty(prop ))
+                    if( init.hasOwnProperty( prop ) )
                     {
                         this._config[prop] = init[prop] ;
                     }
@@ -78,7 +78,7 @@ export function ObjectConfig( init )
             {
                 for( var prop in init )
                 {
-                    if( init.hasOwnProperty(prop ))
+                    if( init.hasOwnProperty( prop ))
                     {
                         this._locale[prop] = init[prop] ;
                     }

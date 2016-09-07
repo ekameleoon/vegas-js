@@ -38,7 +38,7 @@ Parameters.prototype = Object.create( Object.prototype ,
      */
     contains : { value : function( name ) /*Boolean*/
     {
-        return this.parameters && this.parameters.hasOwnProperty(name) && this.parameters.name !== null ;
+        return this.parameters && name && (name in this.parameters) && (this.parameters[name] !== null) ;
     }},
 
     /**

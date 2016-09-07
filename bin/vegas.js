@@ -7412,7 +7412,7 @@ Object.defineProperties(ObjectFactoryMethod, {
             if (o === null) {
                 return null;
             }
-            if (o.hasOwnProperty(ObjectAttribute.FACTORY) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+            if (ObjectAttribute.FACTORY in o && ObjectAttribute.NAME in o) {
                 return new ObjectFactoryMethod(o[ObjectAttribute.FACTORY || null], o[ObjectAttribute.NAME || null], createArguments(o[ObjectAttribute.ARGUMENTS] || null));
             } else {
                 return null;
@@ -7468,7 +7468,7 @@ Object.defineProperties(ObjectFactoryProperty, {
             if (o === null) {
                 return null;
             }
-            if (o.hasOwnProperty(ObjectAttribute.FACTORY) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+            if (ObjectAttribute.FACTORY in o && ObjectAttribute.NAME in o) {
                 return new ObjectFactoryProperty(o[ObjectAttribute.FACTORY] || null, o[ObjectAttribute.NAME] || null, o[ObjectAttribute.EVALUATORS] || null);
             } else {
                 return null;
@@ -7550,7 +7550,7 @@ Object.defineProperties(ObjectStaticFactoryMethod, {
             if (o === null) {
                 return null;
             }
-            if (o.hasOwnProperty(ObjectAttribute.TYPE) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+            if (ObjectAttribute.TYPE in o && ObjectAttribute.NAME in o) {
                 return new ObjectStaticFactoryMethod(o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.NAME] || null, createArguments(o[ObjectAttribute.ARGUMENTS] || null));
             } else {
                 return null;
@@ -7606,7 +7606,7 @@ Object.defineProperties(ObjectStaticFactoryProperty, {
             if (o === null) {
                 return null;
             }
-            if (o.hasOwnProperty(ObjectAttribute.TYPE) && o.hasOwnProperty(ObjectAttribute.NAME)) {
+            if (ObjectAttribute.TYPE in o && ObjectAttribute.NAME in o) {
                 return new ObjectStaticFactoryProperty(o[ObjectAttribute.NAME] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.EVALUATORS] || null);
             } else {
                 return null;
@@ -9019,7 +9019,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
             var args;
             var instance = null;
-            var clazz;
+            var type;
             var factory;
             var ref;
             var name;
@@ -9032,14 +9032,14 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 args = this.createArguments(factoryMethod.args);
 
                 if (factoryMethod instanceof ObjectStaticFactoryMethod) {
-                    clazz = this.config.typeEvaluator.eval(factoryMethod.type);
-                    if (clazz !== null && clazz.hasOwnProperty(name)) {
-                        instance = clazz[name].apply(null, args);
+                    type = this.config.typeEvaluator.eval(factoryMethod.type);
+                    if (type !== null && name && name in type && type[name] instanceof Function) {
+                        instance = type[name].apply(null, args);
                     }
                 } else if (factoryMethod instanceof ObjectFactoryMethod) {
                     factory = factoryMethod.factory;
                     ref = this.getObject(factory);
-                    if (ref !== null && name !== null && ref.hasOwnProperty(name)) {
+                    if (ref !== null && name && name in ref && ref[name] instanceof Function) {
                         instance = ref[name].apply(null, args);
                     }
                 }
@@ -9049,15 +9049,15 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 name = factoryProperty.name;
 
                 if (factoryProperty instanceof ObjectStaticFactoryProperty) {
-                    clazz = this.config.typeEvaluator.eval(factoryProperty.type);
-                    if (clazz !== null && clazz.hasOwnProperty(name)) {
-                        instance = clazz[name];
+                    type = this.config.typeEvaluator.eval(factoryProperty.type);
+                    if (type && name && name in type) {
+                        instance = type[name];
                     }
                 } else if (factoryProperty instanceof ObjectFactoryProperty) {
                     factory = factoryProperty.factory;
-                    if (factory !== null && this.hasObjectDefinition(factory)) {
+                    if (factory && this.hasObjectDefinition(factory)) {
                         ref = this.getObject(factory);
-                        if (ref !== null && name !== null && ref.hasOwnProperty(name)) {
+                        if (ref && name && name in ref) {
                             instance = ref[name];
                         }
                     }
@@ -9152,11 +9152,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
             if (definition && definition instanceof ObjectDefinition) {
-                var name = definition.destroyMethodName;
+                var name = definition.destroyMethodName || null;
                 if (name === null && this.config !== null) {
                     name = this.config.defaultDestroyMethod;
                 }
-                if (name !== null && o.hasOwnProperty(name) && o[name] instanceof Function) {
+                if (name && name in o && o[name] instanceof Function) {
                     o[name].call(o);
                 }
             }
@@ -9173,7 +9173,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 if (name === null && this.config) {
                     name = this.config.defaultInitMethod || null;
                 }
-                if (name !== null && name in o && o[name] instanceof Function) {
+                if (name && name in o && o[name] instanceof Function) {
                     o[name].call(o);
                 }
             }
@@ -9307,9 +9307,9 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         listener = listeners[i];
                         dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
                         if (dispatcher !== null && listener.type !== null) {
-                            if (listener.method !== null && o.hasOwnProperty(listener.method) && o[listener.method] instanceof Function) {
+                            if (listener.method && listener.method in o && o[listener.method] instanceof Function) {
                                 method = o[listener.method];
-                            } else if (o.hasOwnProperty('handleEvent') && o.handleEvent instanceof Function) {
+                            } else if ('handleEvent' in o && o.handleEvent instanceof Function) {
                                 method = o.handleEvent;
                             }
                             if (method !== null) {
@@ -9997,7 +9997,7 @@ Parameters.prototype = Object.create(Object.prototype, {
      */
     contains: { value: function value(name) /*Boolean*/
         {
-            return this.parameters && this.parameters.hasOwnProperty(name) && this.parameters.name !== null;
+            return this.parameters && name && name in this.parameters && this.parameters[name] !== null;
         } },
 
     /**

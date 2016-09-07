@@ -37,7 +37,7 @@ Object.defineProperties( ObjectStaticFactoryMethod ,
             {
                 return null ;
             }
-            if ( o.hasOwnProperty(ObjectAttribute.TYPE) && o.hasOwnProperty(ObjectAttribute.NAME) )
+            if ( (ObjectAttribute.TYPE in o) && (ObjectAttribute.NAME in o) )
             {
                 return new ObjectStaticFactoryMethod
                 (

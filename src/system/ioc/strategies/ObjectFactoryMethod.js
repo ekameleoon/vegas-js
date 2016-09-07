@@ -37,7 +37,7 @@ Object.defineProperties( ObjectFactoryMethod ,
             {
                 return null ;
             }
-            if ( o.hasOwnProperty(ObjectAttribute.FACTORY) && o.hasOwnProperty(ObjectAttribute.NAME) )
+            if ( (ObjectAttribute.FACTORY in o) && (ObjectAttribute.NAME in o) )
             {
                 return new ObjectFactoryMethod
                 (

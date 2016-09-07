@@ -541,7 +541,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         }
         var args ;
         var instance = null ;
-        var clazz ;
+        var type ;
         var factory ;
         var ref ;
         var name ;
@@ -556,17 +556,17 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
             if ( factoryMethod instanceof ObjectStaticFactoryMethod )
             {
-                clazz  = this.config.typeEvaluator.eval( factoryMethod.type );
-                if ( clazz !== null && clazz.hasOwnProperty(name) )
+                type = this.config.typeEvaluator.eval( factoryMethod.type );
+                if ( type !== null && name && (name in type) && (type[name] instanceof Function) )
                 {
-                    instance = clazz[name].apply( null, args ) ;
+                    instance = type[name].apply( null , args ) ;
                 }
             }
             else if ( factoryMethod instanceof ObjectFactoryMethod )
             {
                 factory  = factoryMethod.factory ;
                 ref      = this.getObject( factory ) ;
-                if ( ( ref !== null ) && ( name !== null ) && ref.hasOwnProperty(name) )
+                if ( ( ref !== null ) && name && (name in ref) && (ref[name] instanceof Function) )
                 {
                     instance = ref[name].apply( null, args ) ;
                 }
@@ -580,19 +580,19 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
             if ( factoryProperty instanceof ObjectStaticFactoryProperty )
             {
-                clazz = this.config.typeEvaluator.eval( factoryProperty.type ) ;
-                if ( clazz !== null && clazz.hasOwnProperty(name) )
+                type = this.config.typeEvaluator.eval( factoryProperty.type ) ;
+                if ( type && name && (name in type) )
                 {
-                    instance = clazz[name] ;
+                    instance = type[name] ;
                 }
             }
             else if ( factoryProperty instanceof ObjectFactoryProperty )
             {
                 factory = factoryProperty.factory ;
-                if ( factory !== null && this.hasObjectDefinition(factory) )
+                if ( factory && this.hasObjectDefinition(factory) )
                 {
                     ref = this.getObject(factory) ;
-                    if ( ( ref !== null ) && ( name !== null ) && ref.hasOwnProperty(name) )
+                    if ( ref && name && (name in ref) )
                     {
                         instance = ref[name] ;
                     }
@@ -707,12 +707,12 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     {
         if( definition && definition instanceof ObjectDefinition )
         {
-            var name = definition.destroyMethodName ;
+            var name = definition.destroyMethodName || null ;
             if ( name === null && this.config !== null )
             {
                 name = this.config.defaultDestroyMethod ;
             }
-            if( (name !== null) && o.hasOwnProperty(name) && (o[name] instanceof Function) )
+            if( name && (name in o) && (o[name] instanceof Function) )
             {
                 o[name].call(o) ;
             }
@@ -731,7 +731,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 name = this.config.defaultInitMethod || null ;
             }
-            if( (name !== null) && (name in o) && (o[name] instanceof Function) )
+            if( name && (name in o) && (o[name] instanceof Function) )
             {
                 o[name].call(o) ;
             }
@@ -904,11 +904,11 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     dispatcher = this._config.referenceEvaluator.eval( listener.dispatcher ) ;
                     if ( dispatcher !== null && listener.type !== null )
                     {
-                        if ( listener.method !== null && o.hasOwnProperty(listener.method) && (o[listener.method] instanceof Function))
+                        if ( listener.method && (listener.method in o) && (o[listener.method] instanceof Function))
                         {
                             method = o[listener.method]   ;
                         }
-                        else if( o.hasOwnProperty('handleEvent') && (o.handleEvent instanceof Function)  )
+                        else if( ('handleEvent' in o) && (o.handleEvent instanceof Function)  )
                         {
                             method = o.handleEvent ;
                         }
