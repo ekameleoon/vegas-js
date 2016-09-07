@@ -14,6 +14,13 @@ Under tree licences : **MPL 1.1/GPL 2.0/LGPL 2.1**
 
 ### Install ###
 
+#### npm ####
+
+```
+#!shell
+npm install vegas-js --save-dev
+```
+
 #### Bower ####
 
 ```
