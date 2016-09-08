@@ -3,10 +3,12 @@
 import '../polyfill.js' ;
 
 import { isIdentifiable } from './data/Identifiable.js' ;
+import { isValidator }    from './data/Validator.js' ;
 
 import { Identifiable } from './data/Identifiable.js' ;
 import { Iterator }     from './data/Iterator.js' ;
 import { Map }          from './data/Map.js' ;
+import { Validator }    from './data/Validator.js' ;
 
 import { ArrayIterator } from './data/iterators/ArrayIterator.js' ;
 import { MapIterator }   from './data/iterators/MapIterator.js' ;
@@ -22,11 +24,13 @@ export var data = Object.assign
 ({
     // singletons
     isIdentifiable : isIdentifiable,
+    isValidator    : isValidator,
 
     // interfaces
     Identifiable : Identifiable ,
     Iterator     : Iterator ,
     Map          : Map ,
+    Validator    : Validator ,
 
     // packages
     iterators :

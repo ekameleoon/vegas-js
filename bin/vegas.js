@@ -3372,6 +3372,47 @@ Identifiable.prototype = Object.create(Object.prototype, {
     }, writable: true }
 });
 
+function isValidator(target) {
+  if (target) {
+    return target instanceof Validator || 'supports' in target && target.supports instanceof Function || 'validate' in target && target.validate instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * Defines the methods that objects that participate in a validation operation.
+ */
+function Validator() {}
+//
+
+
+/**
+ * @extends Object
+ */
+Validator.prototype = Object.create(Object.prototype);
+Validator.prototype.constructor = Validator;
+
+/**
+ * Returns true if the specific value is valid.
+ * @return true if the specific value is valid.
+ */
+Validator.prototype.supports = function (value) /*Boolean*/{};
+
+/**
+ * Evaluates the specified value and throw an Error object if the value is not valid.
+ * @throws Error if the value is not valid.
+ */
+Validator.prototype.validate = function (value) /*void*/{};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+Validator.prototype.toString = function () {
+  return '[Validator]';
+};
+
 /**
  * This interface defines the iterator pattern over a collection.
  */
@@ -4119,11 +4160,13 @@ ArrayMap.prototype.values = function () /*Array*/
 var data = Object.assign({
     // singletons
     isIdentifiable: isIdentifiable,
+    isValidator: isValidator,
 
     // interfaces
     Identifiable: Identifiable,
     Iterator: Iterator,
     Map: Map,
+    Validator: Validator,
 
     // packages
     iterators: {
