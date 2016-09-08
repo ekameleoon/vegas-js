@@ -2,7 +2,7 @@
     "name"        : "vegas-js",
     "description" : "The VEGAS JS Framework",
     "version"     : "1.0.1",
-    "license"     : "Licence MPL 1.1 OR Licence GPL 2 OR GPL-3.0+" ,
+    "license"     : "MPL-1.1 OR GPL-2.0+ OR GPL-3.0+",
     "homepage"    : "https://bitbucket.org/ekameleon/vegas-js",
     "author"      :
     {
