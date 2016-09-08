@@ -41,6 +41,13 @@ Map.prototype = Object.create( Object.prototype ,
     delete : { value : function( key ) {} , writable : true } ,
 
     /**
+     * The forEach() method executes a provided function once per each key/value pair in the Map object, in insertion order.
+     * @param callback Function to execute for each element.
+     * @param thisArg Value to use as this when executing callback.
+     */
+    forEach : { value : function( callback , thisArg = null ) {} , writable : true } ,
+
+    /**
      * Returns the value to which this map maps the specified key.
      */
     get : { value : function( key ) { return null ; } , writable : true } ,
