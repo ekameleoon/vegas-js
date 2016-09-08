@@ -13230,6 +13230,544 @@ Equals.prototype.toString = function () /*String*/
 };
 
 /**
+ * Evaluates if the value is even.
+ * @param value The value to evaluate.
+ * @example
+ * var cond ;
+ * var Even = system.rules.Even ;
+ *
+ * cond = new Even( 0 ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Even( 1 ) ;
+ * trace( cond.eval() ) ; // false
+ *
+ * cond = new Even( 2 ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Even( 3 ) ;
+ * trace( cond.eval() ) ; // false
+ * </pre>
+ */
+function Even() {
+  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.value = value;
+}
+
+/**
+ * @extends Evaluable
+ */
+Even.prototype = Object.create(Rule.prototype);
+Even.prototype.constructor = Even;
+
+/**
+ * Evaluates the specified object.
+ */
+Even.prototype.eval = function () {
+  return this.value % 2 === 0;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Even.prototype.toString = function () /*String*/
+{
+  return "[Even]";
+};
+
+/**
+ * Evaluates if the condition is false.
+ * @param value The value to evaluate.
+ * @example
+ * var False = system.rules.False ;
+ *
+ * var cond1 = new False( true  ) ;
+ * var cond2 = new False( false ) ;
+ * var cond3 = new False( cond1 ) ;
+ * var cond4 = new False( cond2 ) ;
+ *
+ * trace( cond1.eval() ) ; // false
+ * trace( cond2.eval() ) ; // true
+ * trace( cond3.eval() ) ; // true
+ * trace( cond4.eval() ) ; // false
+ * </pre>
+ */
+function False() {
+  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.condition = condition;
+}
+
+/**
+ * @extends Evaluable
+ */
+False.prototype = Object.create(Rule.prototype);
+False.prototype.constructor = False;
+
+/**
+ * Evaluates the specified object.
+ */
+False.prototype.eval = function () {
+  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === false;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+False.prototype.toString = function () /*String*/
+{
+  return "[False]";
+};
+
+/**
+ * Used to indicates if a value is greater or equal than another value.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var GreaterOrEqualsThan = system.rules.GreaterOrEqualsThan ;
+ *
+ * var rule ;
+ *
+ * rule = new GreaterOrEqualsThan( 1 , 1 ) ;
+ * trace( rule.eval() ) ; // true
+ *
+ * rule = new GreaterOrEqualsThan( 1 , 2 ) ;
+ * trace( rule.eval() ) ; // false
+ *
+ * rule = new GreaterOrEqualsThan( 3 , 2 ) ;
+ * trace( rule.eval() ) ; // true
+ * </pre>
+ */
+function GreaterOrEqualsThan() {
+  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  this.value1 = value1;
+  this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+GreaterOrEqualsThan.prototype = Object.create(Rule.prototype);
+GreaterOrEqualsThan.prototype.constructor = GreaterOrEqualsThan;
+
+/**
+ * Evaluates the specified object.
+ */
+GreaterOrEqualsThan.prototype.eval = function () {
+  return this.value1 >= this.value2;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+GreaterOrEqualsThan.prototype.toString = function () /*String*/
+{
+  return "[GreaterOrEqualsThan]";
+};
+
+/**
+ * Used to indicates if a value is greater than another value.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var GreaterThan = system.rules.GreaterThan ;
+ *
+ * var rule ;
+ *
+ * rule = new GreaterThan( 1 , 1 ) ;
+ * trace( rule.eval() ) ; // false
+ *
+ * rule = new GreaterThan( 1 , 2 ) ;
+ * trace( rule.eval() ) ; // false
+ *
+ * rule = new GreaterThan( 3 , 2 ) ;
+ * trace( rule.eval() ) ; // true
+ * </pre>
+ */
+function GreaterThan() {
+  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  this.value1 = value1;
+  this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+GreaterThan.prototype = Object.create(Rule.prototype);
+GreaterThan.prototype.constructor = GreaterThan;
+
+/**
+ * Evaluates the specified object.
+ */
+GreaterThan.prototype.eval = function () {
+  return this.value1 > this.value2;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+GreaterThan.prototype.toString = function () /*String*/
+{
+  return "[GreaterThan]";
+};
+
+/**
+ * Used to indicates if a value is less or equal than another value.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var LessOrEqualsThan = system.rules.LessOrEqualsThan ;
+ *
+ * var rule ;
+ *
+ * rule = new LessOrEqualsThan( 1 , 1 ) ;
+ * trace( rule.eval() ) ; // true
+ *
+ * rule = new LessOrEqualsThan( 1 , 2 ) ;
+ * trace( rule.eval() ) ; // true
+ *
+ * rule = new LessOrEqualsThan( 3 , 2 ) ;
+ * trace( rule.eval() ) ; // false
+ * </pre>
+ */
+function LessOrEqualsThan() {
+  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  this.value1 = value1;
+  this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+LessOrEqualsThan.prototype = Object.create(Rule.prototype);
+LessOrEqualsThan.prototype.constructor = LessOrEqualsThan;
+
+/**
+ * Evaluates the specified object.
+ */
+LessOrEqualsThan.prototype.eval = function () {
+  return this.value1 <= this.value2;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+LessOrEqualsThan.prototype.toString = function () /*String*/
+{
+  return "[LessOrEqualsThan]";
+};
+
+/**
+ * Used to indicates if a value is greater than another value.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var LessThan = system.rules.LessThan ;
+ *
+ * var rule ;
+ *
+ * rule = new LessThan( 1 , 1 ) ;
+ * trace( rule.eval() ) ; // false
+ *
+ * rule = new LessThan( 1 , 2 ) ;
+ * trace( rule.eval() ) ; // true
+ *
+ * rule = new LessThan( 3 , 2 ) ;
+ * trace( rule.eval() ) ; // false
+ * </pre>
+ */
+function LessThan() {
+  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  this.value1 = value1;
+  this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+LessThan.prototype = Object.create(Rule.prototype);
+LessThan.prototype.constructor = LessThan;
+
+/**
+ * Evaluates the specified object.
+ */
+LessThan.prototype.eval = function () {
+  return this.value1 < this.value2;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+LessThan.prototype.toString = function () /*String*/
+{
+  return "[LessThan]";
+};
+
+/**
+ * Used to perform logical negation on a specific condition.
+ * @param condition The condition to evaluate.
+ * @example
+ * var BooleanRule = system.rules.BooleanRule ;
+ * var Not         = system.rules.Not ;
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ *
+ * var no1 = new Not( true ) ;
+ * var no2 = new Not( false ) ;
+ * var no3 = new Not( cond1 ) ;
+ * var no4 = new Not( cond2 ) ;
+ *
+ * trace( no1.eval() ) ; // false
+ * trace( no2.eval() ) ; // true
+ * trace( no3.eval() ) ; // false
+ * trace( no4.eval() ) ; // true
+ * </pre>
+ */
+function Not() {
+  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.condition = condition;
+}
+
+/**
+ * @extends Evaluable
+ */
+Not.prototype = Object.create(Rule.prototype);
+Not.prototype.constructor = Not;
+
+/**
+ * Evaluates the specified object.
+ */
+Not.prototype.eval = function () {
+  return !(this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition));
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Not.prototype.toString = function () /*String*/
+{
+  return "[Not]";
+};
+
+/**
+ * Used to perform a logical conjunction on two conditions and more.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var BooleanRule = system.rules.BooleanRule ;
+ * var NotEquals      =  system.rules.NotEquals ;
+ *
+ * var e ;
+ *
+ * ///// Compares objects.
+ *
+ * e = new NotEquals( 1 , 1 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new NotEquals( 1 , 2 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * ///// Compares Rule objects.
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ * var cond3 = new BooleanRule( true  ) ;
+ *
+ * e = new NotEquals( cond1 , cond1 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new NotEquals( cond1 , cond2 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new NotEquals( cond1 , cond3 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * ///// Compares Equatable objects.
+ *
+ * var equals = function( o )
+ * {
+ *     return this.id === o.id ;
+ * }
+ *
+ * var o1 = { id:1 , equals:equals } ;
+ * var o2 = { id:2 , equals:equals } ;
+ * var o3 = { id:1 , equals:equals } ;
+ *
+ * e = new NotEquals( o1 , o1 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new NotEquals( o1 , o2 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new NotEquals( o1 , o3 ) ;
+ * trace( e.eval() ) ; // false
+ * </pre>
+ */
+function NotEquals() {
+    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    this.value1 = value1;
+    this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+NotEquals.prototype = Object.create(Rule.prototype);
+NotEquals.prototype.constructor = NotEquals;
+
+/**
+ * Evaluates the specified object.
+ */
+NotEquals.prototype.eval = function () {
+    if (this.value1 === this.value2) {
+        return false;
+    } else if (this.value1 instanceof Rule && this.value2 instanceof Rule) {
+        return this.value1.eval() !== this.value2.eval();
+    } else if (isEquatable(this.value1)) {
+        return !this.value1.equals(this.value2);
+    } else {
+        return true;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+NotEquals.prototype.toString = function () /*String*/
+{
+    return "[NotEquals]";
+};
+
+/**
+ * Evaluates if the condition is null.
+ * @param value The value to evaluate.
+ * @example
+ * var Null = system.rules.Null ;
+ *
+ * var cond ;
+ *
+ * cond = new Null( undefined , true ) ;
+ * trace( cond.eval() ) ; // false
+ *
+ * cond = new Null( undefined ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Null( null ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Null( "hello" ) ;
+ * trace( cond.eval() ) ; // false
+ * </pre>
+ */
+function Null() {
+    var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+    this.value = value;
+    this.strict = strict;
+}
+
+/**
+ * @extends Evaluable
+ */
+Null.prototype = Object.create(Rule.prototype);
+Null.prototype.constructor = Null;
+
+/**
+ * Evaluates the specified object.
+ */
+Null.prototype.eval = function () {
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Null.prototype.toString = function () /*String*/
+{
+    return "[Null]";
+};
+
+/**
+ * Evaluates if the value is odd.
+ * @param value The value to evaluate.
+ * @example
+ * var cond ;
+ * var Odd = system.rules.Odd ;
+ *
+ * cond = new Odd( 0 ) ;
+ * trace( cond.eval() ) ; // false
+ *
+ * cond = new Odd( 1 ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Odd( 2 ) ;
+ * trace( cond.eval() ) ; // false
+ *
+ * cond = new Odd( 3 ) ;
+ * trace( cond.eval() ) ; // true
+ * </pre>
+ */
+function Odd() {
+  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.value = value;
+}
+
+/**
+ * @extends Evaluable
+ */
+Odd.prototype = Object.create(Rule.prototype);
+Odd.prototype.constructor = Odd;
+
+/**
+ * Evaluates the specified object.
+ */
+Odd.prototype.eval = function () {
+  return this.value % 2 !== 0;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Odd.prototype.toString = function () /*String*/
+{
+  return "[Odd]";
+};
+
+/**
  * The VEGAS.js framework - The system.rules library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -13241,9 +13779,19 @@ var rules = Object.assign({
     // classes
     And: And,
     BooleanRule: BooleanRule,
+    DivBy: DivBy,
     EmptyString: EmptyString,
     Equals: Equals,
-    DivBy: DivBy,
+    Even: Even,
+    False: False,
+    GreaterOrEqualsThan: GreaterOrEqualsThan,
+    GreaterThan: GreaterThan,
+    LessOrEqualsThan: LessOrEqualsThan,
+    LessThan: LessThan,
+    Odd: Odd,
+    Not: Not,
+    NotEquals: NotEquals,
+    Null: Null,
     Rule: Rule
 });
 

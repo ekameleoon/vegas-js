@@ -2,13 +2,24 @@
 
 import '../polyfill.js' ;
 
-import { And }         from './rules/And.js' ;
-import { BooleanRule } from './rules/BooleanRule.js' ;
-import { DivBy }       from './rules/DivBy.js' ;
-import { EmptyString } from './rules/EmptyString.js' ;
-import { Equals }      from './rules/Equals.js' ;
-import { isRule }      from './rules/Rule.js' ;
-import { Rule }        from './rules/Rule.js' ;
+import { And }                 from './rules/And.js' ;
+import { BooleanRule }         from './rules/BooleanRule.js' ;
+import { DivBy }               from './rules/DivBy.js' ;
+import { EmptyString }         from './rules/EmptyString.js' ;
+import { Equals }              from './rules/Equals.js' ;
+import { Even }                from './rules/Even.js' ;
+import { False }               from './rules/False.js' ;
+import { GreaterOrEqualsThan } from './rules/GreaterOrEqualsThan.js' ;
+import { GreaterThan }         from './rules/GreaterThan.js' ;
+import { LessOrEqualsThan }    from './rules/LessOrEqualsThan.js' ;
+import { LessThan }            from './rules/LessThan.js' ;
+import { Not }                 from './rules/Not.js' ;
+import { NotEquals }           from './rules/NotEquals.js' ;
+import { Null }                from './rules/Null.js' ;
+import { Odd }                 from './rules/Odd.js' ;
+import { Rule }                from './rules/Rule.js' ;
+
+import { isRule } from './rules/Rule.js' ;
 
 /**
  * The VEGAS.js framework - The system.rules library.
@@ -18,13 +29,23 @@ import { Rule }        from './rules/Rule.js' ;
 export var rules = Object.assign
 ({
     // singletons
-    isRule      : isRule ,
+    isRule : isRule ,
 
     // classes
-    And         : And ,
-    BooleanRule : BooleanRule ,
-    EmptyString : EmptyString ,
-    Equals      : Equals ,
-    DivBy       : DivBy ,
-    Rule        : Rule
+    And                 : And ,
+    BooleanRule         : BooleanRule ,
+    DivBy               : DivBy ,
+    EmptyString         : EmptyString ,
+    Equals              : Equals ,
+    Even                : Even ,
+    False               : False ,
+    GreaterOrEqualsThan : GreaterOrEqualsThan ,
+    GreaterThan         : GreaterThan ,
+    LessOrEqualsThan    : LessOrEqualsThan ,
+    LessThan            : LessThan ,
+    Odd                 : Odd ,
+    Not                 : Not ,
+    NotEquals           : NotEquals ,
+    Null                : Null ,
+    Rule                : Rule
 }) ;

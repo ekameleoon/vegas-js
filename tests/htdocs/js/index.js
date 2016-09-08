@@ -1,4 +1,4 @@
-/*globals vegas */
+/* globals vegas */
 "use strict" ;
 
 if( !vegas )
@@ -11,50 +11,18 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var BooleanRule = system.rules.BooleanRule ;
-var Equals      =  system.rules.Equals ;
+var Null = system.rules.Null ;
 
-var e ;
+var cond ;
 
-///// Compares objects.
+cond = new Null( undefined , true ) ;
+trace( cond.eval() ) ; // false
 
-e = new Equals( 1 , 1 ) ;
-trace( e.eval() ) ; // true
+cond = new Null( undefined ) ;
+trace( cond.eval() ) ; // true
 
-e = new Equals( 1 , 2 ) ;
-trace( e.eval() ) ; // false
+cond = new Null( null ) ;
+trace( cond.eval() ) ; // true
 
-///// Compares Rule objects.
-
-var cond1 = new BooleanRule( true  ) ;
-var cond2 = new BooleanRule( false ) ;
-var cond3 = new BooleanRule( true  ) ;
-
-e = new Equals( cond1 , cond1 ) ;
-trace( e.eval() ) ; // true
-
-e = new Equals( cond1 , cond2 ) ;
-trace( e.eval() ) ; // false
-
-e = new Equals( cond1 , cond3 ) ;
-trace( e.eval() ) ; // true
-
-///// Compares Equatable objects.
-
-var equals = function( o )
-{
-    return this.id === o.id ;
-}
-
-var o1 = { id:1 , equals:equals } ;
-var o2 = { id:2 , equals:equals } ;
-var o3 = { id:1 , equals:equals } ;
-
-e = new Equals( o1 , o1 ) ;
-trace( e.eval() ) ; // true
-
-e = new Equals( o1 , o2 ) ;
-trace( e.eval() ) ; // false
-
-e = new Equals( o1 , o3 ) ;
-trace( e.eval() ) ; // true
+cond = new Null( "hello" ) ;
+trace( cond.eval() ) ; // false
