@@ -10610,6 +10610,426 @@ var logging = Object.assign({
 });
 
 /**
+ * Indicates if the specific objet is a Rule.
+ */
+
+function isRule(target) {
+  if (target) {
+    return target instanceof Rule || 'eval' in target && target.eval instanceof Function;
+  }
+  return false;
+}
+
+/**
+ * Defines the rule to evaluate a basic or complex condition.
+ */
+function Rule() {}
+
+/**
+ * @extends Object
+ */
+Rule.prototype = Object.create(Object.prototype);
+Rule.prototype.constructor = Rule;
+
+/**
+ * Evaluates the specified condition.
+ */
+Rule.prototype.eval = function () /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Rule.prototype.toString = function () /*String*/
+{
+  return "[Rule]";
+};
+
+/**
+ * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @example
+ * <pre>
+ * var BooleanRule = system.rules.BooleanRule ;
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ * var cond3 = new BooleanRule( cond1 ) ;
+ *
+ * trace( cond1.eval() ) ; // true
+ * trace( cond2.eval() ) ; // false
+ * trace( cond3.eval() ) ; // true
+ * </pre>
+ */
+function BooleanRule(condition) {
+  Object.defineProperties(this, {
+    /**
+     * The condition to evaluate.
+     */
+    condition: { value: condition, enumerable: true, writable: true }
+  });
+}
+
+/**
+ * @extends Rule
+ */
+BooleanRule.prototype = Object.create(Rule.prototype);
+BooleanRule.prototype.constructor = BooleanRule;
+
+/**
+ * Evaluates the specified object.
+ */
+BooleanRule.prototype.eval = function () {
+  return this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+BooleanRule.prototype.toString = function () /*String*/
+{
+  return "[BooleanRule]";
+};
+
+/**
+ * Defines a conditional rule to defines a specific 'elseif' block in a IfTask reference.
+ */
+function ElseIf() {
+    var rule /*Rule*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    this.rule = rule instanceof Rule ? rule : new BooleanRule(rule);
+    this.then = then;
+}
+
+/**
+ * @extends Rule
+ */
+ElseIf.prototype = Object.create(Rule.prototype);
+ElseIf.prototype.constructor = ElseIf;
+
+/**
+ * Evaluates the specified object.
+ */
+ElseIf.prototype.eval = function () {
+    if (this.rule && this.rule instanceof Rule) {
+        return this.rule.eval();
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+ElseIf.prototype.toString = function () /*String*/
+{
+    return "[ElseIf]";
+};
+
+/**
+ * Perform some tasks based on whether a given condition holds true or not.
+ */
+function IfTask() // jshint ignore:line
+{
+    var rule = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    Action.call(this);
+
+    Object.defineProperties(this, {
+        /**
+         * Returns the elseIfTask collection reference or null.
+         */
+        elseIfTask: { get: function get() {
+                return this._elseIfTask;
+            } },
+
+        /**
+         * Returns the elseTask action reference or null.
+         */
+        elseTask: { get: function get() {
+                return this._elseTask;
+            } },
+
+        /**
+         * Returns the thenTask action reference or null.
+         */
+        thenTask: { get: function get() {
+                return this._thenTask;
+            } },
+
+        /**
+         * Indicates if the class throws errors or notify a finished event when the task failed.
+         */
+        throwError: { value: false, writable: true, enumerable: true },
+
+        /**
+         * @private
+         */
+        _done: { value: false, writable: true },
+
+        /**
+         * @private
+         */
+        _elseIfTasks: { value: [] },
+
+        /**
+         * @private
+         */
+        _elseTask: {
+            value: elseTask instanceof Action ? elseTask : null,
+            writable: true
+        },
+
+        /**
+         * @private
+         */
+        _rule: {
+            value: rule instanceof Rule ? rule : new BooleanRule(rule),
+            writable: true
+        },
+
+        /**
+         * @private
+         */
+        _thenTask: {
+            value: thenTask instanceof Action ? thenTask : null,
+            writable: true
+        }
+    });
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+/**
+ * @extends TaskGroup
+ */
+IfTask.prototype = Object.create(Action.prototype, {
+    /**
+     * Defines the action when the condition block use the else condition.
+     * @param action The action to defines with the else condition in the IfTask reference.
+     * @return The current IfTask reference.
+     * @throws Error if an 'else' action is already register.
+     */
+    addElse: { value: function value(action /*Action*/) /*IfTask*/
+        {
+            if (this._elseTask) {
+                throw new Error(this + " addElse failed, you must not nest more than one <else> into <if>");
+            } else if (action instanceof Action) {
+                this._elseTask = action;
+            }
+            return this;
+        } },
+
+    /**
+     * Defines an action when the condition block use the elseif condition.
+     * @param condition The condition of the 'elseif' element.
+     * @param task The task to invoke if the 'elseif' condition is succeed.
+     * @return The current IfTask reference.
+     * @throws Error The condition and action reference not must be null.
+     */
+    addElseIf: { value: function value() /*IfTask*/
+        {
+            for (var _len2 = arguments.length, elseIfTask = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                elseIfTask[_key2] = arguments[_key2];
+            }
+
+            if (elseIfTask && elseIfTask.length > 0) {
+                var ei;
+                var len = elseIfTask.length;
+                for (var i = 0; i < len; i++) {
+                    ei = null;
+                    if (elseIfTask[i] instanceof ElseIf) {
+                        ei = elseIfTask[i];
+                    } else if ((elseIfTask[i] instanceof Rule || isBoolean(elseIfTask[i])) && elseIfTask[i + 1] instanceof Action) {
+                        ei = new ElseIf(elseIfTask[i], elseIfTask[i + 1]);
+                        i++;
+                    }
+
+                    if (ei) {
+                        this._elseIfTasks.push(ei);
+                    }
+                }
+            }
+
+            return this;
+        } },
+
+    /**
+     * Defines the main conditional rule of the task.
+     * @param rule The main Rule of the task.
+     * @return The current IfTask reference.
+     * @throws Error if a 'condition' is already register.
+     */
+    addRule: { value: function value(rule) /*IfTask*/
+        {
+            if (this._rule) {
+                throw new Error(this + " addRule failed, you must not nest more than one <condition> into <if>");
+            } else {
+                this._rule = rule instanceof Rule ? rule : new BooleanRule(rule);
+            }
+            return this;
+        } },
+
+    /**
+     * Defines the action when the condition block success and must run the 'then' action.
+     * @param action Defines the 'then' action in the IfTask reference.
+     * @return The current IfTask reference.
+     * @throws Error if the 'then' action is already register.
+     */
+    addThen: { value: function value(action /*Action*/) /*IfTask*/
+        {
+            if (this._thenTask) {
+                throw new Error(this + " addThen failed, you must not nest more than one <then> into <if>");
+            } else if (action instanceof Action) {
+                this._thenTask = action;
+            }
+            return this;
+        } },
+
+    /**
+     * Removes the 'elseIf' action.
+     * @return The current IfTask reference.
+     */
+    deleteElseIf: { value: function value() /*IfTask*/
+        {
+            this._elseIfTasks.length = 0;
+            return this;
+        } },
+
+    /**
+     * Removes the 'else' action.
+     * @return The current IfTask reference.
+     */
+    deleteElse: { value: function value() /*IfTask*/
+        {
+            this._elseTask = null;
+            return this;
+        } },
+
+    /**
+     * Removes the 'rule' of the task.
+     * @return The current IfTask reference.
+     */
+    deleteRule: { value: function value() /*IfTask*/
+        {
+            this._rule = null;
+            return this;
+        } },
+
+    /**
+     * Removes the 'then' action.
+     * @return The current IfTask reference.
+     */
+    deleteThen: { value: function value() /*IfTask*/
+        {
+            this._thenTask = null;
+            return this;
+        } },
+
+    /**
+     * Reset all elements in the process.
+     */
+    reset: { value: function value() {
+            this._elseIfTasks.length = 0;
+            this._elseTask = null;
+            this._thenTask = null;
+        } },
+
+    /**
+     * Run the process.
+     */
+    run: { value: function value() {
+            if (this.running) {
+                return;
+            }
+
+            this._done = false;
+
+            this.notifyStarted();
+
+            if (this.throwError && !this._rule) {
+                throw new Error(this + " run failed, the 'conditional rule' of the task not must be null.");
+            }
+
+            if (this._rule && this._rule.eval()) {
+                if (this._thenTask instanceof Action) {
+                    this._execute(this._thenTask);
+                } else if (this.throwError) {
+                    throw new Error(this + " run failed, the 'then' action not must be null.");
+                }
+            } else {
+                if (this._elseIfTasks.length > 0) {
+                    var ei;
+                    var len = this._elseIfTasks.length;
+                    for (var i = 0; i < len && !this._done; i++) {
+                        ei = this._elseIfTasks[i];
+                        if (ei instanceof ElseIf && ei.eval()) {
+                            this._execute(ei.then);
+                        }
+                    }
+                }
+
+                if (!this._done && this._elseTask) {
+                    this._execute(this._elseTask);
+                }
+            }
+
+            if (!this._done) {
+                if (this.throwError) {
+                    throw new Error(this + " run failed, the 'then' action not must be null.");
+                } else {
+                    this.notifyFinished();
+                }
+            }
+        } },
+
+    // ---------- private
+
+    /**
+     * @private
+     */
+    _execute: { value: function value(action /*Action*/) {
+            if (action instanceof Action) {
+                this._done = true;
+                action.finishIt.connect(this._finishTask, 1, true);
+                action.run();
+            }
+        } },
+
+    /**
+     * @private
+     */
+    _finishTask: { value: function value() {
+            this.notifyFinished();
+        } }
+});
+
+IfTask.prototype.constructor = IfTask;
+
+/**
+ * The VEGAS.js framework - The system.logics library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var logics = Object.assign({
+  ElseIf: ElseIf,
+  IfTask: IfTask
+});
+
+/**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
  * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
@@ -12876,45 +13296,6 @@ var process = Object.assign({
 });
 
 /**
- * Indicates if the specific objet is a Rule.
- */
-
-function isRule(target) {
-  if (target) {
-    return target instanceof Rule || 'eval' in target && target.eval instanceof Function;
-  }
-  return false;
-}
-
-/**
- * Defines the rule to evaluate a basic or complex condition.
- */
-function Rule() {}
-
-/**
- * @extends Object
- */
-Rule.prototype = Object.create(Object.prototype);
-Rule.prototype.constructor = Rule;
-
-/**
- * Evaluates the specified condition.
- */
-Rule.prototype.eval = function () /*Boolean*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Rule.prototype.toString = function () /*String*/
-{
-  return "[Rule]";
-};
-
-/**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
  * <p><b>Example :</b></p>
  * <pre>
@@ -13040,52 +13421,6 @@ And.prototype.eval = function () {
 And.prototype.toString = function () /*String*/
 {
     return "[And]";
-};
-
-/**
- * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * @example
- * <pre>
- * var BooleanRule = system.rules.BooleanRule ;
- *
- * var cond1 = new BooleanRule( true  ) ;
- * var cond2 = new BooleanRule( false ) ;
- * var cond3 = new BooleanRule( cond1 ) ;
- *
- * trace( cond1.eval() ) ; // true
- * trace( cond2.eval() ) ; // false
- * trace( cond3.eval() ) ; // true
- * </pre>
- */
-function BooleanRule(condition) {
-  Object.defineProperties(this, {
-    /**
-     * The condition to evaluate.
-     */
-    condition: { value: condition, enumerable: true, writable: true }
-  });
-}
-
-/**
- * @extends Rule
- */
-BooleanRule.prototype = Object.create(Rule.prototype);
-BooleanRule.prototype.constructor = BooleanRule;
-
-/**
- * Evaluates the specified object.
- */
-BooleanRule.prototype.eval = function () {
-  return this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition);
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-BooleanRule.prototype.toString = function () /*String*/
-{
-  return "[BooleanRule]";
 };
 
 /**
@@ -14265,6 +14600,7 @@ var system = Object.assign({
     formatters: formatters,
     ioc: ioc,
     logging: logging,
+    logics: logics,
     numeric: numeric,
     process: process,
     rules: rules,

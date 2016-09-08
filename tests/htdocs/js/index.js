@@ -11,11 +11,27 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var IsNumber = system.rules.IsNumber ;
+var map = new system.data.maps.ArrayMap() ;
 
-trace( (new IsNumber( 0 )).eval() ) ; // true
-trace( (new IsNumber( 1 )).eval() ) ; // true
-trace( (new IsNumber( NaN )).eval() ) ; // true
+map.set("key1", "value1") ;
+map.set("key2", "value2") ;
+map.set("key3", "value3") ;
 
-trace( (new IsNumber( true )).eval() ) ; // false
-trace( (new IsNumber( null )).eval() ) ; // false
+trace ("map : " + map) ;
+
+trace ("------ iterator") ;
+
+var iterator = map.iterator() ;
+while (iterator.hasNext())
+{
+    trace (iterator.next() + " : " + iterator.key()) ;
+}
+
+trace( 'values : ' + map.values()) ;
+trace( map.has('key2')) ;
+trace( map.get('key2') ) ;
+trace( map.indexOfKey('key2')) ;
+
+map.delete( 'key2' ) ;
+
+trace ("map : " + map) ;

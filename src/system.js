@@ -16,6 +16,7 @@ import { evaluators } from './system/evaluators.js' ;
 import { formatters } from './system/formatters.js' ;
 import { ioc }        from './system/ioc.js' ;
 import { logging }    from './system/logging.js' ;
+import { logics }     from './system/logics.js' ;
 import { numeric }    from './system/numeric.js' ;
 import { process }    from './system/process.js' ;
 import { rules }      from './system/rules.js' ;
@@ -45,6 +46,7 @@ export var system = Object.assign
     formatters : formatters ,
     ioc        : ioc ,
     logging    : logging ,
+    logics     : logics ,
     numeric    : numeric ,
     process    : process ,
     rules      : rules ,
