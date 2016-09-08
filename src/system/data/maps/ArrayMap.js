@@ -129,6 +129,25 @@ ArrayMap.prototype.delete = function ( key )
 }
 
 /**
+ * The forEach() method executes a provided function once per each key/value pair in the Map object, in insertion order.
+ * @param callback Function to execute for each element.
+ * @param thisArg Value to use as this when executing callback.
+ */
+ArrayMap.prototype.forEach = function( callback , thisArg = null )
+{
+    if (typeof callback !== "function")
+    {
+        throw new TypeError( callback + ' is not a function' );
+    }
+
+    var l = this._keys.length ;
+    for( var i = 0 ; i<l ; i++ )
+    {
+        callback.call( thisArg , this._values[i] , this._keys[i] , this ) ;
+    }
+}
+
+/**
  * Returns the value to which this map maps the specified key.
  * @return the value to which this map maps the specified key.
  */
