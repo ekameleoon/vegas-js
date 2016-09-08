@@ -8,7 +8,7 @@ export function isEvaluable( target )
 {
     if( target )
     {
-        return ( 'eval' in target ) && ( target.eval instanceof Function )  ;
+        return (target instanceof Evaluable) || (( 'eval' in target ) && ( target.eval instanceof Function ))  ;
     }
 
     return false ;

@@ -8,7 +8,7 @@ export function isFormattable( target )
 {
     if( target )
     {
-        return ( 'format' in target ) && ( target.format instanceof Function )  ;
+        return (target instanceof Formattable) || (( 'format' in target ) && ( target.format instanceof Function ))  ;
     }
 
     return false ;

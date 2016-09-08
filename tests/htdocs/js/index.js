@@ -1,4 +1,4 @@
-/* globals vegas */
+/*globals vegas */
 "use strict" ;
 
 if( !vegas )
@@ -11,161 +11,50 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var Log           = system.logging.Log ;
-var LoggerLevel   = system.logging.LoggerLevel ;
-var ConsoleTarget = system.logging.targets.ConsoleTarget ;
+var BooleanRule = system.rules.BooleanRule ;
+var Equals      =  system.rules.Equals ;
 
-var target = new ConsoleTarget
-({
-    includeChannel      : true  ,
-    includeDate         : false ,
-    includeLevel        : true  ,
-    includeLines        : true  ,
-    includeMilliseconds : true  ,
-    includeTime         : true
-}) ;
+var e ;
 
-target.filters = ['*'] ;
-target.level   = LoggerLevel.ALL ;
+///// Compares objects.
 
-var logger = Log.getLogger('channel') ;
+e = new Equals( 1 , 1 ) ;
+trace( e.eval() ) ; // true
 
-logger.info('---------- Start Example');
+e = new Equals( 1 , 2 ) ;
+trace( e.eval() ) ; // false
 
-// -----------------------
+///// Compares Rule objects.
 
-var Point = function( x , y )
+var cond1 = new BooleanRule( true  ) ;
+var cond2 = new BooleanRule( false ) ;
+var cond3 = new BooleanRule( true  ) ;
+
+e = new Equals( cond1 , cond1 ) ;
+trace( e.eval() ) ; // true
+
+e = new Equals( cond1 , cond2 ) ;
+trace( e.eval() ) ; // false
+
+e = new Equals( cond1 , cond3 ) ;
+trace( e.eval() ) ; // true
+
+///// Compares Equatable objects.
+
+var equals = function( o )
 {
-    this.x = x ;
-    this.y = y ;
-};
-
-Point.prototype.destroy = function()
-{
-    logger.info( this + " destroy" ) ;
+    return this.id === o.id ;
 }
 
-Point.prototype.init = function()
-{
-    logger.info( this + " init" ) ;
-}
+var o1 = { id:1 , equals:equals } ;
+var o2 = { id:2 , equals:equals } ;
+var o3 = { id:1 , equals:equals } ;
 
-Point.prototype.test = function( message = null )
-{
-    logger.info( this + ' test message: ' + message ) ;
-}
+e = new Equals( o1 , o1 ) ;
+trace( e.eval() ) ; // true
 
-Point.prototype.toString = function()
-{
-    return "[Point x:" + this.x + " y:" + this.y + "]" ;
-} ;
+e = new Equals( o1 , o2 ) ;
+trace( e.eval() ) ; // false
 
-// -----------------------
-
-var Slot = function()
-{
-    logger.debug( this + ' constructor invoked') ;
-}
-
-Slot.prototype = Object.create( system.signals.Receiver.prototype ,
-{
-    constructor : { value : Slot } ,
-    receive     : { value : function( message )
-    {
-        logger.info( 'slot receive ' + (message || 'an unknow message...') ) ;
-    }},
-    toString : { value : function() { return '[Slot]' ; } }
-})
-
-// -----------------------
-
-var ObjectFactory = system.ioc.ObjectFactory ;
-
-var factory = new ObjectFactory();
-var config  = factory.config ;
-
-//config.domain = vegas ;
-
-config.setConfigTarget({
-
-    'origin'  : { x : 10 , y : 20 } ,
-    'nirvana' : { x : 0  , y : 0  }
-});
-
-config.setLocaleTarget({
-
-    messages :
-    {
-        test : 'test'
-    }
-});
-
-config.typePolicy = system.ioc.TypePolicy.ALL ;
-
-config.typeAliases =
-[
-    { alias : "Signal" , type : "{signals}.Signal" }
-];
-
-config.typeExpression =
-[
-    { name : "system"  , value : "system"           } ,
-    { name : "signals" , value : "{system}.signals" }
-];
-
-var objects =
-[
-    {
-        id        : "signal" ,
-        type      : "Signal" ,
-        dependsOn : [ 'slot' ] ,
-        singleton : true ,
-        lazyInit  : true
-    },
-    {
-        id        : "slot" ,
-        type      : "Slot" ,
-        singleton : true ,
-        lazyInit  : true ,
-        receivers : [ { signal : "signal" } ]
-    },
-    {
-        id   : "position" ,
-        type : "Point" ,
-        args : [ { value : 2 } , { ref : 'origin.y' }],
-        sigleton   : true ,
-        lazyInit   : true ,
-        init       : 'init' ,
-        properties :
-        [
-            { name : "x" , ref   :'origin.x' } ,
-            { name : "y" , value : 100       } ,
-            { name : '#init' , config : 'nirvana' }
-        ]
-    },
-    {
-        id         : "origin" ,
-        type       : "Point" ,
-        singleton  : true ,
-        lazyInit   : true ,
-        args       : [ { config : 'origin.x' } , { value : 20 }] ,
-        properties :
-        [
-            { name : 'test' , args : [ { locale : 'messages.test' } ] }
-        ]
-    }
-];
-
-factory.run( objects );
-
-var position = factory.getObject('position') ;
-
-var signal = factory.getObject('signal') ;
-if( signal )
-{
-    signal.emit( 'hello world' ) ;
-}
-else
-{
-    logger.warning( 'The slot reference not must be null or undefined.' );
-}
+e = new Equals( o1 , o3 ) ;
+trace( e.eval() ) ; // true

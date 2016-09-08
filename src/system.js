@@ -3,6 +3,7 @@
 import './polyfill.js' ;
 
 import { Enum }        from './system/Enum.js' ;
+import { Equatable }   from './system/Equatable.js' ;
 import { Evaluable }   from './system/Evaluable.js' ;
 import { Formattable } from './system/Formattable.js' ;
 
@@ -17,6 +18,7 @@ import { ioc }        from './system/ioc.js' ;
 import { logging }    from './system/logging.js' ;
 import { numeric }    from './system/numeric.js' ;
 import { process }    from './system/process.js' ;
+import { rules }      from './system/rules.js' ;
 import { signals }    from './system/signals.js' ;
 
 /**
@@ -28,6 +30,7 @@ export var system = Object.assign
 ({
     // interfaces
     Enum        : Enum ,
+    Equatable   : Equatable ,
     Evaluable   : Evaluable ,
     Formattable : Formattable ,
 
@@ -44,5 +47,6 @@ export var system = Object.assign
     logging    : logging ,
     numeric    : numeric ,
     process    : process ,
+    rules      : rules ,
     signals    : signals
 }) ;

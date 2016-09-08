@@ -3210,12 +3210,53 @@ Enum.prototype.valueOf = function () {
 };
 
 /**
+ * Indicates if the specific objet is Equatable.
+ */
+
+function isEquatable(target) {
+  if (target) {
+    return target.equals && target.equals instanceof Function || target instanceof Equatable;
+  }
+
+  return false;
+}
+
+/**
+ * This interface is implemented by classes that can compare an object with their objects.
+ */
+function Equatable() {}
+
+/**
+ * @extends Object
+ */
+Equatable.prototype = Object.create(Object.prototype);
+Equatable.prototype.constructor = Equatable;
+
+/**
+ * Compares the specified object with this object for equality.
+ * @return true if the the specified object is equal with this object.
+ */
+Equatable.prototype.equals = function (o) /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Equatable.prototype.toString = function () /*String*/
+{
+  return "[Equatable]";
+};
+
+/**
  * Indicates if the specific objet is Evaluable.
  */
 
 function isEvaluable(target) {
   if (target) {
-    return 'eval' in target && target.eval instanceof Function;
+    return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
   }
 
   return false;
@@ -3257,7 +3298,7 @@ Evaluable.prototype.eval = function (o) /*void*/
 
 function isFormattable(target) {
   if (target) {
-    return 'format' in target && target.format instanceof Function;
+    return target instanceof Formattable || 'format' in target && target.format instanceof Function;
   }
 
   return false;
@@ -12792,6 +12833,421 @@ var process = Object.assign({
 });
 
 /**
+ * Indicates if the specific objet is a Rule.
+ */
+
+function isRule(target) {
+  if (target) {
+    return target instanceof Rule || 'eval' in target && target.eval instanceof Function;
+  }
+  return false;
+}
+
+/**
+ * Defines the rule to evaluate a basic or complex condition.
+ */
+function Rule() {}
+
+/**
+ * @extends Object
+ */
+Rule.prototype = Object.create(Object.prototype);
+Rule.prototype.constructor = Rule;
+
+/**
+ * Evaluates the specified condition.
+ */
+Rule.prototype.eval = function () /*Boolean*/
+{}
+//
+
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+;Rule.prototype.toString = function () /*String*/
+{
+  return "[Rule]";
+};
+
+/**
+ * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * <p><b>Example :</b></p>
+ * <pre>
+ * var And = system.rules.And ;
+ * var BooleanRule = system.rules.BooleanRule ;
+ *
+ * var rule1 = new BooleanRule( true  ) ;
+ * var rule2 = new BooleanRule( false ) ;
+ * var rule3 = new BooleanRule( true  ) ;
+ *
+ * var a ;
+ *
+ * a = new And( rule1 , rule1 ) ;
+ * trace( a.eval() ) ; // true
+ *
+ * a = new And( rule1 , rule1 , rule1 ) ;
+ * trace( a.eval() ) ; // true
+ *
+ * a = new And( rule1 , rule2 ) ;
+ * trace( a.eval() ) ; // false
+ *
+ * a = new And( rule2 , rule1 ) ;
+ * trace( a.eval() ) ; // false
+ *
+ * a = new And( rule2 , rule2 ) ;
+ * trace( a.eval() ) ; // false
+ *
+ * a = new And( rule1 , rule2 , rule3 ) ;
+ * trace( a.eval() ) ; // false
+ *
+ * a = new And( rule1 , rule3 ) ;
+ * a.add( rule2 ) ;
+ * trace( a.length ) ; // 3
+ * trace( a.eval() ) ; // false
+ *
+ * a.clear()
+ * trace( a.length ) ; // 0
+ * trace( a.eval() ) ; // false
+ * a.add(rule1) ;
+ * trace( a.eval() ) ; // true
+ * </pre>
+ */
+function And(rule1 /*Rule*/, rule2 /*Rule*/) {
+    Object.defineProperties(this, {
+        /**
+         * The collection of all rules to evaluate.
+         */
+        rules: { value: [], enumerable: true },
+
+        /**
+         * The number of rules to evaluate.
+         */
+        length: { get: function get() {
+                return this.rules instanceof Array ? this.rules.length : 0;
+            } }
+    });
+
+    if (!(rule1 instanceof Rule) || !(rule2 instanceof Rule)) {
+        throw new ReferenceError(this + ' constructor failed, the two rules in argument must be defined.');
+    }
+
+    this.add(rule1);
+    this.add(rule2);
+
+    for (var _len = arguments.length, rules = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        rules[_key - 2] = arguments[_key];
+    }
+
+    if (rules && rules.length > 0) {
+        var len = rules.length;
+        for (var i = 0; i < len; i++) {
+            if (rules[i] instanceof Rule) {
+                this.add(rules[i]);
+            }
+        }
+    }
+}
+
+/**
+ * @extends Evaluable
+ */
+And.prototype = Object.create(Rule.prototype);
+And.prototype.constructor = And;
+
+/**
+ * Insert a new Rule in the And condition.
+ */
+And.prototype.add = function (rule) {
+    if (rule instanceof Rule) {
+        this.rules.push(rule);
+    }
+    return this;
+};
+
+/**
+ * Clear all rules to evaluates.
+ */
+And.prototype.clear = function () {
+    this.rules.length = 0;
+    return this;
+};
+
+/**
+ * Evaluates the specified object.
+ */
+And.prototype.eval = function () {
+    if (this.rules.length > 0) {
+        var b = this.rules[0].eval();
+        var l = this.rules.length;
+        for (var i = 1; i < l; i++) {
+            b = b && this.rules[i].eval();
+        }
+        return b;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+And.prototype.toString = function () /*String*/
+{
+    return "[And]";
+};
+
+/**
+ * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @example
+ * <pre>
+ * var BooleanRule = system.rules.BooleanRule ;
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ * var cond3 = new BooleanRule( cond1 ) ;
+ *
+ * trace( cond1.eval() ) ; // true
+ * trace( cond2.eval() ) ; // false
+ * trace( cond3.eval() ) ; // true
+ * </pre>
+ */
+function BooleanRule(condition) {
+  Object.defineProperties(this, {
+    /**
+     * The condition to evaluate.
+     */
+    condition: { value: condition, enumerable: true, writable: true }
+  });
+}
+
+/**
+ * @extends Evaluable
+ */
+BooleanRule.prototype = Object.create(Rule.prototype);
+BooleanRule.prototype.constructor = BooleanRule;
+
+/**
+ * Evaluates the specified object.
+ */
+BooleanRule.prototype.eval = function () {
+  return this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition);
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+BooleanRule.prototype.toString = function () /*String*/
+{
+  return "[BooleanRule]";
+};
+
+/**
+ * Evaluates if the division of a value by another returns 0.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ * var DivBy = system.rules.DivBy ;
+ *
+ * var cond ;
+ *
+ * cond = new DivBy( 4 , 2 ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new DivBy( 5 , 2 ) ;
+ * trace( cond.eval() ) ; // false
+ * </pre>
+ */
+function DivBy() {
+  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  this.value1 = value1;
+  this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+DivBy.prototype = Object.create(Rule.prototype);
+DivBy.prototype.constructor = DivBy;
+
+/**
+ * Evaluates the specified object.
+ */
+DivBy.prototype.eval = function () {
+  return this.value1 % this.value2 === 0;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+DivBy.prototype.toString = function () /*String*/
+{
+  return "[DivBy]";
+};
+
+/**
+ * Evaluates if the value is an empty String.
+ * @param value The value to evaluate.
+ * @example
+ * var EmptyString = system.rules.EmptyString ;
+ *
+ * var cond1 = new EmptyString( null ) ;
+ * var cond2 = new EmptyString( "" ) ;
+ * var cond3 = new EmptyString( "hello" ) ;
+ *
+ * trace( cond1.eval() ) ; // false
+ * trace( cond2.eval() ) ; // true
+ * trace( cond3.eval() ) ; // false
+ * </pre>
+ */
+function EmptyString() {
+  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.value = value;
+}
+
+/**
+ * @extends Evaluable
+ */
+EmptyString.prototype = Object.create(Rule.prototype);
+EmptyString.prototype.constructor = EmptyString;
+
+/**
+ * Evaluates the specified object.
+ */
+EmptyString.prototype.eval = function () {
+  return this.value === "";
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+EmptyString.prototype.toString = function () /*String*/
+{
+  return "[EmptyString]";
+};
+
+/**
+ * Used to perform a logical conjunction on two conditions and more.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ *
+ * var BooleanRule = system.rules.BooleanRule ;
+ * var Equals      =  system.rules.Equals ;
+ *
+ * var e ;
+ *
+ * ///// Compares objects.
+ *
+ * e = new Equals( 1 , 1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( 1 , 2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * ///// Compares Rule objects.
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ * var cond3 = new BooleanRule( true  ) ;
+ *
+ * e = new Equals( cond1 , cond1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( cond1 , cond2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new Equals( cond1 , cond3 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * ///// Compares Equatable objects.
+ *
+ * var equals = function( o )
+ * {
+ *     return this.id === o.id ;
+ * }
+ *
+ * var o1 = { id:1 , equals:equals } ;
+ * var o2 = { id:2 , equals:equals } ;
+ * var o3 = { id:1 , equals:equals } ;
+ *
+ * e = new Equals( o1 , o1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( o1 , o2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new Equals( o1 , o3 ) ;
+ * trace( e.eval() ) ; // true
+ * </pre>
+ */
+function Equals() {
+    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    this.value1 = value1;
+    this.value2 = value2;
+}
+
+/**
+ * @extends Evaluable
+ */
+Equals.prototype = Object.create(Rule.prototype);
+Equals.prototype.constructor = Equals;
+
+/**
+ * Evaluates the specified object.
+ */
+Equals.prototype.eval = function () {
+    if (this.value1 === this.value2) {
+        return true;
+    } else if (this.value1 instanceof Rule && this.value2 instanceof Rule) {
+        return this.value1.eval() === this.value2.eval();
+    } else if (isEquatable(this.value1)) {
+        return this.value1.equals(this.value2);
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Equals.prototype.toString = function () /*String*/
+{
+    return "[Equals]";
+};
+
+/**
+ * The VEGAS.js framework - The system.rules library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var rules = Object.assign({
+    // singletons
+    isRule: isRule,
+
+    // classes
+    And: And,
+    BooleanRule: BooleanRule,
+    EmptyString: EmptyString,
+    Equals: Equals,
+    DivBy: DivBy,
+    Rule: Rule
+});
+
+/**
  * The enumeration of all string expressions in the signal engine.
  */
 
@@ -12831,6 +13287,7 @@ var signals = Object.assign({
 var system = Object.assign({
     // interfaces
     Enum: Enum,
+    Equatable: Equatable,
     Evaluable: Evaluable,
     Formattable: Formattable,
 
@@ -12847,6 +13304,7 @@ var system = Object.assign({
     logging: logging,
     numeric: numeric,
     process: process,
+    rules: rules,
     signals: signals
 });
 
