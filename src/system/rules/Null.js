@@ -1,3 +1,4 @@
+/* jshint eqnull: true */
 "use strict" ;
 
 import { Rule } from './Rule.js' ;
@@ -23,14 +24,14 @@ import { Rule } from './Rule.js' ;
  * trace( cond.eval() ) ; // false
  * </pre>
  */
-export function Null( value = null , strict = false )
+export function Null( value , strict = false )
 {
     this.value  = value ;
-    this.strict = strict ;
+    this.strict = Boolean(strict) ;
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Null.prototype = Object.create( Rule.prototype );
 Null.prototype.constructor = Null ;
@@ -42,11 +43,11 @@ Null.prototype.eval = function ()
 {
     if( this.strict )
     {
-        return this.value === null ;
+        return (this.value === null) ;
     }
     else
     {
-        return this.value == null ;
+        return (this.value == null) ;
     }
 }
 

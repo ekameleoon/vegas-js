@@ -65,7 +65,7 @@ export function NotEquals( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 NotEquals.prototype = Object.create( Rule.prototype );
 NotEquals.prototype.constructor = NotEquals ;

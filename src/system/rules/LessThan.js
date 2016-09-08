@@ -29,7 +29,7 @@ export function LessThan( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 LessThan.prototype = Object.create( Rule.prototype );
 LessThan.prototype.constructor = LessThan ;

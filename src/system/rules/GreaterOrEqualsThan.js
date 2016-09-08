@@ -29,7 +29,7 @@ export function GreaterOrEqualsThan( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 GreaterOrEqualsThan.prototype = Object.create( Rule.prototype );
 GreaterOrEqualsThan.prototype.constructor = GreaterOrEqualsThan ;

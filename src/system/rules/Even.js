@@ -28,7 +28,7 @@ export function Even( value = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Even.prototype = Object.create( Rule.prototype );
 Even.prototype.constructor = Even ;

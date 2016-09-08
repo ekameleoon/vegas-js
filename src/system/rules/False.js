@@ -25,7 +25,7 @@ export function False( condition = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 False.prototype = Object.create( Rule.prototype );
 False.prototype.constructor = False ;

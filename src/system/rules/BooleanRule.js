@@ -29,7 +29,7 @@ export function BooleanRule( condition )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 BooleanRule.prototype = Object.create( Rule.prototype );
 BooleanRule.prototype.constructor = BooleanRule ;

@@ -23,7 +23,7 @@ export function EmptyString( value = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 EmptyString.prototype = Object.create( Rule.prototype );
 EmptyString.prototype.constructor = EmptyString ;

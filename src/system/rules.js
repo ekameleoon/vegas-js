@@ -11,13 +11,20 @@ import { Even }                from './rules/Even.js' ;
 import { False }               from './rules/False.js' ;
 import { GreaterOrEqualsThan } from './rules/GreaterOrEqualsThan.js' ;
 import { GreaterThan }         from './rules/GreaterThan.js' ;
+import { IsBoolean }           from './rules/IsBoolean.js' ;
+import { IsNumber }            from './rules/IsNumber.js' ;
+import { IsString }            from './rules/IsString.js' ;
 import { LessOrEqualsThan }    from './rules/LessOrEqualsThan.js' ;
 import { LessThan }            from './rules/LessThan.js' ;
 import { Not }                 from './rules/Not.js' ;
 import { NotEquals }           from './rules/NotEquals.js' ;
 import { Null }                from './rules/Null.js' ;
 import { Odd }                 from './rules/Odd.js' ;
+import { Or }                  from './rules/Or.js' ;
 import { Rule }                from './rules/Rule.js' ;
+import { True }                from './rules/True.js' ;
+import { Undefined }           from './rules/Undefined.js' ;
+import { Zero }                from './rules/Zero.js' ;
 
 import { isRule } from './rules/Rule.js' ;
 
@@ -41,11 +48,18 @@ export var rules = Object.assign
     False               : False ,
     GreaterOrEqualsThan : GreaterOrEqualsThan ,
     GreaterThan         : GreaterThan ,
+    IsBoolean           : IsBoolean ,
+    IsNumber            : IsNumber ,
+    IsString            : IsString ,
     LessOrEqualsThan    : LessOrEqualsThan ,
     LessThan            : LessThan ,
     Odd                 : Odd ,
     Not                 : Not ,
     NotEquals           : NotEquals ,
     Null                : Null ,
-    Rule                : Rule
+    Or                  : Or ,
+    Rule                : Rule,
+    True                : True,
+    Undefined           : Undefined,
+    Zero                : Zero
 }) ;

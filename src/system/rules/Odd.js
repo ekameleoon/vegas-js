@@ -28,7 +28,7 @@ export function Odd( value = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Odd.prototype = Object.create( Rule.prototype );
 Odd.prototype.constructor = Odd ;

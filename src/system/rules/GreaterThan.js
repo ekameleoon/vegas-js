@@ -29,7 +29,7 @@ export function GreaterThan( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 GreaterThan.prototype = Object.create( Rule.prototype );
 GreaterThan.prototype.constructor = GreaterThan ;

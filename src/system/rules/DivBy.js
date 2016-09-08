@@ -26,7 +26,7 @@ export function DivBy( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 DivBy.prototype = Object.create( Rule.prototype );
 DivBy.prototype.constructor = DivBy ;

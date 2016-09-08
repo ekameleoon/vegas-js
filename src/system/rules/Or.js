@@ -6,46 +6,46 @@ import { Rule } from './Rule.js' ;
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
  * <p><b>Example :</b></p>
  * <pre>
- * var And = system.rules.And ;
+ * var Or = system.rules.Or ;
  * var BooleanRule = system.rules.BooleanRule ;
  *
  * var rule1 = new BooleanRule( true  ) ;
  * var rule2 = new BooleanRule( false ) ;
  * var rule3 = new BooleanRule( true  ) ;
  *
- * var a ;
+ * var o ;
  *
- * a = new And( rule1 , rule1 ) ;
- * trace( a.eval() ) ; // true
+ * o = new Or( rule1 , rule1 ) ;
+ * trace( o.eval() ) ; // true
  *
- * a = new And( rule1 , rule1 , rule1 ) ;
- * trace( a.eval() ) ; // true
+ * o = new Or( rule1 , rule1 , rule1 ) ;
+ * trace( o.eval() ) ; // true
  *
- * a = new And( rule1 , rule2 ) ;
- * trace( a.eval() ) ; // false
+ * o = new Or( rule1 , rule2 ) ;
+ * trace( o.eval() ) ; // true
  *
- * a = new And( rule2 , rule1 ) ;
- * trace( a.eval() ) ; // false
+ * o = new Or( rule2 , rule1 ) ;
+ * trace( o.eval() ) ; // true
  *
- * a = new And( rule2 , rule2 ) ;
- * trace( a.eval() ) ; // false
+ * o = new Or( rule2 , rule2 ) ;
+ * trace( o.eval() ) ; // false
  *
- * a = new And( rule1 , rule2 , rule3 ) ;
- * trace( a.eval() ) ; // false
+ * o = new Or( rule1 , rule2 , rule3 ) ;
+ * trace( o.eval() ) ; // true
  *
- * a = new And( rule1 , rule3 ) ;
- * a.add( rule2 ) ;
- * trace( a.length ) ; // 3
- * trace( a.eval() ) ; // false
+ * o = new Or( rule1 , rule3 ) ;
+ * o.add( rule2 ) ;
+ * trace( o.length ) ; // 3
+ * trace( o.eval() ) ; // true
  *
- * a.clear()
- * trace( a.length ) ; // 0
- * trace( a.eval() ) ; // false
- * a.add(rule1) ;
- * trace( a.eval() ) ; // true
+ * o.clear()
+ * trace( o.length ) ; // 0
+ * trace( o.eval() ) ; // false
+ * o.add(rule1) ;
+ * trace( o.eval() ) ; // true
  * </pre>
  */
-export function And( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
+export function Or( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
 {
     Object.defineProperties( this ,
     {
@@ -84,13 +84,13 @@ export function And( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
 /**
  * @extends Rule
  */
-And.prototype = Object.create( Rule.prototype );
-And.prototype.constructor = And ;
+Or.prototype = Object.create( Rule.prototype );
+Or.prototype.constructor = Or ;
 
 /**
- * Insert a new Rule in the And condition.
+ * Insert a new Rule in the Or condition.
  */
-And.prototype.add = function( rule )
+Or.prototype.add = function( rule )
 {
     if( rule instanceof Rule )
     {
@@ -102,7 +102,7 @@ And.prototype.add = function( rule )
 /**
  * Clear all rules to evaluates.
  */
-And.prototype.clear = function()
+Or.prototype.clear = function()
 {
     this.rules.length = 0 ;
     return this ;
@@ -111,7 +111,7 @@ And.prototype.clear = function()
 /**
  * Evaluates the specified object.
  */
-And.prototype.eval = function ()
+Or.prototype.eval = function ()
 {
     if( this.rules.length > 0 )
     {
@@ -119,7 +119,7 @@ And.prototype.eval = function ()
         var l = this.rules.length ;
         for ( var i = 1 ; i<l ; i++ )
         {
-            b = b && (this.rules[i].eval()) ;
+            b = b || (this.rules[i].eval()) ;
         }
         return b ;
     }
@@ -133,7 +133,7 @@ And.prototype.eval = function ()
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
  */
-And.prototype.toString = function () /*String*/
+Or.prototype.toString = function () /*String*/
 {
-    return "[And]" ;
+    return "[Or]" ;
 }

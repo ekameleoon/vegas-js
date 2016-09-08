@@ -66,7 +66,7 @@ export function Equals( value1 = null , value2 = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Equals.prototype = Object.create( Rule.prototype );
 Equals.prototype.constructor = Equals ;

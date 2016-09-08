@@ -12951,7 +12951,7 @@ function And(rule1 /*Rule*/, rule2 /*Rule*/) {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 And.prototype = Object.create(Rule.prototype);
 And.prototype.constructor = And;
@@ -13024,7 +13024,7 @@ function BooleanRule(condition) {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 BooleanRule.prototype = Object.create(Rule.prototype);
 BooleanRule.prototype.constructor = BooleanRule;
@@ -13071,7 +13071,7 @@ function DivBy() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 DivBy.prototype = Object.create(Rule.prototype);
 DivBy.prototype.constructor = DivBy;
@@ -13114,7 +13114,7 @@ function EmptyString() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 EmptyString.prototype = Object.create(Rule.prototype);
 EmptyString.prototype.constructor = EmptyString;
@@ -13200,7 +13200,7 @@ function Equals() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Equals.prototype = Object.create(Rule.prototype);
 Equals.prototype.constructor = Equals;
@@ -13256,7 +13256,7 @@ function Even() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Even.prototype = Object.create(Rule.prototype);
 Even.prototype.constructor = Even;
@@ -13301,7 +13301,7 @@ function False() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 False.prototype = Object.create(Rule.prototype);
 False.prototype.constructor = False;
@@ -13351,7 +13351,7 @@ function GreaterOrEqualsThan() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 GreaterOrEqualsThan.prototype = Object.create(Rule.prototype);
 GreaterOrEqualsThan.prototype.constructor = GreaterOrEqualsThan;
@@ -13401,7 +13401,7 @@ function GreaterThan() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 GreaterThan.prototype = Object.create(Rule.prototype);
 GreaterThan.prototype.constructor = GreaterThan;
@@ -13420,6 +13420,126 @@ GreaterThan.prototype.eval = function () {
 GreaterThan.prototype.toString = function () /*String*/
 {
   return "[GreaterThan]";
+};
+
+/**
+ * Evaluates if the condition is a boolean.
+ * @param value The value to evaluate.
+ * @example
+ * var IsBoolean = system.rules.IsBoolean ;
+ *
+ * trace( (new IsBoolean( 0 )).eval() ) ; // false
+ * trace( (new IsBoolean( 1 )).eval() ) ; // false
+ *
+ * trace( (new IsBoolean( true )).eval() ) ; // true
+ * trace( (new IsBoolean( false )).eval() ) ; // true
+ *
+ * trace( (new IsBoolean( new Boolean(true) )).eval() ) ; // true
+ * trace( (new IsBoolean( new Boolean(false) )).eval() ) ; // true
+ * </pre>
+ */
+function IsBoolean(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+IsBoolean.prototype = Object.create(Rule.prototype);
+IsBoolean.prototype.constructor = IsBoolean;
+
+/**
+ * Evaluates the specified object.
+ */
+IsBoolean.prototype.eval = function () {
+  return typeof this.value === 'boolean' || this.value instanceof Boolean;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+IsBoolean.prototype.toString = function () /*String*/
+{
+  return "[IsBoolean]";
+};
+
+/**
+ * Evaluates if the condition is a boolean.
+ * @param value The value to evaluate.
+ * @example
+ * var IsNumber = system.rules.IsNumber ;
+ *
+ * trace( (new IsNumber( 0 )).eval() ) ; // true
+ * trace( (new IsNumber( 1 )).eval() ) ; // true
+ * trace( (new IsNumber( NaN )).eval() ) ; // true
+ *
+ * trace( (new IsNumber( true )).eval() ) ; // false
+ * trace( (new IsNumber( null )).eval() ) ; // false
+ * </pre>
+ */
+function IsNumber(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+IsNumber.prototype = Object.create(Rule.prototype);
+IsNumber.prototype.constructor = IsNumber;
+
+/**
+ * Evaluates the specified object.
+ */
+IsNumber.prototype.eval = function () {
+  return typeof this.value === 'number' || this.value instanceof Number;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+IsNumber.prototype.toString = function () /*String*/
+{
+  return "[IsNumber]";
+};
+
+/**
+ * Evaluates if the condition is a string.
+ * @param value The value to evaluate.
+ * @example
+ * var IsString = system.rules.IsString ;
+ *
+ * trace( (new IsString( new String('hello') )).eval() ) ; // true
+ * trace( (new IsString( 'hello' )).eval() ) ; // true
+ * trace( (new IsString( '' )).eval() ) ; // true
+ * trace( (new IsString( 1 )).eval() ) ; // false
+ * </pre>
+ */
+function IsString(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+IsString.prototype = Object.create(Rule.prototype);
+IsString.prototype.constructor = IsString;
+
+/**
+ * Evaluates the specified object.
+ */
+IsString.prototype.eval = function () {
+  return typeof this.value === 'string' || this.value instanceof String;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+IsString.prototype.toString = function () /*String*/
+{
+  return "[IsString]";
 };
 
 /**
@@ -13451,7 +13571,7 @@ function LessOrEqualsThan() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 LessOrEqualsThan.prototype = Object.create(Rule.prototype);
 LessOrEqualsThan.prototype.constructor = LessOrEqualsThan;
@@ -13501,7 +13621,7 @@ function LessThan() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 LessThan.prototype = Object.create(Rule.prototype);
 LessThan.prototype.constructor = LessThan;
@@ -13550,7 +13670,7 @@ function Not() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Not.prototype = Object.create(Rule.prototype);
 Not.prototype.constructor = Not;
@@ -13635,7 +13755,7 @@ function NotEquals() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 NotEquals.prototype = Object.create(Rule.prototype);
 NotEquals.prototype.constructor = NotEquals;
@@ -13685,16 +13805,15 @@ NotEquals.prototype.toString = function () /*String*/
  * trace( cond.eval() ) ; // false
  * </pre>
  */
-function Null() {
-    var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+function Null(value) {
     var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
     this.value = value;
-    this.strict = strict;
+    this.strict = Boolean(strict);
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
@@ -13746,7 +13865,7 @@ function Odd() {
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Odd.prototype = Object.create(Rule.prototype);
 Odd.prototype.constructor = Odd;
@@ -13768,6 +13887,252 @@ Odd.prototype.toString = function () /*String*/
 };
 
 /**
+ * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * <p><b>Example :</b></p>
+ * <pre>
+ * var Or = system.rules.Or ;
+ * var BooleanRule = system.rules.BooleanRule ;
+ *
+ * var rule1 = new BooleanRule( true  ) ;
+ * var rule2 = new BooleanRule( false ) ;
+ * var rule3 = new BooleanRule( true  ) ;
+ *
+ * var o ;
+ *
+ * o = new Or( rule1 , rule1 ) ;
+ * trace( o.eval() ) ; // true
+ *
+ * o = new Or( rule1 , rule1 , rule1 ) ;
+ * trace( o.eval() ) ; // true
+ *
+ * o = new Or( rule1 , rule2 ) ;
+ * trace( o.eval() ) ; // true
+ *
+ * o = new Or( rule2 , rule1 ) ;
+ * trace( o.eval() ) ; // true
+ *
+ * o = new Or( rule2 , rule2 ) ;
+ * trace( o.eval() ) ; // false
+ *
+ * o = new Or( rule1 , rule2 , rule3 ) ;
+ * trace( o.eval() ) ; // true
+ *
+ * o = new Or( rule1 , rule3 ) ;
+ * o.add( rule2 ) ;
+ * trace( o.length ) ; // 3
+ * trace( o.eval() ) ; // true
+ *
+ * o.clear()
+ * trace( o.length ) ; // 0
+ * trace( o.eval() ) ; // false
+ * o.add(rule1) ;
+ * trace( o.eval() ) ; // true
+ * </pre>
+ */
+function Or(rule1 /*Rule*/, rule2 /*Rule*/) {
+    Object.defineProperties(this, {
+        /**
+         * The collection of all rules to evaluate.
+         */
+        rules: { value: [], enumerable: true },
+
+        /**
+         * The number of rules to evaluate.
+         */
+        length: { get: function get() {
+                return this.rules instanceof Array ? this.rules.length : 0;
+            } }
+    });
+
+    if (!(rule1 instanceof Rule) || !(rule2 instanceof Rule)) {
+        throw new ReferenceError(this + ' constructor failed, the two rules in argument must be defined.');
+    }
+
+    this.add(rule1);
+    this.add(rule2);
+
+    for (var _len = arguments.length, rules = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        rules[_key - 2] = arguments[_key];
+    }
+
+    if (rules && rules.length > 0) {
+        var len = rules.length;
+        for (var i = 0; i < len; i++) {
+            if (rules[i] instanceof Rule) {
+                this.add(rules[i]);
+            }
+        }
+    }
+}
+
+/**
+ * @extends Rule
+ */
+Or.prototype = Object.create(Rule.prototype);
+Or.prototype.constructor = Or;
+
+/**
+ * Insert a new Rule in the Or condition.
+ */
+Or.prototype.add = function (rule) {
+    if (rule instanceof Rule) {
+        this.rules.push(rule);
+    }
+    return this;
+};
+
+/**
+ * Clear all rules to evaluates.
+ */
+Or.prototype.clear = function () {
+    this.rules.length = 0;
+    return this;
+};
+
+/**
+ * Evaluates the specified object.
+ */
+Or.prototype.eval = function () {
+    if (this.rules.length > 0) {
+        var b = this.rules[0].eval();
+        var l = this.rules.length;
+        for (var i = 1; i < l; i++) {
+            b = b || this.rules[i].eval();
+        }
+        return b;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Or.prototype.toString = function () /*String*/
+{
+    return "[Or]";
+};
+
+/**
+ * Evaluates if the condition is true.
+ * @param value The value to evaluate.
+ * @example
+ * var True = system.rules.True ;
+ *
+ * var cond1 = new True( true  ) ;
+ * var cond2 = new True( false ) ;
+ * var cond3 = new True( cond1 ) ;
+ * var cond4 = new True( cond2 ) ;
+ *
+ * trace( cond1.eval() ) ; // true
+ * trace( cond2.eval() ) ; // false
+ * trace( cond3.eval() ) ; // true
+ * trace( cond4.eval() ) ; // false
+ * </pre>
+ */
+function True() {
+  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.condition = condition;
+}
+
+/**
+ * @extends Rule
+ */
+True.prototype = Object.create(Rule.prototype);
+True.prototype.constructor = True;
+
+/**
+ * Evaluates the specified object.
+ */
+True.prototype.eval = function () {
+  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === true;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+True.prototype.toString = function () /*String*/
+{
+  return "[True]";
+};
+
+/**
+ * Evaluates if the condition is undefined.
+ * @param value The value to evaluate.
+ * @example
+ * var Undefined = system.rules.Undefined ;
+ *
+ * trace( (new Undefined( undefined )).eval() ) ; // true
+ * trace( (new Undefined( 'hello'   )).eval() ) ; // true
+ * </pre>
+ */
+function Undefined(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+Undefined.prototype = Object.create(Rule.prototype);
+Undefined.prototype.constructor = Undefined;
+
+/**
+ * Evaluates the specified object.
+ */
+Undefined.prototype.eval = function () {
+  return this.value === undefined;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Undefined.prototype.toString = function () /*String*/
+{
+  return "[Undefined]";
+};
+
+/**
+ * Evaluates if the condition is undefined.
+ * @param value The value to evaluate.
+ * @example
+ * var Zero = system.rules.Zero ;
+ *
+ * trace( (new Zero( 0 )).eval() ) ; // true
+ * trace( (new Zero( 1 )).eval() ) ; // false
+ * trace( (new Zero( 'test' )).eval() ) ; // false
+ * </pre>
+ */
+function Zero(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+Zero.prototype = Object.create(Rule.prototype);
+Zero.prototype.constructor = Zero;
+
+/**
+ * Evaluates the specified object.
+ */
+Zero.prototype.eval = function () {
+  return this.value === 0;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Zero.prototype.toString = function () /*String*/
+{
+  return "[Zero]";
+};
+
+/**
  * The VEGAS.js framework - The system.rules library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -13786,13 +14151,20 @@ var rules = Object.assign({
     False: False,
     GreaterOrEqualsThan: GreaterOrEqualsThan,
     GreaterThan: GreaterThan,
+    IsBoolean: IsBoolean,
+    IsNumber: IsNumber,
+    IsString: IsString,
     LessOrEqualsThan: LessOrEqualsThan,
     LessThan: LessThan,
     Odd: Odd,
     Not: Not,
     NotEquals: NotEquals,
     Null: Null,
-    Rule: Rule
+    Or: Or,
+    Rule: Rule,
+    True: True,
+    Undefined: Undefined,
+    Zero: Zero
 });
 
 /**

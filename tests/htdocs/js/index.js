@@ -11,18 +11,11 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var Null = system.rules.Null ;
+var IsNumber = system.rules.IsNumber ;
 
-var cond ;
+trace( (new IsNumber( 0 )).eval() ) ; // true
+trace( (new IsNumber( 1 )).eval() ) ; // true
+trace( (new IsNumber( NaN )).eval() ) ; // true
 
-cond = new Null( undefined , true ) ;
-trace( cond.eval() ) ; // false
-
-cond = new Null( undefined ) ;
-trace( cond.eval() ) ; // true
-
-cond = new Null( null ) ;
-trace( cond.eval() ) ; // true
-
-cond = new Null( "hello" ) ;
-trace( cond.eval() ) ; // false
+trace( (new IsNumber( true )).eval() ) ; // false
+trace( (new IsNumber( null )).eval() ) ; // false

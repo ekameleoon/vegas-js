@@ -29,7 +29,7 @@ export function Not( condition = null )
 }
 
 /**
- * @extends Evaluable
+ * @extends Rule
  */
 Not.prototype = Object.create( Rule.prototype );
 Not.prototype.constructor = Not ;
