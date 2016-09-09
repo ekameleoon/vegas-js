@@ -42,7 +42,8 @@ var time = function( action )
     }
 }
 
-var action = new system.process.Timer( 1000 , 10 ) ;
+var action = new system.process.Timer( 1000 , 10  ) ;
+//var action = new system.process.Timer( 1 , 10 , true ) ;
 
 action.finishIt.connect( finish ) ;
 action.timerIt.connect( time ) ;

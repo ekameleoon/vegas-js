@@ -14066,6 +14066,7 @@ Object.defineProperties(TimeoutPolicy, {
  * }
  *
  * var action = new system.process.Timer( 1000 , 10 ) ;
+ * //var action = new system.process.Timer( 1 , 10 , true ) ; // use the useSeconds flag
  *
  * action.finishIt.connect( finish ) ;
  * action.timerIt.connect( time ) ;
@@ -14078,6 +14079,7 @@ Object.defineProperties(TimeoutPolicy, {
  */
 function Timer(delay /*uint*/) {
     var repeatCount /*uint*/ = arguments.length <= 1 || arguments[1] === undefined ? NaN : arguments[1];
+    var useSeconds /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
     Task.call(this);
 
@@ -14100,6 +14102,11 @@ function Timer(delay /*uint*/) {
         /**
          * @private
          */
+        _itv: { value: 0, writable: true },
+
+        /**
+         * @private
+         */
         _repeatCount: { value: repeatCount > 0 ? repeatCount : 0, writable: true },
 
         /**
@@ -14110,7 +14117,7 @@ function Timer(delay /*uint*/) {
         /**
          * @private
          */
-        _itv: { value: 0, writable: true }
+        _useSeconds: { value: Boolean(useSeconds), writable: true }
     });
 }
 
@@ -14134,7 +14141,7 @@ Timer.prototype = Object.create(Task.prototype, {
         },
         set: function set(value) {
             if (this._running) {
-                throw new Error(this + " change delay property is impossible during the running phase.");
+                throw new Error(this + " the 'delay' property can't be changed during the running phase.");
             }
             this._delay = value > 0 ? value : 0;
         }
@@ -14157,8 +14164,23 @@ Timer.prototype = Object.create(Task.prototype, {
      */
     stopped: { get: function get() {
             return this._stopped;
-        } }
+        } },
 
+    /**
+     * Indicates if the timer delaty is in seconds or in milliseconds (default milliseconds).
+     */
+
+    useSeconds: {
+        get: function get() {
+            return this._useSeconds;
+        },
+        set: function set(flag /*Boolean*/) {
+            if (this._running) {
+                throw new Error(this + " the 'useSeconds' property can't be changed during the running phase.");
+            }
+            this._useSeconds = Boolean(flag);
+        }
+    }
 });
 Timer.prototype.constructor = Timer;
 
@@ -14179,7 +14201,7 @@ Timer.prototype.resume = function () /*void*/
     if (this._stopped) {
         this._running = true;
         this._stopped = false;
-        this._itv = setInterval(this._next.bind(this), this._delay);
+        this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
         this.notifyResumed();
     }
 };
@@ -14203,7 +14225,7 @@ Timer.prototype.run = function () {
         this._count = 0;
         this._stopped = false;
         this.notifyStarted();
-        this._itv = setInterval(this._next.bind(this), this._delay);
+        this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
     }
 };
 
