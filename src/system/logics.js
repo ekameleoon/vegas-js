@@ -4,7 +4,10 @@ import '../polyfill.js' ;
 
 
 import { ElseIf } from './logics/ElseIf.js' ;
+import { ElseIfEmptyString } from './logics/ElseIfEmptyString.js' ;
+
 import { IfTask } from './logics/IfTask.js' ;
+import { IfEmptyString } from './logics/IfEmptyString.js' ;
 
 /**
  * The VEGAS.js framework - The system.logics library.
@@ -14,5 +17,8 @@ import { IfTask } from './logics/IfTask.js' ;
 export var logics = Object.assign
 ({
     ElseIf : ElseIf ,
-    IfTask : IfTask
+    ElseIfEmptyString : ElseIfEmptyString ,
+
+    IfTask : IfTask,
+    IfEmptyString : IfEmptyString
 }) ;

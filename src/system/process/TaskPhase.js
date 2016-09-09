@@ -5,6 +5,7 @@
  */
 export var TaskPhase = Object.defineProperties( {} ,
 {
+    ERROR    : { value : 'error'    , enumerable : true } ,
     DELAYED  : { value : 'delayed'  , enumerable : true } ,
     FINISHED : { value : 'finished' , enumerable : true } ,
     INACTIVE : { value : 'inactive' , enumerable : true } ,

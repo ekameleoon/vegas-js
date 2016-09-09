@@ -8226,6 +8226,7 @@ Runnable.prototype.run = function () /*void*/
  */
 
 var TaskPhase = Object.defineProperties({}, {
+    ERROR: { value: 'error', enumerable: true },
     DELAYED: { value: 'delayed', enumerable: true },
     FINISHED: { value: 'finished', enumerable: true },
     INACTIVE: { value: 'inactive', enumerable: true },
@@ -10759,7 +10760,179 @@ ElseIf.prototype.toString = function () /*String*/
 };
 
 /**
+ * Evaluates if the value is an empty String.
+ * @param value The value to evaluate.
+ * @example
+ * var EmptyString = system.rules.EmptyString ;
+ *
+ * var cond1 = new EmptyString( null ) ;
+ * var cond2 = new EmptyString( "" ) ;
+ * var cond3 = new EmptyString( "hello" ) ;
+ *
+ * trace( cond1.eval() ) ; // false
+ * trace( cond2.eval() ) ; // true
+ * trace( cond3.eval() ) ; // false
+ * </pre>
+ */
+function EmptyString() {
+  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+EmptyString.prototype = Object.create(Rule.prototype);
+EmptyString.prototype.constructor = EmptyString;
+
+/**
+ * Evaluates the specified object.
+ */
+EmptyString.prototype.eval = function () {
+  return this.value === "";
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+EmptyString.prototype.toString = function () /*String*/
+{
+  return "[EmptyString]";
+};
+
+/**
+ * Evaluates if the value is an empty String.
+ */
+function ElseIfEmptyString() {
+  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  ElseIf.call(this, new EmptyString(value), then);
+}
+
+ElseIfEmptyString.prototype = Object.create(ElseIf.prototype);
+ElseIfEmptyString.prototype.constructor = ElseIfEmptyString;
+ElseIfEmptyString.prototype.toString = function () {
+  return "[ElseIfEmptyString]";
+};
+
+/**
  * Perform some tasks based on whether a given condition holds true or not.
+ * @example
+ * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
+ * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )
+ * @example
+ * <pre>
+ * // -------- Imports
+ *
+ * var IfTask      = system.logics.IfTask ;
+ * var Do          = system.process.Do ;
+ * var ElseIf      = system.logics.ElseIf ;
+ * var EmptyString = system.rules.EmptyString ;
+ * var Equals      = system.rules.Equals ;
+ *
+ * // -------- init
+ *
+ * var task ;
+ *
+ * var do1 = new Do() ;
+ * var do2 = new Do() ;
+ * var do3 = new Do() ;
+ * var do4 = new Do() ;
+ *
+ * do1.something = function() { trace("do1 ###") } ;
+ * do2.something = function() { trace("do2 ###") } ;
+ * do3.something = function() { trace("do3 ###") } ;
+ * do4.something = function() { trace("do4 ###") } ;
+ *
+ * // -------- behaviors
+ *
+ * var error = function( message , action  )
+ * {
+ *     trace( "error:" + action + " message:" + message ) ;
+ * };
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * trace(' -------- test 1');
+ *
+ * task = new IfTask( new EmptyString('') , do1 , do2 ) ;
+ *
+ * task.finishIt.connect(finish) ;
+ * task.errorIt.connect(error) ;
+ * task.startIt.connect(start) ;
+ *
+ * task.run() ;
+ *
+ * task.clear() ;
+ *
+ * trace(' -------- test 2');
+ *
+ * task.clear() ;
+ *
+ * task.rule = new Equals(1,2) ;
+ *
+ * task.addThen( do1 )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 3 : <elseIf>');
+ *
+ * task.clear() ;
+ *
+ * task.addRule( new Equals(1,2) )
+ *     .addThen( do1 )
+ *     .addElseIf
+ *     (
+ *         new ElseIf( new Equals(2,1) , do3 ) ,
+ *         new ElseIf( new Equals(2,2) , do4 )
+ *     )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 4 : <then> is already register');
+ *
+ * task.clear() ;
+ * task.throwError = true ;
+ *
+ * try
+ * {
+ *     task.addThen( do1 )
+ *         .addElse( do2 )
+ *         .addThen( do3 )
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 5 : <rule> is not defined');
+ *
+ * try
+ * {
+ *     task.run() ;
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 6 : <rule> is not defined and throwError = false');
+ *
+ * task.throwError = false ;
+ *
+ * task.run() ;
+ * </pre>
  */
 function IfTask() // jshint ignore:line
 {
@@ -10771,21 +10944,38 @@ function IfTask() // jshint ignore:line
 
     Object.defineProperties(this, {
         /**
-         * Returns the elseIfTask collection reference or null.
+         * The collection of condition/action invokable if the main rule is not true.
          */
         elseIfTask: { get: function get() {
                 return this._elseIfTask;
             } },
 
         /**
-         * Returns the elseTask action reference or null.
+         * The action invoked if all the conditions failed.
          */
         elseTask: { get: function get() {
                 return this._elseTask;
             } },
 
         /**
-         * Returns the thenTask action reference or null.
+         * This signal emit when the action failed.
+         */
+        errorIt: { value: new Signal() },
+
+        /**
+         * The rule reference of this task.
+         */
+        rule: {
+            get: function get() {
+                return this._rule;
+            },
+            set: function set(rule) {
+                this._rule = rule instanceof Rule ? rule : new BooleanRule(rule);
+            }
+        },
+
+        /**
+         * The action to execute if the main condition if true.
          */
         thenTask: { get: function get() {
                 return this._thenTask;
@@ -10927,6 +11117,16 @@ IfTask.prototype = Object.create(Action.prototype, {
         } },
 
     /**
+     * Clear all elements conditions and conditional tasks in the process.
+     */
+    clear: { value: function value() {
+            this._rule = null;
+            this._elseIfTasks.length = 0;
+            this._elseTask = null;
+            this._thenTask = null;
+        } },
+
+    /**
      * Removes the 'elseIf' action.
      * @return The current IfTask reference.
      */
@@ -10967,12 +11167,16 @@ IfTask.prototype = Object.create(Action.prototype, {
         } },
 
     /**
-     * Reset all elements in the process.
+     * Notify when the process is started.
      */
-    reset: { value: function value() {
-            this._elseIfTasks.length = 0;
-            this._elseTask = null;
-            this._thenTask = null;
+    notifyError: { value: function value(message) /*void*/
+        {
+            this._running = false;
+            this._phase = TaskPhase.ERROR;
+            this.errorIt.emit(message, this);
+            if (this.throwError) {
+                throw new Error(message);
+            }
         } },
 
     /**
@@ -10987,15 +11191,17 @@ IfTask.prototype = Object.create(Action.prototype, {
 
             this.notifyStarted();
 
-            if (this.throwError && !this._rule) {
-                throw new Error(this + " run failed, the 'conditional rule' of the task not must be null.");
+            if (!this._rule || !(this._rule instanceof Rule)) {
+                this.notifyError(this + " run failed, the 'conditional rule' of the task not must be null.");
+                this.notifyFinished();
+                return;
             }
 
-            if (this._rule && this._rule.eval()) {
+            if (this._rule.eval()) {
                 if (this._thenTask instanceof Action) {
                     this._execute(this._thenTask);
                 } else if (this.throwError) {
-                    throw new Error(this + " run failed, the 'then' action not must be null.");
+                    this.notifyError(this + " run failed, the 'then' action not must be null.");
                 }
             } else {
                 if (this._elseIfTasks.length > 0) {
@@ -11016,7 +11222,7 @@ IfTask.prototype = Object.create(Action.prototype, {
 
             if (!this._done) {
                 if (this.throwError) {
-                    throw new Error(this + " run failed, the 'then' action not must be null.");
+                    this.notifyError(this + " run failed, the 'then' action not must be null.");
                 } else {
                     this.notifyFinished();
                 }
@@ -11030,8 +11236,7 @@ IfTask.prototype = Object.create(Action.prototype, {
      */
     _execute: { value: function value(action /*Action*/) {
             if (action instanceof Action) {
-                this._done = true;
-                action.finishIt.connect(this._finishTask, 1, true);
+                action.finishIt.connect(this._finishTask.bind(this), 1, true);
                 action.run();
             }
         } },
@@ -11039,12 +11244,40 @@ IfTask.prototype = Object.create(Action.prototype, {
     /**
      * @private
      */
-    _finishTask: { value: function value() {
+    _finishTask: {
+        value: function value() {
+            this._done = true;
             this.notifyFinished();
-        } }
+        }
+    }
 });
 
 IfTask.prototype.constructor = IfTask;
+
+/**
+ * Evaluates if the value is an empty String.
+ */
+function IfEmptyString(value) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    IfTask.call(this, new EmptyString(value), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfEmptyString.prototype = Object.create(IfTask.prototype);
+IfEmptyString.prototype.constructor = IfEmptyString;
+IfEmptyString.prototype.toString = function () {
+    return "[IfEmptyString]";
+};
 
 /**
  * The VEGAS.js framework - The system.logics library.
@@ -11053,7 +11286,10 @@ IfTask.prototype.constructor = IfTask;
  */
 var logics = Object.assign({
   ElseIf: ElseIf,
-  IfTask: IfTask
+  ElseIfEmptyString: ElseIfEmptyString,
+
+  IfTask: IfTask,
+  IfEmptyString: IfEmptyString
 });
 
 /**
@@ -12903,7 +13139,9 @@ Do.prototype.something = function () {}
 ;Do.prototype.run = function () /*void*/
 {
   this.notifyStarted();
-  this.something();
+  if ('something' in this && this.something instanceof Function) {
+    this.something();
+  }
   this.notifyFinished();
 };
 
@@ -13495,49 +13733,6 @@ DivBy.prototype.eval = function () {
 DivBy.prototype.toString = function () /*String*/
 {
   return "[DivBy]";
-};
-
-/**
- * Evaluates if the value is an empty String.
- * @param value The value to evaluate.
- * @example
- * var EmptyString = system.rules.EmptyString ;
- *
- * var cond1 = new EmptyString( null ) ;
- * var cond2 = new EmptyString( "" ) ;
- * var cond3 = new EmptyString( "hello" ) ;
- *
- * trace( cond1.eval() ) ; // false
- * trace( cond2.eval() ) ; // true
- * trace( cond3.eval() ) ; // false
- * </pre>
- */
-function EmptyString() {
-  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-
-  this.value = value;
-}
-
-/**
- * @extends Rule
- */
-EmptyString.prototype = Object.create(Rule.prototype);
-EmptyString.prototype.constructor = EmptyString;
-
-/**
- * Evaluates the specified object.
- */
-EmptyString.prototype.eval = function () {
-  return this.value === "";
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-EmptyString.prototype.toString = function () /*String*/
-{
-  return "[EmptyString]";
 };
 
 /**

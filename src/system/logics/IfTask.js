@@ -6,9 +6,124 @@ import { Action }      from '../process/Action.js' ;
 import { BooleanRule } from '../rules/BooleanRule.js' ;
 import { ElseIf }      from './ElseIf.js' ;
 import { Rule }        from '../rules/Rule.js' ;
+import { Signal }      from '../signals/Signal.js' ;
+import { TaskPhase }   from '../process/TaskPhase.js' ;
 
 /**
  * Perform some tasks based on whether a given condition holds true or not.
+ * @example
+ * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
+ * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )
+ * @example
+ * <pre>
+ * // -------- Imports
+ *
+ * var IfTask      = system.logics.IfTask ;
+ * var Do          = system.process.Do ;
+ * var ElseIf      = system.logics.ElseIf ;
+ * var EmptyString = system.rules.EmptyString ;
+ * var Equals      = system.rules.Equals ;
+ *
+ * // -------- init
+ *
+ * var task ;
+ *
+ * var do1 = new Do() ;
+ * var do2 = new Do() ;
+ * var do3 = new Do() ;
+ * var do4 = new Do() ;
+ *
+ * do1.something = function() { trace("do1 ###") } ;
+ * do2.something = function() { trace("do2 ###") } ;
+ * do3.something = function() { trace("do3 ###") } ;
+ * do4.something = function() { trace("do4 ###") } ;
+ *
+ * // -------- behaviors
+ *
+ * var error = function( message , action  )
+ * {
+ *     trace( "error:" + action + " message:" + message ) ;
+ * };
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * trace(' -------- test 1');
+ *
+ * task = new IfTask( new EmptyString('') , do1 , do2 ) ;
+ *
+ * task.finishIt.connect(finish) ;
+ * task.errorIt.connect(error) ;
+ * task.startIt.connect(start) ;
+ *
+ * task.run() ;
+ *
+ * task.clear() ;
+ *
+ * trace(' -------- test 2');
+ *
+ * task.clear() ;
+ *
+ * task.rule = new Equals(1,2) ;
+ *
+ * task.addThen( do1 )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 3 : <elseIf>');
+ *
+ * task.clear() ;
+ *
+ * task.addRule( new Equals(1,2) )
+ *     .addThen( do1 )
+ *     .addElseIf
+ *     (
+ *         new ElseIf( new Equals(2,1) , do3 ) ,
+ *         new ElseIf( new Equals(2,2) , do4 )
+ *     )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 4 : <then> is already register');
+ *
+ * task.clear() ;
+ * task.throwError = true ;
+ *
+ * try
+ * {
+ *     task.addThen( do1 )
+ *         .addElse( do2 )
+ *         .addThen( do3 )
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 5 : <rule> is not defined');
+ *
+ * try
+ * {
+ *     task.run() ;
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 6 : <rule> is not defined and throwError = false');
+ *
+ * task.throwError = false ;
+ *
+ * task.run() ;
+ * </pre>
  */
 export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
 {
@@ -17,17 +132,34 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
     Object.defineProperties( this ,
     {
         /**
-         * Returns the elseIfTask collection reference or null.
+         * The collection of condition/action invokable if the main rule is not true.
          */
         elseIfTask : { get : function() { return this._elseIfTask ; } } ,
 
         /**
-         * Returns the elseTask action reference or null.
+         * The action invoked if all the conditions failed.
          */
         elseTask : { get : function() { return this._elseTask ; } } ,
 
         /**
-         * Returns the thenTask action reference or null.
+         * This signal emit when the action failed.
+         */
+        errorIt : { value : new Signal() } ,
+
+        /**
+         * The rule reference of this task.
+         */
+        rule :
+        {
+            get : function() { return this._rule ; } ,
+            set : function( rule )
+            {
+                this._rule = ( rule instanceof Rule ) ? rule : new BooleanRule(rule) ;
+            }
+        } ,
+
+        /**
+         * The action to execute if the main condition if true.
          */
         thenTask : { get : function() { return this._thenTask ; } } ,
 
@@ -159,7 +291,6 @@ IfTask.prototype = Object.create( Action.prototype ,
         return this ;
     }},
 
-
     /**
      * Defines the action when the condition block success and must run the 'then' action.
      * @param action Defines the 'then' action in the IfTask reference.
@@ -177,6 +308,17 @@ IfTask.prototype = Object.create( Action.prototype ,
             this._thenTask = action ;
         }
         return this ;
+    }},
+
+    /**
+     * Clear all elements conditions and conditional tasks in the process.
+     */
+    clear : { value : function()
+    {
+        this._rule = null ;
+        this._elseIfTasks.length = 0 ;
+        this._elseTask = null ;
+        this._thenTask = null ;
     }},
 
     /**
@@ -220,13 +362,17 @@ IfTask.prototype = Object.create( Action.prototype ,
     }},
 
     /**
-     * Reset all elements in the process.
+     * Notify when the process is started.
      */
-    reset : { value : function()
+    notifyError : { value : function( message ) /*void*/
     {
-        this._elseIfTasks.length = 0 ;
-        this._elseTask = null ;
-        this._thenTask = null ;
+        this._running = false ;
+        this._phase  = TaskPhase.ERROR ;
+        this.errorIt.emit( message , this ) ;
+        if( this.throwError )
+        {
+            throw new Error( message ) ;
+        }
     }},
 
     /**
@@ -243,12 +389,14 @@ IfTask.prototype = Object.create( Action.prototype ,
 
         this.notifyStarted() ;
 
-        if ( this.throwError && !this._rule )
+        if ( !this._rule || !(this._rule instanceof Rule) )
         {
-            throw new Error( this + " run failed, the 'conditional rule' of the task not must be null.") ;
+            this.notifyError( this + " run failed, the 'conditional rule' of the task not must be null." ) ;
+            this.notifyFinished() ;
+            return ;
         }
 
-        if ( this._rule && this._rule.eval() )
+        if ( this._rule.eval() )
         {
             if( this._thenTask instanceof Action )
             {
@@ -256,7 +404,7 @@ IfTask.prototype = Object.create( Action.prototype ,
             }
             else if ( this.throwError )
             {
-                throw new Error( this + " run failed, the 'then' action not must be null.") ;
+                this.notifyError( this + " run failed, the 'then' action not must be null.") ;
             }
         }
         else
@@ -285,7 +433,7 @@ IfTask.prototype = Object.create( Action.prototype ,
         {
             if ( this.throwError )
             {
-                throw new Error( this + " run failed, the 'then' action not must be null.") ;
+                this.notifyError( this + " run failed, the 'then' action not must be null.") ;
             }
             else
             {
@@ -303,8 +451,7 @@ IfTask.prototype = Object.create( Action.prototype ,
     {
         if ( action instanceof Action )
         {
-            this._done = true ;
-            action.finishIt.connect( this._finishTask , 1 , true ) ;
+            action.finishIt.connect( this._finishTask.bind(this) , 1 , true ) ;
             action.run() ;
         }
     }},
@@ -312,7 +459,14 @@ IfTask.prototype = Object.create( Action.prototype ,
     /**
      * @private
      */
-    _finishTask : { value : function() { this.notifyFinished() ; } }
+    _finishTask :
+    {
+        value : function()
+        {
+            this._done = true ;
+            this.notifyFinished() ;
+        }
+    }
 }) ;
 
 IfTask.prototype.constructor = IfTask;

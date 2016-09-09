@@ -63,7 +63,10 @@ Do.prototype.something = function()
 Do.prototype.run = function() /*void*/
 {
     this.notifyStarted() ;
-    this.something() ;
+    if( 'something' in this && (this.something instanceof Function) )
+    {
+        this.something() ;
+    }
     this.notifyFinished() ;
 }
 
