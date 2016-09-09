@@ -10819,6 +10819,408 @@ ElseIfEmptyString.prototype.toString = function () {
 };
 
 /**
+ * Used to perform a logical conjunction on two conditions and more.
+ * @param value1 The first value to evaluate.
+ * @param value2 The second value to evaluate.
+ * @example
+ * <pre>
+ *
+ * var BooleanRule = system.rules.BooleanRule ;
+ * var Equals      =  system.rules.Equals ;
+ *
+ * var e ;
+ *
+ * ///// Compares objects.
+ *
+ * e = new Equals( 1 , 1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( 1 , 2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * ///// Compares Rule objects.
+ *
+ * var cond1 = new BooleanRule( true  ) ;
+ * var cond2 = new BooleanRule( false ) ;
+ * var cond3 = new BooleanRule( true  ) ;
+ *
+ * e = new Equals( cond1 , cond1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( cond1 , cond2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new Equals( cond1 , cond3 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * ///// Compares Equatable objects.
+ *
+ * var equals = function( o )
+ * {
+ *     return this.id === o.id ;
+ * }
+ *
+ * var o1 = { id:1 , equals:equals } ;
+ * var o2 = { id:2 , equals:equals } ;
+ * var o3 = { id:1 , equals:equals } ;
+ *
+ * e = new Equals( o1 , o1 ) ;
+ * trace( e.eval() ) ; // true
+ *
+ * e = new Equals( o1 , o2 ) ;
+ * trace( e.eval() ) ; // false
+ *
+ * e = new Equals( o1 , o3 ) ;
+ * trace( e.eval() ) ; // true
+ * </pre>
+ */
+function Equals() {
+    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    this.value1 = value1;
+    this.value2 = value2;
+}
+
+/**
+ * @extends Rule
+ */
+Equals.prototype = Object.create(Rule.prototype);
+Equals.prototype.constructor = Equals;
+
+/**
+ * Evaluates the specified object.
+ */
+Equals.prototype.eval = function () {
+    if (this.value1 === this.value2) {
+        return true;
+    } else if (this.value1 instanceof Rule && this.value2 instanceof Rule) {
+        return this.value1.eval() === this.value2.eval();
+    } else if (isEquatable(this.value1)) {
+        return this.value1.equals(this.value2);
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Equals.prototype.toString = function () /*String*/
+{
+    return "[Equals]";
+};
+
+/**
+ * Defines an equality between two values in an <elseif> conditional block.
+ */
+function ElseIfEquals(value1, value2) {
+  var then /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+  ElseIf.call(this, new Equals(value1, value2), then);
+}
+
+ElseIfEquals.prototype = Object.create(ElseIf.prototype);
+ElseIfEquals.prototype.constructor = ElseIfEquals;
+ElseIfEquals.prototype.toString = function () {
+  return "[ElseIfEquals]";
+};
+
+/**
+ * Evaluates if the condition is false.
+ * @param value The value to evaluate.
+ * @example
+ * var False = system.rules.False ;
+ *
+ * var cond1 = new False( true  ) ;
+ * var cond2 = new False( false ) ;
+ * var cond3 = new False( cond1 ) ;
+ * var cond4 = new False( cond2 ) ;
+ *
+ * trace( cond1.eval() ) ; // false
+ * trace( cond2.eval() ) ; // true
+ * trace( cond3.eval() ) ; // true
+ * trace( cond4.eval() ) ; // false
+ * </pre>
+ */
+function False() {
+  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.condition = condition;
+}
+
+/**
+ * @extends Rule
+ */
+False.prototype = Object.create(Rule.prototype);
+False.prototype.constructor = False;
+
+/**
+ * Evaluates the specified object.
+ */
+False.prototype.eval = function () {
+  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === false;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+False.prototype.toString = function () /*String*/
+{
+  return "[False]";
+};
+
+/**
+ * Defines if condition is false in an <elseif> conditional block.
+ */
+function ElseIfFalse(condition) {
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  ElseIf.call(this, new False(condition), then);
+}
+
+ElseIfFalse.prototype = Object.create(ElseIf.prototype);
+ElseIfFalse.prototype.constructor = ElseIfFalse;
+ElseIfFalse.prototype.toString = function () {
+  return "[ElseIfFalse]";
+};
+
+/**
+ * Evaluates if the condition is null.
+ * @param value The value to evaluate.
+ * @example
+ * var Null = system.rules.Null ;
+ *
+ * var cond ;
+ *
+ * cond = new Null( undefined , true ) ;
+ * trace( cond.eval() ) ; // false
+ *
+ * cond = new Null( undefined ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Null( null ) ;
+ * trace( cond.eval() ) ; // true
+ *
+ * cond = new Null( "hello" ) ;
+ * trace( cond.eval() ) ; // false
+ * </pre>
+ */
+function Null(value) {
+    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+    this.value = value;
+    this.strict = Boolean(strict);
+}
+
+/**
+ * @extends Rule
+ */
+Null.prototype = Object.create(Rule.prototype);
+Null.prototype.constructor = Null;
+
+/**
+ * Evaluates the specified object.
+ */
+Null.prototype.eval = function () {
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Null.prototype.toString = function () /*String*/
+{
+    return "[Null]";
+};
+
+/**
+ * Defines if a value is null in an <elseif> conditional block.
+ */
+function ElseIfNull(value) {
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var strict = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+  ElseIf.call(this, new Null(value, strict), then);
+}
+
+ElseIfNull.prototype = Object.create(ElseIf.prototype);
+ElseIfNull.prototype.constructor = ElseIfNull;
+ElseIfNull.prototype.toString = function () {
+  return "[ElseIfNull]";
+};
+
+/**
+ * Evaluates if the condition is true.
+ * @param value The value to evaluate.
+ * @example
+ * var True = system.rules.True ;
+ *
+ * var cond1 = new True( true  ) ;
+ * var cond2 = new True( false ) ;
+ * var cond3 = new True( cond1 ) ;
+ * var cond4 = new True( cond2 ) ;
+ *
+ * trace( cond1.eval() ) ; // true
+ * trace( cond2.eval() ) ; // false
+ * trace( cond3.eval() ) ; // true
+ * trace( cond4.eval() ) ; // false
+ * </pre>
+ */
+function True() {
+  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+  this.condition = condition;
+}
+
+/**
+ * @extends Rule
+ */
+True.prototype = Object.create(Rule.prototype);
+True.prototype.constructor = True;
+
+/**
+ * Evaluates the specified object.
+ */
+True.prototype.eval = function () {
+  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === true;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+True.prototype.toString = function () /*String*/
+{
+  return "[True]";
+};
+
+/**
+ * Defines if condition is true in an <elseif> conditional block.
+ */
+function ElseIfTrue(condition) {
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  ElseIf.call(this, new True(condition), then);
+}
+
+ElseIfTrue.prototype = Object.create(ElseIf.prototype);
+ElseIfTrue.prototype.constructor = ElseIfTrue;
+ElseIfTrue.prototype.toString = function () {
+  return "[ElseIfTrue]";
+};
+
+/**
+ * Evaluates if the condition is undefined.
+ * @param value The value to evaluate.
+ * @example
+ * var Undefined = system.rules.Undefined ;
+ *
+ * trace( (new Undefined( undefined )).eval() ) ; // true
+ * trace( (new Undefined( 'hello'   )).eval() ) ; // true
+ * </pre>
+ */
+function Undefined(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+Undefined.prototype = Object.create(Rule.prototype);
+Undefined.prototype.constructor = Undefined;
+
+/**
+ * Evaluates the specified object.
+ */
+Undefined.prototype.eval = function () {
+  return this.value === undefined;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Undefined.prototype.toString = function () /*String*/
+{
+  return "[Undefined]";
+};
+
+/**
+ * Defines if a value is undefined in an <elseif> conditional block.
+ */
+function ElseIfUndefined(value) {
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  ElseIf.call(this, new Undefined(value), then);
+}
+
+ElseIfUndefined.prototype = Object.create(ElseIf.prototype);
+ElseIfUndefined.prototype.constructor = ElseIfUndefined;
+ElseIfUndefined.prototype.toString = function () {
+  return "[ElseIfUndefined]";
+};
+
+/**
+ * Evaluates if the condition is undefined.
+ * @param value The value to evaluate.
+ * @example
+ * var Zero = system.rules.Zero ;
+ *
+ * trace( (new Zero( 0 )).eval() ) ; // true
+ * trace( (new Zero( 1 )).eval() ) ; // false
+ * trace( (new Zero( 'test' )).eval() ) ; // false
+ * </pre>
+ */
+function Zero(value) {
+  this.value = value;
+}
+
+/**
+ * @extends Rule
+ */
+Zero.prototype = Object.create(Rule.prototype);
+Zero.prototype.constructor = Zero;
+
+/**
+ * Evaluates the specified object.
+ */
+Zero.prototype.eval = function () {
+  return this.value === 0;
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Zero.prototype.toString = function () /*String*/
+{
+  return "[Zero]";
+};
+
+/**
+ * Defines if a value is 0 in an <elseif> conditional block.
+ */
+function ElseIfZero(value) {
+  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+  ElseIf.call(this, new Zero(value), then);
+}
+
+ElseIfZero.prototype = Object.create(ElseIf.prototype);
+ElseIfZero.prototype.constructor = ElseIfZero;
+ElseIfZero.prototype.toString = function () {
+  return "[ElseIfZero]";
+};
+
+/**
  * Perform some tasks based on whether a given condition holds true or not.
  * @example
  * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
@@ -11255,7 +11657,7 @@ IfTask.prototype = Object.create(Action.prototype, {
 IfTask.prototype.constructor = IfTask;
 
 /**
- * Evaluates if the value is an empty String.
+ * Perform some tasks based on whether a given value is an empty string ("").
  */
 function IfEmptyString(value) // jshint ignore:line
 {
@@ -11280,16 +11682,179 @@ IfEmptyString.prototype.toString = function () {
 };
 
 /**
+ * Perform some tasks based on whether a given condition holds equality of two values.
+ */
+function IfEquals(value1, value2) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var elseTask /*Action*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+    IfTask.call(this, new Equals(value1, value2), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfEquals.prototype = Object.create(IfTask.prototype);
+IfEquals.prototype.constructor = IfEquals;
+IfEquals.prototype.toString = function () {
+    return "[IfEquals]";
+};
+
+/**
+ * Perform some tasks based on whether a given condition holds false.
+ */
+function IfFalse(condition) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    IfTask.call(this, new False(condition), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfFalse.prototype = Object.create(IfTask.prototype);
+IfFalse.prototype.constructor = IfFalse;
+IfFalse.prototype.toString = function () {
+    return "[IfFalse]";
+};
+
+/**
+ * Perform some tasks based on whether a given value is undefined.
+ */
+function IfNull(value) // jshint ignore:line
+{
+    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var thenTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var elseTask /*Action*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+    IfTask.call(this, new Null(value, strict), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfNull.prototype = Object.create(IfTask.prototype);
+IfNull.prototype.constructor = IfNull;
+IfNull.prototype.toString = function () {
+    return "[IfNull]";
+};
+
+/**
+ * Perform some tasks based on whether a given condition holds true.
+ */
+function IfTrue(condition) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    IfTask.call(this, new True(condition), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfTrue.prototype = Object.create(IfTask.prototype);
+IfTrue.prototype.constructor = IfTrue;
+IfTrue.prototype.toString = function () {
+    return "[IfTrue]";
+};
+
+/**
+ * Perform some tasks based on whether a given value is undefined.
+ */
+function IfUndefined(value) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    IfTask.call(this, new Undefined(value), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfUndefined.prototype = Object.create(IfTask.prototype);
+IfUndefined.prototype.constructor = IfUndefined;
+IfUndefined.prototype.toString = function () {
+    return "[IfUndefined]";
+};
+
+/**
+ * Perform some tasks based on whether a given value is 0.
+ */
+function IfZero(value) // jshint ignore:line
+{
+    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    IfTask.call(this, new Zero(value), thenTask, elseTask);
+
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        elseIfTasks[_key - 3] = arguments[_key];
+    }
+
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+
+IfZero.prototype = Object.create(IfTask.prototype);
+IfZero.prototype.constructor = IfZero;
+IfZero.prototype.toString = function () {
+    return "[IfZero]";
+};
+
+/**
  * The VEGAS.js framework - The system.logics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var logics = Object.assign({
-  ElseIf: ElseIf,
-  ElseIfEmptyString: ElseIfEmptyString,
+    ElseIf: ElseIf,
+    ElseIfEmptyString: ElseIfEmptyString,
+    ElseIfEquals: ElseIfEquals,
+    ElseIfFalse: ElseIfFalse,
+    ElseIfNull: ElseIfNull,
+    ElseIfTrue: ElseIfTrue,
+    ElseIfUndefined: ElseIfUndefined,
+    ElseIfZero: ElseIfZero,
 
-  IfTask: IfTask,
-  IfEmptyString: IfEmptyString
+    IfEmptyString: IfEmptyString,
+    IfEquals: IfEquals,
+    IfFalse: IfFalse,
+    IfNull: IfNull,
+    IfTask: IfTask,
+    IfTrue: IfTrue,
+    IfUndefined: IfUndefined,
+    IfZero: IfZero
 });
 
 /**
@@ -13736,100 +14301,6 @@ DivBy.prototype.toString = function () /*String*/
 };
 
 /**
- * Used to perform a logical conjunction on two conditions and more.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
- * @example
- * <pre>
- *
- * var BooleanRule = system.rules.BooleanRule ;
- * var Equals      =  system.rules.Equals ;
- *
- * var e ;
- *
- * ///// Compares objects.
- *
- * e = new Equals( 1 , 1 ) ;
- * trace( e.eval() ) ; // true
- *
- * e = new Equals( 1 , 2 ) ;
- * trace( e.eval() ) ; // false
- *
- * ///// Compares Rule objects.
- *
- * var cond1 = new BooleanRule( true  ) ;
- * var cond2 = new BooleanRule( false ) ;
- * var cond3 = new BooleanRule( true  ) ;
- *
- * e = new Equals( cond1 , cond1 ) ;
- * trace( e.eval() ) ; // true
- *
- * e = new Equals( cond1 , cond2 ) ;
- * trace( e.eval() ) ; // false
- *
- * e = new Equals( cond1 , cond3 ) ;
- * trace( e.eval() ) ; // true
- *
- * ///// Compares Equatable objects.
- *
- * var equals = function( o )
- * {
- *     return this.id === o.id ;
- * }
- *
- * var o1 = { id:1 , equals:equals } ;
- * var o2 = { id:2 , equals:equals } ;
- * var o3 = { id:1 , equals:equals } ;
- *
- * e = new Equals( o1 , o1 ) ;
- * trace( e.eval() ) ; // true
- *
- * e = new Equals( o1 , o2 ) ;
- * trace( e.eval() ) ; // false
- *
- * e = new Equals( o1 , o3 ) ;
- * trace( e.eval() ) ; // true
- * </pre>
- */
-function Equals() {
-    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
-    this.value1 = value1;
-    this.value2 = value2;
-}
-
-/**
- * @extends Rule
- */
-Equals.prototype = Object.create(Rule.prototype);
-Equals.prototype.constructor = Equals;
-
-/**
- * Evaluates the specified object.
- */
-Equals.prototype.eval = function () {
-    if (this.value1 === this.value2) {
-        return true;
-    } else if (this.value1 instanceof Rule && this.value2 instanceof Rule) {
-        return this.value1.eval() === this.value2.eval();
-    } else if (isEquatable(this.value1)) {
-        return this.value1.equals(this.value2);
-    } else {
-        return false;
-    }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Equals.prototype.toString = function () /*String*/
-{
-    return "[Equals]";
-};
-
-/**
  * Evaluates if the value is even.
  * @param value The value to evaluate.
  * @example
@@ -13875,51 +14346,6 @@ Even.prototype.eval = function () {
 Even.prototype.toString = function () /*String*/
 {
   return "[Even]";
-};
-
-/**
- * Evaluates if the condition is false.
- * @param value The value to evaluate.
- * @example
- * var False = system.rules.False ;
- *
- * var cond1 = new False( true  ) ;
- * var cond2 = new False( false ) ;
- * var cond3 = new False( cond1 ) ;
- * var cond4 = new False( cond2 ) ;
- *
- * trace( cond1.eval() ) ; // false
- * trace( cond2.eval() ) ; // true
- * trace( cond3.eval() ) ; // true
- * trace( cond4.eval() ) ; // false
- * </pre>
- */
-function False() {
-  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-
-  this.condition = condition;
-}
-
-/**
- * @extends Rule
- */
-False.prototype = Object.create(Rule.prototype);
-False.prototype.constructor = False;
-
-/**
- * Evaluates the specified object.
- */
-False.prototype.eval = function () {
-  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === false;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-False.prototype.toString = function () /*String*/
-{
-  return "[False]";
 };
 
 /**
@@ -14385,60 +14811,6 @@ NotEquals.prototype.toString = function () /*String*/
 };
 
 /**
- * Evaluates if the condition is null.
- * @param value The value to evaluate.
- * @example
- * var Null = system.rules.Null ;
- *
- * var cond ;
- *
- * cond = new Null( undefined , true ) ;
- * trace( cond.eval() ) ; // false
- *
- * cond = new Null( undefined ) ;
- * trace( cond.eval() ) ; // true
- *
- * cond = new Null( null ) ;
- * trace( cond.eval() ) ; // true
- *
- * cond = new Null( "hello" ) ;
- * trace( cond.eval() ) ; // false
- * </pre>
- */
-function Null(value) {
-    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-    this.value = value;
-    this.strict = Boolean(strict);
-}
-
-/**
- * @extends Rule
- */
-Null.prototype = Object.create(Rule.prototype);
-Null.prototype.constructor = Null;
-
-/**
- * Evaluates the specified object.
- */
-Null.prototype.eval = function () {
-    if (this.strict) {
-        return this.value === null;
-    } else {
-        return this.value == null;
-    }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Null.prototype.toString = function () /*String*/
-{
-    return "[Null]";
-};
-
-/**
  * Evaluates if the value is odd.
  * @param value The value to evaluate.
  * @example
@@ -14612,124 +14984,6 @@ Or.prototype.eval = function () {
 Or.prototype.toString = function () /*String*/
 {
     return "[Or]";
-};
-
-/**
- * Evaluates if the condition is true.
- * @param value The value to evaluate.
- * @example
- * var True = system.rules.True ;
- *
- * var cond1 = new True( true  ) ;
- * var cond2 = new True( false ) ;
- * var cond3 = new True( cond1 ) ;
- * var cond4 = new True( cond2 ) ;
- *
- * trace( cond1.eval() ) ; // true
- * trace( cond2.eval() ) ; // false
- * trace( cond3.eval() ) ; // true
- * trace( cond4.eval() ) ; // false
- * </pre>
- */
-function True() {
-  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-
-  this.condition = condition;
-}
-
-/**
- * @extends Rule
- */
-True.prototype = Object.create(Rule.prototype);
-True.prototype.constructor = True;
-
-/**
- * Evaluates the specified object.
- */
-True.prototype.eval = function () {
-  return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === true;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-True.prototype.toString = function () /*String*/
-{
-  return "[True]";
-};
-
-/**
- * Evaluates if the condition is undefined.
- * @param value The value to evaluate.
- * @example
- * var Undefined = system.rules.Undefined ;
- *
- * trace( (new Undefined( undefined )).eval() ) ; // true
- * trace( (new Undefined( 'hello'   )).eval() ) ; // true
- * </pre>
- */
-function Undefined(value) {
-  this.value = value;
-}
-
-/**
- * @extends Rule
- */
-Undefined.prototype = Object.create(Rule.prototype);
-Undefined.prototype.constructor = Undefined;
-
-/**
- * Evaluates the specified object.
- */
-Undefined.prototype.eval = function () {
-  return this.value === undefined;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Undefined.prototype.toString = function () /*String*/
-{
-  return "[Undefined]";
-};
-
-/**
- * Evaluates if the condition is undefined.
- * @param value The value to evaluate.
- * @example
- * var Zero = system.rules.Zero ;
- *
- * trace( (new Zero( 0 )).eval() ) ; // true
- * trace( (new Zero( 1 )).eval() ) ; // false
- * trace( (new Zero( 'test' )).eval() ) ; // false
- * </pre>
- */
-function Zero(value) {
-  this.value = value;
-}
-
-/**
- * @extends Rule
- */
-Zero.prototype = Object.create(Rule.prototype);
-Zero.prototype.constructor = Zero;
-
-/**
- * Evaluates the specified object.
- */
-Zero.prototype.eval = function () {
-  return this.value === 0;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Zero.prototype.toString = function () /*String*/
-{
-  return "[Zero]";
 };
 
 /**

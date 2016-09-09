@@ -5,7 +5,7 @@ import { EmptyString } from '../rules/EmptyString.js' ;
 import { IfTask } from './IfTask.js' ;
 
 /**
- * Evaluates if the value is an empty String.
+ * Perform some tasks based on whether a given value is an empty string ("").
  */
 export function IfEmptyString( value , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
 {
