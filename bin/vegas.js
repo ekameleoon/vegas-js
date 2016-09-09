@@ -14078,7 +14078,7 @@ Object.defineProperties(TimeoutPolicy, {
  * </pre>
  */
 function Timer(delay /*uint*/) {
-    var repeatCount /*uint*/ = arguments.length <= 1 || arguments[1] === undefined ? NaN : arguments[1];
+    var repeatCount /*uint*/ = arguments.length <= 1 || arguments[1] === undefined ? 1 : arguments[1];
     var useSeconds /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
     Task.call(this);
@@ -14148,7 +14148,9 @@ Timer.prototype = Object.create(Task.prototype, {
     },
 
     /**
-     * Indicates the number of repetitions. If zero, the timer repeats infinitely. If nonzero, the timer runs the specified number of times and then stops.
+     * Indicates the number of repetitions.
+     * If zero, the timer repeats infinitely.
+     * If nonzero, the timer runs the specified number of times and then stops.
      */
     repeatCount: {
         get: function get() {

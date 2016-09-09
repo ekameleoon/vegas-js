@@ -50,7 +50,7 @@ import { Signal } from '../signals/Signal.js' ;
  * action.run() ;
  * </pre>
  */
-export function Timer( delay /*uint*/ , repeatCount /*uint*/ = NaN , useSeconds /*Boolean*/ = false )
+export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 1 , useSeconds /*Boolean*/ = false )
 {
     Task.call(this) ;
 
@@ -120,7 +120,9 @@ Timer.prototype = Object.create( Task.prototype ,
     },
 
     /**
-     * Indicates the number of repetitions. If zero, the timer repeats infinitely. If nonzero, the timer runs the specified number of times and then stops.
+     * Indicates the number of repetitions.
+     * If zero, the timer repeats infinitely.
+     * If nonzero, the timer runs the specified number of times and then stops.
      */
     repeatCount :
     {
