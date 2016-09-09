@@ -51,7 +51,7 @@ import { TaskGroup } from './TaskGroup.js' ;
  *
  * trace('---------') ;
  *
- * trace( 'batch   : ' + chain.toString(true) ) ;
+ * trace( 'chain   : ' + chain.toString(true) ) ;
  * trace( 'running : ' + chain.running ) ;
  * trace( 'length  : ' + chain.length ) ;
  *
@@ -99,7 +99,7 @@ export function Chain( looping /*Boolean*/ , numLoop /*uint*/ , mode /*String*/ 
 Chain.prototype = Object.create( TaskGroup.prototype ,
 {
     /**
-     * Indicates the current Action reference when the batch is in progress.
+     * Indicates the current Action reference when the process is in progress.
      */
     current : { get : function() { return this._current ? this._current.action : null ; } } ,
 
