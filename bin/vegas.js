@@ -8412,7 +8412,7 @@ function Task() {
 }
 
 /**
- * @extends Task
+ * @extends Action
  */
 Task.prototype = Object.create(Action.prototype);
 
@@ -12608,10 +12608,8 @@ function TaskGroup(mode /*String*/, actions /*Array*/) {
 
         /**
          * @private
-         */
-        _next: { value: null, writable: true, configurable: true },
-
-        /**
+        _next : { value : null , writable : true , configurable : true },
+         /**
          * @private
          */
         _stopped: { value: false, writable: true },
@@ -13495,7 +13493,7 @@ ChainNext.prototype.receive = function () {
  *
  * trace('---------') ;
  *
- * trace( 'batch   : ' + chain.toString(true) ) ;
+ * trace( 'chain   : ' + chain.toString(true) ) ;
  * trace( 'running : ' + chain.running ) ;
  * trace( 'length  : ' + chain.length ) ;
  *
@@ -13539,7 +13537,7 @@ function Chain(looping /*Boolean*/, numLoop /*uint*/, mode /*String*/, actions /
  */
 Chain.prototype = Object.create(TaskGroup.prototype, {
     /**
-     * Indicates the current Action reference when the batch is in progress.
+     * Indicates the current Action reference when the process is in progress.
      */
     current: { get: function get() {
             return this._current ? this._current.action : null;
@@ -14033,6 +14031,224 @@ Object.defineProperties(TimeoutPolicy, {
 });
 
 /**
+ * The Timer class is the interface to timers, which let you run code on a specified time sequence.
+ * @example
+ * <pre>
+ * var finish = function( action )
+ * {
+ *     trace( action + " finish" ) ;
+ * }
+ *
+ * var resume = function( action )
+ * {
+ *     trace( action + " resume" ) ;
+ * }
+ *
+ * var start = function( action )
+ * {
+ *     trace( action + " start" ) ;
+ * }
+ *
+ * var stop = function( action )
+ * {
+ *     trace( action + " stop" ) ;
+ * }
+ *
+ * var time = function( action )
+ * {
+ *     trace( action + " count: " + action.currentCount + " / " + action.repeatCount ) ;
+ *     if ( action.currentCount === 5 )
+ *     {
+ *         action.stop() ;
+ *         trace( "timer stopped:" + action.stopped ) ;
+ *         action.resume() ;
+ *     }
+ * }
+ *
+ * var action = new system.process.Timer( 1000 , 10 ) ;
+ *
+ * action.finishIt.connect( finish ) ;
+ * action.timerIt.connect( time ) ;
+ * action.resumeIt.connect( resume ) ;
+ * action.startIt.connect( start ) ;
+ * action.stopIt.connect( stop ) ;
+ *
+ * action.run() ;
+ * </pre>
+ */
+function Timer(delay /*uint*/) {
+    var repeatCount /*uint*/ = arguments.length <= 1 || arguments[1] === undefined ? NaN : arguments[1];
+
+    Task.call(this);
+
+    Object.defineProperties(this, {
+        /**
+         * This signal emit when the timer emit a new interval.
+         */
+        timerIt: { value: new Signal() },
+
+        /**
+         * @private
+         */
+        _count: { value: 0, writable: true },
+
+        /**
+         * @private
+         */
+        _delay: { value: delay > 0 ? delay : 0, writable: true },
+
+        /**
+         * @private
+         */
+        _repeatCount: { value: repeatCount > 0 ? repeatCount : 0, writable: true },
+
+        /**
+         * @private
+         */
+        _stopped: { value: false, writable: true },
+
+        /**
+         * @private
+         */
+        _itv: { value: 0, writable: true }
+    });
+}
+
+/**
+ * @extends Task
+ */
+Timer.prototype = Object.create(Task.prototype, {
+    /**
+     * The total number of times the timer has fired since it started at zero.
+     */
+    currentCount: { get: function get() {
+            return this._count;
+        } },
+
+    /**
+     * Indicates the delay between timer events, in milliseconds.
+     */
+    delay: {
+        get: function get() {
+            return this._delay;
+        },
+        set: function set(value) {
+            if (this._running) {
+                throw new Error(this + " change delay property is impossible during the running phase.");
+            }
+            this._delay = value > 0 ? value : 0;
+        }
+    },
+
+    /**
+     * Indicates the number of repetitions. If zero, the timer repeats infinitely. If nonzero, the timer runs the specified number of times and then stops.
+     */
+    repeatCount: {
+        get: function get() {
+            return this._repeatCount;
+        },
+        set: function set(value) {
+            this._repeatCount = value > 0 ? value : 0;
+        }
+    },
+
+    /**
+     * Indicates true if the timer is stopped.
+     */
+    stopped: { get: function get() {
+            return this._stopped;
+        } }
+
+});
+Timer.prototype.constructor = Timer;
+
+/**
+ * Returns a shallow copy of this object.
+ * @return a shallow copy of this object.
+ */
+Timer.prototype.clone = function () /*Timer*/
+{
+    return new Timer(this._delay, this._repeatCount);
+};
+
+/**
+ * Restarts the timer. The timer is stopped, and then started.
+ */
+Timer.prototype.resume = function () /*void*/
+{
+    if (this._stopped) {
+        this._running = true;
+        this._stopped = false;
+        this._itv = setInterval(this._next.bind(this), this._delay);
+        this.notifyResumed();
+    }
+};
+
+/**
+ * Reset the timer and stop it before if it's running.
+ */
+Timer.prototype.reset = function () /*Void*/
+{
+    if (this.running) {
+        this.stop();
+    }
+    this._count = 0;
+};
+
+/**
+ * Run the timer.
+ */
+Timer.prototype.run = function () {
+    if (!this._running) {
+        this._count = 0;
+        this._stopped = false;
+        this.notifyStarted();
+        this._itv = setInterval(this._next.bind(this), this._delay);
+    }
+};
+
+/**
+ * Starts the timer.
+ */
+Timer.prototype.start = function () {
+    this.run();
+};
+
+/**
+ * Stops the timer.
+ */
+Timer.prototype.stop = function () {
+    if (this._running && !this._stopped) {
+        this._running = false;
+        this._stopped = true;
+        clearInterval(this._itv);
+        this.notifyStopped();
+    }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Timer.prototype.toString = function () /*String*/
+{
+    return '[Timer]';
+};
+
+/**
+ * @private
+ */
+Timer.prototype._next = function () /*void*/
+{
+    this._count++;
+    this.timerIt.emit(this);
+    if (this._repeatCount > 0 && this._repeatCount === this._count) {
+        clearInterval(this._itv);
+        this.notifyFinished();
+    }
+};
+
+/**
  * Invoked to Unlock a specific Unlockable object.
  * @example
  * var chain  = new system.process.Chain() ;
@@ -14122,6 +14338,7 @@ var process = Object.assign({
     TaskGroup: TaskGroup,
     TaskPhase: TaskPhase,
     TimeoutPolicy: TimeoutPolicy,
+    Timer: Timer,
     Unlock: Unlock
 });
 

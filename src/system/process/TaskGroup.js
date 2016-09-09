@@ -74,7 +74,6 @@ export function TaskGroup( mode /*String*/ , actions /*Array*/)
 
         /**
          * @private
-         */
         _next : { value : null , writable : true , configurable : true },
 
         /**

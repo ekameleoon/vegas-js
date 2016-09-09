@@ -66,7 +66,7 @@ export function Task()
 }
 
 /**
- * @extends Task
+ * @extends Action
  */
 Task.prototype = Object.create( Action.prototype );
 

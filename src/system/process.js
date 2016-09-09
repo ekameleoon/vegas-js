@@ -25,6 +25,7 @@ import { Task }          from './process/Task.js' ;
 import { TaskGroup }     from './process/TaskGroup.js' ;
 import { TaskPhase }     from './process/TaskPhase.js' ;
 import { TimeoutPolicy } from './process/TimeoutPolicy.js' ;
+import { Timer }         from './process/Timer.js' ;
 import { Unlock }        from './process/Unlock.js' ;
 
 import { isLockable  } from './process/Lockable.js' ;
@@ -74,5 +75,6 @@ export var process = Object.assign
     TaskGroup     : TaskGroup ,
     TaskPhase     : TaskPhase ,
     TimeoutPolicy : TimeoutPolicy,
+    Timer         : Timer,
     Unlock        : Unlock
 }) ;
