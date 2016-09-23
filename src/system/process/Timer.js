@@ -105,6 +105,7 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates the delay between timer events, in milliseconds.
+     * @member {number}
      */
     delay :
     {
@@ -120,9 +121,9 @@ Timer.prototype = Object.create( Task.prototype ,
     },
 
     /**
-     * Indicates the number of repetitions.
-     * If zero, the timer repeats infinitely.
+     * Indicates the number of repetitions. If zero, the timer repeats infinitely.
      * If nonzero, the timer runs the specified number of times and then stops.
+     * @member {number}
      */
     repeatCount :
     {
@@ -143,8 +144,8 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates if the timer delaty is in seconds or in milliseconds (default milliseconds).
+     * @member {boolean}
      */
-
     useSeconds :
     {
         get : function() { return this._useSeconds ; } ,

@@ -8,8 +8,7 @@ if ( !Function.prototype.bind )
   {
     if (typeof this !== "function")
     {
-      // au plus proche de la fonction interne ECMAScript 5 IsCallable
-      throw new TypeError("Function.prototype.bind - ce qui est à lier ne peut être appelé");
+      throw new TypeError( 'Function.prototype.bind called on incompatible ' + this );
     }
 
     var aArgs = Array.prototype.slice.call(arguments, 1),

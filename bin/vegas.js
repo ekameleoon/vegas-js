@@ -8,8 +8,7 @@
 if (!Function.prototype.bind) {
     Function.prototype.bind = function (oThis) {
         if (typeof this !== "function") {
-            // au plus proche de la fonction interne ECMAScript 5 IsCallable
-            throw new TypeError("Function.prototype.bind - ce qui est à lier ne peut être appelé");
+            throw new TypeError('Function.prototype.bind called on incompatible ' + this);
         }
 
         var aArgs = Array.prototype.slice.call(arguments, 1),
@@ -14134,6 +14133,7 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates the delay between timer events, in milliseconds.
+     * @member {number}
      */
     delay: {
         get: function get() {
@@ -14148,9 +14148,9 @@ Timer.prototype = Object.create(Task.prototype, {
     },
 
     /**
-     * Indicates the number of repetitions.
-     * If zero, the timer repeats infinitely.
+     * Indicates the number of repetitions. If zero, the timer repeats infinitely.
      * If nonzero, the timer runs the specified number of times and then stops.
+     * @member {number}
      */
     repeatCount: {
         get: function get() {
@@ -14170,8 +14170,8 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates if the timer delaty is in seconds or in milliseconds (default milliseconds).
+     * @member {boolean}
      */
-
     useSeconds: {
         get: function get() {
             return this._useSeconds;
