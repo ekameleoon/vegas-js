@@ -1,7 +1,7 @@
 {
   "name": "vegas-js",
   "description": "The VEGAS JS Framework",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MPL-1.1 OR GPL-2.0+ OR GPL-3.0+",
   "homepage": "https://bitbucket.org/ekameleon/vegas-js",
   "author": {
@@ -9,7 +9,7 @@
     "email": "ekameleon@gmail.com",
     "url": "http://www.ooopener.com"
   },
-  "main": "./bin/vegas.js",
+  "main": "./src/index.js",
   "files": [
     "package.json",
     "LICENSE",
