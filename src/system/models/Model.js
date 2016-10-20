@@ -13,35 +13,41 @@ export function Model()
 /**
  * @extends Lockable
  */
-Model.prototype = Object.create( Lockable.prototype );
-Model.prototype.constructor = Model;
-
-/**
- * Returns true if the specific value is valid.
- * @return true if the specific value is valid.
- */
-Model.prototype.supports = function( value ) /*Boolean*/
+Model.prototype = Object.create( Lockable.prototype ,
 {
-    return value === value ;
-}
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Model } ,
 
-/**
- * Evaluates the specified value and throw an Error object if the value is not valid.
- * @throws Error if the value is not valid.
- */
-Model.prototype.validate = function ( value ) /*void*/
-{
-    if ( !this.supports( value ) )
+    /**
+     * Returns true if the specific value is valid.
+     * @return true if the specific value is valid.
+     */
+    supports : { writable : true , value : function( value )
     {
-        throw new Error( this + " validate(" + value + ") is mismatch." ) ;
-    }
-}
+        return value === value ;
+    }} ,
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Model.prototype.toString = function () /*String*/
-{
-    return '[' + this.constructor.name + ']' ;
-}
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }},
+
+    /**
+     * Evaluates the specified value and throw an Error object if the value is not valid.
+     * @throws Error if the value is not valid.
+     */
+    validate : { writable : true , value : function ( value ) /*void*/
+    {
+        if ( !this.supports( value ) )
+        {
+            throw new Error( this + " validate(" + value + ") is mismatch." ) ;
+        }
+    }}
+
+}) ;

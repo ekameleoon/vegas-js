@@ -12356,37 +12356,40 @@ function Model() {}
 /**
  * @extends Lockable
  */
-Model.prototype = Object.create(Lockable.prototype);
-Model.prototype.constructor = Model;
+Model.prototype = Object.create(Lockable.prototype, {
+  /**
+   * The constructor reference of the instance.
+   */
+  constructor: { writable: true, value: Model },
 
-/**
- * Returns true if the specific value is valid.
- * @return true if the specific value is valid.
- */
-Model.prototype.supports = function (value) /*Boolean*/
-{
-  return value === value;
-};
+  /**
+   * Returns true if the specific value is valid.
+   * @return true if the specific value is valid.
+   */
+  supports: { writable: true, value: function value(_value) {
+      return _value === _value;
+    } },
 
-/**
- * Evaluates the specified value and throw an Error object if the value is not valid.
- * @throws Error if the value is not valid.
- */
-Model.prototype.validate = function (value) /*void*/
-{
-  if (!this.supports(value)) {
-    throw new Error(this + " validate(" + value + ") is mismatch.");
-  }
-};
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { writable: true, value: function value() {
+      return '[' + this.constructor.name + ']';
+    } },
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Model.prototype.toString = function () /*String*/
-{
-  return '[' + this.constructor.name + ']';
-};
+  /**
+   * Evaluates the specified value and throw an Error object if the value is not valid.
+   * @throws Error if the value is not valid.
+   */
+  validate: { writable: true, value: function value(_value2) /*void*/
+    {
+      if (!this.supports(_value2)) {
+        throw new Error(this + " validate(" + _value2 + ") is mismatch.");
+      }
+    } }
+
+});
 
 /**
  * The VEGAS.js framework - The system.models library.
