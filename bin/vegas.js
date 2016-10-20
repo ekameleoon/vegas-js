@@ -2420,7 +2420,61 @@ var numbers = Object.assign({
   toUnicodeNotation: toUnicodeNotation
 });
 
-/*
+/**
+ * Executes a function on each item in the object. Each invocation of iterator is called with three arguments: (value, key, ref).
+ * @example
+ * <pre class="prettyprint">
+ * var object = { one:1 , two:2 , three:3 , four:4 , five:5 } ;
+ *
+ * var action = function( value , key , ref )
+ * {
+ *     trace( "key:" + key + " value:" + value ) ;
+ *     return value ;
+ * }
+ *
+ * forEach( object , action ) ;
+ *
+ * trace( "----" ) ;
+ *
+ * forEach( object , action, null, 3 ) ;
+ *
+ * trace( "----" ) ;
+ *
+ * forEach( [1,2,3,4] , action ) ; // use the Array.forEach method over Array objects.
+ * </pre>
+ * @param object The reference of the object to enumerate.
+ * @param callback The function to run on each item in the object. This function can contain a simple command (for example, a trace() statement)
+ * or a more complex operation, and is invoked with three arguments; the value of an item, the key of an item, and the object reference : <code>function callback(item:*, key:*, ref:Object):void;</code>.
+ * @param context An object to use as this for the callback function.
+ * @param An optional breaker value to stop the enumeration. If this argument is null the behaviour is forgotten.
+ */
+
+function forEach(object /*Object*/, callback /*Function*/) /*Object*/
+{
+    var context /*Object*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var breaker = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    if (!object) {
+        return;
+    }
+    if ("forEach" in object && object.forEach instanceof Function) {
+        object.forEach(callback, context);
+    } else {
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                if (breaker !== null) {
+                    if (callback.call(context, object[key], key, object) === breaker) {
+                        return;
+                    }
+                } else {
+                    callback.call(context, object[key], key, object);
+                }
+            }
+        }
+    }
+}
+
+/**
  * Copies an array or vector from the specified source (array or vector), beginning at the specified position, to the specified position of the destination object.
  * A subsequence of array components are copied from the source referenced by src to the destination referenced by dest.
  * The number of components copied is equal to the length argument. The components at positions srcPos through srcPos+length-1 in the source array are copied into positions
@@ -2539,6 +2593,7 @@ function merge(target /*Object*/, source /*Object*/, overwrite /*Boolean*/) /*Ob
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var objects = Object.assign({
+  forEach: forEach,
   fuse: fuse,
   members: members,
   merge: merge

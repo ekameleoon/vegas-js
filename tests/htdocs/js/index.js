@@ -1,4 +1,4 @@
-/* globals vegas */
+/* globals vegas*/
 "use strict" ;
 
 if( !vegas )
@@ -11,12 +11,22 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var dump = core.dump ;
-var fuse = core.objects.fuse ;
+var forEach = core.objects.forEach ;
 
-var ar1 = [1,2,3,4] ;
-var ar2 = [5,6,7,8] ;
+var object = { one:1 , two:2 , three:3 , four:4 , five:5 } ;
 
-fuse( ar1 , 2 , ar2 , 2 , 2 ) ;
+var action = function( value , key , ref )
+{
+    trace( "key:" + key + " value:" + value ) ;
+    return value ;
+}
 
-trace( dump( ar2 ) ) ; // [5,6,3,4]
+forEach( object , action ) ;
+
+trace( "----" ) ;
+
+forEach( object , action, null, 3 ) ;
+
+trace( "----" ) ;
+
+forEach( [1,2,3,4] , action ) ; // use the Array.forEach method over Array objects.

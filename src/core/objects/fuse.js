@@ -1,6 +1,6 @@
 "use strict" ;
 
-/*
+/**
  * Copies an array or vector from the specified source (array or vector), beginning at the specified position, to the specified position of the destination object.
  * A subsequence of array components are copied from the source referenced by src to the destination referenced by dest.
  * The number of components copied is equal to the length argument. The components at positions srcPos through srcPos+length-1 in the source array are copied into positions
