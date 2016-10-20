@@ -6,6 +6,7 @@ import { compare }           from './chars/compare.js' ;
 import { isAlpha }           from './chars/isAlpha.js' ;
 import { isAlphaOrDigit }    from './chars/isAlphaOrDigit.js' ;
 import { isASCII }           from './chars/isASCII.js' ;
+import { isContained }       from './chars/isContained.js' ;
 import { isDigit }           from './chars/isDigit.js' ;
 import { isHexDigit }        from './chars/isHexDigit.js' ;
 import { isIdentifierStart } from './chars/isIdentifierStart.js' ;
@@ -32,6 +33,7 @@ export var chars = Object.assign
     isAlpha           : isAlpha ,
     isAlphaOrDigit    : isAlphaOrDigit ,
     isASCII           : isASCII ,
+    isContained       : isContained ,
     isDigit           : isDigit ,
     isHexDigit        : isHexDigit ,
     isIdentifierStart : isIdentifierStart ,

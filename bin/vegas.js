@@ -946,6 +946,33 @@ function isASCII(c /*String*/) /*Boolean*/
  * Indicates if the specified character is a digit.
  * @param c The expression to evaluate.
  * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @param charset The list of characters to evaluate.
+ * @return True if the specified character is a digit.
+ */
+
+function isContained(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+
+    var l = charset.length;
+    for (var i = 0; i < l; i++) {
+        if (c === charset.charAt(i)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Indicates if the specified character is a digit.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
  * @return True if the specified character is a digit.
  */
 
@@ -996,6 +1023,53 @@ function isIdentifierStart(c /*String*/) /*Boolean*/
         c = c.charAt(index);
     }
     return "A" <= c && c <= "Z" || "a" <= c && c <= "z" || c === "_" || c === "$";
+}
+
+/**
+ * Like white space characters, line terminator characters are used to improve source text readability and to separate tokens (indivisible lexical units) from each other.
+ * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar.
+ * In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
+ * A line terminator cannot occur within any token, not even a string.
+ * Line terminators also affect the process of automatic semicolon insertion.
+ * <p>ECMAScript specification.</p>
+ */
+
+var lineTerminators = ["\n" /*LF : Line Feed*/
+, "\r" /*CR : Carriage Return*/
+, "\u2028" /*LS : Line Separator*/
+, "\u2929" /*PS : Paragraphe Separator*/
+];
+
+/**
+ * Indicates if the specified character is a line terminator.
+ * <p>Note: line terminators</p>
+ * <pre class="prettyprint">
+ * "\n" - u000A - LF : Line Feed
+ * "\r" - u000D - CR : Carriage Return
+ * ???  - u2028 - LS : Line Separator
+ * ???  - u2029 - PS : Paragraphe Separator
+ * </pre>
+ * @see ECMA-262 spec 7.3 (PDF p24/188)
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the passed-in string value is a line terminator defines in the core.chars.lineTerminators collection.
+ */
+function isLineTerminator(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+
+    var l = lineTerminators.length;
+    while (--l > -1) {
+        if (c === lineTerminators[l]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -1068,6 +1142,68 @@ function isOperator(c /*String*/) /*Boolean*/
                 return false;
             }
     }
+}
+
+/**
+ * The collection representation of all ASCII symbols characters.
+ */
+
+var symbols = [" ", // The "space" unicode character
+"!", // The "!" unicode character
+"\"", // The quotation marks
+"#", // The number sign
+"$", // The "$" unicode character
+"%", // The percent unicode character
+"&", // The ampersand unicode character
+"\'", // The apostrophe unicode character
+"(", // The "(" unicode character
+")", // The ")" unicode character
+"*", // The asterisk closing single quotation mark, acute accent unicode character
+"+", // The plus unicode character
+",", // The comma unicode character
+"-", // The minus (hyphen) unicode character
+".", // The decimal point (period) unicode character
+"/", // The slash (slant) unicode character
+":", // The colon ":" unicode character
+";", // The semi colon ";" unicode character
+"<", // The lessThan "&lt;" unicode characte.
+"=", // The equals unicode character
+">", // The greaterThen "&gt;" unicode character
+"?", // The questionMark "?" unicode character
+"@", // The commercial at "@" unicode character
+"[", // The opening bracket "[" unicode character
+"\\", // The backslash (reverse slant) "\\" unicode character
+"]", // The closing bracket "]" unicode character
+"^", // The circumflex "^" unicode character
+"_", // The underline "_" unicode character
+"`", // The grave accent "`" unicode character
+"{", // The opening brace "{" unicode character
+"|", // The pipe (vertical line) "|" unicode character
+"}", // The closing brace "}" unicode character
+"~"];
+
+/**
+ * Indicates if the character is a ASCII symbol.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the passed-in string value is a symbol defines in the core.chars.symbols collection.
+ */
+function isSymbol(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+
+    var l = symbols.length;
+    while (--l > -1) {
+        if (c === symbols[l]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -1191,15 +1327,20 @@ var chars = Object.assign({
     isAlpha: isAlpha,
     isAlphaOrDigit: isAlphaOrDigit,
     isASCII: isASCII,
+    isContained: isContained,
     isDigit: isDigit,
     isHexDigit: isHexDigit,
     isIdentifierStart: isIdentifierStart,
+    isLineTerminator: isLineTerminator,
     isLower: isLower,
     isOctalDigit: isOctalDigit,
     isOperator: isOperator,
+    isSymbol: isSymbol,
     isUnicode: isUnicode,
     isUpper: isUpper,
     isWhiteSpace: isWhiteSpace,
+    lineTerminators: lineTerminators,
+    symbols: symbols,
     whiteSpaces: whiteSpaces
 });
 
