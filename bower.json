@@ -1,39 +1,34 @@
 {
-    "name"        : "vegas.js",
-    "version"     : "master" ,
-    "description" : "VEGAS the opensource Framework",
-    "main"        : "bin/vegas.js",
-    "private"     : false ,
-    "license"     : "MIT",
-    "keywords"    :
-    [
-        "vegas-js", "es6" , "logger" , "ioc" , "task" , "core" , "system"
-    ],
-    "license" :
-    [
-       "Licence MPL 1.1" ,
-       "Licence GPL 2" ,
-       "GPL-3.0+"
-    ],
-    "ignore" :
-    [
-        "**/.*",
-        "docs",
-        "gulp",
-        "node_modules",
-        "bower_components",
-        "tests",
-        "bower.json",
-        "gulpfile.js",
-        "package.json"
-    ],
-    "dependencies":
-    {
-
-    }
-    ,
-    "devDependencies":
-    {
-
-    }
+  "name": "vegas.js",
+  "version": "master",
+  "description": "VEGAS the opensource Framework",
+  "main": "bin/vegas.js",
+  "private": false,
+  "license": [
+    "Licence MPL 1.1",
+    "Licence GPL 2",
+    "GPL-3.0+"
+  ],
+  "keywords": [
+    "vegas-js",
+    "es6",
+    "logger",
+    "ioc",
+    "task",
+    "core",
+    "system"
+  ],
+  "ignore": [
+    "**/.*",
+    "docs",
+    "gulp",
+    "node_modules",
+    "bower_components",
+    "tests",
+    "bower.json",
+    "gulpfile.js",
+    "package.json"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
 }

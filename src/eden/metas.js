@@ -10,4 +10,3 @@ export var metas = Object.defineProperties( {} ,
     license     : { enumerable : true , value : "MPL-1.1 OR GPL-2.0+ OR GPL-3.0+" }
 });
 
-

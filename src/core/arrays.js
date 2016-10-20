@@ -6,6 +6,7 @@ import { contains }   from './arrays/contains.js' ;
 import { initialize } from './arrays/initialize.js' ;
 import { pierce }     from './arrays/pierce.js' ;
 import { repeat }     from './arrays/repeat.js' ;
+import { rotate }     from './arrays/rotate.js' ;
 import { shuffle }    from './arrays/shuffle.js' ;
 import { sortOn }     from './arrays/sortOn.js' ;
 import { spliceInto } from './arrays/spliceInto.js' ;
@@ -21,6 +22,7 @@ export var arrays = Object.assign
     initialize : initialize ,
     pierce : pierce ,
     repeat : repeat ,
+    rotate : rotate ,
     shuffle : shuffle ,
     sortOn : sortOn ,
     spliceInto : spliceInto

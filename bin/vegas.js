@@ -5,6 +5,8 @@
         (factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
 
+/*jshint laxbreak: true*/
+/*jshint freeze: false*/
 if (!Function.prototype.bind) {
     Function.prototype.bind = function (oThis) {
         if (typeof this !== "function") {
@@ -103,7 +105,7 @@ function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, ind
 
     var source /*Array*/ = [];
 
-    var i /*int*/;
+    var i;
     var l /*int*/ = value.length;
 
     for (i = 0; i < l; i++) {
@@ -247,7 +249,7 @@ function toUnicodeNotation(num) {
  */
 function dumpString(value /*String*/) /*String*/
 {
-    var code /*int*/;
+    var code;
     var quote /*String*/ = "\"";
     var str /*String*/ = "";
     var ch /*String*/ = "";
@@ -280,7 +282,7 @@ function dumpString(value /*String*/) /*String*/
                     str += "\\n";
                     break;
                 }
-            case "\u000b":
+            case "\x0B":
                 // vertical tab /* TODO: check the VT bug */
                 {
                     str += "\\v"; //str += "\\u000B" ;
@@ -494,7 +496,7 @@ function repeat(ar /*Array*/, count /*uint*/) /*Array*/
 {
     count = isNaN(count) ? 0 : count;
     count = count > 0 ? Math.abs(count) : 0;
-    var result /*Array*/;
+    var result;
     if (count > 0) {
         result = [];
         for (var i /*int*/ = 0; i < count; i++) {
@@ -504,6 +506,39 @@ function repeat(ar /*Array*/, count /*uint*/) /*Array*/
         result = [].concat(ar);
     }
     return result;
+}
+
+/**
+ * Rotates an Array in-place. After calling this method, the element at index i will be the element previously at index (i - n) % array.length,
+ * for all values of i between 0 and array.length - 1, inclusive.
+ * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
+ * @example
+ * <pre>
+ * var array = ["l","o","v","e"] ;
+ *
+ * trace( dump( rotate( array ,  1 ) ) ) ; // ["e","l","o","v"]
+ * trace( dump( rotate( array , -1 ) ) ) ; // ["l","o","v","e"]
+ * trace( dump( rotate( array , -1 ) ) ) ; // ["o","v","e","l"]
+ * trace( dump( rotate( array ,  3 ) ) ) ; // ["v","e","l","o"]
+ * </pre>
+ * @param ar The array to rotate.
+ * @param amount The amount to rotate.
+ * @return The rotated Array reference.
+ */
+
+function rotate(ar /*Array*/) /*Array*/
+{
+    var amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+    if (ar && ar.length > 0) {
+        amount %= ar.length;
+        if (amount > 0) {
+            ar.unshift.apply(ar, ar.splice(-amount, amount));
+        } else if (amount < 0) {
+            ar.push.apply(ar, ar.splice(0, -amount));
+        }
+    }
+    return ar;
 }
 
 /**
@@ -524,7 +559,7 @@ function repeat(ar /*Array*/, count /*uint*/) /*Array*/
 function shuffle(ar /*Array*/) /*Array*/
 {
     var item = void 0;
-    var rdm = void 0 /*int*/;
+    var rdm = void 0;
     var tmp /*Array*/ = [];
     var len /*int*/ = ar.length;
     var index /*int*/ = len - 1;
@@ -541,6 +576,7 @@ function shuffle(ar /*Array*/) /*Array*/
     return ar;
 }
 
+/*jslint bitwise: true */
 /**
  * In the sorting methods, this constant specifies case-insensitive sorting. You can use this constant for the options parameter in the sort() or sortOn() method.
  * <p>he value of this constant is 1.</p>
@@ -812,6 +848,7 @@ var arrays = Object.assign({
     initialize: initialize,
     pierce: pierce,
     repeat: repeat,
+    rotate: rotate,
     shuffle: shuffle,
     sortOn: sortOn,
     spliceInto: spliceInto
@@ -1437,7 +1474,7 @@ var gcd = function gcd(i1, i2) {
     } else if (i1 === i2) {
         return i1;
     } else {
-        var t /*int*/;
+        var t;
         while (i2 !== 0) {
             t = i2;
             i2 = i1 % i2;
@@ -2126,6 +2163,7 @@ var objects = Object.assign({
   merge: merge
 });
 
+/*jslint bitwise: true */
 /**
  * Generates a variant 2, version 4 (randomly generated number) UUID as per RFC 4122.
  */
@@ -2157,7 +2195,7 @@ var random = Object.assign({
  * </pre>
  */
 function getDefinitionByName(name /*String*/) {
-    var domain = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     if (name instanceof String || typeof name === 'string') {
         name = name.split('.');
@@ -2180,6 +2218,7 @@ function getDefinitionByName(name /*String*/) {
     return undefined;
 }
 
+/*jslint bitwise: true */
 /**
  * Invokes dynamically a class constructor.
  * @example
@@ -2197,7 +2236,7 @@ function getDefinitionByName(name /*String*/) {
  */
 
 function invoke(c /*Function*/) {
-        var a /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+        var a /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
         if (a === null || !(a instanceof Array) || a.length === 0) {
                 return new c();
@@ -2416,32 +2455,33 @@ function center(source /*String*/, size /*uint*/, separator /*String*/) /*String
 
 var whiteSpaceChars = ["\t" /*Horizontal tab*/
 , "\n" /*Line feed or New line*/
-, "\u000b" /*Vertical tab*/
+, "\x0B" /*Vertical tab*/
 , "\f" /*Formfeed*/
 , "\r" /*Carriage return*/
 , " " /*Space*/
-, " " /*Non-breaking space*/
-, " " /*Ogham space mark*/
-, "᠎" /*Mongolian vowel separator*/
-, " " /*En quad*/
-, " " /*Em quad*/
-, " " /*En space*/
-, " " /*Em space*/
-, " " /*Three-per-em space*/
-, " " /*Four-per-em space*/
-, " " /*Six-per-em space*/
-, " " /*Figure space*/
-, " " /*Punctuation space*/
-, " " /*Thin space*/
-, " " /*Hair space*/
-, "​" /*Zero width space*/
+, "\xA0" /*Non-breaking space*/
+, "\u1680" /*Ogham space mark*/
+, "\u180E" /*Mongolian vowel separator*/
+, "\u2000" /*En quad*/
+, "\u2001" /*Em quad*/
+, "\u2002" /*En space*/
+, "\u2003" /*Em space*/
+, "\u2004" /*Three-per-em space*/
+, "\u2005" /*Four-per-em space*/
+, "\u2006" /*Six-per-em space*/
+, "\u2007" /*Figure space*/
+, "\u2008" /*Punctuation space*/
+, "\u2009" /*Thin space*/
+, "\u200A" /*Hair space*/
+, "\u200B" /*Zero width space*/
 , "\u2028" /*Line separator*/
 , "\u2029" /*Paragraph separator*/
-, " " /*Narrow no-break space*/
-, " " /*Medium mathematical space*/
-, "　" /*Ideographic space*/
+, "\u202F" /*Narrow no-break space*/
+, "\u205F" /*Medium mathematical space*/
+, "\u3000" /*Ideographic space*/
 ];
 
+/*jslint noempty: false */
 /**
  * Removes all occurrences of a set of specified characters (or strings) from the beginning and end of this instance.
  * <p><b>Example :</b></p>
@@ -2462,8 +2502,8 @@ function trim(source /*String*/, chars /*Array*/) /*String*/
         return "";
     }
 
-    var i /*int*/;
-    var l /*int*/;
+    var i;
+    var l;
 
     ////// start
 
@@ -2707,11 +2747,11 @@ function format(pattern /*String*/) /*String*/
     var search /*RegExp*/ = new RegExp("{([a-z0-9,:\\-]*)}", "m");
     var result /*Array*/ = search.exec(formatted);
 
-    var part /*String*/;
-    var token /*String*/;
-    var c /*String*/;
+    var part;
+    var token;
+    var c;
 
-    var pos /*int*/;
+    var pos;
 
     var dirty /*Boolean*/ = false;
 
@@ -2756,7 +2796,7 @@ function format(pattern /*String*/) /*String*/
 
                 buffer.push(part);
 
-                formatted = formatted.replace(new RegExp(part, "g"), "￼" + (buffer.length - 1));
+                formatted = formatted.replace(new RegExp(part, "g"), "\uFFFC" + (buffer.length - 1));
                 dirty = true;
             } else if ("a" <= c && c <= "z") {
             if (token in words || words.hasOwnProperty(token)) {
@@ -2776,10 +2816,10 @@ function format(pattern /*String*/) /*String*/
     }
 
     if (dirty) {
-        var i /*int*/;
+        var i;
         var bl /*int*/ = buffer.length;
         for (i = 0; i < bl; i++) {
-            formatted = formatted.replace(new RegExp("￼" + i, "g"), buffer[i]);
+            formatted = formatted.replace(new RegExp("\uFFFC" + i, "g"), buffer[i]);
         }
     }
 
@@ -2829,9 +2869,9 @@ function indexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/, cou
     count = isNaN(count) ? -1 : count >= 0 ? count : -1;
 
     if (anyOf !== null && source !== null && source !== "") {
-        var i /*int*/;
+        var i;
         var l /*int*/ = anyOf.length;
-        var endIndex /*int*/;
+        var endIndex;
         if (count < 0 || count > l - startIndex) {
             endIndex = l - 1;
         } else {
@@ -2910,8 +2950,8 @@ function insert(source /*String*/, index /*int*/, value /*String*/) /*String*/
 
 function lastIndexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/, count /*int*/) /*int*/
 {
-    var i /*int*/;
-    var index /*int*/;
+    var i;
+    var index;
 
     startIndex = isNaN(startIndex) ? 0x7FFFFFFF : startIndex;
     count = isNaN(count) ? 0x7FFFFFFF : count;
@@ -2954,7 +2994,7 @@ function lastIndexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/,
 var lineTerminatorChars = ["\n" /*LF : Line Feed*/
 , "\r" /*CR : Carriage Return*/
 , "\u2028" /*LS : Line Separator*/
-, "⤩" /*PS : Paragraphe Separator*/
+, "\u2929" /*PS : Paragraphe Separator*/
 ];
 
 /**
@@ -3014,6 +3054,8 @@ function startsWith(source /*String*/, value /*String*/) /*Boolean*/
     return source.indexOf(value) === 0;
 }
 
+/*jslint noempty: false */
+/*jslint unused: false */
 /**
  * Removes all occurrences of a set of characters specified in an array from the end of this instance.
  * <p><b>Example :</b></p>
@@ -3034,7 +3076,7 @@ function trimEnd(source /*String*/, chars /*Array*/) /*String*/
         return "";
     }
 
-    var i /*int*/;
+    var i;
     var l /*int*/ = source.length;
 
     for (i = source.length - 1; i >= 0 && chars.indexOf(source.charAt(i)) > -1; i--) {}
@@ -3042,6 +3084,7 @@ function trimEnd(source /*String*/, chars /*Array*/) /*String*/
     return source.substring(0, i + 1);
 }
 
+/*jslint noempty: false */
 /**
  * Removes all occurrences of a set of characters specified in an array from the beginning of this instance.
  * <p><b>Example :</b></p>
@@ -3062,7 +3105,7 @@ function trimStart(source /*String*/, chars /*Array*/) /*String*/
         return "";
     }
 
-    var i /*int*/;
+    var i;
     var l /*int*/ = source.length;
 
     for (i = 0; i < l && chars.indexOf(source.charAt(i)) > -1; i++) {}
@@ -3208,6 +3251,7 @@ Enum.prototype.valueOf = function () {
     return this._value;
 };
 
+/*jshint unused: false*/
 /**
  * Indicates if the specific objet is Equatable.
  */
@@ -3249,6 +3293,7 @@ Equatable.prototype.equals = function (o) /*Boolean*/
   return "[Equatable]";
 };
 
+/*jshint unused: false*/
 /**
  * Indicates if the specific objet is Evaluable.
  */
@@ -3291,6 +3336,7 @@ Evaluable.prototype.eval = function (o) /*void*/
   return "[Evaluable]";
 };
 
+/*jshint unused: false*/
 /**
  * Indicates if the specific objet is Formattable.
  */
@@ -3371,6 +3417,8 @@ Identifiable.prototype = Object.create(Object.prototype, {
     }, writable: true }
 });
 
+/*jshint laxbreak : true*/
+/*jshint unused   : false*/
 function isValidator(target) {
   if (target) {
     return target instanceof Validator || 'supports' in target && target.supports instanceof Function || 'validate' in target && target.validate instanceof Function;
@@ -3412,6 +3460,7 @@ Validator.prototype.toString = function () {
   return '[Validator]';
 };
 
+/*jshint unused: false*/
 /**
  * This interface defines the iterator pattern over a collection.
  */
@@ -3467,6 +3516,7 @@ Iterator.prototype.toString = function () {
   return '[Iterator]';
 };
 
+/*jshint unused: false*/
 /**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  */
@@ -3515,7 +3565,7 @@ Map.prototype = Object.create(Object.prototype, {
    * @param thisArg Value to use as this when executing callback.
    */
   forEach: { value: function value(callback) {
-      var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+      var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     }, writable: true },
 
   /**
@@ -3699,6 +3749,7 @@ ArrayIterator.prototype.toString = function () {
     return '[ArrayIterator]';
 };
 
+/*jshint unused: false*/
 /**
  * Converts a <code>Map</code> to an iterator.
  */
@@ -3965,7 +4016,7 @@ ArrayMap.prototype.delete = function (key) {
  * @param thisArg Value to use as this when executing callback.
  */
 ArrayMap.prototype.forEach = function (callback) {
-    var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     if (typeof callback !== "function") {
         throw new TypeError(callback + ' is not a function');
@@ -4600,7 +4651,7 @@ PropertyEvaluator.prototype.toString = function () /*String*/
  */
 
 function RomanNumber() {
-    var value = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
     Object.defineProperties(this, {
         _num: { value: 0, writable: true }
@@ -4664,11 +4715,11 @@ Object.defineProperties(RomanNumber, {
                 n = num;
             }
 
-            var i /*int*/;
-            var rank /*uint*/;
-            var bellow /*uint*/;
-            var roman /*String*/;
-            var romansub /*String*/;
+            var i;
+            var rank;
+            var bellow;
+            var roman;
+            var romansub;
 
             var size /*int*/ = NUMERIC.length;
 
@@ -4726,8 +4777,8 @@ Object.defineProperties(RomanNumber, {
             var ch /*String*/ = "";
             var next /*String*/ = "";
 
-            var ich /*uint*/;
-            var inext /*uint*/;
+            var ich;
+            var inext;
 
             while (pos >= 0) {
                 ch = roman.charAt(pos);
@@ -5131,6 +5182,7 @@ Receiver.prototype.toString = function () /*String*/
   return "[Receiver]";
 };
 
+/*jslint unused: false */
 /**
  * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
  */
@@ -5430,11 +5482,11 @@ Signal.prototype.emit = function () /*Arguments*/ /*void*/
         return;
     }
 
-    var i /*int*/;
+    var i;
     var l /*int*/ = this.receivers.length;
     var r /*Array*/ = [];
     var a /*Array*/ = this.receivers.slice();
-    var e /*SignalEntry*/;
+    var e;
 
     var slot;
 
@@ -6124,8 +6176,8 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
         value: function value(target /*LoggerTarget*/) /*void*/
         {
             if (target && target instanceof LoggerTarget) {
-                var channel /*String*/;
-                var log /*Logger*/;
+                var channel;
+                var log;
 
                 var filters /*Array*/ = target.filters;
                 var it /*Iterator*/ = this._loggers.iterator();
@@ -6183,7 +6235,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
                 this._loggers.set(channel, logger);
             }
 
-            var target /*LoggerTarget*/;
+            var target;
 
             var len /*int*/ = this._targets.length;
             for (var i /*int*/ = 0; i < len; i++) {
@@ -6329,7 +6381,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     _channelMatchInFilterList: {
         value: function value(channel /*String*/, filters /*Array*/) /*Boolean*/
         {
-            var filter /*String*/;
+            var filter;
             var index /*int*/ = -1;
             var len /*int*/ = filters.length;
             for (var i /*int*/ = 0; i < len; i++) {
@@ -6372,7 +6424,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     _resetTargetLevel: {
         value: function value() /*void*/
         {
-            var t /*LoggerTarget*/;
+            var t;
             var min /*LoggerLevel*/ = LoggerLevel.NONE;
             var len /*int*/ = this._targets.length;
             for (var i /*int*/ = 0; i < len; i++) {
@@ -6631,8 +6683,8 @@ var ObjectAttribute = Object.defineProperties({}, {
  * @param channel The Logger reference of this entry.
  */
 function ObjectArgument(value) {
-    var policy = arguments.length <= 1 || arguments[1] === undefined ? "value" : arguments[1];
-    var evaluators = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var policy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "value";
+    var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     Object.defineProperties(this, {
         /**
@@ -6954,9 +7006,9 @@ var ObjectOrder = Object.defineProperties({}, {
  * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
 function ObjectListener(dispatcher /*String*/, type /*String*/) {
-  var method /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-  var useCapture /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+  var method /*Boolean*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var useCapture /*Boolean*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var order /*String*/ = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
 
   Object.defineProperties(this, {
     /**
@@ -7141,8 +7193,8 @@ ObjectStrategy.prototype = Object.create(Object.prototype, {
  * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
  */
 function ObjectProperty(name /*String*/, value) {
-  var policy /*String*/ = arguments.length <= 2 || arguments[2] === undefined ? "value" : arguments[2];
-  var evaluators /*Array*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+  var policy /*String*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
+  var evaluators /*Array*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
   Object.defineProperties(this, {
     /**
@@ -7311,10 +7363,10 @@ function createProperties(factory) /*Array*/
  * @param order Indicates the order to connect the receiver "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
 function ObjectReceiver(signal /*String*/) {
-  var slot /*String*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-  var priority /*int*/ = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-  var autoDisconnect /*Boolean*/ = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-  var order /*String*/ = arguments.length <= 4 || arguments[4] === undefined ? "after" : arguments[4];
+  var slot /*String*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var priority /*int*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  var autoDisconnect /*Boolean*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var order /*String*/ = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
 
   Object.defineProperties(this, {
     /**
@@ -7556,7 +7608,7 @@ ObjectFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
  * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
  */
 function ObjectFactoryProperty(factory /*String*/, name /*String*/) {
-    var evaluators /*Array*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var evaluators /*Array*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     ObjectProperty.call(name, null, null, evaluators);
     Object.defineProperties(this, {
@@ -7694,7 +7746,7 @@ ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
  * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
  */
 function ObjectStaticFactoryProperty(name /*String*/, type /*String*/) {
-    var evaluators /*Array*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var evaluators /*Array*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     ObjectProperty.call(name, null, null, evaluators);
     Object.defineProperties(this, {
@@ -7839,8 +7891,8 @@ var ObjectScope = Object.defineProperties({}, {
 });
 
 function ObjectDefinition(id, type) {
-    var singleton = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-    var lazyInit = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+    var singleton = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var lazyInit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     if (id === null || id === undefined) {
         throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
@@ -7968,7 +8020,7 @@ function ObjectDefinition(id, type) {
                 if (ar === null || !(ar instanceof Array)) {
                     return;
                 }
-                var r /*ObjectListener*/;
+                var r;
                 var l = ar.length;
                 if (l > 0) {
                     for (var i = 0; i < l; i++) {
@@ -8008,7 +8060,7 @@ function ObjectDefinition(id, type) {
                     return;
                 }
 
-                var r /*ObjectReceiver*/;
+                var r;
                 var l = ar.length;
                 if (l > 0) {
                     for (var i = 0; i < l; i++) {
@@ -8743,8 +8795,8 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
  * trace( factory.getObject('position') ) ;
  */
 function ObjectFactory() {
-    var config /*ObjectConfig*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var objects /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var config /*ObjectConfig*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var objects /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     ObjectDefinitionContainer.call(this);
     Object.defineProperties(this, {
@@ -9019,7 +9071,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
 
             if (this.objects instanceof Array && this.objects.length > 0) {
-                var definition /*ObjectDefinition*/;
+                var definition;
 
                 var init;
 
@@ -9082,7 +9134,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * @return the arguments Array representation of the specified definition.
      */
     createArguments: { value: function value() {
-            var args = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+            var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
             if (args === null || !(args instanceof Array) || args.length === 0) {
                 return null;
@@ -9091,7 +9143,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             var len = args.length;
             var i;
             var stack = [];
-            var item /*ObjectArgument*/;
+            var item;
             var value;
             for (i = 0; i < len; i++) {
                 item = args[i];
@@ -9205,7 +9257,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * @return The new value after evaluation.
      */
     eval: { value: function value(_value) {
-            var evaluators /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var evaluators /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (!(evaluators instanceof Array) || evaluators.length === 0) {
                 return _value;
@@ -9260,7 +9312,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * Invokes the destroy method of the specified object, if the init method is define in the IDefinition object.
      */
     invokeDestroyMethod: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (definition && definition instanceof ObjectDefinition) {
                 var name = definition.destroyMethodName || null;
@@ -9277,7 +9329,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * Invokes the init method of the specified object, if the init method is define in the IDefinition object.
      */
     invokeInitMethod: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (definition && definition instanceof ObjectDefinition) {
                 var name = definition.initMethodName || null;
@@ -9294,7 +9346,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * Populates the <code class="prettyprint">Identifiable</code> singleton object, if the 'identify' flag is true the config of this factory and if specified the <code class="prettyprint">IObjectDefinition</code> object scope is singleton.
      */
     populateIdentifiable: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (definition && definition instanceof ObjectDefinition) {
                 if (definition.singleton && isIdentifiable(o)) {
@@ -9309,7 +9361,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * Populates all properties in the Map passed in argument.
      */
     populateProperties: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (definition && definition instanceof ObjectDefinition) {
                 var properties = definition.properties;
@@ -9438,7 +9490,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * Initialize the receiver callback of the specified object.
      */
     registerReceivers: { value: function value(o) {
-            var receivers /*Array*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+            var receivers /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (!(receivers instanceof Array) || receivers.length === 0) {
                 return;
@@ -9659,7 +9711,7 @@ var TypePolicy = Object.defineProperties({}, {
  * </pre>
  */
 function TypeEvaluator() {
-    var config = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
     Object.defineProperties(this, {
         /**
@@ -10052,7 +10104,7 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
      * This method is used to change the target of the internal config dynamic object.
      */
     setConfigTarget: { value: function value() {
-            var o = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+            var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
             this._config = o || {};
         } },
@@ -10061,7 +10113,7 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
      * This method is used to change the target of the internal local dynamic object.
      */
     setLocaleTarget: { value: function value() {
-            var o = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+            var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
             this._locale = o || {};
         } },
@@ -10182,6 +10234,7 @@ var ioc = Object.assign({
     TypePolicy: TypePolicy
 });
 
+/*jshint laxbreak: true*/
 /**
  * Indicates if the specific objet is Loggable.
  */
@@ -10725,8 +10778,8 @@ BooleanRule.prototype.toString = function () /*String*/
  * Defines a conditional rule to defines a specific 'elseif' block in a IfTask reference.
  */
 function ElseIf() {
-    var rule /*Rule*/ = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var rule /*Rule*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     this.rule = rule instanceof Rule ? rule : new BooleanRule(rule);
     this.then = then;
@@ -10774,7 +10827,7 @@ ElseIf.prototype.toString = function () /*String*/
  * </pre>
  */
 function EmptyString() {
-  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.value = value;
 }
@@ -10805,8 +10858,8 @@ EmptyString.prototype.toString = function () /*String*/
  * Evaluates if the value is an empty String.
  */
 function ElseIfEmptyString() {
-  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   ElseIf.call(this, new EmptyString(value), then);
 }
@@ -10874,8 +10927,8 @@ ElseIfEmptyString.prototype.toString = function () {
  * </pre>
  */
 function Equals() {
-    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     this.value1 = value1;
     this.value2 = value2;
@@ -10915,7 +10968,7 @@ Equals.prototype.toString = function () /*String*/
  * Defines an equality between two values in an <elseif> conditional block.
  */
 function ElseIfEquals(value1, value2) {
-  var then /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+  var then /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
   ElseIf.call(this, new Equals(value1, value2), then);
 }
@@ -10944,7 +10997,7 @@ ElseIfEquals.prototype.toString = function () {
  * </pre>
  */
 function False() {
-  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.condition = condition;
 }
@@ -10975,7 +11028,7 @@ False.prototype.toString = function () /*String*/
  * Defines if condition is false in an <elseif> conditional block.
  */
 function ElseIfFalse(condition) {
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   ElseIf.call(this, new False(condition), then);
 }
@@ -10986,6 +11039,7 @@ ElseIfFalse.prototype.toString = function () {
   return "[ElseIfFalse]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is null.
  * @param value The value to evaluate.
@@ -11008,7 +11062,7 @@ ElseIfFalse.prototype.toString = function () {
  * </pre>
  */
 function Null(value) {
-    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     this.value = value;
     this.strict = Boolean(strict);
@@ -11044,8 +11098,8 @@ Null.prototype.toString = function () /*String*/
  * Defines if a value is null in an <elseif> conditional block.
  */
 function ElseIfNull(value) {
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-  var strict = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var strict = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   ElseIf.call(this, new Null(value, strict), then);
 }
@@ -11074,7 +11128,7 @@ ElseIfNull.prototype.toString = function () {
  * </pre>
  */
 function True() {
-  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.condition = condition;
 }
@@ -11105,7 +11159,7 @@ True.prototype.toString = function () /*String*/
  * Defines if condition is true in an <elseif> conditional block.
  */
 function ElseIfTrue(condition) {
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   ElseIf.call(this, new True(condition), then);
 }
@@ -11116,6 +11170,7 @@ ElseIfTrue.prototype.toString = function () {
   return "[ElseIfTrue]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is undefined.
  * @param value The value to evaluate.
@@ -11156,7 +11211,7 @@ Undefined.prototype.toString = function () /*String*/
  * Defines if a value is undefined in an <elseif> conditional block.
  */
 function ElseIfUndefined(value) {
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   ElseIf.call(this, new Undefined(value), then);
 }
@@ -11167,6 +11222,7 @@ ElseIfUndefined.prototype.toString = function () {
   return "[ElseIfUndefined]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is undefined.
  * @param value The value to evaluate.
@@ -11208,7 +11264,7 @@ Zero.prototype.toString = function () /*String*/
  * Defines if a value is 0 in an <elseif> conditional block.
  */
 function ElseIfZero(value) {
-  var then /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   ElseIf.call(this, new Zero(value), then);
 }
@@ -11337,9 +11393,9 @@ ElseIfZero.prototype.toString = function () {
  */
 function IfTask() // jshint ignore:line
 {
-    var rule = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     Action.call(this);
 
@@ -11660,8 +11716,8 @@ IfTask.prototype.constructor = IfTask;
  */
 function IfEmptyString(value) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new EmptyString(value), thenTask, elseTask);
 
@@ -11685,8 +11741,8 @@ IfEmptyString.prototype.toString = function () {
  */
 function IfEquals(value1, value2) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-    var elseTask /*Action*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+    var thenTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask /*Action*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     IfTask.call(this, new Equals(value1, value2), thenTask, elseTask);
 
@@ -11710,8 +11766,8 @@ IfEquals.prototype.toString = function () {
  */
 function IfFalse(condition) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new False(condition), thenTask, elseTask);
 
@@ -11735,9 +11791,9 @@ IfFalse.prototype.toString = function () {
  */
 function IfNull(value) // jshint ignore:line
 {
-    var strict = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-    var thenTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-    var elseTask /*Action*/ = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var thenTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask /*Action*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     IfTask.call(this, new Null(value, strict), thenTask, elseTask);
 
@@ -11761,8 +11817,8 @@ IfNull.prototype.toString = function () {
  */
 function IfTrue(condition) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new True(condition), thenTask, elseTask);
 
@@ -11786,8 +11842,8 @@ IfTrue.prototype.toString = function () {
  */
 function IfUndefined(value) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new Undefined(value), thenTask, elseTask);
 
@@ -11811,8 +11867,8 @@ IfUndefined.prototype.toString = function () {
  */
 function IfZero(value) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var elseTask /*Action*/ = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new Zero(value), thenTask, elseTask);
 
@@ -11866,7 +11922,7 @@ var logics = Object.assign({
  */
 
 function PRNG() {
-    var value = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
     Object.defineProperties(this, {
         _value: { value: 1, writable: true }
@@ -12002,8 +12058,8 @@ PRNG.prototype.valueOf = function () /*int*/
  */
 
 function Range() {
-    var min = arguments.length <= 0 || arguments[0] === undefined ? NaN : arguments[0];
-    var max = arguments.length <= 1 || arguments[1] === undefined ? NaN : arguments[1];
+    var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+    var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
     if (max < min) {
         throw new RangeError("The Range constructor failed, the 'max' argument is < of 'min' argument");
@@ -12041,7 +12097,7 @@ Object.defineProperties(Range, {
      */
     filterNaNValue: {
         value: function value(_value) {
-            var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+            var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
             return isNaN(_value) ? defaultValue : _value;
         }
@@ -12308,6 +12364,7 @@ ActionEntry.prototype.toString = function () /*String*/
   return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
 };
 
+/*jshint laxbreak: true*/
 /**
  * Creates a new Batch instance.
  * @param init The optional Array of Runnable objects to fill the batch.
@@ -12540,6 +12597,7 @@ Batch.prototype.toString = function () /*Array*/
     return r;
 };
 
+/*jshint unused: false*/
 /**
  * A simple representation of the Action interface, to group some Action objects in one.
  * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
@@ -12675,7 +12733,7 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             var l /*int*/ = this._actions.length;
             if (l > 0) {
                 var slot;
-                var e /*ActionEntry*/;
+                var e;
                 while (--l > -1) {
                     e = this._actions[l];
                     if (e && e.action && this._next) {
@@ -12820,7 +12878,7 @@ TaskGroup.prototype.contains = function (action /*Action*/) /*Action*/
 {
     if (action && action instanceof Action) {
         if (this._actions.length > 0) {
-            var e /*ActionEntry*/;
+            var e;
             var l /*int*/ = this._actions.length;
             while (--l > -1) {
                 e = this._actions[l];
@@ -12865,7 +12923,7 @@ TaskGroup.prototype.next = function (action /*Action*/) /*void*/
     this.stop();
     if (this._actions.length > 0) {
         if (action && action instanceof Action) {
-            var e /*ActionEntry*/;
+            var e;
             var l /*int*/ = this._actions.length;
 
             var slot;
@@ -12920,8 +12978,8 @@ TaskGroup.prototype.toString = function () /*String*/
     if (Boolean(this.verbose)) {
         if (this._actions.length > 0) {
             s += "[";
-            var i /*int*/;
-            var e /*ActionEntry*/;
+            var i;
+            var e;
             var l /*int*/ = this._actions.length;
             var r /*Array*/ = [];
             for (i = 0; i < l; i++) {
@@ -13095,8 +13153,8 @@ BatchTask.prototype.resume = function () /*void*/
         this._stopped = false;
         this.notifyResumed();
         if (this._actions.length > 0) {
-            var a /*Action*/;
-            var e /*ActionEntry*/;
+            var a;
+            var e;
             var l /*int*/ = this._actions.length;
             while (--l > -1) {
                 e = this._actions[l];
@@ -13157,8 +13215,8 @@ BatchTask.prototype.stop = function () /*void*/
 {
     if (this._running) {
         if (this._actions.length > 0) {
-            var a /*Action*/;
-            var e /*ActionEntry*/;
+            var a;
+            var e;
             var l /*int*/ = this._actions.length;
             while (--l > -1) {
                 e = this._actions[l];
@@ -14077,8 +14135,8 @@ Object.defineProperties(TimeoutPolicy, {
  * </pre>
  */
 function Timer(delay /*uint*/) {
-    var repeatCount /*uint*/ = arguments.length <= 1 || arguments[1] === undefined ? 1 : arguments[1];
-    var useSeconds /*Boolean*/ = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var repeatCount /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    var useSeconds /*Boolean*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     Task.call(this);
 
@@ -14512,8 +14570,8 @@ And.prototype.toString = function () /*String*/
  * </pre>
  */
 function DivBy() {
-  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   this.value1 = value1;
   this.value2 = value2;
@@ -14562,7 +14620,7 @@ DivBy.prototype.toString = function () /*String*/
  * </pre>
  */
 function Even() {
-  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.value = value;
 }
@@ -14610,8 +14668,8 @@ Even.prototype.toString = function () /*String*/
  * </pre>
  */
 function GreaterOrEqualsThan() {
-  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   this.value1 = value1;
   this.value2 = value2;
@@ -14660,8 +14718,8 @@ GreaterOrEqualsThan.prototype.toString = function () /*String*/
  * </pre>
  */
 function GreaterThan() {
-  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   this.value1 = value1;
   this.value2 = value2;
@@ -14689,6 +14747,7 @@ GreaterThan.prototype.toString = function () /*String*/
   return "[GreaterThan]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is a boolean.
  * @param value The value to evaluate.
@@ -14731,6 +14790,7 @@ IsBoolean.prototype.toString = function () /*String*/
   return "[IsBoolean]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is a boolean.
  * @param value The value to evaluate.
@@ -14771,6 +14831,7 @@ IsNumber.prototype.toString = function () /*String*/
   return "[IsNumber]";
 };
 
+/* jshint eqnull: true */
 /**
  * Evaluates if the condition is a string.
  * @param value The value to evaluate.
@@ -14830,8 +14891,8 @@ IsString.prototype.toString = function () /*String*/
  * </pre>
  */
 function LessOrEqualsThan() {
-  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   this.value1 = value1;
   this.value2 = value2;
@@ -14880,8 +14941,8 @@ LessOrEqualsThan.prototype.toString = function () /*String*/
  * </pre>
  */
 function LessThan() {
-  var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-  var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   this.value1 = value1;
   this.value2 = value2;
@@ -14931,7 +14992,7 @@ LessThan.prototype.toString = function () /*String*/
  * </pre>
  */
 function Not() {
-  var condition = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.condition = condition;
 }
@@ -15014,8 +15075,8 @@ Not.prototype.toString = function () /*String*/
  * </pre>
  */
 function NotEquals() {
-    var value1 = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-    var value2 = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     this.value1 = value1;
     this.value2 = value2;
@@ -15072,7 +15133,7 @@ NotEquals.prototype.toString = function () /*String*/
  * </pre>
  */
 function Odd() {
-  var value = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
   this.value = value;
 }
