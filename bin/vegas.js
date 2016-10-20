@@ -12349,6 +12349,55 @@ var logics = Object.assign({
 });
 
 /**
+ *  The Model interface defines all models in the application.
+ */
+function Model() {}
+
+/**
+ * @extends Lockable
+ */
+Model.prototype = Object.create(Lockable.prototype);
+Model.prototype.constructor = Model;
+
+/**
+ * Returns true if the specific value is valid.
+ * @return true if the specific value is valid.
+ */
+Model.prototype.supports = function (value) /*Boolean*/
+{
+  return value === value;
+};
+
+/**
+ * Evaluates the specified value and throw an Error object if the value is not valid.
+ * @throws Error if the value is not valid.
+ */
+Model.prototype.validate = function (value) /*void*/
+{
+  if (!this.supports(value)) {
+    throw new Error(this + " validate(" + value + ") is mismatch.");
+  }
+};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Model.prototype.toString = function () /*String*/
+{
+  return '[' + this.constructor.name + ']';
+};
+
+/**
+ * The VEGAS.js framework - The system.models library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var models = Object.assign({
+  Model: Model
+});
+
+/**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
  * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
@@ -15815,6 +15864,7 @@ var system = Object.assign({
     ioc: ioc,
     logging: logging,
     logics: logics,
+    models: models,
     numeric: numeric,
     process: process,
     rules: rules,
