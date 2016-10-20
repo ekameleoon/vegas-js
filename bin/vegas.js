@@ -893,38 +893,87 @@ function compare(charA /*String*/, charB /*String*/) /*uint*/
 
 /**
  * Indicates if the specified character is an alpha (A-Z or a-z) character.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is an alpha character.
  */
 
 function isAlpha(c /*String*/) /*Boolean*/
 {
-  return "A" <= c && c <= "Z" || "a" <= c && c <= "z";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "A" <= c && c <= "Z" || "a" <= c && c <= "z";
+}
+
+/**
+ * Indicates if the specified character is an alpha (A-Z or a-z) or a digit character.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is an alpha or digit character.
+ */
+
+function isAlphaOrDigit(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "A" <= c && c <= "Z" || "a" <= c && c <= "z" || "0" <= c && c <= "9";
 }
 
 /**
  * Indicates if the specified character is an ASCII character.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is a ASCII character.
  */
 
 function isASCII(c /*String*/) /*Boolean*/
 {
-  return c.charCodeAt(0) <= 255;
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return c.charCodeAt(0) <= 255;
 }
 
 /**
  * Indicates if the specified character is a digit.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is a digit.
  */
 
 function isDigit(c /*String*/) /*Boolean*/
 {
-  return "0" <= c && c <= "9";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "0" <= c && c <= "9";
 }
 
 /**
  * Indicates if the specified character is a hexadecimal digit.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is an hexadecimal digit.
  */
 
 function isHexDigit(c /*String*/) /*Boolean*/
 {
-  return "0" <= c && c <= "9" || "A" <= c && c <= "F" || "a" <= c && c <= "f";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "0" <= c && c <= "9" || "A" <= c && c <= "F" || "a" <= c && c <= "f";
 }
 
 /**
@@ -1001,6 +1050,7 @@ function isUpper(c /*String*/) /*Boolean*/
 var chars = Object.assign({
     compare: compare,
     isAlpha: isAlpha,
+    isAlphaOrDigit: isAlphaOrDigit,
     isASCII: isASCII,
     isDigit: isDigit,
     isHexDigit: isHexDigit,

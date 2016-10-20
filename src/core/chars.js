@@ -2,16 +2,17 @@
 
 import '../polyfill.js' ;
 
-import { compare }      from './chars/compare.js' ;
-import { isAlpha }      from './chars/isAlpha.js' ;
-import { isASCII }      from './chars/isASCII.js' ;
-import { isDigit }      from './chars/isDigit.js' ;
-import { isHexDigit }   from './chars/isHexDigit.js' ;
-import { isLower }      from './chars/isLower.js' ;
-import { isOctalDigit } from './chars/isOctalDigit.js' ;
-import { isOperator }   from './chars/isOperator.js' ;
-import { isUnicode }    from './chars/isUnicode.js' ;
-import { isUpper }      from './chars/isUpper.js' ;
+import { compare }        from './chars/compare.js' ;
+import { isAlpha }        from './chars/isAlpha.js' ;
+import { isAlphaOrDigit } from './chars/isAlphaOrDigit.js' ;
+import { isASCII }        from './chars/isASCII.js' ;
+import { isDigit }        from './chars/isDigit.js' ;
+import { isHexDigit }     from './chars/isHexDigit.js' ;
+import { isLower }        from './chars/isLower.js' ;
+import { isOctalDigit }   from './chars/isOctalDigit.js' ;
+import { isOperator }     from './chars/isOperator.js' ;
+import { isUnicode }      from './chars/isUnicode.js' ;
+import { isUpper }        from './chars/isUpper.js' ;
 
 /**
  * The VEGAS.js framework - The core.chars library.
@@ -20,14 +21,15 @@ import { isUpper }      from './chars/isUpper.js' ;
  */
 export var chars = Object.assign
 ({
-    compare : compare ,
-    isAlpha : isAlpha ,
-    isASCII : isASCII ,
-    isDigit : isDigit ,
-    isHexDigit : isHexDigit ,
-    isLower : isLower ,
-    isOctalDigit : isOctalDigit ,
-    isOperator : isOperator ,
-    isUnicode : isUnicode ,
-    isUpper : isUpper
+    compare        : compare ,
+    isAlpha        : isAlpha ,
+    isAlphaOrDigit : isAlphaOrDigit ,
+    isASCII        : isASCII ,
+    isDigit        : isDigit ,
+    isHexDigit     : isHexDigit ,
+    isLower        : isLower ,
+    isOctalDigit   : isOctalDigit ,
+    isOperator     : isOperator ,
+    isUnicode      : isUnicode ,
+    isUpper        : isUpper
 }) ;
