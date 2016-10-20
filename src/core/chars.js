@@ -9,12 +9,14 @@ import { isASCII }           from './chars/isASCII.js' ;
 import { isDigit }           from './chars/isDigit.js' ;
 import { isHexDigit }        from './chars/isHexDigit.js' ;
 import { isIdentifierStart } from './chars/isIdentifierStart.js' ;
+import { isLineTerminator }  from './chars/isLineTerminator.js' ;
 import { isLower }           from './chars/isLower.js' ;
 import { isOctalDigit }      from './chars/isOctalDigit.js' ;
 import { isOperator }        from './chars/isOperator.js' ;
 import { isUnicode }         from './chars/isUnicode.js' ;
 import { isUpper }           from './chars/isUpper.js' ;
 import { isWhiteSpace }      from './chars/isWhiteSpace.js' ;
+import { lineTerminators }   from './chars/lineTerminators.js' ;
 import { whiteSpaces }       from './chars/whiteSpaces.js' ;
 
 /**
@@ -31,11 +33,13 @@ export var chars = Object.assign
     isDigit           : isDigit ,
     isHexDigit        : isHexDigit ,
     isIdentifierStart : isIdentifierStart ,
+    isLineTerminator  : isLineTerminator ,
     isLower           : isLower ,
     isOctalDigit      : isOctalDigit ,
     isOperator        : isOperator ,
     isUnicode         : isUnicode ,
     isUpper           : isUpper ,
     isWhiteSpace      : isWhiteSpace ,
+    lineTerminators   : lineTerminators ,
     whiteSpaces       : whiteSpaces
 }) ;
