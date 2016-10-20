@@ -11,9 +11,8 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var isAlphaOrDigit = core.chars.isAlphaOrDigit ;
+var isWhiteSpace = core.chars.isWhiteSpace ;
 
-trace( isAlphaOrDigit( '!' ) ) ;
-trace( isAlphaOrDigit( 'A' ) ) ;
-trace( isAlphaOrDigit( 'a' ) ) ;
-trace( isAlphaOrDigit( '1' ) ) ;
+trace( isWhiteSpace( '!' ) ) ;
+trace( isWhiteSpace( ' ' ) ) ;
+trace( isWhiteSpace( '\r' ) ) ;

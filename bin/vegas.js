@@ -977,29 +977,75 @@ function isHexDigit(c /*String*/) /*Boolean*/
 }
 
 /**
+ * Indicates if the specified character is a start identifier.
+ * UnicodeLetter
+ * $
+ * _
+ * or the \ unicode escape sequence.
+ * @see ECMA-262 spec 7.6 (PDF p26/188)
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is an identifier start character.
+ */
+
+function isIdentifierStart(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "A" <= c && c <= "Z" || "a" <= c && c <= "z" || c === "_" || c === "$";
+}
+
+/**
  * Indicates if the character is lowercase.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is lowercase.
  */
 
 function isLower(c /*String*/) /*Boolean*/
 {
-  return "a" <= c && c <= "z";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "a" <= c && c <= "z";
 }
 
 /**
  * Indicates if the specified character is an octal digit.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is an octal digit.
  */
 
 function isOctalDigit(c /*String*/) /*Boolean*/
 {
-  return "0" <= c && c <= "7";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "0" <= c && c <= "7";
 }
 
 /**
  * Indicates if the passed-in string value is a operator digit.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the passed-in string value is a operator digit.
  */
 
 function isOperator(c /*String*/) /*Boolean*/
 {
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
     switch (c) {
         case "*":
         case "/":
@@ -1026,20 +1072,113 @@ function isOperator(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is a unicode character.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the passed-in string value is a unicode character.
  */
 
 function isUnicode(c /*String*/) /*Boolean*/
 {
-  return c.charCodeAt(0) > 255;
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return c.charCodeAt(0) > 255;
 }
 
 /**
  * Indicates if the character is uppercase.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the specified character is lowercase.
  */
 
 function isUpper(c /*String*/) /*Boolean*/
 {
-  return "A" <= c && c <= "Z";
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+    return "A" <= c && c <= "Z";
+}
+
+/**
+ * This collection contains all white space chars.
+ * <p><b>Note :</b></p>
+ * <ul>
+ * <li><a href="http://developer.mozilla.org/es4/proposals/string.html">http://developer.mozilla.org/es4/proposals/string.html</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/category/Zs/list.htm">http://www.fileformat.info/info/unicode/category/Zs/list.htm</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/category/Zl/list.htm">http://www.fileformat.info/info/unicode/category/Zl/list.htm</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/category/Zp/list.htm">http://www.fileformat.info/info/unicode/category/Zp/list.htm</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/char/200b/index.htm">http://www.fileformat.info/info/unicode/char/200b/index.htm</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/char/feff/index.htm">http://www.fileformat.info/info/unicode/char/feff/index.htm</a></li>
+ * <li><a href="http://www.fileformat.info/info/unicode/char/2060/index.htm">http://www.fileformat.info/info/unicode/char/2060/index.htm</a></li>
+ * </ul>
+ */
+
+var whiteSpaces = ["\t" /*Horizontal tab*/
+, "\n" /*Line feed or New line*/
+, "\x0B" /*Vertical tab*/
+, "\f" /*Formfeed*/
+, "\r" /*Carriage return*/
+, " " /*Space*/
+, "\xA0" /*Non-breaking space*/
+, "\u1680" /*Ogham space mark*/
+, "\u180E" /*Mongolian vowel separator*/
+, "\u2000" /*En quad*/
+, "\u2001" /*Em quad*/
+, "\u2002" /*En space*/
+, "\u2003" /*Em space*/
+, "\u2004" /*Three-per-em space*/
+, "\u2005" /*Four-per-em space*/
+, "\u2006" /*Six-per-em space*/
+, "\u2007" /*Figure space*/
+, "\u2008" /*Punctuation space*/
+, "\u2009" /*Thin space*/
+, "\u200A" /*Hair space*/
+, "\u200B" /*Zero width space*/
+, "\u2028" /*Line separator*/
+, "\u2029" /*Paragraph separator*/
+, "\u202F" /*Narrow no-break space*/
+, "\u205F" /*Medium mathematical space*/
+, "\u3000" /*Ideographic space*/
+];
+
+// TODO We maybe could also define 0xFFEF and/or 0x2060, but not completely sure of all the implication,
+// 0xFFEF in byte order mark etc.
+
+/**
+ * Indicates if the character is white space.
+ * @param c The expression to evaluate.
+ * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @return True if the passed-in string value is a white space defines in the core.chars.whiteSpaces collection.
+ * @example
+ * <pre>
+ * var isWhiteSpace = core.chars.isWhiteSpace ;
+ *
+ * trace( isWhiteSpace( '!' ) ) ;
+ * trace( isWhiteSpace( ' ' ) ) ;
+ * trace( isWhiteSpace( '\r' ) ) ;
+ * </pre>
+ */
+function isWhiteSpace(c /*String*/) /*Boolean*/
+{
+    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (index > 0) {
+        c = c.charAt(index);
+    }
+
+    var l = whiteSpaces.length;
+    while (--l > -1) {
+        if (c === whiteSpaces[l]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -1054,11 +1193,14 @@ var chars = Object.assign({
     isASCII: isASCII,
     isDigit: isDigit,
     isHexDigit: isHexDigit,
+    isIdentifierStart: isIdentifierStart,
     isLower: isLower,
     isOctalDigit: isOctalDigit,
     isOperator: isOperator,
     isUnicode: isUnicode,
-    isUpper: isUpper
+    isUpper: isUpper,
+    isWhiteSpace: isWhiteSpace,
+    whiteSpaces: whiteSpaces
 });
 
 /**

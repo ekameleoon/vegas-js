@@ -14,6 +14,8 @@ import { isOctalDigit }      from './chars/isOctalDigit.js' ;
 import { isOperator }        from './chars/isOperator.js' ;
 import { isUnicode }         from './chars/isUnicode.js' ;
 import { isUpper }           from './chars/isUpper.js' ;
+import { isWhiteSpace }      from './chars/isWhiteSpace.js' ;
+import { whiteSpaces }       from './chars/whiteSpaces.js' ;
 
 /**
  * The VEGAS.js framework - The core.chars library.
@@ -33,5 +35,7 @@ export var chars = Object.assign
     isOctalDigit      : isOctalDigit ,
     isOperator        : isOperator ,
     isUnicode         : isUnicode ,
-    isUpper           : isUpper
+    isUpper           : isUpper ,
+    isWhiteSpace      : isWhiteSpace ,
+    whiteSpaces       : whiteSpaces
 }) ;
