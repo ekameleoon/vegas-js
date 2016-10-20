@@ -2,7 +2,8 @@
 
 import '../polyfill.js' ;
 
-import { Model } from './models/Model.js' ;
+import { ChangeModel } from './models/ChangeModel.js' ;
+import { Model }       from './models/Model.js' ;
 
 /**
  * The VEGAS.js framework - The system.models library.
@@ -11,5 +12,6 @@ import { Model } from './models/Model.js' ;
  */
 export var models = Object.assign
 ({
-    Model : Model
+    ChangeModel : ChangeModel,
+    Model       : Model
 }) ;

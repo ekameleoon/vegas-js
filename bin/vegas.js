@@ -12392,11 +12392,145 @@ Model.prototype = Object.create(Lockable.prototype, {
 });
 
 /**
+ * This model can keep an object in memory and emit messages if this object is changing.
+ * @example
+ * <pre>
+ * <code class="prettyprint">
+ * var beforeChanged = function( value , model )
+ * {
+ *     trace( "before:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var changed = function( value , model )
+ * {
+ *     trace( "change:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var cleared = function( model )
+ * {
+ *     trace( "clear current:" + model.current ) ;
+ * }
+ *
+ * model.beforeChanged.connect( beforeChanged ) ;
+ * model.changed.connect( changed ) ;
+ * model.cleared.connect( cleared ) ;
+ *
+ * model.current = "hello" ;
+ * model.current = "world" ;
+ * model.current = null ;
+ * </pre>
+ */
+function ChangeModel() {
+    Object.defineProperties(this, {
+        /**
+         * Emits a message before the current object in the model is changed.
+         */
+        beforeChanged: { value: new Signal() },
+
+        /**
+         * Emits a message when the current object in the model is changed.
+         */
+        changed: { value: new Signal() },
+
+        /**
+         * Emits a message when the current object in the model is cleared.
+         */
+        cleared: { value: new Signal() },
+
+        /**
+         * This property defined if the current property can accept the same object in argument as the current one.
+         */
+        security: { value: true, writable: true },
+
+        /**
+         * @private
+         */
+        _current: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Lockable
+ */
+ChangeModel.prototype = Object.create(Model.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: ChangeModel },
+
+    /**
+     * Determinates the selected value in this model.
+     */
+    current: {
+        get: function get() {
+            return this._current;
+        },
+        set: function set(o) {
+            if (o === this._current && this.security) {
+                return;
+            }
+
+            if (o) {
+                this.validate(o);
+            }
+
+            var old = this._current;
+
+            this._current = o;
+
+            if (old !== null) {
+                this.notifyBeforeChange(old);
+            }
+
+            if (this._current !== null) {
+                this.notifyChange(this._current);
+            }
+        }
+    },
+
+    /**
+     * Clear the model.
+     */
+    clear: { writable: true, value: function value() {
+            this._current = null;
+            this.notifyClear();
+        } },
+
+    /**
+     * Notify a signal before the specified value is changed.
+     */
+    notifyBeforeChange: { value: function value(_value) {
+            if (!this.isLocked()) {
+                this.beforeChanged.emit(_value, this);
+            }
+        } },
+
+    /**
+     * Notify a signal when the model is changed.
+     */
+    notifyChange: { value: function value(_value2) {
+            if (!this.isLocked()) {
+                this.changed.emit(_value2, this);
+            }
+        } },
+
+    /**
+     * Notify a signal when the model is cleared.
+     */
+    notifyClear: { value: function value() {
+            if (!this.isLocked()) {
+                this.cleared.emit(this);
+            }
+        } }
+});
+
+/**
  * The VEGAS.js framework - The system.models library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var models = Object.assign({
+  ChangeModel: ChangeModel,
   Model: Model
 });
 
