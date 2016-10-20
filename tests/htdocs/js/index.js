@@ -11,8 +11,12 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var isWhiteSpace = core.chars.isWhiteSpace ;
+var dump = core.dump ;
+var fuse = core.objects.fuse ;
 
-trace( isWhiteSpace( '!' ) ) ;
-trace( isWhiteSpace( ' ' ) ) ;
-trace( isWhiteSpace( '\r' ) ) ;
+var ar1 = [1,2,3,4] ;
+var ar2 = [5,6,7,8] ;
+
+fuse( ar1 , 2 , ar2 , 2 , 2 ) ;
+
+trace( dump( ar2 ) ) ; // [5,6,3,4]

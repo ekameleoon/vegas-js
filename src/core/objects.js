@@ -2,6 +2,7 @@
 
 import '../polyfill.js' ;
 
+import { fuse }    from './objects/fuse.js' ;
 import { members } from './objects/members.js' ;
 import { merge }   from './objects/merge.js' ;
 
@@ -12,6 +13,7 @@ import { merge }   from './objects/merge.js' ;
  */
 export var objects = Object.assign
 ({
+    fuse    : fuse,
     members : members,
     merge   : merge
 }) ;
