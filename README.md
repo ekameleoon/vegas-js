@@ -14,9 +14,16 @@ Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
 
 ### Install ###
 
-#### npm ####
+#### YARN / NPM ####
 
-You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js).
+You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js) or [Yarn](https://yarnpkg.com/).
+
+```
+#!shell
+yarn install vegas-js --save-dev
+```
+
+or
 
 ```
 #!shell
