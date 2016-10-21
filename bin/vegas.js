@@ -3855,7 +3855,7 @@ Identifiable.prototype = Object.create(Object.prototype, {
 
 /*jshint unused: false*/
 /**
- * Indicates if the specific objet is Equatable.
+ * Indicates if the specific objet is an Iterator.
  */
 
 function isIterator(target) {
@@ -3918,6 +3918,50 @@ Iterator.prototype.seek = function (position) {};
  */
 Iterator.prototype.toString = function () {
   return '[Iterator]';
+};
+
+/*jshint unused: false*/
+/**
+ * Indicates if the specific objet is an OrderedIterator.
+ */
+function isOrderedIterator(target) {
+    var bool = false;
+    if (target) {
+        bool = target instanceof OrderedIterator || 'hasNext' in target && target.hasNext instanceof Function && 'hasPrevious' in target && target.hasPrevious instanceof Function && 'key' in target && target.key instanceof Function && 'next' in target && target.next instanceof Function && 'previous' in target && target.previous instanceof Function && 'remove' in target && target.remove instanceof Function && 'reset' in target && target.reset instanceof Function && 'seek' in target && target.seek instanceof Function;
+    }
+    return bool;
+}
+
+/**
+ * Defines an iterator that operates over an ordered collection. This iterator allows both forward and reverse iteration through the collection.
+ */
+function OrderedIterator() {}
+//
+
+
+/**
+ * @extends Iterator
+ */
+OrderedIterator.prototype = Object.create(Iterator.prototype);
+OrderedIterator.prototype.constructor = OrderedIterator;
+
+/**
+ * Checks to see if there is a previous element that can be iterated to.
+ */
+OrderedIterator.prototype.hasPrevious = function () {};
+
+/**
+ * Returns the previous element in the collection.
+ * @return the previous element in the collection.
+ */
+OrderedIterator.prototype.previous = function () {};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+OrderedIterator.prototype.toString = function () {
+    return '[OrderedIterator]';
 };
 
 /*jshint laxbreak : true*/
@@ -4685,11 +4729,13 @@ var data = Object.assign({
     // singletons
     isIdentifiable: isIdentifiable,
     isIterator: isIterator,
+    isOrderedIterator: isOrderedIterator,
     isValidator: isValidator,
 
     // interfaces
     Identifiable: Identifiable,
     Iterator: Iterator,
+    OrderedIterator: OrderedIterator,
     Map: Map,
     Validator: Validator,
 

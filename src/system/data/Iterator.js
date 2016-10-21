@@ -2,7 +2,7 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Equatable.
+ * Indicates if the specific objet is an Iterator.
  */
 export function isIterator( target )
 {
