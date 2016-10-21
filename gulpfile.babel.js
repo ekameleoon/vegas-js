@@ -16,6 +16,8 @@ var sources = './src/**/*.js' ;
 var entry   = './src/index.js' ;
 var output  = './bin' ;
 
+var reporter = 'spec' // spec, dot, landing, dot, nyan, list
+
 var globals =
 {
     chai   : 'chai' ,
@@ -97,7 +99,7 @@ gulp.task( 'test', ( done ) =>
         }),
         mocha
         ({
-            reporter : 'spec' // spec, dot, landing, dot, nyan, list
+            reporter : reporter
         })
     ] , done )
 });
