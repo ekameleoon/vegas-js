@@ -7,7 +7,6 @@ import { Signal } from "../signals/Signal.js" ;
  * This model can keep an object in memory and emit messages if this object is changing.
  * @example
  * <pre>
- * <code class="prettyprint">
  * var beforeChanged = function( value , model )
  * {
  *     trace( "before:" + value + " current:" + model.current ) ;
