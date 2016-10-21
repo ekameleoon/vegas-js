@@ -10,12 +10,11 @@ import rename from 'gulp-rename' ;
 import rollup from 'gulp-rollup' ;
 import uglify from 'gulp-uglify' ;
 
-var name    = 'vegas' ;
-var version = '1.0.0' ;
-var sources = './src/**/*.js' ;
-var entry   = './src/index.js' ;
-var output  = './bin' ;
-
+var name     = 'vegas' ;
+var version  = '1.0.0' ;
+var sources  = './src/**/*.js' ;
+var entry    = './src/index.js' ;
+var output   = './bin' ;
 var reporter = 'spec' // spec, dot, landing, dot, nyan, list
 
 var globals =
@@ -27,9 +26,7 @@ var globals =
     trace  : 'trace'
 };
 
-// ------------ VEGAS
-
-gulp.task('compile', ( done ) =>
+var compile = ( done ) =>
 {
     pump
     (
@@ -61,9 +58,9 @@ gulp.task('compile', ( done ) =>
         ],
         done
     );
-});
+}
 
-gulp.task ('compress', ( done ) =>
+var compress = ( done ) =>
 {
     pump([
         gulp.src( [ output + '/' + name + '.js' ] ) ,
@@ -71,9 +68,9 @@ gulp.task ('compress', ( done ) =>
         rename( name + '.min.js'),
         gulp.dest( output )
     ] , done );
-});
+}
 
-gulp.task( 'test', ( done ) =>
+var unittest = ( done ) =>
 {
     pump
     ([
@@ -101,18 +98,31 @@ gulp.task( 'test', ( done ) =>
         ({
             reporter : reporter
         })
-    ] , done )
+    ], done ) ;
+}
+
+// ------------ TASKS
+
+gulp.task('compile', compile );
+gulp.task ('compress', compress );
+
+gulp.task( 'watch', () =>
+{
+    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest , 'compile' , 'compress' ) );
 });
 
-gulp.task( 'watch', function()
+gulp.task( 'watch-test', () =>
 {
-    gulp.watch( 'src/**/*.js', gulp.series( 'compile' , 'compress' ) );
+    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest ) );
 });
+
+gulp.task( 'test', gulp.series( unittest , 'watch-test') );
 
 // ------------ default
 
 gulp.task( 'default', gulp.series
 (
-    'compile' , 'compress' , 'watch'
+    unittest , 'compile' , 'compress' , 'watch'
 ));
 
+// ------------
