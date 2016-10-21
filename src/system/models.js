@@ -3,6 +3,7 @@
 import '../polyfill.js' ;
 
 import { ChangeModel } from './models/ChangeModel.js' ;
+import { MemoryModel } from './models/MemoryModel.js' ;
 import { Model }       from './models/Model.js' ;
 
 /**
@@ -13,5 +14,6 @@ import { Model }       from './models/Model.js' ;
 export var models = Object.assign
 ({
     ChangeModel : ChangeModel,
+    MemoryModel : MemoryModel,
     Model       : Model
 }) ;

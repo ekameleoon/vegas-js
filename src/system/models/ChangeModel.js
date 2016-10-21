@@ -59,12 +59,12 @@ export function ChangeModel()
         /**
          * @private
          */
-        _current : { value : null , writable : true } ,
+        _current : { value : null , writable : true }
     });
 }
 
 /**
- * @extends Lockable
+ * @extends Model
  */
 ChangeModel.prototype = Object.create( Model.prototype ,
 {
@@ -94,16 +94,14 @@ ChangeModel.prototype = Object.create( Model.prototype ,
                 this.validate( o ) ;
             }
 
-            const old = this._current ;
+            if ( this._current )
+            {
+                this.notifyBeforeChange( this._current ) ;
+            }
 
             this._current = o ;
 
-            if ( old !== null )
-            {
-                this.notifyBeforeChange( old ) ;
-            }
-
-            if ( this._current !== null )
+            if( this._current )
             {
                 this.notifyChange( this._current );
             }
@@ -119,7 +117,6 @@ ChangeModel.prototype = Object.create( Model.prototype ,
         this.notifyClear() ;
     }},
 
-
     /**
      * Notify a signal before the specified value is changed.
      */
@@ -134,9 +131,9 @@ ChangeModel.prototype = Object.create( Model.prototype ,
     /**
      * Notify a signal when the model is changed.
      */
-    notifyChange : { value : function( value  )
+    notifyChange : { value : function( value )
     {
-        if ( !this.isLocked( ) )
+        if ( !this.isLocked() )
         {
             this.changed.emit( value , this ) ;
         }
@@ -147,7 +144,7 @@ ChangeModel.prototype = Object.create( Model.prototype ,
      */
     notifyClear : { value : function()
     {
-        if ( !this.isLocked( ) )
+        if ( !this.isLocked() )
         {
             this.cleared.emit( this ) ;
         }

@@ -5,10 +5,7 @@ import { Lockable } from "../process/Lockable.js" ;
 /**
  *  The Model interface defines all models in the application.
  */
-export function Model()
-{
-
-}
+export function Model() {}
 
 /**
  * @extends Lockable
