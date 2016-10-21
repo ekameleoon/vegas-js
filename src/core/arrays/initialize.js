@@ -20,14 +20,9 @@
  * @return a new Array with an arbitrary number of elements (index),
  * with every element containing the passed parameter value or by default the null value.
  */
-export function initialize( elements /*uint*/ , value ) /*Array*/
+export function initialize( elements /*uint*/ , value = null ) /*Array*/
 {
     var ar = [];
-
-    if( arguments.length < 2 )
-    {
-        value = null ;
-    }
 
     elements = elements > 0 ? Math.abs(elements) : 0 ;
 

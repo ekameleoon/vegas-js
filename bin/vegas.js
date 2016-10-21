@@ -72,13 +72,9 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-/**
- * The VEGAS.js framework - The core.reflect library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
- */
-
-var global = global || window || document;
+try {
+  exports.global = exports.global || window || document;
+} catch (e) {}
 
 function trace(context) {
     if (console) {
@@ -412,7 +408,7 @@ function isString(o) {
  */
 
 var contains = function contains(array /*Array*/, value) {
-  return array.indexOf(value) > -1;
+  return array instanceof Array ? array.indexOf(value) > -1 : false;
 };
 
 /**
@@ -436,13 +432,11 @@ var contains = function contains(array /*Array*/, value) {
  * with every element containing the passed parameter value or by default the null value.
  */
 
-function initialize(elements /*uint*/, value) /*Array*/
+function initialize(elements /*uint*/) /*Array*/
 {
-    var ar = [];
+    var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-    if (arguments.length < 2) {
-        value = null;
-    }
+    var ar = [];
 
     elements = elements > 0 ? Math.abs(elements) : 0;
 
@@ -2637,7 +2631,7 @@ function getDefinitionByName(name /*String*/) {
         name = name.split('.');
         if (name.length > 0) {
             try {
-                var o = domain || global;
+                var o = domain || exports.global;
                 name.forEach(function (element) {
                     if (o.hasOwnProperty(element)) {
                         o = o[element];
@@ -3607,7 +3601,7 @@ var strings = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var core = Object.assign({
-    global: global,
+    global: exports.global,
     dump: dump,
 
     isBoolean: isBoolean,
@@ -17083,7 +17077,6 @@ var system = Object.assign({
     signals: signals
 });
 
-exports.global = global;
 exports.trace = trace;
 exports.core = core;
 exports.system = system;

@@ -13,4 +13,4 @@
  * @param value The object to find in the array.
  * @return <code>true</code> if the specified object exists as an element in the array ; otherwise, <code>false</code>.
  */
-export var contains = ( array /*Array*/ , value ) => array.indexOf(value) > -1 ;
+export var contains = ( array /*Array*/ , value ) => (array instanceof Array) ? (array.indexOf(value) > -1) : false ;
