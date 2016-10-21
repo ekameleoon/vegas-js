@@ -103,8 +103,8 @@ var unittest = ( done ) =>
 
 // ------------ TASKS
 
-gulp.task('compile', compile );
-gulp.task ('compress', compress );
+gulp.task( 'compile'  , compile  );
+gulp.task( 'compress' , compress );
 
 gulp.task( 'watch', () =>
 {
