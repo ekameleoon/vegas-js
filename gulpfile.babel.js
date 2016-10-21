@@ -103,12 +103,9 @@ var unittest = ( done ) =>
 
 // ------------ TASKS
 
-gulp.task( 'compile'  , compile  );
-gulp.task( 'compress' , compress );
-
 gulp.task( 'watch', () =>
 {
-    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest , 'compile' , 'compress' ) );
+    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest , compile , compress ) );
 });
 
 gulp.task( 'watch-test', () =>
@@ -118,11 +115,9 @@ gulp.task( 'watch-test', () =>
 
 gulp.task( 'test', gulp.series( unittest , 'watch-test') );
 
-// ------------ default
-
 gulp.task( 'default', gulp.series
 (
-    unittest , 'compile' , 'compress' , 'watch'
+    unittest , compile , compress , 'watch'
 ));
 
 // ------------
