@@ -7,28 +7,52 @@ import { NoSuchElementError }  from "../errors/NoSuchElementError.js" ;
  * This model can keep an object in memory and emit messages if this object is changing.
  * @example
  * <pre>
+ * var model = new MemoryModel();
+ *
  * var beforeChanged = function( value , model )
  * {
- *     trace( "before:" + value + " current:" + model.current ) ;
+ *     trace( "[-] before:" + value + " current:" + model.current + " size:" + model.size ) ;
  * }
  *
  * var changed = function( value , model )
  * {
- *     trace( "change:" + value + " current:" + model.current ) ;
+ *     trace( "[+] change:" + value + " current:" + model.current + " size:" + model.size ) ;
  * }
  *
  * var cleared = function( model )
  * {
- *     trace( "clear current:" + model.current ) ;
+ *     trace( "[x] clear current:" + model.current + " size:" + model.size ) ;
  * }
  *
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
  * model.cleared.connect( cleared ) ;
  *
- * model.current = "hello" ;
- * model.current = "world" ;
- * model.current = null ;
+ * trace( "-- history" ) ;
+ *
+ * model.current = "home" ;
+ * model.current = "near" ;
+ * model.current = "search" ;
+ * model.current = "place" ;
+ * model.current = "events" ;
+ * model.current = "map" ;
+ * model.current = "test" ;
+ *
+ * trace( "-- back" ) ;
+ *
+ * trace( "back() : " + model.back() ) ;
+ *
+ * trace( "-- backTo(3)" ) ;
+ *
+ * trace( "backTo(3) : " + model.backTo( 3 ) ) ;
+ *
+ * trace( "-- home" ) ;
+ *
+ * trace( 'home() : ' + model.home() ) ;
+ *
+ * trace( "--" ) ;
+ *
+ * model.clear() ;
  * </pre>
  */
 export function MemoryModel()
