@@ -7,6 +7,7 @@ import { MemoryModel } from './models/MemoryModel.js' ;
 import { Model }       from './models/Model.js' ;
 
 import { ArrayModel } from './models/arrays/ArrayModel.js' ;
+import { MapModel }   from './models/maps/MapModel.js' ;
 
 /**
  * The VEGAS.js framework - The system.models library.
@@ -15,6 +16,8 @@ import { ArrayModel } from './models/arrays/ArrayModel.js' ;
  */
 export var models = Object.assign
 ({
+    // classes
+
     ChangeModel : ChangeModel,
     MemoryModel : MemoryModel,
     Model       : Model,
@@ -24,5 +27,10 @@ export var models = Object.assign
     arrays : Object.assign
     ({
         ArrayModel
+    }),
+
+    maps : Object.assign
+    ({
+        MapModel
     })
 }) ;

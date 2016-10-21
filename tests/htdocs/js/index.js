@@ -11,49 +11,63 @@ var trace  = vegas.trace  ; // jshint ignore:line
 var core   = vegas.core   ; // jshint ignore:line
 var system = vegas.system ; // jshint ignore:line
 
-var model = new system.models.MemoryModel();
+var o1 = { id : "key1" } ;
+var o2 = { id : "key2" } ;
+var o3 = { id : "key3" } ;
+var o4 = { id : "key1" } ;
 
-var beforeChanged = function( value , model )
+var dump  = core.dump ;
+var model = new system.models.maps.MapModel();
+
+var added = function( entry , model )
 {
-    trace( "[-] before:" + value + " current:" + model.current + " size:" + model.size ) ;
+    trace( "[+] added entry:" + dump(entry) + " size:" + model.length ) ;
 }
 
-var changed = function( value , model )
+var beforeChanged = function( entry , model )
 {
-    trace( "[+] change:" + value + " current:" + model.current + " size:" + model.size ) ;
+    trace( "[--] before:" + dump(entry) + " current:" + model.current + " size:" + model.length ) ;
+}
+
+var changed = function( entry , model )
+{
+    trace( "[++] change:" + dump(entry) + " current:" + model.current + " size:" + model.length ) ;
 }
 
 var cleared = function( model )
 {
-    trace( "[x] clear current:" + model.current + " size:" + model.size ) ;
+    trace( "[x] clear current:" + model.current + " size:" + model.length ) ;
 }
 
+var removed = function( entry , model )
+{
+    trace( "[-] removed entry:" + dump(entry) + " size:" + model.length ) ;
+}
+
+var updated = function( entry , model )
+{
+    trace( "[u] update entry:" + dump(entry) + " size:" + model.length ) ;
+}
+
+model.added.connect( added ) ;
 model.beforeChanged.connect( beforeChanged ) ;
 model.changed.connect( changed ) ;
 model.cleared.connect( cleared ) ;
+model.removed.connect( removed ) ;
+model.updated.connect( updated ) ;
 
-trace( "-- history" ) ;
+model.add( o1 ) ;
+model.add( o2 ) ;
+model.add( o3 ) ;
 
-model.current = "home" ;
-model.current = "near" ;
-model.current = "search" ;
-model.current = "place" ;
-model.current = "events" ;
-model.current = "map" ;
-model.current = "test" ;
+trace( "#  model.get('key1') == o1 : " + ( model.get("key1") === o1 ) ) ;
+trace( "#  model.get('key1') == o4 : " + ( model.get("key1") === o4 ) ) ;
 
-trace( "-- back" ) ;
+model.update( o4 ) ;
 
-trace( "back() : " + model.back() ) ;
+model.current = o1 ;
+model.current = o2 ;
 
-trace( "-- backTo(3)" ) ;
-
-trace( "backTo(3) : " + model.backTo( 3 ) ) ;
-
-trace( "-- home" ) ;
-
-trace( 'home() : ' + model.home() ) ;
-
-trace( "--" ) ;
+model.remove( o1 ) ;
 
 model.clear() ;
