@@ -3,6 +3,7 @@
 import '../polyfill.js' ;
 
 import { isIdentifiable } from './data/Identifiable.js' ;
+import { isIterator }     from './data/Iterator.js' ;
 import { isValidator }    from './data/Validator.js' ;
 
 import { Identifiable } from './data/Identifiable.js' ;
@@ -24,6 +25,7 @@ export var data = Object.assign
 ({
     // singletons
     isIdentifiable : isIdentifiable,
+    isIterator     : isIterator,
     isValidator    : isValidator,
 
     // interfaces

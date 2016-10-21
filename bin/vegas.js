@@ -3853,54 +3853,22 @@ Identifiable.prototype = Object.create(Object.prototype, {
     }, writable: true }
 });
 
-/*jshint laxbreak : true*/
-/*jshint unused   : false*/
-function isValidator(target) {
-  if (target) {
-    return target instanceof Validator || 'supports' in target && target.supports instanceof Function || 'validate' in target && target.validate instanceof Function;
-  }
+/*jshint unused: false*/
+/**
+ * Indicates if the specific objet is Equatable.
+ */
 
-  return false;
+function isIterator(target) {
+  var bool = false;
+  if (target) {
+    bool = target instanceof Iterator || 'hasNext' in target && target.hasNext instanceof Function && 'key' in target && target.key instanceof Function && 'next' in target && target.next instanceof Function && 'remove' in target && target.remove instanceof Function && 'reset' in target && target.reset instanceof Function && 'seek' in target && target.seek instanceof Function;
+  }
+  return bool;
 }
 
 /**
- * Defines the methods that objects that participate in a validation operation.
- */
-function Validator() {}
-//
-
-
-/**
- * @extends Object
- */
-Validator.prototype = Object.create(Object.prototype);
-Validator.prototype.constructor = Validator;
-
-/**
- * Returns true if the specific value is valid.
- * @return true if the specific value is valid.
- */
-Validator.prototype.supports = function (value) /*Boolean*/{};
-
-/**
- * Evaluates the specified value and throw an Error object if the value is not valid.
- * @throws Error if the value is not valid.
- */
-Validator.prototype.validate = function (value) /*void*/{};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-Validator.prototype.toString = function () {
-  return '[Validator]';
-};
-
-/*jshint unused: false*/
-/**
  * This interface defines the iterator pattern over a collection.
  */
-
 function Iterator() {}
 //
 
@@ -3950,6 +3918,49 @@ Iterator.prototype.seek = function (position) {};
  */
 Iterator.prototype.toString = function () {
   return '[Iterator]';
+};
+
+/*jshint laxbreak : true*/
+/*jshint unused   : false*/
+function isValidator(target) {
+  if (target) {
+    return target instanceof Validator || 'supports' in target && target.supports instanceof Function || 'validate' in target && target.validate instanceof Function;
+  }
+
+  return false;
+}
+
+/**
+ * Defines the methods that objects that participate in a validation operation.
+ */
+function Validator() {}
+//
+
+
+/**
+ * @extends Object
+ */
+Validator.prototype = Object.create(Object.prototype);
+Validator.prototype.constructor = Validator;
+
+/**
+ * Returns true if the specific value is valid.
+ * @return true if the specific value is valid.
+ */
+Validator.prototype.supports = function (value) /*Boolean*/{};
+
+/**
+ * Evaluates the specified value and throw an Error object if the value is not valid.
+ * @throws Error if the value is not valid.
+ */
+Validator.prototype.validate = function (value) /*void*/{};
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance
+ */
+Validator.prototype.toString = function () {
+  return '[Validator]';
 };
 
 /*jshint unused: false*/
@@ -4673,6 +4684,7 @@ ArrayMap.prototype.values = function () /*Array*/
 var data = Object.assign({
     // singletons
     isIdentifiable: isIdentifiable,
+    isIterator: isIterator,
     isValidator: isValidator,
 
     // interfaces
@@ -12395,7 +12407,6 @@ Model.prototype = Object.create(Lockable.prototype, {
  * This model can keep an object in memory and emit messages if this object is changing.
  * @example
  * <pre>
- * <code class="prettyprint">
  * var beforeChanged = function( value , model )
  * {
  *     trace( "before:" + value + " current:" + model.current ) ;
@@ -12526,7 +12537,6 @@ ChangeModel.prototype = Object.create(Model.prototype, {
  * This model can keep an object in memory and emit messages if this object is changing.
  * @example
  * <pre>
- * <code class="prettyprint">
  * var beforeChanged = function( value , model )
  * {
  *     trace( "before:" + value + " current:" + model.current ) ;

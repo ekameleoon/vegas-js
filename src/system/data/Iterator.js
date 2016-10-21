@@ -2,6 +2,30 @@
 "use strict" ;
 
 /**
+ * Indicates if the specific objet is Equatable.
+ */
+export function isIterator( target )
+{
+    var bool = false ;
+    if( target )
+    {
+        bool =
+        (
+            (target instanceof Iterator) ||
+            (
+                (('hasNext' in target) && (target.hasNext instanceof Function)) &&
+                (('key'     in target) && (target.key     instanceof Function)) &&
+                (('next'    in target) && (target.next    instanceof Function)) &&
+                (('remove'  in target) && (target.remove  instanceof Function)) &&
+                (('reset'   in target) && (target.reset   instanceof Function)) &&
+                (('seek'    in target) && (target.seek    instanceof Function))
+            )
+        );
+    }
+    return bool ;
+}
+
+/**
  * This interface defines the iterator pattern over a collection.
  */
 export function Iterator()
