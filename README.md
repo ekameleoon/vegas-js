@@ -37,6 +37,15 @@ npm install vegas-js --save-dev
 bower install vegas-js
 ```
 
+#### Unit tests ####
+
+We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
+
+```
+#!shell
+gulp test
+```
+
 ### About ###
 
  * Author : Marc ALCARAZ (aka eKameleon)
