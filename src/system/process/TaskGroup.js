@@ -1,7 +1,5 @@
-/*jshint unused: false*/
+/* jshint unused: false*/
 "use strict" ;
-
-import { ArrayMap }  from '../data/maps/ArrayMap.js' ;
 
 import { Action }      from './Action.js' ;
 import { ActionEntry } from './ActionEntry.js' ;
@@ -153,7 +151,6 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             var l /*int*/ = this._actions.length ;
             if ( l > 0 )
             {
-                var slot ;
                 var e /*ActionEntry*/ ;
                 while( --l > -1 )
                 {
@@ -284,7 +281,6 @@ TaskGroup.prototype.dispose = function() /*void*/
 {
     if ( this._actions.length > 0 )
     {
-        var slot ;
         this._actions.forEach( ( entry ) =>
         {
             if ( entry instanceof ActionEntry )
@@ -372,8 +368,6 @@ TaskGroup.prototype.remove = function( action /*Action*/ ) /*Boolean*/
         {
             var e /*ActionEntry*/ ;
             var l /*int*/ = this._actions.length ;
-
-            var slot ;
 
             this._actions.forEach( ( element ) =>
             {

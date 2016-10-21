@@ -3,14 +3,14 @@
 
 import { ArrayIterator } from './ArrayIterator.js' ;
 import { Iterator }      from '../Iterator.js' ;
-import { Map }           from '../Map.js' ;
+import { KeyValuePair }  from '../KeyValuePair.js' ;
 
 /**
- * Converts a <code>Map</code> to an iterator.
+ * Converts a <code>KeyValuePair</code> to an iterator.
  */
 export function MapIterator( map )
 {
-    if ( map && ( map instanceof Map) )
+    if ( map && ( map instanceof KeyValuePair) )
     {
         Object.defineProperties( this ,
         {
@@ -21,7 +21,7 @@ export function MapIterator( map )
     }
     else
     {
-       throw new ReferenceError( this + " constructor failed, the passed-in Map argument not must be 'null'.") ;
+       throw new ReferenceError( this + " constructor failed, the passed-in KeyValuePair argument not must be 'null'.") ;
     }
 }
 

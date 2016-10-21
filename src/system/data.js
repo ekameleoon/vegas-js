@@ -9,7 +9,7 @@ import { isValidator }       from './data/Validator.js' ;
 
 import { Identifiable }    from './data/Identifiable.js' ;
 import { Iterator }        from './data/Iterator.js' ;
-import { Map }             from './data/Map.js' ;
+import { KeyValuePair }    from './data/KeyValuePair.js' ;
 import { OrderedIterator } from './data/OrderedIterator.js' ;
 import { Validator }       from './data/Validator.js' ;
 
@@ -34,8 +34,8 @@ export var data = Object.assign
     // interfaces
     Identifiable    : Identifiable ,
     Iterator        : Iterator ,
+    KeyValuePair    : KeyValuePair ,
     OrderedIterator : OrderedIterator ,
-    Map             : Map ,
     Validator       : Validator ,
 
     // packages

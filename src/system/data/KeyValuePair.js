@@ -4,7 +4,7 @@
 /**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  */
-export function Map()
+export function KeyValuePair()
 {
     //
 }
@@ -12,12 +12,12 @@ export function Map()
 /**
  * @extends Object
  */
-Map.prototype = Object.create( Object.prototype ,
+KeyValuePair.prototype = Object.create( Object.prototype ,
 {
     /**
      * Returns a reference to the Object function that created the instance's prototype.
      */
-    constructor : { value :  Map , writable : true , configurable : true },
+    constructor : { value :  KeyValuePair , writable : true , configurable : true },
 
     /**
      * Returns the number of key-value mappings in this map.
@@ -33,7 +33,7 @@ Map.prototype = Object.create( Object.prototype ,
      * Returns a shallow copy of the map.
      * @return a shallow copy of the map.
      */
-    clone : { value : function () { return new Map() } , writable : true } ,
+    clone : { value : function () { return new KeyValuePair() } , writable : true } ,
 
     /**
      * Removes the mapping for this key from this map if it is present (optional operation).
@@ -41,7 +41,7 @@ Map.prototype = Object.create( Object.prototype ,
     delete : { value : function( key ) {} , writable : true } ,
 
     /**
-     * The forEach() method executes a provided function once per each key/value pair in the Map object, in insertion order.
+     * The forEach() method executes a provided function once per each key/value pair in the KeyValuePair object, in insertion order.
      * @param callback Function to execute for each element.
      * @param thisArg Value to use as this when executing callback.
      */
@@ -95,13 +95,13 @@ Map.prototype = Object.create( Object.prototype ,
     /**
      * Copies all of the mappings from the specified map to this map (optional operation).
      */
-    setAll : { value : function( map /*Map*/ ) {} , writable : true } ,
+    setAll : { value : function( map /*KeyValuePair*/ ) {} , writable : true } ,
 
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance
      */
-    toString : { value : function () { return '[Map]' ; } , writable : true } ,
+    toString : { value : function () { return '[' + this.constructor.name + ']' ; } , writable : true } ,
 
     /**
      * Returns an array of all the values in the map.

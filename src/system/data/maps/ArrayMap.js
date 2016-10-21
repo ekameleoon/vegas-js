@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { Map }       from '../Map.js' ;
-import { MapEntry }  from './MapEntry.js' ;
-import { formatter } from './MapFormatter.js' ;
+import { KeyValuePair } from '../KeyValuePair.js' ;
+import { MapEntry }     from './MapEntry.js' ;
+import { formatter }    from './MapFormatter.js' ;
 
 import { ArrayIterator } from '../iterators/ArrayIterator.js' ;
 import { MapIterator }   from '../iterators/MapIterator.js' ;
@@ -77,9 +77,9 @@ export function ArrayMap( keys /*Array*/ , values /*Array*/ )
 }
 
 /**
- * @extends Map
+ * @extends KeyValuePair
  */
-ArrayMap.prototype = Object.create( Map.prototype ,
+ArrayMap.prototype = Object.create( KeyValuePair.prototype ,
 {
     /**
      * Returns the number of key-value mappings in this map.
@@ -289,9 +289,9 @@ ArrayMap.prototype.set = function ( key , value )
 /**
  * Copies all of the mappings from the specified map to this one.
  */
-ArrayMap.prototype.setAll = function ( map /*Map*/ )
+ArrayMap.prototype.setAll = function ( map /*KeyValuePair*/ )
 {
-    if ( !map || !(map instanceof Map) )
+    if ( !map || !(map instanceof KeyValuePair) )
     {
         return ;
     }

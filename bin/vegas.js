@@ -4012,18 +4012,18 @@ Validator.prototype.toString = function () {
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  */
 
-function Map() {}
+function KeyValuePair() {}
 //
 
 
 /**
  * @extends Object
  */
-Map.prototype = Object.create(Object.prototype, {
+KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Returns a reference to the Object function that created the instance's prototype.
    */
-  constructor: { value: Map, writable: true, configurable: true },
+  constructor: { value: KeyValuePair, writable: true, configurable: true },
 
   /**
    * Returns the number of key-value mappings in this map.
@@ -4042,7 +4042,7 @@ Map.prototype = Object.create(Object.prototype, {
    * @return a shallow copy of the map.
    */
   clone: { value: function value() {
-      return new Map();
+      return new KeyValuePair();
     }, writable: true },
 
   /**
@@ -4051,7 +4051,7 @@ Map.prototype = Object.create(Object.prototype, {
   delete: { value: function value(key) {}, writable: true },
 
   /**
-   * The forEach() method executes a provided function once per each key/value pair in the Map object, in insertion order.
+   * The forEach() method executes a provided function once per each key/value pair in the KeyValuePair object, in insertion order.
    * @param callback Function to execute for each element.
    * @param thisArg Value to use as this when executing callback.
    */
@@ -4121,14 +4121,14 @@ Map.prototype = Object.create(Object.prototype, {
   /**
    * Copies all of the mappings from the specified map to this map (optional operation).
    */
-  setAll: { value: function value(map /*Map*/) {}, writable: true },
+  setAll: { value: function value(map /*KeyValuePair*/) {}, writable: true },
 
   /**
    * Returns the string representation of this instance.
    * @return the string representation of this instance
    */
   toString: { value: function value() {
-      return '[Map]';
+      return '[' + this.constructor.name + ']';
     }, writable: true },
 
   /**
@@ -4242,17 +4242,17 @@ ArrayIterator.prototype.toString = function () {
 
 /*jshint unused: false*/
 /**
- * Converts a <code>Map</code> to an iterator.
+ * Converts a <code>KeyValuePair</code> to an iterator.
  */
 function MapIterator(map) {
-    if (map && map instanceof Map) {
+    if (map && map instanceof KeyValuePair) {
         Object.defineProperties(this, {
             _m: { value: map, writable: true },
             _i: { value: new ArrayIterator(map.keys()), writable: true },
             _k: { value: null, writable: true }
         });
     } else {
-        throw new ReferenceError(this + " constructor failed, the passed-in Map argument not must be 'null'.");
+        throw new ReferenceError(this + " constructor failed, the passed-in KeyValuePair argument not must be 'null'.");
     }
 }
 
@@ -4369,7 +4369,7 @@ MapFormatter.prototype.constructor = MapFormatter;
  */
 MapFormatter.prototype.format = function (value) /*String*/
 {
-    if (value && value instanceof Map) {
+    if (value && value instanceof KeyValuePair) {
         var r = "{";
         var keys = value.keys();
         var len = keys.length;
@@ -4454,9 +4454,9 @@ function ArrayMap(keys /*Array*/, values /*Array*/) {
 }
 
 /**
- * @extends Map
+ * @extends KeyValuePair
  */
-ArrayMap.prototype = Object.create(Map.prototype, {
+ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
     /**
      * Returns the number of key-value mappings in this map.
      */
@@ -4650,8 +4650,8 @@ ArrayMap.prototype.set = function (key, value) {
 /**
  * Copies all of the mappings from the specified map to this one.
  */
-ArrayMap.prototype.setAll = function (map /*Map*/) {
-    if (!map || !(map instanceof Map)) {
+ArrayMap.prototype.setAll = function (map /*KeyValuePair*/) {
+    if (!map || !(map instanceof KeyValuePair)) {
         return;
     }
     var keys = map.keys();
@@ -4735,8 +4735,8 @@ var data = Object.assign({
     // interfaces
     Identifiable: Identifiable,
     Iterator: Iterator,
+    KeyValuePair: KeyValuePair,
     OrderedIterator: OrderedIterator,
-    Map: Map,
     Validator: Validator,
 
     // packages
@@ -13952,7 +13952,7 @@ Batch.prototype.toString = function () /*Array*/
     return r;
 };
 
-/*jshint unused: false*/
+/* jshint unused: false*/
 /**
  * A simple representation of the Action interface, to group some Action objects in one.
  * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
@@ -14087,7 +14087,6 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             this._actions.length = value;
             var l /*int*/ = this._actions.length;
             if (l > 0) {
-                var slot;
                 var e;
                 while (--l > -1) {
                     e = this._actions[l];
@@ -14201,7 +14200,6 @@ TaskGroup.prototype.dispose = function () /*void*/
     var _this2 = this;
 
     if (this._actions.length > 0) {
-        var slot;
         this._actions.forEach(function (entry) {
             if (entry instanceof ActionEntry) {
                 entry.action.finishIt.disconnect(_this2._next);
@@ -14280,8 +14278,6 @@ TaskGroup.prototype.next = function (action /*Action*/) /*void*/
         if (action && action instanceof Action) {
             var e;
             var l /*int*/ = this._actions.length;
-
-            var slot;
 
             this._actions.forEach(function (element) {
                 if (element && element instanceof ActionEntry && element.action === action) {

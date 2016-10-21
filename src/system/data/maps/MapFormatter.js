@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Map } from '../Map.js' ;
+import { KeyValuePair } from '../KeyValuePair.js' ;
 
 /**
  * Converts a Map to a custom string representation.
@@ -22,7 +22,7 @@ MapFormatter.prototype.constructor = MapFormatter ;
  */
 MapFormatter.prototype.format = function( value ) /*String*/
 {
-    if ( value && value instanceof Map )
+    if ( value && value instanceof KeyValuePair )
     {
         var r = "{";
         var keys   = value.keys()   ;
