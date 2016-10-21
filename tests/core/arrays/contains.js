@@ -25,6 +25,6 @@ describe( 'src/core/arrays/contains.js' , () =>
 
     it('contains("hello",5) === false', () =>
     {
-        assert.isFalse( contains( null , 5 ) );
+        assert.isFalse( contains( "hello" , 5 ) );
     })
 });
