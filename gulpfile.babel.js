@@ -17,7 +17,7 @@ var version  = '1.0.0' ;
 var sources  = './src/**/*.js' ;
 var entry    = './src/index.js' ;
 var output   = './bin' ;
-var reporter = 'spec' // spec, dot, landing, dot, nyan, list
+var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
 var watching = false ;
 
 var colors = util.colors ;
