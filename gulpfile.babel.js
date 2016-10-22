@@ -52,7 +52,7 @@ var compile = ( done ) =>
                 banner     : '/* VEGAS version ' + version + ' */' ,
                 footer     : '/* follow me on Twitter! @ekameleon */' ,
                 format     : 'umd' ,
-                sourceMap  : true ,
+                sourceMap  : false ,
                 useStrict  : true ,
                 globals    : globals,
                 plugins :

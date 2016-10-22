@@ -488,16 +488,17 @@ function pierce(ar /*Array*/, index /*uint*/, flag /*Boolean*/) {
 
 function repeat(ar /*Array*/, count /*uint*/) /*Array*/
 {
-    count = isNaN(count) ? 0 : count;
-    count = count > 0 ? Math.abs(count) : 0;
-    var result;
-    if (count > 0) {
-        result = [];
-        for (var i /*int*/ = 0; i < count; i++) {
-            result = result.concat(ar);
+    var result = null;
+    if (ar instanceof Array) {
+        count = count > 0 ? count : 0;
+        if (count > 0) {
+            result = [];
+            for (var i = 0; i < count; i++) {
+                result = result.concat(ar);
+            }
+        } else {
+            result = [].concat(ar);
         }
-    } else {
-        result = [].concat(ar);
     }
     return result;
 }
