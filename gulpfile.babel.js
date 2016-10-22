@@ -1,5 +1,4 @@
 /* jshint node: true */
-/*jshint globalstrict: true*/
 "use strict" ;
 
 import babel  from 'rollup-plugin-babel' ;
@@ -9,9 +8,9 @@ import pump   from 'pump' ;
 import rename from 'gulp-rename' ;
 import rollup from 'gulp-rollup' ;
 import uglify from 'gulp-uglify' ;
+import util   from 'gulp-util' ;
 
-import resolve  from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import includePaths from 'rollup-plugin-includepaths';
 
 var name     = 'vegas' ;
 var version  = '1.0.0' ;
@@ -19,14 +18,25 @@ var sources  = './src/**/*.js' ;
 var entry    = './src/index.js' ;
 var output   = './bin' ;
 var reporter = 'spec' // spec, dot, landing, dot, nyan, list
+var watching = false ;
 
-var globals =
+var colors = util.colors ;
+var log    = util.log ;
+
+let globals =
 {
-    chai   : 'chai' ,
+    chai   : 'chai',
     core   : 'core',
     system : 'system',
     global : 'global' ,
     trace  : 'trace'
+};
+
+let includePathOptions =
+{
+    include    : {},
+    external   : ['chai'],
+    extensions : ['.js']
 };
 
 var compile = ( done ) =>
@@ -88,12 +98,16 @@ var unittest = ( done ) =>
             globals    : globals,
             plugins    :
             [
+                includePaths( includePathOptions ) ,
                 babel
                 ({
                     babelrc : false,
                     presets : ['es2015-rollup'],
                     exclude : 'node_modules/**' ,
-                    plugins : [ "external-helpers"]
+                    plugins :
+                    [
+                        "external-helpers"
+                    ]
                 })
             ]
         }),
@@ -101,18 +115,35 @@ var unittest = ( done ) =>
         ({
             reporter : reporter
         })
+        .on( 'error' , onError )
     ], done ) ;
+}
+
+function onError( error )
+{
+    log( colors.magenta( error.toString() ) );
+
+    if (watching)
+    {
+      this.emit('end');
+    }
+    else
+    {
+      process.exit(1);
+    }
 }
 
 // ------------ TASKS
 
 gulp.task( 'watch', () =>
 {
+    watching = true;
     gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest , compile , compress ) );
 });
 
 gulp.task( 'watch-test', () =>
 {
+    watching = true;
     gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest ) );
 });
 
