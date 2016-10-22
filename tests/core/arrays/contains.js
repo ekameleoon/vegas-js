@@ -1,10 +1,10 @@
 "use strict" ;
 
-import chai from 'chai' ;
-
 import { contains } from '../../../src/core/arrays/contains.js' ;
 
-var assert = chai.assert ;
+import chai from 'chai' ;
+
+const assert = chai.assert ;
 
 describe( 'src/core/arrays/contains.js' , () =>
 {

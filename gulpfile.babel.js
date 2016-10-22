@@ -10,6 +10,9 @@ import rename from 'gulp-rename' ;
 import rollup from 'gulp-rollup' ;
 import uglify from 'gulp-uglify' ;
 
+import resolve  from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+
 var name     = 'vegas' ;
 var version  = '1.0.0' ;
 var sources  = './src/**/*.js' ;
@@ -80,10 +83,10 @@ var unittest = ( done ) =>
             moduleName : name ,
             entry      : './tests/main.js' ,
             format     : 'umd' ,
-            sourceMap  : true ,
+            sourceMap  : 'inline' ,
             useStrict  : true ,
             globals    : globals,
-            plugins :
+            plugins    :
             [
                 babel
                 ({

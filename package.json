@@ -65,13 +65,16 @@
     "jshint": "^2.9.2",
     "jshint-stylish": "^2.2.1",
     "pump": "^1.0.1",
-    "rollup-plugin-babel": "^2.6.1"
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0"
   },
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/ekameleon/vegas-js.git"
   },
   "dependencies": {
-    "gulp-babel": "^6.1.2"
+    "gulp-babel": "^6.1.2",
+    "minimatch": "^3.0.3"
   }
 }
