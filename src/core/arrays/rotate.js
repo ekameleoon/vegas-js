@@ -19,7 +19,7 @@
  */
 export function rotate( ar /*Array*/ , amount = 1 ) /*Array*/
 {
-    if ( ar && ar.length > 0 )
+    if ( ( ar instanceof Array ) && ar.length > 0 )
     {
         amount %= ar.length ;
         if ( amount > 0 )
@@ -30,6 +30,10 @@ export function rotate( ar /*Array*/ , amount = 1 ) /*Array*/
         {
             ar.push.apply( ar , ar.splice(0, -amount ) );
         }
+    }
+    else
+    {
+        ar = null ;
     }
     return ar;
 }

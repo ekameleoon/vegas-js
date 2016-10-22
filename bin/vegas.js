@@ -525,13 +525,15 @@ function rotate(ar /*Array*/) /*Array*/
 {
     var amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
-    if (ar && ar.length > 0) {
+    if (ar instanceof Array && ar.length > 0) {
         amount %= ar.length;
         if (amount > 0) {
             ar.unshift.apply(ar, ar.splice(-amount, amount));
         } else if (amount < 0) {
             ar.push.apply(ar, ar.splice(0, -amount));
         }
+    } else {
+        ar = null;
     }
     return ar;
 }

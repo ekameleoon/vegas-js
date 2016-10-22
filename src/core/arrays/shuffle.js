@@ -15,22 +15,29 @@
  */
 export function shuffle( ar /*Array*/ ) /*Array*/
 {
-    let item ;
-    let rdm /*int*/ ;
-    let tmp /*Array*/ = [] ;
-    let len /*int*/   = ar.length;
-    let index /*int*/ = len - 1 ;
-    for ( var i /*int*/ = 0 ; i < len ; i++ )
+    if( ar instanceof Array )
     {
-        rdm  = Math.round( Math.random() * index ) ;
-        item = ar[ rdm ] ;
-        ar.splice( rdm , 1 ) ;
-        tmp[tmp.length] = item ;
-        index-- ;
+        let item ;
+        let rdm /*int*/ ;
+        let tmp /*Array*/ = [] ;
+        let len /*int*/   = ar.length;
+        let index /*int*/ = len - 1 ;
+        for ( var i /*int*/ = 0 ; i < len ; i++ )
+        {
+            rdm  = Math.round( Math.random() * index ) ;
+            item = ar[ rdm ] ;
+            ar.splice( rdm , 1 ) ;
+            tmp[tmp.length] = item ;
+            index-- ;
+        }
+        while(--len > -1)
+        {
+            ar[len] = tmp[len] ;
+        }
     }
-    while(--len > -1)
+    else
     {
-        ar[len] = tmp[len] ;
+        ar = null ;
     }
     return ar ;
 }
