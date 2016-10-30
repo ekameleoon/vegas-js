@@ -12,6 +12,12 @@ Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
  * License GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
  * License LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
 
+### Slack Community ###
+
+![slack-logo-vector-download.jpg](https://bitbucket.org/repo/AEbB9b/images/3509366499-slack-logo-vector-download.jpg)
+
+Send us your email to join the **VEGAS** community on Slack !
+
 ### Install ###
 
 #### YARN / NPM ####
