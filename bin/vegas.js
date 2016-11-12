@@ -17190,6 +17190,48 @@ var bounceInOut = function bounceInOut(t, b, c, d) {
 };
 
 /**
+ * The <code>circularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularIn = function circularIn(t, b, c, d) {
+  return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
+};
+
+/**
+ * The <code>circularInOut</code> function combines the motion of the circularIn and circularOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularInOut = function circularInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+    }
+    return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
+};
+
+/**
+ * The <code>circularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularOut = function circularOut(t, b, c, d) {
+  return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
+};
+
+/**
  * The <code>linear</code> function starts a basic and linear motion.
  * @param t Specifies the current time, between 0 and duration inclusive.
  * @param b Specifies the initial value of the animation property.
@@ -17214,6 +17256,9 @@ var easings = Object.assign({
     bounceIn: bounceIn,
     bounceInOut: bounceInOut,
     bounceOut: bounceOut,
+    circularIn: circularIn,
+    circularInOut: circularInOut,
+    circularOut: circularOut,
     linear: linear
 });
 
