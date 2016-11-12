@@ -17084,9 +17084,104 @@ var system = Object.assign({
     signals: signals
 });
 
+/**
+ * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backIn = function backIn(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    return c * (t /= d) * t * ((s + 1) * t - s) + b;
+};
+
+/**
+ * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backInOut = function backInOut(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    if ((t /= d / 2) < 1) {
+        return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
+    }
+    return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
+};
+
+/**
+ * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backOut = function backOut(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
+};
+
+/**
+ * The <code>linear</code> function starts a basic and linear motion.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var linear = function linear(t, b, c, d) {
+  return c * t / d + b;
+};
+
+/**
+ * The VEGAS.js framework - The graphics.easings library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var easings = Object.assign({
+  backIn: backIn,
+  backInOut: backInOut,
+  backOut: backOut,
+  linear: linear
+});
+
+/**
+ * The VEGAS.js framework - The graphics library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var graphics = Object.assign({
+  easings: easings
+});
+
 exports.trace = trace;
 exports.core = core;
 exports.system = system;
+exports.graphics = graphics;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
