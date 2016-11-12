@@ -555,20 +555,24 @@ function rotate(ar /*Array*/) /*Array*/
 
 function shuffle(ar /*Array*/) /*Array*/
 {
-    var item = void 0;
-    var rdm = void 0;
-    var tmp /*Array*/ = [];
-    var len /*int*/ = ar.length;
-    var index /*int*/ = len - 1;
-    for (var i /*int*/ = 0; i < len; i++) {
-        rdm = Math.round(Math.random() * index);
-        item = ar[rdm];
-        ar.splice(rdm, 1);
-        tmp[tmp.length] = item;
-        index--;
-    }
-    while (--len > -1) {
-        ar[len] = tmp[len];
+    if (ar instanceof Array) {
+        var item = void 0;
+        var rdm = void 0;
+        var tmp /*Array*/ = [];
+        var len /*int*/ = ar.length;
+        var index /*int*/ = len - 1;
+        for (var i /*int*/ = 0; i < len; i++) {
+            rdm = Math.round(Math.random() * index);
+            item = ar[rdm];
+            ar.splice(rdm, 1);
+            tmp[tmp.length] = item;
+            index--;
+        }
+        while (--len > -1) {
+            ar[len] = tmp[len];
+        }
+    } else {
+        ar = null;
     }
     return ar;
 }

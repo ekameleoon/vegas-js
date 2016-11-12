@@ -12,6 +12,8 @@ import util   from 'gulp-util' ;
 
 import includePaths from 'rollup-plugin-includepaths';
 
+// ---------
+
 var name     = 'vegas' ;
 var version  = '1.0.0' ;
 var sources  = './src/**/*.js' ;
@@ -35,9 +37,11 @@ let globals =
 let includePathOptions =
 {
     include    : {},
-    external   : ['chai'],
-    extensions : ['.js']
+    external   : [ 'chai' ],
+    extensions : [ '.js' ]
 };
+
+// ---------
 
 var compile = ( done ) =>
 {
@@ -83,6 +87,15 @@ var compress = ( done ) =>
     ] , done );
 }
 
+var test = () =>
+{
+    watching = true;
+    gulp.watch
+    (
+        ['src/**/*.js' , './tests/**/*.js' ] , gulp.series( unittest )
+    );
+}
+
 var unittest = ( done ) =>
 {
     pump
@@ -104,10 +117,7 @@ var unittest = ( done ) =>
                     babelrc : false,
                     presets : ['es2015-rollup'],
                     exclude : 'node_modules/**' ,
-                    plugins :
-                    [
-                        "external-helpers"
-                    ]
+                    plugins : [ "external-helpers" ]
                 })
             ]
         }),
@@ -115,43 +125,36 @@ var unittest = ( done ) =>
         ({
             reporter : reporter
         })
-        .on( 'error' , onError )
+        .on( 'error' , ( error ) =>
+        {
+            log( colors.magenta( error.toString() ) );
+            if( watching )
+            {
+                this.emit('end') ;
+            }
+            else
+            {
+                process.exit(1);
+            }
+        } )
     ], done ) ;
 }
 
-function onError( error )
+var watch = () =>
 {
-    log( colors.magenta( error.toString() ) );
-
-    if (watching)
-    {
-      this.emit('end');
-    }
-    else
-    {
-      process.exit(1);
-    }
+    watching = true;
+    gulp.watch
+    (
+        ['src/**/*.js' , './tests/**/*.js' ] ,
+        gulp.series( unittest , compile , compress )
+    );
 }
 
 // ------------ TASKS
 
-gulp.task( 'watch', () =>
-{
-    watching = true;
-    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest , compile , compress ) );
-});
-
-gulp.task( 'watch-test', () =>
-{
-    watching = true;
-    gulp.watch( ['src/**/*.js' , './tests/**/*.js' ], gulp.series( unittest ) );
-});
-
-gulp.task( 'test', gulp.series( unittest , 'watch-test') );
-
-gulp.task( 'default', gulp.series
-(
-    unittest , compile , compress , 'watch'
-));
+gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
+gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
+gulp.task( 'ut'      , gulp.series( unittest ) ) ;
+gulp.task( 'watch'   , watch ) ;
 
 // ------------
