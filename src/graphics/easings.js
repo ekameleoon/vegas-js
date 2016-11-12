@@ -26,14 +26,18 @@ export var easings = Object.assign
     backIn        : backIn ,
     backInOut     : backInOut ,
     backOut       : backOut ,
+
     bounceIn      : bounceIn ,
     bounceInOut   : bounceInOut ,
     bounceOut     : bounceOut ,
+
     circularIn    : circularIn ,
     circularInOut : circularInOut ,
     circularOut   : circularOut ,
+
     cubicIn       : cubicIn ,
     cubicInOut    : cubicInOut ,
     cubicOut      : cubicOut ,
+
     linear        : linear
 }) ;
