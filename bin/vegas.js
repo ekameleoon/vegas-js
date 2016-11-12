@@ -17145,6 +17145,51 @@ var backOut = function backOut(t, b, c, d) {
 };
 
 /**
+ * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var bounceOut = function bounceOut(t, b, c, d) {
+    if ((t /= d) < 1 / 2.75) {
+        return c * (7.5625 * t * t) + b;
+    } else if (t < 2 / 2.75) {
+        return c * (7.5625 * (t -= 1.5 / 2.75) * t + 0.75) + b;
+    } else if (t < 2.5 / 2.75) {
+        return c * (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375) + b;
+    } else {
+        return c * (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375) + b;
+    }
+};
+
+/**
+ * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+var bounceIn = function bounceIn(t, b, c, d) {
+  return c - bounceOut(d - t, 0, c, d) + b;
+};
+
+/**
+ * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+var bounceInOut = function bounceInOut(t, b, c, d) {
+  return t < d / 2 ? bounceIn(t * 2, 0, c, d) * 0.5 + b : bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
+};
+
+/**
  * The <code>linear</code> function starts a basic and linear motion.
  * @param t Specifies the current time, between 0 and duration inclusive.
  * @param b Specifies the initial value of the animation property.
@@ -17163,10 +17208,13 @@ var linear = function linear(t, b, c, d) {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var easings = Object.assign({
-  backIn: backIn,
-  backInOut: backInOut,
-  backOut: backOut,
-  linear: linear
+    backIn: backIn,
+    backInOut: backInOut,
+    backOut: backOut,
+    bounceIn: bounceIn,
+    bounceInOut: bounceInOut,
+    bounceOut: bounceOut,
+    linear: linear
 });
 
 /**
