@@ -11,6 +11,9 @@ import { bounceOut }     from './easings/bounceOut.js' ;
 import { circularIn }    from './easings/circularIn.js' ;
 import { circularInOut } from './easings/circularInOut.js' ;
 import { circularOut }   from './easings/circularOut.js' ;
+import { cubicIn }       from './easings/cubicIn.js' ;
+import { cubicInOut }    from './easings/cubicInOut.js' ;
+import { cubicOut }      from './easings/cubicOut.js' ;
 import { linear }        from './easings/linear.js' ;
 
 /**
@@ -29,5 +32,8 @@ export var easings = Object.assign
     circularIn    : circularIn ,
     circularInOut : circularInOut ,
     circularOut   : circularOut ,
+    cubicIn       : cubicIn ,
+    cubicInOut    : cubicInOut ,
+    cubicOut      : cubicOut ,
     linear        : linear
 }) ;

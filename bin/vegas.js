@@ -17232,6 +17232,50 @@ var circularOut = function circularOut(t, b, c, d) {
 };
 
 /**
+ * The <code>cubicIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicIn = function cubicIn(t, b, c, d) {
+  return c * (t /= d) * t * t + b;
+};
+
+/**
+ * The <code>cubicOut</code> function combines the motion of the <b>cubicIn</b> and <b>cubicOut</b> functions to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicInOut = function cubicInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t + b;
+    }
+    return c / 2 * ((t -= 2) * t * t + 2) + b;
+};
+
+/**
+ * The <code>cubicOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicOut = function cubicOut(t, b, c, d) {
+  return c * ((t = t / d - 1) * t * t + 1) + b;
+};
+
+/**
  * The <code>linear</code> function starts a basic and linear motion.
  * @param t Specifies the current time, between 0 and duration inclusive.
  * @param b Specifies the initial value of the animation property.
@@ -17259,6 +17303,9 @@ var easings = Object.assign({
     circularIn: circularIn,
     circularInOut: circularInOut,
     circularOut: circularOut,
+    cubicIn: cubicIn,
+    cubicInOut: cubicInOut,
+    cubicOut: cubicOut,
     linear: linear
 });
 
