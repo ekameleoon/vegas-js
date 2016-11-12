@@ -125,7 +125,7 @@ var unittest = ( done ) =>
         ({
             reporter : reporter
         })
-        .on( 'error' , ( error ) =>
+        .on( 'error' , function( error )
         {
             log( colors.magenta( error.toString() ) );
             if( watching )
@@ -134,6 +134,7 @@ var unittest = ( done ) =>
             }
             else
             {
+                this.emit('end') ;
                 process.exit(1);
             }
         } )

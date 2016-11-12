@@ -2,4 +2,5 @@
 
 // CHAI Doc : http://chaijs.com/api/assert/
 
-import './core/arrays.js' ;
+import './core.js' ;
+import './graphics.js' ;
