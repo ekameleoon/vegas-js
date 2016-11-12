@@ -17276,6 +17276,123 @@ var cubicOut = function cubicOut(t, b, c, d) {
 };
 
 /**
+ * The <code>elasticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticIn = function elasticIn(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+
+    if ((t /= d) === 1) {
+        return b + c;
+    }
+
+    if (isNaN(p)) {
+        p = d * 0.3;
+    }
+
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+};
+
+/**
+ * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticInOut = function elasticInOut(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+    if ((t /= d / 2) === 2) {
+        return b + c;
+    }
+    if (isNaN(p)) {
+        p = d * (0.3 * 1.5);
+    }
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    if (t < 1) {
+        return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+    }
+
+    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
+};
+
+/**
+ * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticOut = function elasticOut(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+
+    if ((t /= d) === 1) {
+        return b + c;
+    }
+
+    if (isNaN(p)) {
+        p = d * 0.3;
+    }
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+};
+
+/**
  * The <code>linear</code> function starts a basic and linear motion.
  * @param t Specifies the current time, between 0 and duration inclusive.
  * @param b Specifies the initial value of the animation property.
@@ -17297,15 +17414,23 @@ var easings = Object.assign({
     backIn: backIn,
     backInOut: backInOut,
     backOut: backOut,
+
     bounceIn: bounceIn,
     bounceInOut: bounceInOut,
     bounceOut: bounceOut,
+
     circularIn: circularIn,
     circularInOut: circularInOut,
     circularOut: circularOut,
+
     cubicIn: cubicIn,
     cubicInOut: cubicInOut,
     cubicOut: cubicOut,
+
+    elasticIn: elasticIn,
+    elasticInOut: elasticInOut,
+    elasticOut: elasticOut,
+
     linear: linear
 });
 

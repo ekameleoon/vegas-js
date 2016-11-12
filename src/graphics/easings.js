@@ -14,6 +14,9 @@ import { circularOut }   from './easings/circularOut.js' ;
 import { cubicIn }       from './easings/cubicIn.js' ;
 import { cubicInOut }    from './easings/cubicInOut.js' ;
 import { cubicOut }      from './easings/cubicOut.js' ;
+import { elasticIn }     from './easings/elasticIn.js' ;
+import { elasticInOut }  from './easings/elasticInOut.js' ;
+import { elasticOut }    from './easings/elasticOut.js' ;
 import { linear }        from './easings/linear.js' ;
 
 /**
@@ -38,6 +41,10 @@ export var easings = Object.assign
     cubicIn       : cubicIn ,
     cubicInOut    : cubicInOut ,
     cubicOut      : cubicOut ,
+
+    elasticIn     : elasticIn ,
+    elasticInOut  : elasticInOut ,
+    elasticOut    : elasticOut ,
 
     linear        : linear
 }) ;
