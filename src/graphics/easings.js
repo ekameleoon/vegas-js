@@ -24,6 +24,9 @@ import { linear }        from './easings/linear.js' ;
 import { quarticIn }     from './easings/quarticIn.js' ;
 import { quarticInOut }  from './easings/quarticInOut.js' ;
 import { quarticOut }    from './easings/quarticOut.js' ;
+import { quinticIn }     from './easings/quinticIn.js' ;
+import { quinticInOut }  from './easings/quinticInOut.js' ;
+import { quinticOut }    from './easings/quinticOut.js' ;
 
 /**
  * The VEGAS.js framework - The graphics.easings library.
@@ -53,5 +56,8 @@ export var easings = Object.assign
     linear        : linear,
     quarticIn     : quarticIn ,
     quarticInOut  : quarticInOut ,
-    quarticOut    : quarticOut
+    quarticOut    : quarticOut,
+    quinticIn     : quinticIn,
+    quinticInOut  : quinticInOut,
+    quinticOut    : quinticOut
 }) ;
