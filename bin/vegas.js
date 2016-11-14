@@ -73,7 +73,7 @@ if (Function.prototype.name === undefined) {
 }
 
 try {
-  exports.global = exports.global || window || document;
+  exports.global = exports.global || window || document || {};
 } catch (e) {}
 
 function trace(context) {
@@ -17071,6 +17071,84 @@ var system = Object.assign({
     signals: signals
 });
 
+/* jshint -W079 */
+var performance$1 = exports.global.performance = {};
+
+if (window) {
+    performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow || Date.now || function () {
+        return new Date().getTime();
+    };
+} else {
+    performance$1.now = Date.now || function () {
+        return new Date().getTime();
+    };
+}
+
+var ONE_FRAME_TIME = 16;
+
+if (!(Date.now && Date.prototype.getTime)) {
+    Date.now = function now() {
+        return new Date().getTime();
+    };
+}
+
+if (!(exports.global.performance && exports.global.performance.now)) {
+    (function () {
+        var startTime = Date.now();
+
+        if (!exports.global.performance) {
+            exports.global.performance = {};
+        }
+
+        exports.global.performance.now = function () {
+            return Date.now() - startTime;
+        };
+    })();
+}
+
+var lastTime = Date.now();
+
+var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+var len = vendors.length;
+for (var x = 0; x < len && !exports.global.requestAnimationFrame; ++x) {
+    var p = vendors[x];
+
+    exports.global.requestAnimationFrame = exports.global[p + 'RequestAnimationFrame'];
+    exports.global.cancelAnimationFrame = exports.global[p + 'CancelAnimationFrame'] || exports.global[p + 'CancelRequestAnimationFrame'];
+}
+
+if (!exports.global.requestAnimationFrame) {
+    exports.global.requestAnimationFrame = function (callback) {
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + 'is not a function');
+        }
+
+        var currentTime = Date.now();
+
+        var delay = ONE_FRAME_TIME + lastTime - currentTime;
+
+        if (delay < 0) {
+            delay = 0;
+        }
+
+        lastTime = currentTime;
+
+        return setTimeout(function () {
+            lastTime = Date.now();
+            callback(performance.now());
+        }, delay);
+    };
+}
+
+if (!exports.global.cancelAnimationFrame) {
+    exports.global.cancelAnimationFrame = function (id) {
+        return clearTimeout(id);
+    };
+}
+
+/* jshint -W079 */
+
 /**
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
  * @param t Specifies the current time, between 0 and duration inclusive.
@@ -17621,7 +17699,7 @@ var sineOut = function sineOut(t, b, c, d) {
 };
 
 /**
- * The VEGAS.js framework - The graphics.easings library.
+ * The VEGAS.js framework - The molecule.easings library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
@@ -17659,13 +17737,26 @@ var easings = Object.assign({
     sineOut: sineOut
 });
 
+//import { performance } from './transitions/performance.js' ;
+
+/**
+ * The VEGAS.js framework - The molecule.transitions library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+
+var transitions = Object.assign({
+  //
+});
+
 /**
  * The VEGAS.js framework - The molecule library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var molecule = Object.assign({
-  easings: easings
+  easings: easings,
+  transitions: transitions
 });
 
 exports.trace = trace;

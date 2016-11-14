@@ -9,7 +9,7 @@ var global ;
 
 try
 {
-    global = global || window || document ;
+    global = global || window || document || {} ;
 }
 catch (e)
 {

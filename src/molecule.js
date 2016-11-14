@@ -1,8 +1,10 @@
 "use strict" ;
 
 import './polyfill.js' ;
+import './molecule/polyfill/index.js' ;
 
-import { easings } from './molecule/easings.js' ;
+import { easings }     from './molecule/easings.js' ;
+import { transitions } from './molecule/transitions.js' ;
 
 /**
  * The VEGAS.js framework - The molecule library.
@@ -11,5 +13,6 @@ import { easings } from './molecule/easings.js' ;
  */
 export var molecule = Object.assign
 ({
-    easings : easings
+    easings     : easings,
+    transitions : transitions
 }) ;
