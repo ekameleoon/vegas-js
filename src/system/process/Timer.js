@@ -1,7 +1,6 @@
 "use strict" ;
 
 import { Task } from './Task.js' ;
-import { Signal } from '../signals/Signal.js' ;
 
 /**
  * The Timer class is the interface to timers, which let you run code on a specified time sequence.
@@ -42,7 +41,7 @@ import { Signal } from '../signals/Signal.js' ;
  * //var action = new system.process.Timer( 1 , 10 , true ) ; // use the useSeconds flag
  *
  * action.finishIt.connect( finish ) ;
- * action.timerIt.connect( time ) ;
+ * action.progressIt.connect( time ) ;
  * action.resumeIt.connect( resume ) ;
  * action.startIt.connect( start ) ;
  * action.stopIt.connect( stop ) ;
@@ -56,11 +55,6 @@ export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 1 , useSeconds /*
 
     Object.defineProperties( this ,
     {
-        /**
-         * This signal emit when the timer emit a new interval.
-         */
-        timerIt : { value : new Signal() },
-
         /**
          * @private
          */
@@ -98,6 +92,11 @@ export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 1 , useSeconds /*
  */
 Timer.prototype = Object.create( Task.prototype ,
 {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor : { value : Timer , writable : true } ,
+
     /**
      * The total number of times the timer has fired since it started at zero.
      */
@@ -157,108 +156,99 @@ Timer.prototype = Object.create( Task.prototype ,
             }
             this._useSeconds = Boolean(flag) ;
         }
-    }
+    },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone : { value : function()
+    {
+        return new Timer( this._delay , this._repeatCount ) ;
+    }} ,
+
+    /**
+     * Restarts the timer. The timer is stopped, and then started.
+     */
+    resume : { value : function()
+    {
+        if ( this._stopped )
+        {
+            this._running = true ;
+            this._stopped = false ;
+            this._itv = setInterval
+            (
+                this._next.bind(this) ,
+                this._useSeconds ? (this._delay*1000) : this._delay
+            ) ;
+            this.notifyResumed() ;
+        }
+    }},
+
+    /**
+     * Reset the timer and stop it before if it's running.
+     */
+    reset : { value : function()
+    {
+        if( this.running )
+        {
+            this.stop() ;
+        }
+        this._count = 0 ;
+    }},
+
+    /**
+     * Run the timer.
+     */
+    run : { value : function ()
+    {
+        if( !this._running )
+        {
+            this._count   = 0 ;
+            this._stopped = false ;
+            this.notifyStarted() ;
+            this._itv = setInterval
+            (
+                this._next.bind(this) ,
+                this._useSeconds ? (this._delay*1000) : this._delay
+            ) ;
+        }
+    }},
+
+    /**
+     * Stops the timer.
+     */
+    stop : { value : function()
+    {
+        if ( this._running && !this._stopped )
+        {
+            this._running = false ;
+            this._stopped = true ;
+            clearInterval( this._itv ) ;
+            this.notifyStopped() ;
+        }
+    }},
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString : { value : function ()
+    {
+        return '[Timer]' ;
+    }},
+
+    /**
+     * @private
+     */
+    _next : { value : function()
+    {
+        this._count ++ ;
+        this.notifyProgress() ;
+        if ( (this._repeatCount > 0) && (this._repeatCount === this._count) )
+        {
+            clearInterval( this._itv ) ;
+            this.notifyFinished() ;
+        }
+    }}
 });
-Timer.prototype.constructor = Timer;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Timer.prototype.clone = function() /*Timer*/
-{
-    return new Timer( this._delay , this._repeatCount ) ;
-}
-
-/**
- * Restarts the timer. The timer is stopped, and then started.
- */
-Timer.prototype.resume = function() /*void*/
-{
-    if ( this._stopped )
-    {
-        this._running = true ;
-        this._stopped = false ;
-        this._itv = setInterval
-        (
-            this._next.bind(this) ,
-            this._useSeconds ? (this._delay*1000) : this._delay
-        ) ;
-        this.notifyResumed() ;
-    }
-}
-
-/**
- * Reset the timer and stop it before if it's running.
- */
-Timer.prototype.reset = function() /*Void*/
-{
-    if( this.running )
-    {
-        this.stop() ;
-    }
-    this._count = 0 ;
-}
-
-/**
- * Run the timer.
- */
-Timer.prototype.run = function ()
-{
-    if( !this._running )
-    {
-        this._count   = 0 ;
-        this._stopped = false ;
-        this.notifyStarted() ;
-        this._itv = setInterval
-        (
-            this._next.bind(this) ,
-            this._useSeconds ? (this._delay*1000) : this._delay
-        ) ;
-    }
-}
-
-/**
- * Starts the timer.
- */
-Timer.prototype.start = function()
-{
-    this.run() ;
-}
-
-/**
- * Stops the timer.
- */
-Timer.prototype.stop = function()
-{
-    if ( this._running && !this._stopped )
-    {
-        this._running = false ;
-        this._stopped = true ;
-        clearInterval( this._itv ) ;
-        this.notifyStopped() ;
-    }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Timer.prototype.toString = function () /*String*/
-{
-    return '[Timer]' ;
-}
-
-/**
- * @private
- */
-Timer.prototype._next = function() /*void*/
-{
-    this._count ++ ;
-    this.timerIt.emit( this ) ;
-    if ( (this._repeatCount > 0) && (this._repeatCount === this._count) )
-    {
-        clearInterval( this._itv ) ;
-        this.notifyFinished() ;
-    }
-}

@@ -9089,14 +9089,14 @@ Task.prototype.resume = function () /*void*/
  * Starts the task.
  */
 ;Task.prototype.start = function () /*void*/
-{}
-//
-
+{
+  this.run();
+};
 
 /**
  * Starts the process.
  */
-;Task.prototype.stop = function () /*void*/
+Task.prototype.stop = function () /*void*/
 {}
 //
 
@@ -15141,7 +15141,7 @@ function ChainNext(chain) {
 }
 
 /**
- * @extends TaskGroup
+ * @extends Receiver
  */
 ChainNext.prototype = Object.create(Receiver.prototype);
 ChainNext.prototype.constructor = ChainNext;
@@ -15824,7 +15824,7 @@ Object.defineProperties(TimeoutPolicy, {
  * //var action = new system.process.Timer( 1 , 10 , true ) ; // use the useSeconds flag
  *
  * action.finishIt.connect( finish ) ;
- * action.timerIt.connect( time ) ;
+ * action.progressIt.connect( time ) ;
  * action.resumeIt.connect( resume ) ;
  * action.startIt.connect( start ) ;
  * action.stopIt.connect( stop ) ;
@@ -15839,11 +15839,6 @@ function Timer(delay /*uint*/) {
     Task.call(this);
 
     Object.defineProperties(this, {
-        /**
-         * This signal emit when the timer emit a new interval.
-         */
-        timerIt: { value: new Signal() },
-
         /**
          * @private
          */
@@ -15880,6 +15875,11 @@ function Timer(delay /*uint*/) {
  * @extends Task
  */
 Timer.prototype = Object.create(Task.prototype, {
+    /**
+     * Returns a reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: Timer, writable: true },
+
     /**
      * The total number of times the timer has fired since it started at zero.
      */
@@ -15938,95 +15938,82 @@ Timer.prototype = Object.create(Task.prototype, {
             }
             this._useSeconds = Boolean(flag);
         }
-    }
+    },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: { value: function value() {
+            return new Timer(this._delay, this._repeatCount);
+        } },
+
+    /**
+     * Restarts the timer. The timer is stopped, and then started.
+     */
+    resume: { value: function value() {
+            if (this._stopped) {
+                this._running = true;
+                this._stopped = false;
+                this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
+                this.notifyResumed();
+            }
+        } },
+
+    /**
+     * Reset the timer and stop it before if it's running.
+     */
+    reset: { value: function value() {
+            if (this.running) {
+                this.stop();
+            }
+            this._count = 0;
+        } },
+
+    /**
+     * Run the timer.
+     */
+    run: { value: function value() {
+            if (!this._running) {
+                this._count = 0;
+                this._stopped = false;
+                this.notifyStarted();
+                this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
+            }
+        } },
+
+    /**
+     * Stops the timer.
+     */
+    stop: { value: function value() {
+            if (this._running && !this._stopped) {
+                this._running = false;
+                this._stopped = true;
+                clearInterval(this._itv);
+                this.notifyStopped();
+            }
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[Timer]';
+        } },
+
+    /**
+     * @private
+     */
+    _next: { value: function value() {
+            this._count++;
+            this.notifyProgress();
+            if (this._repeatCount > 0 && this._repeatCount === this._count) {
+                clearInterval(this._itv);
+                this.notifyFinished();
+            }
+        } }
 });
-Timer.prototype.constructor = Timer;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Timer.prototype.clone = function () /*Timer*/
-{
-    return new Timer(this._delay, this._repeatCount);
-};
-
-/**
- * Restarts the timer. The timer is stopped, and then started.
- */
-Timer.prototype.resume = function () /*void*/
-{
-    if (this._stopped) {
-        this._running = true;
-        this._stopped = false;
-        this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
-        this.notifyResumed();
-    }
-};
-
-/**
- * Reset the timer and stop it before if it's running.
- */
-Timer.prototype.reset = function () /*Void*/
-{
-    if (this.running) {
-        this.stop();
-    }
-    this._count = 0;
-};
-
-/**
- * Run the timer.
- */
-Timer.prototype.run = function () {
-    if (!this._running) {
-        this._count = 0;
-        this._stopped = false;
-        this.notifyStarted();
-        this._itv = setInterval(this._next.bind(this), this._useSeconds ? this._delay * 1000 : this._delay);
-    }
-};
-
-/**
- * Starts the timer.
- */
-Timer.prototype.start = function () {
-    this.run();
-};
-
-/**
- * Stops the timer.
- */
-Timer.prototype.stop = function () {
-    if (this._running && !this._stopped) {
-        this._running = false;
-        this._stopped = true;
-        clearInterval(this._itv);
-        this.notifyStopped();
-    }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Timer.prototype.toString = function () /*String*/
-{
-    return '[Timer]';
-};
-
-/**
- * @private
- */
-Timer.prototype._next = function () /*void*/
-{
-    this._count++;
-    this.timerIt.emit(this);
-    if (this._repeatCount > 0 && this._repeatCount === this._count) {
-        clearInterval(this._itv);
-        this.notifyFinished();
-    }
-};
 
 /**
  * Invoked to Unlock a specific Unlockable object.
@@ -17393,6 +17380,57 @@ var elasticOut = function elasticOut(t, b, c, d) {
 };
 
 /**
+ * The <code>expoIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoIn = function expoIn(t, b, c, d) {
+  return t === 0 ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
+};
+
+/**
+ * The <code>expoOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoInOut = function expoInOut(t, b, c, d) {
+    if (t === 0) {
+        return b;
+    }
+    if (t === d) {
+        return b + c;
+    }
+    if ((t /= d / 2) < 1) {
+        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+    }
+    return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
+};
+
+/**
+ * The <code>expoOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoOut = function expoOut(t, b, c, d) {
+  return t === d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+};
+
+/**
  * The <code>linear</code> function starts a basic and linear motion.
  * @param t Specifies the current time, between 0 and duration inclusive.
  * @param b Specifies the initial value of the animation property.
@@ -17406,6 +17444,183 @@ var linear = function linear(t, b, c, d) {
 };
 
 /**
+ * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticIn = function quarticIn(t, b, c, d) {
+  return c * (t /= d) * t * t * t + b;
+};
+
+/**
+ * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticInOut = function quarticInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t * t + b;
+    }
+    return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+};
+
+/**
+ * The <code>quarticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticOut = function quarticOut(t, b, c, d) {
+  return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+};
+
+/**
+ * The <code>quinticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticIn = function quinticIn(t, b, c, d) {
+  return c * (t /= d) * t * t * t * t + b;
+};
+
+/**
+ * The <code>quinticInOut</code> function combines the motion of the quinticIn() and quinticOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticInOut = function quinticInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t * t * t + b;
+    }
+    return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
+};
+
+/**
+ * The <code>quinticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticOut = function quinticOut(t, b, c, d) {
+  return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+};
+
+/**
+ * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularIn = function regularIn(t, b, c, d) {
+  return c * (t /= d) * t + b;
+};
+
+/**
+ * The <code>regularInOut</code> function combines the motion of the regularIn() and regularOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularInOut = function regularInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t + b;
+    }
+    return -c / 2 * (--t * (t - 2) - 1) + b;
+};
+
+/**
+ * The <code>regularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularOut = function regularOut(t, b, c, d) {
+  return -c * (t /= d) * (t - 2) + b;
+};
+
+/**
+ * The <code>sineIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineIn = function sineIn(t, b, c, d) {
+  return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+};
+
+/**
+ * The <code>sineInOut</code> function combines the motion of the sineIn() and sineOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineInOut = function sineInOut(t, b, c, d) {
+  return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+};
+
+/**
+ * The <code>sineOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineOut = function sineOut(t, b, c, d) {
+  return c * Math.sin(t / d * (Math.PI / 2)) + b;
+};
+
+/**
  * The VEGAS.js framework - The graphics.easings library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -17414,39 +17629,49 @@ var easings = Object.assign({
     backIn: backIn,
     backInOut: backInOut,
     backOut: backOut,
-
     bounceIn: bounceIn,
     bounceInOut: bounceInOut,
     bounceOut: bounceOut,
-
     circularIn: circularIn,
     circularInOut: circularInOut,
     circularOut: circularOut,
-
     cubicIn: cubicIn,
     cubicInOut: cubicInOut,
     cubicOut: cubicOut,
-
     elasticIn: elasticIn,
     elasticInOut: elasticInOut,
     elasticOut: elasticOut,
-
-    linear: linear
+    expoIn: expoIn,
+    expoInOut: expoInOut,
+    expoOut: expoOut,
+    linear: linear,
+    quarticIn: quarticIn,
+    quarticInOut: quarticInOut,
+    quarticOut: quarticOut,
+    quinticIn: quinticIn,
+    quinticInOut: quinticInOut,
+    quinticOut: quinticOut,
+    regularIn: regularIn,
+    regularInOut: regularInOut,
+    regularOut: regularOut,
+    sineIn: sineIn,
+    sineInOut: sineInOut,
+    sineOut: sineOut
 });
 
 /**
- * The VEGAS.js framework - The graphics library.
+ * The VEGAS.js framework - The molecule library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
-var graphics = Object.assign({
+var molecule = Object.assign({
   easings: easings
 });
 
 exports.trace = trace;
 exports.core = core;
 exports.system = system;
-exports.graphics = graphics;
+exports.molecule = molecule;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

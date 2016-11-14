@@ -16,6 +16,17 @@ var finish = function( action )
     trace( action + " finish" ) ;
 }
 
+var progress = function( action )
+{
+    trace( action + " progress count: " + action.currentCount + " / " + action.repeatCount ) ;
+    if ( action.currentCount === 5 )
+    {
+        action.stop() ;
+        trace( "timer stopped:" + action.stopped ) ;
+        action.resume() ;
+    }
+}
+
 var resume = function( action )
 {
     trace( action + " resume" ) ;
@@ -31,21 +42,10 @@ var stop = function( action )
     trace( action + " stop" ) ;
 }
 
-var time = function( action )
-{
-    trace( action + " count: " + action.currentCount + " / " + action.repeatCount ) ;
-    if ( action.currentCount === 5 )
-    {
-        action.stop() ;
-        trace( "timer stopped:" + action.stopped ) ;
-        action.resume() ;
-    }
-}
-
 var action = new system.process.Timer( 1000 , 10 ) ;
 
 action.finishIt.connect( finish ) ;
-action.timerIt.connect( time ) ;
+action.progressIt.connect( progress ) ;
 action.resumeIt.connect( resume ) ;
 action.startIt.connect( start ) ;
 action.stopIt.connect( stop ) ;

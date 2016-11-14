@@ -12,7 +12,7 @@ export function ChainNext( chain )
 }
 
 /**
- * @extends TaskGroup
+ * @extends Receiver
  */
 ChainNext.prototype = Object.create( Receiver.prototype ) ;
 ChainNext.prototype.constructor = ChainNext;

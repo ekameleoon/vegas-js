@@ -208,7 +208,7 @@ Task.prototype.reset = function() /*void*/
  */
 Task.prototype.start = function() /*void*/
 {
-    //
+    this.run() ;
 }
 
 /**
