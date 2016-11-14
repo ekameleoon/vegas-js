@@ -30,6 +30,9 @@ import { quinticOut }    from './easings/quinticOut.js' ;
 import { regularIn }     from './easings/regularIn.js' ;
 import { regularInOut }  from './easings/regularInOut.js' ;
 import { regularOut }    from './easings/regularOut.js' ;
+import { sineIn }        from './easings/sineIn.js' ;
+import { sineInOut }     from './easings/sineInOut.js' ;
+import { sineOut }       from './easings/sineOut.js' ;
 
 /**
  * The VEGAS.js framework - The graphics.easings library.
@@ -65,5 +68,8 @@ export var easings = Object.assign
     quinticOut    : quinticOut,
     regularIn     : regularIn,
     regularInOut  : regularInOut,
-    regularOut    : regularOut
+    regularOut    : regularOut,
+    sineIn        : sineIn,
+    sineInOut     : sineInOut,
+    sineOut       : sineOut
 }) ;
