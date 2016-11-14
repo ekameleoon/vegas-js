@@ -1,29 +1,10 @@
 /* jshint -W079 */
 "use strict" ;
 
-import { global } from '../../core/global.js' ;
+import { global }      from '../../core/global.js' ;
+import { performance } from './performance.js' ;
 
 const ONE_FRAME_TIME = 16;
-
-if (!(Date.now && Date.prototype.getTime))
-{
-    Date.now = function now()
-    {
-        return new Date().getTime();
-    };
-}
-
-if ( !(global.performance && global.performance.now) )
-{
-    const startTime = Date.now();
-
-    if (!global.performance)
-    {
-        global.performance = {};
-    }
-
-    global.performance.now = () => Date.now() - startTime;
-}
 
 let lastTime = Date.now();
 

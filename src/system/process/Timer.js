@@ -49,7 +49,7 @@ import { Task } from './Task.js' ;
  * action.run() ;
  * </pre>
  */
-export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 1 , useSeconds /*Boolean*/ = false )
+export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 0, useSeconds /*Boolean*/ = false )
 {
     Task.call(this) ;
 

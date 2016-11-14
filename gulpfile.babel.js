@@ -29,6 +29,7 @@ let globals =
 {
     chai   : 'chai',
     core   : 'core',
+    jsdom  : 'jsdom' ,
     system : 'system',
     global : 'global' ,
     trace  : 'trace'

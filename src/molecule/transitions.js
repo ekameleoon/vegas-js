@@ -1,5 +1,6 @@
 "use strict" ;
 
+import { Motion }     from './transitions/Motion.js' ;
 import { Transition } from './transitions/Transition.js' ;
 
 /**
@@ -9,5 +10,6 @@ import { Transition } from './transitions/Transition.js' ;
  */
 export var transitions = Object.assign
 ({
+    Motion     : Motion,
     Transition : Transition
 }) ;

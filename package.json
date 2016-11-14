@@ -64,6 +64,7 @@
     "gulp-util": "^3.0.7",
     "jshint": "^2.9.2",
     "jshint-stylish": "^2.2.1",
+    "mocha-jsdom": "^1.1.0",
     "pump": "^1.0.1",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-includepaths": "^0.1.6"

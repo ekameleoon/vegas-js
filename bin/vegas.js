@@ -72,9 +72,21 @@ if (Function.prototype.name === undefined) {
     });
 }
 
-try {
-  exports.global = exports.global || window || document || {};
-} catch (e) {}
+if (!exports.global) {
+    try {
+        exports.global = window;
+    } catch (e) {}
+}
+
+if (!exports.global) {
+    try {
+        exports.global = document;
+    } catch (e) {}
+}
+
+if (!exports.global) {
+    exports.global = {};
+}
 
 function trace(context) {
     if (console) {
@@ -15833,7 +15845,7 @@ Object.defineProperties(TimeoutPolicy, {
  * </pre>
  */
 function Timer(delay /*uint*/) {
-    var repeatCount /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    var repeatCount /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var useSeconds /*Boolean*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     Task.call(this);
@@ -17072,40 +17084,27 @@ var system = Object.assign({
 });
 
 /* jshint -W079 */
-var performance$1 = exports.global.performance = {};
-
-if (window) {
-    performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow || Date.now || function () {
-        return new Date().getTime();
-    };
-} else {
-    performance$1.now = Date.now || function () {
-        return new Date().getTime();
-    };
-}
-
-/* jshint -W079 */
-var ONE_FRAME_TIME = 16;
-
 if (!(Date.now && Date.prototype.getTime)) {
     Date.now = function now() {
         return new Date().getTime();
     };
 }
 
+var performance = exports.global.performance = {};
+
+performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
+
 if (!(exports.global.performance && exports.global.performance.now)) {
     (function () {
         var startTime = Date.now();
-
-        if (!exports.global.performance) {
-            exports.global.performance = {};
-        }
-
         exports.global.performance.now = function () {
             return Date.now() - startTime;
         };
     })();
 }
+
+/* jshint -W079 */
+var ONE_FRAME_TIME = 16;
 
 var lastTime = Date.now();
 
@@ -17744,16 +17743,359 @@ var easings = Object.assign({
     sineOut: sineOut
 });
 
-//import { performance } from './transitions/performance.js' ;
+/**
+ * A simple Transition object.
+ */
+function Transition() {
+    var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    Task.call(this);
+
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _id: { value: id, writable: true }
+    });
+}
+
+/**
+ * @extends Task
+ */
+Transition.prototype = Object.create(Task.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: Transition, writable: true },
+
+    /**
+     * Indicates the id value of this object.
+     */
+    id: {
+        get: function get() {
+            return this._id;
+        },
+        set: function set(value) {
+            this._id = value;
+        }
+    },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Transition(this.id);
+        } },
+
+    /**
+     * Compares the specified object with this object for equality. This method compares the ids of the objects with the <code>Identifiable.id</code> method.
+     * @return a shallow copy of this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o === this) {
+                return true;
+            } else if (o && o instanceof Transition) {
+                return o.id === this.id;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
+
+/**
+ * The Motion class.
+ */
+function Motion() {
+    var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    Transition.call(this, id);
+
+    Object.defineProperties(this, {
+        /**
+         * Defined if the Motion used seconds or not.
+         */
+        useSeconds: { writable: true, value: false },
+
+        /**
+         * @private
+         */
+        _duration: { writable: true, value: 0 },
+
+        /**
+         * @private
+         */
+        _fps: { writable: true, value: 24 },
+
+        /**
+         * @private
+         */
+        _prevTime: { writable: true, value: NaN },
+
+        /**
+         * @private
+         */
+        _startTime: { writable: true, value: NaN },
+
+        /**
+         * @private
+         */
+        _stopped: { writable: true, value: false },
+
+        /**
+         * @private
+         */
+        _target: { writable: true, value: null },
+
+        /**
+         * @private
+         */
+        _time: { writable: true, value: NaN },
+
+        /**
+         * @private
+         */
+        _timer: { writable: true, value: null }
+    });
+
+    this.setTimer(new Timer());
+}
+
+/**
+ * @extends Transition
+ */
+Motion.prototype = Object.create(Transition.prototype, {
+    // ------------- public properties
+
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: Motion, writable: true },
+
+    // ------------- get/set
+
+    /**
+     * Indicates the duration of the tweened animation in frames or seconds (default 0).
+     */
+    duration: {
+        get: function get() {
+            return this._duration;
+        },
+        set: function set(value) {
+            this._duration = isNaN(value) || value <= 0 ? 0 : value;
+        }
+    },
+
+    /**
+     * Indicates the number of frames per second of the tweened animation.
+     */
+    fps: {
+        get: function get() {
+            return this._fps;
+        },
+        set: function set(value) {
+            this._duration = isNaN(value) || value <= 0 ? 0 : value;
+        }
+    },
+
+    /**
+     * Indicates the internal previous time value.
+     */
+    prevTime: {
+        get: function get() {
+            return this._prevTime;
+        }
+    },
+
+    /**
+     * Indicates if the motion is stopped.
+     */
+    stopped: {
+        get: function get() {
+            return this._stopped;
+        }
+    },
+
+    /**
+     * Indicates the target reference of the object contrains by the Motion effect.
+     */
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+        }
+    },
+
+    // ------------- public methods
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Motion(this.id);
+        } },
+
+    /**
+     * Forwards the tweened animation to the next frame.
+     */
+    nextFrame: { value: function value() {
+            this.setTime(this.useSeconds ? (performance.now() - this._startTime) / 1000 : this._time + 1);
+        } },
+
+    /**
+     * Directs the tweened animation to the frame previous to the current frame.
+     */
+    prevFrame: { value: function value() {
+            if (!this.useSeconds) {
+                this.setTime(this._time - 1);
+            }
+        } },
+
+    /**
+     * Resumes a tweened animation from its stopped point in the animation.
+     */
+    resume: { writable: true, value: function value() {
+            if (this._stopped && this._time !== this._duration) {
+                this._stopped = false;
+                this.fixTime();
+                this.startInterval();
+                this.notifyResumed();
+            } else {
+                this.run();
+            }
+        } },
+
+    /**
+     * Rewinds a tweened animation to the beginning of the tweened animation.
+     */
+    rewind: { value: function value() {
+            var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+            this._time = t > 0 ? t : 0;
+            this.fixTime();
+            this.update();
+        } },
+
+    /**
+     * Runs the object.
+     */
+    run: { value: function value() {
+            this._stopped = false;
+            this.notifyStarted();
+            this.rewind();
+            this.startInterval();
+        } },
+
+    /**
+     * Sets the current time within the duration of the animation.
+     */
+    setTime: { value: function value(t) {
+            this._prevTime = this._time;
+            if (t > this._duration) {
+                t = this._duration;
+                if (this.looping) {
+                    this.rewind(t - this._duration);
+                    this.notifyLooped();
+                } else {
+                    if (this.useSeconds) {
+                        this._time = this._duration;
+                        this.update();
+                    }
+                    this.stop();
+                    this.notifyFinished();
+                }
+            } else if (t < 0) {
+                this.rewind();
+            } else {
+                this._time = t;
+                this.update();
+            }
+        } },
+
+    /**
+     * Starts the internal interval of the tweened animation.
+     */
+    startInterval: { value: function value() {
+            this._timer.start();
+            this._running = true;
+        } },
+
+    /**
+     * Stops the tweened animation at its current position.
+     */
+    stop: { value: function value() {
+            this.stopInterval();
+            this._stopped = true;
+            this.notifyStopped();
+        } },
+
+    /**
+     * Stops the intenral interval of the tweened animation.
+     */
+    stopInterval: { value: function value() {
+            this._timer.stop();
+            this._running = false;
+        } },
+
+    /**
+      * Update the current object.
+      */
+    update: { writable: true, value: function value() {
+            //
+        } },
+
+    // ------------- private
+
+    /**
+     * @private
+     */
+    fixTime: { value: function value() {
+            if (this.useSeconds) {
+                this._startTime = performance.now() - this._time * 1000;
+            }
+        } },
+
+    /**
+     * Sets the internal timer of the tweened animation.
+     */
+    setTimer: { writable: true, value: function value(_value) {
+            if (this._timer) {
+                if (this._timer instanceof Task) {
+                    if (this._timer.running) {
+                        this._timer.stop();
+                    }
+                    this._timer.progressIt.disconnect(this.nextFrame);
+                }
+                this._timer = null;
+            }
+
+            this._timer = _value instanceof Task ? _value : new Timer();
+
+            if (this._timer) {
+                this._timer.progressIt.connect(this.nextFrame);
+            }
+        } }
+});
 
 /**
  * The VEGAS.js framework - The molecule.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
-
 var transitions = Object.assign({
-  //
+  Motion: Motion,
+  Transition: Transition
 });
 
 /**

@@ -3,20 +3,24 @@
 
 import { global } from '../../core/global.js' ;
 
+if (!(Date.now && Date.prototype.getTime))
+{
+    Date.now = function now()
+    {
+        return new Date().getTime();
+    };
+}
+
 export var performance = global.performance = {} ;
 
-if( window )
-{
-    performance.now = performance.now       ||
-                      performance.mozNow    ||
-                      performance.msNow     ||
-                      performance.oNow      ||
-                      performance.webkitNow ||
-                      Date.now              ||
-                      function() { return new Date().getTime(); };
-}
-else
-{
-    performance.now = Date.now || function(){ return new Date().getTime(); }
-}
+performance.now = performance.now       ||
+                  performance.mozNow    ||
+                  performance.msNow     ||
+                  performance.oNow      ||
+                  performance.webkitNow
 
+if ( !(global.performance && global.performance.now) )
+{
+    const startTime = Date.now();
+    global.performance.now = () => Date.now() - startTime;
+}
