@@ -1,3 +1,4 @@
+/* jshint -W079 */
 "use strict" ;
 
 import { global } from '../../core/global.js' ;
@@ -39,7 +40,7 @@ for ( let x = 0 ; x < len && !global.requestAnimationFrame ; ++x )
 
 if (!global.requestAnimationFrame)
 {
-    global.requestAnimationFrame = (callback) =>
+    global.requestAnimationFrame = ( callback ) =>
     {
         if ( typeof callback !== 'function' )
         {
@@ -60,7 +61,7 @@ if (!global.requestAnimationFrame)
         return setTimeout(() =>
         {
             lastTime = Date.now();
-            callback(performance.now());
+            callback( performance.now() );
         }, delay);
     };
 }

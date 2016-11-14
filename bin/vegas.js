@@ -17084,6 +17084,7 @@ if (window) {
     };
 }
 
+/* jshint -W079 */
 var ONE_FRAME_TIME = 16;
 
 if (!(Date.now && Date.prototype.getTime)) {
@@ -17148,6 +17149,12 @@ if (!exports.global.cancelAnimationFrame) {
 }
 
 /* jshint -W079 */
+
+/* jshint -W079 */
+var cancelAnimationFrame = exports.global.cancelAnimationFrame;
+
+/* jshint -W079 */
+var requestAnimationFrame = exports.global.requestAnimationFrame;
 
 /**
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
@@ -17755,6 +17762,9 @@ var transitions = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var molecule = Object.assign({
+  cancelAnimationFrame: cancelAnimationFrame,
+  requestAnimationFrame: requestAnimationFrame,
+
   easings: easings,
   transitions: transitions
 });
