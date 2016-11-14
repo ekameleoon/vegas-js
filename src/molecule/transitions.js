@@ -1,6 +1,6 @@
 "use strict" ;
 
-//import { performance } from './transitions/performance.js' ;
+import { Transition } from './transitions/Transition.js' ;
 
 /**
  * The VEGAS.js framework - The molecule.transitions library.
@@ -9,5 +9,5 @@
  */
 export var transitions = Object.assign
 ({
-    //
+    Transition : Transition
 }) ;
