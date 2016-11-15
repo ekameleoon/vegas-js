@@ -5,14 +5,10 @@ import { Motion }     from '../../../src/molecule/transitions/Motion.js' ;
 import { Transition } from '../../../src/molecule/transitions/Transition.js' ;
 
 import chai  from 'chai' ;
-//import jsdom from 'mocha-jsdom' ;
-
 const assert = chai.assert ;
 
 describe( 'src/molecule/transitions/Motion.js' , () =>
 {
-    //jsdom() ;
-
     var m = new Motion() ;
 
     it('instanceof Transition', () =>

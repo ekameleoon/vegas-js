@@ -17866,7 +17866,7 @@ function Motion() {
         _timer: { writable: true, value: null }
     });
 
-    this.setTimer(new Timer());
+    this.setTimer(new Timer(1000 / this._fps));
 }
 
 /**
@@ -17902,7 +17902,15 @@ Motion.prototype = Object.create(Transition.prototype, {
             return this._fps;
         },
         set: function set(value) {
-            this._duration = isNaN(value) || value <= 0 ? 0 : value;
+            if (this._timer && this._timer._running) {
+                this._timer.stop();
+            }
+            this._fps = value > 0 ? value : NaN;
+            if (isNaN(this._fps)) {
+                this.setTimer(null);
+            } else {
+                this.setTimer(new Timer(1000 / this._fps));
+            }
         }
     },
 
@@ -17950,6 +17958,8 @@ Motion.prototype = Object.create(Transition.prototype, {
      * Forwards the tweened animation to the next frame.
      */
     nextFrame: { value: function value() {
+            console.log('nextFrame' + this);
+
             this.setTime(this.useSeconds ? (performance.now() - this._startTime) / 1000 : this._time + 1);
         } },
 
@@ -18072,7 +18082,7 @@ Motion.prototype = Object.create(Transition.prototype, {
     setTimer: { writable: true, value: function value(_value) {
             if (this._timer) {
                 if (this._timer instanceof Task) {
-                    if (this._timer.running) {
+                    if (this._timer._running) {
                         this._timer.stop();
                     }
                     this._timer.progressIt.disconnect(this.nextFrame);
@@ -18089,13 +18099,107 @@ Motion.prototype = Object.create(Transition.prototype, {
 });
 
 /**
+ * The TweenUnit class interpolate in time a value between 0 and 1.
+ */
+function TweenUnit() {
+    var easing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var useSeconds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var auto = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+    Motion.call(this);
+
+    Object.defineProperties(this, {
+        /**
+         * The current position of this tween.
+         */
+        position: { writable: true, value: 0 },
+
+        /**
+         * @private
+         */
+        _change: { writable: true, value: 1 }, // max - min
+
+        /**
+         * @private
+         */
+        _easing: { writable: true, value: easing instanceof Function ? easing : linear }
+    });
+
+    this.duration = duration;
+    this.useSeconds = useSeconds;
+
+    if (auto) {
+        this.run();
+    }
+}
+
+/**
+ * @extends Motion
+ */
+TweenUnit.prototype = Object.create(Motion.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: TweenUnit, writable: true },
+
+    /**
+     * Defines the easing method reference of this entry.
+     */
+    easing: {
+        get: function get() {
+            return this._easing;
+        },
+        set: function set(value) {
+            this._easing = value instanceof Function ? value : linear;
+        }
+    },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: { writable: true, value: function value() {
+            return new TweenUnit(this.easing, this.duration, this.useSeconds);
+        } },
+
+    /**
+     * Set the TweenUnit properties.
+     * @param easing the easing function of the tween entry.
+     * @param duration A number indicating the length of time or number of frames for the tween motion.
+     * @param useSeconds Indicates if the duration is in seconds.
+     */
+    set: { value: function value(easing) {
+            var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var useSeconds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+            this.duration = duration;
+            this.useSeconds = useSeconds;
+            this.easing = easing;
+        } },
+
+    /**
+      * Update the current object.
+      */
+    update: { writable: true, value: function value() {
+            if (this._easing) {
+                this.position = this._easing(this._time, 0, this._change, this._duration);
+                this.notifyChanged();
+            } else {
+                this.position = 0;
+            }
+        } }
+});
+
+/**
  * The VEGAS.js framework - The molecule.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var transitions = Object.assign({
   Motion: Motion,
-  Transition: Transition
+  Transition: Transition,
+  TweenUnit: TweenUnit
 });
 
 /**

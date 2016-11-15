@@ -2,6 +2,7 @@
 
 import { Motion }     from './transitions/Motion.js' ;
 import { Transition } from './transitions/Transition.js' ;
+import { TweenUnit }  from './transitions/TweenUnit.js' ;
 
 /**
  * The VEGAS.js framework - The molecule.transitions library.
@@ -11,5 +12,6 @@ import { Transition } from './transitions/Transition.js' ;
 export var transitions = Object.assign
 ({
     Motion     : Motion,
-    Transition : Transition
+    Transition : Transition,
+    TweenUnit  : TweenUnit
 }) ;

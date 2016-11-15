@@ -62,7 +62,7 @@ export function Motion( id = null )
         _timer : { writable : true , value : null }
     });
 
-    this.setTimer( new Timer() ) ;
+    this.setTimer( new Timer( 1000 / this._fps ) ) ;
 }
 
 /**
@@ -105,7 +105,19 @@ Motion.prototype = Object.create( Transition.prototype ,
         },
         set : function( value )
         {
-            this._duration = (isNaN(value) || value <= 0 ) ? 0 : value ;
+            if ( this._timer && this._timer._running )
+            {
+                this._timer.stop() ;
+            }
+            this._fps = value > 0 ? value : NaN ;
+            if ( isNaN(this._fps) )
+            {
+                this.setTimer( null ) ;
+            }
+            else
+            {
+                this.setTimer( new Timer( 1000 / this._fps ) ) ;
+            }
         }
     },
 
@@ -162,6 +174,8 @@ Motion.prototype = Object.create( Transition.prototype ,
      */
     nextFrame : { value : function()
     {
+        console.log( 'nextFrame' + this ) ;
+
         this.setTime( (this.useSeconds) ? ( ( performance.now() - this._startTime ) / 1000 ) : ( this._time + 1 ) ) ;
     }},
 
@@ -309,7 +323,7 @@ Motion.prototype = Object.create( Transition.prototype ,
         {
             if( this._timer instanceof Task )
             {
-                if( this._timer.running )
+                if( this._timer._running )
                 {
                     this._timer.stop();
                 }
