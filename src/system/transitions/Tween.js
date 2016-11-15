@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { TaskPhase } from '../../system/process/TaskPhase.js' ;
+import { TaskPhase } from '../process/TaskPhase.js' ;
 import { TweenUnit } from './TweenUnit.js' ;
 
 /**

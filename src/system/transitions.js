@@ -6,7 +6,7 @@ import { Tween }      from './transitions/Tween.js' ;
 import { TweenUnit }  from './transitions/TweenUnit.js' ;
 
 /**
- * The VEGAS.js framework - The molecule.transitions library.
+ * The VEGAS.js framework - The system.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */

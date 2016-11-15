@@ -14,9 +14,8 @@ window.onload = function()
     var trace    = vegas.trace  ; // jshint ignore:line
     var core     = vegas.core   ; // jshint ignore:line
     var system   = vegas.system ; // jshint ignore:line
-    var molecule = vegas.molecule ; // jshint ignore:line
 
-    var TweenUnit = molecule.transitions.TweenUnit ;
+    var TweenUnit = system.transitions.TweenUnit ;
 
     // ----- behaviors
 
@@ -40,11 +39,11 @@ window.onload = function()
 
     var canvas  = document.getElementById('canvas') ;
     var context = canvas.getContext('2d');
-    var tween   = new TweenUnit( molecule.easings.backOut , 48 ) ;
+    var tween   = new TweenUnit( core.easings.backOut , 48 ) ;
 
-    //tween.easing = molecule.easings.cubicOut ;
-    //tween.easing = molecule.easings.elasticOut ;
-    //tween.easing = molecule.easings.sineOut ;
+    //tween.easing = core.easings.cubicOut ;
+    //tween.easing = core.easings.elasticOut ;
+    //tween.easing = core.easings.sineOut ;
 
     //tween.fps = 24  ; // use the system.process.Timer class
     tween.fps = NaN ; // Use the system.process.FrameTimer

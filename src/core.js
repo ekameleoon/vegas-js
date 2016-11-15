@@ -14,6 +14,7 @@ import { isString  } from './core/isString.js' ;
 
 import { arrays  } from './core/arrays.js' ;
 import { chars   } from './core/chars.js' ;
+import { easings } from './core/easings.js' ;
 import { maths   } from './core/maths.js' ;
 import { numbers } from './core/numbers.js' ;
 import { objects } from './core/objects.js' ;
@@ -39,6 +40,7 @@ export var core = Object.assign
 
     arrays  : arrays ,
     chars   : chars ,
+    easings : easings,
     maths   : maths ,
     numbers : numbers,
     objects : objects ,

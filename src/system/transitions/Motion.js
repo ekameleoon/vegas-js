@@ -3,11 +3,11 @@
 import { performance } from '../../polyfill/performance.js' ;
 
 import { MotionNextFrame as NextFrame }  from './MotionNextFrame.js' ;
-import { Transition }  from './Transition.js' ;
+import { Transition }                    from './Transition.js' ;
 
-import { FrameTimer } from '../../system/process/FrameTimer.js' ;
-import { Task }       from '../../system/process/Task.js' ;
-import { Timer }      from '../../system/process/Timer.js' ;
+import { FrameTimer } from '../process/FrameTimer.js' ;
+import { Task }       from '../process/Task.js' ;
+import { Timer }      from '../process/Timer.js' ;
 
 /**
  * The Motion class.
@@ -31,7 +31,7 @@ export function Motion( id = null )
         /**
          * @private
          */
-        _fps : { writable : true , value : 24 } ,
+        _fps : { writable : true , value : NaN } ,
 
         /**
          * @private
@@ -69,7 +69,7 @@ export function Motion( id = null )
         _timer : { writable : true , value : null }
     });
 
-    this.setTimer( new Timer( 1000 / this._fps ) ) ;
+    this.setTimer( new FrameTimer() ) ;
 }
 
 /**
@@ -245,7 +245,7 @@ Motion.prototype = Object.create( Transition.prototype ,
             t = this._duration ;
             if ( this.looping )
             {
-                this.rewind (t - this._duration);
+                this.rewind( t - this._duration );
                 this.notifyLooped() ;
             }
             else

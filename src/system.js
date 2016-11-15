@@ -10,18 +10,19 @@ import { Formattable } from './system/Formattable.js' ;
 import { isEvaluable   } from './system/Evaluable.js' ;
 import { isFormattable } from './system/Formattable.js' ;
 
-import { data }       from './system/data.js' ;
-import { errors }     from './system/errors.js' ;
-import { evaluators } from './system/evaluators.js' ;
-import { formatters } from './system/formatters.js' ;
-import { ioc }        from './system/ioc.js' ;
-import { logging }    from './system/logging.js' ;
-import { logics }     from './system/logics.js' ;
-import { models }     from './system/models.js' ;
-import { numeric }    from './system/numeric.js' ;
-import { process }    from './system/process.js' ;
-import { rules }      from './system/rules.js' ;
-import { signals }    from './system/signals.js' ;
+import { data }        from './system/data.js' ;
+import { errors }      from './system/errors.js' ;
+import { evaluators }  from './system/evaluators.js' ;
+import { formatters }  from './system/formatters.js' ;
+import { ioc }         from './system/ioc.js' ;
+import { logging }     from './system/logging.js' ;
+import { logics }      from './system/logics.js' ;
+import { models }      from './system/models.js' ;
+import { numeric }     from './system/numeric.js' ;
+import { process }     from './system/process.js' ;
+import { rules }       from './system/rules.js' ;
+import { signals }     from './system/signals.js' ;
+import { transitions } from './system/transitions.js' ;
 
 /**
  * The VEGAS.js framework - The system library.
@@ -31,26 +32,30 @@ import { signals }    from './system/signals.js' ;
 export var system = Object.assign
 ({
     // interfaces
+
     Enum        : Enum ,
     Equatable   : Equatable ,
     Evaluable   : Evaluable ,
     Formattable : Formattable ,
 
     // functions
+
     isEvaluable   : isEvaluable ,
     isFormattable : isFormattable ,
 
     // packages
-    data       : data ,
-    errors     : errors ,
-    evaluators : evaluators ,
-    formatters : formatters ,
-    ioc        : ioc ,
-    logging    : logging ,
-    logics     : logics ,
-    models     : models ,
-    numeric    : numeric ,
-    process    : process ,
-    rules      : rules ,
-    signals    : signals
+
+    data        : data ,
+    errors      : errors ,
+    evaluators  : evaluators ,
+    formatters  : formatters ,
+    ioc         : ioc ,
+    logging     : logging ,
+    logics      : logics ,
+    models      : models ,
+    numeric     : numeric ,
+    process     : process ,
+    rules       : rules ,
+    signals     : signals,
+    transitions : transitions
 }) ;

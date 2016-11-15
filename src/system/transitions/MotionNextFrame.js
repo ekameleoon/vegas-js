@@ -1,8 +1,7 @@
 "use strict" ;
 
 import { performance } from '../../polyfill/performance.js' ;
-
-import { Receiver  } from '../../system/signals/Receiver.js' ;
+import { Receiver  } from '../signals/Receiver.js' ;
 import { Motion }    from './Motion.js' ;
 
 /**

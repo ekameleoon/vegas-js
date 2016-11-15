@@ -11,5 +11,3 @@ export { global   } from './core/global.js' ;
 export { trace    } from './trace.js' ;
 export { core     } from './core.js' ;
 export { system   } from './system.js' ;
-
-export { molecule } from './molecule.js' ;

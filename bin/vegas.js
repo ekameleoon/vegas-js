@@ -1439,6 +1439,594 @@ var chars = Object.assign({
 });
 
 /**
+ * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backIn = function backIn(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    return c * (t /= d) * t * ((s + 1) * t - s) + b;
+};
+
+/**
+ * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backInOut = function backInOut(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    if ((t /= d / 2) < 1) {
+        return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
+    }
+    return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
+};
+
+/**
+ * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var backOut = function backOut(t, b, c, d) {
+    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
+
+    if (isNaN(s)) {
+        s = 1.70158;
+    }
+    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
+};
+
+/**
+ * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var bounceOut = function bounceOut(t, b, c, d) {
+    if ((t /= d) < 1 / 2.75) {
+        return c * (7.5625 * t * t) + b;
+    } else if (t < 2 / 2.75) {
+        return c * (7.5625 * (t -= 1.5 / 2.75) * t + 0.75) + b;
+    } else if (t < 2.5 / 2.75) {
+        return c * (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375) + b;
+    } else {
+        return c * (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375) + b;
+    }
+};
+
+/**
+ * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+var bounceIn = function bounceIn(t, b, c, d) {
+  return c - bounceOut(d - t, 0, c, d) + b;
+};
+
+/**
+ * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+var bounceInOut = function bounceInOut(t, b, c, d) {
+  return t < d / 2 ? bounceIn(t * 2, 0, c, d) * 0.5 + b : bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
+};
+
+/**
+ * The <code>circularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularIn = function circularIn(t, b, c, d) {
+  return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
+};
+
+/**
+ * The <code>circularInOut</code> function combines the motion of the circularIn and circularOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularInOut = function circularInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+    }
+    return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
+};
+
+/**
+ * The <code>circularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var circularOut = function circularOut(t, b, c, d) {
+  return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
+};
+
+/**
+ * The <code>cubicIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicIn = function cubicIn(t, b, c, d) {
+  return c * (t /= d) * t * t + b;
+};
+
+/**
+ * The <code>cubicOut</code> function combines the motion of the <b>cubicIn</b> and <b>cubicOut</b> functions to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicInOut = function cubicInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t + b;
+    }
+    return c / 2 * ((t -= 2) * t * t + 2) + b;
+};
+
+/**
+ * The <code>cubicOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var cubicOut = function cubicOut(t, b, c, d) {
+  return c * ((t = t / d - 1) * t * t + 1) + b;
+};
+
+/**
+ * The <code>elasticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticIn = function elasticIn(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+
+    if ((t /= d) === 1) {
+        return b + c;
+    }
+
+    if (!p) {
+        p = d * 0.3;
+    }
+
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+};
+
+/**
+ * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticInOut = function elasticInOut(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+    if ((t /= d / 2) === 2) {
+        return b + c;
+    }
+    if (!p) {
+        p = d * (0.3 * 1.5);
+    }
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    if (t < 1) {
+        return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+    }
+
+    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
+};
+
+/**
+ * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @param a Specifies the amplitude of the sine wave.
+ * @param p Specifies the period of the sine wave.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var elasticOut = function elasticOut(t, b, c, d) {
+    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    var s;
+
+    if (t === 0) {
+        return b;
+    }
+
+    if ((t /= d) === 1) {
+        return b + c;
+    }
+
+    if (!p) {
+        p = d * 0.3;
+    }
+    if (!a || a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    } else {
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    }
+
+    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+};
+
+/**
+ * The <code>expoIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoIn = function expoIn(t, b, c, d) {
+  return t === 0 ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
+};
+
+/**
+ * The <code>expoOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoInOut = function expoInOut(t, b, c, d) {
+    if (t === 0) {
+        return b;
+    }
+    if (t === d) {
+        return b + c;
+    }
+    if ((t /= d / 2) < 1) {
+        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+    }
+    return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
+};
+
+/**
+ * The <code>expoOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var expoOut = function expoOut(t, b, c, d) {
+  return t === d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+};
+
+/**
+ * The <code>linear</code> function starts a basic and linear motion.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var linear = function linear(t, b, c, d) {
+  return c * t / d + b;
+};
+
+/**
+ * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticIn = function quarticIn(t, b, c, d) {
+  return c * (t /= d) * t * t * t + b;
+};
+
+/**
+ * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticInOut = function quarticInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t * t + b;
+    }
+    return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+};
+
+/**
+ * The <code>quarticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quarticOut = function quarticOut(t, b, c, d) {
+  return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+};
+
+/**
+ * The <code>quinticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticIn = function quinticIn(t, b, c, d) {
+  return c * (t /= d) * t * t * t * t + b;
+};
+
+/**
+ * The <code>quinticInOut</code> function combines the motion of the quinticIn() and quinticOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticInOut = function quinticInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t * t * t * t + b;
+    }
+    return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
+};
+
+/**
+ * The <code>quinticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var quinticOut = function quinticOut(t, b, c, d) {
+  return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+};
+
+/**
+ * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularIn = function regularIn(t, b, c, d) {
+  return c * (t /= d) * t + b;
+};
+
+/**
+ * The <code>regularInOut</code> function combines the motion of the regularIn() and regularOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularInOut = function regularInOut(t, b, c, d) {
+    if ((t /= d / 2) < 1) {
+        return c / 2 * t * t + b;
+    }
+    return -c / 2 * (--t * (t - 2) - 1) + b;
+};
+
+/**
+ * The <code>regularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var regularOut = function regularOut(t, b, c, d) {
+  return -c * (t /= d) * (t - 2) + b;
+};
+
+/**
+ * The <code>sineIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineIn = function sineIn(t, b, c, d) {
+  return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+};
+
+/**
+ * The <code>sineInOut</code> function combines the motion of the sineIn() and sineOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineInOut = function sineInOut(t, b, c, d) {
+  return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+};
+
+/**
+ * The <code>sineOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
+ * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
+ * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
+ * @param t Specifies the current time, between 0 and duration inclusive.
+ * @param b Specifies the initial value of the animation property.
+ * @param c Specifies the total change in the animation property.
+ * @param d Specifies the duration of the motion.
+ * @return The value of the interpolated property at the specified time.
+ */
+
+var sineOut = function sineOut(t, b, c, d) {
+  return c * Math.sin(t / d * (Math.PI / 2)) + b;
+};
+
+/**
+ * The VEGAS.js framework - The core.easings library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+var easings = Object.assign({
+    backIn: backIn,
+    backInOut: backInOut,
+    backOut: backOut,
+    bounceIn: bounceIn,
+    bounceInOut: bounceInOut,
+    bounceOut: bounceOut,
+    circularIn: circularIn,
+    circularInOut: circularInOut,
+    circularOut: circularOut,
+    cubicIn: cubicIn,
+    cubicInOut: cubicInOut,
+    cubicOut: cubicOut,
+    elasticIn: elasticIn,
+    elasticInOut: elasticInOut,
+    elasticOut: elasticOut,
+    expoIn: expoIn,
+    expoInOut: expoInOut,
+    expoOut: expoOut,
+    linear: linear,
+    quarticIn: quarticIn,
+    quarticInOut: quarticInOut,
+    quarticOut: quarticOut,
+    quinticIn: quinticIn,
+    quinticInOut: quinticInOut,
+    quinticOut: quinticOut,
+    regularIn: regularIn,
+    regularInOut: regularInOut,
+    regularOut: regularOut,
+    sineIn: sineIn,
+    sineInOut: sineInOut,
+    sineOut: sineOut
+});
+
+/**
  * This constant change radians to degrees : <b>180/Math.PI</b>.
  */
 
@@ -3712,6 +4300,7 @@ var core = Object.assign({
 
     arrays: arrays,
     chars: chars,
+    easings: easings,
     maths: maths,
     numbers: numbers,
     objects: objects,
@@ -17288,625 +17877,6 @@ var signals = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The system library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
- */
-var system = Object.assign({
-    // interfaces
-    Enum: Enum,
-    Equatable: Equatable,
-    Evaluable: Evaluable,
-    Formattable: Formattable,
-
-    // functions
-    isEvaluable: isEvaluable,
-    isFormattable: isFormattable,
-
-    // packages
-    data: data,
-    errors: errors,
-    evaluators: evaluators,
-    formatters: formatters,
-    ioc: ioc,
-    logging: logging,
-    logics: logics,
-    models: models,
-    numeric: numeric,
-    process: process,
-    rules: rules,
-    signals: signals
-});
-
-/**
- * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
- * @return The value of the interpolated property at the specified time.
- */
-
-var backIn = function backIn(t, b, c, d) {
-    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
-
-    if (isNaN(s)) {
-        s = 1.70158;
-    }
-    return c * (t /= d) * t * ((s + 1) * t - s) + b;
-};
-
-/**
- * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
- * @return The value of the interpolated property at the specified time.
- */
-
-var backInOut = function backInOut(t, b, c, d) {
-    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
-
-    if (isNaN(s)) {
-        s = 1.70158;
-    }
-    if ((t /= d / 2) < 1) {
-        return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
-    }
-    return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
-};
-
-/**
- * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
- * @return The value of the interpolated property at the specified time.
- */
-
-var backOut = function backOut(t, b, c, d) {
-    var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
-
-    if (isNaN(s)) {
-        s = 1.70158;
-    }
-    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
-};
-
-/**
- * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var bounceOut = function bounceOut(t, b, c, d) {
-    if ((t /= d) < 1 / 2.75) {
-        return c * (7.5625 * t * t) + b;
-    } else if (t < 2 / 2.75) {
-        return c * (7.5625 * (t -= 1.5 / 2.75) * t + 0.75) + b;
-    } else if (t < 2.5 / 2.75) {
-        return c * (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375) + b;
-    } else {
-        return c * (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375) + b;
-    }
-};
-
-/**
- * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-var bounceIn = function bounceIn(t, b, c, d) {
-  return c - bounceOut(d - t, 0, c, d) + b;
-};
-
-/**
- * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-var bounceInOut = function bounceInOut(t, b, c, d) {
-  return t < d / 2 ? bounceIn(t * 2, 0, c, d) * 0.5 + b : bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
-};
-
-/**
- * The <code>circularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var circularIn = function circularIn(t, b, c, d) {
-  return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
-};
-
-/**
- * The <code>circularInOut</code> function combines the motion of the circularIn and circularOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var circularInOut = function circularInOut(t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
-    }
-    return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
-};
-
-/**
- * The <code>circularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var circularOut = function circularOut(t, b, c, d) {
-  return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
-};
-
-/**
- * The <code>cubicIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var cubicIn = function cubicIn(t, b, c, d) {
-  return c * (t /= d) * t * t + b;
-};
-
-/**
- * The <code>cubicOut</code> function combines the motion of the <b>cubicIn</b> and <b>cubicOut</b> functions to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var cubicInOut = function cubicInOut(t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t + b;
-    }
-    return c / 2 * ((t -= 2) * t * t + 2) + b;
-};
-
-/**
- * The <code>cubicOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var cubicOut = function cubicOut(t, b, c, d) {
-  return c * ((t = t / d - 1) * t * t + 1) + b;
-};
-
-/**
- * The <code>elasticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
- * @return The value of the interpolated property at the specified time.
- */
-
-var elasticIn = function elasticIn(t, b, c, d) {
-    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-
-    var s;
-
-    if (t === 0) {
-        return b;
-    }
-
-    if ((t /= d) === 1) {
-        return b + c;
-    }
-
-    if (!p) {
-        p = d * 0.3;
-    }
-
-    if (!a || a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    }
-
-    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-};
-
-/**
- * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
- * @return The value of the interpolated property at the specified time.
- */
-
-var elasticInOut = function elasticInOut(t, b, c, d) {
-    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-
-    var s;
-
-    if (t === 0) {
-        return b;
-    }
-    if ((t /= d / 2) === 2) {
-        return b + c;
-    }
-    if (!p) {
-        p = d * (0.3 * 1.5);
-    }
-    if (!a || a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    }
-
-    if (t < 1) {
-        return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-    }
-
-    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
-};
-
-/**
- * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
- * @return The value of the interpolated property at the specified time.
- */
-
-var elasticOut = function elasticOut(t, b, c, d) {
-    var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-    var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-
-    var s;
-
-    if (t === 0) {
-        return b;
-    }
-
-    if ((t /= d) === 1) {
-        return b + c;
-    }
-
-    if (!p) {
-        p = d * 0.3;
-    }
-    if (!a || a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    }
-
-    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
-};
-
-/**
- * The <code>expoIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var expoIn = function expoIn(t, b, c, d) {
-  return t === 0 ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
-};
-
-/**
- * The <code>expoOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var expoInOut = function expoInOut(t, b, c, d) {
-    if (t === 0) {
-        return b;
-    }
-    if (t === d) {
-        return b + c;
-    }
-    if ((t /= d / 2) < 1) {
-        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-    }
-    return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
-};
-
-/**
- * The <code>expoOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var expoOut = function expoOut(t, b, c, d) {
-  return t === d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-};
-
-/**
- * The <code>linear</code> function starts a basic and linear motion.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var linear = function linear(t, b, c, d) {
-  return c * t / d + b;
-};
-
-/**
- * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quarticIn = function quarticIn(t, b, c, d) {
-  return c * (t /= d) * t * t * t + b;
-};
-
-/**
- * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quarticInOut = function quarticInOut(t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t * t + b;
-    }
-    return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-};
-
-/**
- * The <code>quarticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quarticOut = function quarticOut(t, b, c, d) {
-  return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-};
-
-/**
- * The <code>quinticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quinticIn = function quinticIn(t, b, c, d) {
-  return c * (t /= d) * t * t * t * t + b;
-};
-
-/**
- * The <code>quinticInOut</code> function combines the motion of the quinticIn() and quinticOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quinticInOut = function quinticInOut(t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t * t * t + b;
-    }
-    return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-};
-
-/**
- * The <code>quinticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var quinticOut = function quinticOut(t, b, c, d) {
-  return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
-};
-
-/**
- * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var regularIn = function regularIn(t, b, c, d) {
-  return c * (t /= d) * t + b;
-};
-
-/**
- * The <code>regularInOut</code> function combines the motion of the regularIn() and regularOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var regularInOut = function regularInOut(t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-        return c / 2 * t * t + b;
-    }
-    return -c / 2 * (--t * (t - 2) - 1) + b;
-};
-
-/**
- * The <code>regularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var regularOut = function regularOut(t, b, c, d) {
-  return -c * (t /= d) * (t - 2) + b;
-};
-
-/**
- * The <code>sineIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
- * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var sineIn = function sineIn(t, b, c, d) {
-  return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-};
-
-/**
- * The <code>sineInOut</code> function combines the motion of the sineIn() and sineOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
- * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var sineInOut = function sineInOut(t, b, c, d) {
-  return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-};
-
-/**
- * The <code>sineOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
- * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @return The value of the interpolated property at the specified time.
- */
-
-var sineOut = function sineOut(t, b, c, d) {
-  return c * Math.sin(t / d * (Math.PI / 2)) + b;
-};
-
-/**
- * The VEGAS.js framework - The molecule.easings library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
- */
-var easings = Object.assign({
-    backIn: backIn,
-    backInOut: backInOut,
-    backOut: backOut,
-    bounceIn: bounceIn,
-    bounceInOut: bounceInOut,
-    bounceOut: bounceOut,
-    circularIn: circularIn,
-    circularInOut: circularInOut,
-    circularOut: circularOut,
-    cubicIn: cubicIn,
-    cubicInOut: cubicInOut,
-    cubicOut: cubicOut,
-    elasticIn: elasticIn,
-    elasticInOut: elasticInOut,
-    elasticOut: elasticOut,
-    expoIn: expoIn,
-    expoInOut: expoInOut,
-    expoOut: expoOut,
-    linear: linear,
-    quarticIn: quarticIn,
-    quarticInOut: quarticInOut,
-    quarticOut: quarticOut,
-    quinticIn: quinticIn,
-    quinticInOut: quinticInOut,
-    quinticOut: quinticOut,
-    regularIn: regularIn,
-    regularInOut: regularInOut,
-    regularOut: regularOut,
-    sineIn: sineIn,
-    sineInOut: sineInOut,
-    sineOut: sineOut
-});
-
-/**
  * The internal MotionNextFrame Receiver.
  */
 function MotionNextFrame(motion) {
@@ -18022,7 +17992,7 @@ function Motion() {
         /**
          * @private
          */
-        _fps: { writable: true, value: 24 },
+        _fps: { writable: true, value: NaN },
 
         /**
          * @private
@@ -18060,7 +18030,7 @@ function Motion() {
         _timer: { writable: true, value: null }
     });
 
-    this.setTimer(new Timer(1000 / this._fps));
+    this.setTimer(new FrameTimer());
 }
 
 /**
@@ -18581,7 +18551,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The molecule.transitions library.
+ * The VEGAS.js framework - The system.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
@@ -18593,19 +18563,43 @@ var transitions = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The molecule library.
+ * The VEGAS.js framework - The system library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
-var molecule = Object.assign({
-  easings: easings,
-  transitions: transitions
+var system = Object.assign({
+    // interfaces
+
+    Enum: Enum,
+    Equatable: Equatable,
+    Evaluable: Evaluable,
+    Formattable: Formattable,
+
+    // functions
+
+    isEvaluable: isEvaluable,
+    isFormattable: isFormattable,
+
+    // packages
+
+    data: data,
+    errors: errors,
+    evaluators: evaluators,
+    formatters: formatters,
+    ioc: ioc,
+    logging: logging,
+    logics: logics,
+    models: models,
+    numeric: numeric,
+    process: process,
+    rules: rules,
+    signals: signals,
+    transitions: transitions
 });
 
 exports.trace = trace;
 exports.core = core;
 exports.system = system;
-exports.molecule = molecule;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

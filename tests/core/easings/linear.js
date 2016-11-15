@@ -1,12 +1,12 @@
 "use strict" ;
 
-import { linear } from '../../../src/molecule/easings/linear.js' ;
+import { linear } from '../../../src/core/easings/linear.js' ;
 
 import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'src/molecule/easings/linear.js' , () =>
+describe( 'core/easings/linear.js' , () =>
 {
     var b = 0 ,
         c = 1 ,

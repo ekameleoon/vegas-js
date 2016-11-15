@@ -1,14 +1,14 @@
 "use strict" ;
 
 
-import { Motion }    from '../../../src/molecule/transitions/Motion.js' ;
-import { TweenUnit } from '../../../src/molecule/transitions/TweenUnit.js' ;
+import { Motion }    from '../../../src/system/transitions/Motion.js' ;
+import { TweenUnit } from '../../../src/system/transitions/TweenUnit.js' ;
 
 import chai  from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'src/molecule/transitions/TweenUnit.js' , () =>
+describe( 'system/transitions/TweenUnit.js' , () =>
 {
     var tween = new TweenUnit() ;
 
@@ -27,9 +27,9 @@ describe( 'src/molecule/transitions/TweenUnit.js' , () =>
         assert.strictEqual( tween.duration , 0 );
     });
 
-    it('tween.fps === 24', () =>
+    it('tween.fps is NaN', () =>
     {
-        assert.strictEqual( tween.fps , 24 );
+        assert.isTrue( isNaN(tween.fps) );
     });
 
     it('tween.position === 0', () =>

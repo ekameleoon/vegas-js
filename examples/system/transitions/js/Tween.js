@@ -14,9 +14,8 @@ window.onload = function()
     var trace    = vegas.trace  ; // jshint ignore:line
     var core     = vegas.core   ; // jshint ignore:line
     var system   = vegas.system ; // jshint ignore:line
-    var molecule = vegas.molecule ; // jshint ignore:line
 
-    var Tween = molecule.transitions.Tween ;
+    var Tween = system.transitions.Tween ;
 
     // ----- behaviors
 
@@ -26,7 +25,7 @@ window.onload = function()
         render() ;
     }
 
-    var finish = function( tween )
+    var finish = function()
     {
         trace( 'finish' ) ;
         tween.duration = 120 ;
@@ -46,7 +45,7 @@ window.onload = function()
     var context = canvas.getContext('2d');
 
     canvas.width  = 800;
-    canvas.height = 640;
+    canvas.height = 600;
 
     var color   = '#FF0000' ;
     var radius  = 25;
@@ -57,28 +56,30 @@ window.onload = function()
 
     var easings = null ;
 
-    //easings = { x : molecule.easings.backIn     , y : molecule.easings.backOut  } ;
-    // easings = { x : molecule.easings.backOut   , y : molecule.easings.backIn  } ;
-    // easings = { x : molecule.easings.circularOut    , y : molecule.easings.circularIn  } ;
-    // easings = { x : molecule.easings.bounceOut , y : molecule.easings.bounceIn } ;
-    easings = { x : molecule.easings.sineOut   , y : molecule.easings.sineIn   } ;
+    // easings = { x : core.easings.backIn , y : core.easings.backOut  } ;
+    // easings = { x : core.easings.backOut , y : core.easings.backIn  } ;
+    // easings = { x : core.easings.circularOut , y : core.easings.circularIn  } ;
+    // easings = { x : core.easings.bounceOut , y : core.easings.bounceIn } ;
+
+    easings = { x : core.easings.backOut , y : core.easings.sineIn   } ;
 
     var tween = new Tween
     ({
-        duration : 48 ,
-        easing   : molecule.easings.backOut,
-        easings  : easings,
-        from     : from ,
-        target   : target ,
-        to       : to
+        auto       : false,
+        duration   : 48 ,
+        useSeconds : false ,
+        easing     : core.easings.backOut,
+        easings    : easings,
+        from       : from ,
+        target     : target ,
+        to         : to
     }) ;
 
-    //tween.easing = molecule.easings.cubicOut ;
-    //tween.easing = molecule.easings.elasticOut ;
-    //tween.easing = molecule.easings.sineOut ;
+    //tween.easing = core.easings.cubicOut ;
+    //tween.easing = core.easings.elasticOut ;
+    //tween.easing = core.easings.sineOut ;
 
-    //tween.fps = 24  ; // use the system.process.Timer class
-    tween.fps = NaN ; // Use the system.process.FrameTimer
+    // tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
 
     //tween.looping = true ;
 

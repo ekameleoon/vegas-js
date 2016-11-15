@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { linear } from '../easings/linear.js' ;
+import { linear } from '../../core/easings/linear.js' ;
 import { Motion } from './Motion.js' ;
 
 /**
