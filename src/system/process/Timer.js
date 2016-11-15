@@ -83,7 +83,7 @@ export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 0, useSeconds /*B
         /**
          * @private
          */
-        _useSeconds : { value : Boolean(useSeconds) , writable : true },
+        _useSeconds : { value : Boolean(useSeconds) , writable : true }
     }) ;
 }
 

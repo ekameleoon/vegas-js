@@ -13,6 +13,7 @@ import { BatchTask }     from './process/BatchTask.js' ;
 import { Cache }         from './process/Cache.js' ;
 import { Chain }         from './process/Chain.js' ;
 import { Do }            from './process/Do.js' ;
+import { FrameTimer }    from './process/FrameTimer.js' ;
 import { Lock }          from './process/Lock.js' ;
 import { Lockable }      from './process/Lockable.js' ;
 import { Priority }      from './process/Priority.js' ;
@@ -63,6 +64,7 @@ export var process = Object.assign
     Cache         : Cache ,
     Chain         : Chain ,
     Do            : Do,
+    FrameTimer    : FrameTimer,
     Lock          : Lock ,
     Lockable      : Lockable ,
     Priority      : Priority ,

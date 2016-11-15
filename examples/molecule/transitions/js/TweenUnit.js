@@ -43,10 +43,12 @@ window.onload = function()
     var tween   = new TweenUnit( molecule.easings.backOut , 48 ) ;
 
     //tween.easing = molecule.easings.cubicOut ;
-    tween.easing = molecule.easings.elasticOut ;
+    //tween.easing = molecule.easings.elasticOut ;
     //tween.easing = molecule.easings.sineOut ;
 
-    tween.fps = 48 ;
+    //tween.fps = 24  ; // use the system.process.Timer class
+    tween.fps = NaN ; // Use the system.process.FrameTimer
+
     tween.finishIt.connect( finish ) ;
     tween.changeIt.connect( change ) ;
     tween.startIt.connect( start ) ;

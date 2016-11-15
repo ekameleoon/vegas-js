@@ -5,8 +5,9 @@ import { performance } from '../../polyfill/performance.js' ;
 import { MotionNextFrame as NextFrame }  from './MotionNextFrame.js' ;
 import { Transition }  from './Transition.js' ;
 
-import { Task }  from '../../system/process/Task.js' ;
-import { Timer } from '../../system/process/Timer.js' ;
+import { FrameTimer } from '../../system/process/FrameTimer.js' ;
+import { Task }       from '../../system/process/Task.js' ;
+import { Timer }      from '../../system/process/Timer.js' ;
 
 /**
  * The Motion class.
@@ -118,7 +119,7 @@ Motion.prototype = Object.create( Transition.prototype ,
             this._fps = value > 0 ? value : NaN ;
             if ( isNaN(this._fps) )
             {
-                this.setTimer( null ) ;
+                this.setTimer( new FrameTimer() ) ;
             }
             else
             {
@@ -283,9 +284,12 @@ Motion.prototype = Object.create( Transition.prototype ,
      */
     stop : { value : function()
     {
-        this.stopInterval() ;
-        this._stopped = true ;
-        this.notifyStopped() ;
+        if( this._running )
+        {
+            this.stopInterval() ;
+            this._stopped = true ;
+            this.notifyStopped() ;
+        }
     }},
 
     /**
@@ -321,7 +325,7 @@ Motion.prototype = Object.create( Transition.prototype ,
     /**
      * Sets the internal timer of the tweened animation.
      */
-    setTimer : { writable : true , value : function( value )
+    setTimer : { value : function( value )
     {
         if ( this._timer )
         {
