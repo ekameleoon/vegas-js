@@ -17371,7 +17371,7 @@ var elasticIn = function elasticIn(t, b, c, d) {
         return b + c;
     }
 
-    if (isNaN(p)) {
+    if (!p) {
         p = d * 0.3;
     }
 
@@ -17408,7 +17408,7 @@ var elasticInOut = function elasticInOut(t, b, c, d) {
     if ((t /= d / 2) === 2) {
         return b + c;
     }
-    if (isNaN(p)) {
+    if (!p) {
         p = d * (0.3 * 1.5);
     }
     if (!a || a < Math.abs(c)) {
@@ -17450,7 +17450,7 @@ var elasticOut = function elasticOut(t, b, c, d) {
         return b + c;
     }
 
-    if (isNaN(p)) {
+    if (!p) {
         p = d * 0.3;
     }
     if (!a || a < Math.abs(c)) {
@@ -17744,6 +17744,32 @@ var easings = Object.assign({
 });
 
 /**
+ * The internal MotionNextFrame Receiver.
+ */
+function MotionNextFrame(motion) {
+  this.motion = motion instanceof Motion ? motion : null;
+}
+
+/**
+ * @extends Receiver
+ */
+MotionNextFrame.prototype = Object.create(Receiver.prototype, {
+  /**
+   * The constructor reference of the instance.
+   */
+  constructor: { value: MotionNextFrame },
+
+  /**
+   * Receives the signal message.
+   */
+  receive: { value: function value() {
+      if (this.motion) {
+        this.motion.setTime(this.motion.useSeconds ? (performance.now() - this.motion._startTime) / 1000 : this.motion._time + 1);
+      }
+    } }
+});
+
+/**
  * A simple Transition object.
  */
 function Transition() {
@@ -17834,6 +17860,11 @@ function Motion() {
          * @private
          */
         _fps: { writable: true, value: 24 },
+
+        /**
+         * @private
+         */
+        _nextFrame: { value: new MotionNextFrame(this) },
 
         /**
          * @private
@@ -17958,8 +17989,6 @@ Motion.prototype = Object.create(Transition.prototype, {
      * Forwards the tweened animation to the next frame.
      */
     nextFrame: { value: function value() {
-            console.log('nextFrame' + this);
-
             this.setTime(this.useSeconds ? (performance.now() - this._startTime) / 1000 : this._time + 1);
         } },
 
@@ -18085,7 +18114,7 @@ Motion.prototype = Object.create(Transition.prototype, {
                     if (this._timer._running) {
                         this._timer.stop();
                     }
-                    this._timer.progressIt.disconnect(this.nextFrame);
+                    this._timer.progressIt.disconnect(this._nextFrame);
                 }
                 this._timer = null;
             }
@@ -18093,7 +18122,7 @@ Motion.prototype = Object.create(Transition.prototype, {
             this._timer = _value instanceof Task ? _value : new Timer();
 
             if (this._timer) {
-                this._timer.progressIt.connect(this.nextFrame);
+                this._timer.progressIt.connect(this._nextFrame);
             }
         } }
 });
@@ -18106,8 +18135,9 @@ function TweenUnit() {
     var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var useSeconds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var auto = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var id = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
-    Motion.call(this);
+    Motion.call(this, id);
 
     Object.defineProperties(this, {
         /**

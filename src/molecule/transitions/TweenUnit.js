@@ -6,9 +6,9 @@ import { Motion } from './Motion.js' ;
 /**
  * The TweenUnit class interpolate in time a value between 0 and 1.
  */
-export function TweenUnit( easing = null , duration = 0 , useSeconds = false , auto = false )
+export function TweenUnit( easing = null , duration = 0 , useSeconds = false , auto = false , id = null )
 {
-    Motion.call( this ) ;
+    Motion.call( this , id ) ;
 
     Object.defineProperties( this ,
     {

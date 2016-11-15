@@ -24,7 +24,7 @@ export var elasticIn = ( t , b , c , d , a = 0 , p = 0 ) =>
         return b+c ;
     }
 
-    if ( isNaN(p) )
+    if ( !(p) )
     {
         p = d * 0.3 ;
     }

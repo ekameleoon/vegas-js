@@ -2,6 +2,7 @@
 
 import { performance } from '../polyfill/performance.js' ;
 
+import { MotionNextFrame as NextFrame }  from './MotionNextFrame.js' ;
 import { Transition }  from './Transition.js' ;
 
 import { Task }  from '../../system/process/Task.js' ;
@@ -30,6 +31,11 @@ export function Motion( id = null )
          * @private
          */
         _fps : { writable : true , value : 24 } ,
+
+        /**
+         * @private
+         */
+        _nextFrame : { value : new NextFrame(this) },
 
         /**
          * @private
@@ -174,8 +180,6 @@ Motion.prototype = Object.create( Transition.prototype ,
      */
     nextFrame : { value : function()
     {
-        console.log( 'nextFrame' + this ) ;
-
         this.setTime( (this.useSeconds) ? ( ( performance.now() - this._startTime ) / 1000 ) : ( this._time + 1 ) ) ;
     }},
 
@@ -327,7 +331,7 @@ Motion.prototype = Object.create( Transition.prototype ,
                 {
                     this._timer.stop();
                 }
-                this._timer.progressIt.disconnect( this.nextFrame ) ;
+                this._timer.progressIt.disconnect( this._nextFrame ) ;
             }
             this._timer = null ;
         }
@@ -336,7 +340,7 @@ Motion.prototype = Object.create( Transition.prototype ,
 
         if( this._timer )
         {
-            this._timer.progressIt.connect( this.nextFrame ) ;
+            this._timer.progressIt.connect( this._nextFrame ) ;
         }
     }}
 });
