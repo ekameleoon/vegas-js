@@ -49,6 +49,8 @@ window.onload = function()
     //tween.fps = 24  ; // use the system.process.Timer class
     tween.fps = NaN ; // Use the system.process.FrameTimer
 
+    //tween.looping = true ;
+
     tween.finishIt.connect( finish ) ;
     tween.changeIt.connect( change ) ;
     tween.startIt.connect( start ) ;
