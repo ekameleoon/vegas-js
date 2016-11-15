@@ -226,7 +226,7 @@ Motion.prototype = Object.create( Transition.prototype ,
     /**
      * Runs the object.
      */
-    run : { value : function()
+    run : { writable : true , value : function()
     {
         this._stopped = false ;
         this.notifyStarted() ;

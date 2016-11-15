@@ -96,7 +96,7 @@ TweenUnit.prototype = Object.create( Motion.prototype ,
         }
         else
         {
-            this.position = 0 ;
+            this.position = null ;
         }
     }}
 });

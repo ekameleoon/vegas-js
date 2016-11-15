@@ -18192,7 +18192,7 @@ Motion.prototype = Object.create(Transition.prototype, {
     /**
      * Runs the object.
      */
-    run: { value: function value() {
+    run: { writable: true, value: function value() {
             this._stopped = false;
             this.notifyStarted();
             this.rewind();
@@ -18273,7 +18273,7 @@ Motion.prototype = Object.create(Transition.prototype, {
     /**
      * Sets the internal timer of the tweened animation.
      */
-    setTimer: { writable: true, value: function value(_value) {
+    setTimer: { value: function value(_value) {
             if (this._timer) {
                 if (this._timer instanceof Task) {
                     if (this._timer._running) {
@@ -18381,8 +18381,202 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
                 this.position = this._easing(this._time, 0, this._change, this._duration);
                 this.notifyChanged();
             } else {
-                this.position = 0;
+                this.position = null;
             }
+        } }
+});
+
+/**
+ * The Tween class interpolate in time a value between 0 and 1.
+ */
+function Tween(init) {
+    TweenUnit.call(this);
+    this.position = null;
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _begin: { writable: true, value: null },
+
+        /**
+         * @private
+         */
+        _changed: { writable: true, value: false },
+
+        /**
+         * @private
+         */
+        _easings: { writable: true, value: null },
+
+        /**
+         * @private
+         */
+        _from: { writable: true, value: null },
+
+        /**
+         * @private
+         */
+        _target: { writable: true, value: null },
+
+        /**
+         * @private
+         */
+        _to: { writable: true, value: null }
+    });
+
+    if (init) {
+        for (var prop in init) {
+            if (prop in this) {
+                this[prop] = init[prop];
+            }
+        }
+        if ('auto' in init && init.auto === true) {
+            this.run();
+        }
+    }
+}
+
+/**
+ * @extends TweenUnit
+ */
+Tween.prototype = Object.create(TweenUnit.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: TweenUnit, writable: true },
+
+    /**
+     * Determinates the generic object with all custom easing functions to interpolate the transition of the specific component in time.
+     * If this object is null, the default numeric attributes of the target are used.
+     */
+    easings: {
+        get: function get() {
+            return this._easings;
+        },
+        set: function set(value) {
+            this._easings = value;
+        }
+    },
+
+    /**
+     * Determinates the generic object with all numeric attributes to start the transition.
+     * If this object is null, the default numeric attributes of the target are used.
+     */
+    from: {
+        get: function get() {
+            return this._from;
+        },
+        set: function set(value) {
+            this._from = value;
+            this._changed = true;
+        }
+    },
+
+    /**
+     * Indicates the target reference of the object contrains by the Motion effect.
+     */
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+            this._changed = true;
+        }
+    },
+
+    /**
+     * Determinates the generic object with all properties to change inside.
+     */
+    to: {
+        get: function get() {
+            return this._to;
+        },
+        set: function set(value) {
+            this._to = value;
+            this._changed = true;
+        }
+    },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Tween({
+                duration: this.duration,
+                easing: this.easing,
+                easings: this.easings,
+                from: this.from,
+                target: this.target,
+                to: this.to,
+                useSeconds: this.useSeconds
+            });
+        } },
+
+    /**
+     * Notify when the process is finished.
+     */
+    notifyFinished: { value: function value() {
+            this._changed = true;
+            this._running = false;
+            this._phase = TaskPhase.FINISHED;
+            this.finishIt.emit(this);
+            this._phase = TaskPhase.INACTIVE;
+        } },
+
+    /**
+     * Runs the object.
+     */
+    run: { writable: true, value: function value() {
+            var to = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+            if (to) {
+                this.to = to;
+            }
+            this._changed = true;
+            this._stopped = false;
+            this.position = null;
+            this.notifyStarted();
+            this.rewind();
+            this.startInterval();
+        } },
+
+    /**
+      * Update the current object.
+      */
+    update: { writable: true, value: function value() {
+            if (this._changed) {
+                this._changed = false;
+                if (!this._target) {
+                    throw new Error(this + " update failed, the 'target' property not must be null.");
+                }
+                if (!this._to) {
+                    throw new Error(this + " update failed, the 'to' property not must be null.");
+                }
+                if (this._from) {
+                    this._begin = this._from;
+                } else {
+                    this._begin = {};
+
+                    for (var prop in this._to) {
+                        if (this._target.hasOwnProperty(prop)) {
+                            this._begin[prop] = this._target[prop];
+                        }
+                    }
+                }
+            }
+
+            this.position = {};
+
+            for (var _prop in this._to) {
+                if (this._target.hasOwnProperty(_prop)) {
+                    var e = this._easings && _prop in this._easings && this.easings[_prop] instanceof Function ? this.easings[_prop] : this._easing;
+                    this._target[_prop] = this.position[_prop] = e(this._time, this._begin[_prop], this._to[_prop] - this._begin[_prop], this._duration);
+                }
+            }
+
+            this.notifyChanged();
         } }
 });
 
@@ -18394,6 +18588,7 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
 var transitions = Object.assign({
   Motion: Motion,
   Transition: Transition,
+  Tween: Tween,
   TweenUnit: TweenUnit
 });
 

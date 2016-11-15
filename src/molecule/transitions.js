@@ -2,6 +2,7 @@
 
 import { Motion }     from './transitions/Motion.js' ;
 import { Transition } from './transitions/Transition.js' ;
+import { Tween }      from './transitions/Tween.js' ;
 import { TweenUnit }  from './transitions/TweenUnit.js' ;
 
 /**
@@ -13,5 +14,6 @@ export var transitions = Object.assign
 ({
     Motion     : Motion,
     Transition : Transition,
+    Tween      : Tween,
     TweenUnit  : TweenUnit
 }) ;
