@@ -5,7 +5,7 @@ window.onload = function()
 {
     if( !vegas )
     {
-        throw new Error("The VEGAS library is not found.") ;
+        throw new Error( "The VEGAS library is not found." ) ;
     }
 
     // ----- imports
@@ -28,10 +28,10 @@ window.onload = function()
     var finish = function()
     {
         trace( 'finish' ) ;
-        tween.duration = 120 ;
-        tween.from = null ;
-        tween.to   = tween.to === to ? from : to ;
-        tween.run() ;
+        // tween.duration = 120 ;
+        // tween.from = null ;
+        // tween.to   = tween.to === to ? from : to ;
+        // tween.run() ;
     }
 
     var start = function()
@@ -61,7 +61,7 @@ window.onload = function()
     // easings = { x : core.easings.circularOut , y : core.easings.circularIn  } ;
     // easings = { x : core.easings.bounceOut , y : core.easings.bounceIn } ;
 
-    easings = { x : core.easings.backOut , y : core.easings.sineIn   } ;
+    easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
 
     var tween = new Tween
     ({
@@ -81,7 +81,7 @@ window.onload = function()
 
     // tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
 
-    //tween.looping = true ;
+    tween.looping = true ;
 
     tween.finishIt.connect( finish ) ;
     tween.changeIt.connect( change ) ;
@@ -100,7 +100,7 @@ window.onload = function()
         context.fillRect(0, 0, width, height );
 
         context.beginPath();
-        context.arc( target.x , target.y, radius, 0, Math.PI * 2, false);
+        context.arc( target.x, target.y, radius, 0, Math.PI * 2, false );
         context.closePath();
         context.fillStyle = color ;
         context.fill();
