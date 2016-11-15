@@ -6,7 +6,7 @@
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 
-var global ;
+var global = global || null ;
 
 if( !global )
 {

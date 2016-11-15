@@ -72,6 +72,14 @@ if (Function.prototype.name === undefined) {
     });
 }
 
+/**
+ * The VEGAS.js framework - The core.reflect library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
+
+exports.global = exports.global || null;
+
 if (!exports.global) {
     try {
         exports.global = window;
@@ -380,6 +388,79 @@ function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /
         return "<unknown>";
     }
 }
+
+/* jshint -W079 */
+if (!(Date.now && Date.prototype.getTime)) {
+    Date.now = function now() {
+        return new Date().getTime();
+    };
+}
+
+var performance = {};
+
+Object.defineProperty(exports.global, 'performance', { value: performance, configurable: true, writable: true });
+
+performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
+
+if (!(exports.global.performance && exports.global.performance.now)) {
+    (function () {
+        var startTime = Date.now();
+        exports.global.performance.now = function () {
+            return Date.now() - startTime;
+        };
+    })();
+}
+
+/* jshint -W079 */
+var ONE_FRAME_TIME = 16;
+
+var lastTime = Date.now();
+
+var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+var len = vendors.length;
+for (var x = 0; x < len && !exports.global.requestAnimationFrame; ++x) {
+    var p = vendors[x];
+
+    exports.global.requestAnimationFrame = exports.global[p + 'RequestAnimationFrame'];
+    exports.global.cancelAnimationFrame = exports.global[p + 'CancelAnimationFrame'] || exports.global[p + 'CancelRequestAnimationFrame'];
+}
+
+if (!exports.global.requestAnimationFrame) {
+    exports.global.requestAnimationFrame = function (callback) {
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + 'is not a function');
+        }
+
+        var currentTime = Date.now();
+
+        var delay = ONE_FRAME_TIME + lastTime - currentTime;
+
+        if (delay < 0) {
+            delay = 0;
+        }
+
+        lastTime = currentTime;
+
+        return setTimeout(function () {
+            lastTime = Date.now();
+            callback(performance.now());
+        }, delay);
+    };
+}
+
+if (!exports.global.cancelAnimationFrame) {
+    exports.global.cancelAnimationFrame = function (id) {
+        return clearTimeout(id);
+    };
+}
+
+var cancelAnimationFrame = exports.global.cancelAnimationFrame;
+var requestAnimationFrame = exports.global.requestAnimationFrame;
+
+/* jshint -W079 */
+
+/* jshint -W079 */
 
 /**
  * Indicates if the specific object is a Boolean.
@@ -3622,6 +3703,8 @@ var strings = Object.assign({
 var core = Object.assign({
     global: exports.global,
     dump: dump,
+    cancelAnimationFrame: cancelAnimationFrame,
+    requestAnimationFrame: requestAnimationFrame,
 
     isBoolean: isBoolean,
     isNumber: isNumber,
@@ -17083,78 +17166,6 @@ var system = Object.assign({
     signals: signals
 });
 
-/* jshint -W079 */
-if (!(Date.now && Date.prototype.getTime)) {
-    Date.now = function now() {
-        return new Date().getTime();
-    };
-}
-
-var performance = exports.global.performance = {};
-
-performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
-
-if (!(exports.global.performance && exports.global.performance.now)) {
-    (function () {
-        var startTime = Date.now();
-        exports.global.performance.now = function () {
-            return Date.now() - startTime;
-        };
-    })();
-}
-
-/* jshint -W079 */
-var ONE_FRAME_TIME = 16;
-
-var lastTime = Date.now();
-
-var vendors = ['ms', 'moz', 'webkit', 'o'];
-
-var len = vendors.length;
-for (var x = 0; x < len && !exports.global.requestAnimationFrame; ++x) {
-    var p = vendors[x];
-
-    exports.global.requestAnimationFrame = exports.global[p + 'RequestAnimationFrame'];
-    exports.global.cancelAnimationFrame = exports.global[p + 'CancelAnimationFrame'] || exports.global[p + 'CancelRequestAnimationFrame'];
-}
-
-if (!exports.global.requestAnimationFrame) {
-    exports.global.requestAnimationFrame = function (callback) {
-        if (typeof callback !== 'function') {
-            throw new TypeError(callback + 'is not a function');
-        }
-
-        var currentTime = Date.now();
-
-        var delay = ONE_FRAME_TIME + lastTime - currentTime;
-
-        if (delay < 0) {
-            delay = 0;
-        }
-
-        lastTime = currentTime;
-
-        return setTimeout(function () {
-            lastTime = Date.now();
-            callback(performance.now());
-        }, delay);
-    };
-}
-
-if (!exports.global.cancelAnimationFrame) {
-    exports.global.cancelAnimationFrame = function (id) {
-        return clearTimeout(id);
-    };
-}
-
-/* jshint -W079 */
-
-/* jshint -W079 */
-var cancelAnimationFrame = exports.global.cancelAnimationFrame;
-
-/* jshint -W079 */
-var requestAnimationFrame = exports.global.requestAnimationFrame;
-
 /**
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
  * @param t Specifies the current time, between 0 and duration inclusive.
@@ -18238,9 +18249,6 @@ var transitions = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var molecule = Object.assign({
-  cancelAnimationFrame: cancelAnimationFrame,
-  requestAnimationFrame: requestAnimationFrame,
-
   easings: easings,
   transitions: transitions
 });

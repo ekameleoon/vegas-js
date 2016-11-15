@@ -16,7 +16,7 @@ window.onload = function()
     var system   = vegas.system ; // jshint ignore:line
     var molecule = vegas.molecule ; // jshint ignore:line
 
-    var TweenUnit   = molecule.transitions.TweenUnit ;
+    var TweenUnit = molecule.transitions.TweenUnit ;
 
     // ----- behaviors
 

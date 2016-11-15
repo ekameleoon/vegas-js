@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { performance } from '../polyfill/performance.js' ;
+import { performance } from '../../polyfill/performance.js' ;
 
 import { MotionNextFrame as NextFrame }  from './MotionNextFrame.js' ;
 import { Transition }  from './Transition.js' ;

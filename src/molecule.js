@@ -1,10 +1,6 @@
 "use strict" ;
 
 import './polyfill.js' ;
-import './molecule/polyfill/index.js' ;
-
-import { cancelAnimationFrame }  from './molecule/cancelAnimationFrame.js' ;
-import { requestAnimationFrame } from './molecule/requestAnimationFrame.js' ;
 
 import { easings }     from './molecule/easings.js' ;
 import { transitions } from './molecule/transitions.js' ;
@@ -16,9 +12,6 @@ import { transitions } from './molecule/transitions.js' ;
  */
 export var molecule = Object.assign
 ({
-    cancelAnimationFrame  : cancelAnimationFrame ,
-    requestAnimationFrame : requestAnimationFrame ,
-
     easings     : easings,
     transitions : transitions
 }) ;

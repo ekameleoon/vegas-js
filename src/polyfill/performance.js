@@ -1,7 +1,7 @@
 /* jshint -W079 */
 "use strict" ;
 
-import { global } from '../../core/global.js' ;
+import { global } from '../core/global.js' ;
 
 if (!(Date.now && Date.prototype.getTime))
 {
@@ -11,7 +11,9 @@ if (!(Date.now && Date.prototype.getTime))
     };
 }
 
-export var performance = global.performance = {} ;
+export var performance = {} ;
+
+Object.defineProperty( global, 'performance', { value : performance , configurable : true , writable : true } ) ;
 
 performance.now = performance.now       ||
                   performance.mozNow    ||
@@ -24,3 +26,4 @@ if ( !(global.performance && global.performance.now) )
     const startTime = Date.now();
     global.performance.now = () => Date.now() - startTime;
 }
+

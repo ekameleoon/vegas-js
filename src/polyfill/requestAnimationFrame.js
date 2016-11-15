@@ -1,7 +1,7 @@
 /* jshint -W079 */
 "use strict" ;
 
-import { global }      from '../../core/global.js' ;
+import { global }      from '../core/global.js' ;
 import { performance } from './performance.js' ;
 
 const ONE_FRAME_TIME = 16;
@@ -51,3 +51,6 @@ if (!global.cancelAnimationFrame)
 {
     global.cancelAnimationFrame = (id) => clearTimeout(id);
 }
+
+export var cancelAnimationFrame  = global.cancelAnimationFrame ;
+export var requestAnimationFrame = global.requestAnimationFrame ;

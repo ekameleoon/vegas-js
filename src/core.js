@@ -5,6 +5,9 @@ import './polyfill.js' ;
 import { dump    } from './core/dump.js' ;
 import { global  } from './core/global.js' ;
 
+import { cancelAnimationFrame  } from './core/cancelAnimationFrame.js' ;
+import { requestAnimationFrame } from './core/requestAnimationFrame.js' ;
+
 import { isBoolean } from './core/isBoolean.js' ;
 import { isNumber  } from './core/isNumber.js' ;
 import { isString  } from './core/isString.js' ;
@@ -27,6 +30,8 @@ export var core = Object.assign
 ({
     global  : global ,
     dump    : dump ,
+    cancelAnimationFrame  : cancelAnimationFrame ,
+    requestAnimationFrame : requestAnimationFrame ,
 
     isBoolean : isBoolean ,
     isNumber  : isNumber ,
