@@ -14,7 +14,7 @@ window.onload = function()
     var core   = vegas.core   ; // jshint ignore:line
     var system = vegas.system ; // jshint ignore:line
 
-    var renderer = new PIXI.CanvasRenderer
+    var renderer = new PIXI.autoDetectRenderer
     (
         800, 600,
         {
@@ -40,33 +40,48 @@ window.onload = function()
     stage.hitArea     = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
     stage.interactive = true ;
 
+    trace( '> click the screen...' ) ;
+
     stage.click = function( event )
     {
         if( event && event.data )
         {
             var global = event.data.global ;
-            tween.stop() ;
-            tween.easings = null ;
-            tween.duration = 60 ;
             tween.to = { x : global.x , y : global.y } ;
             tween.run() ;
         }
     };
 
     PIXI.loader
-        .add( 'bunny'    , './images/bunny.png' )
-        .once('complete' , complete )
+        .add( 'sprite'      , './images/bunny.png' )
+        .add( 'spritesheet' , './images/mc.json')
+        .once('complete'    , complete )
         .load();
 
-    var bunny ;
+    var sprite ;
     var resources ;
     var tween ;
 
     function finish()
     {
-        tween.easings = { x : core.easings.sineOut , y : core.easings.backOut } ;
-        tween.to = { x : 50 , y : 50 } ;
-        tween.run() ;
+        trace( '¬ finish' ) ;
+    }
+
+    function start()
+    {
+        trace( '¬ start' ) ;
+    }
+
+    function createExplosion()
+    {
+        var textures = [] ;
+
+        for ( var i = 0; i < 26 ; i++ )
+        {
+            textures.push( PIXI.Texture.fromImage( 'frame' + (i+1) + '.png') );
+        }
+
+        return new PIXI.extras.MovieClip(textures);
     }
 
     function complete( event )
@@ -74,26 +89,34 @@ window.onload = function()
         resources = event.resources ;
         if( resources )
         {
-            bunny = new PIXI.Sprite(resources.bunny.texture);
+            sprite = createExplosion() ;
 
-            bunny.anchor.set(0.5,0.5);
+            sprite.play() ;
 
-            bunny.x = 200;
-            bunny.y = 100;
+            //sprite = new PIXI.Sprite(resources.sprite.texture);
 
-            bunny.scale.set(1.5,1.5);
+            sprite.anchor.set(0.5,0.5);
 
-            stage.addChild(bunny);
+            sprite.x = 200;
+            sprite.y = 100;
+
+            //sprite.scale.set(1.5,1.5);
+
+            stage.addChild(sprite);
 
             tween = new system.transitions.Tween
             ({
-                target   : bunny.position ,
-                duration : 48 ,
+                target   : sprite.position ,
+                duration : 24 ,
                 easing   : core.easings.backOut ,
                 to       : { x : 480 , y : 480 }
             }) ;
 
-            tween.finishIt.connect( finish , 0 , true ) ;
+            tween.easings = { x : core.easings.backOut , y : core.easings.sineIn } ;
+            tween.fps = 60 ;
+
+            tween.startIt.connect( start ) ;
+            tween.finishIt.connect( finish ) ;
 
             tween.run() ;
 
@@ -103,7 +126,7 @@ window.onload = function()
 
     function render()
     {
-        requestAnimationFrame(render);
         renderer.render(stage);
+        requestAnimationFrame(render);
     }
 }
