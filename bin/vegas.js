@@ -18530,7 +18530,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
                     this._begin = {};
 
                     for (var prop in this._to) {
-                        if (this._target.hasOwnProperty(prop)) {
+                        if (prop in this._target) {
                             this._begin[prop] = this._target[prop];
                         }
                     }
@@ -18540,7 +18540,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
             this.position = {};
 
             for (var _prop in this._to) {
-                if (this._target.hasOwnProperty(_prop)) {
+                if (_prop in this._target) {
                     var e = this._easings && _prop in this._easings && this.easings[_prop] instanceof Function ? this.easings[_prop] : this._easing;
                     this._target[_prop] = this.position[_prop] = e(this._time, this._begin[_prop], this._to[_prop] - this._begin[_prop], this._duration);
                 }

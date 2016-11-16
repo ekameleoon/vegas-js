@@ -207,7 +207,7 @@ Tween.prototype = Object.create( TweenUnit.prototype ,
 
                 for( let prop in this._to )
                 {
-                    if( this._target.hasOwnProperty(prop) )
+                    if( prop in this._target )
                     {
                         this._begin[prop] = this._target[prop] ;
                     }
@@ -219,7 +219,7 @@ Tween.prototype = Object.create( TweenUnit.prototype ,
 
         for ( let prop in this._to )
         {
-            if( this._target.hasOwnProperty(prop) )
+            if( prop in this._target )
             {
                 let e = (this._easings && (prop in this._easings) && this.easings[prop] instanceof Function) ? this.easings[prop] : this._easing ;
                 this._target[prop] = this.position[prop] = e( this._time, this._begin[prop] , this._to[prop] - this._begin[prop] , this._duration ) ;
