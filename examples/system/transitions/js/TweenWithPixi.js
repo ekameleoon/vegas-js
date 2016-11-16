@@ -90,7 +90,6 @@ window.onload = function()
         if( resources )
         {
             sprite = createExplosion() ;
-
             sprite.play() ;
 
             //sprite = new PIXI.Sprite(resources.sprite.texture);
@@ -112,7 +111,7 @@ window.onload = function()
                 to       : { x : 480 , y : 480 }
             }) ;
 
-            tween.easings = { x : core.easings.backOut , y : core.easings.sineIn } ;
+            tween.easings = { x : core.easings.elasticOut , y : core.easings.backOut } ;
             tween.fps = 60 ;
 
             tween.startIt.connect( start ) ;
