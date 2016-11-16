@@ -7,10 +7,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 Nothing
 
-## [1.0.5] - 2016-11-16
+## [1.0.6] - 2016-11-16
 ### Added
 * Adds the vegas.sayHello and vegas.skipHello methods
 * Adds the vegas.sayHello prompt
+* Adds the new basic example to illustrate the skyHello method usage.
+
+### Changed
+* Changes the gulp versioning based on the package.json file
+
+### Removed
+* Removes the htdocs/ folder, use now the examples/ folder only
+
+
+## [1.0.5] - 2016-11-15
+### Added
 * Adds the core.easings package with all the easing functions.
 * Adds the system.transitions package.
 * Adds the system.transitions.TweenUnit class and example.
@@ -19,10 +30,6 @@ Nothing
 
 ### Changed
 * Changes the gulp tasks
-* Changes the gulp versioning based on the package.json file
-
-### Removed
-* Removes the htdocs/ folder, use now the examples/ folder only
 
 ## [1.0.0] - 2016-08-31
 ### Added
