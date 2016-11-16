@@ -18622,7 +18622,7 @@ function sayHello() {
 
             window.console.log.apply(console, args);
         } else if (window.console) {
-            window.console.log('VEGAS JS 1.0.5 - https://bitbucket.org/ekameleon/vegas-js');
+            window.console.log(library + ' ' + version + ' - ' + link);
         }
     } catch (error) {
         // do nothing
