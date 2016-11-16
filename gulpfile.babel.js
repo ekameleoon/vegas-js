@@ -1,21 +1,25 @@
 /* jshint node: true */
 "use strict" ;
 
-import babel  from 'rollup-plugin-babel' ;
-import gulp   from 'gulp' ;
-import mocha  from 'gulp-mocha' ;
-import pump   from 'pump' ;
-import rename from 'gulp-rename' ;
-import rollup from 'gulp-rollup' ;
-import uglify from 'gulp-uglify' ;
-import util   from 'gulp-util' ;
+import config from './package.json' ;
+
+import babel   from 'rollup-plugin-babel' ;
+import gulp    from 'gulp' ;
+import mocha   from 'gulp-mocha' ;
+import pump    from 'pump' ;
+import rename  from 'gulp-rename' ;
+import rollup  from 'gulp-rollup' ;
+import uglify  from 'gulp-uglify' ;
+import util    from 'gulp-util' ;
 
 import includePaths from 'rollup-plugin-includepaths';
+import replace      from 'rollup-plugin-replace';
 
 // ---------
 
 var name     = 'vegas' ;
-var version  = '1.0.0' ;
+var version  = config.version ;
+
 var sources  = './src/**/*.js' ;
 var entry    = './src/index.js' ;
 var output   = './bin' ;
@@ -24,23 +28,6 @@ var watching = false ;
 
 var colors = util.colors ;
 var log    = util.log ;
-
-let globals =
-{
-    chai   : 'chai',
-    core   : 'core',
-    jsdom  : 'jsdom' ,
-    system : 'system',
-    global : 'global' ,
-    trace  : 'trace'
-};
-
-let includePathOptions =
-{
-    include    : {},
-    external   : [ 'chai' ],
-    extensions : [ '.js' ]
-};
 
 // ---------
 
@@ -59,9 +46,23 @@ var compile = ( done ) =>
                 format     : 'umd' ,
                 sourceMap  : false ,
                 useStrict  : true ,
-                globals    : globals,
+                globals    :
+                {
+                    core      : 'core',
+                    system    : 'system',
+                    global    : 'global' ,
+                    sayHello  : 'sayHello' ,
+                    skipHello : 'skipHello' ,
+                    trace     : 'trace',
+                    version   : 'version'
+                },
                 plugins :
                 [
+                    replace
+                    ({
+                        delimiters : [ '<@' , '@>' ] ,
+                        values     : { VERSION : version }
+                    }),
                     babel
                     ({
                         babelrc : false,
@@ -109,10 +110,28 @@ var unittest = ( done ) =>
             format     : 'umd' ,
             sourceMap  : 'inline' ,
             useStrict  : true ,
-            globals    : globals,
+            globals    :
+            {
+                chai    : 'chai',
+                core    : 'core',
+                system  : 'system',
+                global  : 'global',
+                trace   : 'trace',
+                version : 'version'
+            },
             plugins    :
             [
-                includePaths( includePathOptions ) ,
+                replace
+                ({
+                    delimiters : [ '<@' , '@>' ] ,
+                    values     : { VERSION : version }
+                }),
+                includePaths
+                ({
+                    include    : {},
+                    external   : [ 'chai' ],
+                    extensions : [ '.js' ]
+                }) ,
                 babel
                 ({
                     babelrc : false,
