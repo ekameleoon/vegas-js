@@ -2,9 +2,10 @@
 
 import './polyfill.js' ;
 
-import { Align }   from './graphics/Align.js' ;
-import { ArcType } from './graphics/ArcType.js' ;
-import { Border }  from './graphics/Border.js' ;
+import { Align }              from './graphics/Align.js' ;
+import { ArcType }            from './graphics/ArcType.js' ;
+import { Border }             from './graphics/Border.js' ;
+import { CardinalDirection }  from './graphics/CardinalDirection.js' ;
 
 /**
  * The VEGAS.js framework - The graphics library.
@@ -13,7 +14,8 @@ import { Border }  from './graphics/Border.js' ;
  */
 export var graphics = Object.assign
 ({
-    Align   : Align ,
-    ArcType : ArcType ,
-    Border  : Border
+    Align              : Align ,
+    ArcType            : ArcType ,
+    Border             : Border ,
+    CardinalDirection  : CardinalDirection
 }) ;

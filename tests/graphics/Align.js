@@ -9,7 +9,7 @@ const assert = chai.assert ;
 
 describe( 'graphics.Align' , () =>
 {
-    describe( '#CONSTANTS' , () =>
+    describe( '#constants' , () =>
     {
         it('Align.NONE === 0', () =>
         {

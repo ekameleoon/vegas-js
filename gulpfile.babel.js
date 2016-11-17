@@ -38,8 +38,8 @@ var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
  * If not null, trigger mocha to only run tests matching the given pattern which
  * is internally compiled to a RegExp.
  */
-//var match = null ; // ex: 'graphics.Align' to test only this object
-var match = 'graphics.Border' ;
+//var match = null ; // ex: 'graphics' to test the package or 'graphics.Align' to test only this object
+var match = 'graphics.CardinalDirection' ;
 
 // --------- Actions
 
