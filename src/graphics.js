@@ -4,6 +4,7 @@ import './polyfill.js' ;
 
 import { Align }   from './graphics/Align.js' ;
 import { ArcType } from './graphics/ArcType.js' ;
+import { Border }  from './graphics/Border.js' ;
 
 /**
  * The VEGAS.js framework - The graphics library.
@@ -12,8 +13,7 @@ import { ArcType } from './graphics/ArcType.js' ;
  */
 export var graphics = Object.assign
 ({
-    // main
-
     Align   : Align ,
-    ArcType : ArcType
+    ArcType : ArcType ,
+    Border  : Border
 }) ;
