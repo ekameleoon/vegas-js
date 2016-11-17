@@ -13,10 +13,12 @@ import rename  from 'gulp-rename' ;
 import rollup  from 'gulp-rollup' ;
 import uglify  from 'gulp-uglify' ;
 import util    from 'gulp-util' ;
+import yargs   from 'yargs' ;
 
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
 
+var argv   = yargs.argv ;
 var colors = util.colors ;
 var log    = util.log ;
 
@@ -38,8 +40,12 @@ var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
  * If not null, trigger mocha to only run tests matching the given pattern which
  * is internally compiled to a RegExp.
  */
-//var match = null ; // ex: 'graphics' to test the package or 'graphics.Align' to test only this object
-var match = 'graphics.CardinalDirection' ;
+var match = null ; // ex: 'graphics' to test the package or 'graphics.Align' to test only this object
+
+if( argv && argv.match )
+{
+    match = argv.match ;
+}
 
 // --------- Actions
 
