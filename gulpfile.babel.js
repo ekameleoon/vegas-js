@@ -29,6 +29,12 @@ var watching = false ;
 var colors = util.colors ;
 var log    = util.log ;
 
+/**
+ * If not null, trigger mocha to only run tests matching the given pattern which
+ * is internally compiled to a RegExp.
+ */
+var match = null ; // ex: 'graphics.Align' to test only this object
+
 // ---------
 
 var compile = ( done ) =>
@@ -143,7 +149,8 @@ var unittest = ( done ) =>
         }),
         mocha
         ({
-            reporter : reporter
+            reporter : reporter ,
+            grep     : match ? match : null
         })
         .on( 'error' , function( error )
         {

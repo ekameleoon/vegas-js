@@ -5,3 +5,7 @@
 import './version.js' ;
 import './core.js' ;
 import './system.js' ;
+
+import './graphics.js' ;
+
+//import './graphics/Align.js' ;
