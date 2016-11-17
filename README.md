@@ -63,6 +63,30 @@ or watch your modifications with :
 gulp test
 ```
 
+**Note** : You can use the two options **--match** and **--reporter** in the unit tests gulp task.
+
+The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'. By default the 'spec' value is defined. 
+
+```
+#!shell
+gulp ut --reporter nyan
+```
+![nyan.png](https://bitbucket.org/repo/E9RjA6/images/3930502565-nyan.png)
+
+The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples : 
+
+```
+#!shell
+gulp ut --match graphics
+```
+Run all the graphics package unit tests.
+
+```
+#!shell
+gulp ut --match graphics.CardinalDimension
+```
+Run only the graphics.CardinalDimension unit tests.
+
 ### About ###
 
  * Author : Marc ALCARAZ (aka eKameleon)
