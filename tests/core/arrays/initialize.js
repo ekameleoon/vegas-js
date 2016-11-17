@@ -6,7 +6,7 @@ import { initialize } from '../../../src/core/arrays/initialize.js' ;
 
 var assert = chai.assert ;
 
-describe( 'core/arrays/initialize.js' , () =>
+describe( 'core.arrays.initialize' , () =>
 {
     it('initialize() === []', () =>
     {

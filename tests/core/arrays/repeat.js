@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/arrays/repeat.js' , () =>
+describe( 'core.arrays.repeat' , () =>
 {
     it('repeat([1,2,3],NaN) === [1,2,3]', () =>
     {

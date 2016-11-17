@@ -34,8 +34,6 @@ var watching = false ;
 
 // --------- Unit tests
 
-var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
-
 /**
  * If not null, trigger mocha to only run tests matching the given pattern which
  * is internally compiled to a RegExp.
@@ -45,6 +43,17 @@ var match = null ; // ex: 'graphics' to test the package or 'graphics.Align' to 
 if( argv && argv.match )
 {
     match = argv.match ;
+}
+
+/**
+ * The reporters name of the unit tests : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'
+ */
+var reporters = ['spec', 'dot', 'landing', 'dot', 'nyan', 'list'] ;
+var reporter  = 'spec' ;
+
+if( argv && argv.reporter && reporters.indexOf(argv.reporter) > -1 )
+{
+    reporter = argv.reporter ;
 }
 
 // --------- Actions

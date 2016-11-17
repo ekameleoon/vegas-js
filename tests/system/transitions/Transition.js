@@ -7,7 +7,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'system/transitions/Transition.js' , () =>
+describe( 'system.transitions.Transition' , () =>
 {
     var t0 = new Transition() ;
     var t1 = new Transition(1) ;

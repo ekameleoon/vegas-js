@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/arrays/pierce.js' , () =>
+describe( 'core.arrays.pierce' , () =>
 {
     var ar = [0,1,2,3,4,5] ;
 

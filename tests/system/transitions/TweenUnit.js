@@ -8,7 +8,7 @@ import chai  from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'system/transitions/TweenUnit.js' , () =>
+describe( 'system.transitions.TweenUnit' , () =>
 {
     var tween = new TweenUnit() ;
 

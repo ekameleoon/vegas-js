@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/arrays/contains.js' , () =>
+describe( 'core.arrays.contains' , () =>
 {
     it('contains([1,2,3],1) === true', () =>
     {

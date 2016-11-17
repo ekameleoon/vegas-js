@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/easings/linear.js' , () =>
+describe( 'core.easings.linear' , () =>
 {
     var b = 0 ,
         c = 1 ,

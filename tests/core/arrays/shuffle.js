@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/arrays/shuffle.js' , () =>
+describe( 'core.arrays.shuffle' , () =>
 {
     let ar = [0,1,2,3,4,5,6,7,8,9] ;
 

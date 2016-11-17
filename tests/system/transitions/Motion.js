@@ -7,7 +7,7 @@ import { Transition } from '../../../src/system/transitions/Transition.js' ;
 import chai  from 'chai' ;
 const assert = chai.assert ;
 
-describe( 'system/transitions/Motion.js' , () =>
+describe( 'system.transitions.Motion' , () =>
 {
     var m = new Motion() ;
 

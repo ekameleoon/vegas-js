@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/global.js' , () =>
+describe( 'core.global' , () =>
 {
     it('global !== null', () =>
     {

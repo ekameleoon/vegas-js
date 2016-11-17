@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core/arrays/rotate.js' , () =>
+describe( 'core.arrays.rotate' , () =>
 {
     it('rotate("hello",1) === null', () =>
     {

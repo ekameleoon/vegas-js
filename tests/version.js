@@ -6,7 +6,7 @@ import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'version.js' , () =>
+describe( 'version' , () =>
 {
     it('version', () =>
     {
