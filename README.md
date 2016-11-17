@@ -43,9 +43,20 @@ npm install vegas-js --save-dev
 bower install vegas-js
 ```
 
+#### Tutorials ####
+
+* [The system.transitions package](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions)
+
 #### Unit tests ####
 
 We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
+
+```
+#!shell
+gulp ut
+```
+
+or watch your modifications with :
 
 ```
 #!shell
