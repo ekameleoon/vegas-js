@@ -1,6 +1,8 @@
 /* jshint node: true */
 "use strict" ;
 
+// --------- Imports
+
 import config from './package.json' ;
 
 import babel   from 'rollup-plugin-babel' ;
@@ -15,7 +17,10 @@ import util    from 'gulp-util' ;
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
 
-// ---------
+var colors = util.colors ;
+var log    = util.log ;
+
+// --------- Initialize
 
 var name     = 'vegas' ;
 var version  = config.version ;
@@ -23,11 +28,11 @@ var version  = config.version ;
 var sources  = './src/**/*.js' ;
 var entry    = './src/index.js' ;
 var output   = './bin' ;
-var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
 var watching = false ;
 
-var colors = util.colors ;
-var log    = util.log ;
+// --------- Unit tests
+
+var reporter = 'spec' ; // spec, dot, landing, dot, nyan, list
 
 /**
  * If not null, trigger mocha to only run tests matching the given pattern which
@@ -36,7 +41,7 @@ var log    = util.log ;
 var match = null ; // ex: 'graphics.Align' to test only this object
 //var match = 'graphics.Align' ;
 
-// ---------
+// --------- Actions
 
 var compile = ( done ) =>
 {
@@ -179,11 +184,9 @@ var watch = () =>
     );
 }
 
-// ------------ TASKS
+// --------- Tasks
 
 gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
 gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
 gulp.task( 'ut'      , gulp.series( unittest ) ) ;
 gulp.task( 'watch'   , watch ) ;
-
-// ------------

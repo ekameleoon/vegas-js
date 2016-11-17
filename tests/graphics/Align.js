@@ -9,15 +9,6 @@ const assert = chai.assert ;
 
 describe( 'graphics.Align' , () =>
 {
-    // --------------------------------
-
-    it( 'Align exist', () =>
-    {
-        assert.notStrictEqual( Align , null );
-    });
-
-    // --------------------------------
-
     describe( '#CONSTANTS' , () =>
     {
         it('Align.NONE === 0', () =>

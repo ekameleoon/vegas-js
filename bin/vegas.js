@@ -18751,6 +18751,7 @@ var Align = Object.defineProperties({}, {
             if (str === null || !(str instanceof String || typeof str === 'string')) {
                 return none;
             }
+            str = str.toLowerCase();
             return str in Align.stringToNumber ? Align.stringToNumber[str] : none;
         } },
 
@@ -18808,16 +18809,17 @@ var Align = Object.defineProperties({}, {
      * @return <code class="prettyprint">true</code> if the specified Align value in argument is a valid Align value else returns <code class="prettyprint">false</code>.
      */
     validate: { value: function value(_value) {
-            var a = [Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.CENTER, Align.CENTER_LEFT, Align.CENTER_RIGHT, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT, Align.LEFT, Align.RIGHT];
-            return a.indexOf(_value) > -1;
+            return Align.alignments.indexOf(_value) > -1;
         } }
 });
 
+Object.defineProperty(Align, 'alignments', { value: [Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.CENTER, Align.CENTER_LEFT, Align.CENTER_RIGHT, Align.LEFT, Align.LEFT_BOTTOM, Align.LEFT_TOP, Align.RIGHT, Align.RIGHT_BOTTOM, Align.RIGHT_TOP, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT, Align.NONE] });
+
 Object.defineProperty(Align, 'stringToNumber', { value: {
-        "c": Align.CENTER,
         "b": Align.BOTTOM,
         "bl": Align.BOTTOM_LEFT,
         "br": Align.BOTTOM_RIGHT,
+        "c": Align.CENTER,
         "cl": Align.CENTER_LEFT,
         "cr": Align.CENTER_RIGHT,
         "l": Align.LEFT,
@@ -18832,6 +18834,28 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
         "tr": Align.TOP_RIGHT
     } });
 
+/*jshint bitwise: false*/
+/**
+ * This static singleton to enumerates all types used to draw an Arc.
+ */
+
+var ArcType = Object.defineProperties({}, {
+  /**
+   * The 'chord' type.
+   */
+  CHORD: { enumerable: true, value: 'chord' },
+
+  /**
+   * The 'none' type.
+   */
+  NONE: { enumerable: true, value: 'none' },
+
+  /**
+   * The 'pie' type.
+   */
+  PIE: { enumerable: true, value: 'pie' }
+});
+
 /**
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
@@ -18840,7 +18864,8 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
 var graphics = Object.assign({
   // main
 
-  Align: Align
+  Align: Align,
+  ArcType: ArcType
 });
 
 exports.trace = trace;
