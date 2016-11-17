@@ -74,6 +74,9 @@ Object.defineProperties( Border ,
     TOP : { enumerable : true , value : 8 }
 }) ;
 
+/**
+ * @extends Object
+ */
 Border.prototype = Object.create( Object ,
 {
     /**
