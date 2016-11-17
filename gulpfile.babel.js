@@ -34,6 +34,7 @@ var log    = util.log ;
  * is internally compiled to a RegExp.
  */
 var match = null ; // ex: 'graphics.Align' to test only this object
+//var match = 'graphics.Align' ;
 
 // ---------
 
