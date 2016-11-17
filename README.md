@@ -65,7 +65,7 @@ gulp test
 
 **Note** : You can use the two options **--match** and **--reporter** in the unit tests gulp task.
 
-The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'. By default the 'spec' value is defined. 
+The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'. By default the 'spec' value is used. 
 
 ```
 #!shell
