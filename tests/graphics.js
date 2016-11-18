@@ -6,6 +6,7 @@ import './graphics/Border.js' ;
 import './graphics/CardinalDirection.js' ;
 import './graphics/Corner.js' ;
 import './graphics/Direction.js' ;
+import './graphics/DirectionOrder.js' ;
 
 // import chai from 'chai' ;
 //
@@ -38,5 +39,9 @@ import './graphics/Direction.js' ;
 //     it('graphics.Direction !== null', () =>
 //     {
 //         assert.isNotNull( graphics.Direction );
+//     });
+//     it('graphics.DirectionOrder !== null', () =>
+//     {
+//         assert.isNotNull( graphics.DirectionOrder );
 //     });
 // });

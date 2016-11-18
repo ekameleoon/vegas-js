@@ -8,6 +8,7 @@ import { Border }             from './graphics/Border.js' ;
 import { CardinalDirection }  from './graphics/CardinalDirection.js' ;
 import { Corner }             from './graphics/Corner.js' ;
 import { Direction }          from './graphics/Direction.js' ;
+import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
 
 /**
  * The VEGAS.js framework - The graphics library.
@@ -21,5 +22,6 @@ export var graphics = Object.assign
     Border             : Border ,
     CardinalDirection  : CardinalDirection ,
     Corner             : Corner ,
-    Direction          : Direction
+    Direction          : Direction ,
+    DirectionOrder     : DirectionOrder
 }) ;

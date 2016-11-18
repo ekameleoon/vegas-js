@@ -1,6 +1,4 @@
-/*jshint bitwise: false*/
 "use strict" ;
-
 
 /**
  * Determinates the corner definition.This object is use to set for example the CornerRectanglePen implementation (Bevel, RoundedComplex, etc.)
