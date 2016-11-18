@@ -7,6 +7,7 @@ import { ArcType }            from './graphics/ArcType.js' ;
 import { Border }             from './graphics/Border.js' ;
 import { CardinalDirection }  from './graphics/CardinalDirection.js' ;
 import { Corner }             from './graphics/Corner.js' ;
+import { Direction }          from './graphics/Direction.js' ;
 
 /**
  * The VEGAS.js framework - The graphics library.
@@ -19,5 +20,6 @@ export var graphics = Object.assign
     ArcType            : ArcType ,
     Border             : Border ,
     CardinalDirection  : CardinalDirection ,
-    Corner             : Corner
+    Corner             : Corner ,
+    Direction          : Direction
 }) ;

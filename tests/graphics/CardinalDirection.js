@@ -1,4 +1,3 @@
-/*jshint bitwise: false*/
 "use strict" ;
 
 import { CardinalDirection } from '../../src/graphics/CardinalDirection.js' ;

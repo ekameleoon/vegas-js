@@ -1,4 +1,3 @@
-/*jshint bitwise: false*/
 "use strict" ;
 
 import { Corner } from '../../src/graphics/Corner.js' ;
