@@ -95,7 +95,11 @@ var compile = ( done ) =>
                         babelrc : false,
                         presets : ['es2015-rollup'],
                         exclude : 'node_modules/**' ,
-                        plugins : [ "external-helpers"]
+                        plugins :
+                        [
+                            "external-helpers" ,
+                            "transform-es2015-destructuring"
+                        ]
                     })
                 ]
             }),
@@ -164,7 +168,11 @@ var unittest = ( done ) =>
                     babelrc : false,
                     presets : ['es2015-rollup'],
                     exclude : 'node_modules/**' ,
-                    plugins : [ "external-helpers" ]
+                    plugins :
+                    [
+                        "external-helpers" ,
+                        "transform-es2015-destructuring"
+                    ]
                 })
             ]
         }),

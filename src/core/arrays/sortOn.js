@@ -107,72 +107,51 @@ Array.UNIQUESORT = 4 ;
  * echo(a) ;
  * }
  */
-export function sortOn( ar /*Array*/ , propName , options )
+export function sortOn( ar , propName , options )
 {
-    var sortFunction = function(o1, o2)
+    var sort = function( o1 , o2 )
     {
-        var v1 = (o1[propName] !== undefined) ? o1[propName].valueOf() : "" ;
-        var v2 = (o2[propName] !== undefined) ? o2[propName].valueOf() : "" ;
-
-        function noCase()
-        {
-            if (typeof(v1) === "string" || v1 instanceof String)
-            {
-                v1 = v1.toLowerCase() ;
-            }
-            if (typeof(v2) === "string" || v2 instanceof String)
-            {
-                v2 = v2.toLowerCase() ;
-            }
-        }
-
-        function numeric()
-        {
-            v1 = Number(v1) ;
-            v2 = Number(v2) ;
-            v1 = isNaN(v1) ? 0 : v1 ;
-            v2 = isNaN(v2) ? 0 : v2 ;
-        }
-
-        function reverse()
-        {
-            var tmp = v1 ;
-            v1 = v2 ;
-            v2 = tmp ;
-        }
+        var v1 = (propName in o1) ? o1[propName] : '' ;
+        var v2 = (propName in o2) ? o2[propName] : '' ;
 
         switch( options )
         {
             case Array.CASEINSENSITIVE :
             case Array.CASEINSENSITIVE | Array.RETURNINDEXEDARRAY :
             {
-                noCase() ;
+                v1 = (typeof(v1) === "string" || v1 instanceof String) ? v1.toLowerCase() : v1 ;
+                v2 = (typeof(v2) === "string" || v2 instanceof String) ? v2.toLowerCase() : v2 ;
                 break ;
             }
             case Array.NUMERIC :
             case Array.NUMERIC | Array.RETURNINDEXEDARRAY :
             {
-                numeric() ;
+                v1 = Number(v1) ; v2 = Number(v2) ;
+                v1 = isNaN(v1) ? 0 : v1 ;
+                v2 = isNaN(v2) ? 0 : v2 ;
                 break ;
             }
             case Array.DESCENDING :
             case Array.DESCENDING | Array.RETURNINDEXEDARRAY :
             {
-                reverse() ;
+                [v1,v2] = [v2,v1] ;
                 break ;
             }
             case Array.CASEINSENSITIVE | Array.DESCENDING :
             case Array.CASEINSENSITIVE | Array.DESCENDING | Array.RETURNINDEXEDARRAY :
             {
-                noCase() ;
-                reverse() ;
+                v1 = (typeof(v1) === "string" || v1 instanceof String) ? v1.toLowerCase() : v1 ;
+                v2 = (typeof(v2) === "string" || v2 instanceof String) ? v2.toLowerCase() : v2 ;
+                [v1,v2] = [v2,v1] ;
                 break ;
             }
             case Array.NUMERIC | Array.DESCENDING :
             case Array.NUMERIC | Array.DESCENDING | Array.RETURNINDEXEDARRAY :
             {
-                numeric() ;
-                reverse() ;
+                v1 = Number(v1) ; v2 = Number(v2) ;
+                v1 = isNaN(v1) ? 0 : v1 ;
+                v2 = isNaN(v2) ? 0 : v2 ;
+                [v1,v2] = [v2,v1] ;
                 break ;
             }
             case Array.UNIQUESORT :
@@ -185,7 +164,7 @@ export function sortOn( ar /*Array*/ , propName , options )
             }
         }
 
-        if (v1 < v2)
+        if ( v1 < v2 )
         {
             return -1 ;
         }
@@ -208,7 +187,7 @@ export function sortOn( ar /*Array*/ , propName , options )
         case Array.RETURNINDEXEDARRAY | Array.CASEINSENSITIVE | Array.DESCENDING :
         {
             var tmp = [].concat(ar) ;
-            tmp.sort(sortFunction) ;
+            tmp.sort(sort) ;
             var result = [] ;
             var l = ar.length ;
             for ( var i = 0; i < l; i++ )
@@ -219,7 +198,7 @@ export function sortOn( ar /*Array*/ , propName , options )
         }
         default :
         {
-            return ar.sort(sortFunction) ;
+            return ar.sort(sort) ;
         }
     }
 }
