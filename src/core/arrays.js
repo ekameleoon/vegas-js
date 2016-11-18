@@ -10,6 +10,7 @@ import { rotate }     from './arrays/rotate.js' ;
 import { shuffle }    from './arrays/shuffle.js' ;
 import { sortOn }     from './arrays/sortOn.js' ;
 import { spliceInto } from './arrays/spliceInto.js' ;
+import { swap }       from './arrays/swap.js' ;
 
 /**
  * The VEGAS.js framework - The core.arrays library.
@@ -25,5 +26,6 @@ export var arrays = Object.assign
     rotate : rotate ,
     shuffle : shuffle ,
     sortOn : sortOn ,
-    spliceInto : spliceInto
+    spliceInto : spliceInto,
+    swap : swap
 }) ;

@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing
+### Added
+* Adds the --match and --reporter arguments in the 'gulp test' and 'gulp ut' tasks.
+* Adds the core.arrays.swap function.
+* Adds an example of the Tween class with the Pixi library.
+* Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
+
+### Changed
+* Updates the core.arrays.sortOn method.
+* Refactoring of the polyfill files.
+
+### Fixed
+* Fix the performance.now() method.
 
 ## [1.0.6] - 2016-11-16
 ### Added
@@ -18,7 +29,6 @@ Nothing
 
 ### Removed
 * Removes the htdocs/ folder, use now the examples/ folder only
-
 
 ## [1.0.5] - 2016-11-15
 ### Added

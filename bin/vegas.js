@@ -911,11 +911,13 @@ function sortOn(ar, propName, options) {
             {
                 var tmp = [].concat(ar);
                 tmp.sort(sort);
+
                 var result = [];
                 var l = ar.length;
                 for (var i = 0; i < l; i++) {
                     result.push(tmp.indexOf(ar[i]));
                 }
+
                 return result;
             }
         default:
@@ -978,6 +980,41 @@ function spliceInto(inserted /*Array*/, container /*Array*/, position /*Number*/
 }
 
 /**
+ * Swaps two indexed values in a specific array representation.
+ * @example
+ * <pre>
+ * var ar = [ 1 , 2 , 3 , 4 ] ;
+ *
+ * trace( ar ) ; // 1,2,3,4
+ *
+ * core.arrays.swap( ar , 1 , 3 ) ;
+ *
+ * trace( ar ) ; // 1,4,3,2
+ * </pre>
+ * @param ar The Array of values to change.
+ * @param from The first index position to swap.
+ * @param to The second index position to swap.
+ * @param clone Returns a swaped clone of the passed-in array.
+ */
+
+function swap(ar) {
+    var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var to = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var clone = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+    if (ar instanceof Array) {
+        if (clone) {
+            ar = [].concat(ar);
+        }
+        var value = ar[from];
+        ar[from] = ar[to];
+        ar[to] = value;
+        return ar;
+    }
+    return null;
+}
+
+/**
  * The VEGAS.js framework - The core.arrays library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -990,7 +1027,8 @@ var arrays = Object.assign({
     rotate: rotate,
     shuffle: shuffle,
     sortOn: sortOn,
-    spliceInto: spliceInto
+    spliceInto: spliceInto,
+    swap: swap
 });
 
 /**

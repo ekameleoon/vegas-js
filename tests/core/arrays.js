@@ -6,3 +6,4 @@ import './arrays/pierce.js' ;
 import './arrays/repeat.js' ;
 import './arrays/rotate.js' ;
 import './arrays/shuffle.js' ;
+import './arrays/swap.js' ;
