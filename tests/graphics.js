@@ -7,6 +7,7 @@ import './graphics/CardinalDirection.js' ;
 import './graphics/Corner.js' ;
 import './graphics/Direction.js' ;
 import './graphics/DirectionOrder.js' ;
+import './graphics/Orientation.js' ;
 import './graphics/Position.js' ;
 import './graphics/ZOrder.js' ;
 
@@ -45,6 +46,10 @@ import './graphics/ZOrder.js' ;
 //     it('graphics.DirectionOrder !== null', () =>
 //     {
 //         assert.isNotNull( graphics.DirectionOrder );
+//     });
+//     it('graphics.Orientation !== null', () =>
+//     {
+//         assert.isNotNull( graphics.Orientation );
 //     });
 //     it('graphics.Position !== null', () =>
 //     {

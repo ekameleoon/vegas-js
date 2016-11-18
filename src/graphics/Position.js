@@ -6,7 +6,6 @@
  */
 export var Position = Object.defineProperties( {} ,
 {
-
     /**
      * Constant indicating an "absolute" position. An element with position "absolute" is taken out of the normal flow of the page
      * and positioned at the desired coordinates relative to its containing block.
