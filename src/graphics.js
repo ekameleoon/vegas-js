@@ -9,6 +9,7 @@ import { CardinalDirection }  from './graphics/CardinalDirection.js' ;
 import { Corner }             from './graphics/Corner.js' ;
 import { Direction }          from './graphics/Direction.js' ;
 import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
+import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
 
 /**
@@ -25,5 +26,6 @@ export var graphics = Object.assign
     Corner             : Corner ,
     Direction          : Direction ,
     DirectionOrder     : DirectionOrder,
+    Position           : Position,
     ZOrder             : ZOrder
 }) ;
