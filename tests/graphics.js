@@ -6,6 +6,7 @@ import './graphics/Border.js' ;
 import './graphics/CardinalDirection.js' ;
 import './graphics/Corner.js' ;
 import './graphics/Direction.js' ;
+import './graphics/Directionable.js' ;
 import './graphics/DirectionOrder.js' ;
 import './graphics/Orientation.js' ;
 import './graphics/Position.js' ;
@@ -19,6 +20,11 @@ import './graphics/ZOrder.js' ;
 //
 // describe( 'graphics' , () =>
 // {
+//     it('graphics.isDirectionable !== null', () =>
+//     {
+//         assert.isNotNull( graphics.isDirectionable );
+//     });
+//
 //     it('graphics.Align is not null', () =>
 //     {
 //         assert.isNotNull( graphics.Align );
@@ -40,6 +46,10 @@ import './graphics/ZOrder.js' ;
 //         assert.isNotNull( graphics.Corner );
 //     });
 //     it('graphics.Direction !== null', () =>
+//     {
+//         assert.isNotNull( graphics.Direction );
+//     });
+//     it('graphics.Directionable !== null', () =>
 //     {
 //         assert.isNotNull( graphics.Direction );
 //     });
