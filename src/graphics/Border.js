@@ -27,11 +27,11 @@
  */
 export function Border( side = 30 )
 {
-    /**
-     * The side value, an integer bitwise combination.
-     */
     Object.defineProperties( this ,
     {
+        /**
+         * The side value, an integer bitwise combination.
+         */
         value : { value : side , writable : true }
     }) ;
 }

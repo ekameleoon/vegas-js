@@ -18856,16 +18856,386 @@ var ArcType = Object.defineProperties({}, {
   PIE: { enumerable: true, value: 'pie' }
 });
 
+/*jshint bitwise: false*/
+/**
+ * Enables/Disables the border on the specified sides. The border is specified as an integer bitwise combination of the constants: LEFT, RIGHT, TOP, BOTTOM.
+ * @example
+ * <pre>
+ * var Border = graphics.Border ;
+ *
+ * var border:Border = new Border( Border.NO_BORDER ) ;
+ *
+ * trace( border ) ;
+ * trace( border.hasBorders() ) ;
+ *
+ * border.enableBorderSide( Border.TOP ) ;
+ * trace( border ) ;
+ *
+ * border.enableBorderSide( Border.BOTTOM ) ;
+ * trace( border ) ;
+ *
+ * border.enableBorderSide( Border.LEFT ) ;
+ * trace( border ) ;
+ *
+ * border.enableBorderSide( Border.RIGHT ) ;
+ * trace( border ) ;
+ * </pre>
+ */
+
+function Border() {
+    var side = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 30;
+
+    Object.defineProperties(this, {
+        /**
+         * The side value, an integer bitwise combination.
+         */
+        value: { value: side, writable: true }
+    });
+}
+
+Object.defineProperties(Border, {
+    /**
+     * This represents the value to set all the sides of the Rectangle (30).
+     */
+    ALL: { enumerable: true, value: 30 },
+
+    /**
+     * Defines the NONE value (0).
+     */
+    NONE: { enumerable: true, value: 0 },
+
+    /**
+     * This represents the bottom side of the border of the Rectangle (16).
+     */
+    BOTTOM: { enumerable: true, value: 16 },
+
+    /**
+     * This represents the left side of the border of the Rectangle (2).
+     */
+    LEFT: { enumerable: true, value: 2 },
+
+    /**
+     * This represents a rectangle without borders (0).
+     */
+    NO_BORDER: { enumerable: true, value: 0 },
+
+    /**
+     * This represents the right side of the border of the Rectangle (4).
+     */
+    RIGHT: { enumerable: true, value: 4 },
+
+    /**
+     * This represents the top side of the border of the Rectangle (8).
+     */
+    TOP: { enumerable: true, value: 8 }
+});
+
+/**
+ * @extends Object
+ */
+Border.prototype = Object.create(Object, {
+    /**
+     * Enables the border on the specified side.
+     * @param side  the side to enable. One of LEFT, RIGHT, TOP, BOTTOM.
+     */
+    enableBorderSide: { value: function value(side) {
+            this.toggleBorder(side, true);
+        } },
+
+    /**
+     * Disables the border on the specified side.
+     * @param side the side to disable. One of LEFT, RIGHT, TOP, BOTTOM.
+     */
+    disableBorderSide: { value: function value(side) {
+            this.toggleBorder(side, false);
+        } },
+
+    /**
+     * Indicates whether the specified type of border is set. One of LEFT, RIGHT, TOP, BOTTOM.
+     */
+    hasBorder: { value: function value(type) {
+            return Boolean(type & this.value);
+        } },
+
+    /**
+     * Indicates whether some type of border is set. One of LEFT, RIGHT, TOP, BOTTOM.
+     */
+    hasBorders: { value: function value() {
+            return this.hasBorder(Border.TOP) || this.hasBorder(Border.BOTTOM) || this.hasBorder(Border.LEFT) || this.hasBorder(Border.RIGHT);
+        } },
+
+    /**
+     * Toggle a side in this border object.
+     */
+    toggleBorder: { value: function value(side) {
+            var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+            var old = this.value;
+            this.value = flag ? this.value | side : this.value & ~side;
+            return old !== this.value;
+        } },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return "[Border " + this.value + "]";
+        } },
+
+    /**
+     * Returns the value of the object.
+     * @return the value of the object.
+     */
+    valueOf: { value: function value() {
+            return this.value;
+        } }
+});
+
+/*jshint bitwise: false*/
+/**
+ * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
+ * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
+ */
+
+function CardinalDirection() {
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+    var azimut = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * @private
+         */
+        _value: { value: value, writable: true },
+        _name: { value: name, writable: true },
+        _azimut: { value: azimut, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+CardinalDirection.prototype = Object.create(Object, {
+    /**
+     * Indicates the angular measurement in a spherical coordinate system (in degrees).
+     */
+    azimut: { value: function value() {
+            return this._azimut;
+        } },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return this._name;
+        } },
+
+    /**
+     * Returns the value of the object.
+     * @return the value of the object.
+     */
+    valueOf: { value: function value() {
+            return this._value;
+        } }
+});
+
+Object.defineProperties(CardinalDirection, {
+    /**
+     * This represents the value to set all the sides of the Rectangle (30).
+     */
+    E: { enumerable: true, value: new CardinalDirection(Math.PI / 2, "E", 90) },
+
+    /**
+     * The East-North-East cardinal point "ENE" : Azimut:67.5° Radians:3π/8
+     */
+    ENE: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 8, "ENE", 67.5) },
+
+    /**
+     * The East-South-East cardinal point "ESE" : Azimut:112,5° Radians:5π/8
+     */
+    ESE: { enumerable: true, value: new CardinalDirection(5 * Math.PI / 8, "ESE", 112.5) },
+
+    /**
+     * The North cardinal point "N" : Azimut:0° Radians:0
+     */
+    N: { enumerable: true, value: new CardinalDirection(0, "N", 0) },
+
+    /**
+     * The North-East cardinal point "NE" : Azimut:45° Radians:π/4
+     */
+    NE: { enumerable: true, value: new CardinalDirection(Math.PI / 4, "NE", 45) },
+
+    /**
+     * The North-North-East cardinal point "NNE" : Azimut:22.5° Radians:π/8
+     */
+    NNE: { enumerable: true, value: new CardinalDirection(Math.PI / 8, "NNE", 22.5) },
+
+    /**
+     * The North-North-West cardinal point "NNW" : Azimut:337.5° Radians:15π/8
+     */
+    NNW: { enumerable: true, value: new CardinalDirection(15 * Math.PI / 8, "NNW", 337.5) },
+
+    /**
+     * The North-West cardinal point "NW" : Azimut:315° Radians:7π/4
+     */
+    NW: { enumerable: true, value: new CardinalDirection(7 * Math.PI / 4, "NW", 315) },
+
+    /**
+     * The South cardinal point "S" : Azimut:180° Radians:π
+     */
+    S: { enumerable: true, value: new CardinalDirection(Math.PI, "S", 180) },
+
+    /**
+     * The South-East cardinal point "SE" : Azimut:135° Radians:3π/4
+     */
+    SE: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 4, "SE", 135) },
+
+    /**
+     * The South-South-East cardinal point "SSE" : Azimut:157.5° Radians:7π/8
+     */
+    SSE: { enumerable: true, value: new CardinalDirection(7 * Math.PI / 8, "SSE", 157.5) },
+
+    /**
+     * The South-South-West cardinal point "SSW" : Azimut:202.5° Radians:9π/8
+     */
+    SSW: { enumerable: true, value: new CardinalDirection(9 * Math.PI / 8, "SSW", 202.5) },
+
+    /**
+     * The South-West cardinal point "SW" : Azimut:225° Radians:5π/4
+     */
+    SW: { enumerable: true, value: new CardinalDirection(5 * Math.PI / 4, "SW", 225) },
+
+    /**
+     * The West cardinal point "W" : Azimut:270° Radians:3π/2
+     */
+    W: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 2, "W", 270) },
+
+    /**
+     * The West-North-West cardinal point "WNW" : Azimut:292.5° Radians:13π/8
+     */
+    WNW: { enumerable: true, value: new CardinalDirection(13 * Math.PI / 8, "WNW", 292.5) },
+
+    /**
+     * The West-South-West cardinal point "WSW" : Azimut:247.5° Radians:11π/8
+     */
+    WSW: { enumerable: true, value: new CardinalDirection(11 * Math.PI / 8, "WSW", 247.5) }
+});
+
+Object.defineProperties(CardinalDirection, {
+    /**
+     * The set of all diagonal directions (northeast, southeast, southwest, northwest).
+     */
+    ALL: { enumerable: true, value: [CardinalDirection.N, CardinalDirection.E, CardinalDirection.S, CardinalDirection.W, CardinalDirection.NE, CardinalDirection.SE, CardinalDirection.NW, CardinalDirection.SW, CardinalDirection.NNE, CardinalDirection.NNW, CardinalDirection.SSE, CardinalDirection.SSW, CardinalDirection.ENE, CardinalDirection.ESE, CardinalDirection.WNW, CardinalDirection.WSW] },
+
+    /**
+     * The set of all diagonal directions (northeast, southeast, southwest, northwest).
+     */
+    DIAGONALS: { value: [CardinalDirection.NE, CardinalDirection.SE, CardinalDirection.NW, CardinalDirection.SW] },
+
+    /**
+     * The set of all orthogonals directions (north, south, south, north).
+     */
+    ORTHOGONALS: { value: [CardinalDirection.N, CardinalDirection.E, CardinalDirection.S, CardinalDirection.W] },
+
+    /**
+     * Returns true if this is a diagonal direction (northeast, southeast, southwest, northwest).
+     * @return true if this is a diagonal direction.
+     */
+    isDiagonal: { value: function value(direction) {
+            return CardinalDirection.DIAGONALS.indexOf(direction) > -1;
+        } },
+
+    /**
+     * Returns true if this is an orthogonal direction (north, east, south, west).
+     * @return true if this is an orthogonal direction.
+     */
+    isOrthogonal: { value: function value(direction) {
+            return CardinalDirection.ORTHOGONALS.indexOf(direction) > -1;
+        } }
+});
+
+/*jshint bitwise: false*/
+/**
+ * Determinates the corner definition.This object is use to set for example the CornerRectanglePen implementation (Bevel, RoundedComplex, etc.)
+ */
+
+function Corner() {
+    var tl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    var tr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    var br = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    var bl = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+    Object.defineProperties(this, {
+        /**
+         * The bottom left flag value.
+         */
+        bl: { value: bl === true, writable: true, enumerable: true },
+
+        /**
+         * The bottom right flag value.
+         */
+        br: { value: br === true, writable: true, enumerable: true },
+
+        /**
+         * The top left flag value.
+         */
+        tl: { value: tl === true, writable: true, enumerable: true },
+
+        /**
+         * The top right flag value.
+         */
+        tr: { value: tr === true, writable: true, enumerable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Corner.prototype = Object.create(Object, {
+    /**
+     * Creates and returns a shallow copy of the object.
+     * @return A new object that is a shallow copy of this instance.
+     */
+    clone: { value: function value() {
+            return new Corner(this.tl, this.tr, this.br, this.bl);
+        } },
+
+    /**
+     * Compares the specified object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { value: function value(o) {
+            if (o === this) {
+                return true;
+            } else if (o instanceof Corner) {
+                return this.tl === o.tl && o.tr === this.tr && o.bl === this.bl && o.br === this.br;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return "[Corner tl:" + this.tl + " tr:" + this.tr + " br:" + this.br + " bl:" + this.bl + "]";
+        } }
+});
+
 /**
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var graphics = Object.assign({
-  // main
-
-  Align: Align,
-  ArcType: ArcType
+    Align: Align,
+    ArcType: ArcType,
+    Border: Border,
+    CardinalDirection: CardinalDirection,
+    Corner: Corner
 });
 
 exports.trace = trace;
