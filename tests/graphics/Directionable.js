@@ -1,4 +1,3 @@
-/*jshint bitwise: false*/
 "use strict" ;
 
 import { isDirectionable } from '../../src/graphics/Directionable.js' ;

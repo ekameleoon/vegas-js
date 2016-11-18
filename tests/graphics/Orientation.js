@@ -1,4 +1,3 @@
-/*jshint bitwise: false*/
 "use strict" ;
 
 import { Orientation } from '../../src/graphics/Orientation.js' ;
