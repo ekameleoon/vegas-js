@@ -1,7 +1,5 @@
 "use strict" ;
 
-import '../../polyfill.js' ;
-
 /**
  * The error throws when methods that have detected concurrent modification of an object when such modification is not permissible.
  * @param message Optional. Human-readable description of the error.

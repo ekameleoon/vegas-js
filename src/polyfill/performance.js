@@ -11,7 +11,7 @@ if (!(Date.now && Date.prototype.getTime))
     };
 }
 
-export var performance = {} ;
+export var performance = global.performance || {} ;
 
 Object.defineProperty( global, 'performance', { value : performance , configurable : true , writable : true } ) ;
 
@@ -19,11 +19,10 @@ performance.now = performance.now       ||
                   performance.mozNow    ||
                   performance.msNow     ||
                   performance.oNow      ||
-                  performance.webkitNow
+                  performance.webkitNow ;
 
 if ( !(global.performance && global.performance.now) )
 {
     const startTime = Date.now();
-    global.performance.now = () => Date.now() - startTime;
+    global.performance.now = () => Date.now() - startTime ;
 }
-

@@ -1,7 +1,5 @@
 "use strict" ;
 
-import '../../polyfill.js' ;
-
 /**
  * The error throws when an invalid filter is find.
  * @param message Optional. Human-readable description of the error.

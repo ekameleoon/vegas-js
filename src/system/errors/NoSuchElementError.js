@@ -1,7 +1,5 @@
 "use strict" ;
 
-import '../../polyfill.js' ;
-
 /**
  * Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
  * @param message Optional. Human-readable description of the error.

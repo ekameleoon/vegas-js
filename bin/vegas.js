@@ -19,12 +19,31 @@ if (!Function.prototype.bind) {
             fBound = function fBound() {
             return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
         };
+
         if (this.prototype) {
             fNOP.prototype = this.prototype;
         }
+
         fBound.prototype = new fNOP();
 
         return fBound;
+    };
+}
+
+if (Function.prototype.name === undefined) {
+    // Missing in IE9-11.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+    Object.defineProperty(Function.prototype, 'name', {
+        get: function get() {
+            return this.toString().match(/^\s*function\s*(\S*)\s*\(/)[1];
+        }
+    });
+}
+
+if (Math.sign === undefined) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
+    Math.sign = function (x) {
+        return x < 0 ? -1 : x > 0 ? 1 : +x;
     };
 }
 
@@ -55,23 +74,6 @@ if (Object.assign === undefined) {
     })();
 }
 
-if (Math.sign === undefined) {
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
-    Math.sign = function (x) {
-        return x < 0 ? -1 : x > 0 ? 1 : +x;
-    };
-}
-
-if (Function.prototype.name === undefined) {
-    // Missing in IE9-11.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-    Object.defineProperty(Function.prototype, 'name', {
-        get: function get() {
-            return this.toString().match(/^\s*function\s*(\S*)\s*\(/)[1];
-        }
-    });
-}
-
 /**
  * The VEGAS.js framework - The core.reflect library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
@@ -95,6 +97,86 @@ if (!exports.global) {
 if (!exports.global) {
     exports.global = {};
 }
+
+/* jshint -W079 */
+if (!(Date.now && Date.prototype.getTime)) {
+    Date.now = function now() {
+        return new Date().getTime();
+    };
+}
+
+var performance = exports.global.performance || {};
+
+Object.defineProperty(exports.global, 'performance', { value: performance, configurable: true, writable: true });
+
+performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
+
+if (console) {
+    if (performance.now) {
+        console.log(exports.global);
+        console.log("performance exist !!!");
+        console.log(performance.now);
+    } else {
+        console.warn("performance not exist !!!");
+        console.log(performance.now);
+    }
+}
+
+if (!(exports.global.performance && exports.global.performance.now)) {
+    (function () {
+        var startTime = Date.now();
+        exports.global.performance.now = function () {
+            return Date.now() - startTime;
+        };
+    })();
+}
+
+/* jshint -W079 */
+var ONE_FRAME_TIME = 16;
+
+var lastTime = Date.now();
+
+var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+var len = vendors.length;
+for (var x = 0; x < len && !exports.global.requestAnimationFrame; ++x) {
+    var p = vendors[x];
+
+    exports.global.requestAnimationFrame = exports.global[p + 'RequestAnimationFrame'];
+    exports.global.cancelAnimationFrame = exports.global[p + 'CancelAnimationFrame'] || exports.global[p + 'CancelRequestAnimationFrame'];
+}
+
+if (!exports.global.requestAnimationFrame) {
+    exports.global.requestAnimationFrame = function (callback) {
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + 'is not a function');
+        }
+
+        var currentTime = Date.now();
+
+        var delay = ONE_FRAME_TIME + lastTime - currentTime;
+
+        if (delay < 0) {
+            delay = 0;
+        }
+
+        lastTime = currentTime;
+
+        return setTimeout(function () {
+            lastTime = Date.now();
+            callback(performance.now());
+        }, delay);
+    };
+}
+
+if (!exports.global.cancelAnimationFrame) {
+    exports.global.cancelAnimationFrame = function (id) {
+        return clearTimeout(id);
+    };
+}
+
+var cancelAnimationFrame = exports.global.cancelAnimationFrame;
+var requestAnimationFrame = exports.global.requestAnimationFrame;
 
 function trace(context) {
     if (console) {
@@ -438,75 +520,6 @@ function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /
         return "<unknown>";
     }
 }
-
-/* jshint -W079 */
-if (!(Date.now && Date.prototype.getTime)) {
-    Date.now = function now() {
-        return new Date().getTime();
-    };
-}
-
-var performance = {};
-
-Object.defineProperty(exports.global, 'performance', { value: performance, configurable: true, writable: true });
-
-performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
-
-if (!(exports.global.performance && exports.global.performance.now)) {
-    (function () {
-        var startTime = Date.now();
-        exports.global.performance.now = function () {
-            return Date.now() - startTime;
-        };
-    })();
-}
-
-/* jshint -W079 */
-var ONE_FRAME_TIME = 16;
-
-var lastTime = Date.now();
-
-var vendors = ['ms', 'moz', 'webkit', 'o'];
-
-var len = vendors.length;
-for (var x = 0; x < len && !exports.global.requestAnimationFrame; ++x) {
-    var p = vendors[x];
-
-    exports.global.requestAnimationFrame = exports.global[p + 'RequestAnimationFrame'];
-    exports.global.cancelAnimationFrame = exports.global[p + 'CancelAnimationFrame'] || exports.global[p + 'CancelRequestAnimationFrame'];
-}
-
-if (!exports.global.requestAnimationFrame) {
-    exports.global.requestAnimationFrame = function (callback) {
-        if (typeof callback !== 'function') {
-            throw new TypeError(callback + 'is not a function');
-        }
-
-        var currentTime = Date.now();
-
-        var delay = ONE_FRAME_TIME + lastTime - currentTime;
-
-        if (delay < 0) {
-            delay = 0;
-        }
-
-        lastTime = currentTime;
-
-        return setTimeout(function () {
-            lastTime = Date.now();
-            callback(performance.now());
-        }, delay);
-    };
-}
-
-if (!exports.global.cancelAnimationFrame) {
-    exports.global.cancelAnimationFrame = function (id) {
-        return clearTimeout(id);
-    };
-}
-
-var cancelAnimationFrame = exports.global.cancelAnimationFrame;
-var requestAnimationFrame = exports.global.requestAnimationFrame;
 
 /* jshint -W079 */
 
@@ -5490,6 +5503,7 @@ var data = Object.assign({
  * @param fileName Optional. Human-readable description of the error.
  * @param lineNumber Optional. Human-readable description of the error.
  */
+
 function ConcurrencyError(message, fileName, lineNumber) {
   this.name = 'ConcurrencyError';
   this.message = message || 'concurrency error';
@@ -5510,6 +5524,7 @@ ConcurrencyError.prototype.constructor = ConcurrencyError;
  * @param fileName Optional. Human-readable description of the error.
  * @param lineNumber Optional. Human-readable description of the error.
  */
+
 function InvalidChannelError(message, fileName, lineNumber) {
   this.name = 'InvalidChannelError';
   this.message = message || 'invalid channel error';
@@ -5530,6 +5545,7 @@ InvalidChannelError.prototype.constructor = InvalidChannelError;
  * @param fileName Optional. Human-readable description of the error.
  * @param lineNumber Optional. Human-readable description of the error.
  */
+
 function InvalidFilterError(message, fileName, lineNumber) {
   this.name = 'InvalidFilterError';
   this.message = message || 'invalid filter error';
@@ -5577,6 +5593,7 @@ NonUniqueKeyError.prototype.constructor = NonUniqueKeyError;
  * @param fileName Optional. Human-readable description of the error.
  * @param lineNumber Optional. Human-readable description of the error.
  */
+
 function NoSuchElementError(message, fileName, lineNumber) {
   this.name = 'NoSuchElementError';
   this.message = message || 'no such element error';
@@ -18647,6 +18664,46 @@ var system = Object.assign({
     transitions: transitions
 });
 
+/**
+ * Indicates if the specific objet is Directionable.
+ */
+
+function isDirectionable(target) {
+  if (target) {
+    return target instanceof Directionable || 'direction' in target;
+  }
+
+  return false;
+}
+
+/**
+ * This interface defines a graphic object or component with a direction.
+ */
+function Directionable() {
+  this.direction = null;
+}
+
+/**
+ * @extends Object
+ */
+Directionable.prototype = Object.create(Object.prototype);
+Directionable.prototype.constructor = Directionable;
+
+/**
+ * Compares the specified object with this object for equality.
+ * @return true if the the specified object is equal with this object.
+ */
+Directionable.prototype.direction = null;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ */
+Directionable.prototype.toString = function () /*String*/
+{
+  return "[Directionable]";
+};
+
 /*jshint bitwise: false*/
 /**
  * The Align enumeration class provides constant values to align displays or components.
@@ -18834,7 +18891,6 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
         "tr": Align.TOP_RIGHT
     } });
 
-/*jshint bitwise: false*/
 /**
  * This static singleton to enumerates all types used to draw an Arc.
  */
@@ -18992,7 +19048,6 @@ Border.prototype = Object.create(Object, {
         } }
 });
 
-/*jshint bitwise: false*/
 /**
  * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
@@ -19156,7 +19211,6 @@ Object.defineProperties(CardinalDirection, {
         } }
 });
 
-/*jshint bitwise: false*/
 /**
  * Determinates the corner definition.This object is use to set for example the CornerRectanglePen implementation (Bevel, RoundedComplex, etc.)
  */
@@ -19226,16 +19280,254 @@ Corner.prototype = Object.create(Object, {
 });
 
 /**
+ * The most common relative directions are horizontal, vertical, both, left, right, forward, backward, none, up, and down.
+ */
+
+var Direction = Object.defineProperties({}, {
+  /**
+   * Specifies the "backward" value to change the orientation of a Display or a component.
+   */
+  BACKWARD: { enumerable: true, value: 'backward' },
+
+  /**
+   * Specifies the "both" value to represent both horizontal and vertical scrolling.
+   */
+  BOTH: { enumerable: true, value: 'both' },
+
+  /**
+   * Specifies the "down" value to change the orientation of a Display or a component.
+   */
+  DOWN: { enumerable: true, value: 'down' },
+
+  /**
+   * Specifies the "forward" value to change the direction or scrolling of a Display or a component.
+   */
+  FORWARD: { enumerable: true, value: 'forward' },
+
+  /**
+    * Specifies the "horizontal" value to change the orientation of a Display or a component.
+    */
+  HORIZONTAL: { enumerable: true, value: 'horizontal' },
+
+  /**
+   * Specifies the "left" value to change the orientation of a Display or a component.
+   */
+  LEFT: { enumerable: true, value: 'left' },
+
+  /**
+   * Specifies the "none" value to represent no scrolling or an object without direction.
+   */
+  NONE: { enumerable: true, value: 'none' },
+
+  /**
+   * Specifies the "right" value to change the orientation of a Display or a component.
+   */
+  RIGHT: { enumerable: true, value: 'right' },
+
+  /**
+   * Specifies the "up" value to change the orientation of a Display or a component.
+   */
+  UP: { enumerable: true, value: 'up' },
+
+  /**
+   * Specifies the "vertical" value to change the orientation of a Display or a component.
+   */
+  VERTICAL: { enumerable: true, value: 'vertical' }
+});
+
+/**
+ * Defines the order to display all children in a specific horizontal or vertical container.
+ * Children within a horizontally oriented box are, by default, displayed from left to right in the same order as they appear in the source document.
+ * Children within a vertically oriented box are displayed top to bottom in the same order.
+ */
+
+var DirectionOrder = Object.defineProperties({}, {
+  /**
+   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
+   */
+  NORMAL: { enumerable: true, value: 'normal' },
+
+  /**
+   * Specifies the "reverse" direction order. The horizontal containers displays its children from right to left and the vertical containers displays its children from bottom to top.
+   */
+  REVERSE: { enumerable: true, value: 'reverse' }
+});
+
+/**
+ * Constants defining layout orientation options.
+ */
+
+var Orientation = Object.defineProperties({}, {
+    /**
+     * Constant indicating a bottom-to-top layout orientation (4).
+     */
+    BOTTOM_TO_TOP: { enumerable: true, value: 4 },
+
+    /**
+     * Constant indicating a none layout orientation, use the default orientation (0).
+     */
+    NONE: { enumerable: true, value: 0 },
+
+    /**
+     * Constant indicating a left-to-right layout orientation (1).
+     */
+    LEFT_TO_RIGHT: { enumerable: true, value: 1 },
+
+    /**
+     * Constant indicating a right-to-left layout orientation (2).
+     */
+    RIGHT_TO_LEFT: { enumerable: true, value: 2 },
+
+    /**
+     * Constant indicating a bottom-to-top layout orientation (8).
+     */
+    TOP_TO_BOTTOM: { enumerable: true, value: 8 },
+
+    /**
+     * Constant indicating a left-to-right layout orientation (5).
+     */
+    LEFT_TO_RIGHT_BOTTOM_TO_TOP: { enumerable: true, value: 5 },
+
+    /**
+     * Constant indicating a left-to-right and top-to-bottom layout orientation (9).
+     */
+    LEFT_TO_RIGHT_TOP_TO_BOTTOM: { enumerable: true, value: 9 },
+
+    /**
+     * Constant indicating a right-to-left layout orientation (6).
+     */
+    RIGHT_TO_LEFT_BOTTOM_TO_TOP: { enumerable: true, value: 6 },
+
+    /**
+     * Constant indicating a right-to-left and top-to-bottom layout orientation (10).
+     */
+    RIGHT_TO_LEFT_TOP_TO_BOTTOM: { enumerable: true, value: 10 }
+});
+
+Object.defineProperties(Orientation, {
+    /**
+     * All the orientations defines in the Orientation singleton.
+     */
+    ALL: { value: [Orientation.NONE, Orientation.BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT, Orientation.RIGHT_TO_LEFT, Orientation.TOP_TO_BOTTOM, Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM, Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP, Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM] },
+
+    /**
+     * Returns the string representation of the specified Align value passed in argument.
+     * <p><b>Example :</b></p>
+     * <pre class="prettyprint">
+     * import graphics.Align ;
+     * trace( Align.toString(Align.LEFT)) ; // "l"
+     * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
+     * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
+     * </pre>
+     * @return the string representation of the specified Align value passed in argument.
+     */
+    toString: { value: function value(_value) {
+            var byDefault = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "none";
+
+            switch (_value) {
+                case Orientation.BOTTOM_TO_TOP:
+                    return "btt";
+                case Orientation.LEFT_TO_RIGHT:
+                    return "ltr";
+                case Orientation.RIGHT_TO_LEFT:
+                    return "rtl";
+                case Orientation.TOP_TO_BOTTOM:
+                    return "ttb";
+                case Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP:
+                    return "ltrbtt";
+                case Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM:
+                    return "ltrttb";
+                case Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP:
+                    return "rtlbtt";
+                case Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM:
+                    return "rtlttb";
+                case Orientation.NONE:
+                    return "none";
+                default:
+                    return byDefault;
+            }
+        } },
+
+    /**
+     * Returns <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
+     * @return <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
+     */
+    validate: { value: function value(_value2) {
+            return Orientation.ALL.indexOf(_value2) > -1;
+        } }
+});
+
+/**
+ * Constants defining the position declaration lets you declare what
+ * the position of an element should be.
+ */
+
+var Position = Object.defineProperties({}, {
+  /**
+   * Constant indicating an "absolute" position. An element with position "absolute" is taken out of the normal flow of the page
+   * and positioned at the desired coordinates relative to its containing block.
+   */
+  ABSOLUTE: { enumerable: true, value: 'absolute' },
+
+  /**
+   * Constant indicating a "fixed" position. An element with position "fixed" is taken out of the normal flow of the page and
+   * positioned at the desired coordinates relative to the browser window. It remains at that position regardless of scrolling.
+   */
+  FIXED: { enumerable: true, value: 'fixed' },
+
+  /**
+   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
+   */
+  NORMAL: { enumerable: true, value: 'normal' },
+
+  /**
+   * Constant indicating a "relative" position. An element with position: relative initially has the position the normal flow
+   * of the page gives it, but it is subsequently offset by the amount the top, bottom, left, and/or right declarations give.
+   */
+  RELATIVE: { enumerable: true, value: 'relative' },
+
+  /**
+   * Constant indicating a "static" position. An element with position "static" always has the position the normal flow of the page gives it.
+   * It cannot be moved from this position; a static element ignores any x, y, top, bottom, left, or right declarations.
+   */
+  STATIC: { enumerable: true, value: 'static' }
+});
+
+/**
+ * Represents the ZOrder of a display added to the document.
+ */
+
+var ZOrder = Object.defineProperties({}, {
+  /**
+   * Back means the display will be behind an other object and has a value of 0.
+   */
+  BACK: { enumerable: true, value: 0 },
+
+  /**
+   * Front means the display will be in front of an other object and has a value of 1.
+   */
+  FRONT: { enumerable: true, value: 1 }
+});
+
+/**
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var graphics = Object.assign({
+    isDirectionable: isDirectionable,
+
     Align: Align,
     ArcType: ArcType,
     Border: Border,
     CardinalDirection: CardinalDirection,
-    Corner: Corner
+    Corner: Corner,
+    Direction: Direction,
+    Directionable: Directionable,
+    DirectionOrder: DirectionOrder,
+    Orientation: Orientation,
+    Position: Position,
+    ZOrder: ZOrder
 });
 
 exports.trace = trace;

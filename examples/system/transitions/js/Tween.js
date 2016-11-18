@@ -28,10 +28,10 @@ window.onload = function()
     var finish = function()
     {
         trace( 'finish' ) ;
-        // tween.duration = 120 ;
-        // tween.from = null ;
-        // tween.to   = tween.to === to ? from : to ;
-        // tween.run() ;
+        tween.duration = 120 ;
+        tween.from = null ;
+        tween.to   = tween.to === to ? from : to ;
+        tween.run() ;
     }
 
     var start = function()
@@ -57,11 +57,10 @@ window.onload = function()
     var easings = null ;
 
     // easings = { x : core.easings.backIn , y : core.easings.backOut  } ;
-    // easings = { x : core.easings.backOut , y : core.easings.backIn  } ;
+    easings = { x : core.easings.backOut , y : core.easings.backIn  } ;
     // easings = { x : core.easings.circularOut , y : core.easings.circularIn  } ;
     // easings = { x : core.easings.bounceOut , y : core.easings.bounceIn } ;
-
-    easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
+    // easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
 
     var tween = new Tween
     ({
@@ -81,7 +80,7 @@ window.onload = function()
 
     // tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
 
-    tween.looping = true ;
+    //tween.looping = true ;
 
     tween.finishIt.connect( finish ) ;
     tween.changeIt.connect( change ) ;

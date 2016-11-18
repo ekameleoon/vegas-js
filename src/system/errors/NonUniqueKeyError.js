@@ -1,6 +1,5 @@
 "use strict" ;
 
-import '../../polyfill.js' ;
 import { fastformat } from '../../core/strings/fastformat.js' ;
 
 /**
