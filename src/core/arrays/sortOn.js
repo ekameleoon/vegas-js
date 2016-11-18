@@ -188,12 +188,14 @@ export function sortOn( ar , propName , options )
         {
             var tmp = [].concat(ar) ;
             tmp.sort(sort) ;
+
             var result = [] ;
             var l = ar.length ;
-            for ( var i = 0; i < l; i++ )
+            for ( var i = 0 ; i < l ; i++ )
             {
                 result.push(tmp.indexOf(ar[i])) ;
             }
+
             return result  ;
         }
         default :
