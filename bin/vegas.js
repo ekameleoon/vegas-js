@@ -1,9 +1,16 @@
 /* VEGAS version 1.0.6 */
 (function (global, factory) {
-        typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-        typeof define === 'function' && define.amd ? define(['exports'], factory) :
-        (factory((global.vegas = global.vegas || {})));
+                  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+                  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+                  (factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
+
+/* jshint -W079 */
+if (!(Date.now && Date.prototype.getTime)) {
+    Date.now = function now() {
+        return new Date().getTime();
+    };
+}
 
 /*jshint laxbreak: true*/
 /*jshint freeze: false*/
@@ -99,12 +106,6 @@ if (!exports.global) {
 }
 
 /* jshint -W079 */
-if (!(Date.now && Date.prototype.getTime)) {
-    Date.now = function now() {
-        return new Date().getTime();
-    };
-}
-
 var performance = exports.global.performance || {};
 
 Object.defineProperty(exports.global, 'performance', { value: performance, configurable: true, writable: true });
@@ -112,12 +113,12 @@ Object.defineProperty(exports.global, 'performance', { value: performance, confi
 performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
 
 if (!(exports.global.performance && exports.global.performance.now)) {
-    (function () {
-        var startTime = Date.now();
-        exports.global.performance.now = function () {
-            return Date.now() - startTime;
-        };
-    })();
+                  (function () {
+                                    var startTime = Date.now();
+                                    exports.global.performance.now = function () {
+                                                      return Date.now() - startTime;
+                                    };
+                  })();
 }
 
 /* jshint -W079 */

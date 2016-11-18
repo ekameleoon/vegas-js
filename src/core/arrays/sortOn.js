@@ -213,8 +213,7 @@ export function sortOn( ar /*Array*/ , propName , options )
             var l = ar.length ;
             for ( var i = 0; i < l; i++ )
             {
-                var index = tmp.indexOf(ar[i]) ;
-                result.push(index) ;
+                result.push(tmp.indexOf(ar[i])) ;
             }
             return result  ;
         }

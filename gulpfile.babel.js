@@ -18,11 +18,11 @@ import yargs   from 'yargs' ;
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
 
+// --------- Initialize
+
 var argv   = yargs.argv ;
 var colors = util.colors ;
 var log    = util.log ;
-
-// --------- Initialize
 
 var name     = 'vegas' ;
 var version  = config.version ;
