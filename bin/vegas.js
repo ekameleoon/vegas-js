@@ -111,17 +111,6 @@ Object.defineProperty(exports.global, 'performance', { value: performance, confi
 
 performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
 
-if (console) {
-    if (performance.now) {
-        console.log(exports.global);
-        console.log("performance exist !!!");
-        console.log(performance.now);
-    } else {
-        console.warn("performance not exist !!!");
-        console.log(performance.now);
-    }
-}
-
 if (!(exports.global.performance && exports.global.performance.now)) {
     (function () {
         var startTime = Date.now();
