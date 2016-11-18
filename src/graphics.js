@@ -9,6 +9,7 @@ import { CardinalDirection }  from './graphics/CardinalDirection.js' ;
 import { Corner }             from './graphics/Corner.js' ;
 import { Direction }          from './graphics/Direction.js' ;
 import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
+import { ZOrder }             from './graphics/ZOrder.js' ;
 
 /**
  * The VEGAS.js framework - The graphics library.
@@ -23,5 +24,6 @@ export var graphics = Object.assign
     CardinalDirection  : CardinalDirection ,
     Corner             : Corner ,
     Direction          : Direction ,
-    DirectionOrder     : DirectionOrder
+    DirectionOrder     : DirectionOrder,
+    ZOrder             : ZOrder
 }) ;
