@@ -11,6 +11,10 @@
  */
 export function capitalize( source /*String*/ ) /*String*/
 {
+    if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
+    {
+        return '' ;
+    }
     return source.replace
     (
         /\b[a-z]/g,
