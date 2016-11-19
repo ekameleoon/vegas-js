@@ -11,6 +11,10 @@
  */
 export function camelCase( source /*String*/ ) /*String*/
 {
+    if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
+    {
+        return '' ;
+    }
     return source.replace
     (
         /-\D/g ,
