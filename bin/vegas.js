@@ -3811,6 +3811,40 @@ function fastformat(pattern /*String*/) /*String*/
 }
 
 /**
+ * Returns the string representation of the specific date with the format "yyyy-mm-dd".
+ * @param date The date to format (default the current Date if the argument is null).
+ * @param separator The default separator of the format expression (by default '-').
+ * @return the string representation of the specific date with the format "yyyy-mm-dd".
+ */
+
+function fastformatDate() {
+    var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '-';
+
+    if (!(date instanceof Date)) {
+        date = new Date();
+    }
+
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+
+    var exp = date.getFullYear() + separator;
+
+    if (month < 10) {
+        exp += "0";
+    }
+
+    exp += month + separator;
+
+    if (day < 10) {
+        exp += "0";
+    }
+
+    exp += day;
+    return exp;
+}
+
+/**
  * Apply character padding to a string.
  * <p>
  * The padding amount is relative to the string length,
@@ -4349,6 +4383,7 @@ var strings = Object.assign({
     clean: clean,
     endsWith: endsWith,
     fastformat: fastformat,
+    fastformatDate: fastformatDate,
     format: format,
     hyphenate: hyphenate,
     indexOfAny: indexOfAny,

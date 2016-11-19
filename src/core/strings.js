@@ -9,6 +9,7 @@ import { center }              from './strings/center.js' ;
 import { clean }               from './strings/clean.js' ;
 import { endsWith }            from './strings/endsWith.js' ;
 import { fastformat }          from './strings/fastformat.js' ;
+import { fastformatDate }      from './strings/fastformatDate.js' ;
 import { format }              from './strings/format.js' ;
 import { hyphenate }           from './strings/hyphenate.js' ;
 import { indexOfAny }          from './strings/indexOfAny.js' ;
@@ -39,6 +40,7 @@ export var strings = Object.assign
     clean : clean ,
     endsWith : endsWith ,
     fastformat : fastformat ,
+    fastformatDate : fastformatDate ,
     format : format ,
     hyphenate : hyphenate ,
     indexOfAny : indexOfAny ,
