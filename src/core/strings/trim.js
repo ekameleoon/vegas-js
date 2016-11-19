@@ -1,7 +1,7 @@
 /*jslint noempty: false */
 "use strict" ;
 
-import { whiteSpaceChars } from './whiteSpaceChars.js' ;
+import { whiteSpaces } from './whiteSpaces.js' ;
 
 /**
  * Removes all occurrences of a set of specified characters (or strings) from the beginning and end of this instance.
@@ -10,14 +10,14 @@ import { whiteSpaceChars } from './whiteSpaceChars.js' ;
  * trace( trim("\r\t   hello world   \t ") ); // hello world
  * </pre>
  * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaceChars</code> array is used.
+ * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
  * @return The new trimed string.
  */
 export function trim( source /*String*/ , chars /*Array*/ ) /*String*/
 {
     if( !chars || !(chars instanceof Array) )
     {
-        chars = whiteSpaceChars ;
+        chars = whiteSpaces ;
     }
 
     if ( source === null || source === "" )

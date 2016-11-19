@@ -3654,7 +3654,7 @@ function center(source /*String*/, size /*uint*/, separator /*String*/) /*String
  * </ul>
  */
 
-var whiteSpaceChars = ["\t" /*Horizontal tab*/
+var whiteSpaces$1 = ["\t" /*Horizontal tab*/
 , "\n" /*Line feed or New line*/
 , "\x0B" /*Vertical tab*/
 , "\f" /*Formfeed*/
@@ -3690,13 +3690,13 @@ var whiteSpaceChars = ["\t" /*Horizontal tab*/
  * trace( trim("\r\t   hello world   \t ") ); // hello world
  * </pre>
  * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaceChars</code> array is used.
+ * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
  * @return The new trimed string.
  */
 function trim(source /*String*/, chars /*Array*/) /*String*/
 {
     if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaceChars;
+        chars = whiteSpaces$1;
     }
 
     if (source === null || source === "") {
@@ -4295,16 +4295,16 @@ function startsWith(source /*String*/, value /*String*/) /*Boolean*/
  * Removes all occurrences of a set of characters specified in an array from the end of this instance.
  * <p><b>Example :</b></p>
  * <pre class="prettyprint">
- * trace( trimEnd("---hello world---" , Strings.whiteSpaceChars.concat("-") ) ); // ---hello world
+ * trace( trimEnd("---hello world---" , Strings.whiteSpaces.concat("-") ) ); // ---hello world
  * </pre>
  * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaceChars</code> array is used.
+ * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
  * @return The new trimed string.
  */
 function trimEnd(source /*String*/, chars /*Array*/) /*String*/
 {
     if (!(chars instanceof Array)) {
-        chars = whiteSpaceChars;
+        chars = whiteSpaces$1;
     }
 
     if (source === null || source === "") {
@@ -4324,16 +4324,16 @@ function trimEnd(source /*String*/, chars /*Array*/) /*String*/
  * Removes all occurrences of a set of characters specified in an array from the beginning of this instance.
  * <p><b>Example :</b></p>
  * <pre class="prettyprint">
- * trace( trimStart("---hello world---" , Strings.whiteSpaceChars.concat("-") ) ); // hello world---
+ * trace( trimStart("---hello world---" , Strings.whiteSpaces.concat("-") ) ); // hello world---
  * </pre>
  * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaceChars</code> array is used.
+ * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
  * @return The new trimed string.
  */
 function trimStart(source /*String*/, chars /*Array*/) /*String*/
 {
     if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaceChars;
+        chars = whiteSpaces$1;
     }
 
     if (source === null || source === "") {
@@ -4398,7 +4398,7 @@ var strings = Object.assign({
     trimStart: trimStart,
     ucFirst: ucFirst,
     ucWords: ucWords,
-    whiteSpaceChars: whiteSpaceChars
+    whiteSpaces: whiteSpaces$1
 });
 
 /**

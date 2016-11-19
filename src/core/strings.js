@@ -24,7 +24,7 @@ import { trimEnd }             from './strings/trimEnd.js' ;
 import { trimStart }           from './strings/trimStart.js' ;
 import { ucFirst }             from './strings/ucFirst.js' ;
 import { ucWords }             from './strings/ucWords.js' ;
-import { whiteSpaceChars }     from './strings/whiteSpaceChars.js' ;
+import { whiteSpaces }         from './strings/whiteSpaces.js' ;
 
 /**
  * The VEGAS.js framework - The core.strings library.
@@ -55,5 +55,5 @@ export var strings = Object.assign
     trimStart : trimStart ,
     ucFirst : ucFirst ,
     ucWords : ucWords ,
-    whiteSpaceChars : whiteSpaceChars
+    whiteSpaces : whiteSpaces
 }) ;
