@@ -3574,6 +3574,9 @@ var reflect = Object.assign({
 
 function camelCase(source /*String*/) /*String*/
 {
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
     return source.replace(/-\D/g, function (match) {
         return match.charAt(1).toUpperCase();
     });
@@ -3591,6 +3594,9 @@ function camelCase(source /*String*/) /*String*/
 
 function capitalize(source /*String*/) /*String*/
 {
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
     return source.replace(/\b[a-z]/g, function (match) {
         return match.toUpperCase();
     });
@@ -4226,7 +4232,7 @@ function lastIndexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/,
  * <p>ECMAScript specification.</p>
  */
 
-var lineTerminatorChars = ["\n" /*LF : Line Feed*/
+var lineTerminators$1 = ["\n" /*LF : Line Feed*/
 , "\r" /*CR : Carriage Return*/
 , "\u2028" /*LS : Line Separator*/
 , "\u2929" /*PS : Paragraphe Separator*/
@@ -4389,7 +4395,7 @@ var strings = Object.assign({
     indexOfAny: indexOfAny,
     insert: insert,
     lastIndexOfAny: lastIndexOfAny,
-    lineTerminatorChars: lineTerminatorChars,
+    lineTerminators: lineTerminators$1,
     pad: pad,
     repeat: repeat$1,
     startsWith: startsWith,

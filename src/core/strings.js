@@ -15,7 +15,7 @@ import { hyphenate }           from './strings/hyphenate.js' ;
 import { indexOfAny }          from './strings/indexOfAny.js' ;
 import { insert }              from './strings/insert.js' ;
 import { lastIndexOfAny }      from './strings/lastIndexOfAny.js' ;
-import { lineTerminatorChars } from './strings/lineTerminatorChars.js' ;
+import { lineTerminators }     from './strings/lineTerminators.js' ;
 import { pad }                 from './strings/pad.js' ;
 import { repeat as arepeat }   from './strings/repeat.js' ;
 import { startsWith }          from './strings/startsWith.js' ;
@@ -46,7 +46,7 @@ export var strings = Object.assign
     indexOfAny : indexOfAny ,
     insert : insert ,
     lastIndexOfAny : lastIndexOfAny ,
-    lineTerminatorChars : lineTerminatorChars ,
+    lineTerminators : lineTerminators ,
     pad : pad ,
     repeat : arepeat ,
     startsWith : startsWith ,

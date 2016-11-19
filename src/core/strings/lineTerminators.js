@@ -8,7 +8,7 @@
  * Line terminators also affect the process of automatic semicolon insertion.
  * <p>ECMAScript specification.</p>
  */
-export var lineTerminatorChars =
+export var lineTerminators =
 [
     "\u000A" /*LF : Line Feed*/ ,
     "\u000D" /*CR : Carriage Return*/,
