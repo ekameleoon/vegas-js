@@ -13,9 +13,9 @@
  * trace( center("hello world", 20, "_" ) )  ; // ____hello world_____
  * </code>
  */
-export function center( source /*String*/ , size /*uint*/ , separator /*String*/ ) /*String*/
+export function center( source /*String*/ , size = 0  , separator = " " ) /*String*/
 {
-    if ( source === null )
+    if ( source === null || !(source instanceof String || typeof(source) === 'string' ) )
     {
         return "" ;
     }
@@ -25,17 +25,17 @@ export function center( source /*String*/ , size /*uint*/ , separator /*String*/
         separator = " " ;
     }
 
-    var len /*int*/ = source.length;
+    var len = source.length;
 
     if ( len <= size )
     {
-        len                   = size - len ;
-        var remain /*String*/ = ( len % 2 === 0 ) ? "" : separator;
-        var pad /*String*/    = "";
-        var count /*int*/     = Math.floor( len / 2 );
+        len = size - len ;
+        var remain = ( len % 2 === 0 ) ? "" : separator;
+        var pad    = "";
+        var count  = Math.floor( len / 2 );
         if ( count > 0 )
         {
-            for( var i /*int*/ = 0 ; i < count ; i++ )
+            for( var i = 0 ; i < count ; i++ )
             {
                 pad = pad.concat( separator );
             }
