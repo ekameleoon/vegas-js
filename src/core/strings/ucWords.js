@@ -1,17 +1,19 @@
 "use strict" ;
 
-import { ucFirst } from './ucFirst.js' ;
-
 /**
  * Capitalize each word in a string, like the PHP function.
  */
-export function ucWords( str /*String*/ ) /*String*/
+export function ucWords( str /*String*/ , separator = " ") /*String*/
 {
-    var ar = str.split(" ") ;
+    if( !(str instanceof String || typeof(str) === 'string' ) || str === "" )
+    {
+        return '' ;
+    }
+    var ar = str.split(separator) ;
     var l  = ar.length ;
     while(--l > -1)
     {
-        ar[l] = ucFirst(ar[l]) ;
+        ar[l] = ar[l].charAt(0).toUpperCase() + ar[l].substring(1) ;
     }
-    return ar.join(" ") ;
+    return ar.join(separator) ;
 }
