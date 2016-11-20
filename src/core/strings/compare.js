@@ -33,8 +33,23 @@
  * </ul>
  * </p>
  */
-export function compare( str1 /*String*/ , str2 /*String*/ , strict /*Boolean*/ ) /*int*/
+export function compare( str1 /*String*/ , str2 /*String*/ , strict = false ) /*int*/
 {
+    if( !( (typeof(str1) === 'string') || (str1 instanceof String ) ) )
+    {
+        throw new TypeError('Bad arguments, the compare function failed, the first argument must be a string value.') ;
+    }
+
+    if( !( (typeof(str2) === 'string') || (str2 instanceof String ) ) )
+    {
+        throw new TypeError('Bad arguments, the compare function failed, the second argument must be a string value.') ;
+    }
+
+    if( str1 === str2 )
+    {
+        return 0;
+    }
+
     strict = Boolean(strict) ;
 
     if( !strict )
@@ -43,11 +58,7 @@ export function compare( str1 /*String*/ , str2 /*String*/ , strict /*Boolean*/ 
         str2 = str2.toLowerCase();
     }
 
-    if( str1 === str2 )
-    {
-        return 0;
-    }
-    else if( str1.length === str2.length )
+    if( str1.length === str2.length )
     {
         var local /*int*/ = str1.localeCompare( str2 );
         if( local === 0 )
