@@ -74,33 +74,28 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
      */
     proxy :
     {
-        enumerable   : false,
         configurable : true,
         writable     : true,
         value        : null
     },
     receivers :
     {
-        enumerable   : false,
         configurable : true,
         writable     : true,
         value        : []
     },
     _types :
     {
-        enumerable   : false,
         configurable : true,
         writable     : true
     },
     length :
     {
-        enumerable   : false,
         configurable : true,
         get          : function() { return this.receivers.length ; },
     },
     types :
     {
-        enumerable   : false,
         configurable : true,
         get          : function() { return this._types ; },
         set          : function( ar /*Array*/ ) /*void*/
@@ -126,7 +121,6 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
     },
     _typesMatch :
     {
-        enumerable   : false,
         configurable : false,
         writable     : false,
         value : function( o , type ) /*Boolean*/

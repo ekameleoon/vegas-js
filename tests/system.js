@@ -1,5 +1,6 @@
 'use strict' ;
 
+import './system/signals.js' ;
 import './system/transitions.js' ;
 
 // import chai from 'chai' ;

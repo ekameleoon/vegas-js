@@ -1,7 +1,8 @@
 "use strict" ;
 
 /**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * The <code>Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * @constructor
  */
 export function Receiver()
 {

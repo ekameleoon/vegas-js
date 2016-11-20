@@ -3616,9 +3616,12 @@ function capitalize(source /*String*/) /*String*/
  * </code>
  */
 
-function center(source /*String*/, size /*uint*/, separator /*String*/) /*String*/
+function center(source /*String*/) /*String*/
 {
-    if (source === null) {
+    var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ";
+
+    if (source === null || !(source instanceof String || typeof source === 'string')) {
         return "";
     }
 
@@ -3626,15 +3629,15 @@ function center(source /*String*/, size /*uint*/, separator /*String*/) /*String
         separator = " ";
     }
 
-    var len /*int*/ = source.length;
+    var len = source.length;
 
     if (len <= size) {
         len = size - len;
-        var remain /*String*/ = len % 2 === 0 ? "" : separator;
-        var pad /*String*/ = "";
-        var count /*int*/ = Math.floor(len / 2);
+        var remain = len % 2 === 0 ? "" : separator;
+        var pad = "";
+        var count = Math.floor(len / 2);
         if (count > 0) {
-            for (var i /*int*/ = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 pad = pad.concat(separator);
             }
         } else {
@@ -3738,24 +3741,25 @@ function trim(source /*String*/, chars /*Array*/) /*String*/
  * @param source The string to clean.
  * @return The cleaned string.
  * @example
- * <code class="prettyprint">
+ * <code>
  * trace( clean("   hello world \n\n" ) ) ; // hello world
  * </code>
  */
 function clean(source /*String*/) /*String*/
 {
-  return trim(source.replace(/\s+/g, ' '));
+    if (source === null || !(source instanceof String || typeof source === 'string')) {
+        return "";
+    }
+    return trim(source.replace(/\s+/g, ' '));
 }
 
 /**
  * Determines wether the end of a string matches the specified value.
  * @example basic usage
- * <listing>
- * <code class="prettyprint">
+ * <code>
  * trace( endsWith( "hello world", "world" ) ); //true
  * trace( endsWith( "hello world", "hello" ) ); //false
  * </code>
- * </listing>
  * @param source the string reference.
  * @param value the value to find in first in the source.
  * @return true if the value is find in first.
@@ -3779,7 +3783,7 @@ function endsWith(source /*String*/, value /*String*/) /*Boolean*/
  * <li><code>fastformat( pattern:String, ...args:Array ):String</code></li>
  * <li><code>fastformat( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
  * </ul>
- * <p><b>Example :</b></p>
+ * @example
  * <code class="prettyprint">
  * trace( fastformat( "hello {0}", "world" ) );
  * //output: "hello world"
@@ -3809,7 +3813,7 @@ function fastformat(pattern /*String*/) /*String*/
         len = args.length;
     }
 
-    for (var i /*int*/ = 0; i < len; i++) {
+    for (var i = 0; i < len; i++) {
         pattern = pattern.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
     }
 
@@ -3933,7 +3937,7 @@ function pad(source /*String*/, amount /*int*/, ch /*String*/) /*String*/
 
 /**
  * Format a string using indexed or named parameters.
- * <p>Usage :</p>
+ * @example
  * <ul>
  * <li><code>format( pattern:String, ...args:Array ):String</code></li>
  * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
@@ -3941,7 +3945,7 @@ function pad(source /*String*/, amount /*int*/, ch /*String*/) /*String*/
  * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...} ):String</code></li>
  * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...}, ...args:Array ):String</code></li>
  * </ul>
- * <p><b>Examples:</b></p>
+ * @example
  * <pre>
  * trace( core.strings.format( "{0},{1},{2}" , "apples" , "oranges", "grapes" ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{0},{1},{2}" , ["apples" , "oranges", "grapes"] ) ) ; // apples,oranges,grapes
@@ -4079,6 +4083,9 @@ function format(pattern /*String*/) /*String*/
 
 function hyphenate(source /*String*/) /*String*/
 {
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
     return source.replace(/[A-Z]/g, function (match) {
         return '-' + match.charAt(0).toLowerCase();
     });
@@ -4238,32 +4245,60 @@ var lineTerminators$1 = ["\n" /*LF : Line Feed*/
 , "\u2929" /*PS : Paragraphe Separator*/
 ];
 
+/*jshint bitwise: false*/
 /**
  * Returns a new String value who contains the specified String characters repeated count times.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @param source The string expression to repeat.
+ * @param count The number of time to repeat the passed-in expression.
+ * @example
+ * <pre>
  * trace( repeat( "hello" , 0 ) ) ; // hello
  * trace( repeat( "hello" , 3 ) ) ; // hellohellohello
  * </pre>
  * @return a new String who contains the specified String characters repeated count times.
  */
 
-function repeat$1(source /*String*/, count /*uint*/) /*String*/
+function repeat$1(source /*String*/) /*String*/
 {
-    if (source === null) {
-        return "";
+    var count /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
     }
 
     count = isNaN(count) ? 0 : count;
-    count = count > 0 ? count : 0;
 
-    var result /*String*/ = "";
-    if (count > 0) {
-        for (var i /*int*/ = 0; i < count; i++) {
-            result = result.concat(source);
+    if (count < 0) {
+        throw new RangeError('repeat count must be non-negative');
+    }
+
+    if (count === Infinity) {
+        throw new RangeError('repeat count must be less than infinity');
+    }
+
+    count = Math.floor(count);
+
+    // Ensuring count is a 31-bit integer allows us to heavily optimize the
+    // main part. But anyway, most current (August 2014) browsers can't handle
+    // strings 1 << 28 chars or longer, so:
+    if (source.length * count >= 1 << 28) {
+        throw new RangeError('repeat count must not overflow maximum string size');
+    }
+
+    if (count === 0) {
+        return "";
+    }
+
+    var result = '';
+    for (;;) {
+        if ((count & 1) === 1) {
+            result += source;
         }
-    } else {
-        result = source;
+        count >>>= 1;
+        if (count === 0) {
+            break;
+        }
+        source += source;
     }
     return result;
 }
@@ -4360,20 +4395,29 @@ function trimStart(source /*String*/, chars /*Array*/) /*String*/
 
 function ucFirst(str /*String*/) /*String*/
 {
-  return str.charAt(0).toUpperCase() + str.substring(1);
+    if (!(str instanceof String || typeof str === 'string') || str === "") {
+        return '';
+    }
+    return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
 /**
  * Capitalize each word in a string, like the PHP function.
  */
+
 function ucWords(str /*String*/) /*String*/
 {
-    var ar = str.split(" ");
+    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : " ";
+
+    if (!(str instanceof String || typeof str === 'string') || str === "") {
+        return '';
+    }
+    var ar = str.split(separator);
     var l = ar.length;
     while (--l > -1) {
-        ar[l] = ucFirst(ar[l]);
+        ar[l] = ar[l].charAt(0).toUpperCase() + ar[l].substring(1);
     }
-    return ar.join(" ");
+    return ar.join(separator);
 }
 
 /**
@@ -6463,7 +6507,8 @@ var formatters = Object.assign({
 });
 
 /**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * The <code>Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * @constructor
  */
 
 function Receiver() {}
@@ -6611,7 +6656,8 @@ SignalEntry.prototype.toString = function () /*String*/
 
 /**
  * Creates a new Signal instance.
- * <p><b>Example :</b></p>
+ * @constructor
+ * @example
  * <pre>
  * function Slot( name )
  * {
@@ -6653,221 +6699,216 @@ function Signal() {
         /**
          * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
          */
-        proxy: {
-            value: null,
-            configurable: true,
-            writable: true
-        },
-        receivers: {
-            value: [],
-            writable: true
-        }
+        proxy: { value: null, configurable: true, writable: true },
+
+        /**
+         * @private
+         */
+        receivers: { value: [], writable: true }
     });
 }
 
-///////////////////
-
+/**
+ * @extends Signaler
+ */
 Signal.prototype = Object.create(Signaler.prototype, {
+    /**
+     * The constructor reference of the object.
+     */
+    constructor: { value: Signal, writable: true },
+
     /**
      * The number of receivers or slots register in the signal object.
      */
-    length: {
-        get: function get() {
+    length: { get: function get() {
             return this.receivers.length;
-        }
-    }
-});
+        } },
 
-Signal.prototype.constructor = Signal;
+    /**
+     * Connects a Function or a Receiver object.
+     * @param receiver The receiver to connect : a Function reference or a Receiver object.
+     * @param priority Determinates the priority level of the receiver.
+     * @param autoDisconnect Apply a disconnect after the first trigger
+     * @return {boolean} <code>true</code> If the receiver is connected with the signal emitter.
+     */
+    connect: { value: function value(receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
+        {
+            if (receiver === null) {
+                return false;
+            }
 
-///////////////////
+            autoDisconnect = Boolean(autoDisconnect);
+            priority = priority > 0 ? Math.ceil(priority) : 0;
 
-/**
- * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
- * @return <code>true</code> If the receiver is connected with the signal emitter.
- */
-Signal.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
+            if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
+                if (this.hasReceiver(receiver)) {
+                    return false;
+                }
 
-    autoDisconnect = Boolean(autoDisconnect);
-    priority = priority > 0 ? Math.ceil(priority) : 0;
+                this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
 
-    if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-        if (this.hasReceiver(receiver)) {
+                /////// bubble sorting
+
+                var i;
+                var j;
+
+                var a = this.receivers;
+
+                var swap = function swap(j, k) {
+                    var temp = a[j];
+                    a[j] = a[k];
+                    a[k] = temp;
+                    return true;
+                };
+
+                var swapped = false;
+
+                var l = a.length;
+
+                for (i = 1; i < l; i++) {
+                    for (j = 0; j < l - i; j++) {
+                        if (a[j + 1].priority > a[j].priority) {
+                            swapped = swap(j, j + 1);
+                        }
+                    }
+                    if (!swapped) {
+                        break;
+                    }
+                }
+
+                ///////
+
+                return true;
+            }
+
             return false;
-        }
+        } },
 
-        this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+    /**
+     * Returns <code>true</code> if one or more receivers are connected.
+     * @return {boolean} <code>true</code> if one or more receivers are connected.
+     */
+    connected: { value: function value() /*Boolean*/
+        {
+            return this.receivers.length > 0;
+        } },
 
-        /////// bubble sorting
-
-        var i;
-        var j;
-
-        var a = this.receivers;
-
-        var swap = function swap(j, k) {
-            var temp = a[j];
-            a[j] = a[k];
-            a[k] = temp;
-            return true;
-        };
-
-        var swapped = false;
-
-        var l = a.length;
-
-        for (i = 1; i < l; i++) {
-            for (j = 0; j < l - i; j++) {
-                if (a[j + 1].priority > a[j].priority) {
-                    swapped = swap(j, j + 1);
+    /**
+     * Disconnect the specified object or all objects if the parameter is null.
+     * @return {boolean} <code>true</code> if the specified receiver exist and can be unregister.
+     */
+    disconnect: { value: function value(receiver) {
+            if (receiver === null) {
+                if (this.receivers.length > 0) {
+                    this.receivers = [];
+                    return true;
+                } else {
+                    return false;
                 }
             }
-            if (!swapped) {
-                break;
+            if (this.receivers.length > 0) {
+                var l /*int*/ = this.receivers.length;
+                while (--l > -1) {
+                    if (this.receivers[l].receiver === receiver) {
+                        this.receivers.splice(l, 1);
+                        return true;
+                    }
+                }
             }
-        }
-
-        ///////
-
-        return true;
-    }
-
-    return false;
-};
-
-/**
- * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
- */
-Signal.prototype.connected = function () /*Boolean*/
-{
-    return this.receivers.length > 0;
-};
-
-/**
- * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
- */
-Signal.prototype.disconnect = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        if (this.receivers.length > 0) {
-            this.receivers = [];
-            return true;
-        } else {
             return false;
-        }
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                this.receivers.splice(l, 1);
-                return true;
+        } },
+
+    /**
+     * Emit the specified values to the receivers.
+     * @param ...values All values to emit to the receivers.
+     */
+    emit: { value: function value() /*Arguments*/ /*void*/
+        {
+            var values = Object.setPrototypeOf(arguments, Array.prototype);
+
+            if (this.receivers.length === 0) {
+                return;
             }
-        }
-    }
-    return false;
-};
 
-/**
- * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
- */
-Signal.prototype.emit = function () /*Arguments*/ /*void*/
-{
-    var values = Object.setPrototypeOf(arguments, Array.prototype);
+            var i;
+            var l /*int*/ = this.receivers.length;
+            var r /*Array*/ = [];
+            var a /*Array*/ = this.receivers.slice();
+            var e;
 
-    if (this.receivers.length === 0) {
-        return;
-    }
+            var slot;
 
-    var i;
-    var l /*int*/ = this.receivers.length;
-    var r /*Array*/ = [];
-    var a /*Array*/ = this.receivers.slice();
-    var e;
-
-    var slot;
-
-    for (i = 0; i < l; i++) {
-        e = a[i];
-        if (e.auto) {
-            r.push(e);
-        }
-    }
-    if (r.length > 0) {
-        l = r.length;
-        while (--l > -1) {
-            i = this.receivers.indexOf(r[l]);
-            if (i > -1) {
-                this.receivers.splice(i, 1);
+            for (i = 0; i < l; i++) {
+                e = a[i];
+                if (e.auto) {
+                    r.push(e);
+                }
             }
-        }
-    }
-    l = a.length;
-    for (i = 0; i < l; i++) {
-        slot = a[i].receiver;
-
-        if (slot instanceof Function || typeof receiver === "function") {
-            slot.apply(this.proxy || this, values);
-        } else if (slot instanceof Receiver || "receive" in slot) {
-            slot.receive.apply(this.proxy || slot, values);
-        }
-    }
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
- * @return <code class="prettyprint">true</code> if the specified receiver is connected.
- */
-Signal.prototype.hasReceiver = function (receiver) /*Boolean*/
-{
-    if (receiver === null) {
-        return false;
-    }
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        while (--l > -1) {
-            if (this.receivers[l].receiver === receiver) {
-                return true;
+            if (r.length > 0) {
+                l = r.length;
+                while (--l > -1) {
+                    i = this.receivers.indexOf(r[l]);
+                    if (i > -1) {
+                        this.receivers.splice(i, 1);
+                    }
+                }
             }
-        }
-    }
-    return false;
-};
+            l = a.length;
+            for (i = 0; i < l; i++) {
+                slot = a[i].receiver;
 
-/**
- * Returns the Array representation of all receivers connected with the signal.
- * @return the Array representation of all receivers connected with the signal.
- */
-Signal.prototype.toArray = function () /*Array*/
-{
-    var r /*Array*/ = [];
-    if (this.receivers.length > 0) {
-        var l /*int*/ = this.receivers.length;
-        for (var i /*int*/ = 0; i < l; i++) {
-            r.push(this.receivers[i].receiver);
-        }
-    }
-    return r;
-};
+                if (slot instanceof Function || typeof receiver === "function") {
+                    slot.apply(this.proxy || this, values);
+                } else if (slot instanceof Receiver || "receive" in slot) {
+                    slot.receive.apply(this.proxy || slot, values);
+                }
+            }
+        } },
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Signal.prototype.toString = function () /*String*/
-{
-    return '[Signal]';
-};
+    /**
+     * Returns <code>true</code> if the specified receiver is connected.
+     * @return {boolean} <code>true</code> if the specified receiver is connected.
+     */
+    hasReceiver: { value: function value(receiver) /*Boolean*/
+        {
+            if (receiver === null) {
+                return false;
+            }
+            if (this.receivers.length > 0) {
+                var l /*int*/ = this.receivers.length;
+                while (--l > -1) {
+                    if (this.receivers[l].receiver === receiver) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } },
+
+    /**
+     * Returns the Array representation of all receivers connected with the signal.
+     * @return {array} the Array representation of all receivers connected with the signal.
+     */
+    toArray: { value: function value() /*Array*/
+        {
+            var r = [];
+            if (this.receivers.length > 0) {
+                var l = this.receivers.length;
+                for (var i = 0; i < l; i++) {
+                    r.push(this.receivers[i].receiver);
+                }
+            }
+            return r;
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return {string} the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[Signal]';
+        } }
+});
 
 /**
  * The logger levels that is used within the logging framework.
