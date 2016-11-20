@@ -4,6 +4,7 @@ import { Task }   from '../system/process/Task.js' ;
 import { Signal } from '../system/signals/Signal.js' ;
 
 import { Align } from './Align.js' ;
+import { Rectangle } from './geom/Rectangle.js' ;
 
 class Layout extends Task
 {
