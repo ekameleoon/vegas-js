@@ -7,7 +7,7 @@
  * <li><code>fastformat( pattern:String, ...args:Array ):String</code></li>
  * <li><code>fastformat( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
  * </ul>
- * <p><b>Example :</b></p>
+ * @example
  * <code class="prettyprint">
  * trace( fastformat( "hello {0}", "world" ) );
  * //output: "hello world"
@@ -38,7 +38,7 @@ export function fastformat( pattern /*String*/ ) /*String*/
         len  = args.length;
     }
 
-    for( var i /*int*/ = 0 ; i < len ; i++ )
+    for( var i = 0 ; i < len ; i++ )
     {
         pattern = pattern.replace( new RegExp( "\\{"+i+"\\}", "g" ), args[i] );
     }

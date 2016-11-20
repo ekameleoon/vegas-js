@@ -8,8 +8,7 @@
  * </p>
  *
  * @example basic usage
- * <listing version="3.0">
- * <code class="prettyprint">
+ * <code>
  * var s0:String = "HELLO";
  * var s1:String = "hello";
  * var s2:String = "welcome";
@@ -23,8 +22,6 @@
  * trace( compare( s1, s0, true ) ); //-1
  * trace( compare( s0, s1, true ) ); //1
  * </code>
- * </listing>
- *
  * @param str1 first string to compare with the second string
  * @param str2 second string to compare with the first string
  * @param strict (optional) take into account the string case, default to false

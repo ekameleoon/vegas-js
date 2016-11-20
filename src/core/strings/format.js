@@ -4,7 +4,7 @@ import { pad } from './pad.js' ;
 
 /**
  * Format a string using indexed or named parameters.
- * <p>Usage :</p>
+ * @example
  * <ul>
  * <li><code>format( pattern:String, ...args:Array ):String</code></li>
  * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
@@ -12,7 +12,7 @@ import { pad } from './pad.js' ;
  * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...} ):String</code></li>
  * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...}, ...args:Array ):String</code></li>
  * </ul>
- * <p><b>Examples:</b></p>
+ * @example
  * <pre>
  * trace( core.strings.format( "{0},{1},{2}" , "apples" , "oranges", "grapes" ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{0},{1},{2}" , ["apples" , "oranges", "grapes"] ) ) ; // apples,oranges,grapes
