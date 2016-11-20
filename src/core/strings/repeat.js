@@ -1,3 +1,4 @@
+/*jshint bitwise: false*/
 "use strict" ;
 
 /**
@@ -30,14 +31,34 @@ export function repeat( source /*String*/ , count /*uint*/ = 1 ) /*String*/
         throw new RangeError('repeat count must be less than infinity');
     }
 
-    var result = "" ;
-    if ( count > 0 )
+    count = Math.floor(count);
+
+    // Ensuring count is a 31-bit integer allows us to heavily optimize the
+    // main part. But anyway, most current (August 2014) browsers can't handle
+    // strings 1 << 28 chars or longer, so:
+    if ( (source.length * count) >= (1 << 28))
     {
-        for( var i = 0  ; i < count ; i++ )
-        {
-            result = result.concat( source ) ;
-        }
+        throw new RangeError('repeat count must not overflow maximum string size');
     }
 
-    return result ;
+    if ( count === 0 )
+    {
+        return "" ;
+    }
+
+    var result = '';
+    for (;;)
+    {
+        if ((count & 1) === 1)
+        {
+            result += source;
+        }
+        count >>>= 1;
+        if (count === 0)
+        {
+            break;
+        }
+        source += source;
+    }
+    return result;
 }
