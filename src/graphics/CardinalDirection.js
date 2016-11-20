@@ -20,7 +20,7 @@ export function CardinalDirection( value = 0 , name = "" , azimut = 0 )
 /**
  * @extends Object
  */
-CardinalDirection.prototype = Object.create( Object ,
+CardinalDirection.prototype = Object.create( Object.prototype ,
 {
     /**
      * Indicates the angular measurement in a spherical coordinate system (in degrees).

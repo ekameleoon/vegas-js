@@ -12,6 +12,8 @@ import './graphics/Orientation.js' ;
 import './graphics/Position.js' ;
 import './graphics/ZOrder.js' ;
 
+import './graphics/geom.js' ;
+
 // import chai from 'chai' ;
 //
 // import { graphics } from '../src/graphics.js' ;

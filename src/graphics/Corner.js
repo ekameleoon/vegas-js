@@ -32,7 +32,7 @@ export function Corner( tl = true , tr = true , br = true , bl = true )
 /**
  * @extends Object
  */
-Corner.prototype = Object.create( Object ,
+Corner.prototype = Object.create( Object.prototype ,
 {
     /**
      * Creates and returns a shallow copy of the object.

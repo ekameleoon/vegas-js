@@ -16,6 +16,8 @@ import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
 
+import { geom } from './graphics/geom.js' ;
+
 /**
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
@@ -35,5 +37,7 @@ export var graphics = Object.assign
     DirectionOrder     : DirectionOrder,
     Orientation        : Orientation,
     Position           : Position,
-    ZOrder             : ZOrder
+    ZOrder             : ZOrder,
+
+    geom : geom
 }) ;

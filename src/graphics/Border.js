@@ -77,7 +77,7 @@ Object.defineProperties( Border ,
 /**
  * @extends Object
  */
-Border.prototype = Object.create( Object ,
+Border.prototype = Object.create( Object.prototype ,
 {
     /**
      * Enables the border on the specified side.
