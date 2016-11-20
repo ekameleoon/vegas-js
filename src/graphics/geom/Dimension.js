@@ -1,5 +1,7 @@
 "use strict" ;
 
+import { Rectangle } from './Rectangle.js' ;
+
 /**
  * The Dimension encapsulates the width and height of an object.
  * @constructor
@@ -42,7 +44,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
      */
-    clone : { value : function()
+    clone : { writable : true , value : function()
     {
         return new Dimension( this.width , this.height ) ;
     }},
@@ -75,7 +77,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
      */
-    equals : { value : function( o )
+    equals : { writable : true , value : function( o )
     {
         if ( o instanceof Dimension )
         {
@@ -91,9 +93,9 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Returns a new bounds area with a specific position.
      * @return a new bounds area with a specific position.
      */
-    getBounds : { value : function( x = 0 , y = 0)
+    getBounds : { writable : true , value : function()
     {
-        return new Dimension( x , y , this.width , this.height ) ;
+        return new Rectangle( 0 , 0 , this.width , this.height ) ;
     }},
 
     /**
@@ -138,7 +140,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
      */
-    toObject : { value : function()
+    toObject : { writable : true , value : function()
     {
         return { width:this.width , height:this.height } ;
     }},
@@ -147,7 +149,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      */
-    toString : { value : function()
+    toString : { writable : true , value : function()
     {
         return "[Dimension width:" + this.width + " height:" + this.height + "]" ;
     }}
