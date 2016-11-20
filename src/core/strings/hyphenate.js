@@ -11,6 +11,10 @@
  */
 export function hyphenate( source /*String*/ ) /*String*/
 {
+    if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
+    {
+        return '' ;
+    }
     return source.replace
     (
         /[A-Z]/g,
