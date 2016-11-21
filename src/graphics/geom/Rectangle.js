@@ -8,25 +8,26 @@ import { Point } from './Point.js' ;
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
  * @constructor
- * @param width the width value of the object.
- * @param height the height value of the object.
+ * @param {number} x the x value of the object.
+ * @param {number} y the y value of the object.
+ * @param {number} width the width value of the object.
+ * @param {number} height the height value of the object.
  */
 export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 {
-    Dimension.call( this , width , height ) ;
-
     Object.defineProperties( this ,
     {
         /**
          * Determinates the x value of this object.
          */
-        x : { value : x , writable : true } ,
+        x : { value : isNaN(x) ? 0 : x , writable : true } ,
 
         /**
          * Determinates the y value of this object.
          */
-        y : { value : y , writable : true }
+        y : { value : isNaN(y) ? 0 : y , writable : true }
     });
+    Dimension.call( this , width , height ) ;
 }
 
 /**
@@ -34,6 +35,8 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
  */
 Rectangle.prototype = Object.create( Dimension.prototype ,
 {
+    // ------- getters/setters
+
     /**
      * The sum of the y and height properties.
      */
@@ -201,6 +204,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         }
     },
 
+    // ------- methods
+
     /**
      * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
      * @return a shallow copy of the object.
@@ -243,19 +248,24 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     copyFrom : { value : function( rec )
     {
-        this.x = rec.x ;
-        this.y = rec.y ;
-        this.width = rec.width ;
+        this.x      = rec.x ;
+        this.y      = rec.y ;
+        this.width  = rec.width ;
         this.height = rec.height ;
+        return this ;
     }},
 
     /**
      * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
+     * @param toCompare {object} The object to evaluates.
+     * @param strict {boolean} If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
      * @return <code>true</code> if the the specified object is equal with this object.
      */
-    equals : { writable : true , value : function( toCompare )
+    equals : { writable : true , value : function( toCompare , strict = true )
     {
-        if ( toCompare instanceof Rectangle )
+        var flag = strict ? toCompare instanceof Rectangle
+                          : ('x' in toCompare && 'y' in toCompare && 'width' in toCompare && 'height' in toCompare ) ;
+        if ( flag )
         {
             return toCompare.x === this.x &&
                    toCompare.y === this.y &&
@@ -280,6 +290,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         this.y -= dy;
         this.width  += 2 * dx;
         this.height += 2 * dy;
+        return this ;
     }},
 
     /**
@@ -296,6 +307,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         this.y -= point.y;
         this.width  += 2 * point.x;
         this.height += 2 * point.y;
+        return this ;
     }},
 
     /**
@@ -337,16 +349,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     }},
 
     /**
-     * Determines whether or not this Rectangle object is empty.
-     * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
-     */
-    isEmpty : { value : function()
-    {
-        return this.width <= 0 && this.height <= 0;
-    }},
-
-    /**
-     * Adjusts the location of the Rectangle object, as determined by its top-left corner, by the specified amounts.
+     * Adjusts the location of the object, as determined by its top-left corner, by the specified amounts.
      * @param dx {number} Moves the x value of the Rectangle object by this amount.
      * @param dy {number} Moves the y value of the Rectangle object by this amount.
      */
@@ -354,6 +357,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     {
         this.x += dx ;
         this.y += dy ;
+        return this ;
     }},
 
     /**
@@ -364,14 +368,16 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     {
         this.x += point.x ;
         this.y += point.y ;
+        return this ;
     }},
 
     /**
-     * Sets the members of Rectangle to the specified values
+     * Sets the members of Rectangle to the specified values.
      * @param x {number} The x coordinate of the top-left corner of the rectangle (default 0).
      * @param y {number} The y coordinate of the top-left corner of the rectangle (default 0).
      * @param width {number} The width of the rectangle, in pixels (default 0).
      * @param height {number} The height of the rectangle, in pixels (default 0).
+     * @return {Rectangle} The object reference.
      */
     set : { value : function( x = 0 , y = 0 , width = 0 , height = 0 )
     {
@@ -379,6 +385,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         this.y = y ;
         this.width = width ;
         this.height = height ;
+        return this ;
     }},
 
     /**
@@ -423,10 +430,12 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         else
         {
             var rec = new Rectangle();
+
             rec.x = Math.min(this.x, toUnion.x);
             rec.y = Math.min(this.y, toUnion.y);
             rec.width  = Math.max(this.x + this.width  , toUnion.x + toUnion.width  ) - rec.x ;
             rec.height = Math.max(this.y + this.height , toUnion.y + toUnion.height ) - rec.y ;
+
             return rec ;
         }
     }}

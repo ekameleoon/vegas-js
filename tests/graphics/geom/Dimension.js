@@ -32,20 +32,6 @@ describe( 'graphics.geom.Dimension' , () =>
             let dim = new Dimension(500,400) ;
             assert.equal( dim.height , 400 );
         });
-
-        it('new Dimension(new Dimension())', () =>
-        {
-            let dim = new Dimension(new Dimension()) ;
-            assert.equal( dim.width  , 0 );
-            assert.equal( dim.height , 0 );
-        });
-
-        it('new Dimension(new Dimension(10,20))', () =>
-        {
-            let dim = new Dimension(new Dimension(10,20)) ;
-            assert.equal( dim.width  , 10 );
-            assert.equal( dim.height , 20 );
-        });
     });
 
     describe( '#clone()' , () =>
@@ -70,20 +56,25 @@ describe( 'graphics.geom.Dimension' , () =>
         });
     });
 
+    describe( '#copyFrom()' , () =>
+    {
+        it('new Dimension().copyFrom(10,20) === new Dimension(10,20)', () =>
+        {
+            let dim1 = new Dimension() ;
+            let dim2 = new Dimension(10,20) ;
+            let dim3 = dim1.copyFrom( dim2 ) ;
+            assert.strictEqual( dim1 , dim3 );
+            assert.equal( dim1.width, 10 );
+            assert.equal( dim1.height, 20 );
+        }) ;
+    });
+
     describe( '#decrease()' , () =>
     {
-        it('new Dimension(30,20).decrease(new Dimension(10,10)) === new Dimension(20,10)', () =>
+        it('new Dimension(30,20).decrease(10,10) === new Dimension(20,10)', () =>
         {
             let dim = new Dimension(30,20) ;
             let dec = dim.decrease(10,10) ;
-            assert.strictEqual( dim , dec );
-            assert.equal( dim.width, 20 );
-            assert.equal( dim.height, 10 );
-        });
-        it('new Dimension(30,20).decrease(new Dimension(10,10)) === new Dimension(20,10)', () =>
-        {
-            let dim = new Dimension(30,20) ;
-            let dec = dim.decrease(new Dimension(10,10)) ;
             assert.strictEqual( dim , dec );
             assert.equal( dim.width, 20 );
             assert.equal( dim.height, 10 );
@@ -129,14 +120,9 @@ describe( 'graphics.geom.Dimension' , () =>
         });
     });
 
-    // describe( '#getBounds()' , () =>
-    // {
-    //
-    // });
-
     describe( '#increase()' , () =>
     {
-        it('new Dimension(30,20).increase(new Dimension(10,10)) === new Dimension(40,30)', () =>
+        it('new Dimension(30,20).increase(10,10) === new Dimension(40,30)', () =>
         {
             let dim = new Dimension(30,20) ;
             let dec = dim.increase(10,10) ;
@@ -144,45 +130,63 @@ describe( 'graphics.geom.Dimension' , () =>
             assert.equal( dim.width, 40 );
             assert.equal( dim.height, 30 );
         });
-        it('new Dimension(30,20).decrease(new Dimension(10,10)) === new Dimension(40,30)', () =>
-        {
-            let dim = new Dimension(30,20) ;
-            let dec = dim.increase(new Dimension(10,10)) ;
-            assert.strictEqual( dim , dec );
-            assert.equal( dim.width, 40 );
-            assert.equal( dim.height, 30 );
-        });
     });
 
-    describe( '#setSize()' , () =>
+    describe( '#isEmpty()' , () =>
     {
-        it('new Dimension(10,10).setSize() === new Dimension(0,0)', () =>
+        it('new Dimension().isEmpty() === true', () =>
+        {
+            assert.isTrue( new Dimension().isEmpty() );
+        }) ;
+
+        it('new Dimension().isEmpty(10,0) === true', () =>
+        {
+            assert.isTrue( new Dimension(10,0).isEmpty() );
+        }) ;
+
+        it('new Dimension().isEmpty(0,10) === true', () =>
+        {
+            assert.isTrue( new Dimension(10,0).isEmpty() );
+        }) ;
+
+        it('new Dimension().isEmpty(10,10) === false', () =>
+        {
+            assert.isFalse( new Dimension(10,10).isEmpty() );
+        }) ;
+    });
+
+    describe( '#set()' , () =>
+    {
+        it('new Dimension(10,10).set() === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.setSize() ;
+            let now = dim.set() ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 0 );
             assert.equal( dim.height, 0 );
         });
 
-        it('new Dimension(10,10).setSize(0,0) === new Dimension(0,0)', () =>
+        it('new Dimension(10,10).set(0,0) === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.setSize(0,0) ;
+            let now = dim.set(0,0) ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 0 );
             assert.equal( dim.height, 0 );
         });
 
-        it('new Dimension(10,10).setSize(0,0) === new Dimension(0,0)', () =>
+        it('new Dimension(10,10).set(0,0) === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.setSize(110,240) ;
+            let now = dim.set(110,240) ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 110 );
             assert.equal( dim.height, 240 );
         });
+    });
 
+    describe( '#toObject()' , () =>
+    {
         it('new Dimension(10,10).toObject === { width:10 , height:10 }', () =>
         {
             let dim = new Dimension(10,10) ;

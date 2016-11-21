@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * Adds the core.arrays.swap function.
 * Adds an example of the Tween class with the Pixi library.
 * Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
+* Adds the graphics.geom Package : Rectangle, Dimension, Point
 
 ### Changed
 * Updates the core.arrays.sortOn method.

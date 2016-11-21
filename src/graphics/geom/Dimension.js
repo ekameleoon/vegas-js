@@ -1,12 +1,10 @@
 "use strict" ;
 
-import { Rectangle } from './Rectangle.js' ;
-
 /**
- * The Dimension encapsulates the width and height of an object.
+ * The Dimension object encapsulates the width and height components of an object.
  * @constructor
- * @param width the width value, in pixels.
- * @param height The height value, in pixels.
+ * @param {number} width the width value.
+ * @param {number} height The height value.
  */
 export function Dimension( width = 0 , height = 0)
 {
@@ -15,24 +13,13 @@ export function Dimension( width = 0 , height = 0)
         /**
          * The height of the rectangle, in pixels.
          */
-        height : { value : 0 , writable : true } ,
+        height : { value : isNaN(height) ? 0 : height , writable : true } ,
 
         /**
          * The width of the rectangle, in pixels.
          */
-        width : { value : 0 , writable : true }
+        width : { value : isNaN(width) ? 0 : width  , writable : true }
     });
-
-    if( arguments[0] instanceof Dimension )
-    {
-        this.width  = arguments[0].width ;
-        this.height = arguments[0].height ;
-    }
-    else
-    {
-        this.width  = width  > 0 ? width  : 0 ;
-        this.height = height > 0 ? height : 0 ;
-    }
 }
 
 /**
@@ -50,26 +37,24 @@ Dimension.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Decreases the size by s and return its self(this).
-     * @param s an other Dimension reference to decreases the current Dimension.
-     * @return the current reference of this object.
+     * Copies all of data from the source Dimension object into the calling Dimension object.
      */
-    decrease : { value : function( width = 0 , height = 0 )
+    copyFrom : { value : function( dim )
     {
-        if( arguments[0] instanceof Dimension )
-        {
-            this.width  -= arguments[0].width ;
-            this.height -= arguments[0].height ;
-        }
-        else if
-        (
-            ( width instanceof Number  || typeof(width) === 'number'  ) &&
-            ( height instanceof Number || typeof(height) === 'number' )
-        )
-        {
-            this.width  -= width ;
-            this.height -= height ;
-        }
+        this.width = dim.width ;
+        this.height = dim.height ;
+        return this ;
+    }},
+
+    /**
+     * Decreases the size by a specific width/height values and return its self(this).
+     * @param dWidth A number value to descrease the width component of the object (default 0).
+     * @param dHeight A number value to descrease the height component of the object (default 0).
+     */
+    decrease : { value : function( dWidth = 0 , dHeight = 0 )
+    {
+        this.width  -= isNaN(dWidth) ? 0 : dWidth ;
+        this.height -= isNaN(dHeight) ? 0 : dHeight ;
         return this ;
     }},
 
@@ -90,46 +75,34 @@ Dimension.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Returns a new bounds area with a specific position.
-     * @return a new bounds area with a specific position.
-     */
-    getBounds : { writable : true , value : function()
-    {
-        return new Rectangle( 0 , 0 , this.width , this.height ) ;
-    }},
-
-    /**
      * Increases the size by a specific width/height values and return its self(this).
-     * @param width An other Dimension reference to increase the current Dimension or a number to defines the width value of the object.
-     * @param height A number value to inscrease the height component of the object (if width is defined).
+     * @param dWidth A number value to increase the width component of the object (default 0).
+     * @param dHeight A number value to inscrease the height component of the object (default 0).
      * @return the current reference of this object.
      */
-    increase : { value : function( width = 0 , height = 0 )
+    increase : { value : function( dWidth = 0 , dHeight = 0 )
     {
-        if( arguments[0] instanceof Dimension )
-        {
-            this.width  += arguments[0].width ;
-            this.height += arguments[0].height ;
-        }
-        else if
-        (
-            ( width instanceof Number  || typeof(width) === 'number'  ) &&
-            ( height instanceof Number || typeof(height) === 'number' )
-        )
-        {
-            this.width  += width ;
-            this.height += height ;
-        }
+        this.width  += isNaN(dWidth) ? 0 : dWidth ;
+        this.height += isNaN(dHeight) ? 0 : dHeight ;
         return this ;
     }},
 
     /**
-     * Sets the size of this instance.
+     * Determines whether or not this Rectangle object is empty.
+     * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
+     */
+    isEmpty : { value : function()
+    {
+        return this.width <= 0 || this.height <= 0;
+    }},
+
+    /**
+     * Sets the members of Dimension to the specified values.
      * @param {number} width The width component value to change (default 0).
      * @param {number} height The height component value to change (default 0).
-     * @return The object reference.
+     * @return {Dimension} The object reference.
      */
-    setSize : { value : function( width = 0 , height = 0 )
+    set : { value : function( width = 0 , height = 0 )
     {
         this.width  = width ;
         this.height = height ;
@@ -146,8 +119,8 @@ Dimension.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
+     * Returns the string representation of this object.
+     * @return the string representation of this object.
      */
     toString : { writable : true , value : function()
     {
