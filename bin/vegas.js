@@ -19612,12 +19612,764 @@ var ZOrder = Object.defineProperties({}, {
 });
 
 /**
+ * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @constructor
+ * @param x the x value of the object.
+ * @param y the y value of the object.
+ */
+function Point() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * Determinates the x value of this object.
+         */
+        x: { value: x, writable: true },
+
+        /**
+         * Determinates the y value of this object.
+         */
+        y: { value: y, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Point.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns the angle value of this Point object.
+     * @example
+     * <pre>
+     * var p1 = new Point(0,10) ;
+     * var p2 = new Point(10,10) ;
+     * trace(p1.angle) ; // 90
+     * trace(p2.angle) ; // 45
+     * </pre>
+     * @return the angle value of this Point object.
+     */
+    angle: {
+        get: function get() {
+            return atan2D(this.y, this.x);
+        },
+        set: function set(value) {
+            var len = Math.sqrt(this.x * this.x + this.y * this.y); // length
+            this.x = len * cosD(value);
+            this.y = len * sinD(value);
+        }
+    },
+
+    /**
+     * Indicates the length of the line segment from (0,0) to this point.
+     * @example
+     */
+    length: {
+        get: function get() {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        },
+        set: function set(value) {
+            var len = Math.sqrt(this.x * this.x + this.y * this.y);
+            if (!isNaN(len) && len !== 0) {
+                this.scale(value / len);
+            } else {
+                this.x = len;
+            }
+        }
+    },
+
+    /**
+     * Transform the coordinates of this point to used absolute value for the x and y properties.
+     * @example
+     * <pre>
+     * var p = new Point(-10, -20) ;
+     * p.abs() ;
+     * trace(p) ; // [Point x:10 y:20]
+     * </pre>
+     */
+    abs: { writable: true, value: function value() {
+            this.x = Math.abs(this.x);
+            this.y = Math.abs(this.y);
+        } },
+
+    /**
+     * Returns a new Point reference with the absolute value of the coordinates of this Point object.
+     * @example
+     * <pre>
+     * var p1 = new Point(-10, -20) ;
+     * var p2 = p1.absNew() ;
+     * trace(p1 + " / " + p2) ; // [Point x:-10 y:-20] / [Point x:10 y:20]
+     * </pre>
+     * @return a new Point reference with the absolute value of the coordinates of this Point object.
+     */
+    absNew: { writable: true, value: function value() {
+            return new Point(Math.abs(this.x), Math.abs(this.y));
+        } },
+
+    /**
+     * Returns the angle value between this Point object and the specified Point passed in arguments.
+     * <p><b>Example :</b></p>
+     * {@code
+     * var p1:Point = new Point(10, 20) ;
+     * var p2:point = new Point(50, 200) ;
+     * var angle:Number = p1.angleBetween(p2) ;
+     * }
+     * @return the angle value between this Point object and the specified Point passed in arguments.
+     */
+    angleBetween: { value: function value(point) {
+            return acosD(this.dot(point) / (this.length * point.length));
+        } },
+
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Point(this.x, this.y);
+        } },
+
+    /**
+     * Returns the cross value of the current Point object with the Point passed in argument.
+     * <pre>
+     * var p1 = new Point(10,20) ;
+     * var p2 = new Point(40,60) ;
+     * trace(p1.cross(p2)) ; // -200
+     * </pre>
+     * @param p The Point object use to calculate the cross value.
+     * @return The cross value of the current Point object with the Point passed in argument.
+     */
+    cross: { writable: true, value: function value(point) {
+            return this.x * point.y - this.y * point.x;
+        } },
+
+    /**
+     * Returns the dot value of the current Point and the specified Point passed in argument.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,20) ;
+     * var p2 = new Point(40,60) ;
+     * trace(p1.dot(p2)) ; // 1600
+     * </pre>
+     * @param p the Point to calculate the dot value of the current Point.
+     * @return the dot value of the current Point and the specified Point passed in argument.
+     */
+    dot: { writable: true, value: function value(point) {
+            return this.x * point.x + this.y * point.y;
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Point) {
+                return o.x === this.x && o.y === this.y;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Returns the direction of this Point.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,2);
+     * var p2 = p1.getDirection();
+     * trace( p2.getDirection() ) ;
+     * </pre>
+     * @return the direction of this Point.
+     * @see #normalize
+     */
+    getDirection: { value: function value() {
+            var direction = new Point(this.x, this.y);
+            direction.normalize();
+            return direction;
+        } },
+
+    /**
+     * Returns the normal value of this Point.
+     * @example
+     * <pre>
+     * var p = new Point(10,10) ;
+     * var n = p.getNormal() ; // [Point x:-10 y:10]
+     * trace(n) ;
+     * </pre>
+     * @return the normal value of this Point.
+     */
+    getNormal: { value: function value() {
+            return new Point(-this.y, this.x);
+        } },
+
+    /**
+     * Returns the size of the projection of this Point with an other Point.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,10) ;
+     * var p2 = new Point(100,200) ;
+     * var size = p1.getProjectionLength(p2) ;
+     * trace(size) ; // 0.06
+     * </pre>
+     * @param point the Point use to calculate the length of the projection.
+     * @return the size of the projection of this Point with an other Point.
+     */
+    getProjectionLength: { value: function value(point) {
+            var len = point.dot(point);
+            return len === 0 ? 0 : Math.abs(this.dot(point) / len);
+        } },
+
+    /**
+     * Returns true if the Point is perpendicular with the passed-in Point.
+     * @example
+     * <pre>
+     * var p1 = new Point(0,10) ;
+     * var p2 = new Point(10,10) ;
+     * var p3 = new Point(10,0) ;
+     * trace(p1.isPerpTo(p2)) ; // false
+     * trace(p1.isPerpTo(p3)) ; // true
+     * </pre>
+     * @param p the Point use to determinate if this Point object is perpendicular.
+     * @return {@code true} if the Point is perpendicular with the passed-in Point.
+     */
+    isPerpTo: { writable: true, value: function value(point) {
+            return this.dot(point) === 0;
+        } },
+
+    /**
+     * Returns the new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,100) ;
+     * var p2 = new Point(100,10) ;
+     * var p3 = p1.max(p2) ;
+     * trace(p3) ; // [Point x:100 y:100]
+     * </pre>
+     * @param point The Point passed in this method.
+     * @return The new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
+     */
+    max: { writable: true, value: function value(point) {
+            return new Point(Math.max(this.x, point.x), Math.max(this.y, point.y));
+        } },
+
+    /**
+     * Returns a new Point with the minimum horizontal coordinate and the minimize vertical coordinate.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,100) ;
+     * var p2 = new Point(100,10) ;
+     * var p3 = p1.min(p2) ;
+     * trace(p3) ; // [Point x:10 y:10]
+     * </pre>
+     * @param point The Point passed in this method
+     * @return A new Point with the min horizontal coordinate and the minimize vertical coordinate.
+     */
+    min: { writable: true, value: function value(point) {
+            return new Point(Math.min(this.x, point.x), Math.min(this.y, point.y));
+        } },
+
+    /**
+     * Sets this Point with negate coordinates.
+     * @example
+     * <pre>
+     * var p = new Point(10,20) ;
+     * trace(p) ; // [Point x:10 y:20]
+     * p.negate() ;
+     * trace(p) ; // [Point x:-10 y:-20]
+     * p.negate() ;
+     * trace(p) ; // [Point x:10 y:20]
+     * </pre>
+     */
+    negate: { writable: true, value: function value() {
+            this.x = -this.x;
+            this.y = -this.y;
+        } },
+
+    /**
+     * Scales the line segment between (0,0) and the current point to a set length.
+     * @example
+     * <pre>
+     * var p = new Point(0,5) ;
+     * p.normalize() ;
+     * trace(p) ; // [Point x:0 y:1]
+     * </pre>
+     * @param thickness The scaling value. For example, if the current point is (0,5), and you normalize it to 1, the point returned is at (0,1).
+     * @see #length
+     * @throws Error if a zero-length vector or a illegal NaN value is calculate in this method.
+     */
+    normalize: { writable: true, value: function value() {
+            var thickness = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+            if (isNaN(thickness)) {
+                thickness = 1;
+            }
+            var l = Math.sqrt(this.x * this.x + this.y * this.y); // length
+            if (l > 0) {
+                l = thickness / l;
+                this.x *= l;
+                this.y *= l;
+            } else {
+                throw new Error(this + " normalize method failed with a zero-length vector or a illegal NaN value.");
+            }
+        } },
+
+    /**
+     * Offsets the Point object by the specified amount.
+     * The value of dx is added to the original value of x to create the new x value.
+     * The value of dy is added to the original value of y to create the new y value.
+     * @example
+     * <pre>
+     * var p = new Point(10,10) ;
+     * p.offset(10,10) ;
+     * trace(p) ; // [Point x:20 y:20]
+     * </pre>
+     * @param dx The amount by which to offset the horizontal coordinate, x.
+     * @param dy The amount by which to offset the vertical coordinate, y.
+     */
+    offset: { writable: true, value: function value() {
+            var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var dy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.x += dx;
+            this.y += dy;
+        } },
+
+    /**
+     * Adds the coordinates of another point to the coordinates of this point.
+     * @param point the point to be added. You can use an object with the properties x and y.
+     */
+    plus: { writable: true, value: function value(point) {
+            this.x += point.x;
+            this.y += point.y;
+        } },
+
+    /**
+     * Adds the coordinates of another point to the coordinates of this point to create a new point.
+     * @param point the point to be added. You can use an object with the properties x and y.
+     * @return The new point.
+     */
+    plusNew: { value: function value(point) {
+            return new Point(this.x + point.x, this.y + point.y);
+        } },
+
+    /**
+     * Returns the projection of a Point with the specified Point passed in argument.
+     * @param point The Point to project with this current Point.
+     * @return the new project Point.
+     */
+    project: { value: function value(point) {
+            var l = point.dot(point);
+            if (l === 0) {
+                return this.clone();
+            } else {
+                var value = this.dot(point) / l;
+                return new Point(this.x * value, this.y * value);
+            }
+        } },
+
+    /**
+     * Rotates the Point with the specified angle in argument.
+     * @param angle the angle to rotate this Point.
+     */
+    rotate: { value: function value(angle) {
+            var ca = cosD(angle);
+            var sa = sinD(angle);
+            var rx = this.x * ca - this.y * sa;
+            var ry = this.x * ca + this.y * sa;
+            this.x = rx;
+            this.y = ry;
+        } },
+
+    /**
+     * Scales the Point with the specified value in argument.
+     * @param value the value to scale this Point coordinates.
+     */
+    scale: { value: function value(_value) {
+            this.x *= _value;
+            this.y *= _value;
+        } },
+
+    /**
+     * Scales the Point with the specified value and creates a new Point.
+     * @param value the value to scale this Point.
+     * @return The new scaled Point.
+     */
+    scaleNew: { value: function value(_value2) {
+            return new Point(this.x * _value2, this.y * _value2);
+        } },
+
+    /**
+     * Sets the horizontal and vertical coordinates of this Point. If the {@code x} and the {@code y} parameters are NaN or null the x value is 0 and y value is 0.
+     * @param x The x coordinates of the point.
+     * @param y The y coordinates of the point.
+     */
+    set: { value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.x = isNaN(x) ? 0 : x;
+            this.y = isNaN(y) ? 0 : y;
+        } },
+
+    /**
+     * Subtracts the coordinates of another point from the coordinates of this point.
+     * @param point The point to be subtracted.
+     */
+    subtract: { value: function value(point) {
+            this.x -= point.x;
+            this.y -= point.y;
+        } },
+
+    /**
+     * Subtracts the coordinates of another point from the coordinates of this point to create a new point.
+     * @param point The point to be subtracted.
+     * @return The new Point.
+     */
+    subtractNew: { value: function value(point) {
+            return new Point(this.x - point.x, this.y - point.y);
+        } },
+
+    /**
+     * Swap the horizontal and vertical coordinates of two Point objects.
+     * @param point The point to be swap.
+     * @example
+     * var p1 = new Point(10,20) ;
+     * var p2 = new Point(30,40) ;
+     * trace(p1 + " / " + p2) ; // [Point:{10,20}] / [Point:{30,40}]
+     * p1.swap(p2) ;
+     * trace(p1 + " / " + p2) ; // [Point:{30,40}] / [Point:{10,20}]
+     */
+    swap: { value: function value(point) {
+            var tx = this.x;
+            var ty = this.y;
+            this.x = point.x;
+            this.y = point.y;
+            point.x = tx;
+            point.y = ty;
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { x: this.x, y: this.y };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Point x:" + this.x + " y:" + this.y + "]";
+        } }
+});
+
+Object.defineProperties(Point, {
+    /**
+     * Returns the distance between p1 and p2 the 2 Points reference passed in argument.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,20) ;
+     * var p2 = new Point(40,60) ;
+     * trace( Point.distance(p1,p2) ) ; // 50
+     * </pre>
+     * @param p1 the first Point.
+     * @param p2 the second Point.
+     * @return the distance between p1 and p2 the 2 Points reference passed in argument.
+     */
+    distance: { value: function value(p1, p2) {
+            var x = p1.x - p2.x;
+            var y = p1.y - p2.y;
+            return Math.sqrt(x * x + y * y);
+        } },
+
+    /**
+     * Returns the middle Point between 2 Points.
+     * @example
+     * <pre>
+     * var p1 = new Point(10,10) ;
+     * var p2 = new Point(20,20) ;
+     * var middle = Point.getMiddle(p1,p2) ;
+     * trace(middle) ;
+     * </pre>
+     * @return the middle Point between 2 Points.
+     */
+    getMiddle: { value: function value(p1, p2) {
+            return new Point((p1.x + p2.x) * 0.5, (p1.y + p2.y) * 0.5);
+        } },
+
+    /**
+     * Determines a point between two specified points.
+     * The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters {@code p1} and {@code p2}.
+     * The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter {@code p1}).
+     * The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter {@code p2}).
+     * @example
+     * <pre>
+     * var p1 = new Point(10,10) ;
+     * var p2 = new Point(40,40) ;
+     * var p3 ;
+     *
+     * p3 = Point.interpolate( p1 , p2 , 0 ) ;
+     * trace(p3) ; // [Point x:40 y:40]
+     *
+     * p3 = Point.interpolate( p1 , p2 , 1 ) ;
+     * trace(p3) ; // [Point x:10 y:10]
+     *
+     * p3 = Point.interpolate( p1 , p2 , 0.5 ) ;
+     * trace(p3) ; // [Point x:25 y:25]
+     * </pre>
+     * @param p1 The first point.
+     * @param p2 The second Point.
+     * @param level the The level of interpolation between the two points. Indicates where the new point will be, along the line between p1 and p2. If level=1, pt1 is returned; if level=0, pt2 is returned.
+     * @return The new interpolated point.
+     */
+    interpolate: { value: function value(p1, p2) {
+            var level = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+            return new Point(p2.x + level * (p1.x - p2.x), p2.y + level * (p1.y - p2.y));
+        } },
+
+    /**
+     * Converts a pair of polar coordinates to a Cartesian point coordinates.
+     * @example
+     * <pre>
+     * var polar = Point.polar( 5, Math.atan(3/4) ) ;
+     * trace(polar) ; // [Point x:4 y:3]
+     * </pre>
+     * @param len The length coordinate of the polar pair.
+     * @param angle The angle, in radians, of the polar pair.
+     * @return The new Cartesian point.
+     */
+    polar: { value: function value(len, angle) {
+            return new Point(len * Math.cos(angle), len * Math.sin(angle));
+        } }
+});
+
+/**
+ * The Rectangle class is used to create and modify Rectangle objects.
+ * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
+ * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
+ * @constructor
+ * @param width the width value of the object.
+ * @param height the height value of the object.
+ */
+function Rectangle() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+    Dimension.call(this, width, height);
+
+    Object.defineProperties(this, {
+        /**
+         * Determinates the x value of this object.
+         */
+        x: { value: x, writable: true },
+
+        /**
+         * Determinates the y value of this object.
+         */
+        y: { value: y, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Rectangle.prototype = Object.create(Dimension.prototype, {
+    /**
+     * Indicates the sum of the y and height properties.
+     */
+    bottom: {
+        get: function get() {
+            return this.y + this.height;
+        },
+        set: function set(value) {
+            this.height = value - this.y;
+        }
+    },
+
+    /**
+     * Indicates the sum of the y and height properties.
+     */
+    bottomLeft: {
+        get: function get() {
+            return new Point(this.x, this.y + this.height);
+        },
+        set: function set(point) {
+            this.width = this.width + (this.x - point.x);
+            this.height = point.y - this.y;
+            this.x = point.x;
+        }
+    },
+
+    /**
+     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     */
+    bottomRight: {
+        get: function get() {
+            return new Point(this.x + this.width, this.y + this.height);
+        },
+        set: function set(point) {
+            this.width = point.x - this.x;
+            this.height = point.y - this.y;
+        }
+    },
+
+    /**
+     * Determinates the location of the Rectangle object's center, determined by the values of the x and y properties.
+     */
+    center: {
+        get: function get() {
+            return new Point(this.x + this.width * 0.5, this.y + this.height * 0.5);
+        },
+        set: function set(point) {
+            this.x = point.x - this.width * 0.5;
+            this.y = point.y - this.height * 0.5;
+        }
+    },
+
+    /**
+     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     */
+    left: {
+        get: function get() {
+            return this.x;
+        },
+        set: function set(value) {
+            this.width = this.width + (this.x - value);
+            this.x = value;
+        }
+    },
+
+    /**
+     * Indicates the sum of the x and width properties.
+     */
+    right: {
+        get: function get() {
+            return this.x + this.width;
+        },
+        set: function set(value) {
+            this.width = value - this.x;
+        }
+    },
+
+    /**
+     * Indicates the size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
+     */
+    size: {
+        get: function get() {
+            return new Point(this.width, this.height);
+        },
+        set: function set(point) {
+            this.width = point.x;
+            this.height = point.y;
+        }
+    },
+
+    /**
+     * Indicates the y coordinate of the top of the rectangle.
+     */
+    top: {
+        get: function get() {
+            return this.x + this.width;
+        },
+        set: function set(value) {
+            this.height = this.height + (this.y - value);
+            this.y = value;
+        }
+    },
+
+    /**
+     * Indicates the location of the Rectangle object's top-left corner determined by the x and y values of the point.
+     */
+    topLeft: {
+        get: function get() {
+            return new Point(this.x, this.y);
+        },
+        set: function set(point) {
+            this.width = this.width + (this.x - point.x);
+            this.height = this.height + (this.y - point.y);
+            this.x = point.x;
+            this.y = point.y;
+        }
+    },
+
+    /**
+     * Indicates the location of the Rectangle object's top-right corner determined by the x and y values of the point.
+     */
+    topRight: {
+        get: function get() {
+            return new Point(this.x + this.width, this.y);
+        },
+        set: function set(point) {
+            this.width = point.x - this.x;
+            this.height = this.height + (this.y - point.y);
+            this.y = point.y;
+        }
+    },
+
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Rectangle(this.x, this.y, this.width, this.height);
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Rectangle) {
+                return o.x === this.x && o.y === this.y && o.width === this.width && o.height === this.height;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Returns a new bounds area with a specific position.
+     * @return a new bounds area with a specific position.
+     */
+    getBounds: { writable: true, value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            return new Rectangle(x, y, this.width, this.height);
+        } },
+
+    /**
+     * Sets all of the Rectangle object's properties to 0.
+     */
+    setEmpty: { value: function value() {
+            this.x = this.y = this.width = this.height = 0;
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { value: function value() {
+            return { x: this.x, y: this.y, width: this.width, height: this.height };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return "[Rectangle x:" + this.x + " y:" + this.y + " width:" + this.width + " height:" + this.height + "]";
+        } }
+});
+
+/**
  * The Dimension encapsulates the width and height of an object.
  * @constructor
  * @param width the width value of the object.
  * @param height the height value of the object.
  */
-
 function Dimension() {
     var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -19651,7 +20403,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
      */
-    clone: { value: function value() {
+    clone: { writable: true, value: function value() {
             return new Dimension(this.width, this.height);
         } },
 
@@ -19678,7 +20430,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
      */
-    equals: { value: function value(o) {
+    equals: { writable: true, value: function value(o) {
             if (o instanceof Dimension) {
                 return o.width === this.width && o.height === this.height;
             } else {
@@ -19690,11 +20442,8 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Returns a new bounds area with a specific position.
      * @return a new bounds area with a specific position.
      */
-    getBounds: { value: function value() {
-            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            return new Dimension(x, y, this.width, this.height);
+    getBounds: { writable: true, value: function value() {
+            return new Rectangle(0, 0, this.width, this.height);
         } },
 
     /**
@@ -19736,7 +20485,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
      */
-    toObject: { value: function value() {
+    toObject: { writable: true, value: function value() {
             return { width: this.width, height: this.height };
         } },
 
@@ -19744,7 +20493,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      */
-    toString: { value: function value() {
+    toString: { writable: true, value: function value() {
             return "[Dimension width:" + this.width + " height:" + this.height + "]";
         } }
 });
@@ -19755,7 +20504,9 @@ Dimension.prototype = Object.create(Object.prototype, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var geom = Object.assign({
-  Dimension: Dimension
+  Dimension: Dimension,
+  Point: Point,
+  Rectangle: Rectangle
 });
 
 /**

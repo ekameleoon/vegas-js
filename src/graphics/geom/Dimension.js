@@ -5,20 +5,20 @@ import { Rectangle } from './Rectangle.js' ;
 /**
  * The Dimension encapsulates the width and height of an object.
  * @constructor
- * @param width the width value of the object.
- * @param height the height value of the object.
+ * @param width the width value, in pixels.
+ * @param height The height value, in pixels.
  */
 export function Dimension( width = 0 , height = 0)
 {
     Object.defineProperties( this ,
     {
         /**
-         * Determinates the height value of this instance.
+         * The height of the rectangle, in pixels.
          */
         height : { value : 0 , writable : true } ,
 
         /**
-         * Determinates the width value of this instance.
+         * The width of the rectangle, in pixels.
          */
         width : { value : 0 , writable : true }
     });

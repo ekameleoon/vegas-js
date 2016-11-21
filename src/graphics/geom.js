@@ -1,8 +1,10 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { Dimension } from './geom/Dimension.js' ;
+import { Point }     from './geom/Point.js' ;
+import { Rectangle } from './geom/Rectangle.js' ;
 
 /**
  * The VEGAS.js framework - The graphics.geom library.
@@ -11,5 +13,7 @@ import { Dimension } from './geom/Dimension.js' ;
  */
 export var geom = Object.assign
 ({
-    Dimension : Dimension
+    Dimension : Dimension ,
+    Point     : Point ,
+    Rectangle : Rectangle
 }) ;

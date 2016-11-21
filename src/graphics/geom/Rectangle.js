@@ -11,7 +11,7 @@ import { Point } from './Point.js' ;
  * @param width the width value of the object.
  * @param height the height value of the object.
  */
-export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0)
+export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 {
     Dimension.call( this , width , height ) ;
 
@@ -35,7 +35,7 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0)
 Rectangle.prototype = Object.create( Dimension.prototype ,
 {
     /**
-     * Indicates the sum of the y and height properties.
+     * The sum of the y and height properties.
      */
     bottom :
     {
@@ -50,7 +50,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the sum of the y and height properties.
+     * The location of the Rectangle object's bottom-left corner, determined by the values of the left and bottom properties.
      */
     bottomLeft :
     {
@@ -67,7 +67,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     * The location of the Rectangle object's bottom-right corner, determined by the values of the right and bottom properties.
      */
     bottomRight :
     {
@@ -83,7 +83,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Determinates the location of the Rectangle object's center, determined by the values of the x and y properties.
+     * The location of the Rectangle object's center.
      */
     center :
     {
@@ -103,7 +103,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     * The x coordinate of the top-left corner of the rectangle.
      */
     left :
     {
@@ -119,7 +119,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the sum of the x and width properties.
+     * The sum of the x and width properties.
      */
     right :
     {
@@ -134,7 +134,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
+     * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
      */
     size :
     {
@@ -150,7 +150,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the y coordinate of the top of the rectangle.
+     * The y coordinate of the top-left corner of the rectangle.
      */
     top :
     {
@@ -167,7 +167,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
 
     /**
-     * Indicates the location of the Rectangle object's top-left corner determined by the x and y values of the point.
+     * The location of the Rectangle object's top-left corner, determined by the x and y coordinates of the point.
      */
     topLeft :
     {
@@ -185,7 +185,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Indicates the location of the Rectangle object's top-right corner determined by the x and y values of the point.
+     * The location of the Rectangle object's top-right corner, determined by the x and y coordinates of the point.
      */
     topRight :
     {
@@ -202,7 +202,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
-     * Returns a shallow copy of the object.
+     * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
      * @return a shallow copy of the object.
      */
     clone : { writable : true , value : function()
@@ -211,14 +211,56 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     }},
 
     /**
-     * Compares the passed-in object with this object for equality.
+     * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     */
+    contains : { value : function( x, y )
+    {
+        return (this.x <= x) && (this.x + this.width) > x && (this.y <= y) && (this.y + this.height) > y ;
+    }},
+
+    /**
+     * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     */
+    containsPoint : { value : function( point )
+    {
+        return (this.x <= point.x) && (this.x + this.width) > point.x && (this.y <= point.y) && (this.y + this.height) > point.y ;
+    }},
+
+    /**
+     * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
+     */
+    containsRect : { value : function( rec )
+    {
+        let a = rec.x + rec.width ;
+        let b = rec.y + rec.height ;
+        let c = this.x + this.width ;
+        let d = this.y + this.height ;
+        return (rec.x >= this.x && rec.x < c && rec.y >= this.y && rec.y < d && a > this.x && a <= c && b > this.y && b <= d) ;
+    }},
+
+    /**
+     * Copies all of rectangle data from the source Rectangle object into the calling Rectangle object.
+     */
+    copyFrom : { value : function( rec )
+    {
+        this.x = rec.x ;
+        this.y = rec.y ;
+        this.width = rec.width ;
+        this.height = rec.height ;
+    }},
+
+    /**
+     * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
      * @return <code>true</code> if the the specified object is equal with this object.
      */
-    equals : { writable : true , value : function( o )
+    equals : { writable : true , value : function( toCompare )
     {
-        if ( o instanceof Rectangle )
+        if ( toCompare instanceof Rectangle )
         {
-            return o.x === this.x && o.y === this.y && o.width === this.width && o.height=== this.height ;
+            return toCompare.x === this.x &&
+                   toCompare.y === this.y &&
+                   toCompare.width === this.width &&
+                   toCompare.height=== this.height ;
         }
         else
         {
@@ -227,20 +269,38 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     }},
 
     /**
-     * Returns a new bounds area with a specific position.
-     * @return a new bounds area with a specific position.
+     * Determines whether or not this Rectangle object is empty.
+     * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
      */
-    getBounds : { writable : true , value : function( x = 0 , y = 0)
+    isEmpty : { value : function()
     {
-        return new Rectangle( x , y , this.width , this.height ) ;
+        return this.width <= 0 && this.height <= 0;
     }},
 
     /**
-     * Sets all of the Rectangle object's properties to 0.
+     * Adjusts the location of the Rectangle object, as determined by its top-left corner, by the specified amounts.
+     * @param dx {number} Moves the x value of the Rectangle object by this amount.
+     * @param dy {number} Moves the y value of the Rectangle object by this amount.
      */
-    setEmpty : { value : function()
+    offset : { writable : true , value : function( dx = 0 , dy = 0 )
     {
-        this.x = this.y = this.width = this.height = 0 ;
+        this.x += dx ;
+        this.y += dy ;
+    }},
+
+    /**
+     * Sets the members of Rectangle to the specified values
+     * @param x {number} The x coordinate of the top-left corner of the rectangle (default 0).
+     * @param y {number} The y coordinate of the top-left corner of the rectangle (default 0).
+     * @param width {number} The width of the rectangle, in pixels (default 0).
+     * @param height {number} The height of the rectangle, in pixels (default 0).
+     */
+    set : { value : function( x = 0 , y = 0 , width = 0 , height = 0 )
+    {
+        this.x = x ;
+        this.y = y ;
+        this.width = width ;
+        this.height = height ;
     }},
 
     /**
@@ -259,5 +319,32 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     toString : { value : function()
     {
         return "[Rectangle x:" + this.x + " y:" + this.y + " width:" + this.width + " height:" + this.height + "]" ;
+    }},
+
+    /**
+     * Adds two rectangles together to create a new Rectangle object, by filling in the horizontal and vertical space between the two rectangles.
+     * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2:Rectangle = new Rectangle(300,300,50,0);
+     * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
+     * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
+     */
+    union : { value : function( toUnion )
+    {
+        if ( this.isEmpty() )
+        {
+            return toUnion.clone() ;
+        }
+        else if (toUnion.isEmpty())
+        {
+            return this.clone() ;
+        }
+        else
+        {
+            var rec = new Rectangle();
+            rec.x = Math.min(this.x, toUnion.x);
+            rec.y = Math.min(this.y, toUnion.y);
+            rec.width  = Math.max(this.x + this.width  , toUnion.x + toUnion.width  ) - rec.x ;
+            rec.height = Math.max(this.y + this.height , toUnion.y + toUnion.height ) - rec.y ;
+            return rec ;
+        }
     }}
 });

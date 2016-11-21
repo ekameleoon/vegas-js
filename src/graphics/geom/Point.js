@@ -97,18 +97,13 @@ Point.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Returns a new Point reference with the absolute value of the coordinates of this Point object.
-     * @example
-     * <pre>
-     * var p1 = new Point(-10, -20) ;
-     * var p2 = p1.absNew() ;
-     * trace(p1 + " / " + p2) ; // [Point x:-10 y:-20] / [Point x:10 y:20]
-     * </pre>
-     * @return a new Point reference with the absolute value of the coordinates of this Point object.
+     * Adds the coordinates of another point to the coordinates of this point.
+     * @param point the point to be added. You can use an object with the properties x and y.
      */
-    absNew : { writable : true , value : function()
+    add : { writable : true , value : function( point )
     {
-        return new Point(Math.abs(this.x), Math.abs(this.y))  ;
+        this.x += point.x ;
+        this.y += point.y ;
     }},
 
     /**
@@ -356,26 +351,6 @@ Point.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Adds the coordinates of another point to the coordinates of this point.
-     * @param point the point to be added. You can use an object with the properties x and y.
-     */
-    plus : { writable : true , value : function( point )
-    {
-        this.x += point.x ;
-        this.y += point.y ;
-    }},
-
-    /**
-     * Adds the coordinates of another point to the coordinates of this point to create a new point.
-     * @param point the point to be added. You can use an object with the properties x and y.
-     * @return The new point.
-     */
-    plusNew : { value : function( point )
-    {
-        return new Point (this.x + point.x, this.y + point.y) ;
-    }},
-
-    /**
      * Returns the projection of a Point with the specified Point passed in argument.
      * @param point The Point to project with this current Point.
      * @return the new project Point.
@@ -419,16 +394,6 @@ Point.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Scales the Point with the specified value and creates a new Point.
-     * @param value the value to scale this Point.
-     * @return The new scaled Point.
-     */
-    scaleNew : { value : function( value )
-    {
-        return new Point( this.x * value , this.y * value ) ;
-    }},
-
-    /**
      * Sets the horizontal and vertical coordinates of this Point. If the {@code x} and the {@code y} parameters are NaN or null the x value is 0 and y value is 0.
      * @param x The x coordinates of the point.
      * @param y The y coordinates of the point.
@@ -450,24 +415,14 @@ Point.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Subtracts the coordinates of another point from the coordinates of this point to create a new point.
-     * @param point The point to be subtracted.
-     * @return The new Point.
-     */
-    subtractNew : { value : function( point )
-    {
-        return new Point(this.x - point.x, this.y - point.y) ;
-    }},
-
-    /**
      * Swap the horizontal and vertical coordinates of two Point objects.
      * @param point The point to be swap.
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(30,40) ;
-     * trace(p1 + " / " + p2) ; // [Point:{10,20}] / [Point:{30,40}]
+     * trace(p1 + " / " + p2) ; // [Point x:10 y:20] / [Point x:30 y:40]
      * p1.swap(p2) ;
-     * trace(p1 + " / " + p2) ; // [Point:{30,40}] / [Point:{10,20}]
+     * trace(p1 + " / " + p2) ; // [Point x:30 y:40] / [Point x:10 y:20]
      */
     swap : { value : function( point )
     {
@@ -504,8 +459,8 @@ Object.defineProperties( Point ,
      * Returns the distance between p1 and p2 the 2 Points reference passed in argument.
      * @example
      * <pre>
-     * var p1:Point = new Point(10,20) ;
-     * var p2:Point = new Point(40,60) ;
+     * var p1 = new Point(10,20) ;
+     * var p2 = new Point(40,60) ;
      * trace( Point.distance(p1,p2) ) ; // 50
      * </pre>
      * @param p1 the first Point.
@@ -514,7 +469,9 @@ Object.defineProperties( Point ,
      */
     distance : { value : function( p1 , p2 )
     {
-        return (p1.subtractNew(p2)).length ;
+        let x = p1.x - p2.x ;
+        let y = p1.y - p2.y ;
+        return Math.sqrt(x*x+y*y) ;
     }},
 
     /**
@@ -528,9 +485,13 @@ Object.defineProperties( Point ,
      * </pre>
      * @return the middle Point between 2 Points.
      */
-    getMiddle : { value : function( p1, p2)
+    getMiddle : { value : function( p1 , p2 )
     {
-        return new Point( (p1.x + p2.x) * 0.5 , (p1.y + p2.y) * 0.5) ;
+        return new Point
+        (
+            (p1.x + p2.x) * 0.5 ,
+            (p1.y + p2.y) * 0.5
+        ) ;
     }},
 
     /**
@@ -560,11 +521,29 @@ Object.defineProperties( Point ,
      */
     interpolate : { value : function( p1 , p2 , level = 0 )
     {
-        return new Point
-        (
-            p2.x + level * (p1.x - p2.x) ,
-            p2.y + level * (p1.y - p2.y)
-        ) ;
+        if( isNaN(level) )
+        {
+            level = 0 ;
+        }
+
+        level = Math.max( Math.min( level, 1 ), 0 ) ;
+
+        if( level === 0 )
+        {
+            return p2 ;
+        }
+        else if( level === 1 )
+        {
+            return p1 ;
+        }
+        else
+        {
+            return new Point
+            (
+                p2.x + level * (p1.x - p2.x) ,
+                p2.y + level * (p1.y - p2.y)
+            ) ;
+        }
     }},
 
     /**
