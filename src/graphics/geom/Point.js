@@ -320,15 +320,29 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Rotates the Point with the specified angle in argument.
      * @param angle the angle to rotate this Point.
+     * @param anchor the anchor point to rotate this Point around (by default use the {0,0} position).
      */
-    rotate : { value : function( angle )
+    rotate : { value : function( angle , anchor = null )
     {
-        var ca = cosD( angle ) ;
-        var sa = sinD( angle ) ;
-        var rx = this.x * ca - this.y * sa ;
-        var ry = this.x * ca + this.y * sa ;
-        this.x = rx ;
-        this.y = ry ;
+        let center = { x : 0 , y : 0 } ;
+
+        if( anchor )
+        {
+            if( (anchor instanceof Point) || ( ('x' in anchor) && ('y' in anchor) ) )
+            {
+                center.x = isNaN(anchor.x) ? 0 : anchor.x ;
+                center.y = isNaN(anchor.y) ? 0 : anchor.y ;
+            }
+        }
+
+        let dx = this.x - center.x ;
+        let dy = this.y - center.y ;
+
+        let cos = Math.cos( angle ) ;
+        let sin = Math.sin( angle ) ;
+
+        this.x = center.x + ( cos * dx + sin * dy ) ;
+        this.y = center.y + ( cos * dy - sin * dx ) ;
     }},
 
     /**

@@ -3,6 +3,7 @@
 import '../polyfill/Object.js' ;
 
 import { Dimension } from './geom/Dimension.js' ;
+import { Matrix }    from './geom/Matrix.js' ;
 import { Point }     from './geom/Point.js' ;
 import { Rectangle } from './geom/Rectangle.js' ;
 
@@ -14,6 +15,7 @@ import { Rectangle } from './geom/Rectangle.js' ;
 export var geom = Object.assign
 ({
     Dimension : Dimension ,
+    Matrix    : Matrix ,
     Point     : Point ,
     Rectangle : Rectangle
 }) ;

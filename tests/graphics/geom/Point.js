@@ -352,7 +352,31 @@ describe( 'graphics.geom.Point' , () =>
     });
 
     // TODO project
-    // TODO rotate
+
+    // describe( '#rotate()' , () =>
+    // {
+    //     let p = new Point(10,0) ;
+    //
+    //     p.rotate( Math.PI * 0.5 ) ;
+    //     console.log( "> " + p ) ;
+    //
+    //     p.rotate( Math.PI * 0.5 ) ;
+    //     console.log( "> " + p ) ;
+    //
+    //     p.rotate( Math.PI * 0.5 ) ;
+    //     console.log( "> " + p ) ;
+    //
+    //     p.rotate( Math.PI * 0.5 ) ;
+    //     console.log( "> " + p ) ;
+    //
+    //     it( p + '.rotate(Math.PI/2)' , () =>
+    //     {
+    //         p = new Point(10,0) ;
+    //         p.rotate( Math.PI * 0.5 ) ;
+    //         assert.equal( p.x , 10 ) ;
+    //         assert.equal( p.y , 0 ) ;
+    //     });
+    // });
 
     describe( '#scale()' , () =>
     {

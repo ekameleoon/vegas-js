@@ -19612,6 +19612,325 @@ var ZOrder = Object.defineProperties({}, {
 });
 
 /**
+ * The Dimension object encapsulates the width and height components of an object.
+ * @constructor
+ * @param {number} width the width value.
+ * @param {number} height The height value.
+ */
+
+function Dimension() {
+    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * The height of the rectangle, in pixels.
+         */
+        height: { value: isNaN(height) ? 0 : height, writable: true },
+
+        /**
+         * The width of the rectangle, in pixels.
+         */
+        width: { value: isNaN(width) ? 0 : width, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Dimension.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Dimension(this.width, this.height);
+        } },
+
+    /**
+     * Copies all of data from the source Dimension object into the calling Dimension object.
+     */
+    copyFrom: { value: function value(dim) {
+            this.width = dim.width;
+            this.height = dim.height;
+            return this;
+        } },
+
+    /**
+     * Decreases the size by a specific width/height values and return its self(this).
+     * @param dWidth A number value to descrease the width component of the object (default 0).
+     * @param dHeight A number value to descrease the height component of the object (default 0).
+     */
+    decrease: { value: function value() {
+            var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var dHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.width -= isNaN(dWidth) ? 0 : dWidth;
+            this.height -= isNaN(dHeight) ? 0 : dHeight;
+            return this;
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Dimension) {
+                return o.width === this.width && o.height === this.height;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Increases the size by a specific width/height values and return its self(this).
+     * @param dWidth A number value to increase the width component of the object (default 0).
+     * @param dHeight A number value to inscrease the height component of the object (default 0).
+     * @return the current reference of this object.
+     */
+    increase: { value: function value() {
+            var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var dHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.width += isNaN(dWidth) ? 0 : dWidth;
+            this.height += isNaN(dHeight) ? 0 : dHeight;
+            return this;
+        } },
+
+    /**
+     * Determines whether or not this Rectangle object is empty.
+     * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
+     */
+    isEmpty: { value: function value() {
+            return this.width <= 0 || this.height <= 0;
+        } },
+
+    /**
+     * Sets the members of Dimension to the specified values.
+     * @param {number} width The width component value to change (default 0).
+     * @param {number} height The height component value to change (default 0).
+     * @return {Dimension} The object reference.
+     */
+    set: { value: function value() {
+            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.width = width;
+            this.height = height;
+            return this;
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { width: this.width, height: this.height };
+        } },
+
+    /**
+     * Returns the string representation of this object.
+     * @return the string representation of this object.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Dimension width:" + this.width + " height:" + this.height + "]";
+        } }
+});
+
+/**
+ * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
+ * @constructor
+ * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+ * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+ * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+ * @param d The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+ * @param tx The distance by which to translate each point along the <i>x</i> axis.
+ * @param ty The distance by which to translate each point along the <i>y</i> axis.
+ */
+
+function Matrix() {
+    var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+    var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+         */
+        a: { value: isNaN(a) ? 0 : a, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+         */
+        b: { value: isNaN(b) ? 0 : b, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+         */
+        c: { value: isNaN(c) ? 0 : c, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+         */
+        d: { value: isNaN(d) ? 0 : d, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>x</i> axis.
+         */
+        tx: { value: isNaN(tx) ? 0 : tx, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>y</i> axis.
+         */
+        ty: { value: isNaN(ty) ? 0 : ty, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Matrix.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Matrix) {
+                return o.a === this.a && o.b === this.b && o.c === this.c && o.d === this.d && o.tx === this.tx && o.ty === this.ty;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Applies a rotation transformation to the Matrix object.
+     * <p>The <code>rotate()</code> method alters the <code>a</code>, <code>b</code>, <code>c</code>, and <code>d</code> properties of the Matrix object. In matrix notation, this is the same as concatenating the current matrix with the following:</p>
+     * <p><img src="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/images/matrix_rotate.jpg" /></p>
+     * @param angle The rotation angle in radians.
+     */
+    rotate: { value: function value(angle) {
+            /*
+                with sin = sin(angle) and cos = cos(angle):
+                              [a            c            tx           ]
+                              [b            d            ty           ]
+                              [0            0            1            ]
+              [cos   -sin  0] [a*cos-b*sin  c*cos-d*sin  tx*cos-ty*sin]
+              [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
+              [0     0     1] [0            0            1            ]
+            */
+            if (angle !== 0) {
+                var cos = Math.cos(angle);
+                var sin = Math.sin(angle);
+                var a = this.a;
+                var b = this.b;
+                var c = this.c;
+                var d = this.d;
+                var tx = this.tx;
+                var ty = this.ty;
+
+                this.a = a * cos - b * sin;
+                this.b = a * sin + b * cos;
+                this.c = c * cos - d * sin;
+                this.d = c * sin + d * cos;
+                this.tx = tx * cos - ty * sin;
+                this.ty = tx * sin + ty * cos;
+            }
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
+        } }
+});
+
+/**
+ * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @constructor
+ * @param x the x value of the object.
+ * @param y the y value of the object.
+ */
+
+function Vector2() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * Determinates the x value of this object.
+         */
+        x: { value: isNaN(x) ? 0 : x, writable: true },
+
+        /**
+         * Determinates the y value of this object.
+         */
+        y: { value: isNaN(y) ? 0 : y, writable: true }
+    });
+}
+
+/**
+ * @extends Object
+ */
+Vector2.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Vector2(this.x, this.y);
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Vector2) {
+                return o.x === this.x && o.y === this.y;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { x: this.x, y: this.y };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Vector2 x:" + this.x + " y:" + this.y + "]";
+        } }
+});
+
+/**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @constructor
  * @param x the x value of the object.
@@ -19621,23 +19940,13 @@ function Point() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-    Object.defineProperties(this, {
-        /**
-         * Determinates the x value of this object.
-         */
-        x: { value: x, writable: true },
-
-        /**
-         * Determinates the y value of this object.
-         */
-        y: { value: y, writable: true }
-    });
+    Vector2.call(this, x, y);
 }
 
 /**
- * @extends Object
+ * @extends Vector2
  */
-Point.prototype = Object.create(Object.prototype, {
+Point.prototype = Object.create(Vector2.prototype, {
     /**
      * Returns the angle value of this Point object.
      * @example
@@ -19667,14 +19976,6 @@ Point.prototype = Object.create(Object.prototype, {
     length: {
         get: function get() {
             return Math.sqrt(this.x * this.x + this.y * this.y);
-        },
-        set: function set(value) {
-            var len = Math.sqrt(this.x * this.x + this.y * this.y);
-            if (!isNaN(len) && len !== 0) {
-                this.scale(value / len);
-            } else {
-                this.x = len;
-            }
         }
     },
 
@@ -19693,31 +19994,27 @@ Point.prototype = Object.create(Object.prototype, {
         } },
 
     /**
-     * Returns a new Point reference with the absolute value of the coordinates of this Point object.
-     * @example
-     * <pre>
-     * var p1 = new Point(-10, -20) ;
-     * var p2 = p1.absNew() ;
-     * trace(p1 + " / " + p2) ; // [Point x:-10 y:-20] / [Point x:10 y:20]
-     * </pre>
-     * @return a new Point reference with the absolute value of the coordinates of this Point object.
+     * Adds the coordinates of another point to the coordinates of this point.
+     * @param point the point to be added. You can use an object with the properties x and y.
      */
-    absNew: { writable: true, value: function value() {
-            return new Point(Math.abs(this.x), Math.abs(this.y));
+    add: { writable: true, value: function value(point) {
+            this.x += point.x;
+            this.y += point.y;
+            return this;
         } },
 
     /**
      * Returns the angle value between this Point object and the specified Point passed in arguments.
      * <p><b>Example :</b></p>
      * {@code
-     * var p1:Point = new Point(10, 20) ;
-     * var p2:point = new Point(50, 200) ;
-     * var angle:Number = p1.angleBetween(p2) ;
+     * var p1 = new Point(10, 20) ;
+     * var p2 = new Point(50, 200) ;
+     * var angle = p1.angleBetween(p2) ;
      * }
      * @return the angle value between this Point object and the specified Point passed in arguments.
      */
     angleBetween: { value: function value(point) {
-            return acosD(this.dot(point) / (this.length * point.length));
+            return acosD(this.dot(point) / (Math.sqrt(this.x * this.x + this.y * this.y) * Math.sqrt(point.x * point.x + point.y * point.y)));
         } },
 
     /**
@@ -19755,35 +20052,6 @@ Point.prototype = Object.create(Object.prototype, {
      */
     dot: { writable: true, value: function value(point) {
             return this.x * point.x + this.y * point.y;
-        } },
-
-    /**
-     * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
-     */
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Point) {
-                return o.x === this.x && o.y === this.y;
-            } else {
-                return false;
-            }
-        } },
-
-    /**
-     * Returns the direction of this Point.
-     * @example
-     * <pre>
-     * var p1 = new Point(10,2);
-     * var p2 = p1.getDirection();
-     * trace( p2.getDirection() ) ;
-     * </pre>
-     * @return the direction of this Point.
-     * @see #normalize
-     */
-    getDirection: { value: function value() {
-            var direction = new Point(this.x, this.y);
-            direction.normalize();
-            return direction;
         } },
 
     /**
@@ -19915,39 +20183,21 @@ Point.prototype = Object.create(Object.prototype, {
      * Offsets the Point object by the specified amount.
      * The value of dx is added to the original value of x to create the new x value.
      * The value of dy is added to the original value of y to create the new y value.
+     * @param dx {number} The amount by which to offset the horizontal coordinate, x.
+     * @param dy {number} The amount by which to offset the vertical coordinate, y.
      * @example
      * <pre>
      * var p = new Point(10,10) ;
      * p.offset(10,10) ;
      * trace(p) ; // [Point x:20 y:20]
      * </pre>
-     * @param dx The amount by which to offset the horizontal coordinate, x.
-     * @param dy The amount by which to offset the vertical coordinate, y.
      */
     offset: { writable: true, value: function value() {
             var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
             var dy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-            this.x += dx;
-            this.y += dy;
-        } },
-
-    /**
-     * Adds the coordinates of another point to the coordinates of this point.
-     * @param point the point to be added. You can use an object with the properties x and y.
-     */
-    plus: { writable: true, value: function value(point) {
-            this.x += point.x;
-            this.y += point.y;
-        } },
-
-    /**
-     * Adds the coordinates of another point to the coordinates of this point to create a new point.
-     * @param point the point to be added. You can use an object with the properties x and y.
-     * @return The new point.
-     */
-    plusNew: { value: function value(point) {
-            return new Point(this.x + point.x, this.y + point.y);
+            this.x += isNaN(dx) ? 0 : dx;
+            this.y += isNaN(dy) ? 0 : dy;
         } },
 
     /**
@@ -19968,14 +20218,28 @@ Point.prototype = Object.create(Object.prototype, {
     /**
      * Rotates the Point with the specified angle in argument.
      * @param angle the angle to rotate this Point.
+     * @param anchor the anchor point to rotate this Point around (by default use the {0,0} position).
      */
     rotate: { value: function value(angle) {
-            var ca = cosD(angle);
-            var sa = sinD(angle);
-            var rx = this.x * ca - this.y * sa;
-            var ry = this.x * ca + this.y * sa;
-            this.x = rx;
-            this.y = ry;
+            var anchor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+            var center = { x: 0, y: 0 };
+
+            if (anchor) {
+                if (anchor instanceof Point || 'x' in anchor && 'y' in anchor) {
+                    center.x = isNaN(anchor.x) ? 0 : anchor.x;
+                    center.y = isNaN(anchor.y) ? 0 : anchor.y;
+                }
+            }
+
+            var dx = this.x - center.x;
+            var dy = this.y - center.y;
+
+            var cos = Math.cos(angle);
+            var sin = Math.sin(angle);
+
+            this.x = center.x + (cos * dx + sin * dy);
+            this.y = center.y + (cos * dy - sin * dx);
         } },
 
     /**
@@ -19983,17 +20247,8 @@ Point.prototype = Object.create(Object.prototype, {
      * @param value the value to scale this Point coordinates.
      */
     scale: { value: function value(_value) {
-            this.x *= _value;
-            this.y *= _value;
-        } },
-
-    /**
-     * Scales the Point with the specified value and creates a new Point.
-     * @param value the value to scale this Point.
-     * @return The new scaled Point.
-     */
-    scaleNew: { value: function value(_value2) {
-            return new Point(this.x * _value2, this.y * _value2);
+            this.x *= isNaN(_value) ? 0 : _value;
+            this.y *= isNaN(_value) ? 0 : _value;
         } },
 
     /**
@@ -20019,23 +20274,14 @@ Point.prototype = Object.create(Object.prototype, {
         } },
 
     /**
-     * Subtracts the coordinates of another point from the coordinates of this point to create a new point.
-     * @param point The point to be subtracted.
-     * @return The new Point.
-     */
-    subtractNew: { value: function value(point) {
-            return new Point(this.x - point.x, this.y - point.y);
-        } },
-
-    /**
      * Swap the horizontal and vertical coordinates of two Point objects.
      * @param point The point to be swap.
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(30,40) ;
-     * trace(p1 + " / " + p2) ; // [Point:{10,20}] / [Point:{30,40}]
+     * trace(p1 + " / " + p2) ; // [Point x:10 y:20] / [Point x:30 y:40]
      * p1.swap(p2) ;
-     * trace(p1 + " / " + p2) ; // [Point:{30,40}] / [Point:{10,20}]
+     * trace(p1 + " / " + p2) ; // [Point x:30 y:40] / [Point x:10 y:20]
      */
     swap: { value: function value(point) {
             var tx = this.x;
@@ -20044,14 +20290,6 @@ Point.prototype = Object.create(Object.prototype, {
             this.y = point.y;
             point.x = tx;
             point.y = ty;
-        } },
-
-    /**
-     * Returns the Object representation of this object.
-     * @return the Object representation of this object.
-     */
-    toObject: { writable: true, value: function value() {
-            return { x: this.x, y: this.y };
         } },
 
     /**
@@ -20125,7 +20363,19 @@ Object.defineProperties(Point, {
     interpolate: { value: function value(p1, p2) {
             var level = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
-            return new Point(p2.x + level * (p1.x - p2.x), p2.y + level * (p1.y - p2.y));
+            if (isNaN(level)) {
+                level = 0;
+            }
+
+            level = Math.max(Math.min(level, 1), 0);
+
+            if (level === 0) {
+                return p2;
+            } else if (level === 1) {
+                return p1;
+            } else {
+                return new Point(p2.x + level * (p1.x - p2.x), p2.y + level * (p1.y - p2.y));
+            }
         } },
 
     /**
@@ -20149,8 +20399,10 @@ Object.defineProperties(Point, {
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
  * @constructor
- * @param width the width value of the object.
- * @param height the height value of the object.
+ * @param {number} x the x value of the object.
+ * @param {number} y the y value of the object.
+ * @param {number} width the width value of the object.
+ * @param {number} height the height value of the object.
  */
 function Rectangle() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -20158,27 +20410,28 @@ function Rectangle() {
     var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
     var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
-    Dimension.call(this, width, height);
-
     Object.defineProperties(this, {
         /**
          * Determinates the x value of this object.
          */
-        x: { value: x, writable: true },
+        x: { value: isNaN(x) ? 0 : x, writable: true },
 
         /**
          * Determinates the y value of this object.
          */
-        y: { value: y, writable: true }
+        y: { value: isNaN(y) ? 0 : y, writable: true }
     });
+    Dimension.call(this, width, height);
 }
 
 /**
  * @extends Object
  */
 Rectangle.prototype = Object.create(Dimension.prototype, {
+    // ------- getters/setters
+
     /**
-     * Indicates the sum of the y and height properties.
+     * The sum of the y and height properties.
      */
     bottom: {
         get: function get() {
@@ -20190,7 +20443,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the sum of the y and height properties.
+     * The location of the Rectangle object's bottom-left corner, determined by the values of the left and bottom properties.
      */
     bottomLeft: {
         get: function get() {
@@ -20204,7 +20457,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     * The location of the Rectangle object's bottom-right corner, determined by the values of the right and bottom properties.
      */
     bottomRight: {
         get: function get() {
@@ -20217,7 +20470,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Determinates the location of the Rectangle object's center, determined by the values of the x and y properties.
+     * The location of the Rectangle object's center.
      */
     center: {
         get: function get() {
@@ -20230,7 +20483,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the location of the Rectangle object's bottom-right corner, determined by the values of the x and y properties.
+     * The x coordinate of the top-left corner of the rectangle.
      */
     left: {
         get: function get() {
@@ -20243,7 +20496,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the sum of the x and width properties.
+     * The sum of the x and width properties.
      */
     right: {
         get: function get() {
@@ -20255,7 +20508,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
+     * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
      */
     size: {
         get: function get() {
@@ -20268,7 +20521,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the y coordinate of the top of the rectangle.
+     * The y coordinate of the top-left corner of the rectangle.
      */
     top: {
         get: function get() {
@@ -20281,7 +20534,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the location of the Rectangle object's top-left corner determined by the x and y values of the point.
+     * The location of the Rectangle object's top-left corner, determined by the x and y coordinates of the point.
      */
     topLeft: {
         get: function get() {
@@ -20296,7 +20549,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
 
     /**
-     * Indicates the location of the Rectangle object's top-right corner determined by the x and y values of the point.
+     * The location of the Rectangle object's top-right corner, determined by the x and y coordinates of the point.
      */
     topRight: {
         get: function get() {
@@ -20309,8 +20562,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
         }
     },
 
+    // ------- methods
+
     /**
-     * Returns a shallow copy of the object.
+     * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -20318,33 +20573,165 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
         } },
 
     /**
-     * Compares the passed-in object with this object for equality.
+     * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     */
+    contains: { value: function value(x, y) {
+            return this.x <= x && this.x + this.width > x && this.y <= y && this.y + this.height > y;
+        } },
+
+    /**
+     * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     */
+    containsPoint: { value: function value(point) {
+            return this.x <= point.x && this.x + this.width > point.x && this.y <= point.y && this.y + this.height > point.y;
+        } },
+
+    /**
+     * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
+     */
+    containsRect: { value: function value(rec) {
+            var a = rec.x + rec.width;
+            var b = rec.y + rec.height;
+            var c = this.x + this.width;
+            var d = this.y + this.height;
+            return rec.x >= this.x && rec.x < c && rec.y >= this.y && rec.y < d && a > this.x && a <= c && b > this.y && b <= d;
+        } },
+
+    /**
+     * Copies all of rectangle data from the source Rectangle object into the calling Rectangle object.
+     */
+    copyFrom: { value: function value(rec) {
+            this.x = rec.x;
+            this.y = rec.y;
+            this.width = rec.width;
+            this.height = rec.height;
+            return this;
+        } },
+
+    /**
+     * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
+     * @param toCompare {object} The object to evaluates.
+     * @param strict {boolean} If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
      * @return <code>true</code> if the the specified object is equal with this object.
      */
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Rectangle) {
-                return o.x === this.x && o.y === this.y && o.width === this.width && o.height === this.height;
+    equals: { writable: true, value: function value(toCompare) {
+            var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+            var flag = strict ? toCompare instanceof Rectangle : 'x' in toCompare && 'y' in toCompare && 'width' in toCompare && 'height' in toCompare;
+            if (flag) {
+                return toCompare.x === this.x && toCompare.y === this.y && toCompare.width === this.width && toCompare.height === this.height;
             } else {
                 return false;
             }
         } },
 
     /**
-     * Returns a new bounds area with a specific position.
-     * @return a new bounds area with a specific position.
+     * Increases the size of the Rectangle object by the specified amounts, in pixels.
+     * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
+     * @param dx {number} The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
+     * @param dy {number} The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
      */
-    getBounds: { writable: true, value: function value() {
-            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            return new Rectangle(x, y, this.width, this.height);
+    inflate: { value: function value(dx, dy) {
+            this.x -= dx;
+            this.y -= dy;
+            this.width += 2 * dx;
+            this.height += 2 * dy;
+            return this;
         } },
 
     /**
-     * Sets all of the Rectangle object's properties to 0.
+     * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
+     * @param point {Point} The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
+     * @example
+     * var rect  = new Rectangle(0,0,2,5);
+     * var point = new Point(2,2);
+     * rect.inflatePoint(point) ;
      */
-    setEmpty: { value: function value() {
-            this.x = this.y = this.width = this.height = 0;
+    inflatePoint: { value: function value(point) {
+            this.x -= point.x;
+            this.y -= point.y;
+            this.width += 2 * point.x;
+            this.height += 2 * point.y;
+            return this;
+        } },
+
+    /**
+     * If the Rectangle object specified in the toIntersect parameter intersects with this Rectangle object, returns the area of intersection as a Rectangle object. If the rectangles do not intersect, this method returns an empty Rectangle object with its properties set to 0.
+     * @param toIntersect {Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
+     * @return {Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     */
+    intersection: { value: function value(toIntersect) {
+            var rec = new Rectangle();
+
+            if (this.isEmpty() || toIntersect.isEmpty()) {
+                rec.set();
+                return rec;
+            }
+
+            rec.x = Math.max(this.x, toIntersect.x);
+            rec.y = Math.max(this.y, toIntersect.y);
+            rec.width = Math.min(this.x + this.width, toIntersect.x + toIntersect.width) - rec.x;
+            rec.height = Math.min(this.y + this.height, toIntersect.y + toIntersect.height) - rec.y;
+
+            if (rec.width <= 0 || rec.height <= 0) {
+                rec.set();
+            }
+
+            return rec;
+        } },
+
+    /**
+     * Determines whether the object specified in the toIntersect parameter intersects with this Rectangle object. This method checks the x, y, width, and height properties of the specified Rectangle object to see if it intersects with this Rectangle object.
+     * @param toIntersect {Rectangle} The Rectangle object to compare against this Rectangle object.
+     * @return {boolean} A value of true if the specified object intersects with this Rectangle object; otherwise false.
+     */
+    intersects: { value: function value(toIntersect) {
+            return !this.intersection(toIntersect).isEmpty();
+        } },
+
+    /**
+     * Adjusts the location of the object, as determined by its top-left corner, by the specified amounts.
+     * @param dx {number} Moves the x value of the Rectangle object by this amount.
+     * @param dy {number} Moves the y value of the Rectangle object by this amount.
+     */
+    offset: { writable: true, value: function value() {
+            var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var dy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            this.x += dx;
+            this.y += dy;
+            return this;
+        } },
+
+    /**
+     * Adjusts the location of the Rectangle object using a Point object as a parameter. This method is similar to the Rectangle.offset() method, except that it takes a Point object as a parameter.
+     * @param point {Point} A Point object to use to offset this Rectangle object.
+     */
+    offsetPoint: { writable: true, value: function value(point) {
+            this.x += point.x;
+            this.y += point.y;
+            return this;
+        } },
+
+    /**
+     * Sets the members of Rectangle to the specified values.
+     * @param x {number} The x coordinate of the top-left corner of the rectangle (default 0).
+     * @param y {number} The y coordinate of the top-left corner of the rectangle (default 0).
+     * @param width {number} The width of the rectangle, in pixels (default 0).
+     * @param height {number} The height of the rectangle, in pixels (default 0).
+     * @return {Rectangle} The object reference.
+     */
+    set: { value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            return this;
         } },
 
     /**
@@ -20361,140 +20748,33 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      */
     toString: { value: function value() {
             return "[Rectangle x:" + this.x + " y:" + this.y + " width:" + this.width + " height:" + this.height + "]";
-        } }
-});
-
-/**
- * The Dimension encapsulates the width and height of an object.
- * @constructor
- * @param width the width value of the object.
- * @param height the height value of the object.
- */
-function Dimension() {
-    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    Object.defineProperties(this, {
-        /**
-         * Determinates the height value of this instance.
-         */
-        height: { value: 0, writable: true },
-
-        /**
-         * Determinates the width value of this instance.
-         */
-        width: { value: 0, writable: true }
-    });
-
-    if (arguments[0] instanceof Dimension) {
-        this.width = arguments[0].width;
-        this.height = arguments[0].height;
-    } else {
-        this.width = width > 0 ? width : 0;
-        this.height = height > 0 ? height : 0;
-    }
-}
-
-/**
- * @extends Object
- */
-Dimension.prototype = Object.create(Object.prototype, {
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     */
-    clone: { writable: true, value: function value() {
-            return new Dimension(this.width, this.height);
         } },
 
     /**
-     * Decreases the size by s and return its self(this).
-     * @param s an other Dimension reference to decreases the current Dimension.
-     * @return the current reference of this object.
+     * Adds two rectangles together to create a new Rectangle object, by filling in the horizontal and vertical space between the two rectangles.
+     * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2 = new Rectangle(300,300,50,0);
+     * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
+     * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
      */
-    decrease: { value: function value() {
-            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            if (arguments[0] instanceof Dimension) {
-                this.width -= arguments[0].width;
-                this.height -= arguments[0].height;
-            } else if ((width instanceof Number || typeof width === 'number') && (height instanceof Number || typeof height === 'number')) {
-                this.width -= width;
-                this.height -= height;
+    union: { value: function value(toUnion) {
+            if (!(toUnion instanceof Rectangle)) {
+                return null; // ignore
             }
-            return this;
-        } },
 
-    /**
-     * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
-     */
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Dimension) {
-                return o.width === this.width && o.height === this.height;
+            if (this.width <= 0 || this.height <= 0) {
+                return toUnion.clone();
+            } else if (toUnion.width <= 0 || toUnion.height <= 0) {
+                return this.clone();
             } else {
-                return false;
+                var rec = new Rectangle();
+
+                rec.x = Math.min(this.x, toUnion.x);
+                rec.y = Math.min(this.y, toUnion.y);
+                rec.width = Math.max(this.x + this.width, toUnion.x + toUnion.width) - rec.x;
+                rec.height = Math.max(this.y + this.height, toUnion.y + toUnion.height) - rec.y;
+
+                return rec;
             }
-        } },
-
-    /**
-     * Returns a new bounds area with a specific position.
-     * @return a new bounds area with a specific position.
-     */
-    getBounds: { writable: true, value: function value() {
-            return new Rectangle(0, 0, this.width, this.height);
-        } },
-
-    /**
-     * Increases the size by a specific width/height values and return its self(this).
-     * @param width An other Dimension reference to increase the current Dimension or a number to defines the width value of the object.
-     * @param height A number value to inscrease the height component of the object (if width is defined).
-     * @return the current reference of this object.
-     */
-    increase: { value: function value() {
-            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            if (arguments[0] instanceof Dimension) {
-                this.width += arguments[0].width;
-                this.height += arguments[0].height;
-            } else if ((width instanceof Number || typeof width === 'number') && (height instanceof Number || typeof height === 'number')) {
-                this.width += width;
-                this.height += height;
-            }
-            return this;
-        } },
-
-    /**
-     * Sets the size of this instance.
-     * @param {number} width The width component value to change (default 0).
-     * @param {number} height The height component value to change (default 0).
-     * @return The object reference.
-     */
-    setSize: { value: function value() {
-            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            this.width = width;
-            this.height = height;
-            return this;
-        } },
-
-    /**
-     * Returns the Object representation of this object.
-     * @return the Object representation of this object.
-     */
-    toObject: { writable: true, value: function value() {
-            return { width: this.width, height: this.height };
-        } },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { writable: true, value: function value() {
-            return "[Dimension width:" + this.width + " height:" + this.height + "]";
         } }
 });
 
@@ -20505,6 +20785,7 @@ Dimension.prototype = Object.create(Object.prototype, {
  */
 var geom = Object.assign({
   Dimension: Dimension,
+  Matrix: Matrix,
   Point: Point,
   Rectangle: Rectangle
 });
