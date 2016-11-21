@@ -269,6 +269,74 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     }},
 
     /**
+     * Increases the size of the Rectangle object by the specified amounts, in pixels.
+     * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
+     * @param dx {number} The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
+     * @param dy {number} The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
+     */
+    inflate : { value : function( dx , dy )
+    {
+        this.x -= dx;
+        this.y -= dy;
+        this.width  += 2 * dx;
+        this.height += 2 * dy;
+    }},
+
+    /**
+     * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
+     * @param point {Point} The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
+     * @example
+     * var rect  = new Rectangle(0,0,2,5);
+     * var point = new Point(2,2);
+     * rect.inflatePoint(point) ;
+     */
+    inflatePoint : { value : function( point )
+    {
+        this.x -= point.x;
+        this.y -= point.y;
+        this.width  += 2 * point.x;
+        this.height += 2 * point.y;
+    }},
+
+    /**
+     * If the Rectangle object specified in the toIntersect parameter intersects with this Rectangle object, returns the area of intersection as a Rectangle object. If the rectangles do not intersect, this method returns an empty Rectangle object with its properties set to 0.
+     * @param toIntersect {Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
+     * @return {Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     */
+    intersection : { value : function( toIntersect )
+    {
+        var rec = new Rectangle() ;
+
+        if ( this.isEmpty() || toIntersect.isEmpty() )
+        {
+            rec.set();
+            return rec ;
+        }
+
+        rec.x = Math.max(this.x, toIntersect.x);
+        rec.y = Math.max(this.y, toIntersect.y);
+        rec.width  = Math.min( this.x + this.width  , toIntersect.x + toIntersect.width  ) - rec.x ;
+        rec.height = Math.min( this.y + this.height , toIntersect.y + toIntersect.height ) - rec.y ;
+
+        if ( rec.width <= 0 || rec.height <= 0 )
+        {
+            rec.set();
+        }
+
+        return rec ;
+    }},
+
+    /**
+     * Determines whether the object specified in the toIntersect parameter intersects with this Rectangle object. This method checks the x, y, width, and height properties of the specified Rectangle object to see if it intersects with this Rectangle object.
+     * @param toIntersect {Rectangle} The Rectangle object to compare against this Rectangle object.
+     * @return {boolean} A value of true if the specified object intersects with this Rectangle object; otherwise false.
+     */
+    intersects : { value : function( toIntersect )
+    {
+        return !this.intersection(toIntersect).isEmpty() ;
+    }},
+
+    /**
      * Determines whether or not this Rectangle object is empty.
      * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
      */
@@ -286,6 +354,16 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     {
         this.x += dx ;
         this.y += dy ;
+    }},
+
+    /**
+     * Adjusts the location of the Rectangle object using a Point object as a parameter. This method is similar to the Rectangle.offset() method, except that it takes a Point object as a parameter.
+     * @param point {Point} A Point object to use to offset this Rectangle object.
+     */
+    offsetPoint : { writable : true , value : function( point )
+    {
+        this.x += point.x ;
+        this.y += point.y ;
     }},
 
     /**
@@ -323,17 +401,22 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Adds two rectangles together to create a new Rectangle object, by filling in the horizontal and vertical space between the two rectangles.
-     * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2:Rectangle = new Rectangle(300,300,50,0);
+     * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2 = new Rectangle(300,300,50,0);
      * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
      * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
      */
     union : { value : function( toUnion )
     {
-        if ( this.isEmpty() )
+        if( !(toUnion instanceof Rectangle) )
+        {
+            return null ; // ignore
+        }
+
+        if ( this.width <= 0 || this.height <= 0 )
         {
             return toUnion.clone() ;
         }
-        else if (toUnion.isEmpty())
+        else if ( toUnion.width <= 0 || toUnion.height <= 0 )
         {
             return this.clone() ;
         }
