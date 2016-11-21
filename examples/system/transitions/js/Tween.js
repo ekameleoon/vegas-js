@@ -82,7 +82,7 @@ window.onload = function()
     //tween.easing = core.easings.elasticOut ;
     //tween.easing = core.easings.sineOut ;
 
-    tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
+    //tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
 
     //tween.looping = true ;
 

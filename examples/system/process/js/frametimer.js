@@ -13,14 +13,17 @@ window.onload = function()
     var core   = vegas.core   ; // jshint ignore:line
     var system = vegas.system ; // jshint ignore:line
 
+    var time ;
+
     var finish = function( action )
     {
-        trace( action + " finish" ) ;
+        time = performance.now() - time ;
+        trace( action + " finish time:" + time ) ;
     }
 
     var progress = function( action )
     {
-        trace( action + " progress" ) ;
+        trace( action + " progress time" ) ;
         if( count++ === 100 )
         {
             action.stop() ;
@@ -34,12 +37,14 @@ window.onload = function()
 
     var start = function( action )
     {
+        time = performance.now() ;
         trace( action + " start" ) ;
     }
 
     var stop = function( action )
     {
-        trace( action + " stop" ) ;
+        time = performance.now() - time ;
+        trace( action + " stop time:" + time ) ;
     }
 
     var action = new system.process.FrameTimer() ;

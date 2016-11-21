@@ -35,7 +35,7 @@ class Layout extends Task
              * The absolute rectangle bound area calculate with the measure method.
              * @private
              */
-            _align : { _bounds : new Rectangle() , writable : true }
+            _bounds : {  value : new Rectangle() , writable : true }
         });
     }
     /**
