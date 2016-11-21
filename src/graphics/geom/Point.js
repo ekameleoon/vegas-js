@@ -299,50 +299,32 @@ Point.prototype = Object.create( Vector2.prototype ,
     }},
 
     /**
-     * Returns the projection of a Point with the specified Point passed in argument.
-     * @param point The Point to project with this current Point.
-     * @return the new project Point.
-     */
-    project : { value : function( point )
-    {
-        let l = point.dot(point) ;
-        if( l === 0)
-        {
-            return this.clone() ;
-        }
-        else
-        {
-            let value = this.dot( point ) / l ;
-            return new Point( this.x * value , this.y * value ) ;
-        }
-    }},
-
-    /**
      * Rotates the Point with the specified angle in argument.
      * @param angle the angle to rotate this Point.
      * @param anchor the anchor point to rotate this Point around (by default use the {0,0} position).
      */
     rotate : { value : function( angle , anchor = null )
     {
-        let center = { x : 0 , y : 0 } ;
+        let ax = 0 ;
+        let ay = 0 ;
 
         if( anchor )
         {
             if( (anchor instanceof Point) || ( ('x' in anchor) && ('y' in anchor) ) )
             {
-                center.x = isNaN(anchor.x) ? 0 : anchor.x ;
-                center.y = isNaN(anchor.y) ? 0 : anchor.y ;
+                ax = isNaN(anchor.x) ? 0 : anchor.x ;
+                ay = isNaN(anchor.y) ? 0 : anchor.y ;
             }
         }
 
-        let dx = this.x - center.x ;
-        let dy = this.y - center.y ;
+        let dx = this.x - ax ;
+        let dy = this.y - ay ;
 
         let cos = Math.cos( angle ) ;
         let sin = Math.sin( angle ) ;
 
-        this.x = center.x + ( cos * dx + sin * dy ) ;
-        this.y = center.y + ( cos * dy - sin * dx ) ;
+        this.x = ax + ( cos * dx + sin * dy ) ;
+        this.y = ay + ( cos * dy - sin * dx ) ;
     }},
 
     /**
@@ -506,8 +488,8 @@ Object.defineProperties( Point ,
      * var polar = Point.polar( 5, Math.atan(3/4) ) ;
      * trace(polar) ; // [Point x:4 y:3]
      * </pre>
-     * @param len The length coordinate of the polar pair.
-     * @param angle The angle, in radians, of the polar pair.
+     * @param {number} len The length coordinate of the polar pair.
+     * @param {number} angle The angle, in radians, of the polar pair.
      * @return The new Cartesian point.
      */
     polar : { value : function( len , angle )

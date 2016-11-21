@@ -83,8 +83,6 @@ Matrix.prototype = Object.create( Object.prototype ,
 
     /**
      * Applies a rotation transformation to the Matrix object.
-     * <p>The <code>rotate()</code> method alters the <code>a</code>, <code>b</code>, <code>c</code>, and <code>d</code> properties of the Matrix object. In matrix notation, this is the same as concatenating the current matrix with the following:</p>
-     * <p><img src="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/images/matrix_rotate.jpg" /></p>
      * @param angle The rotation angle in radians.
      */
     rotate : { value : function( angle )
@@ -98,7 +96,13 @@ Matrix.prototype = Object.create( Object.prototype ,
           [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
           [0     0     1] [0            0            1            ]
         */
-        if ( angle!== 0 )
+
+        if( isNaN(angle) )
+        {
+            angle = 0 ;
+        }
+
+        if ( angle !== 0 )
         {
             let cos = Math.cos(angle);
             let sin = Math.sin(angle);

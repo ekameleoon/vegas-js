@@ -19815,8 +19815,6 @@ Matrix.prototype = Object.create(Object.prototype, {
 
     /**
      * Applies a rotation transformation to the Matrix object.
-     * <p>The <code>rotate()</code> method alters the <code>a</code>, <code>b</code>, <code>c</code>, and <code>d</code> properties of the Matrix object. In matrix notation, this is the same as concatenating the current matrix with the following:</p>
-     * <p><img src="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/images/matrix_rotate.jpg" /></p>
      * @param angle The rotation angle in radians.
      */
     rotate: { value: function value(angle) {
@@ -19829,6 +19827,11 @@ Matrix.prototype = Object.create(Object.prototype, {
               [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
               [0     0     1] [0            0            1            ]
             */
+
+            if (isNaN(angle)) {
+                angle = 0;
+            }
+
             if (angle !== 0) {
                 var cos = Math.cos(angle);
                 var sin = Math.sin(angle);
@@ -20201,21 +20204,6 @@ Point.prototype = Object.create(Vector2.prototype, {
         } },
 
     /**
-     * Returns the projection of a Point with the specified Point passed in argument.
-     * @param point The Point to project with this current Point.
-     * @return the new project Point.
-     */
-    project: { value: function value(point) {
-            var l = point.dot(point);
-            if (l === 0) {
-                return this.clone();
-            } else {
-                var value = this.dot(point) / l;
-                return new Point(this.x * value, this.y * value);
-            }
-        } },
-
-    /**
      * Rotates the Point with the specified angle in argument.
      * @param angle the angle to rotate this Point.
      * @param anchor the anchor point to rotate this Point around (by default use the {0,0} position).
@@ -20223,23 +20211,24 @@ Point.prototype = Object.create(Vector2.prototype, {
     rotate: { value: function value(angle) {
             var anchor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-            var center = { x: 0, y: 0 };
+            var ax = 0;
+            var ay = 0;
 
             if (anchor) {
                 if (anchor instanceof Point || 'x' in anchor && 'y' in anchor) {
-                    center.x = isNaN(anchor.x) ? 0 : anchor.x;
-                    center.y = isNaN(anchor.y) ? 0 : anchor.y;
+                    ax = isNaN(anchor.x) ? 0 : anchor.x;
+                    ay = isNaN(anchor.y) ? 0 : anchor.y;
                 }
             }
 
-            var dx = this.x - center.x;
-            var dy = this.y - center.y;
+            var dx = this.x - ax;
+            var dy = this.y - ay;
 
             var cos = Math.cos(angle);
             var sin = Math.sin(angle);
 
-            this.x = center.x + (cos * dx + sin * dy);
-            this.y = center.y + (cos * dy - sin * dx);
+            this.x = ax + (cos * dx + sin * dy);
+            this.y = ay + (cos * dy - sin * dx);
         } },
 
     /**

@@ -351,32 +351,23 @@ describe( 'graphics.geom.Point' , () =>
         });
     });
 
-    // TODO project
-
-    // describe( '#rotate()' , () =>
-    // {
-    //     let p = new Point(10,0) ;
-    //
-    //     p.rotate( Math.PI * 0.5 ) ;
-    //     console.log( "> " + p ) ;
-    //
-    //     p.rotate( Math.PI * 0.5 ) ;
-    //     console.log( "> " + p ) ;
-    //
-    //     p.rotate( Math.PI * 0.5 ) ;
-    //     console.log( "> " + p ) ;
-    //
-    //     p.rotate( Math.PI * 0.5 ) ;
-    //     console.log( "> " + p ) ;
-    //
-    //     it( p + '.rotate(Math.PI/2)' , () =>
-    //     {
-    //         p = new Point(10,0) ;
-    //         p.rotate( Math.PI * 0.5 ) ;
-    //         assert.equal( p.x , 10 ) ;
-    //         assert.equal( p.y , 0 ) ;
-    //     });
-    // });
+    describe( '#rotate()' , () =>
+    {
+        it( 'new Point(20,10).rotate(Math.PI,{x:10,y:10 })' , () =>
+        {
+            let p = new Point(20,10) ;
+            p.rotate( Math.PI/2 , { x : 10 , y : 10 }) ;
+            assert.equal( p.x , 10 ) ;
+            assert.equal( p.y , 0 ) ;
+        });
+        it( 'new Point(20,10).rotate(Math.PI,new Point(10,10))' , () =>
+        {
+            let p = new Point(20,10) ;
+            p.rotate( Math.PI/2 , new Point(10,10) ) ;
+            assert.equal( p.x , 10 ) ;
+            assert.equal( p.y , 0 ) ;
+        });
+    });
 
     describe( '#scale()' , () =>
     {
@@ -560,6 +551,17 @@ describe( 'graphics.geom.Point' , () =>
                 assert.equal( p3.x , 10 );
                 assert.equal( p3.y , 10 );
                 assert.equal( p3 , p1 ) ;
+            });
+        });
+
+        describe( '#polar()' , () =>
+        {
+            it('Point.polar(5, Math.atan(3/4)) === [Point x:4 y:3]', () =>
+            {
+                let polar = Point.polar(5, Math.atan(3/4));
+                assert.instanceOf( polar , Point );
+                assert.equal( polar.x , 4 );
+                assert.equal( polar.y , 3 );
             });
         });
     });
