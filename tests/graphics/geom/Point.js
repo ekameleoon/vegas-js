@@ -113,10 +113,18 @@ describe( 'graphics.geom.Point' , () =>
     {
         let p = new Point(10,20) ;
         let o = p.toObject() ;
-        assert.isTrue( o.constructor === Object );
-        assert.isTrue( Object.getPrototypeOf(o) === Object.prototype );
-        assert.equal( o.x , 10 );
-        assert.equal( o.y , 20 );
+        it( p + '.toObject() is a generic object', () =>
+        {
+            assert.isTrue( o.constructor === Object );
+        });
+        it( p + '.toObject() x === 10', () =>
+        {
+            assert.equal( o.x , 10 );
+        });
+        it( p + '.toObject() y === 20', () =>
+        {
+            assert.equal( o.y , 20 );
+        });
     });
 
     describe( '#toString()' , () =>
