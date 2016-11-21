@@ -5,6 +5,8 @@ import { atan2D } from '../../core/maths/atan2D.js' ;
 import { cosD } from '../../core/maths/cosD.js' ;
 import { sinD } from '../../core/maths/sinD.js' ;
 
+import { Vector2 } from './Vector2.js' ;
+
 /**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @constructor
@@ -13,24 +15,13 @@ import { sinD } from '../../core/maths/sinD.js' ;
  */
 export function Point( x = 0 , y = 0 )
 {
-    Object.defineProperties( this ,
-    {
-        /**
-         * Determinates the x value of this object.
-         */
-        x : { value : x , writable : true } ,
-
-        /**
-         * Determinates the y value of this object.
-         */
-        y : { value : y , writable : true }
-    });
+    Vector2.call( this , x , y ) ;
 }
 
 /**
- * @extends Object
+ * @extends Vector2
  */
-Point.prototype = Object.create( Object.prototype ,
+Point.prototype = Object.create( Vector2.prototype ,
 {
     /**
      * Returns the angle value of this Point object.
@@ -66,18 +57,6 @@ Point.prototype = Object.create( Object.prototype ,
         get : function()
         {
             return Math.sqrt(this.x * this.x + this.y * this.y) ;
-        },
-        set : function( value )
-        {
-            let len = Math.sqrt(this.x * this.x + this.y * this.y) ;
-            if ( !isNaN(len) && len !== 0 )
-            {
-                this.scale( value / len ) ;
-            }
-            else
-            {
-                this.x = len ;
-            }
         }
     },
 
@@ -104,22 +83,25 @@ Point.prototype = Object.create( Object.prototype ,
     {
         this.x += point.x ;
         this.y += point.y ;
+        return this ;
     }},
 
     /**
      * Returns the angle value between this Point object and the specified Point passed in arguments.
      * <p><b>Example :</b></p>
      * {@code
-     * var p1:Point = new Point(10, 20) ;
-     * var p2:point = new Point(50, 200) ;
-     * var angle:Number = p1.angleBetween(p2) ;
+     * var p1 = new Point(10, 20) ;
+     * var p2 = new Point(50, 200) ;
+     * var angle = p1.angleBetween(p2) ;
      * }
      * @return the angle value between this Point object and the specified Point passed in arguments.
      */
     angleBetween : { value : function( point )
     {
-        return acosD(
-            this.dot(point) / (this.length * point.length)
+        return acosD
+        (
+            this.dot(point) /
+            ( (Math.sqrt(this.x*this.x+this.y*this.y)) * (Math.sqrt(point.x*point.x+point.y*point.y)) )
         ) ;
     }},
 
@@ -144,7 +126,7 @@ Point.prototype = Object.create( Object.prototype ,
      */
     cross : { writable : true , value : function( point )
     {
-        return ( this.x * point.y ) - (this.y * point.x) ;
+        return (this.x*point.y) - (this.y*point.x) ;
     }},
 
     /**
@@ -161,22 +143,6 @@ Point.prototype = Object.create( Object.prototype ,
     dot : { writable : true , value : function( point )
     {
         return (this.x * point.x) + (this.y * point.y) ;
-    }},
-
-    /**
-     * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
-     */
-    equals : { writable : true , value : function( o )
-    {
-        if ( o instanceof Point )
-        {
-            return o.x === this.x && o.y === this.y ;
-        }
-        else
-        {
-            return false ;
-        }
     }},
 
     /**
@@ -432,15 +398,6 @@ Point.prototype = Object.create( Object.prototype ,
         this.y = point.y ;
         point.x = tx ;
         point.y = ty ;
-    }},
-
-    /**
-     * Returns the Object representation of this object.
-     * @return the Object representation of this object.
-     */
-    toObject : { writable : true , value : function()
-    {
-        return { x:this.x , y:this.y } ;
     }},
 
     /**

@@ -1,6 +1,7 @@
 "use strict" ;
 
-import { Point } from '../../../src/graphics/geom/Point.js' ;
+import { Point }   from '../../../src/graphics/geom/Point.js' ;
+import { Vector2 } from '../../../src/graphics/geom/Vector2.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
@@ -9,28 +10,138 @@ describe( 'graphics.geom.Point' , () =>
 {
     describe( '#constructor' , () =>
     {
-        it('new Point().x === 0', () =>
+        describe( 'new Point()' , () =>
         {
             let point = new Point() ;
-            assert.equal( point.x  , 0 );
+            it( point + ', instanceof Vector2', () =>
+            {
+                assert.instanceOf( point  , Vector2 );
+            });
+
+            it( point + ', x === 0', () =>
+            {
+                assert.equal( point.x  , 0 );
+            });
+            it( point + ', y === 0', () =>
+            {
+                assert.equal( point.y , 0 );
+            });
         });
 
-        it('new Point().y === 0', () =>
+        describe( 'new Point(NaN,NaN)' , () =>
         {
-            let point = new Point() ;
-            assert.equal( point.y , 0 );
+            let point = new Point(NaN,NaN) ;
+            it( 'new Point(NaN,NaN), x === 0', () =>
+            {
+                assert.equal( point.x  , 0 );
+            });
+            it( 'new Point(NaN,NaN), y === 0', () =>
+            {
+                assert.equal( point.y , 0 );
+            });
         });
 
-        it('new Point(500,400).x === 500', () =>
+        describe( 'new Point("foo","foo")' , () =>
+        {
+            let point = new Point("foo","foo") ;
+            it( 'new Point("foo","foo"), x === 0', () =>
+            {
+                assert.equal( point.x  , 0 );
+            });
+            it( 'new Point("foo","foo"), y === 0', () =>
+            {
+                assert.equal( point.y , 0 );
+            });
+        });
+
+        describe( 'new Point(500,400)' , () =>
         {
             let point = new Point(500,400) ;
-            assert.equal( point.x , 500 );
+            it( point + ', x === 500', () =>
+            {
+                assert.equal( point.x , 500 );
+            });
+            it( point + ', y === 400', () =>
+            {
+                assert.equal( point.y , 400 );
+            });
+        });
+    });
+
+    describe( '#angle' , () =>
+    {
+        let p1 = new Point(0,10) ;
+        let p2 = new Point(10,10) ;
+        it( p1 + '.angle === 90', () =>
+        {
+            assert.equal( p1.angle , 90 );
+        });
+        it( p2 + '.angle === 45', () =>
+        {
+            assert.equal( p2.angle , 45 );
+        });
+    });
+
+    describe( '#length' , () =>
+    {
+        let p1 = new Point(0,10) ;
+        let p2 = new Point(100,100) ;
+        it( p1 + '.length === Math.sqrt(0*0+10*10) : ' + Math.sqrt(0*0+10*10) , () =>
+        {
+            assert.equal( p1.length , 10 );
+            assert.equal( p1.length , Math.sqrt(0*0+10*10) );
+        });
+        it( p2 + '.length === Math.sqrt(100*100+100*100) : ' + Math.sqrt(100*100+100*100) , () =>
+        {
+            assert.equal( p2.length , Math.sqrt(100*100+100*100) );
+        });
+    });
+
+    describe( '#abs()' , () =>
+    {
+        it('new Point(-10,-20).abs() === new Point(10,20)', () =>
+        {
+            let p = new Point(-10,-20) ;
+            p.abs() ;
+            assert.equal( p.x , 10 );
+            assert.equal( p.y , 20 );
+        });
+    });
+
+    describe( '#add()' , () =>
+    {
+        it('new Point(10,20).add(new Point(10,10)) === new Point(20,30)', () =>
+        {
+            let p = new Point(10,20) ;
+            p.add(new Point(10,10)) ;
+            assert.equal( p.x , 20 );
+            assert.equal( p.y , 30 );
+        });
+    });
+
+    describe( '#angleWith()' , () =>
+    {
+        var p1 = new Point(0, 100) ;
+        var p2 = new Point(100, 0) ;
+        var p3 = new Point(0, -100) ;
+        var p4 = new Point(-100,0) ;
+
+        it( p1 + '.angleBetween(' + p2 + ') === 90', () =>
+        {
+            let angle = p1.angleBetween(p2) ;
+            assert.equal( angle , 90 );
         });
 
-        it('new Point(500,400).y === 400', () =>
+        it( p1 + '.angleBetween(' + p3 + ') === 180', () =>
         {
-            let point = new Point(500,400) ;
-            assert.equal( point.y , 400 );
+            let angle = p1.angleBetween(p3) ;
+            assert.equal( angle , 180 );
+        });
+
+        it( p1 + '.angleBetween(' + p4 + ') === 90', () =>
+        {
+            let angle = p1.angleBetween(p4) ;
+            assert.equal( angle , 90 );
         });
     });
 
