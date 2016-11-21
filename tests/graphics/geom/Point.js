@@ -119,7 +119,7 @@ describe( 'graphics.geom.Point' , () =>
         });
     });
 
-    describe( '#angleWith()' , () =>
+    describe( '#angleBetween()' , () =>
     {
         var p1 = new Point(0, 100) ;
         var p2 = new Point(100, 0) ;
@@ -167,6 +167,26 @@ describe( 'graphics.geom.Point' , () =>
         });
     });
 
+    describe( '#cross()' , () =>
+    {
+        let p1 = new Point(10,20) ;
+        let p2 = new Point(40,60) ;
+        it( p1 + '.cross(' + p2 + ') === -200', () =>
+        {
+            assert.equal( p1.cross(p2) , -200 );
+        });
+    });
+
+    describe( '#dot()' , () =>
+    {
+        let p1 = new Point(10,20) ;
+        let p2 = new Point(40,60) ;
+        it( p1 + '.dot(' + p2 + ') === 1600', () =>
+        {
+            assert.equal( p1.dot(p2) , 1600 );
+        });
+    });
+
     describe( '#equals()' , () =>
     {
         let p1 = new Point(30,20) ;
@@ -203,6 +223,179 @@ describe( 'graphics.geom.Point' , () =>
         it('new Point(30,20).equals("foo") === false', () =>
         {
             assert.isFalse( p1.equals('foo') );
+        });
+    });
+
+    describe( '#getNormal()' , () =>
+    {
+        let p = new Point(10,10) ;
+        let n = p.getNormal() ;
+        it( p + '.getNormal() === ' + n , () =>
+        {
+            assert.equal( n.x , -10 );
+            assert.equal( n.y ,  10 );
+        });
+    });
+
+    describe( '#getProjectionLength()' , () =>
+    {
+        let p1 = new Point(10,10) ;
+        let p2 = new Point(100,200) ;
+        let size = p1.getProjectionLength(p2) ;
+        it( p1 + '.getProjectionLength(' + p2 + ') === 0.06' , () =>
+        {
+            assert.equal( size , 0.06 );
+        });
+    });
+
+    describe( '#isPerpTo()' , () =>
+    {
+        let p1 = new Point(0,10) ;
+        let p2 = new Point(10,10) ;
+        let p3 = new Point(10,0) ;
+        it( p1 + '.isPerpTo(' + p2 + ') === false' , () =>
+        {
+            assert.isFalse( p1.isPerpTo(p2) );
+        });
+        it( p1 + '.isPerpTo(' + p3 + ') === true' , () =>
+        {
+            assert.isTrue( p1.isPerpTo(p3) );
+        });
+    });
+
+    describe( '#max()' , () =>
+    {
+        let p1 = new Point(10,100) ;
+        let p2 = new Point(100,10) ;
+        let p3 = p1.max(p2) ;
+        it( p1 + '.max(' + p2 + ') === ' + p3 , () =>
+        {
+            assert.instanceOf( p3 , Point );
+            assert.equal( p3.x , 100 ) ;
+            assert.equal( p3.y , 100 ) ;
+        });
+    });
+
+    describe( '#min()' , () =>
+    {
+        let p1 = new Point(10,100) ;
+        let p2 = new Point(100,10) ;
+        let p3 = p1.min(p2) ;
+        it( p1 + '.min(' + p2 + ') === ' + p3 , () =>
+        {
+            assert.instanceOf( p3 , Point );
+            assert.equal( p3.x , 10 ) ;
+            assert.equal( p3.y , 10 ) ;
+        });
+    });
+
+    describe( '#negate()' , () =>
+    {
+        let p = new Point(100,200) ;
+        it( p + '.negate()' , () =>
+        {
+            p.negate() ;
+            assert.equal( p.x , -100 ) ;
+            assert.equal( p.y , -200 ) ;
+        });
+    });
+
+    describe( '#normalize()' , () =>
+    {
+        let p = new Point(0,5) ;
+        it( p + '.normalize()' , () =>
+        {
+            p = new Point(0,5) ;
+            p.normalize() ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 1 ) ;
+            p = new Point(0,5) ;
+        });
+
+        it( p + '.normalize(1)' , () =>
+        {
+            p = new Point(0,5) ;
+            p.normalize(1) ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 1 ) ;
+            p = new Point(0,5) ;
+        });
+
+        it( p + '.normalize(NaN)' , () =>
+        {
+            p = new Point(0,5) ;
+            p.normalize(NaN) ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 1 ) ;
+            p = new Point(0,5) ;
+        });
+
+        it( p + '.normalize(2)' , () =>
+        {
+            p = new Point(0,5) ;
+            p.normalize(2) ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 2 ) ;
+            p = new Point(0,5) ;
+        });
+    });
+
+    describe( '#offset()' , () =>
+    {
+        let p = new Point(100,200) ;
+        it( p + '.offset(10,20)' , () =>
+        {
+            p.offset(10,20) ;
+            assert.equal( p.x , 110 ) ;
+            assert.equal( p.y , 220 ) ;
+        });
+    });
+
+    // TODO project
+    // TODO rotate
+
+    describe( '#scale()' , () =>
+    {
+        let p = new Point(10,20) ;
+        it( p + '.scale(10)' , () =>
+        {
+            p.scale(10) ;
+            assert.equal( p.x , 100 ) ;
+            assert.equal( p.y , 200 ) ;
+        });
+    });
+
+    describe( '#set()' , () =>
+    {
+        let p = new Point(50,60) ;
+        it( p + '.set()' , () =>
+        {
+            p.set() ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 0 ) ;
+        });
+        it( p + '.set(10,20)' , () =>
+        {
+            p.set(10,20) ;
+            assert.equal( p.x , 10 ) ;
+            assert.equal( p.y , 20 ) ;
+        });
+        it( p + '.set(NaN,NaN)' , () =>
+        {
+            p.set(NaN,NaN) ;
+            assert.equal( p.x , 0 ) ;
+            assert.equal( p.y , 0 ) ;
+        });
+    });
+
+    describe( '#subtract()' , () =>
+    {
+        it('new Point(10,20).subtract(new Point(10,10)) === new Point(0,10)', () =>
+        {
+            let p = new Point(10,20) ;
+            p.subtract(new Point(10,10)) ;
+            assert.equal( p.x , 0 );
+            assert.equal( p.y , 10 );
         });
     });
 

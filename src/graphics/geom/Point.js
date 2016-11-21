@@ -146,24 +146,6 @@ Point.prototype = Object.create( Vector2.prototype ,
     }},
 
     /**
-     * Returns the direction of this Point.
-     * @example
-     * <pre>
-     * var p1 = new Point(10,2);
-     * var p2 = p1.getDirection();
-     * trace( p2.getDirection() ) ;
-     * </pre>
-     * @return the direction of this Point.
-     * @see #normalize
-     */
-    getDirection : { value : function()
-    {
-        let direction = new Point(this.x,this.y) ;
-        direction.normalize();
-        return direction ;
-    }},
-
-    /**
      * Returns the normal value of this Point.
      * @example
      * <pre>
@@ -301,19 +283,19 @@ Point.prototype = Object.create( Vector2.prototype ,
      * Offsets the Point object by the specified amount.
      * The value of dx is added to the original value of x to create the new x value.
      * The value of dy is added to the original value of y to create the new y value.
+     * @param dx {number} The amount by which to offset the horizontal coordinate, x.
+     * @param dy {number} The amount by which to offset the vertical coordinate, y.
      * @example
      * <pre>
      * var p = new Point(10,10) ;
      * p.offset(10,10) ;
      * trace(p) ; // [Point x:20 y:20]
      * </pre>
-     * @param dx The amount by which to offset the horizontal coordinate, x.
-     * @param dy The amount by which to offset the vertical coordinate, y.
      */
     offset : { writable : true , value : function( dx = 0 , dy = 0 )
     {
-        this.x += dx ;
-        this.y += dy ;
+        this.x += isNaN(dx) ? 0 : dx ;
+        this.y += isNaN(dy) ? 0 : dy ;
     }},
 
     /**
@@ -355,8 +337,8 @@ Point.prototype = Object.create( Vector2.prototype ,
      */
     scale : { value : function( value )
     {
-        this.x *= value ;
-        this.y *= value ;
+        this.x *= isNaN(value) ? 0 : value ;
+        this.y *= isNaN(value) ? 0 : value ;
     }},
 
     /**
