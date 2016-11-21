@@ -21,13 +21,16 @@ window.onload = function()
 
     var change = function( tween )
     {
-        trace( 'progress ' + core.dump(tween.target) ) ;
+        //trace( 'progress ' + core.dump(tween.target) ) ;
         render() ;
     }
 
+    var time ;
+
     var finish = function()
     {
-        trace( 'finish' ) ;
+        time = time - performance.now() ;
+        trace( 'finish time:' + time ) ;
         tween.duration = 120 ;
         tween.from = null ;
         tween.to   = tween.to === to ? from : to ;
@@ -36,6 +39,7 @@ window.onload = function()
 
     var start = function()
     {
+        time = performance.now() ;
         trace( 'start' ) ;
     }
 
