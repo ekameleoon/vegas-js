@@ -31,7 +31,7 @@ window.onload = function()
     {
         time = performance.now() - time ;
         trace( 'finish time:' + time ) ;
-        tween.duration = 120 ;
+        tween.duration = 60 ;
         tween.from = null ;
         tween.to   = tween.to === to ? from : to ;
         tween.run() ;
@@ -69,7 +69,7 @@ window.onload = function()
     var tween = new Tween
     ({
         auto       : false,
-        duration   : 48 ,
+        duration   : 60 ,
         useSeconds : false ,
         easing     : core.easings.backOut,
         easings    : easings,
@@ -82,7 +82,7 @@ window.onload = function()
     //tween.easing = core.easings.elasticOut ;
     //tween.easing = core.easings.sineOut ;
 
-    // tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
+    tween.fps = 60  ; // use the Timer class or the FrameTimer class if fps is NaN
 
     //tween.looping = true ;
 
