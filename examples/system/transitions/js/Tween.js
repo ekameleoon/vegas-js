@@ -29,7 +29,7 @@ window.onload = function()
 
     var finish = function()
     {
-        time = time - performance.now() ;
+        time = performance.now() - time ;
         trace( 'finish time:' + time ) ;
         tween.duration = 120 ;
         tween.from = null ;
