@@ -4,6 +4,12 @@ Vegas is an opensource framework based on ECMAScript.
 
 This repository contains the Javascript [ES6](http://es6-features.org/) version of the framework.
 
+### About ###
+
+ * Author : Marc ALCARAZ (aka eKameleon)
+ * Mail : ekameleon@gmail.com
+ * Link : http://www.ooopener.com
+
 ### Licenses ###
 
 Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
@@ -87,11 +93,17 @@ gulp ut --match graphics.CardinalDimension
 ```
 Run only the graphics.CardinalDimension unit tests.
 
-### About ###
+#### Documentation ####
 
- * Author : Marc ALCARAZ (aka eKameleon)
- * Mail : ekameleon@gmail.com
- * Link : http://www.ooopener.com
+The documentation of the framework is based on [JSDoc](http://usejsdoc.org/). 
+
+Run the documentation build with gulp :
+```
+#!shell
+gulp doc
+```
+
+The documentation is generated in the main project folder : **./docs**
 
 ### History ###
 
