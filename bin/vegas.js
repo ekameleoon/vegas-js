@@ -4455,6 +4455,7 @@ var strings = Object.assign({
  * The VEGAS.js framework - The core library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace
  */
 var core = Object.assign({
     global: exports.global,
@@ -16384,7 +16385,7 @@ function FrameTimer() {
 
     /**
      * Time elapsed in milliseconds from last frame to this frame.
-     * Opposed to what the scalar {@link PIXI.ticker.Ticker#deltaTime}
+     * Opposed to what the scalar {@link FrameTimer#deltaTime}
      * is based, this value is neither capped nor scaled.
      * If the platform supports DOMHighResTimeStamp,
      * this value will have a precision of 1 µs.
@@ -16406,7 +16407,7 @@ function FrameTimer() {
 
     /**
      * Manages the maximum amount of milliseconds allowed to elapse between invoking {@link FrameTimer#next}.
-     * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link PIXI.ticker.Ticker#FPS}.
+     * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link FrameTimer#fps}.
      * When setting this property it is clamped to a value between `0` and `FPMS * 1000`.
      * @member {number}
      * @default 10
@@ -18833,6 +18834,7 @@ var transitions = Object.assign({
  * The VEGAS.js framework - The system library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace
  */
 var system = Object.assign({
     // interfaces
@@ -20971,6 +20973,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
  * The VEGAS.js framework - The graphics.geom library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace
  */
 var geom = Object.assign({
   Dimension: Dimension,
@@ -20983,6 +20986,7 @@ var geom = Object.assign({
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace
  */
 var graphics = Object.assign({
     isDirectionable: isDirectionable,
