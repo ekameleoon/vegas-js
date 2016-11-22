@@ -7,16 +7,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Added
 * Adds the --match and --reporter arguments in the 'gulp test' and 'gulp ut' tasks.
+* Adds the JSDoc task : gulp doc.
 * Adds the core.arrays.swap function.
 * Adds the core.functors.aop function.
-* Adds an example of the Tween class with the Pixi library.
 * Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
 * Adds the graphics.geom Package : Dimension, EdgeMetrics, Point, Rectangle
 * Adds the graphics.Layout basic class + the graphics.LayoutBufferMode enumeration singleton.
+* Adds an example of the Tween class with the Pixi library.
 
 ### Changed
 * Updates the core.arrays.sortOn method.
 * Refactoring of the polyfill files.
+* Refactoring of all the JSDoc.
 
 ### Fixed
 * Fix the performance.now() method.
