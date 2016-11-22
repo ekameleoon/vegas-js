@@ -106,11 +106,11 @@ if (!exports.global) {
 }
 
 /* jshint -W079 */
-var performance = exports.global.performance || {};
+var performance$1 = exports.global.performance || {};
 
-Object.defineProperty(exports.global, 'performance', { value: performance, configurable: true, writable: true });
+Object.defineProperty(exports.global, 'performance', { value: performance$1, configurable: true, writable: true });
 
-performance.now = performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow;
+performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow;
 
 if (!(exports.global.performance && exports.global.performance.now)) {
                   (function () {
@@ -154,7 +154,7 @@ if (!exports.global.requestAnimationFrame) {
 
         return setTimeout(function () {
             lastTime = Date.now();
-            callback(performance.now());
+            callback(performance$1.now());
         }, delay);
     };
 }
@@ -16371,110 +16371,208 @@ Do.prototype.toString = function () /*String*/
  * </pre>
  */
 function FrameTimer() {
-    Task.call(this);
+  Task.call(this);
 
-    Object.defineProperties(this, {
-        /**
-         * @private
-         */
-        _requestID: { value: null, writable: true },
+  Object.defineProperties(this, {
+    /**
+     * Scalar time value from last frame to this frame.
+     * This value is capped by setting minFPS and is scaled with "speed".
+     * @member {number}
+     * @default 1
+     */
+    deltaTime: { value: 1, writable: true },
 
-        /**
-         * @private
-         */
-        _stopped: { value: false, writable: true }
-    });
+    /**
+     * Time elapsed in milliseconds from last frame to this frame.
+     * Opposed to what the scalar {@link PIXI.ticker.Ticker#deltaTime}
+     * is based, this value is neither capped nor scaled.
+     * If the platform supports DOMHighResTimeStamp,
+     * this value will have a precision of 1 µs.
+     * @member {number}
+     * @default 1 / FPMS
+     */
+    elapsedMS: { value: 1 / FPMS, writable: true },
+
+    /**
+     * The frames per second at which this timer is running.
+     * The default is approximately 60 in most modern browsers.
+     * **Note:** This does not factor in the value of {@link FrameTimer#speed},
+     * which is specific to scaling {@link FrameTimer#deltaTime}.
+     * @readonly
+     */
+    fps: { get: function get() {
+        return 1000 / this.elapsedMS;
+      } },
+
+    /**
+     * Manages the maximum amount of milliseconds allowed to elapse between invoking {@link FrameTimer#next}.
+     * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link PIXI.ticker.Ticker#FPS}.
+     * When setting this property it is clamped to a value between `0` and `FPMS * 1000`.
+     * @member {number}
+     * @default 10
+     */
+    minFPS: {
+      get: function get() {
+        return 1000 / this._maxElapsedMS;
+      },
+      set: function set(fps) {
+        var minFPMS = Math.min(Math.max(0, fps) / 1000, FPMS);
+        this._maxElapsedMS = 1 / minFPMS;
+      }
+    },
+
+    /**
+     * The last time the next method was invoked.
+     * This value is also reset internally outside of invoking update, but only when a new animation frame is requested.
+     * If the platform supports DOMHighResTimeStamp, this value will have a precision of 1 µs.
+     * @member {number}
+     * @default 0
+     */
+    lastTime: { value: 0, writable: true },
+
+    /**
+     * Factor of current deltaTime.
+     * @member {number}
+     * @default 1
+     * @example
+     * // Scales ticker.deltaTime to what would be the equivalent of approximately 120 FPS
+     * ticker.speed = 2;
+     */
+    speed: { value: 1, writable: true },
+
+    /**
+     * @private
+     */
+    _requestID: { value: null, writable: true },
+
+    /**
+     * Internal value managed by minFPS property setter and getter.
+     * This is the maximum allowed milliseconds between updates.
+     * @private
+     */
+    _maxElapsedMS: { value: 100, writable: true },
+
+    /**
+     * @private
+     */
+    _stopped: { value: false, writable: true }
+  });
 }
 
 /**
  * @extends Task
  */
 FrameTimer.prototype = Object.create(Task.prototype, {
-    /**
-     * Indicates the reference to the Object function that created the instance's prototype.
-     */
-    constructor: { value: FrameTimer, writable: true },
+  /**
+   * Indicates the reference to the Object function that created the instance's prototype.
+   */
+  constructor: { value: FrameTimer, writable: true },
 
-    /**
-     * Indicates true if the timer is stopped.
-     */
-    stopped: { get: function get() {
-            return this._stopped;
-        } },
+  /**
+   * Indicates true if the timer is stopped.
+   */
+  stopped: { get: function get() {
+      return this._stopped;
+    } },
 
-    /**
-     * Returns a shallow copy of this object.
-     * @return a shallow copy of this object.
-     */
-    clone: { value: function value() {
-            return new FrameTimer();
-        } },
+  /**
+   * Returns a shallow copy of this object.
+   * @return a shallow copy of this object.
+   */
+  clone: { value: function value() {
+      return new FrameTimer();
+    } },
 
-    /**
-     * Restarts the timer. The timer is stopped, and then started.
-     */
-    resume: { value: function value() {
-            if (this._stopped) {
-                this._running = true;
-                this._stopped = false;
-                this.notifyResumed();
-                this._requestID = requestAnimationFrame(this._next.bind(this));
-            }
-        } },
+  /**
+   * Restarts the timer. The timer is stopped, and then started.
+   */
+  resume: { value: function value() {
+      if (this._stopped) {
+        this._running = true;
+        this._stopped = false;
+        this.notifyResumed();
+        this._requestID = requestAnimationFrame(this._next.bind(this));
+      }
+    } },
 
-    /**
-     * Reset the timer and stop it before if it's running.
-     */
-    reset: { value: function value() {
-            this.stop();
-            this._stopped = false;
-        } },
+  /**
+   * Reset the timer and stop it before if it's running.
+   */
+  reset: { value: function value() {
+      this.stop();
+      this._stopped = false;
+    } },
 
-    /**
-     * Run the timer.
-     */
-    run: { value: function value() {
-            if (!this._running) {
-                this._stopped = false;
-                this.notifyStarted();
-                this._requestID = requestAnimationFrame(this._next.bind(this));
-            }
-        } },
+  /**
+   * Run the timer.
+   */
+  run: { value: function value() {
+      if (!this._running) {
+        this._stopped = false;
+        this.lastTime = performance.now();
+        this.notifyStarted();
+        this._requestID = requestAnimationFrame(this._next.bind(this));
+      }
+    } },
 
-    /**
-     * Stops the timer.
-     */
-    stop: { value: function value() {
-            if (this._running && !this._stopped) {
-                this._running = false;
-                this._stopped = true;
-                cancelAnimationFrame(this._requestID);
-                this._requestID = null;
-                this.notifyStopped();
-            }
-        } },
+  /**
+   * Stops the timer.
+   */
+  stop: { value: function value() {
+      if (this._running && !this._stopped) {
+        this._running = false;
+        this._stopped = true;
+        cancelAnimationFrame(this._requestID);
+        this._requestID = null;
+        this.notifyStopped();
+      }
+    } },
 
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { value: function value() {
-            return '[FrameTimer]';
-        } },
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   */
+  toString: { value: function value() {
+      return '[FrameTimer]';
+    } },
 
-    /**
-     * @private
-     */
-    _next: { value: function value() {
-            if (this._stopped || !this._running) {
-                cancelAnimationFrame(this._requestID);
-                this._requestID = null;
-                return;
-            }
-            this.notifyProgress();
-            this._requestID = requestAnimationFrame(this._next.bind(this));
-        } }
+  /**
+   * @private
+   */
+  _next: { value: function value() {
+      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : performance.now();
+
+      if (this._requestID !== null && (this._stopped || !this._running)) {
+        cancelAnimationFrame(this._requestID);
+        this._requestID = null;
+        return;
+      }
+      var elapsedMS = void 0;
+
+      if (time > this.lastTime) {
+        elapsedMS = this.elapsedMS = time - this.lastTime;
+
+        if (elapsedMS > this._maxElapsedMS) {
+          elapsedMS = this._maxElapsedMS;
+        }
+
+        this.deltaTime = elapsedMS * FPMS * this.speed;
+
+        this.notifyProgress();
+      } else {
+        this.deltaTime = this.elapsedMS = 0;
+      }
+
+      this.lastTime = time;
+
+      this._requestID = requestAnimationFrame(this._next.bind(this));
+    } }
 });
+
+/**
+ * The target frames per millisecond.
+ */
+var FPMS = 0.06;
 
 /**
  * Invoked to lock a specific Lockable object.
@@ -18066,7 +18164,7 @@ MotionNextFrame.prototype = Object.create(Receiver.prototype, {
    */
   receive: { value: function value() {
       if (this.motion) {
-        this.motion.setTime(this.motion.useSeconds ? (performance.now() - this.motion._startTime) / 1000 : this.motion._time + 1);
+        this.motion.setTime(this.motion.useSeconds ? (performance$1.now() - this.motion._startTime) / 1000 : this.motion._time + 1);
       }
     } }
 });
@@ -18291,7 +18389,7 @@ Motion.prototype = Object.create(Transition.prototype, {
      * Forwards the tweened animation to the next frame.
      */
     nextFrame: { value: function value() {
-            this.setTime(this.useSeconds ? (performance.now() - this._startTime) / 1000 : this._time + 1);
+            this.setTime(this.useSeconds ? (performance$1.now() - this._startTime) / 1000 : this._time + 1);
         } },
 
     /**
@@ -18405,7 +18503,7 @@ Motion.prototype = Object.create(Transition.prototype, {
      */
     fixTime: { value: function value() {
             if (this.useSeconds) {
-                this._startTime = performance.now() - this._time * 1000;
+                this._startTime = performance$1.now() - this._time * 1000;
             }
         } },
 
@@ -19738,137 +19836,6 @@ Dimension.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
- * @constructor
- * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
- * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
- * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
- * @param d The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
- * @param tx The distance by which to translate each point along the <i>x</i> axis.
- * @param ty The distance by which to translate each point along the <i>y</i> axis.
- */
-
-function Matrix() {
-    var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-    var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-    var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-
-    Object.defineProperties(this, {
-        /**
-         * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
-         */
-        a: { value: isNaN(a) ? 0 : a, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
-         */
-        b: { value: isNaN(b) ? 0 : b, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
-         */
-        c: { value: isNaN(c) ? 0 : c, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
-         */
-        d: { value: isNaN(d) ? 0 : d, writable: true },
-
-        /**
-         * The distance by which to translate each point along the <i>x</i> axis.
-         */
-        tx: { value: isNaN(tx) ? 0 : tx, writable: true },
-
-        /**
-         * The distance by which to translate each point along the <i>y</i> axis.
-         */
-        ty: { value: isNaN(ty) ? 0 : ty, writable: true }
-    });
-}
-
-/**
- * @extends Object
- */
-Matrix.prototype = Object.create(Object.prototype, {
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     */
-    clone: { writable: true, value: function value() {
-            return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
-        } },
-
-    /**
-     * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
-     */
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Matrix) {
-                return o.a === this.a && o.b === this.b && o.c === this.c && o.d === this.d && o.tx === this.tx && o.ty === this.ty;
-            } else {
-                return false;
-            }
-        } },
-
-    /**
-     * Applies a rotation transformation to the Matrix object.
-     * @param angle The rotation angle in radians.
-     */
-    rotate: { value: function value(angle) {
-            /*
-                with sin = sin(angle) and cos = cos(angle):
-                              [a            c            tx           ]
-                              [b            d            ty           ]
-                              [0            0            1            ]
-              [cos   -sin  0] [a*cos-b*sin  c*cos-d*sin  tx*cos-ty*sin]
-              [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
-              [0     0     1] [0            0            1            ]
-            */
-
-            if (isNaN(angle)) {
-                angle = 0;
-            }
-
-            if (angle !== 0) {
-                var cos = Math.cos(angle);
-                var sin = Math.sin(angle);
-                var a = this.a;
-                var b = this.b;
-                var c = this.c;
-                var d = this.d;
-                var tx = this.tx;
-                var ty = this.ty;
-
-                this.a = a * cos - b * sin;
-                this.b = a * sin + b * cos;
-                this.c = c * cos - d * sin;
-                this.d = c * sin + d * cos;
-                this.tx = tx * cos - ty * sin;
-                this.ty = tx * sin + ty * cos;
-            }
-        } },
-
-    /**
-     * Returns the Object representation of this object.
-     * @return the Object representation of this object.
-     */
-    toObject: { writable: true, value: function value() {
-            return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
-        } },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { writable: true, value: function value() {
-            return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
-        } }
-});
-
-/**
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @constructor
  * @param x the x value of the object.
@@ -20374,12 +20341,245 @@ Object.defineProperties(Point, {
      * var polar = Point.polar( 5, Math.atan(3/4) ) ;
      * trace(polar) ; // [Point x:4 y:3]
      * </pre>
-     * @param len The length coordinate of the polar pair.
-     * @param angle The angle, in radians, of the polar pair.
+     * @param {number} len The length coordinate of the polar pair.
+     * @param {number} angle The angle, in radians, of the polar pair.
      * @return The new Cartesian point.
      */
     polar: { value: function value(len, angle) {
             return new Point(len * Math.cos(angle), len * Math.sin(angle));
+        } }
+});
+
+/**
+ * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
+ * @constructor
+ * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+ * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+ * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+ * @param d The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+ * @param tx The distance by which to translate each point along the <i>x</i> axis.
+ * @param ty The distance by which to translate each point along the <i>y</i> axis.
+ */
+function Matrix() {
+    var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+    var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+         */
+        a: { value: isNaN(a) ? 0 : a, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+         */
+        b: { value: isNaN(b) ? 0 : b, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+         */
+        c: { value: isNaN(c) ? 0 : c, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+         */
+        d: { value: isNaN(d) ? 0 : d, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>x</i> axis.
+         */
+        tx: { value: isNaN(tx) ? 0 : tx, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>y</i> axis.
+         */
+        ty: { value: isNaN(ty) ? 0 : ty, writable: true }
+    });
+}
+
+Object.defineProperties(Matrix, {
+    MAGIC_GRADIENT_FACTOR: { value: 16384 / 10 }
+});
+
+/**
+ * @extends Object
+ */
+Matrix.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
+        } },
+
+    /**
+     * Concatenates a matrix with the current matrix, effectively combining the geometric effects of the two. In mathematical terms, concatenating two matrixes is the same as combining them using matrix multiplication.
+     * <p>For example, if matrix <code>m1</code> scales an object by a factor of four, and matrix <code>m2</code> rotates an object by 1.5707963267949 radians (<code>Math.PI/2</code>), then <code>m1.concat(m2)</code> transforms <code>m1</code> into a matrix that scales an object by a factor of four and rotates the object by <code>Math.PI/2</code> radians.</p>
+     * <p>This method replaces the source matrix with the concatenated matrix. If you want to concatenate two matrixes without altering either of the two source matrixes, first copy the source matrix by using the <code>clone()</code> method, as shown in the Class Examples section.</p>
+     * @param matrix The matrix to be concatenated to the source matrix.
+     */
+    concat: { value: function value(matrix) {
+            var a = this.a;
+            var b = this.b;
+            var c = this.c;
+            var d = this.d;
+            var tx = this.tx;
+            var ty = this.ty;
+
+            this.a = matrix.a * a + matrix.c * b;
+            this.b = matrix.b * a + matrix.d * b;
+            this.c = matrix.a * c + matrix.c * d;
+            this.d = matrix.b * c + matrix.d * d;
+            this.tx = matrix.a * tx + matrix.c * ty + matrix.tx;
+            this.ty = matrix.b * tx + matrix.d * ty + matrix.ty;
+        } },
+
+    /**
+     *Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
+     * <p>Using the <code>createBox()</code> method lets you obtain the same matrix as you would if you applied the <code>identity()</code>, <code>rotate()</code>, <code>scale()</code>, and <code>translate()</code> methods in succession. For example, <code>mat.createBox(2,2,Math.PI/4, 100, 100)</code> has the same effect as the following:</p>
+     * <p>
+     * <pre><code>
+     * var mat = new Matrix();
+     * mat.createBox(2,2,Math.PI/4, 100, 100)
+     * // or
+     * mat.identity();
+     * mat.rotate(Math.PI/4);
+     * mat.scale(2,2);
+     * mat.translate(10,20);
+     * </code></pre>
+     * </p>
+     * @param scaleX The factor by which to scale horizontally.
+     * @param scaleY The factor by which scale vertically.
+     * @param rotation The amount to rotate, in radians.
+     * @param tx The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param ty The number of pixels to translate (move) down along the <i>y</i> axis.
+     */
+    createBox: { value: function value(scaleX, scaleY) {
+            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+            if (rotation === 0) {
+                this.a = this.d = 1;
+                this.b = this.c = 0;
+            } else {
+                this.a = Math.cos(rotation);
+                this.b = Math.sin(rotation);
+                this.c = -this.b;
+                this.d = this.a;
+            }
+
+            if (scaleX !== 1) {
+                this.a *= scaleX;
+                this.c *= scaleX;
+            }
+
+            if (scaleY !== 1) {
+                this.b *= scaleY;
+                this.d *= scaleY;
+            }
+            this.tx = tx;
+            this.ty = ty;
+        } },
+
+    /**
+     * Creates the specific style of matrix expected by the <code>beginGradientFill()</code> and <code>lineGradientStyle()</code> methods of the Graphics class. Width and height are scaled to a <code>scaleX</code>/<code>scaleY</code> pair and the <code>tx</code>/<code>ty</code> values are offset by half the width and height.
+     */
+    createGradientBox: { value: function value(width, height) {
+            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+            this.createBox(width / Matrix.MAGIC_GRADIENT_FACTOR, height / Matrix.MAGIC_GRADIENT_FACTOR, rotation, tx + width * 0.5, ty + height * 0.5);
+        } },
+
+    /**
+     * Given a point in the pretransform coordinate space, returns the coordinates of that point after the transformation occurs. Unlike the standard transformation applied using the <code>transformPoint()</code> method, the <code>deltaTransformPoint()</code> method's transformation does not consider the translation parameters <code>tx</code> and <code>ty</code>.
+     * @param point The point for which you want to get the result of the matrix transformation.
+     *
+     * @return The point resulting from applying the matrix transformation.
+     */
+    deltaTransformPoint: { value: function value(point) {
+            return new Point(this.a * point.x + this.c * point.y, this.b * point.x + this.d * point.y);
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Matrix) {
+                return o.a === this.a && o.b === this.b && o.c === this.c && o.d === this.d && o.tx === this.tx && o.ty === this.ty;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
+     */
+    identity: { value: function value() {
+            this.a = this.d = 1;
+            this.b = this.c = this.tx = this.ty = 0;
+        } },
+
+    /**
+     * Applies a rotation transformation to the Matrix object.
+     * @param angle The rotation angle in radians.
+     */
+    rotate: { value: function value(angle) {
+            /*
+                with sin = sin(angle) and cos = cos(angle):
+                              [a            c            tx           ]
+                              [b            d            ty           ]
+                              [0            0            1            ]
+              [cos   -sin  0] [a*cos-b*sin  c*cos-d*sin  tx*cos-ty*sin]
+              [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
+              [0     0     1] [0            0            1            ]
+            */
+
+            if (isNaN(angle)) {
+                angle = 0;
+            }
+
+            if (angle !== 0) {
+                var cos = Math.cos(angle);
+                var sin = Math.sin(angle);
+                var a = this.a;
+                var b = this.b;
+                var c = this.c;
+                var d = this.d;
+                var tx = this.tx;
+                var ty = this.ty;
+
+                this.a = a * cos - b * sin;
+                this.b = a * sin + b * cos;
+                this.c = c * cos - d * sin;
+                this.d = c * sin + d * cos;
+                this.tx = tx * cos - ty * sin;
+                this.ty = tx * sin + ty * cos;
+            }
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
         } }
 });
 

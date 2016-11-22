@@ -21,6 +21,7 @@ window.onload = function()
 
     var test = function()
     {
+        console.log( arguments ) ;
         if( count++ < total )
         {
             cur = performance.now() - cur ;
