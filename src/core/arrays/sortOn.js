@@ -43,9 +43,8 @@ Array.UNIQUESORT = 4 ;
  * <li>Each element of the array holds an object with one or more properties.</li>
  * <li>All of the objects have at least one property in common, the values of which can be used to sort the array. Such a property is called a field.</li>
  * </ul>
- * <p><b>Example : </b></p>
- * {@code
- * echo = function( a )
+ * @example
+ * var echo = function( a )
  * {
  *     var l = a.length ;
  *     for (var i = 0; i < l; i++)
@@ -105,7 +104,9 @@ Array.UNIQUESORT = 4 ;
  * core.arrays.sortOn( a , "name", Array.UNIQUESORT ) ;
  *
  * echo(a) ;
- * }
+ * @memberof core.arrays
+ * @name shuffle
+ * @instance
  */
 export function sortOn( ar , propName , options )
 {

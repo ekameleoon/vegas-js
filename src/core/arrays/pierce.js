@@ -2,8 +2,7 @@
 
 /**
  * Splices an array (removes an element) and returns either the entire array or the removed element.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @example
  * var ar = [0,1,2,3,4,5] ;
  *
  * trace( ar ) ; // 0,1,2,3,4,5
@@ -14,11 +13,13 @@
  * trace( ar ) ; // 0,3,4,5
  *
  * trace( pierce( ar, 1 , true ) ) ; // 0,4,5
- * </pre>
- * @param ar the array.
- * @param index the index of the array element to remove from the array (default 0).
- * @param flag a boolean <code>true</code> to return a new spliced array of false to return the removed element.
+ * @param {Array} ar - The array to pierce.
+ * @param {number} index - The index of the array element to remove from the array (default 0).
+ * @param {boolean} flag - A boolean <code>true</code> to return a new spliced array of false to return the removed element.
  * @return The newly spliced array or the removed element in function of the flag parameter.
+ * @memberof core.arrays
+ * @name pierce
+ * @instance
  */
 export function pierce( ar /*Array*/ , index /*uint*/ , flag /*Boolean*/ )
 {

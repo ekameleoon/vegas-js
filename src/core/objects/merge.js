@@ -5,8 +5,8 @@
  * @param target The target object to merge.
  * @param source The source object reference.
  * @param overwrite The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
- * <p><b>Example :</b></p>
- * <code class="prettyprint">
+ * @example
+ * <code>
  * var target = { a : 5 , b : 6 } ;
  * var from   = { a : 1 , b : 2 , c: 3 } ;
  * trace( core.dump( core.objects.merge( target , from ) ) ) ; // {a:1,b:2,c:3}

@@ -17,7 +17,6 @@ describe( 'core.functors.aop' , () =>
     var sum = function(x, y)
     {
         testScope = this === scope  ;
-        console.log( testScope ) ;
         return x + y;
     }
 

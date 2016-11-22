@@ -2,7 +2,10 @@
 
 /**
  * The EdgeMetrics class specifies the thickness, in pixels, of the four edge regions around a visual component.
+ * @name EdgeMetrics
+ * @memberof graphics.geom
  * @constructor
+ * @class
  * @param {number} [left=0] The width, in pixels, of the left edge region.
  * @param {number} [top=0] The height, in pixels, of the top edge region.
  * @param {number} [right=0] The width, in pixels, of the right edge region.

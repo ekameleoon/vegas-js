@@ -2,6 +2,7 @@
 
 /**
  * The string expression of the current VEGAS version.
+ * @static
  */
 export const version = '<@VERSION@>' ;
 

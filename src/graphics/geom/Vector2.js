@@ -2,9 +2,12 @@
 
 /**
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @name Vector2
+ * @memberof graphics.geom
  * @constructor
- * @param x the x value of the object.
- * @param y the y value of the object.
+ * @class
+ * @param {number} x - The x value of the object.
+ * @param {number} y - The y value of the object.
  */
 export function Vector2( x = 0 , y = 0 )
 {
@@ -38,7 +41,7 @@ Vector2.prototype = Object.create( Object.prototype ,
 
     /**
      * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
+     * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      */
     equals : { writable : true , value : function( o )
     {
@@ -63,7 +66,7 @@ Vector2.prototype = Object.create( Object.prototype ,
 
     /**
      * Returns the string representation of this instance.
-     * @return the string representation of this instance.
+     * @return {string} The string representation of this instance.
      */
     toString : { writable : true , value : function()
     {

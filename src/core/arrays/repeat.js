@@ -2,12 +2,15 @@
 
 /**
  * Returns a new Array who contains the specified Array elements repeated count times.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name repeat
+ * @memberof core.arrays
+ * @instance
+ * @example
  * trace( core.arrays.repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
  * trace( core.arrays.repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
- * </pre>
- * @return a new Array who contains the specified Array elements repeated count times.
+ * @param {Array} ar - The array to repeat.
+ * @param {number} count - The number of repeat.
+ * @return {Array} A new Array who contains the specified Array elements repeated count times.
  */
 export function repeat( ar /*Array*/ , count /*uint*/ ) /*Array*/
 {

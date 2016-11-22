@@ -24,7 +24,7 @@ import { geom } from './graphics/geom.js' ;
  * The VEGAS.js framework - The graphics library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace graphics
  */
 export var graphics = Object.assign
 ({

@@ -15,6 +15,8 @@ import uglify  from 'gulp-uglify' ;
 import util    from 'gulp-util' ;
 import yargs   from 'yargs' ;
 
+import jsdoc from 'gulp-jsdoc3' ;
+
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
 
@@ -31,6 +33,39 @@ var sources  = './src/**/*.js' ;
 var entry    = './src/index.js' ;
 var output   = './bin' ;
 var watching = false ;
+
+/**
+ * https://www.npmjs.com/package/gulp-jsdoc3
+ */
+var docs =
+{
+    "tags" :
+    {
+        "allowUnknownTags": true
+    } ,
+    "opts" :
+    {
+        "destination": "./docs/gen"
+    },
+    "plugins":
+    [
+        "plugins/markdown"
+    ],
+    "templates":
+    {
+        "cleverLinks"    : false,
+        "monospaceLinks" : false,
+        "default"        :
+        {
+            "outputSourceFiles" : true
+        },
+        "path"       : "ink-docstrap",
+        "theme"      : "cerulean",
+        "navType"    : "vertical",
+        "linenums"   : true,
+        "dateFormat" : "YYYY Do MMMM, h:mm:ss a"
+    }
+}
 
 // --------- Unit tests
 
@@ -109,6 +144,14 @@ var compile = ( done ) =>
         done
     );
 }
+
+var doc = ( done ) =>
+{
+    pump([
+        gulp.src(['README.md', './src/**/*.js'] , {read: false} ) ,
+        jsdoc( docs , done )
+    ] , done );
+};
 
 var compress = ( done ) =>
 {
@@ -210,6 +253,7 @@ var watch = () =>
 // --------- Tasks
 
 gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
+gulp.task( 'doc'     , gulp.series( doc ) ) ;
 gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
 gulp.task( 'ut'      , gulp.series( unittest ) ) ;
 gulp.task( 'watch'   , watch ) ;

@@ -66,6 +66,8 @@ import { vincenty }               from './maths/vincenty.js' ;
  * The VEGAS.js framework - The core.maths library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.maths
+ * @memberof core
  */
 export var maths = Object.assign
 ({

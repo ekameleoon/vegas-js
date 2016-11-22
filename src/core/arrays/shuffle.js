@@ -1,8 +1,7 @@
 "use strict" ;
 /**
  * Shuffles an array.
- * <p><b>Example :</b></p>
- * <pre>
+ * @example
  * ar = [0,1,2,3,4,5,6,7,8,9] ;
  *
  * trace( ar ) ;
@@ -10,8 +9,11 @@
  * shuffle( ar ) ;
  *
  * trace( ar ) ;
- * </pre>
- * @return the shuffled array.
+ * @param {Array} ar - The array to shuffle.
+ * @return {Array} the shuffled array.
+ * @memberof core.arrays
+ * @name shuffle
+ * @instance
  */
 export function shuffle( ar /*Array*/ ) /*Array*/
 {

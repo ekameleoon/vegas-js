@@ -57,6 +57,7 @@
     "babel-register": "^6.16.3",
     "chai": "^3.5.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.0.1",
     "gulp-mocha": "^3.0.1",
     "gulp-rename": "^1.2.2",

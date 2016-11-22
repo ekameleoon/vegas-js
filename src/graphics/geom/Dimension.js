@@ -2,7 +2,10 @@
 
 /**
  * The Dimension object encapsulates the width and height components of an object.
+ * @name Dimension
+ * @memberof graphics.geom
  * @constructor
+ * @class
  * @param {number} width the width value.
  * @param {number} height The height value.
  */

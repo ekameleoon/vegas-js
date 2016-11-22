@@ -7,11 +7,15 @@ import { Point } from './Point.js' ;
  * The Rectangle class is used to create and modify Rectangle objects.
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
+ * @name Rectangle
+ * @memberof graphics.geom
  * @constructor
+ * @class
  * @param {number} x the x value of the object.
  * @param {number} y the y value of the object.
  * @param {number} width the width value of the object.
  * @param {number} height the height value of the object.
+ * @inheritdoc
  */
 export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 {
@@ -19,11 +23,17 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
     {
         /**
          * Determinates the x value of this object.
+         * @var
+         * @default 0
+         * @type {number}
          */
         x : { value : isNaN(x) ? 0 : x , writable : true } ,
 
         /**
          * Determinates the y value of this object.
+         * @var
+         * @default 0
+         * @type {number}
          */
         y : { value : isNaN(y) ? 0 : y , writable : true }
     });
@@ -39,6 +49,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The sum of the y and height properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottom :
     {
@@ -54,6 +66,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The location of the Rectangle object's bottom-left corner, determined by the values of the left and bottom properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottomLeft :
     {
@@ -71,6 +85,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The location of the Rectangle object's bottom-right corner, determined by the values of the right and bottom properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottomRight :
     {
@@ -87,6 +103,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The location of the Rectangle object's center.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     center :
     {
@@ -107,6 +125,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The x coordinate of the top-left corner of the rectangle.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     left :
     {
@@ -123,6 +143,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The sum of the x and width properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     right :
     {
@@ -138,6 +160,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     size :
     {
@@ -154,6 +178,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The y coordinate of the top-left corner of the rectangle.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     top :
     {
@@ -171,6 +197,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The location of the Rectangle object's top-left corner, determined by the x and y coordinates of the point.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     topLeft :
     {
@@ -189,6 +217,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * The location of the Rectangle object's top-right corner, determined by the x and y coordinates of the point.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     topRight :
     {
@@ -208,6 +238,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      * @return a shallow copy of the object.
      */
     clone : { writable : true , value : function()
@@ -217,14 +249,21 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {number} x - The x position of the point to check.
+     * @param {number} y - The y position of the point to check.
      */
-    contains : { value : function( x, y )
+    contains : { value : function( x , y )
     {
         return (this.x <= x) && (this.x + this.width) > x && (this.y <= y) && (this.y + this.height) > y ;
     }},
 
     /**
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {Object|graphics.geom.Point} point - The point to check.
      */
     containsPoint : { value : function( point )
     {
@@ -233,6 +272,9 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {Object|graphics.geom.Rectangle} rec - The rectangle area to check.
      */
     containsRect : { value : function( rec )
     {
@@ -245,6 +287,9 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Copies all of rectangle data from the source Rectangle object into the calling Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {graphics.geom.Rectangle|Object} rec - The rectangle object to copy.
      */
     copyFrom : { value : function( rec )
     {
@@ -257,9 +302,11 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
-     * @param toCompare {object} The object to evaluates.
-     * @param strict {boolean} If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
-     * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {object} toCompareThe - object to evaluates.
+     * @param {boolean} [strict=true] - If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
+     * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      */
     equals : { writable : true , value : function( toCompare , strict = true )
     {
@@ -281,8 +328,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     /**
      * Increases the size of the Rectangle object by the specified amounts, in pixels.
      * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
-     * @param dx {number} The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
-     * @param dy {number} The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {number} dx - The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
+     * @param {number} dy - The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
      */
     inflate : { value : function( dx , dy )
     {
@@ -295,7 +344,9 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
-     * @param point {Point} The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {graphics.geom.Point} point - The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
      * @example
      * var rect  = new Rectangle(0,0,2,5);
      * var point = new Point(2,2);
@@ -340,8 +391,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Determines whether the object specified in the toIntersect parameter intersects with this Rectangle object. This method checks the x, y, width, and height properties of the specified Rectangle object to see if it intersects with this Rectangle object.
-     * @param toIntersect {Rectangle} The Rectangle object to compare against this Rectangle object.
+     * @param {graphics.geom.Rectangle} toIntersect - The Rectangle object to compare against this Rectangle object.
      * @return {boolean} A value of true if the specified object intersects with this Rectangle object; otherwise false.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     intersects : { value : function( toIntersect )
     {
@@ -350,8 +403,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Adjusts the location of the object, as determined by its top-left corner, by the specified amounts.
-     * @param dx {number} Moves the x value of the Rectangle object by this amount.
-     * @param dy {number} Moves the y value of the Rectangle object by this amount.
+     * @param {number} [dx=0] - Moves the x value of the Rectangle object by this amount.
+     * @param {number} [dy=0] - Moves the y value of the Rectangle object by this amount.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     offset : { writable : true , value : function( dx = 0 , dy = 0 )
     {
@@ -362,7 +417,9 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Adjusts the location of the Rectangle object using a Point object as a parameter. This method is similar to the Rectangle.offset() method, except that it takes a Point object as a parameter.
-     * @param point {Point} A Point object to use to offset this Rectangle object.
+     * @param {graphics.geom.Point} point - A Point object to use to offset this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     offsetPoint : { writable : true , value : function( point )
     {
@@ -373,11 +430,13 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * Sets the members of Rectangle to the specified values.
-     * @param x {number} The x coordinate of the top-left corner of the rectangle (default 0).
-     * @param y {number} The y coordinate of the top-left corner of the rectangle (default 0).
-     * @param width {number} The width of the rectangle, in pixels (default 0).
-     * @param height {number} The height of the rectangle, in pixels (default 0).
+     * @param {number} [x=0] - The x coordinate of the top-left corner of the rectangle (default 0).
+     * @param {number} [y=0] - The y coordinate of the top-left corner of the rectangle (default 0).
+     * @param {number} [width=0] - The width of the rectangle, in pixels (default 0).
+     * @param {number} [height=0] - The height of the rectangle, in pixels (default 0).
      * @return {Rectangle} The object reference.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     set : { value : function( x = 0 , y = 0 , width = 0 , height = 0 )
     {
@@ -391,6 +450,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     toObject : { value : function()
     {
@@ -400,6 +461,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     toString : { value : function()
     {
@@ -409,6 +472,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     /**
      * Adds two rectangles together to create a new Rectangle object, by filling in the horizontal and vertical space between the two rectangles.
      * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2 = new Rectangle(300,300,50,0);
+     * @memberof graphics.geom.Rectangle
+     * @instance
      * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
      * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
      */

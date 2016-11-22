@@ -3,6 +3,13 @@
 /**
  * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
+ * @class
+ * @constructor
+ * @param {number} value - The numeric value who define the direction.
+ * @param {string} name - The name of the direction.
+ * @param {number} azimut - The azimut angle.
+ * @memberof graphics
+ * @name CardinalDirection
  */
 export function CardinalDirection( value = 0 , name = "" , azimut = 0 )
 {
@@ -24,6 +31,8 @@ CardinalDirection.prototype = Object.create( Object.prototype ,
 {
     /**
      * Indicates the angular measurement in a spherical coordinate system (in degrees).
+     * @memberof graphics.CardinalDirection
+     * @type {number}
      */
     azimut : { value : function()
     {
@@ -32,7 +41,8 @@ CardinalDirection.prototype = Object.create( Object.prototype ,
 
     /**
      * Returns the String representation of the object.
-     * @return the String representation of the object.
+     * @memberof graphics.CardinalDirection
+     * @return {string} The String representation of the object.
      */
     toString : { value : function()
     {
@@ -53,11 +63,13 @@ Object.defineProperties( CardinalDirection ,
 {
     /**
      * This represents the value to set all the sides of the Rectangle (30).
+     * @memberof CardinalDirection
      */
     E : { enumerable : true , value : new CardinalDirection( Math.PI / 2 , "E" , 90 ) },
 
     /**
      * The East-North-East cardinal point "ENE" : Azimut:67.5° Radians:3π/8
+     * @memberof CardinalDirection
      */
     ENE : { enumerable : true , value : new CardinalDirection( 3 * Math.PI / 8 , "ENE" , 67.5 ) },
 

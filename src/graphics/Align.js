@@ -3,6 +3,8 @@
 
 /**
  * The Align enumeration class provides constant values to align displays or components.
+ * @memberof graphics
+ * @name Align
  */
 export var Align = Object.defineProperties( {} ,
 {
