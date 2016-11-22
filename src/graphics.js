@@ -12,6 +12,8 @@ import { Corner }             from './graphics/Corner.js' ;
 import { Direction }          from './graphics/Direction.js' ;
 import { Directionable }      from './graphics/Directionable.js' ;
 import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
+import { Layout }             from './graphics/Layout.js' ;
+import { LayoutBufferMode }   from './graphics/LayoutBufferMode.js' ;
 import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
@@ -26,7 +28,11 @@ import { geom } from './graphics/geom.js' ;
  */
 export var graphics = Object.assign
 ({
+    // ----- Singletons
+
     isDirectionable : isDirectionable ,
+
+    // ----- Classes and enumerations
 
     Align              : Align ,
     ArcType            : ArcType ,
@@ -35,10 +41,14 @@ export var graphics = Object.assign
     Corner             : Corner ,
     Direction          : Direction ,
     Directionable      : Directionable ,
-    DirectionOrder     : DirectionOrder,
-    Orientation        : Orientation,
-    Position           : Position,
-    ZOrder             : ZOrder,
+    DirectionOrder     : DirectionOrder ,
+    Layout             : Layout ,
+    LayoutBufferMode   : LayoutBufferMode ,
+    Orientation        : Orientation ,
+    Position           : Position ,
+    ZOrder             : ZOrder ,
+
+    // ----- packages
 
     geom : geom
 }) ;

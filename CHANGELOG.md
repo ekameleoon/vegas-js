@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * Adds an example of the Tween class with the Pixi library.
 * Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
 * Adds the graphics.geom Package : Dimension, EdgeMetrics, Point, Rectangle
+* Adds the graphics.Layout basic class + the graphics.LayoutBufferMode enumeration singleton.
 
 ### Changed
 * Updates the core.arrays.sortOn method.

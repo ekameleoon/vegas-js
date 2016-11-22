@@ -2113,23 +2113,25 @@ var easings = Object.assign({
  * Creates a Function who execute a specific function between two others.
  * @example
  * <pre><code>
- * function sum(x, y)
+ * var scope = { toString : function() { return "scope" ; } } ;
+ *
+ * var sum = function(x, y)
  * {
- *     console.info("calculating...")
+ *     console.info( this + " calculating...")
  *     return x + y;
  * }
  *
  * function begin()
  * {
- *     trace("begin");
+ *     trace("--- begin");
  * }
  *
  * function end()
  * {
- *     trace("end");
+ *     trace("--- end");
  * }
  *
- * var result = aop(sum, begin, end)(3, 5) ;
+ * var result = aop(sum, begin, end, scope)(3, 5) ;
  *
  * console.log( result ) ;
  * </code></pre>
@@ -19622,159 +19624,21 @@ var DirectionOrder = Object.defineProperties({}, {
 });
 
 /**
- * Constants defining layout orientation options.
+ * The layout buffering modes.
  */
 
-var Orientation = Object.defineProperties({}, {
-    /**
-     * Constant indicating a bottom-to-top layout orientation (4).
-     */
-    BOTTOM_TO_TOP: { enumerable: true, value: 4 },
-
-    /**
-     * Constant indicating a none layout orientation, use the default orientation (0).
-     */
-    NONE: { enumerable: true, value: 0 },
-
-    /**
-     * Constant indicating a left-to-right layout orientation (1).
-     */
-    LEFT_TO_RIGHT: { enumerable: true, value: 1 },
-
-    /**
-     * Constant indicating a right-to-left layout orientation (2).
-     */
-    RIGHT_TO_LEFT: { enumerable: true, value: 2 },
-
-    /**
-     * Constant indicating a bottom-to-top layout orientation (8).
-     */
-    TOP_TO_BOTTOM: { enumerable: true, value: 8 },
-
-    /**
-     * Constant indicating a left-to-right layout orientation (5).
-     */
-    LEFT_TO_RIGHT_BOTTOM_TO_TOP: { enumerable: true, value: 5 },
-
-    /**
-     * Constant indicating a left-to-right and top-to-bottom layout orientation (9).
-     */
-    LEFT_TO_RIGHT_TOP_TO_BOTTOM: { enumerable: true, value: 9 },
-
-    /**
-     * Constant indicating a right-to-left layout orientation (6).
-     */
-    RIGHT_TO_LEFT_BOTTOM_TO_TOP: { enumerable: true, value: 6 },
-
-    /**
-     * Constant indicating a right-to-left and top-to-bottom layout orientation (10).
-     */
-    RIGHT_TO_LEFT_TOP_TO_BOTTOM: { enumerable: true, value: 10 }
-});
-
-Object.defineProperties(Orientation, {
-    /**
-     * All the orientations defines in the Orientation singleton.
-     */
-    ALL: { value: [Orientation.NONE, Orientation.BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT, Orientation.RIGHT_TO_LEFT, Orientation.TOP_TO_BOTTOM, Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM, Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP, Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM] },
-
-    /**
-     * Returns the string representation of the specified Align value passed in argument.
-     * <p><b>Example :</b></p>
-     * <pre class="prettyprint">
-     * import graphics.Align ;
-     * trace( Align.toString(Align.LEFT)) ; // "l"
-     * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
-     * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
-     * </pre>
-     * @return the string representation of the specified Align value passed in argument.
-     */
-    toString: { value: function value(_value) {
-            var byDefault = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "none";
-
-            switch (_value) {
-                case Orientation.BOTTOM_TO_TOP:
-                    return "btt";
-                case Orientation.LEFT_TO_RIGHT:
-                    return "ltr";
-                case Orientation.RIGHT_TO_LEFT:
-                    return "rtl";
-                case Orientation.TOP_TO_BOTTOM:
-                    return "ttb";
-                case Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP:
-                    return "ltrbtt";
-                case Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM:
-                    return "ltrttb";
-                case Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP:
-                    return "rtlbtt";
-                case Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM:
-                    return "rtlttb";
-                case Orientation.NONE:
-                    return "none";
-                default:
-                    return byDefault;
-            }
-        } },
-
-    /**
-     * Returns <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
-     * @return <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
-     */
-    validate: { value: function value(_value2) {
-            return Orientation.ALL.indexOf(_value2) > -1;
-        } }
-});
-
-/**
- * Constants defining the position declaration lets you declare what
- * the position of an element should be.
- */
-
-var Position = Object.defineProperties({}, {
+var LayoutBufferMode = Object.defineProperties({}, {
   /**
-   * Constant indicating an "absolute" position. An element with position "absolute" is taken out of the normal flow of the page
-   * and positioned at the desired coordinates relative to its containing block.
+   * The "auto" buffering mode is used when the layout initialize
+   * this internal buffer with all childs registered in the container of the layout.
    */
-  ABSOLUTE: { enumerable: true, value: 'absolute' },
+  AUTO: { enumerable: true, value: 'auto' },
 
   /**
-   * Constant indicating a "fixed" position. An element with position "fixed" is taken out of the normal flow of the page and
-   * positioned at the desired coordinates relative to the browser window. It remains at that position regardless of scrolling.
+   * The "normal" buffering mode use the natural internal buffer of the layout,
+   * the user must fill the layout manually.
    */
-  FIXED: { enumerable: true, value: 'fixed' },
-
-  /**
-   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
-   */
-  NORMAL: { enumerable: true, value: 'normal' },
-
-  /**
-   * Constant indicating a "relative" position. An element with position: relative initially has the position the normal flow
-   * of the page gives it, but it is subsequently offset by the amount the top, bottom, left, and/or right declarations give.
-   */
-  RELATIVE: { enumerable: true, value: 'relative' },
-
-  /**
-   * Constant indicating a "static" position. An element with position "static" always has the position the normal flow of the page gives it.
-   * It cannot be moved from this position; a static element ignores any x, y, top, bottom, left, or right declarations.
-   */
-  STATIC: { enumerable: true, value: 'static' }
-});
-
-/**
- * Represents the ZOrder of a display added to the document.
- */
-
-var ZOrder = Object.defineProperties({}, {
-  /**
-   * Back means the display will be behind an other object and has a value of 0.
-   */
-  BACK: { enumerable: true, value: 0 },
-
-  /**
-   * Front means the display will be in front of an other object and has a value of 1.
-   */
-  FRONT: { enumerable: true, value: 1 }
+  NORMAL: { enumerable: true, value: 'normal' }
 });
 
 /**
@@ -20419,239 +20283,6 @@ Object.defineProperties(Point, {
 });
 
 /**
- * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
- * @constructor
- * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
- * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
- * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
- * @param d The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
- * @param tx The distance by which to translate each point along the <i>x</i> axis.
- * @param ty The distance by which to translate each point along the <i>y</i> axis.
- */
-function Matrix() {
-    var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-    var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-    var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-
-    Object.defineProperties(this, {
-        /**
-         * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
-         */
-        a: { value: isNaN(a) ? 0 : a, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
-         */
-        b: { value: isNaN(b) ? 0 : b, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
-         */
-        c: { value: isNaN(c) ? 0 : c, writable: true },
-
-        /**
-         * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
-         */
-        d: { value: isNaN(d) ? 0 : d, writable: true },
-
-        /**
-         * The distance by which to translate each point along the <i>x</i> axis.
-         */
-        tx: { value: isNaN(tx) ? 0 : tx, writable: true },
-
-        /**
-         * The distance by which to translate each point along the <i>y</i> axis.
-         */
-        ty: { value: isNaN(ty) ? 0 : ty, writable: true }
-    });
-}
-
-Object.defineProperties(Matrix, {
-    MAGIC_GRADIENT_FACTOR: { value: 16384 / 10 }
-});
-
-/**
- * @extends Object
- */
-Matrix.prototype = Object.create(Object.prototype, {
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     */
-    clone: { writable: true, value: function value() {
-            return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
-        } },
-
-    /**
-     * Concatenates a matrix with the current matrix, effectively combining the geometric effects of the two. In mathematical terms, concatenating two matrixes is the same as combining them using matrix multiplication.
-     * <p>For example, if matrix <code>m1</code> scales an object by a factor of four, and matrix <code>m2</code> rotates an object by 1.5707963267949 radians (<code>Math.PI/2</code>), then <code>m1.concat(m2)</code> transforms <code>m1</code> into a matrix that scales an object by a factor of four and rotates the object by <code>Math.PI/2</code> radians.</p>
-     * <p>This method replaces the source matrix with the concatenated matrix. If you want to concatenate two matrixes without altering either of the two source matrixes, first copy the source matrix by using the <code>clone()</code> method, as shown in the Class Examples section.</p>
-     * @param matrix The matrix to be concatenated to the source matrix.
-     */
-    concat: { value: function value(matrix) {
-            var a = this.a;
-            var b = this.b;
-            var c = this.c;
-            var d = this.d;
-            var tx = this.tx;
-            var ty = this.ty;
-
-            this.a = matrix.a * a + matrix.c * b;
-            this.b = matrix.b * a + matrix.d * b;
-            this.c = matrix.a * c + matrix.c * d;
-            this.d = matrix.b * c + matrix.d * d;
-            this.tx = matrix.a * tx + matrix.c * ty + matrix.tx;
-            this.ty = matrix.b * tx + matrix.d * ty + matrix.ty;
-        } },
-
-    /**
-     *Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
-     * <p>Using the <code>createBox()</code> method lets you obtain the same matrix as you would if you applied the <code>identity()</code>, <code>rotate()</code>, <code>scale()</code>, and <code>translate()</code> methods in succession. For example, <code>mat.createBox(2,2,Math.PI/4, 100, 100)</code> has the same effect as the following:</p>
-     * <p>
-     * <pre><code>
-     * var mat = new Matrix();
-     * mat.createBox(2,2,Math.PI/4, 100, 100)
-     * // or
-     * mat.identity();
-     * mat.rotate(Math.PI/4);
-     * mat.scale(2,2);
-     * mat.translate(10,20);
-     * </code></pre>
-     * </p>
-     * @param scaleX The factor by which to scale horizontally.
-     * @param scaleY The factor by which scale vertically.
-     * @param rotation The amount to rotate, in radians.
-     * @param tx The number of pixels to translate (move) to the right along the <i>x</i> axis.
-     * @param ty The number of pixels to translate (move) down along the <i>y</i> axis.
-     */
-    createBox: { value: function value(scaleX, scaleY) {
-            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-
-            if (rotation === 0) {
-                this.a = this.d = 1;
-                this.b = this.c = 0;
-            } else {
-                this.a = Math.cos(rotation);
-                this.b = Math.sin(rotation);
-                this.c = -this.b;
-                this.d = this.a;
-            }
-
-            if (scaleX !== 1) {
-                this.a *= scaleX;
-                this.c *= scaleX;
-            }
-
-            if (scaleY !== 1) {
-                this.b *= scaleY;
-                this.d *= scaleY;
-            }
-            this.tx = tx;
-            this.ty = ty;
-        } },
-
-    /**
-     * Creates the specific style of matrix expected by the <code>beginGradientFill()</code> and <code>lineGradientStyle()</code> methods of the Graphics class. Width and height are scaled to a <code>scaleX</code>/<code>scaleY</code> pair and the <code>tx</code>/<code>ty</code> values are offset by half the width and height.
-     */
-    createGradientBox: { value: function value(width, height) {
-            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-
-            this.createBox(width / Matrix.MAGIC_GRADIENT_FACTOR, height / Matrix.MAGIC_GRADIENT_FACTOR, rotation, tx + width * 0.5, ty + height * 0.5);
-        } },
-
-    /**
-     * Given a point in the pretransform coordinate space, returns the coordinates of that point after the transformation occurs. Unlike the standard transformation applied using the <code>transformPoint()</code> method, the <code>deltaTransformPoint()</code> method's transformation does not consider the translation parameters <code>tx</code> and <code>ty</code>.
-     * @param point The point for which you want to get the result of the matrix transformation.
-     *
-     * @return The point resulting from applying the matrix transformation.
-     */
-    deltaTransformPoint: { value: function value(point) {
-            return new Point(this.a * point.x + this.c * point.y, this.b * point.x + this.d * point.y);
-        } },
-
-    /**
-     * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
-     */
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Matrix) {
-                return o.a === this.a && o.b === this.b && o.c === this.c && o.d === this.d && o.tx === this.tx && o.ty === this.ty;
-            } else {
-                return false;
-            }
-        } },
-
-    /**
-     * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
-     */
-    identity: { value: function value() {
-            this.a = this.d = 1;
-            this.b = this.c = this.tx = this.ty = 0;
-        } },
-
-    /**
-     * Applies a rotation transformation to the Matrix object.
-     * @param angle The rotation angle in radians.
-     */
-    rotate: { value: function value(angle) {
-            /*
-                with sin = sin(angle) and cos = cos(angle):
-                              [a            c            tx           ]
-                              [b            d            ty           ]
-                              [0            0            1            ]
-              [cos   -sin  0] [a*cos-b*sin  c*cos-d*sin  tx*cos-ty*sin]
-              [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
-              [0     0     1] [0            0            1            ]
-            */
-
-            if (isNaN(angle)) {
-                angle = 0;
-            }
-
-            if (angle !== 0) {
-                var cos = Math.cos(angle);
-                var sin = Math.sin(angle);
-                var a = this.a;
-                var b = this.b;
-                var c = this.c;
-                var d = this.d;
-                var tx = this.tx;
-                var ty = this.ty;
-
-                this.a = a * cos - b * sin;
-                this.b = a * sin + b * cos;
-                this.c = c * cos - d * sin;
-                this.d = c * sin + d * cos;
-                this.tx = tx * cos - ty * sin;
-                this.ty = tx * sin + ty * cos;
-            }
-        } },
-
-    /**
-     * Returns the Object representation of this object.
-     * @return the Object representation of this object.
-     */
-    toObject: { writable: true, value: function value() {
-            return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
-        } },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { writable: true, value: function value() {
-            return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
-        } }
-});
-
-/**
  * The Rectangle class is used to create and modify Rectangle objects.
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
@@ -21036,6 +20667,555 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 });
 
 /**
+ * Creates a new Layout instance.
+ * @constructor
+ */
+function Layout() {
+    Object.defineProperties(this, {
+        /**
+         * The signal invoked when the render method is called.
+         */
+        renderer: { value: new Signal() },
+
+        /**
+         * The signal invoked when the update method is called.
+         */
+        updater: { value: new Signal() },
+
+        /**
+         * @private
+         */
+        _align: { value: Align.TOP_LEFT, writable: true },
+
+        /**
+         * @private
+         */
+        _bufferMode: { value: LayoutBufferMode.AUTO, writable: true },
+
+        /**
+         * The absolute rectangle bound area calculate with the measure method.
+         * @private
+         */
+        _bounds: { value: new Rectangle() },
+
+        /**
+         * @private
+         */
+        _container: { value: null, writable: true }
+    });
+}
+
+/**
+ * @extends Task
+ */
+Layout.prototype = Object.create(Task.prototype, {
+    // ------------- getters/setters
+
+    /**
+     * The alignement of the layout.
+     * @see graphics.Align
+     */
+    align: {
+        get: function get() {
+            return this._align;
+        },
+        set: function set(value) {
+            this._align = value;
+        }
+    },
+
+    /**
+     * A rectangle that defines the current visible area of the layout.
+     * @readonly
+     */
+    bounds: {
+        get: function get() {
+            return this._bounds;
+        }
+    },
+
+    /**
+     * A rectangle that defines the current visible area of the layout.
+     * @readonly
+     */
+    bufferMode: {
+        get: function get() {
+            return this._bufferMode;
+        },
+        set: function set(value) {
+            if (this._bufferMode === value) {
+                return;
+            }
+            this._bufferMode = value === LayoutBufferMode.AUTO ? LayoutBufferMode.AUTO : LayoutBufferMode.NORMAL;
+        }
+    },
+
+    /**
+     * Indicates the container reference to change with the layout.
+     */
+    container: {
+        get: function get() {
+            return this._container;
+        },
+        set: function set(target) {
+            this._container = target;
+        }
+    },
+
+    /**
+     * The default height of the layout, in pixels.
+     * @readonly
+     */
+    measuredHeight: { get: function get() {
+            return this._bounds.height;
+        } },
+
+    /**
+     * The default width of the layout, in pixels.
+     * @readonly
+     */
+    measuredWidth: { get: function get() {
+            return this._bounds.width;
+        } },
+
+    // ------------- public methods
+
+    /*jshint -W098 */
+    /**
+     * Initialize the layout container with the specific elements. This method flush the layout container and remove all old elements register in the collection before initialize it.
+     * @param children an Array, a container or a list of element references to register. If this argument is null the layout is only flushed.
+     */
+    initialize: { writable: true, value: function value() {
+            var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        } },
+    /*jshint +W098 */
+
+    /**
+     * Calculates the default sizes and minimum and maximum values.
+     * You can overrides this method in the specific layouts.
+     */
+    measure: { writable: true, value: function value() {} },
+
+    /**
+     * Render the layout, refresh and change the position of all childs in a specific container.
+     */
+    render: { writable: true, value: function value() {} },
+
+    /**
+     * Run the process.
+     */
+    run: { writable: true, value: function value() {
+            if (this.isLocked()) {
+                return;
+            }
+
+            this.notifyStarted();
+
+            if (this._bufferMode === LayoutBufferMode.AUTO && this._container) {
+                this.initialize(this._container);
+            }
+
+            this.measure();
+            this.render();
+            this.update();
+        } },
+
+    /**
+     * This method is invoked when the rendering is finished to finalize the it after the measure invokation.
+     */
+    update: { writable: true, value: function value() {} }
+});
+
+/**
+ * Constants defining layout orientation options.
+ */
+
+var Orientation = Object.defineProperties({}, {
+    /**
+     * Constant indicating a bottom-to-top layout orientation (4).
+     */
+    BOTTOM_TO_TOP: { enumerable: true, value: 4 },
+
+    /**
+     * Constant indicating a none layout orientation, use the default orientation (0).
+     */
+    NONE: { enumerable: true, value: 0 },
+
+    /**
+     * Constant indicating a left-to-right layout orientation (1).
+     */
+    LEFT_TO_RIGHT: { enumerable: true, value: 1 },
+
+    /**
+     * Constant indicating a right-to-left layout orientation (2).
+     */
+    RIGHT_TO_LEFT: { enumerable: true, value: 2 },
+
+    /**
+     * Constant indicating a bottom-to-top layout orientation (8).
+     */
+    TOP_TO_BOTTOM: { enumerable: true, value: 8 },
+
+    /**
+     * Constant indicating a left-to-right layout orientation (5).
+     */
+    LEFT_TO_RIGHT_BOTTOM_TO_TOP: { enumerable: true, value: 5 },
+
+    /**
+     * Constant indicating a left-to-right and top-to-bottom layout orientation (9).
+     */
+    LEFT_TO_RIGHT_TOP_TO_BOTTOM: { enumerable: true, value: 9 },
+
+    /**
+     * Constant indicating a right-to-left layout orientation (6).
+     */
+    RIGHT_TO_LEFT_BOTTOM_TO_TOP: { enumerable: true, value: 6 },
+
+    /**
+     * Constant indicating a right-to-left and top-to-bottom layout orientation (10).
+     */
+    RIGHT_TO_LEFT_TOP_TO_BOTTOM: { enumerable: true, value: 10 }
+});
+
+Object.defineProperties(Orientation, {
+    /**
+     * All the orientations defines in the Orientation singleton.
+     */
+    ALL: { value: [Orientation.NONE, Orientation.BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT, Orientation.RIGHT_TO_LEFT, Orientation.TOP_TO_BOTTOM, Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM, Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP, Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM] },
+
+    /**
+     * Returns the string representation of the specified Align value passed in argument.
+     * <p><b>Example :</b></p>
+     * <pre class="prettyprint">
+     * import graphics.Align ;
+     * trace( Align.toString(Align.LEFT)) ; // "l"
+     * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
+     * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
+     * </pre>
+     * @return the string representation of the specified Align value passed in argument.
+     */
+    toString: { value: function value(_value) {
+            var byDefault = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "none";
+
+            switch (_value) {
+                case Orientation.BOTTOM_TO_TOP:
+                    return "btt";
+                case Orientation.LEFT_TO_RIGHT:
+                    return "ltr";
+                case Orientation.RIGHT_TO_LEFT:
+                    return "rtl";
+                case Orientation.TOP_TO_BOTTOM:
+                    return "ttb";
+                case Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP:
+                    return "ltrbtt";
+                case Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM:
+                    return "ltrttb";
+                case Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP:
+                    return "rtlbtt";
+                case Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM:
+                    return "rtlttb";
+                case Orientation.NONE:
+                    return "none";
+                default:
+                    return byDefault;
+            }
+        } },
+
+    /**
+     * Returns <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
+     * @return <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
+     */
+    validate: { value: function value(_value2) {
+            return Orientation.ALL.indexOf(_value2) > -1;
+        } }
+});
+
+/**
+ * Constants defining the position declaration lets you declare what
+ * the position of an element should be.
+ */
+
+var Position = Object.defineProperties({}, {
+  /**
+   * Constant indicating an "absolute" position. An element with position "absolute" is taken out of the normal flow of the page
+   * and positioned at the desired coordinates relative to its containing block.
+   */
+  ABSOLUTE: { enumerable: true, value: 'absolute' },
+
+  /**
+   * Constant indicating a "fixed" position. An element with position "fixed" is taken out of the normal flow of the page and
+   * positioned at the desired coordinates relative to the browser window. It remains at that position regardless of scrolling.
+   */
+  FIXED: { enumerable: true, value: 'fixed' },
+
+  /**
+   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
+   */
+  NORMAL: { enumerable: true, value: 'normal' },
+
+  /**
+   * Constant indicating a "relative" position. An element with position: relative initially has the position the normal flow
+   * of the page gives it, but it is subsequently offset by the amount the top, bottom, left, and/or right declarations give.
+   */
+  RELATIVE: { enumerable: true, value: 'relative' },
+
+  /**
+   * Constant indicating a "static" position. An element with position "static" always has the position the normal flow of the page gives it.
+   * It cannot be moved from this position; a static element ignores any x, y, top, bottom, left, or right declarations.
+   */
+  STATIC: { enumerable: true, value: 'static' }
+});
+
+/**
+ * Represents the ZOrder of a display added to the document.
+ */
+
+var ZOrder = Object.defineProperties({}, {
+  /**
+   * Back means the display will be behind an other object and has a value of 0.
+   */
+  BACK: { enumerable: true, value: 0 },
+
+  /**
+   * Front means the display will be in front of an other object and has a value of 1.
+   */
+  FRONT: { enumerable: true, value: 1 }
+});
+
+/**
+ * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
+ * @constructor
+ * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+ * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+ * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+ * @param d The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+ * @param tx The distance by which to translate each point along the <i>x</i> axis.
+ * @param ty The distance by which to translate each point along the <i>y</i> axis.
+ */
+function Matrix() {
+    var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+    var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+    Object.defineProperties(this, {
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+         */
+        a: { value: isNaN(a) ? 0 : a, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+         */
+        b: { value: isNaN(b) ? 0 : b, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+         */
+        c: { value: isNaN(c) ? 0 : c, writable: true },
+
+        /**
+         * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+         */
+        d: { value: isNaN(d) ? 0 : d, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>x</i> axis.
+         */
+        tx: { value: isNaN(tx) ? 0 : tx, writable: true },
+
+        /**
+         * The distance by which to translate each point along the <i>y</i> axis.
+         */
+        ty: { value: isNaN(ty) ? 0 : ty, writable: true }
+    });
+}
+
+Object.defineProperties(Matrix, {
+    MAGIC_GRADIENT_FACTOR: { value: 16384 / 10 }
+});
+
+/**
+ * @extends Object
+ */
+Matrix.prototype = Object.create(Object.prototype, {
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
+        } },
+
+    /**
+     * Concatenates a matrix with the current matrix, effectively combining the geometric effects of the two. In mathematical terms, concatenating two matrixes is the same as combining them using matrix multiplication.
+     * <p>For example, if matrix <code>m1</code> scales an object by a factor of four, and matrix <code>m2</code> rotates an object by 1.5707963267949 radians (<code>Math.PI/2</code>), then <code>m1.concat(m2)</code> transforms <code>m1</code> into a matrix that scales an object by a factor of four and rotates the object by <code>Math.PI/2</code> radians.</p>
+     * <p>This method replaces the source matrix with the concatenated matrix. If you want to concatenate two matrixes without altering either of the two source matrixes, first copy the source matrix by using the <code>clone()</code> method, as shown in the Class Examples section.</p>
+     * @param matrix The matrix to be concatenated to the source matrix.
+     */
+    concat: { value: function value(matrix) {
+            var a = this.a;
+            var b = this.b;
+            var c = this.c;
+            var d = this.d;
+            var tx = this.tx;
+            var ty = this.ty;
+
+            this.a = matrix.a * a + matrix.c * b;
+            this.b = matrix.b * a + matrix.d * b;
+            this.c = matrix.a * c + matrix.c * d;
+            this.d = matrix.b * c + matrix.d * d;
+            this.tx = matrix.a * tx + matrix.c * ty + matrix.tx;
+            this.ty = matrix.b * tx + matrix.d * ty + matrix.ty;
+        } },
+
+    /**
+     *Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
+     * <p>Using the <code>createBox()</code> method lets you obtain the same matrix as you would if you applied the <code>identity()</code>, <code>rotate()</code>, <code>scale()</code>, and <code>translate()</code> methods in succession. For example, <code>mat.createBox(2,2,Math.PI/4, 100, 100)</code> has the same effect as the following:</p>
+     * <p>
+     * <pre><code>
+     * var mat = new Matrix();
+     * mat.createBox(2,2,Math.PI/4, 100, 100)
+     * // or
+     * mat.identity();
+     * mat.rotate(Math.PI/4);
+     * mat.scale(2,2);
+     * mat.translate(10,20);
+     * </code></pre>
+     * </p>
+     * @param scaleX The factor by which to scale horizontally.
+     * @param scaleY The factor by which scale vertically.
+     * @param rotation The amount to rotate, in radians.
+     * @param tx The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param ty The number of pixels to translate (move) down along the <i>y</i> axis.
+     */
+    createBox: { value: function value(scaleX, scaleY) {
+            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+            if (rotation === 0) {
+                this.a = this.d = 1;
+                this.b = this.c = 0;
+            } else {
+                this.a = Math.cos(rotation);
+                this.b = Math.sin(rotation);
+                this.c = -this.b;
+                this.d = this.a;
+            }
+
+            if (scaleX !== 1) {
+                this.a *= scaleX;
+                this.c *= scaleX;
+            }
+
+            if (scaleY !== 1) {
+                this.b *= scaleY;
+                this.d *= scaleY;
+            }
+            this.tx = tx;
+            this.ty = ty;
+        } },
+
+    /**
+     * Creates the specific style of matrix expected by the <code>beginGradientFill()</code> and <code>lineGradientStyle()</code> methods of the Graphics class. Width and height are scaled to a <code>scaleX</code>/<code>scaleY</code> pair and the <code>tx</code>/<code>ty</code> values are offset by half the width and height.
+     */
+    createGradientBox: { value: function value(width, height) {
+            var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var tx = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            var ty = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+            this.createBox(width / Matrix.MAGIC_GRADIENT_FACTOR, height / Matrix.MAGIC_GRADIENT_FACTOR, rotation, tx + width * 0.5, ty + height * 0.5);
+        } },
+
+    /**
+     * Given a point in the pretransform coordinate space, returns the coordinates of that point after the transformation occurs. Unlike the standard transformation applied using the <code>transformPoint()</code> method, the <code>deltaTransformPoint()</code> method's transformation does not consider the translation parameters <code>tx</code> and <code>ty</code>.
+     * @param point The point for which you want to get the result of the matrix transformation.
+     *
+     * @return The point resulting from applying the matrix transformation.
+     */
+    deltaTransformPoint: { value: function value(point) {
+            return new Point(this.a * point.x + this.c * point.y, this.b * point.x + this.d * point.y);
+        } },
+
+    /**
+     * Compares the passed-in object with this object for equality.
+     * @return <code>true</code> if the the specified object is equal with this object.
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Matrix) {
+                return o.a === this.a && o.b === this.b && o.c === this.c && o.d === this.d && o.tx === this.tx && o.ty === this.ty;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
+     */
+    identity: { value: function value() {
+            this.a = this.d = 1;
+            this.b = this.c = this.tx = this.ty = 0;
+        } },
+
+    /**
+     * Applies a rotation transformation to the Matrix object.
+     * @param angle The rotation angle in radians.
+     */
+    rotate: { value: function value(angle) {
+            /*
+                with sin = sin(angle) and cos = cos(angle):
+                              [a            c            tx           ]
+                              [b            d            ty           ]
+                              [0            0            1            ]
+              [cos   -sin  0] [a*cos-b*sin  c*cos-d*sin  tx*cos-ty*sin]
+              [sin   cos   0] [a*sin+b*cos  c*sin+d*cos  tx*sin+ty*cos]
+              [0     0     1] [0            0            1            ]
+            */
+
+            if (isNaN(angle)) {
+                angle = 0;
+            }
+
+            if (angle !== 0) {
+                var cos = Math.cos(angle);
+                var sin = Math.sin(angle);
+                var a = this.a;
+                var b = this.b;
+                var c = this.c;
+                var d = this.d;
+                var tx = this.tx;
+                var ty = this.ty;
+
+                this.a = a * cos - b * sin;
+                this.b = a * sin + b * cos;
+                this.c = c * cos - d * sin;
+                this.d = c * sin + d * cos;
+                this.tx = tx * cos - ty * sin;
+                this.ty = tx * sin + ty * cos;
+            }
+        } },
+
+    /**
+     * Returns the Object representation of this object.
+     * @return the Object representation of this object.
+     */
+    toObject: { writable: true, value: function value() {
+            return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     */
+    toString: { writable: true, value: function value() {
+            return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
+        } }
+});
+
+/**
  * The VEGAS.js framework - The graphics.geom library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
@@ -21055,7 +21235,11 @@ var geom = Object.assign({
  * @namespace
  */
 var graphics = Object.assign({
+    // ----- Singletons
+
     isDirectionable: isDirectionable,
+
+    // ----- Classes and enumerations
 
     Align: Align,
     ArcType: ArcType,
@@ -21065,9 +21249,13 @@ var graphics = Object.assign({
     Direction: Direction,
     Directionable: Directionable,
     DirectionOrder: DirectionOrder,
+    Layout: Layout,
+    LayoutBufferMode: LayoutBufferMode,
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
+
+    // ----- packages
 
     geom: geom
 });

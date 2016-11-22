@@ -1,4 +1,3 @@
-/*jshint bitwise: false*/
 "use strict" ;
 
 import { ArcType } from '../../src/graphics/ArcType.js' ;

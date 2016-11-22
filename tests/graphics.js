@@ -8,6 +8,8 @@ import './graphics/Corner.js' ;
 import './graphics/Direction.js' ;
 import './graphics/Directionable.js' ;
 import './graphics/DirectionOrder.js' ;
+import './graphics/Layout.js' ;
+import './graphics/LayoutBufferMode.js' ;
 import './graphics/Orientation.js' ;
 import './graphics/Position.js' ;
 import './graphics/ZOrder.js' ;
