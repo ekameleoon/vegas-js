@@ -15,7 +15,6 @@ import { Point } from './Point.js' ;
  * @param {number} y the y value of the object.
  * @param {number} width the width value of the object.
  * @param {number} height the height value of the object.
- * @inheritdoc
  */
 export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 {
@@ -23,17 +22,19 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
     {
         /**
          * Determinates the x value of this object.
-         * @var
+         * @memberof graphics.geom.Rectangle
          * @default 0
-         * @type {number}
+         * @type {Number}
+         * @instance
          */
         x : { value : isNaN(x) ? 0 : x , writable : true } ,
 
         /**
          * Determinates the y value of this object.
-         * @var
+         * @memberof graphics.geom.Rectangle
          * @default 0
-         * @type {number}
+         * @type {Number}
+         * @instance
          */
         y : { value : isNaN(y) ? 0 : y , writable : true }
     });
@@ -363,8 +364,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
     /**
      * If the Rectangle object specified in the toIntersect parameter intersects with this Rectangle object, returns the area of intersection as a Rectangle object. If the rectangles do not intersect, this method returns an empty Rectangle object with its properties set to 0.
-     * @param toIntersect {Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
-     * @return {Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     * @param toIntersect {graphics.geom.Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
+     * @return {graphics.geom.Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     intersection : { value : function( toIntersect )
     {

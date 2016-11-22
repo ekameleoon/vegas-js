@@ -33,6 +33,8 @@ Vector2.prototype = Object.create( Object.prototype ,
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     clone : { writable : true , value : function()
     {
@@ -42,6 +44,8 @@ Vector2.prototype = Object.create( Object.prototype ,
     /**
      * Compares the passed-in object with this object for equality.
      * @return {boolean} <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     equals : { writable : true , value : function( o )
     {
@@ -58,6 +62,8 @@ Vector2.prototype = Object.create( Object.prototype ,
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     toObject : { writable : true , value : function()
     {
@@ -67,6 +73,8 @@ Vector2.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return {string} The string representation of this instance.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     toString : { writable : true , value : function()
     {
