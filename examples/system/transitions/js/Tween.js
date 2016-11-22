@@ -21,7 +21,7 @@ window.onload = function()
 
     var change = function( tween )
     {
-        //trace( 'progress ' + core.dump(tween.target) ) ;
+        trace( 'progress ' + core.dump(tween.target) ) ;
         render() ;
     }
 
