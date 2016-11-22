@@ -2110,6 +2110,71 @@ var easings = Object.assign({
 });
 
 /**
+ * Creates a Function who execute a specific function between two others.
+ * @example
+ * <pre><code>
+ * function sum(x, y)
+ * {
+ *     console.info("calculating...")
+ *     return x + y;
+ * }
+ *
+ * function begin()
+ * {
+ *     trace("begin");
+ * }
+ *
+ * function end()
+ * {
+ *     trace("end");
+ * }
+ *
+ * var result = aop(sum, begin, end)(3, 5) ;
+ *
+ * console.log( result ) ;
+ * </code></pre>
+ * @param func {Function} The function to invoke.
+ * @param begin {Function} The function to invoke before the main function.
+ * @param end {Function} The function to invoke after the main function.
+ * @param scope {Object} The scope of the function to invoke after the main function.
+ * @return {Function} The new function with the aop merging.
+ */
+
+var aop = function aop(func) {
+    var begin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var scope = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    return function () {
+        try {
+            if (begin !== null && begin instanceof Function) {
+                begin();
+            }
+
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            return func.apply(scope, args);
+        } finally {
+            if (end !== null && end instanceof Function) {
+                end();
+            }
+        }
+    };
+};
+
+/**
+ * The VEGAS.js framework - The core.arrays library.
+ * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace
+ */
+var functors = Object.assign({
+  aop: aop
+});
+
+/**
  * This constant change radians to degrees : <b>180/Math.PI</b>.
  */
 
@@ -4470,6 +4535,7 @@ var core = Object.assign({
     arrays: arrays,
     chars: chars,
     easings: easings,
+    functors: functors,
     maths: maths,
     numbers: numbers,
     objects: objects,
