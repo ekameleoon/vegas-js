@@ -4,13 +4,17 @@ import { dump } from './dump.js' ;
 
 /**
  * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
+ * @name dumpArray
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Array} value - The Array to dump.
+ * @param {boolean} [prettyprint=false] boolean option to output a pretty printed string
+ * @param {number} [indent=0] initial indentation
+ * @param {string} [indentor=    ] initial string used for the indent.
  * @return The dump string representation of any Array reference.
  */
-export function dumpArray( value /*Array*/ , prettyprint /*Boolean*/ , indent /*int*/ , indentor /*String*/  ) /*String*/
+export function dumpArray( value /*Array*/ , prettyprint = false , indent = 0 , indentor = "    " )
 {
     indent = isNaN(indent) ? 0 : indent ;
     prettyprint = Boolean( prettyprint ) ;

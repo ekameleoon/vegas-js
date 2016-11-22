@@ -4,7 +4,11 @@ import { toUnicodeNotation } from './numbers/toUnicodeNotation.js' ;
 
 /**
  * Dumps a string representation of any String value.
- * @param str a String to transform.
+ * @name dumpString
+ * @memberof core
+ * @function
+ * @instance
+ * @param {string} str a String to transform.
  * @return The dump string representation of any String value.
  */
 export function dumpString( value /*String*/  ) /*String*/

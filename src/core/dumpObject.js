@@ -4,15 +4,18 @@ import { dump } from './dump.js' ;
 
 /**
  * Dumps a string representation of an object.
- * @param value an object
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
+ * @name dumpObject
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Object} value - An object to dump.
+ * @param {boolean} [prettyprint=false] - The option to output a pretty printed string.
+ * @param {number} [indent=0] - The initial indentation value.
+ * @param {string} [indentor=    ] - The initial string used for the indent.
+ * @return The string expression of the dump.
  */
-export function dumpObject( value /*Object*/ , prettyprint /*Boolean*/ , indent /*int*/ , indentor /*String*/  ) /*String*/
+export function dumpObject( value , prettyprint = false , indent = 0 , indentor = "    ")
 {
-    ///////////
-
     indent = isNaN(indent) ? 0 : indent ;
 
     prettyprint = Boolean( prettyprint ) ;
@@ -21,8 +24,6 @@ export function dumpObject( value /*Object*/ , prettyprint /*Boolean*/ , indent 
     {
         indentor = "    " ;
     }
-
-    ///////////
 
     var source /*Array*/ = [];
 
@@ -58,17 +59,17 @@ export function dumpObject( value /*Object*/ , prettyprint /*Boolean*/ , indent 
     source = source.sort();
     if( prettyprint )
     {
-        var spaces /*Array*/ = [];
-        for( var i /*int*/ ; i < indent ; i++ )
+        let spaces = [];
+        for( var i = 0 ; i < indent ; i++ )
         {
             spaces.push( indentor );
         }
 
-        var decal /*String*/ = "\n" + spaces.join( "" );
-        return decal + "{" + decal + indentor + source.join( "," + decal + indentor ) + decal + "}";
+        let decal = '\n' + spaces.join( '' );
+        return decal + '{' + decal + indentor + source.join( ',' + decal + indentor ) + decal + '}' ;
     }
     else
     {
-        return( "{" + source.join( "," ) + "}" ) ;
+        return( '{' + source.join( ',' ) + '}' ) ;
     }
 }

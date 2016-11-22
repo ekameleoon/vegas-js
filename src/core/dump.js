@@ -6,17 +6,29 @@ import { dumpObject } from './dumpObject.js' ;
 import { dumpString } from './dumpString.js' ;
 
 /**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
+ * Dumps a string representation of any object reference.
+ * @name dump
+ * @memberof core
+ * @function
+ * @instance
+ * @param {*} value - Any object to dump.
+ * @param {boolean} [prettyprint=false] boolean option to output a pretty printed string
+ * @param {number} [indent=0] initial indentation
+ * @param {string} [indentor=    ] initial string used for the indent.
+ * @return The string expression of the dump.
+ * @example
+ * var object =
+ * {
+ *     name   : "vegas" ,
+ *     count  : 10 ,
+ *     time   : new Date() ,
+ *     flag   : true ,
+ *     values : [1,2,3]
+ * } ;
+ * trace( dump( object ) ) ;
  */
 export function dump( o , prettyprint /*Boolean*/ , indent /*int*/ , indentor /*String*/  ) /*String*/
 {
-    ///////////
-
     indent = isNaN(indent) ? 0 : indent ;
 
     prettyprint = Boolean( prettyprint ) ;
@@ -25,8 +37,6 @@ export function dump( o , prettyprint /*Boolean*/ , indent /*int*/ , indentor /*
     {
         indentor = "    " ;
     }
-
-    ///////////
 
     if( o === undefined )
     {

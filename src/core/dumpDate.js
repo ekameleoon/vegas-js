@@ -1,14 +1,16 @@
 "use strict" ;
 
 /**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
+ * Dumps a string representation of any Date reference.
+ * @name dumpDate
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Date} value - A Date object to dump.
+ * @param {boolean} [timestamp=false] - The optional timestamp flag.
+ * @return The string representation of any Date reference.
  */
-export function dumpDate( date /*Date*/ , timestamp /*Boolean*/  ) /*String*/
+export function dumpDate( date /*Date*/ , timestamp = false  ) /*String*/
 {
     timestamp = Boolean( timestamp ) ;
     if ( timestamp )

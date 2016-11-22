@@ -3,102 +3,140 @@
 
 /**
  * The Align enumeration class provides constant values to align displays or components.
- * @memberof graphics
  * @name Align
+ * @namespace graphics.Align
+ * @memberof graphics
  */
 export var Align = Object.defineProperties( {} ,
 {
     /**
      * Defines the NONE value (0).
+     * @memberof graphics.Align
+     * @static
+     * @type {number}
+     * @default 0
      */
     NONE : { enumerable : true , value : 0 },
 
     /**
      * Defines the CENTER value (1).
+     * @memberof graphics.Align
+     * @default 1
      */
     CENTER : { enumerable : true , value : 1 },
 
     /**
      * Defines the LEFT value (2).
+     * @memberof graphics.Align
+     * @default 2
      */
     LEFT : { enumerable : true , value : 2 },
 
     /**
      * Defines the RIGHT value (4).
+     * @memberof graphics.Align
+     * @default 4
      */
     RIGHT : { enumerable : true , value : 4 },
 
     /**
      * Defines the TOP value (8).
+     * @memberof graphics.Align
+     * @property {object} TOP
+     * @default 8
      */
     TOP : { enumerable : true , value : 8 },
 
     /**
      * Defines the BOTTOM value (16).
+     * @memberof graphics.Align
+     * @default 16
      */
     BOTTOM : { enumerable : true , value : 16 },
 
     /**
      * Defines the REVERSE value (32).
+     * @memberof graphics.Align
+     * @default 32
      */
     REVERSE : { enumerable : true , value : 32 },
 
     /**
      * Defines the BOTTOM_LEFT value (18).
+     * @memberof graphics.Align
+     * @default graphics.Align.BOTTOM | graphics.Align.LEFT
      */
     BOTTOM_LEFT : { enumerable : true , value : 16 | 2 } ,
 
     /**
      * Defines the BOTTOM_RIGHT value (20).
+     * @memberof graphics.Align
+     * @default graphics.Align.BOTTOM | graphics.Align.RIGHT
      */
     BOTTOM_RIGHT : { enumerable : true , value : 16 | 4 },
 
     /**
      * Defines the CENTER_LEFT value (3).
+     * @memberof graphics.Align
+     * @default graphics.Align.CENTER | graphics.Align.LEFT
      */
     CENTER_LEFT : { enumerable : true , value : 1 | 2  },
 
     /**
      * Defines the CENTER_RIGHT value (5).
+     * @memberof graphics.Align
+     * @default graphics.Align.CENTER | graphics.Align.RIGHT
      */
     CENTER_RIGHT : { enumerable : true , value : 1 | 4  },
 
     /**
      * Defines the TOP_LEFT value (10).
+     * @memberof graphics.Align
+     * @default graphics.Align.TOP | graphics.Align.LEFT
      */
     TOP_LEFT : { enumerable : true , value : 8 | 2  },
 
     /**
      * Defines the TOP_RIGHT value (12).
+     * @memberof graphics.Align
+     * @default graphics.Align.TOP | graphics.Align.RIGHT
      */
     TOP_RIGHT : { enumerable : true , value : 8 | 4  },
 
     /**
      * Defines the LEFT_BOTTOM value (50).
+     * @memberof graphics.Align
+     * @default graphics.Align.LEFT | graphics.Align.BOTTOM
      */
     LEFT_BOTTOM : { enumerable : true , value : 16 | 2 | 32  },
 
     /**
      * Defines the RIGHT_BOTTOM value (52).
+     * @memberof graphics.Align
+     * @default graphics.Align.RIGHT | graphics.Align.BOTTOM
      */
     RIGHT_BOTTOM : { enumerable : true , value : 16 | 4 | 32  },
 
     /**
      * Defines the LEFT_TOP value (42).
+     * @memberof graphics.Align
+     * @default graphics.Align.LEFT | graphics.Align.TOP
      */
     LEFT_TOP : { enumerable : true , value : 8 | 2 | 32  },
 
     /**
      * Defines the RIGHT_TOP value (44).
+     * @memberof graphics.Align
+     * @default graphics.Align.RIGHT | graphics.Align.TOP
      */
     RIGHT_TOP : { enumerable : true , value : 8 | 4 | 32  },
 
     /**
      * Converts a string value in this Align value. If the String value isn't valid the Align.CENTER value is return.
+     * @memberof graphics.Align
+     * @function
      * @example
-     * <pre>
      * trace( Align.toNumber("l") == Align.LEFT ) ; // true
-     * </pre>
      */
     toNumber : { value : function( str , none = 0 )
     {
@@ -112,17 +150,18 @@ export var Align = Object.defineProperties( {} ,
 
     /**
      * Returns the string representation of the specified Align value passed in argument.
+     * @memberof graphics.Align
+     * @function
+     * @param {number} value - The valid numeric value to convert in a string expression.
+     * @return the string representation of the specified Align value passed in argument.
      * @example
-     * <pre>
      * trace( Align.toString(Align.LEFT)) ; // "l"
      * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
      * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
-     * </pre>
-     * @return the string representation of the specified Align value passed in argument.
      */
-    toString : { value : function( n )
+    toString : { value : function( value )
     {
-        switch (n)
+        switch (value)
         {
             case Align.NONE         : return "none" ;
             case Align.BOTTOM       : return "b"  ;
@@ -145,8 +184,14 @@ export var Align = Object.defineProperties( {} ,
     }},
 
     /**
-     * Returns <code class="prettyprint">true</code> if the specified Align value in argument is a valid Align value else returns <code class="prettyprint">false</code>.
-     * @return <code class="prettyprint">true</code> if the specified Align value in argument is a valid Align value else returns <code class="prettyprint">false</code>.
+     * Returns <code>true</code> if the specified Align value in argument is a valid Align value else returns <code>false</code>.
+     * @memberof graphics.Align
+     * @function
+     * @example
+     * trace( Align.validate(Align.LEFT)) ; // true
+     * trace( Align.toString(1000)) ; // false
+     * @param {number} value - The numeric value to validate.
+     * @return <code>true</code> if the specified Align value in argument is a valid Align value else returns <code>false</code>.
      */
     validate : { value : function( value )
     {
@@ -154,6 +199,10 @@ export var Align = Object.defineProperties( {} ,
     }}
 });
 
+/**
+ * Defines the alignments collection of all valid aligment elements.
+ * @memberof graphics.Align
+ */
 Object.defineProperty( Align , 'alignments' , { value :
 [
     Align.BOTTOM   , Align.BOTTOM_LEFT  , Align.BOTTOM_RIGHT ,
@@ -164,6 +213,10 @@ Object.defineProperty( Align , 'alignments' , { value :
     Align.NONE
 ]});
 
+/**
+ * Defines the key/value map to register all aligments by name (string).
+ * @memberof graphics.Align
+ */
 Object.defineProperty( Align , 'stringToNumber' , { value :
 {
     "b"    : Align.BOTTOM ,
