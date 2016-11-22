@@ -6,6 +6,7 @@
  * @memberof graphics.geom
  * @constructor
  * @class
+ * @extends Object
  * @param {number} width the width value.
  * @param {number} height The height value.
  */
@@ -15,24 +16,31 @@ export function Dimension( width = 0 , height = 0)
     {
         /**
          * The height of the rectangle, in pixels.
+         * @memberof graphics.geom.Dimension
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         height : { value : isNaN(height) ? 0 : height , writable : true } ,
 
         /**
          * The width of the rectangle, in pixels.
+         * @memberof graphics.geom.Dimension
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         width : { value : isNaN(width) ? 0 : width  , writable : true }
     });
 }
 
-/**
- * @extends Object
- */
 Dimension.prototype = Object.create( Object.prototype ,
 {
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     clone : { writable : true , value : function()
     {
@@ -41,6 +49,8 @@ Dimension.prototype = Object.create( Object.prototype ,
 
     /**
      * Copies all of data from the source Dimension object into the calling Dimension object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     copyFrom : { value : function( dim )
     {
@@ -51,8 +61,10 @@ Dimension.prototype = Object.create( Object.prototype ,
 
     /**
      * Decreases the size by a specific width/height values and return its self(this).
-     * @param dWidth A number value to descrease the width component of the object (default 0).
-     * @param dHeight A number value to descrease the height component of the object (default 0).
+     * @param {number} [dWidth=0] - A number value to descrease the width component of the object (default 0).
+     * @param {number} [dHeight=0] - A number value to descrease the height component of the object (default 0).
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     decrease : { value : function( dWidth = 0 , dHeight = 0 )
     {
@@ -64,6 +76,8 @@ Dimension.prototype = Object.create( Object.prototype ,
     /**
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     equals : { writable : true , value : function( o )
     {
@@ -79,9 +93,11 @@ Dimension.prototype = Object.create( Object.prototype ,
 
     /**
      * Increases the size by a specific width/height values and return its self(this).
-     * @param dWidth A number value to increase the width component of the object (default 0).
-     * @param dHeight A number value to inscrease the height component of the object (default 0).
+     * @param {number} [dWidth=0] - A number value to increase the width component of the object (default 0).
+     * @param {number} [dHeight=0] - A number value to inscrease the height component of the object (default 0).
      * @return the current reference of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     increase : { value : function( dWidth = 0 , dHeight = 0 )
     {
@@ -93,6 +109,8 @@ Dimension.prototype = Object.create( Object.prototype ,
     /**
      * Determines whether or not this Rectangle object is empty.
      * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     isEmpty : { value : function()
     {
@@ -101,9 +119,11 @@ Dimension.prototype = Object.create( Object.prototype ,
 
     /**
      * Sets the members of Dimension to the specified values.
-     * @param {number} width The width component value to change (default 0).
-     * @param {number} height The height component value to change (default 0).
-     * @return {Dimension} The object reference.
+     * @param {number} width - The width component value to change (default 0).
+     * @param {number} height - The height component value to change (default 0).
+     * @return {graphics.geom.Dimension} The object reference.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     set : { value : function( width = 0 , height = 0 )
     {
@@ -115,6 +135,8 @@ Dimension.prototype = Object.create( Object.prototype ,
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     toObject : { writable : true , value : function()
     {
@@ -124,6 +146,8 @@ Dimension.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this object.
      * @return the string representation of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     toString : { writable : true , value : function()
     {

@@ -15,11 +15,19 @@ export function Vector2( x = 0 , y = 0 )
     {
         /**
          * Determinates the x value of this object.
+         * @memberof graphics.geom.Vector2
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         x : { value : isNaN(x) ? 0 : x , writable : true } ,
 
         /**
          * Determinates the y value of this object.
+         * @memberof graphics.geom.Vector2
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         y : { value : isNaN(y) ? 0 : y , writable : true }
     });

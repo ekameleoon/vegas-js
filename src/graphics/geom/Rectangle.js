@@ -8,6 +8,7 @@ import { Point } from './Point.js' ;
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
  * @name Rectangle
+ * @extends Object
  * @memberof graphics.geom
  * @constructor
  * @class
@@ -41,9 +42,6 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
     Dimension.call( this , width , height ) ;
 }
 
-/**
- * @extends Object
- */
 Rectangle.prototype = Object.create( Dimension.prototype ,
 {
     // ------- getters/setters
