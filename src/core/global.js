@@ -1,12 +1,10 @@
 "use strict" ;
 
 /**
- * The VEGAS.js framework - The core.global library.
+ * The global namespace (reference to the global scope of the application).
  * @name global
- * @global
- * @module global
+ * @namespace global
  * @instance
- * @memberof core
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */

@@ -21,31 +21,55 @@ export function Matrix( a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0 )
     {
         /**
          * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         a : { value : isNaN(a) ? 0 : a , writable : true } ,
 
         /**
          * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         b : { value : isNaN(b) ? 0 : b , writable : true } ,
 
         /**
          * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         c : { value : isNaN(c) ? 0 : c , writable : true } ,
 
         /**
          * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         d : { value : isNaN(d) ? 0 : d , writable : true } ,
 
         /**
          * The distance by which to translate each point along the <i>x</i> axis.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         tx : { value : isNaN(tx) ? 0 : tx , writable : true } ,
 
         /**
          * The distance by which to translate each point along the <i>y</i> axis.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         ty : { value : isNaN(ty) ? 0 : ty , writable : true }
     });
@@ -63,6 +87,8 @@ Matrix.prototype = Object.create( Object.prototype ,
 {
     /**
      * Returns a shallow copy of the object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      * @return a shallow copy of the object.
      */
     clone : { writable : true , value : function()
@@ -74,7 +100,9 @@ Matrix.prototype = Object.create( Object.prototype ,
      * Concatenates a matrix with the current matrix, effectively combining the geometric effects of the two. In mathematical terms, concatenating two matrixes is the same as combining them using matrix multiplication.
      * <p>For example, if matrix <code>m1</code> scales an object by a factor of four, and matrix <code>m2</code> rotates an object by 1.5707963267949 radians (<code>Math.PI/2</code>), then <code>m1.concat(m2)</code> transforms <code>m1</code> into a matrix that scales an object by a factor of four and rotates the object by <code>Math.PI/2</code> radians.</p>
      * <p>This method replaces the source matrix with the concatenated matrix. If you want to concatenate two matrixes without altering either of the two source matrixes, first copy the source matrix by using the <code>clone()</code> method, as shown in the Class Examples section.</p>
-     * @param matrix The matrix to be concatenated to the source matrix.
+     * @param {graphics.geom.Matrix|Object} matrix The matrix to be concatenated to the source matrix.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     concat : { value : function( matrix )
     {
@@ -94,10 +122,9 @@ Matrix.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     *Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
+     * Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
      * <p>Using the <code>createBox()</code> method lets you obtain the same matrix as you would if you applied the <code>identity()</code>, <code>rotate()</code>, <code>scale()</code>, and <code>translate()</code> methods in succession. For example, <code>mat.createBox(2,2,Math.PI/4, 100, 100)</code> has the same effect as the following:</p>
-     * <p>
-     * <pre><code>
+     * @example
      * var mat = new Matrix();
      * mat.createBox(2,2,Math.PI/4, 100, 100)
      * // or
@@ -105,13 +132,13 @@ Matrix.prototype = Object.create( Object.prototype ,
      * mat.rotate(Math.PI/4);
      * mat.scale(2,2);
      * mat.translate(10,20);
-     * </code></pre>
-     * </p>
-     * @param scaleX The factor by which to scale horizontally.
-     * @param scaleY The factor by which scale vertically.
-     * @param rotation The amount to rotate, in radians.
-     * @param tx The number of pixels to translate (move) to the right along the <i>x</i> axis.
-     * @param ty The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @param {number} scaleX - The factor by which to scale horizontally.
+     * @param {number} scaleY - The factor by which scale vertically.
+     * @param {number} [rotation=0] - The amount to rotate, in radians.
+     * @param {number} [tx=0] - The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     createBox : { value : function( scaleX, scaleY, rotation = 0, tx = 0, ty = 0 )
     {
@@ -145,6 +172,13 @@ Matrix.prototype = Object.create( Object.prototype ,
 
     /**
      * Creates the specific style of matrix expected by the <code>beginGradientFill()</code> and <code>lineGradientStyle()</code> methods of the Graphics class. Width and height are scaled to a <code>scaleX</code>/<code>scaleY</code> pair and the <code>tx</code>/<code>ty</code> values are offset by half the width and height.
+     * @param {number} width - The width of the box.
+     * @param {number} scaleY - The height of the box.
+     * @param {number} [rotation=0] - The amount to rotate, in radians.
+     * @param {number} [tx=0] - The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     createGradientBox : { value : function( width, height, rotation = 0, tx = 0, ty = 0)
     {
@@ -160,9 +194,10 @@ Matrix.prototype = Object.create( Object.prototype ,
 
     /**
      * Given a point in the pretransform coordinate space, returns the coordinates of that point after the transformation occurs. Unlike the standard transformation applied using the <code>transformPoint()</code> method, the <code>deltaTransformPoint()</code> method's transformation does not consider the translation parameters <code>tx</code> and <code>ty</code>.
-     * @param point The point for which you want to get the result of the matrix transformation.
-     *
+     * @param {graphics.geom.Point|Object} point - The point for which you want to get the result of the matrix transformation.
      * @return The point resulting from applying the matrix transformation.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     deltaTransformPoint : { value : function( point)
     {
@@ -176,6 +211,8 @@ Matrix.prototype = Object.create( Object.prototype ,
     /**
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     equals : { writable : true , value : function( o )
     {
@@ -196,6 +233,8 @@ Matrix.prototype = Object.create( Object.prototype ,
 
     /**
      * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     identity : { value : function()
     {
@@ -205,7 +244,9 @@ Matrix.prototype = Object.create( Object.prototype ,
 
     /**
      * Applies a rotation transformation to the Matrix object.
-     * @param angle The rotation angle in radians.
+     * @param {number} angle - The rotation angle in radians.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     rotate : { value : function( angle )
     {
@@ -247,6 +288,8 @@ Matrix.prototype = Object.create( Object.prototype ,
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     toObject : { writable : true , value : function()
     {
@@ -256,6 +299,8 @@ Matrix.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     toString : { writable : true , value : function()
     {

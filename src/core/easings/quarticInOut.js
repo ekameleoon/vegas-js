@@ -3,10 +3,14 @@
 /**
  * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quarticInOut
+ * @function quarticInOut
+ * @memberof core.easings
+ * @instance
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 export var quarticInOut = ( t , b , c , d ) =>

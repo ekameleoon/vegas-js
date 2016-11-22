@@ -12,11 +12,9 @@ import { Vector2 } from './Vector2.js' ;
  * @name Point
  * @memberof graphics.geom
  * @extends graphics.geom.Vector2
- * @constructor
  * @class
- * @param x the x value of the object.
- * @param y the y value of the object.
- * @memberof graphics.geom
+ * @param {number} [x=0] - The x value of the point.
+ * @param {number} [y=0] - The y value of the point.
  */
 export function Point( x = 0 , y = 0 )
 {
@@ -27,14 +25,13 @@ Point.prototype = Object.create( Vector2.prototype ,
 {
     /**
      * Returns the angle value of this Point object.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(0,10) ;
      * var p2 = new Point(10,10) ;
      * trace(p1.angle) ; // 90
      * trace(p2.angle) ; // 45
-     * </pre>
-     * @return {number} the angle value of this Point object.
      */
     angle :
     {
@@ -52,6 +49,8 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Indicates the length of the line segment from (0,0) to this point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @readonly
      */
     length :
@@ -64,12 +63,12 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Transform the coordinates of this point to used absolute value for the x and y properties.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(-10, -20) ;
      * p.abs() ;
      * trace(p) ; // [Point x:10 y:20]
-     * </pre>
      */
     abs : { writable : true , value : function()
     {
@@ -80,6 +79,8 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Adds the coordinates of another point to the coordinates of this point.
      * @param {graphics.geom.Point} point - the point to be added. You can use an object with the properties x and y.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     add : { writable : true , value : function( point )
     {
@@ -90,12 +91,12 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the angle value between this Point object and the specified Point passed in arguments.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <code>
      * var p1 = new Point(10, 20) ;
      * var p2 = new Point(50, 200) ;
      * var angle = p1.angleBetween(p2) ;
-     * </code>
      * @param {graphics.geom.Point} point - The point reference.
      * @return the angle value between this Point object and the specified Point passed in arguments.
      */
@@ -110,6 +111,8 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns a shallow copy of the object.
+     * @memberof graphics.geom.Point
+     * @instance
      * @return a shallow copy of the object.
      */
     clone : { writable : true , value : function()
@@ -119,12 +122,12 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the cross value of the current Point object with the Point passed in argument.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace(p1.cross(p2)) ; // -200
-     * </pre>
      * @param {graphics.geom.Point} point - The Point object use to calculate the cross value.
      * @return The cross value of the current Point object with the Point passed in argument.
      */
@@ -135,12 +138,12 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the dot value of the current Point and the specified Point passed in argument.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace(p1.dot(p2)) ; // 1600
-     * </pre>
      * @param {graphics.geom.Point} point - The Point to calculate the dot value of the current Point.
      * @return the dot value of the current Point and the specified Point passed in argument.
      */
@@ -151,12 +154,12 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the normal value of this Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(10,10) ;
      * var n = p.getNormal() ; // [Point x:-10 y:10]
      * trace(n) ;
-     * </pre>
      * @return the normal value of this Point.
      */
     getNormal : { value : function()
@@ -166,13 +169,13 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the size of the projection of this Point with an other Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(100,200) ;
      * var size = p1.getProjectionLength(p2) ;
      * trace(size) ; // 0.06
-     * </pre>
      * @param point the Point use to calculate the length of the projection.
      * @return the size of the projection of this Point with an other Point.
      */
@@ -184,14 +187,14 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns true if the Point is perpendicular with the passed-in Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(0,10) ;
      * var p2 = new Point(10,10) ;
      * var p3 = new Point(10,0) ;
      * trace(p1.isPerpTo(p2)) ; // false
      * trace(p1.isPerpTo(p3)) ; // true
-     * </pre>
      * @param {graphics.geom.Point} point - The Point use to determinate if this Point object is perpendicular.
      * @return {boolean} True if the Point is perpendicular with the passed-in Point.
      */
@@ -202,13 +205,13 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns the new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
      * var p3 = p1.max(p2) ;
      * trace(p3) ; // [Point x:100 y:100]
-     * </pre>
      * @param {graphics.geom.Point} point - The Point passed in this method.
      * @return {graphics.geom.Point} The new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
      */
@@ -219,13 +222,13 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Returns a new Point with the minimum horizontal coordinate and the minimize vertical coordinate.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
      * var p3 = p1.min(p2) ;
      * trace(p3) ; // [Point x:10 y:10]
-     * </pre>
      * @param {graphics.geom.Point} point - The Point passed in this method
      * @return {graphics.geom.Point} A new Point with the min horizontal coordinate and the minimize vertical coordinate.
      */
@@ -236,15 +239,15 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Sets this Point with negate coordinates.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(10,20) ;
      * trace(p) ; // [Point x:10 y:20]
      * p.negate() ;
      * trace(p) ; // [Point x:-10 y:-20]
      * p.negate() ;
      * trace(p) ; // [Point x:10 y:20]
-     * </pre>
      */
     negate : { writable : true , value : function()
     {
@@ -254,14 +257,14 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Scales the line segment between (0,0) and the current point to a set length.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(0,5) ;
      * p.normalize() ;
      * trace(p) ; // [Point x:0 y:1]
-     * </pre>
      * @param {number} [thickness=1] The scaling value. For example, if the current point is (0,5), and you normalize it to 1, the point returned is at (0,1).
-     * @see #length
+     * @see graphics.geom.Point#length
      * @throws Error if a zero-length vector or a illegal NaN value is calculate in this method.
      */
     normalize : { writable : true , value : function( thickness = 1 )
@@ -287,14 +290,15 @@ Point.prototype = Object.create( Vector2.prototype ,
      * Offsets the Point object by the specified amount.
      * The value of dx is added to the original value of x to create the new x value.
      * The value of dy is added to the original value of y to create the new y value.
-     * @param {number} dx The amount by which to offset the horizontal coordinate, x.
-     * @param {number} dy  The amount by which to offset the vertical coordinate, y.
+     * @memberof graphics.geom.Point
+     * @instance
+     * @param {number} [dx=0] - The amount by which to offset the horizontal coordinate, x.
+     * @param {number} [dy=0] - The amount by which to offset the vertical coordinate, y.
      * @example
-     * <pre>
      * var p = new Point(10,10) ;
      * p.offset(10,10) ;
      * trace(p) ; // [Point x:20 y:20]
-     * </pre>
+     * @memberof graphics.geom.Point
      */
     offset : { writable : true , value : function( dx = 0 , dy = 0 )
     {
@@ -304,8 +308,10 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Rotates the Point with the specified angle in argument.
+     * @memberof graphics.geom.Point
+     * @instance
      * @param {number} angle - The angle to rotate this Point.
-     * @param {Object} anchor - The anchor point to rotate this Point around (by default use the {0,0} position).
+     * @param {Object} [anchor=null] - The anchor point to rotate this Point around (by default use the {0,0} position).
      */
     rotate : { value : function( angle , anchor = null )
     {
@@ -334,6 +340,8 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Scales the Point with the specified value in argument.
      * @param {number} value - the value to scale this Point coordinates.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     scale : { value : function( value )
     {
@@ -343,8 +351,10 @@ Point.prototype = Object.create( Vector2.prototype ,
 
     /**
      * Sets the horizontal and vertical coordinates of this Point. If the {@code x} and the {@code y} parameters are NaN or null the x value is 0 and y value is 0.
-     * @param {number} x - The x coordinates of the point.
-     * @param {number} y - The y coordinates of the point.
+     * @param {number} [x=0] - The x coordinates of the point.
+     * @param {number} [y=0] - The y coordinates of the point.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     set : { value : function( x = 0 , y = 0 )
     {
@@ -355,6 +365,8 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Subtracts the coordinates of another point from the coordinates of this point.
      * @param {graphics.geom.Point} point - The point to be subtracted.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     subtract : { value : function( point )
     {
@@ -365,6 +377,8 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Swap the horizontal and vertical coordinates of two Point objects.
      * @param {graphics.geom.Point} point - The point to be swap.
+     * @instance
+     * @memberof graphics.geom.Point
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(30,40) ;
@@ -385,6 +399,8 @@ Point.prototype = Object.create( Vector2.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     toString : { writable : true , value : function()
     {
@@ -396,12 +412,12 @@ Object.defineProperties( Point ,
 {
     /**
      * Returns the distance between p1 and p2 the 2 Points reference passed in argument.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace( Point.distance(p1,p2) ) ; // 50
-     * </pre>
      * @param {graphics.geom.Point} p1 - the first Point.
      * @param {graphics.geom.Point} p2 - the second Point.
      * @return the distance between p1 and p2 the 2 Points reference passed in argument.
@@ -415,13 +431,13 @@ Object.defineProperties( Point ,
 
     /**
      * Returns the middle Point between 2 Points.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(20,20) ;
      * var middle = Point.getMiddle(p1,p2) ;
      * trace(middle) ;
-     * </pre>
      * @param {graphics.geom.Point} p1 - the first Point.
      * @param {graphics.geom.Point} p2 - the second Point.
      * @return the middle Point between 2 Points.
@@ -437,11 +453,14 @@ Object.defineProperties( Point ,
 
     /**
      * Determines a point between two specified points.
-     * The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters p1 and p2.
-     * The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter p1).
-     * The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter p2).
+     * <ul>
+     * <li>The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters p1 and p2.</li>
+     * <li>The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter p1).</li>
+     * <li>The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter p2).</li>
+     * </ul>
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(40,40) ;
      * var p3 ;
@@ -454,10 +473,9 @@ Object.defineProperties( Point ,
      *
      * p3 = Point.interpolate( p1 , p2 , 0.5 ) ;
      * trace(p3) ; // [Point x:25 y:25]
-     * </pre>
      * @param {graphics.geom.Point} p1 - the first Point.
      * @param {graphics.geom.Point} p2 - the second Point.
-     * @param {number} level the The level of interpolation between the two points. Indicates where the new point will be, along the line between p1 and p2. If level=1, pt1 is returned; if level=0, pt2 is returned.
+     * @param {number} [level=0] the The level of interpolation between the two points. Indicates where the new point will be, along the line between p1 and p2. If level=1, pt1 is returned; if level=0, pt2 is returned.
      * @return The new interpolated point.
      */
     interpolate : { value : function( p1 , p2 , level = 0 )
@@ -489,6 +507,8 @@ Object.defineProperties( Point ,
 
     /**
      * Converts a pair of polar coordinates to a Cartesian point coordinates.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
      * <pre>
      * var polar = Point.polar( 5, Math.atan(3/4) ) ;

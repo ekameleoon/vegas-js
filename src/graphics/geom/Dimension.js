@@ -4,11 +4,11 @@
  * The Dimension object encapsulates the width and height components of an object.
  * @name Dimension
  * @memberof graphics.geom
- * @constructor
  * @class
+ * @constructs
  * @extends Object
- * @param {number} width the width value.
- * @param {number} height The height value.
+ * @param {number} [width=0] the width value.
+ * @param {number} [height=0] The height value.
  */
 export function Dimension( width = 0 , height = 0)
 {

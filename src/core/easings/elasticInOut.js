@@ -2,12 +2,16 @@
 
 /**
  * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
+ * @name elasticInOut
+ * @function elasticInOut
+ * @memberof core.easings
+ * @instance
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [a=0] - Specifies the amplitude of the sine wave.
+ * @param {number} [p=0] - Specifies the period of the sine wave.
  * @return The value of the interpolated property at the specified time.
  */
 export var elasticInOut = ( t , b , c , d , a = 0 , p = 0 ) =>
