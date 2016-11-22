@@ -35,7 +35,8 @@ var output   = './bin' ;
 var watching = false ;
 
 /**
- * https://www.npmjs.com/package/gulp-jsdoc3
+ * Node Module : https://www.npmjs.com/package/gulp-jsdoc3
+ * Documentation : http://usejsdoc.org/
  */
 var docs =
 {
@@ -60,12 +61,15 @@ var docs =
             "outputSourceFiles" : true
         },
         "path"       : "ink-docstrap",
-        "theme"      : "cerulean",
+        "theme"      : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
         "navType"    : "vertical",
         "linenums"   : true,
         "dateFormat" : "YYYY Do MMMM, h:mm:ss a"
     }
 }
+
+
+
 
 // --------- Unit tests
 
