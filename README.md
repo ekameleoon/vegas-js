@@ -1,8 +1,8 @@
 # VEGAS #
 
-Vegas is an opensource framework based on ECMAScript and ActionScript.
+Vegas is an opensource framework based on ECMAScript.
 
-This repository contains the Javascript version of the framework.
+This repository contains the Javascript [ES6](http://es6-features.org/) version of the framework.
 
 ### Licenses ###
 
