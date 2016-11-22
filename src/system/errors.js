@@ -10,8 +10,10 @@ import { NoSuchElementError }  from './errors/NoSuchElementError.js' ;
 
 /**
  * The VEGAS.js framework - The system.errors library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.errors
+ * @memberof system
  */
 export var errors = Object.assign
 ({

@@ -6,9 +6,11 @@ import { SignalEntry } from './SignalEntry.js' ;
 
 /**
  * Creates a new Signal instance.
- * @constructor
+ * @name Signal
+ * @class
+ * @implements system.signals.Signaler
+ * @memberof system.signals
  * @example
- * <pre>
  * function Slot( name )
  * {
  *     this.name = name ;
@@ -42,7 +44,6 @@ import { SignalEntry } from './SignalEntry.js' ;
  * signal.connect( slot2 , 2 ) ;
  *
  * signal.emit( "hello world" ) ;
- * </pre>
  */
 export function Signal()
 {
@@ -50,6 +51,10 @@ export function Signal()
     {
         /**
          * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         * @memberof system.signals.Signal
+         * @default null
+         * @type {Object}
+         * @instance
          */
         proxy : { value : null, configurable : true, writable : true },
 
@@ -60,9 +65,6 @@ export function Signal()
     }) ;
 }
 
-/**
- * @extends Signaler
- */
 Signal.prototype = Object.create( Signaler.prototype ,
 {
     /**
@@ -72,17 +74,25 @@ Signal.prototype = Object.create( Signaler.prototype ,
 
     /**
      * The number of receivers or slots register in the signal object.
+     * @memberof system.signals.Signal
+     * @default 0
+     * @type {number}
+     * @instance
+     * @readonly
      */
     length : { get : function() { return this.receivers.length ; } },
 
     /**
      * Connects a Function or a Receiver object.
-     * @param receiver The receiver to connect : a Function reference or a Receiver object.
-     * @param priority Determinates the priority level of the receiver.
-     * @param autoDisconnect Apply a disconnect after the first trigger
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
+     * @param {system.signals.Receiver|Function} receiver The receiver to connect : a Function reference or a Receiver object.
+     * @param {number} [priority=0] Determinates the priority level of the receiver.
+     * @param {boolean} [autoDisconnect=false] Apply a disconnect after the first trigger
      * @return {boolean} <code>true</code> If the receiver is connected with the signal emitter.
      */
-    connect : { value : function ( receiver , priority /*uint*/ , autoDisconnect /*Boolean*/ ) /*Boolean*/
+    connect : { value : function ( receiver , priority = 0 , autoDisconnect = false ) /*Boolean*/
     {
         if ( receiver === null )
         {
@@ -146,15 +156,23 @@ Signal.prototype = Object.create( Signaler.prototype ,
     /**
      * Returns <code>true</code> if one or more receivers are connected.
      * @return {boolean} <code>true</code> if one or more receivers are connected.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
-    connected : { value : function () /*Boolean*/
+    connected : { value : function ()
     {
         return this.receivers.length > 0 ;
     }},
 
     /**
      * Disconnect the specified object or all objects if the parameter is null.
+     *
      * @return {boolean} <code>true</code> if the specified receiver exist and can be unregister.
+     * @param {system.signals.Receiver|Function} receiver The receiver to disconnect : a Function reference or a Receiver object.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     disconnect : { value : function ( receiver )
     {
@@ -188,8 +206,11 @@ Signal.prototype = Object.create( Signaler.prototype ,
     /**
      * Emit the specified values to the receivers.
      * @param ...values All values to emit to the receivers.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
-    emit : { value : function( /*Arguments*/ ) /*void*/
+    emit : { value : function( /*Arguments*/ ) // FIXME use ...values
     {
         var values = Object.setPrototypeOf( arguments , Array.prototype ) ;
 
@@ -245,6 +266,9 @@ Signal.prototype = Object.create( Signaler.prototype ,
     /**
      * Returns <code>true</code> if the specified receiver is connected.
      * @return {boolean} <code>true</code> if the specified receiver is connected.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     hasReceiver : { value : function ( receiver ) /*Boolean*/
     {
@@ -268,7 +292,10 @@ Signal.prototype = Object.create( Signaler.prototype ,
 
     /**
      * Returns the Array representation of all receivers connected with the signal.
-     * @return {array} the Array representation of all receivers connected with the signal.
+     * @return {array} The Array representation of all receivers connected with the signal.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     toArray : { value : function() /*Array*/
     {
@@ -287,6 +314,9 @@ Signal.prototype = Object.create( Signaler.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     toString : { value : function ()
     {

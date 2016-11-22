@@ -9,6 +9,8 @@ import { TweenUnit }  from './transitions/TweenUnit.js' ;
  * The VEGAS.js framework - The system.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.transitions
+ * @memberof system
  */
 export var transitions = Object.assign
 ({

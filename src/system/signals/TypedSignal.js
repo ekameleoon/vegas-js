@@ -9,8 +9,14 @@ import { SignalEntry } from './SignalEntry.js' ;
 
 /**
  * Creates a new Signal instance.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name TypedSignal
+ * @class
+ * @implements system.signals.Signaler
+ * @memberof system.signals
+ * @param {Array} [types=null] An optional Array who contains any number of class references that enable type checks in the "emit" method.
+ * If this argument is null the "emit" method not check the types of the parameters in the method.
+ * @param {Array} [receivers=null] The Array collection of receiver objects to connect with this signal.
+ * @example
  * function Slot( name )
  * {
  *     this.name = name ;
@@ -44,12 +50,8 @@ import { SignalEntry } from './SignalEntry.js' ;
  * signal.connect( slot2 , 2 ) ;
  *
  * signal.emit( "hello world" ) ;
- * </pre>
- * @param types An optional Array who contains any number of class references that enable type checks in the "emit" method.
- * If this argument is null the "emit" method not check the types of the parameters in the method.
- * @param receivers The Array collection of receiver objects to connect with this signal.
  */
-export function TypedSignal( types /*Array*/ , receivers /*Array*/ )
+export function TypedSignal( types = null , receivers = null )
 {
     if( types && types instanceof Array && types.length > 0 )
     {
@@ -64,8 +66,6 @@ export function TypedSignal( types /*Array*/ , receivers /*Array*/ )
         }
     }
 }
-
-///////////////////
 
 TypedSignal.prototype = Object.create( Signaler.prototype ,
 {
@@ -151,6 +151,10 @@ TypedSignal.prototype.constructor = TypedSignal;
 
 /**
  * Checks all values passed-in the emit method.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name checkValues
  */
 TypedSignal.prototype.checkValues = function( values /*Array*/ ) /*void*/
 {
@@ -182,10 +186,14 @@ TypedSignal.prototype.checkValues = function( values /*Array*/ ) /*void*/
 
 /**
  * Connects a Function or a Receiver object.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
  * @param receiver The receiver to connect : a Function reference or a Receiver object.
  * @param priority Determinates the priority level of the receiver.
  * @param autoDisconnect Apply a disconnect after the first trigger
  * @return <code>true</code> If the receiver is connected with the signal emitter.
+ * @name connect
  */
 TypedSignal.prototype.connect = function ( receiver , priority /*uint*/ , autoDisconnect /*Boolean*/ ) /*Boolean*/
 {
@@ -251,6 +259,10 @@ TypedSignal.prototype.connect = function ( receiver , priority /*uint*/ , autoDi
 /**
  * Returns <code>true</code> if one or more receivers are connected.
  * @return <code>true</code> if one or more receivers are connected.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name connected
  */
 TypedSignal.prototype.connected = function () /*Boolean*/
 {
@@ -260,6 +272,10 @@ TypedSignal.prototype.connected = function () /*Boolean*/
 /**
  * Disconnect the specified object or all objects if the parameter is null.
  * @return <code>true</code> if the specified receiver exist and can be unregister.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name disconnect
  */
 TypedSignal.prototype.disconnect = function ( receiver ) /*Boolean*/
 {
@@ -293,6 +309,10 @@ TypedSignal.prototype.disconnect = function ( receiver ) /*Boolean*/
 /**
  * Emit the specified values to the receivers.
  * @param ...values All values to emit to the receivers.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name emit
  */
 TypedSignal.prototype.emit = function( /*Arguments*/ ) /*void*/
 {
@@ -352,6 +372,10 @@ TypedSignal.prototype.emit = function( /*Arguments*/ ) /*void*/
 /**
  * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
  * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name hasReceiver
  */
 TypedSignal.prototype.hasReceiver = function ( receiver ) /*Boolean*/
 {
@@ -377,6 +401,10 @@ TypedSignal.prototype.hasReceiver = function ( receiver ) /*Boolean*/
 /**
  * Returns the Array representation of all receivers connected with the signal.
  * @return the Array representation of all receivers connected with the signal.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name toArray
  */
 TypedSignal.prototype.toArray = function() /*Array*/
 {
@@ -395,6 +423,10 @@ TypedSignal.prototype.toArray = function() /*Array*/
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.signals.TypedSignal
+ * @instance
+ * @function
+ * @name toString
  */
 TypedSignal.prototype.toString = function () /*String*/
 {

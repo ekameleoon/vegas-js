@@ -18,8 +18,10 @@ import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
 
 /**
  * The VEGAS.js framework - The system.logging library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logging
+ * @memberof system
  */
 export var logging = Object.assign
 ({

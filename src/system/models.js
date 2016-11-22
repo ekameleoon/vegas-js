@@ -11,8 +11,10 @@ import { MapModel }   from './models/maps/MapModel.js' ;
 
 /**
  * The VEGAS.js framework - The system.models library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.models
+ * @memberof system
  */
 export var models = Object.assign
 ({

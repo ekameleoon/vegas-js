@@ -30,8 +30,10 @@ import { isRule } from './rules/Rule.js' ;
 
 /**
  * The VEGAS.js framework - The system.rules library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.rules
+ * @memberof system
  */
 export var rules = Object.assign
 ({

@@ -22,8 +22,10 @@ import { IfZero } from './logics/IfZero.js' ;
 
 /**
  * The VEGAS.js framework - The system.logics library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logics
+ * @memberof system
  */
 export var logics = Object.assign
 ({

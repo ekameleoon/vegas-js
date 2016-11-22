@@ -2,10 +2,13 @@
 
 /**
  * This class determinates a basic implementation to creates enumeration objects.
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
+ * @param {number} value The value of the enumeration.
+ * @param {string} name The name key of the enumeration.
+ * @extends Object
+ * @memberof system
+ * @class
  */
-export function Enum( value /*int*/ , name /*String*/ )
+export function Enum( value , name )
 {
     Object.defineProperties( this ,
     {
@@ -26,15 +29,14 @@ export function Enum( value /*int*/ , name /*String*/ )
     }) ;
 }
 
-/**
- * @extends Object
- */
 Enum.prototype = Object.create( Object.prototype );
 Enum.prototype.constructor = Enum;
 
 /**
  * Compares the specified object with this object for equality.
  * @return <code>true</code> if the the specified object is equal with this object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.equals = function ( object ) /*Boolean*/
 {
@@ -54,6 +56,8 @@ Enum.prototype.equals = function ( object ) /*Boolean*/
 /**
  * Returns the String representation of the object.
  * @return the String representation of the object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.toString = function() /*String*/
 {
@@ -63,6 +67,8 @@ Enum.prototype.toString = function() /*String*/
 /**
  * Returns the primitive value of the object.
  * @return the primitive value of the object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.valueOf = function()
 {
