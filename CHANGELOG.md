@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * Adds the core.arrays.swap function.
 * Adds an example of the Tween class with the Pixi library.
 * Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
-* Adds the graphics.geom Package : Rectangle, Dimension, Point
+* Adds the graphics.geom Package : Dimension, EdgeMetrics, Point, Rectangle
 
 ### Changed
 * Updates the core.arrays.sortOn method.
@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 * Fix the performance.now() method.
+* Fix the system.transitions.FrameTimer class (firefox bug).
 
 ## [1.0.6] - 2016-11-16
 ### Added
