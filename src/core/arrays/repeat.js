@@ -5,12 +5,13 @@
  * @name repeat
  * @memberof core.arrays
  * @instance
- * @example
- * trace( core.arrays.repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
- * trace( core.arrays.repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
+ * @function
  * @param {Array} ar - The array to repeat.
  * @param {number} count - The number of repeat.
  * @return {Array} A new Array who contains the specified Array elements repeated count times.
+ * @example
+ * trace( core.arrays.repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
+ * trace( core.arrays.repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
  */
 export function repeat( ar /*Array*/ , count /*uint*/ ) /*Array*/
 {

@@ -1,8 +1,14 @@
 "use strict" ;
 
 /**
- * Initializes a new Array with an arbitrary number of elements (index),
- * with every element containing the passed parameter value or by default the null value.
+ * Initializes a new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
+ * @name initialize
+ * @memberof core.arrays
+ * @instance
+ * @function
+ * @param {number} [elements=1] - The number of elements to fill the Array.
+ * @param {*} [value=null] - The value to inject in the Array.
+ * @return A new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
  * @example
  * ar = initialize( 3 ) ;
  * trace( ar ) ; // [ null , null , null ]
@@ -15,12 +21,8 @@
  *
  * ar = initialize(  4 , "" ) ;
  * trace( ar ) ; // [ "" ,"" ,"" ,"" ]
- * @return a new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
- * @memberof core.arrays
- * @name initialize
- * @instance
  */
-export function initialize( elements /*uint*/ , value = null ) /*Array*/
+export function initialize( elements = 1 , value = null ) /*Array*/
 {
     var ar = [];
 

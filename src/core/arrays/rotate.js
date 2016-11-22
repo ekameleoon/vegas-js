@@ -1,12 +1,16 @@
 "use strict" ;
 
 /**
- * Rotates an Array in-place. After calling this method, the element at index i will be the element previously at index (i - n) % array.length,
+ * Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
  * for all values of i between 0 and array.length - 1, inclusive.
  * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
  * @name rotate
  * @memberof core.arrays
  * @instance
+ * @function
+ * @param {Array} ar - The array to rotate.
+ * @param {number} [amount=1] The amount to rotate.
+ * @return {Array} The rotated Array reference.
  * @example
  * var array = ["l","o","v","e"] ;
  *
@@ -14,9 +18,6 @@
  * trace( dump( rotate( array , -1 ) ) ) ; // ["l","o","v","e"]
  * trace( dump( rotate( array , -1 ) ) ) ; // ["o","v","e","l"]
  * trace( dump( rotate( array ,  3 ) ) ) ; // ["v","e","l","o"]
- * @param {Array} ar - The array to rotate.
- * @param {number} [amount=1] The amount to rotate.
- * @return {Array} The rotated Array reference.
  */
 export function rotate( ar /*Array*/ , amount = 1 ) /*Array*/
 {

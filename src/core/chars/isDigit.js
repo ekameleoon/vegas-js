@@ -2,9 +2,12 @@
 
 /**
  * Indicates if the specified character is a digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is a digit.
+ * @name isDigit
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return {boolean} True if the specified character is a digit.
  */
 export function isDigit( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

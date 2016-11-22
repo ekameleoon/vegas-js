@@ -2,40 +2,6 @@
 "use strict" ;
 
 /**
- * In the sorting methods, this constant specifies case-insensitive sorting. You can use this constant for the options parameter in the sort() or sortOn() method.
- * <p>he value of this constant is 1.</p>
- */
-Array.CASEINSENSITIVE = 1;
-
-/**
- * In the sorting methods, this constant specifies descending sort order. You can use this constant for the options parameter in the sort() or sortOn() method.
- * <p>The value of this constant is 2.</p>
- */
-Array.DESCENDING = 2 ;
-
-/**
- * In the sorting methods, this constant specifies numeric (instead of character-string) sorting. Including it in the options parameter causes the sort() and sortOn() methods to sort numbers as numeric values, not as strings of numeric characters.
- * <p>Without the NUMERIC constant, sorting treats each array element as a character string and produces the results in Unicode order.</p>
- * <p>For example, given the Array of values [2005, 7, 35], if the NUMERIC constant is not included in the options parameter, the sorted Array is [2005, 35, 7], but if the NUMERIC constant is included, the sorted Array is [7, 35, 2005].</p>
- * <p>The value of this constant is 16.</p>
- */
-Array.NUMERIC = 16 ;
-
-/**
- * Specifies that a sort returns an indexed array as a result of calling the sort() or sortOn() method.
- * <p>You can use this constant for the options parameter in the sort() or sortOn() method. This provides preview or copy functionality by returning an array that represents the results of the sort and leaves the original array unmodified.</p>
- * <p>The value of this constant is 8.</p>
- */
-Array.RETURNINDEXEDARRAY = 8 ;
-
-/**
- * In the sorting methods, this constant specifies the unique sorting requirement.
- * <p>You can use this constant for the options parameter in the sort() or sortOn() method. The unique sorting option aborts the sort if any two elements or fields being sorted have identical values.</p>
- * <p>The value of this constant is 4.</p>
- */
-Array.UNIQUESORT = 4 ;
-
-/**
  * Sorts the elements in an array according to one or more fields in the array.
  * The array should have the following characteristics:
  * <ul>
@@ -43,6 +9,10 @@ Array.UNIQUESORT = 4 ;
  * <li>Each element of the array holds an object with one or more properties.</li>
  * <li>All of the objects have at least one property in common, the values of which can be used to sort the array. Such a property is called a field.</li>
  * </ul>
+ * @name shuffle
+ * @memberof core.arrays
+ * @instance
+ * @function
  * @example
  * var echo = function( a )
  * {
@@ -104,9 +74,6 @@ Array.UNIQUESORT = 4 ;
  * core.arrays.sortOn( a , "name", Array.UNIQUESORT ) ;
  *
  * echo(a) ;
- * @memberof core.arrays
- * @name shuffle
- * @instance
  */
 export function sortOn( ar , propName , options )
 {
@@ -205,3 +172,37 @@ export function sortOn( ar , propName , options )
         }
     }
 }
+
+/**
+ * In the sorting methods, this constant specifies case-insensitive sorting. You can use this constant for the options parameter in the sort() or sortOn() method.
+ * <p>he value of this constant is 1.</p>
+ */
+Array.CASEINSENSITIVE = 1;
+
+/**
+ * In the sorting methods, this constant specifies descending sort order. You can use this constant for the options parameter in the sort() or sortOn() method.
+ * <p>The value of this constant is 2.</p>
+ */
+Array.DESCENDING = 2 ;
+
+/**
+ * In the sorting methods, this constant specifies numeric (instead of character-string) sorting. Including it in the options parameter causes the sort() and sortOn() methods to sort numbers as numeric values, not as strings of numeric characters.
+ * <p>Without the NUMERIC constant, sorting treats each array element as a character string and produces the results in Unicode order.</p>
+ * <p>For example, given the Array of values [2005, 7, 35], if the NUMERIC constant is not included in the options parameter, the sorted Array is [2005, 35, 7], but if the NUMERIC constant is included, the sorted Array is [7, 35, 2005].</p>
+ * <p>The value of this constant is 16.</p>
+ */
+Array.NUMERIC = 16 ;
+
+/**
+ * Specifies that a sort returns an indexed array as a result of calling the sort() or sortOn() method.
+ * <p>You can use this constant for the options parameter in the sort() or sortOn() method. This provides preview or copy functionality by returning an array that represents the results of the sort and leaves the original array unmodified.</p>
+ * <p>The value of this constant is 8.</p>
+ */
+Array.RETURNINDEXEDARRAY = 8 ;
+
+/**
+ * In the sorting methods, this constant specifies the unique sorting requirement.
+ * <p>You can use this constant for the options parameter in the sort() or sortOn() method. The unique sorting option aborts the sort if any two elements or fields being sorted have identical values.</p>
+ * <p>The value of this constant is 4.</p>
+ */
+Array.UNIQUESORT = 4 ;
