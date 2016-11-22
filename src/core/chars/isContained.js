@@ -4,7 +4,7 @@
  * Indicates if the specified character is a digit.
  * @name isContained
  * @memberof core.chars
- * @instance
+ * @function
  * @param {string} c - The expression to evaluate.
  * @param {number} index - The optional index to evaluate a specific character in the passed-in expression.
  * @param charset The list of characters to evaluate.

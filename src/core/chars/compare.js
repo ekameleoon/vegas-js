@@ -13,7 +13,7 @@ import { caseValue } from '../strings/caseValue.js' ;
  * </p>
  * @memberof core.chars
  * @name compare
- * @instance
+ * @function
  */
 export function compare( charA /*String*/ , charB /*String*/ ) /*uint*/
 {

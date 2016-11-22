@@ -9,7 +9,10 @@ import { Rectangle } from './geom/Rectangle.js' ;
 
 /**
  * Creates a new Layout instance.
- * @constructor
+ * @name Layout
+ * @memberof graphics
+ * @extends system.process.Task
+ * @class
  */
 export function Layout()
 {
@@ -17,11 +20,19 @@ export function Layout()
     {
         /**
          * The signal invoked when the render method is called.
+         * @memberof graphics.Layout
+         * @type {system.signals.Signal}
+         * @const
+         * @instance
          */
         renderer : { value : new Signal() } ,
 
         /**
          * The signal invoked when the update method is called.
+         * @memberof graphics.Layout
+         * @type {system.signals.Signal}
+         * @const
+         * @instance
          */
         updater : { value : new Signal() } ,
 
@@ -48,16 +59,17 @@ export function Layout()
     });
 }
 
-/**
- * @extends Task
- */
 Layout.prototype = Object.create( Task.prototype ,
 {
     // ------------- getters/setters
 
     /**
      * The alignement of the layout.
+     * @memberof graphics.Layout
+     * @type {number}
+     * @default graphics.Align.TOP_LEFT
      * @see graphics.Align
+     * @instance
      */
     align :
     {
@@ -67,7 +79,10 @@ Layout.prototype = Object.create( Task.prototype ,
 
     /**
      * A rectangle that defines the current visible area of the layout.
+     * @memberof graphics.Layout
+     * @type {graphics.geom.Rectangle}
      * @readonly
+     * @instance
      */
     bounds :
     {
@@ -79,7 +94,11 @@ Layout.prototype = Object.create( Task.prototype ,
 
     /**
      * A rectangle that defines the current visible area of the layout.
+     * @memberof graphics.Layout
+     * @type {graphics.LayoutBufferMode}
+     * @default LayoutBufferMode.AUTO
      * @readonly
+     * @instance
      */
     bufferMode :
     {
@@ -96,6 +115,8 @@ Layout.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates the container reference to change with the layout.
+     * @memberof graphics.Layout
+     * @instance
      */
     container :
     {
@@ -111,13 +132,19 @@ Layout.prototype = Object.create( Task.prototype ,
 
     /**
      * The default height of the layout, in pixels.
+     * @memberof graphics.Layout
      * @readonly
+     * @instance
+     * @type {number}
      */
     measuredHeight : { get : function() { return this._bounds.height } } ,
 
     /**
      * The default width of the layout, in pixels.
+     * @memberof graphics.Layout
      * @readonly
+     * @instance
+     * @type {number}
      */
     measuredWidth : { get : function() { return this._bounds.width } } ,
 
@@ -126,7 +153,10 @@ Layout.prototype = Object.create( Task.prototype ,
     /*jshint -W098 */
     /**
      * Initialize the layout container with the specific elements. This method flush the layout container and remove all old elements register in the collection before initialize it.
-     * @param children an Array, a container or a list of element references to register. If this argument is null the layout is only flushed.
+     * @param {Array} [children=null] - An Array, a container or a list of element references to register. If this argument is null the layout is only flushed.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     initialize : { writable : true  , value : ( children = null ) => {} } ,
     /*jshint +W098 */
@@ -134,16 +164,25 @@ Layout.prototype = Object.create( Task.prototype ,
     /**
      * Calculates the default sizes and minimum and maximum values.
      * You can overrides this method in the specific layouts.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     measure : { writable : true  , value : () => {} } ,
 
     /**
      * Render the layout, refresh and change the position of all childs in a specific container.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     render : { writable : true , value : () => {} } ,
 
     /**
      * Run the process.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     run : { writable : true , value : function()
     {
@@ -166,6 +205,9 @@ Layout.prototype = Object.create( Task.prototype ,
 
     /**
      * This method is invoked when the rendering is finished to finalize the it after the measure invokation.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     update : { writable : true , value : () => {} }
 }) ;

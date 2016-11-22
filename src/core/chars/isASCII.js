@@ -7,7 +7,7 @@
  * @return {boolean} True if the specified character is a ASCII character.
  * @memberof core.chars
  * @name isASCII
- * @instance
+ * @function
  */
 export function isASCII( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

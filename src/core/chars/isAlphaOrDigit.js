@@ -7,7 +7,7 @@
  * @return {boolean} True if the specified character is an alpha or digit character.
  * @memberof core.chars
  * @name isAlphaOrDigit
- * @instance
+ * @function
  */
 export function isAlphaOrDigit( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

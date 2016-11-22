@@ -2,7 +2,7 @@
 
 /**
  * @name isAlpha
- * @instance
+ * @function
  * @memberof core.chars
  * Indicates if the specified character is an alpha (A-Z or a-z) character.
  * @param {string} c - The expression to evaluate.
