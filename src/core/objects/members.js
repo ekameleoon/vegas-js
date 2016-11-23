@@ -2,17 +2,18 @@
 
 /**
  * Returns all the public members of an object, either by key or by value.
+ * @name members
+ * @memberof core.objects
+ * @function
+ * @param {object} o The target object to enumerate.
+ * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
+ * @return An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
  * @example
- * <pre><code>
  * var o = { a : 5 , b : 6 } ;
  * trace( core.dump( core.objects.members( o ) ) ) ; // [a,b]
  * trace( core.dump( core.objects.members( o , true ) ) ) ; // [5,6]
- * </code></pre>
- * @param {object} o The target object to enumerate.
- * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
- * @return {array} An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
  */
-export function members( o /*Object*/ , byValue /*Boolean*/ ) /*Array*/
+export function members( o , byValue = false )
 {
     byValue = Boolean( byValue === true ) ;
     var members /*Array*/ = [];

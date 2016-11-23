@@ -2,18 +2,19 @@
 
 /**
  * Merging enumerable properties from a specific Object to a target Object.
- * @param target The target object to merge.
- * @param source The source object reference.
- * @param overwrite The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
+ * @name merge
+ * @memberof core.objects
+ * @function
+ * @param {Object} target - The target object to merge.
+ * @param {Object} source - The source object reference.
+ * @param {boolean} [overwrite=false] - The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
+ * @return The merged target reference.
  * @example
- * <code>
  * var target = { a : 5 , b : 6 } ;
  * var from   = { a : 1 , b : 2 , c: 3 } ;
- * trace( core.dump( core.objects.merge( target , from ) ) ) ; // {a:1,b:2,c:3}
- * </code>
- * @return The merged target reference.
+ * trace( dump( merge( target , from ) ) ) ; // {a:1,b:2,c:3}
  */
-export function merge( target /*Object*/ , source /*Object*/ , overwrite /*Boolean*/ ) /*Object*/
+export function merge( target , source , overwrite = false ) /*Object*/
 {
     if ( overwrite === null || overwrite === undefined )
     {
@@ -25,7 +26,7 @@ export function merge( target /*Object*/ , source /*Object*/ , overwrite /*Boole
         source = {} ;
     }
 
-    for( var prop /*String*/ in source )
+    for( var prop in source )
     {
         if ( !( prop in target ) || overwrite )
         {
