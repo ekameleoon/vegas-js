@@ -1,10 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specified character is a unicode character.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a unicode character.
+ * Indicates if the specified character is a unicode character (the charcode of the character must be > 255).
+ * @name isUnicode
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a unicode character.
  */
 export function isUnicode( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

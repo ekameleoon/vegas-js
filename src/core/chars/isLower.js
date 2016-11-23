@@ -2,9 +2,18 @@
 
 /**
  * Indicates if the character is lowercase.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is lowercase.
+ * @name isLower
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is lowercase.
+ * @example
+ * trace( isLower( "a" ) ) ; // true
+ * trace( isLower( "A" ) ) ; // false
+ * trace( isLower( "-" ) ) ; // false
+ * trace( isLower( "#" ) ) ; // false
+ * trace( isLower( "1" ) ) ; // false
  */
 export function isLower( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

@@ -4,6 +4,9 @@ import { caseValue } from '../strings/caseValue.js' ;
 
 /**
  * Compares the two caracteres passed in argument for order.
+ * @name compare
+ * @memberof core.chars
+ * @function
  * @param {string} charA - The first char to compare.
  * @param {string} charB - The second char to compare.
  * @return {number} <p>
@@ -11,9 +14,6 @@ import { caseValue } from '../strings/caseValue.js' ;
  * <li> 1 if charA is "higher" than (greater than, after, etc.) charB ;</li>
  * <li> 0 if charA and charB are equal.</li>
  * </p>
- * @memberof core.chars
- * @name compare
- * @function
  */
 export function compare( charA /*String*/ , charB /*String*/ ) /*uint*/
 {

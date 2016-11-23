@@ -7,11 +7,15 @@
  * A line terminator cannot occur within any token, not even a string.
  * Line terminators also affect the process of automatic semicolon insertion.
  * <p>ECMAScript specification.</p>
+ * @name lineTerminators
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 export var lineTerminators =
 [
-        "\u000A" /*LF : Line Feed*/ ,
-        "\u000D" /*CR : Carriage Return*/,
-        "\u2028" /*LS : Line Separator*/ ,
-        "\u2929" /*PS : Paragraphe Separator*/
+    "\u000A" /*LF : Line Feed*/ ,
+    "\u000D" /*CR : Carriage Return*/,
+    "\u2028" /*LS : Line Separator*/ ,
+    "\u2929" /*PS : Paragraphe Separator*/
 ];

@@ -8,6 +8,10 @@
  * @memberof core.chars
  * @name isASCII
  * @function
+ * @example
+ * trace( isASCII( "Z" ) ) ; // true
+ * trace( isASCII( "a" ) ) ; // true
+ * trace( isASCII( "+" ) ) ; // true
  */
 export function isASCII( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
 {

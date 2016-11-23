@@ -2,14 +2,20 @@
 
 /**
  * Indicates if the specified character is an alpha (A-Z or a-z) or a digit character.
+ * @name isAlphaOrDigit
+ * @memberof core.chars
+ * @function
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
- * @return {boolean} True if the specified character is an alpha or digit character.
- * @memberof core.chars
- * @name isAlphaOrDigit
- * @function
+ * @return <code>true</code> if the specified character is an alpha or digit character.
+ * @example
+ * trace( isAlphaOrDigit( "Z" ) ) ; // true
+ * trace( isAlphaOrDigit( "a" ) ) ; // true
+ * trace( isAlphaOrDigit( "0" ) ) ; // true
+ * trace( isAlphaOrDigit( "9" ) ) ; // true
+ * trace( isAlphaOrDigit( "+" ) ) ; // false
  */
-export function isAlphaOrDigit( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isAlphaOrDigit( c , index = 0 )
 {
     if( index > 0 )
     {

@@ -35,9 +35,23 @@ import { sineInOut }     from './easings/sineInOut.js' ;
 import { sineOut }       from './easings/sineOut.js' ;
 
 /**
- * The VEGAS.js framework - The core.easings library.
+ * @description The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific tweening effects. These easings functions provide different flavors of math-based motion under a consistent API.
+ *
+ * |  easing   |                         description                         |  in  | out  | inout  |
+ * |:--------: |:----------------------------------------------------------: |:---: |:---: |:-----: |
+ * |  linear   | simple linear tweening : no easing, no acceleration         |  -   |  -   |   -    |
+ * |   back    | back easing : overshooting cubic easing: (s+1)*t^3 - s*t^2  | yes  | yes  |  yes   |
+ * |  bounce   | bounce easing : exponentially decaying parabolic bounce     | yes  | yes  |  yes   |
+ * | circular  | circular easing : sqrt(1-t^2)                               | yes  | yes  |  yes   |
+ * |   cubic   | cubic easing : t^3                                          | yes  | yes  |  yes   |
+ * |  elastic  | elastic easing : exponentially decaying sine wave           | yes  | yes  |  yes   |
+ * |   expo    | exponential easing : 2^t                                    | yes  | yes  |  yes   |
+ * |   quad    | quadratic easing : t^2                                      | yes  | yes  | yes    |
+ * |  quartic  | quartic easing : t^4                                        | yes  | yes  |  yes   |
+ * |  quintic  | quintic easing : t^5                                        | yes  | yes  |  yes   |
+ * |  regular  | regular easing                                              | yes  | yes  |  yes   |
+ * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.easings
  * @memberof core
  */

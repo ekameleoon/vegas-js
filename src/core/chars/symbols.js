@@ -2,6 +2,10 @@
 
 /**
  * The collection representation of all ASCII symbols characters.
+ * @name symbols
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 export var symbols =
 [

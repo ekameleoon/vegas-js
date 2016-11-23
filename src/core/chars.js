@@ -19,6 +19,7 @@ import { isUnicode }         from './chars/isUnicode.js' ;
 import { isUpper }           from './chars/isUpper.js' ;
 import { isWhiteSpace }      from './chars/isWhiteSpace.js' ;
 import { lineTerminators }   from './chars/lineTerminators.js' ;
+import { operators }         from './chars/operators.js' ;
 import { symbols }           from './chars/symbols.js' ;
 import { whiteSpaces }       from './chars/whiteSpaces.js' ;
 
@@ -48,6 +49,7 @@ export var chars = Object.assign
     isUpper           : isUpper ,
     isWhiteSpace      : isWhiteSpace ,
     lineTerminators   : lineTerminators ,
+    operators         : operators ,
     symbols           : symbols ,
     whiteSpaces       : whiteSpaces
 }) ;

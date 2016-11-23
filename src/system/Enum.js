@@ -4,7 +4,7 @@
  * This class determinates a basic implementation to creates enumeration objects.
  * @param {number} value The value of the enumeration.
  * @param {string} name The name key of the enumeration.
- * @extends Object
+ * @name Enum
  * @memberof system
  * @class
  */
