@@ -9,7 +9,7 @@
  * <li>Each element of the array holds an object with one or more properties.</li>
  * <li>All of the objects have at least one property in common, the values of which can be used to sort the array. Such a property is called a field.</li>
  * </ul>
- * @name shuffle
+ * @name sortOn
  * @memberof core.arrays
  * @instance
  * @function
@@ -36,42 +36,42 @@
  *
  * trace ("---- sort num Array.NUMERIC | Array.DESCENDING") ;
  *
- * var r = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.DESCENDING) ;
+ * var r = sortOn( a , "num", Array.NUMERIC | Array.DESCENDING) ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name") ;
  *
- * core.arrays.sortOn( a , "name") ;
+ * sortOn( a , "name") ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name Array.CASEINSENSITIVE") ;
  *
- * core.arrays.sortOn( a , "name", Array.CASEINSENSITIVE) ;
+ * sortOn( a , "name", Array.CASEINSENSITIVE) ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name Array.RETURNINDEXEDARRAY") ;
  *
- * //var result = core.arrays.sortOn( a , "name", Array.CASESEINSENTIVE | Array.RETURNINDEXEDARRAY) ;
- * //var result = core.arrays.sortOn( a , "name", Array.RETURNINDEXEDARRAY) ;
+ * //var result = sortOn( a , "name", Array.CASESEINSENTIVE | Array.RETURNINDEXEDARRAY) ;
+ * //var result = sortOn( a , "name", Array.RETURNINDEXEDARRAY) ;
  * //trace (result) :
  *
- * var result = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.DESCENDING | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "num", Array.NUMERIC | Array.DESCENDING | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
- * var result = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "num", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
- * var result = core.arrays.sortOn( a , "name", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "name", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
  * trace ("---- sort name Array.UNIQUESORT") ;
  *
  * a.push({ name:"test 1" , num:60 } ) ;
  *
- * core.arrays.sortOn( a , "name", Array.UNIQUESORT ) ;
+ * sortOn( a , "name", Array.UNIQUESORT ) ;
  *
  * echo(a) ;
  */

@@ -2,13 +2,14 @@
 
 /**
  * Short for 'cosinusoidal interpolation', this method will interpolate while easing around the end, when value is near one.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.coserp( 0 , 100 , 0.5 ) ;
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name coserp
+ * @memberof core.maths
+ * @function
+ * @example
+ * trace( coserp( 0 , 100 , 0.5 ) ;
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+ * @param {number} start - The begining value.
+ * @param {number} end - The ending value.
  * @return The interpolated value between two numbers at a specific increment.
  */
 export var coserp = ( amount , start , end ) =>

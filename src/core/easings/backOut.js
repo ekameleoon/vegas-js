@@ -4,7 +4,6 @@
  * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
  * @name backOut
  * @memberof core.easings
- * @instance
  * @function backOut
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

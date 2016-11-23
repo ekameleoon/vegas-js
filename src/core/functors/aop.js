@@ -2,8 +2,10 @@
 
 /**
  * Creates a Function who execute a specific function between two others.
+ * @name aop
+ * @memberof core.functors
+ * @function
  * @example
- * <pre><code>
  * var scope = { toString : function() { return "scope" ; } } ;
  *
  * var sum = function(x, y)
@@ -25,11 +27,10 @@
  * var result = aop(sum, begin, end, scope)(3, 5) ;
  *
  * console.log( result ) ;
- * </code></pre>
- * @param func {Function} The function to invoke.
- * @param begin {Function} The function to invoke before the main function.
- * @param end {Function} The function to invoke after the main function.
- * @param scope {Object} The scope of the function to invoke after the main function.
+ * @param {Function} func - The function to invoke.
+ * @param {Function} begin - The function to invoke before the main function.
+ * @param {Function} end - The function to invoke after the main function.
+ * @param {Object} scope - The scope of the function to invoke after the main function.
  * @return {Function} The new function with the aop merging.
  */
 export var aop = ( func , begin = null , end = null , scope = null ) =>

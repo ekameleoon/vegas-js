@@ -4,7 +4,10 @@ import { RAD2DEG } from './RAD2DEG.js' ;
 
 /**
  * Calculates the arcsine of the passed angle.
- * @param ratio a value between -1 and 1 inclusive.
+ * @name asinD
+ * @memberof core.maths
+ * @function
+ * @param {number} ratio - A value between -1 and 1 inclusive.
  * @return the arcsine of the passeds angle in degrees.
  */
 export var asinD = ( ratio ) => Math.asin(ratio) * RAD2DEG ;

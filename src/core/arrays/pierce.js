@@ -4,7 +4,6 @@
  * Splices an array (removes an element) and returns either the entire array or the removed element.
  * @memberof core.arrays
  * @name pierce
- * @instance
  * @function
  * @param {Array} ar - The array to pierce.
  * @param {number} index - The index of the array element to remove from the array (default 0).

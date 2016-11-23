@@ -10,7 +10,8 @@ describe( 'core.arrays.initialize' , () =>
 {
     it('initialize() === []', () =>
     {
-        assert.deepEqual( initialize() , [] );
+        assert.isArray( initialize() );
+        assert.lengthOf( initialize() , 0 );
     })
 
     it('initialize(0) === []', () =>

@@ -1,13 +1,13 @@
 "use strict" ;
 
 /**
- * Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
- * for all values of i between 0 and array.length - 1, inclusive.
- * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
  * @name rotate
  * @memberof core.arrays
  * @instance
  * @function
+ * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
+ * for all values of i between 0 and array.length - 1, inclusive.
+ * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
  * @param {Array} ar - The array to rotate.
  * @param {number} [amount=1] The amount to rotate.
  * @return {Array} The rotated Array reference.

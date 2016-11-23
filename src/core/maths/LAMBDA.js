@@ -9,5 +9,8 @@
 * n->oo ( k=1 )
 * </pre>
 * </p>
+ * @name LAMBDA
+ * @memberof core.maths
+ * @const
 */
 export const LAMBDA = 0.57721566490143;

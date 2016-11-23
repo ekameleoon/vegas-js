@@ -3,7 +3,6 @@
  * Shuffles an array.
  * @name shuffle
  * @memberof core.arrays
- * @instance
  * @function
  * @param {Array} ar - The array to shuffle.
  * @return {Array} the shuffled array.

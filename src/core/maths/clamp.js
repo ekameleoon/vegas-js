@@ -2,8 +2,10 @@
 
 /**
  * Bounds a numeric value between 2 numbers.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name clamp
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  *
  * n = core.maths.clamp(4, 5, 10) ;
@@ -17,10 +19,9 @@
  *
  * n = core.maths.clamp(NaN, 5, 10) ;
  * trace ("n : " + n) ; // NaN
- * </pre>
- * @param value the value to clamp.
- * @param min the min value of the range.
- * @param max the max value of the range.
+ * @param {number} value - The value to clamp.
+ * @param {number} min - The min value of the range.
+ * @param {number} max - The max value of the range.
  * @return a bound numeric value between 2 numbers.
  */
 export var clamp = ( value , min , max ) =>

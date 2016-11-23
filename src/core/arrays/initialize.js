@@ -4,7 +4,6 @@
  * Initializes a new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
  * @name initialize
  * @memberof core.arrays
- * @instance
  * @function
  * @param {number} [elements=1] - The number of elements to fill the Array.
  * @param {*} [value=null] - The value to inject in the Array.
@@ -22,15 +21,18 @@
  * ar = initialize(  4 , "" ) ;
  * trace( ar ) ; // [ "" ,"" ,"" ,"" ]
  */
-export function initialize( elements = 1 , value = null ) /*Array*/
+export function initialize( elements = 0 , value = null ) /*Array*/
 {
     var ar = [];
 
     elements = elements > 0 ? Math.abs(elements) : 0 ;
 
-    for( var i /*int*/ = 0 ; i < elements ; i++ )
+    if( elements > 0 )
     {
-        ar[i] = value ;
+        for( var i = 0 ; i < elements ; i++ )
+        {
+            ar[i] = value ;
+        }
     }
 
     return ar;

@@ -4,7 +4,6 @@
  * Splice one array into another.
  * @name spliceInto
  * @memberof core.arrays
- * @instance
  * @function
  * @param {array} inserted - The Array of values inserted in the Array container.
  * @param {array} container - The container modified in place.

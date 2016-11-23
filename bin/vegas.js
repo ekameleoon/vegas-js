@@ -82,8 +82,11 @@ if (Object.assign === undefined) {
 }
 
 /**
- * The VEGAS.js framework - The core.reflect library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * The global namespace (reference to the global scope of the application).
+ * @name global
+ * @namespace global
+ * @instance
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 
@@ -168,6 +171,11 @@ if (!exports.global.cancelAnimationFrame) {
 var cancelAnimationFrame = exports.global.cancelAnimationFrame;
 var requestAnimationFrame = exports.global.requestAnimationFrame;
 
+/**
+ * A basic trace() function based on the console.log method.
+ * @static
+ */
+
 function trace(context) {
     if (console) {
         console.log(context);
@@ -176,6 +184,7 @@ function trace(context) {
 
 /**
  * The string expression of the current VEGAS version.
+ * @static
  */
 
 var version = '1.0.6';
@@ -226,14 +235,21 @@ try {
 
 /**
  * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
+ * @name dumpArray
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Array} value - The Array to dump.
+ * @param {boolean} [prettyprint=false] boolean option to output a pretty printed string
+ * @param {number} [indent=0] initial indentation
+ * @param {string} [indentor=    ] initial string used for the indent.
  * @return The dump string representation of any Array reference.
  */
-function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
+function dumpArray(value /*Array*/) {
+    var prettyprint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var indent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var indentor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "    ";
+
     indent = isNaN(indent) ? 0 : indent;
     prettyprint = Boolean(prettyprint);
 
@@ -276,16 +292,20 @@ function dumpArray(value /*Array*/, prettyprint /*Boolean*/, indent /*int*/, ind
 }
 
 /**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
+ * Dumps a string representation of any Date reference.
+ * @name dumpDate
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Date} value - A Date object to dump.
+ * @param {boolean} [timestamp=false] - The optional timestamp flag.
+ * @return The string representation of any Date reference.
  */
 
-function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
+function dumpDate(date /*Date*/) /*String*/
 {
+    var timestamp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
     timestamp = Boolean(timestamp);
     if (timestamp) {
         return "new Date(" + String(date.valueOf()) + ")";
@@ -309,14 +329,20 @@ function dumpDate(date /*Date*/, timestamp /*Boolean*/) /*String*/
 
 /**
  * Dumps a string representation of an object.
- * @param value an object
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
+ * @name dumpObject
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Object} value - An object to dump.
+ * @param {boolean} [prettyprint=false] - The option to output a pretty printed string.
+ * @param {number} [indent=0] - The initial indentation value.
+ * @param {string} [indentor=    ] - The initial string used for the indent.
+ * @return The string expression of the dump.
  */
-function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
-{
-    ///////////
+function dumpObject(value) {
+    var prettyprint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var indent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var indentor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "    ";
 
     indent = isNaN(indent) ? 0 : indent;
 
@@ -325,8 +351,6 @@ function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, i
     if (!indentor) {
         indentor = "    ";
     }
-
-    ///////////
 
     var source /*Array*/ = [];
 
@@ -355,15 +379,15 @@ function dumpObject(value /*Object*/, prettyprint /*Boolean*/, indent /*int*/, i
     }
     source = source.sort();
     if (prettyprint) {
-        var spaces /*Array*/ = [];
-        for (var i /*int*/; i < indent; i++) {
+        var spaces = [];
+        for (var i = 0; i < indent; i++) {
             spaces.push(indentor);
         }
 
-        var decal /*String*/ = "\n" + spaces.join("");
-        return decal + "{" + decal + indentor + source.join("," + decal + indentor) + decal + "}";
+        var decal = '\n' + spaces.join('');
+        return decal + '{' + decal + indentor + source.join(',' + decal + indentor) + decal + '}';
     } else {
-        return "{" + source.join(",") + "}";
+        return '{' + source.join(',') + '}';
     }
 }
 
@@ -382,7 +406,11 @@ function toUnicodeNotation(num) {
 
 /**
  * Dumps a string representation of any String value.
- * @param str a String to transform.
+ * @name dumpString
+ * @memberof core
+ * @function
+ * @instance
+ * @param {string} str a String to transform.
  * @return The dump string representation of any String value.
  */
 function dumpString(value /*String*/) /*String*/
@@ -467,17 +495,29 @@ function dumpString(value /*String*/) /*String*/
 }
 
 /**
- * Dumps a string representation of any Array reference.
- * @param value an Array to dump.
- * @param prettyprint (optional) boolean option to output a pretty printed string
- * @param indent (optional) initial indentation
- * @param indentor (optional) initial string used for the indent
- * @return The dump string representation of any Array reference.
+ * Dumps a string representation of any object reference.
+ * @name dump
+ * @memberof core
+ * @function
+ * @instance
+ * @param {*} value - Any object to dump.
+ * @param {boolean} [prettyprint=false] boolean option to output a pretty printed string
+ * @param {number} [indent=0] initial indentation
+ * @param {string} [indentor=    ] initial string used for the indent.
+ * @return The string expression of the dump.
+ * @example
+ * var object =
+ * {
+ *     name   : "vegas" ,
+ *     count  : 10 ,
+ *     time   : new Date() ,
+ *     flag   : true ,
+ *     values : [1,2,3]
+ * } ;
+ * trace( dump( object ) ) ;
  */
 function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /*String*/
 {
-    ///////////
-
     indent = isNaN(indent) ? 0 : indent;
 
     prettyprint = Boolean(prettyprint);
@@ -485,8 +525,6 @@ function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /
     if (!indentor) {
         indentor = "    ";
     }
-
-    ///////////
 
     if (o === undefined) {
         return "undefined";
@@ -517,40 +555,58 @@ function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /
 
 /**
  * Indicates if the specific object is a Boolean.
+ * @name isBoolean
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Object} object - The object to check.
+ * @return <code>true</code> if the object is a Boolean.
  */
 
-function isBoolean(o) {
-  return typeof o === 'boolean' || o instanceof Boolean;
+function isBoolean(object) {
+  return typeof object === 'boolean' || object instanceof Boolean;
 }
 
 /**
  * Indicates if the specific object is a Number.
+ * @name isNumber
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Object} object - The object to check.
+ * @return <code>true</code> if the object is a Number.
  */
 
-function isNumber(o) {
-  return typeof o === 'number' || o instanceof Number;
+function isNumber(object) {
+  return typeof object === 'number' || object instanceof Number;
 }
 
 /**
  * Indicates if the specific object is a String.
+ * @name isString
+ * @memberof core
+ * @function
+ * @instance
+ * @param {Object} object - The object to check.
+ * @return <code>true</code> if the object is a String.
  */
 
-function isString(o) {
-  return typeof o === 'string' || o instanceof String;
+function isString(object) {
+  return typeof object === 'string' || object instanceof String;
 }
 
 /**
  * Determines whether the specified object exists as an element in an Array object.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var ar = [2, 3, 4] ;
- *
- * trace( core.arrays.contains( ar , 3 ) ) ; // true
- * trace( core.arrays.contains( ar , 5 ) ) ; // false
- * </pre>
- * @param ar The search Array.
- * @param value The object to find in the array.
+ * @name contains
+ * @memberof core.arrays
+ * @function contains
+ * @param {Array} ar - The search Array.
+ * @param {*} value - The object to find in the array.
  * @return <code>true</code> if the specified object exists as an element in the array ; otherwise, <code>false</code>.
+ * @example
+ * var ar = [2, 3, 4] ;
+ * trace( contains( ar , 3 ) ) ; // true
+ * trace( contains( ar , 5 ) ) ; // false
  */
 
 var contains = function contains(array /*Array*/, value) {
@@ -558,10 +614,14 @@ var contains = function contains(array /*Array*/, value) {
 };
 
 /**
- * Initializes a new Array with an arbitrary number of elements (index),
- * with every element containing the passed parameter value or by default the null value.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * Initializes a new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
+ * @name initialize
+ * @memberof core.arrays
+ * @function
+ * @param {number} [elements=1] - The number of elements to fill the Array.
+ * @param {*} [value=null] - The value to inject in the Array.
+ * @return A new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
+ * @example
  * ar = initialize( 3 ) ;
  * trace( ar ) ; // [ null , null , null ]
  *
@@ -573,21 +633,21 @@ var contains = function contains(array /*Array*/, value) {
  *
  * ar = initialize(  4 , "" ) ;
  * trace( ar ) ; // [ "" ,"" ,"" ,"" ]
- * </pre>
- * @return a new Array with an arbitrary number of elements (index),
- * with every element containing the passed parameter value or by default the null value.
  */
 
-function initialize(elements /*uint*/) /*Array*/
+function initialize() /*Array*/
 {
+    var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     var ar = [];
 
     elements = elements > 0 ? Math.abs(elements) : 0;
 
-    for (var i /*int*/ = 0; i < elements; i++) {
-        ar[i] = value;
+    if (elements > 0) {
+        for (var i = 0; i < elements; i++) {
+            ar[i] = value;
+        }
     }
 
     return ar;
@@ -595,8 +655,14 @@ function initialize(elements /*uint*/) /*Array*/
 
 /**
  * Splices an array (removes an element) and returns either the entire array or the removed element.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @memberof core.arrays
+ * @name pierce
+ * @function
+ * @param {Array} ar - The array to pierce.
+ * @param {number} index - The index of the array element to remove from the array (default 0).
+ * @param {boolean} flag - A boolean <code>true</code> to return a new spliced array of false to return the removed element.
+ * @return The newly spliced array or the removed element in function of the flag parameter.
+ * @example
  * var ar = [0,1,2,3,4,5] ;
  *
  * trace( ar ) ; // 0,1,2,3,4,5
@@ -607,11 +673,6 @@ function initialize(elements /*uint*/) /*Array*/
  * trace( ar ) ; // 0,3,4,5
  *
  * trace( pierce( ar, 1 , true ) ) ; // 0,4,5
- * </pre>
- * @param ar the array.
- * @param index the index of the array element to remove from the array (default 0).
- * @param flag a boolean <code>true</code> to return a new spliced array of false to return the removed element.
- * @return The newly spliced array or the removed element in function of the flag parameter.
  */
 
 function pierce(ar /*Array*/, index /*uint*/, flag /*Boolean*/) {
@@ -624,12 +685,15 @@ function pierce(ar /*Array*/, index /*uint*/, flag /*Boolean*/) {
 
 /**
  * Returns a new Array who contains the specified Array elements repeated count times.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.arrays.repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
- * trace( core.arrays.repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
- * </pre>
- * @return a new Array who contains the specified Array elements repeated count times.
+ * @name repeat
+ * @memberof core.arrays
+ * @function
+ * @param {Array} ar - The array to repeat.
+ * @param {number} count - The number of repeat.
+ * @return {Array} A new Array who contains the specified Array elements repeated count times.
+ * @example
+ * trace( repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
+ * trace( repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
  */
 
 function repeat(ar /*Array*/, count /*uint*/) /*Array*/
@@ -650,21 +714,23 @@ function repeat(ar /*Array*/, count /*uint*/) /*Array*/
 }
 
 /**
- * Rotates an Array in-place. After calling this method, the element at index i will be the element previously at index (i - n) % array.length,
+ * @name rotate
+ * @memberof core.arrays
+ * @instance
+ * @function
+ * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
  * for all values of i between 0 and array.length - 1, inclusive.
  * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
+ * @param {Array} ar - The array to rotate.
+ * @param {number} [amount=1] The amount to rotate.
+ * @return {Array} The rotated Array reference.
  * @example
- * <pre>
  * var array = ["l","o","v","e"] ;
  *
  * trace( dump( rotate( array ,  1 ) ) ) ; // ["e","l","o","v"]
  * trace( dump( rotate( array , -1 ) ) ) ; // ["l","o","v","e"]
  * trace( dump( rotate( array , -1 ) ) ) ; // ["o","v","e","l"]
  * trace( dump( rotate( array ,  3 ) ) ) ; // ["v","e","l","o"]
- * </pre>
- * @param ar The array to rotate.
- * @param amount The amount to rotate.
- * @return The rotated Array reference.
  */
 
 function rotate(ar /*Array*/) /*Array*/
@@ -686,17 +752,16 @@ function rotate(ar /*Array*/) /*Array*/
 
 /**
  * Shuffles an array.
- * <p><b>Example :</b></p>
- * <pre>
- * ar = [0,1,2,3,4,5,6,7,8,9] ;
- *
+ * @name shuffle
+ * @memberof core.arrays
+ * @function
+ * @param {Array} ar - The array to shuffle.
+ * @return {Array} the shuffled array.
+ * @example
+ * var = [0,1,2,3,4,5,6,7,8,9] ;
  * trace( ar ) ;
- *
  * shuffle( ar ) ;
- *
  * trace( ar ) ;
- * </pre>
- * @return the shuffled array.
  */
 
 function shuffle(ar /*Array*/) /*Array*/
@@ -725,41 +790,6 @@ function shuffle(ar /*Array*/) /*Array*/
 
 /*jslint bitwise: true */
 /**
- * In the sorting methods, this constant specifies case-insensitive sorting. You can use this constant for the options parameter in the sort() or sortOn() method.
- * <p>he value of this constant is 1.</p>
- */
-
-Array.CASEINSENSITIVE = 1;
-
-/**
- * In the sorting methods, this constant specifies descending sort order. You can use this constant for the options parameter in the sort() or sortOn() method.
- * <p>The value of this constant is 2.</p>
- */
-Array.DESCENDING = 2;
-
-/**
- * In the sorting methods, this constant specifies numeric (instead of character-string) sorting. Including it in the options parameter causes the sort() and sortOn() methods to sort numbers as numeric values, not as strings of numeric characters.
- * <p>Without the NUMERIC constant, sorting treats each array element as a character string and produces the results in Unicode order.</p>
- * <p>For example, given the Array of values [2005, 7, 35], if the NUMERIC constant is not included in the options parameter, the sorted Array is [2005, 35, 7], but if the NUMERIC constant is included, the sorted Array is [7, 35, 2005].</p>
- * <p>The value of this constant is 16.</p>
- */
-Array.NUMERIC = 16;
-
-/**
- * Specifies that a sort returns an indexed array as a result of calling the sort() or sortOn() method.
- * <p>You can use this constant for the options parameter in the sort() or sortOn() method. This provides preview or copy functionality by returning an array that represents the results of the sort and leaves the original array unmodified.</p>
- * <p>The value of this constant is 8.</p>
- */
-Array.RETURNINDEXEDARRAY = 8;
-
-/**
- * In the sorting methods, this constant specifies the unique sorting requirement.
- * <p>You can use this constant for the options parameter in the sort() or sortOn() method. The unique sorting option aborts the sort if any two elements or fields being sorted have identical values.</p>
- * <p>The value of this constant is 4.</p>
- */
-Array.UNIQUESORT = 4;
-
-/**
  * Sorts the elements in an array according to one or more fields in the array.
  * The array should have the following characteristics:
  * <ul>
@@ -767,9 +797,12 @@ Array.UNIQUESORT = 4;
  * <li>Each element of the array holds an object with one or more properties.</li>
  * <li>All of the objects have at least one property in common, the values of which can be used to sort the array. Such a property is called a field.</li>
  * </ul>
- * <p><b>Example : </b></p>
- * {@code
- * echo = function( a )
+ * @name sortOn
+ * @memberof core.arrays
+ * @instance
+ * @function
+ * @example
+ * var echo = function( a )
  * {
  *     var l = a.length ;
  *     for (var i = 0; i < l; i++)
@@ -791,46 +824,46 @@ Array.UNIQUESORT = 4;
  *
  * trace ("---- sort num Array.NUMERIC | Array.DESCENDING") ;
  *
- * var r = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.DESCENDING) ;
+ * var r = sortOn( a , "num", Array.NUMERIC | Array.DESCENDING) ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name") ;
  *
- * core.arrays.sortOn( a , "name") ;
+ * sortOn( a , "name") ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name Array.CASEINSENSITIVE") ;
  *
- * core.arrays.sortOn( a , "name", Array.CASEINSENSITIVE) ;
+ * sortOn( a , "name", Array.CASEINSENSITIVE) ;
  *
  * echo(a) ;
  *
  * trace ("---- sort name Array.RETURNINDEXEDARRAY") ;
  *
- * //var result = core.arrays.sortOn( a , "name", Array.CASESEINSENTIVE | Array.RETURNINDEXEDARRAY) ;
- * //var result = core.arrays.sortOn( a , "name", Array.RETURNINDEXEDARRAY) ;
+ * //var result = sortOn( a , "name", Array.CASESEINSENTIVE | Array.RETURNINDEXEDARRAY) ;
+ * //var result = sortOn( a , "name", Array.RETURNINDEXEDARRAY) ;
  * //trace (result) :
  *
- * var result = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.DESCENDING | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "num", Array.NUMERIC | Array.DESCENDING | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
- * var result = core.arrays.sortOn( a , "num", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "num", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
- * var result = core.arrays.sortOn( a , "name", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
+ * var result = sortOn( a , "name", Array.NUMERIC | Array.RETURNINDEXEDARRAY ) ;
  * trace (result) ;
  *
  * trace ("---- sort name Array.UNIQUESORT") ;
  *
  * a.push({ name:"test 1" , num:60 } ) ;
  *
- * core.arrays.sortOn( a , "name", Array.UNIQUESORT ) ;
+ * sortOn( a , "name", Array.UNIQUESORT ) ;
  *
  * echo(a) ;
- * }
  */
+
 function sortOn(ar, propName, options) {
     var sort = function sort(o1, o2) {
         var v1 = propName in o1 ? o1[propName] : '';
@@ -928,9 +961,49 @@ function sortOn(ar, propName, options) {
 }
 
 /**
+ * In the sorting methods, this constant specifies case-insensitive sorting. You can use this constant for the options parameter in the sort() or sortOn() method.
+ * <p>he value of this constant is 1.</p>
+ */
+Array.CASEINSENSITIVE = 1;
+
+/**
+ * In the sorting methods, this constant specifies descending sort order. You can use this constant for the options parameter in the sort() or sortOn() method.
+ * <p>The value of this constant is 2.</p>
+ */
+Array.DESCENDING = 2;
+
+/**
+ * In the sorting methods, this constant specifies numeric (instead of character-string) sorting. Including it in the options parameter causes the sort() and sortOn() methods to sort numbers as numeric values, not as strings of numeric characters.
+ * <p>Without the NUMERIC constant, sorting treats each array element as a character string and produces the results in Unicode order.</p>
+ * <p>For example, given the Array of values [2005, 7, 35], if the NUMERIC constant is not included in the options parameter, the sorted Array is [2005, 35, 7], but if the NUMERIC constant is included, the sorted Array is [7, 35, 2005].</p>
+ * <p>The value of this constant is 16.</p>
+ */
+Array.NUMERIC = 16;
+
+/**
+ * Specifies that a sort returns an indexed array as a result of calling the sort() or sortOn() method.
+ * <p>You can use this constant for the options parameter in the sort() or sortOn() method. This provides preview or copy functionality by returning an array that represents the results of the sort and leaves the original array unmodified.</p>
+ * <p>The value of this constant is 8.</p>
+ */
+Array.RETURNINDEXEDARRAY = 8;
+
+/**
+ * In the sorting methods, this constant specifies the unique sorting requirement.
+ * <p>You can use this constant for the options parameter in the sort() or sortOn() method. The unique sorting option aborts the sort if any two elements or fields being sorted have identical values.</p>
+ * <p>The value of this constant is 4.</p>
+ */
+Array.UNIQUESORT = 4;
+
+/**
  * Splice one array into another.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name spliceInto
+ * @memberof core.arrays
+ * @function
+ * @param {array} inserted - The Array of values inserted in the Array container.
+ * @param {array} container - The container modified in place.
+ * @param {number} position - The position in the container to inserted the Array of chars.
+ * @param {number} count - The count value to replaced values.
+ * @example
  * inserted  = [1, 2, 3, 4] ;
  * container = [5, 6, 7, 8] ;
  *
@@ -963,11 +1036,6 @@ function sortOn(ar, propName, options) {
  * spliceInto( inserted, container, 0 , 2 ) ;
  *
  * trace( "spliceInto( inserted, container, 0 , 2 ) : " + container ) ; // 1,2,3,4,7,8
- * </pre>
- * @param inserted The Array of values inserted in the Array container.
- * @param container The container modified in place.
- * @param position The position in the container to inserted the Array of chars.
- * @param count The count value to replaced values.
  */
 
 function spliceInto(inserted /*Array*/, container /*Array*/, position /*Number*/, count /*Number*/) {
@@ -981,20 +1049,18 @@ function spliceInto(inserted /*Array*/, container /*Array*/, position /*Number*/
 
 /**
  * Swaps two indexed values in a specific array representation.
+ * @name swap
+ * @memberof core.arrays
+ * @function
+ * @param {Array} ar - The Array of values to change.
+ * @param {number} [from=0] The first index position to swap.
+ * @param {number} [to=0] The second index position to swap.
+ * @param {boolean} [clone=false] Returns a swaped clone of the passed-in array.
  * @example
- * <pre>
  * var ar = [ 1 , 2 , 3 , 4 ] ;
- *
  * trace( ar ) ; // 1,2,3,4
- *
- * core.arrays.swap( ar , 1 , 3 ) ;
- *
+ * swap( ar , 1 , 3 ) ;
  * trace( ar ) ; // 1,4,3,2
- * </pre>
- * @param ar The Array of values to change.
- * @param from The first index position to swap.
- * @param to The second index position to swap.
- * @param clone Returns a swaped clone of the passed-in array.
  */
 
 function swap(ar) {
@@ -1016,8 +1082,10 @@ function swap(ar) {
 
 /**
  * The VEGAS.js framework - The core.arrays library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.arrays
+ * @memberof core
  */
 var arrays = Object.assign({
     contains: contains,
@@ -1043,7 +1111,12 @@ function caseValue(str) /*uint*/
 
 /**
  * Compares the two caracteres passed in argument for order.
- * @return <p>
+ * @name compare
+ * @memberof core.chars
+ * @function
+ * @param {string} charA - The first char to compare.
+ * @param {string} charB - The second char to compare.
+ * @return {number} <p>
  * <li>-1 if charA is "lower" than (less than, before, etc.) charB ;</li>
  * <li> 1 if charA is "higher" than (greater than, after, etc.) charB ;</li>
  * <li> 0 if charA and charB are equal.</li>
@@ -1069,10 +1142,13 @@ function compare(charA /*String*/, charB /*String*/) /*uint*/
 }
 
 /**
- * Indicates if the specified character is an alpha (A-Z or a-z) character.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is an alpha character.
+ * @name isAlpha
+ * @function
+ * @memberof core.chars
+ * @description Indicates if the specified character is an alpha (A-Z or a-z) character.
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return {boolean} True if the specified character is an alpha character.
  */
 
 function isAlpha(c /*String*/) /*Boolean*/
@@ -1087,14 +1163,22 @@ function isAlpha(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is an alpha (A-Z or a-z) or a digit character.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is an alpha or digit character.
+ * @name isAlphaOrDigit
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is an alpha or digit character.
+ * @example
+ * trace( isAlphaOrDigit( "Z" ) ) ; // true
+ * trace( isAlphaOrDigit( "a" ) ) ; // true
+ * trace( isAlphaOrDigit( "0" ) ) ; // true
+ * trace( isAlphaOrDigit( "9" ) ) ; // true
+ * trace( isAlphaOrDigit( "+" ) ) ; // false
  */
 
-function isAlphaOrDigit(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isAlphaOrDigit(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1104,9 +1188,16 @@ function isAlphaOrDigit(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is an ASCII character.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is a ASCII character.
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return {boolean} True if the specified character is a ASCII character.
+ * @memberof core.chars
+ * @name isASCII
+ * @function
+ * @example
+ * trace( isASCII( "Z" ) ) ; // true
+ * trace( isASCII( "a" ) ) ; // true
+ * trace( isASCII( "+" ) ) ; // true
  */
 
 function isASCII(c /*String*/) /*Boolean*/
@@ -1121,8 +1212,11 @@ function isASCII(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is a digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
+ * @name isContained
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} index - The optional index to evaluate a specific character in the passed-in expression.
  * @param charset The list of characters to evaluate.
  * @return True if the specified character is a digit.
  */
@@ -1148,9 +1242,17 @@ function isContained(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is a digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is a digit.
+ * @name isDigit
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return {boolean} True if the specified character is a digit.
+ * @example
+ * trace( isDigit( "Z" ) ) ; // false
+ * trace( isDigit( "+" ) ) ; // false
+ * trace( isDigit( "0" ) ) ; // true
+ * trace( isDigit( "9" ) ) ; // true
  */
 
 function isDigit(c /*String*/) /*Boolean*/
@@ -1165,14 +1267,25 @@ function isDigit(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the specified character is a hexadecimal digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is an hexadecimal digit.
+ * @name isHexDigit
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <true> if the specified character is an hexadecimal digit.
+ * @example
+ * trace( isHexDigit( "Z" ) ) ; // false
+ * trace( isHexDigit( "+" ) ) ; // false
+ * trace( isHexDigit( "0" ) ) ; // true
+ * trace( isHexDigit( "1" ) ) ; // true
+ * trace( isHexDigit( "2" ) ) ; // true
+ * trace( isHexDigit( "9" ) ) ; // true
+ * trace( isHexDigit( "A" ) ) ; // true
+ * trace( isHexDigit( "F" ) ) ; // true
  */
 
-function isHexDigit(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isHexDigit(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1181,20 +1294,18 @@ function isHexDigit(c /*String*/) /*Boolean*/
 }
 
 /**
- * Indicates if the specified character is a start identifier.
- * UnicodeLetter
- * $
- * _
- * or the \ unicode escape sequence.
- * @see ECMA-262 spec 7.6 (PDF p26/188)
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is an identifier start character.
+ * Indicates if the specified character is a start identifier : <strong>UnicodeLetter, $, _ or the \ unicode escape sequence.</strong>
+ * @name isIdentifierStart
+ * @memberof core.chars
+ * @function
+ * @see <a href="http://www.ecma-international.org/ecma-262/5.1/Ecma-262.pdf">ECMA-262 spec 7.6 (PDF)</a>
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is an identifier start character.
  */
 
-function isIdentifierStart(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isIdentifierStart(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1209,6 +1320,10 @@ function isIdentifierStart(c /*String*/) /*Boolean*/
  * A line terminator cannot occur within any token, not even a string.
  * Line terminators also affect the process of automatic semicolon insertion.
  * <p>ECMAScript specification.</p>
+ * @name lineTerminators
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 
 var lineTerminators = ["\n" /*LF : Line Feed*/
@@ -1218,18 +1333,21 @@ var lineTerminators = ["\n" /*LF : Line Feed*/
 ];
 
 /**
- * Indicates if the specified character is a line terminator.
- * <p>Note: line terminators</p>
- * <pre class="prettyprint">
- * "\n" - u000A - LF : Line Feed
- * "\r" - u000D - CR : Carriage Return
- * ???  - u2028 - LS : Line Separator
- * ???  - u2029 - PS : Paragraphe Separator
- * </pre>
- * @see ECMA-262 spec 7.3 (PDF p24/188)
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a line terminator defines in the core.chars.lineTerminators collection.
+ * @description Indicates if the specified character is a line terminator :
+ * * "\n" - u000A - LF : Line Feed
+ * * "\r" - u000D - CR : Carriage Return
+ * * ???  - u2028 - LS : Line Separator
+ * * ???  - u2029 - PS : Paragraphe Separator
+ * @name isLineTerminator
+ * @memberof core.chars
+ * @function
+ * @see <a href="http://www.ecma-international.org/ecma-262/5.1/Ecma-262.pdf">ECMA-262 spec 7.3 (PDF)</a>
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a line terminator defines in the core.chars.lineTerminators collection.
+ * @example
+ * trace( isLineTerminator( "h" ) ) ; // false
+ * trace( isLineTerminator( "\n" ) ) ; // true
  */
 function isLineTerminator(c /*String*/) /*Boolean*/
 {
@@ -1251,9 +1369,18 @@ function isLineTerminator(c /*String*/) /*Boolean*/
 
 /**
  * Indicates if the character is lowercase.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is lowercase.
+ * @name isLower
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is lowercase.
+ * @example
+ * trace( isLower( "a" ) ) ; // true
+ * trace( isLower( "A" ) ) ; // false
+ * trace( isLower( "-" ) ) ; // false
+ * trace( isLower( "#" ) ) ; // false
+ * trace( isLower( "1" ) ) ; // false
  */
 
 function isLower(c /*String*/) /*Boolean*/
@@ -1267,10 +1394,23 @@ function isLower(c /*String*/) /*Boolean*/
 }
 
 /**
- * Indicates if the specified character is an octal digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is an octal digit.
+ * Indicates if the specified character is an octal digit. The octal numeral system, or oct for short, is the <strong>base-8</strong> number system, and uses the digits <code>0</code> to <code>7</code>.
+ * @name isOctalDigit
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is an octal digit.
+ * @example
+ * var chars =
+ * [
+ *     "0" , "1" , "2" , "3" , "4" ,
+ *     "5" , "6" , "7" , "8" , "A" , "a" , "$"
+ * ] ;
+ * for( var i = 0 ; i<chars.length ; i++ )
+ * {
+ *     trace( chars[i] + " isOctalDigit " + isOctalDigit( chars[i] ) ) ;
+ * }
  */
 
 function isOctalDigit(c /*String*/) /*Boolean*/
@@ -1284,45 +1424,42 @@ function isOctalDigit(c /*String*/) /*Boolean*/
 }
 
 /**
- * Indicates if the passed-in string value is a operator digit.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a operator digit.
+ * The collection representation of all operators characters.
+ * @name operators
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 
-function isOperator(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+var operators = ["*", "/", "%", "+", "-", "«", "»", ">", "<", "›", "&", "^", "|"];
+
+/**
+ * Indicates if the passed-in string value is a operator digit.
+ * @name isOperator
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a operator digit.
+ * @example
+ * trace( isOperator( "a" ) ) ; // false
+ * trace( isOperator( "+" ) ) ; // true
+ */
+function isOperator(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
     }
-    switch (c) {
-        case "*":
-        case "/":
-        case "%":
-        case "+":
-        case "-":
-        case "«":
-        case "»":
-        case ">":
-        case "<":
-        case "›":
-        case "&":
-        case "^":
-        case "|":
-            {
-                return true;
-            }
-        default:
-            {
-                return false;
-            }
-    }
+    return operators.indexOf(c) > -1;
 }
 
 /**
  * The collection representation of all ASCII symbols characters.
+ * @name symbols
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 
 var symbols = [" ", // The "space" unicode character
@@ -1360,34 +1497,32 @@ var symbols = [" ", // The "space" unicode character
 "~"];
 
 /**
- * Indicates if the character is a ASCII symbol.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a symbol defines in the core.chars.symbols collection.
+ * Indicates if the character is an ASCII symbol.
+ * @name isSymbol
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a symbol defines in the core.chars.symbols collection.
  */
-function isSymbol(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isSymbol(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
     }
 
-    var l = symbols.length;
-    while (--l > -1) {
-        if (c === symbols[l]) {
-            return true;
-        }
-    }
-
-    return false;
+    return symbols.indexOf(c) > -1;
 }
 
 /**
- * Indicates if the specified character is a unicode character.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a unicode character.
+ * Indicates if the specified character is a unicode character (the charcode of the character must be > 255).
+ * @name isUnicode
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a unicode character.
  */
 
 function isUnicode(c /*String*/) /*Boolean*/
@@ -1401,10 +1536,21 @@ function isUnicode(c /*String*/) /*Boolean*/
 }
 
 /**
- * Indicates if the character is uppercase.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the specified character is lowercase.
+ * Indicates if the character is an uppercase letter.
+ * @name isUpper
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the specified character is lowercase.
+ * trace( isUpper( "A" ) ) ; // true
+ * trace( isUpper( "B" ) ) ; // true
+ * trace( isUpper( "Z" ) ) ; // true
+ * trace( isUpper( "a" ) ) ; // false
+ * trace( isUpper( "b" ) ) ; // false
+ * trace( isUpper( "-" ) ) ; // false
+ * trace( isUpper( "#" ) ) ; // false
+ * trace( isUpper( "1" ) ) ; // false
  */
 
 function isUpper(c /*String*/) /*Boolean*/
@@ -1421,7 +1567,6 @@ function isUpper(c /*String*/) /*Boolean*/
  * This collection contains all white space chars.
  * <p><b>Note :</b></p>
  * <ul>
- * <li><a href="http://developer.mozilla.org/es4/proposals/string.html">http://developer.mozilla.org/es4/proposals/string.html</a></li>
  * <li><a href="http://www.fileformat.info/info/unicode/category/Zs/list.htm">http://www.fileformat.info/info/unicode/category/Zs/list.htm</a></li>
  * <li><a href="http://www.fileformat.info/info/unicode/category/Zl/list.htm">http://www.fileformat.info/info/unicode/category/Zl/list.htm</a></li>
  * <li><a href="http://www.fileformat.info/info/unicode/category/Zp/list.htm">http://www.fileformat.info/info/unicode/category/Zp/list.htm</a></li>
@@ -1429,6 +1574,10 @@ function isUpper(c /*String*/) /*Boolean*/
  * <li><a href="http://www.fileformat.info/info/unicode/char/feff/index.htm">http://www.fileformat.info/info/unicode/char/feff/index.htm</a></li>
  * <li><a href="http://www.fileformat.info/info/unicode/char/2060/index.htm">http://www.fileformat.info/info/unicode/char/2060/index.htm</a></li>
  * </ul>
+ * @name whiteSpaces
+ * @memberof core.chars
+ * @const
+ * @type {Array}
  */
 
 var whiteSpaces = ["\t" /*Horizontal tab*/
@@ -1464,40 +1613,33 @@ var whiteSpaces = ["\t" /*Horizontal tab*/
 
 /**
  * Indicates if the character is white space.
- * @param c The expression to evaluate.
- * @param index The optional index to evaluate a specific character in the passed-in expression.
- * @return True if the passed-in string value is a white space defines in the core.chars.whiteSpaces collection.
+ * @name isWhiteSpace
+ * @memberof core.chars
+ * @function
+ * @param {string} c - The expression to evaluate.
+ * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
+ * @return <code>true</code> if the passed-in string value is a white space defines in the core.chars.whiteSpaces collection.
  * @example
- * <pre>
- * var isWhiteSpace = core.chars.isWhiteSpace ;
- *
  * trace( isWhiteSpace( '!' ) ) ;
  * trace( isWhiteSpace( ' ' ) ) ;
  * trace( isWhiteSpace( '\r' ) ) ;
- * </pre>
  */
-function isWhiteSpace(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isWhiteSpace(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
     }
 
-    var l = whiteSpaces.length;
-    while (--l > -1) {
-        if (c === whiteSpaces[l]) {
-            return true;
-        }
-    }
-
-    return false;
+    return whiteSpaces.indexOf(c) > -1;
 }
 
 /**
  * The VEGAS.js framework - The core.chars library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.chars
+ * @memberof core
  */
 var chars = Object.assign({
     compare: compare,
@@ -1517,18 +1659,22 @@ var chars = Object.assign({
     isUpper: isUpper,
     isWhiteSpace: isWhiteSpace,
     lineTerminators: lineTerminators,
+    operators: operators,
     symbols: symbols,
     whiteSpaces: whiteSpaces
 });
 
 /**
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
- * @return The value of the interpolated property at the specified time.
+ * @name backIn
+ * @memberof core.easings
+ * @function backIn
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [s=1.70158] - Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @return {number} The value of the interpolated property at the specified time.
  */
 
 var backIn = function backIn(t, b, c, d) {
@@ -1542,11 +1688,14 @@ var backIn = function backIn(t, b, c, d) {
 
 /**
  * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @name backInOut
+ * @memberof core.easings
+ * @function backInOut
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [s=1.70158] - Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1564,11 +1713,14 @@ var backInOut = function backInOut(t, b, c, d) {
 
 /**
  * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param s Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
+ * @name backOut
+ * @memberof core.easings
+ * @function backOut
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [s=1.70158] - Specifies the amount of overshoot, where the higher the value, the greater the overshoot.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1583,10 +1735,13 @@ var backOut = function backOut(t, b, c, d) {
 
 /**
  * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name bounceOut
+ * @function bounceOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1604,10 +1759,13 @@ var bounceOut = function bounceOut(t, b, c, d) {
 
 /**
  * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name bounceIn
+ * @function bounceIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 var bounceIn = function bounceIn(t, b, c, d) {
@@ -1616,10 +1774,13 @@ var bounceIn = function bounceIn(t, b, c, d) {
 
 /**
  * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name bounceInOut
+ * @function bounceInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 var bounceInOut = function bounceInOut(t, b, c, d) {
@@ -1628,10 +1789,13 @@ var bounceInOut = function bounceInOut(t, b, c, d) {
 
 /**
  * The <code>circularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name circularIn
+ * @function circularIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1641,10 +1805,13 @@ var circularIn = function circularIn(t, b, c, d) {
 
 /**
  * The <code>circularInOut</code> function combines the motion of the circularIn and circularOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name circularInOut
+ * @function circularInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1657,10 +1824,13 @@ var circularInOut = function circularInOut(t, b, c, d) {
 
 /**
  * The <code>circularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name circularOut
+ * @function circularOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1670,10 +1840,13 @@ var circularOut = function circularOut(t, b, c, d) {
 
 /**
  * The <code>cubicIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name cubicIn
+ * @function cubicIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1684,10 +1857,13 @@ var cubicIn = function cubicIn(t, b, c, d) {
 /**
  * The <code>cubicOut</code> function combines the motion of the <b>cubicIn</b> and <b>cubicOut</b> functions to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name cubicOut
+ * @function cubicOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1701,10 +1877,13 @@ var cubicInOut = function cubicInOut(t, b, c, d) {
 /**
  * The <code>cubicOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name cubicOut
+ * @function cubicOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1714,12 +1893,15 @@ var cubicOut = function cubicOut(t, b, c, d) {
 
 /**
  * The <code>elasticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
+ * @name elasticIn
+ * @function elasticIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [a=0] - Specifies the amplitude of the sine wave.
+ * @param {number} [p=0] - Specifies the period of the sine wave.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1753,12 +1935,15 @@ var elasticIn = function elasticIn(t, b, c, d) {
 
 /**
  * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
+ * @name elasticInOut
+ * @function elasticInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [a=0] - Specifies the amplitude of the sine wave.
+ * @param {number} [p=0] - Specifies the period of the sine wave.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1793,12 +1978,15 @@ var elasticInOut = function elasticInOut(t, b, c, d) {
 
 /**
  * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
- * @param a Specifies the amplitude of the sine wave.
- * @param p Specifies the period of the sine wave.
+ * @name elasticOut
+ * @function elasticOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
+ * @param {number} [a=0] - Specifies the amplitude of the sine wave.
+ * @param {number} [p=0] - Specifies the period of the sine wave.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1832,10 +2020,13 @@ var elasticOut = function elasticOut(t, b, c, d) {
 /**
  * The <code>expoIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name expoIn
+ * @function expoIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1844,12 +2035,15 @@ var expoIn = function expoIn(t, b, c, d) {
 };
 
 /**
- * The <code>expoOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
+ * The <code>expoInOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name expoInOut
+ * @function expoInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1869,10 +2063,13 @@ var expoInOut = function expoInOut(t, b, c, d) {
 /**
  * The <code>expoOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name expoOut
+ * @function expoOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1882,10 +2079,13 @@ var expoOut = function expoOut(t, b, c, d) {
 
 /**
  * The <code>linear</code> function starts a basic and linear motion.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name linear
+ * @function linear
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1896,10 +2096,13 @@ var linear = function linear(t, b, c, d) {
 /**
  * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quarticIn
+ * @function quarticIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1910,10 +2113,13 @@ var quarticIn = function quarticIn(t, b, c, d) {
 /**
  * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quarticInOut
+ * @function quarticInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1927,10 +2133,13 @@ var quarticInOut = function quarticInOut(t, b, c, d) {
 /**
  * The <code>quarticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quarticOut
+ * @function quarticOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1941,10 +2150,13 @@ var quarticOut = function quarticOut(t, b, c, d) {
 /**
  * The <code>quinticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quintic
+ * @function quintic
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1955,10 +2167,13 @@ var quinticIn = function quinticIn(t, b, c, d) {
 /**
  * The <code>quinticInOut</code> function combines the motion of the quinticIn() and quinticOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quinticInOut
+ * @function quintic
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1972,10 +2187,13 @@ var quinticInOut = function quinticInOut(t, b, c, d) {
 /**
  * The <code>quinticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name quinticOut
+ * @function quinticOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1985,10 +2203,13 @@ var quinticOut = function quinticOut(t, b, c, d) {
 
 /**
  * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name regularIn
+ * @function regularIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -1998,10 +2219,13 @@ var regularIn = function regularIn(t, b, c, d) {
 
 /**
  * The <code>regularInOut</code> function combines the motion of the regularIn() and regularOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name regularInOut
+ * @function regularInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -2014,10 +2238,13 @@ var regularInOut = function regularInOut(t, b, c, d) {
 
 /**
  * The <code>regularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name regularOut
+ * @function regularOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -2029,10 +2256,13 @@ var regularOut = function regularOut(t, b, c, d) {
  * The <code>sineIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name sineIn
+ * @function sineIn
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -2044,10 +2274,13 @@ var sineIn = function sineIn(t, b, c, d) {
  * The <code>sineInOut</code> function combines the motion of the sineIn() and sineOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name sineInOut
+ * @function sineInOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -2059,10 +2292,13 @@ var sineInOut = function sineInOut(t, b, c, d) {
  * The <code>sineOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
- * @param t Specifies the current time, between 0 and duration inclusive.
- * @param b Specifies the initial value of the animation property.
- * @param c Specifies the total change in the animation property.
- * @param d Specifies the duration of the motion.
+ * @name sineOut
+ * @function sineOut
+ * @memberof core.easings
+ * @param {number} t - Specifies the current time, between 0 and duration inclusive.
+ * @param {number} b - Specifies the initial value of the animation property.
+ * @param {number} c - Specifies the total change in the animation property.
+ * @param {number} d - Specifies the duration of the motion.
  * @return The value of the interpolated property at the specified time.
  */
 
@@ -2071,9 +2307,25 @@ var sineOut = function sineOut(t, b, c, d) {
 };
 
 /**
- * The VEGAS.js framework - The core.easings library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @description The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific tweening effects. These easings functions provide different flavors of math-based motion under a consistent API.
+ *
+ * |  easing   |                         description                         |  in  | out  | inout  |
+ * |:--------: |:----------------------------------------------------------: |:---: |:---: |:-----: |
+ * |  linear   | simple linear tweening : no easing, no acceleration         |  -   |  -   |   -    |
+ * |   back    | back easing : overshooting cubic easing: (s+1)*t^3 - s*t^2  | yes  | yes  |  yes   |
+ * |  bounce   | bounce easing : exponentially decaying parabolic bounce     | yes  | yes  |  yes   |
+ * | circular  | circular easing : sqrt(1-t^2)                               | yes  | yes  |  yes   |
+ * |   cubic   | cubic easing : t^3                                          | yes  | yes  |  yes   |
+ * |  elastic  | elastic easing : exponentially decaying sine wave           | yes  | yes  |  yes   |
+ * |   expo    | exponential easing : 2^t                                    | yes  | yes  |  yes   |
+ * |   quad    | quadratic easing : t^2                                      | yes  | yes  | yes    |
+ * |  quartic  | quartic easing : t^4                                        | yes  | yes  |  yes   |
+ * |  quintic  | quintic easing : t^5                                        | yes  | yes  |  yes   |
+ * |  regular  | regular easing                                              | yes  | yes  |  yes   |
+ * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @namespace core.easings
+ * @memberof core
  */
 var easings = Object.assign({
     backIn: backIn,
@@ -2111,8 +2363,10 @@ var easings = Object.assign({
 
 /**
  * Creates a Function who execute a specific function between two others.
+ * @name aop
+ * @memberof core.functors
+ * @function
  * @example
- * <pre><code>
  * var scope = { toString : function() { return "scope" ; } } ;
  *
  * var sum = function(x, y)
@@ -2134,11 +2388,10 @@ var easings = Object.assign({
  * var result = aop(sum, begin, end, scope)(3, 5) ;
  *
  * console.log( result ) ;
- * </code></pre>
- * @param func {Function} The function to invoke.
- * @param begin {Function} The function to invoke before the main function.
- * @param end {Function} The function to invoke after the main function.
- * @param scope {Object} The scope of the function to invoke after the main function.
+ * @param {Function} func - The function to invoke.
+ * @param {Function} begin - The function to invoke before the main function.
+ * @param {Function} end - The function to invoke after the main function.
+ * @param {Object} scope - The scope of the function to invoke after the main function.
  * @return {Function} The new function with the aop merging.
  */
 
@@ -2168,23 +2421,30 @@ var aop = function aop(func) {
 
 /**
  * The VEGAS.js framework - The core.arrays library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace core.functors
+ * @memberof core
  */
 var functors = Object.assign({
   aop: aop
 });
 
 /**
- * This constant change radians to degrees : <b>180/Math.PI</b>.
+ * This constant change radians to degrees : <code>180/Math.PI</code>.
+ * @name RAD2DEG
+ * @memberof core.maths
+ * @const
  */
 
 var RAD2DEG = 180 / Math.PI;
 
 /**
  * Returns the inverse cosine of a slope ratio and returns its angle in degrees.
- * @param ratio a value between -1 and 1 inclusive.
+ * @name acosD
+ * @memberof core.maths
+ * @function
+ * @param {number} ratio - A value between -1 and 1 inclusive.
  * @return the inverse cosine of a slope ratio and returns its angle in degrees.
  */
 var acosD = function acosD(ratio) {
@@ -2192,10 +2452,11 @@ var acosD = function acosD(ratio) {
 };
 
 /**
- * Anti-hyperbolic cosine.
- * <pre>
- * acoshm = ln(x-√(x^2-1))
- * </pre>
+ * Anti-hyperbolic cosine : <code>acoshm = ln(x-√(x^2-1))</code>
+ * @name acosHm
+ * @memberof core.maths
+ * @function
+ * @param {number} x - A value to calculate the Anti-hyperbolic cosine.
  */
 
 var acosHm = function acosHm(x) {
@@ -2207,18 +2468,24 @@ var acosHm = function acosHm(x) {
  * <pre>
  * acoshp = ln(x+√(x^2-1))
  * </pre>
+ * @name acosHp
+ * @memberof core.maths
+ * @function
  */
 
-var acosHp = function acosHp(x /*Number*/) {
+var acosHp = function acosHp(x) {
   return Math.log(x + Math.sqrt(x * x - 1));
 };
 
 /**
  * Returns the angle in degrees between 2 points with this coordinates passed in argument.
- * @param x1 the x coordinate of the first point.
- * @param y1 the y coordinate of the first point.
- * @param x2 the x coordinate of the second point.
- * @param y2 the y coordinate of the second point.
+ * @name angleOfLine
+ * @memberof core.maths
+ * @function
+ * @param {number} x1 - The x coordinate of the first point.
+ * @param {number} y1 - The y coordinate of the first point.
+ * @param {number} x2 - The x coordinate of the second point.
+ * @param {number} y2 - The y coordinate of the second point.
  * @return the angle in degrees between 2 points with this coordinates passed in argument.
  */
 var angleOfLine = function angleOfLine(x1, y1, x2, y2) {
@@ -2227,7 +2494,10 @@ var angleOfLine = function angleOfLine(x1, y1, x2, y2) {
 
 /**
  * Calculates the arcsine of the passed angle.
- * @param ratio a value between -1 and 1 inclusive.
+ * @name asinD
+ * @memberof core.maths
+ * @function
+ * @param {number} ratio - A value between -1 and 1 inclusive.
  * @return the arcsine of the passeds angle in degrees.
  */
 var asinD = function asinD(ratio) {
@@ -2236,6 +2506,9 @@ var asinD = function asinD(ratio) {
 
 /**
  * Anti-hyperbolic sine.
+ * @name asinH
+ * @memberof core.maths
+ * @function
  */
 
 var asinH = function asinH(x) {
@@ -2244,8 +2517,11 @@ var asinH = function asinH(x) {
 
 /**
  * Calculates the arctangent2 of the passed angle.
- * @param y a value representing y-axis of angle vector.
- * @param x a value representing x-axis of angle vector.
+ * @name atan2D
+ * @memberof core.maths
+ * @function
+ * @param {number} y - A value representing y-axis of angle vector.
+ * @param {number} x - A value representing x-axis of angle vector.
  * @return the arctangent2 of the passed angle.
  */
 var atan2D = function atan2D(y, x) {
@@ -2254,8 +2530,11 @@ var atan2D = function atan2D(y, x) {
 
 /**
  * Calculates the arctangent of the passed angle.
- * @param angle a real number
- * @return the arctangent of the passed angle, a number between -Math.PI/2 and Math.PI/2 inclusive.
+ * @name atanD
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - A real number
+ * @return the arctangent of the passed angle, a number between <code>-Math.PI/2</code> and <code>Math.PI/2</code> inclusive.
  */
 var atanD = function atanD(angle) {
   return Math.atan(angle) * RAD2DEG;
@@ -2263,34 +2542,41 @@ var atanD = function atanD(angle) {
 
 /**
  * Anti-hyperbolic tangent.
+ * @name atanH
+ * @memberof core.maths
+ * @function
+ * @param {number} x - A real number
+ * @return the Anti-hyperbolic tangent of the passed angle.
  */
 
-function atanH(x /*Number*/) /*Number*/
-{
+function atanH(x) {
   return Math.log((1 + x) / (1 - x)) / 2;
 }
 
 /**
- * This constant change degrees to radians : <b>Math.PI/180</b>.
+ * This constant change degrees to radians : <code>Math.PI/180</code>.
+ * @name DEG2RAD
+ * @memberof core.maths
+ * @const
  */
 
 var DEG2RAD = Math.PI / 180;
 
 /**
  * Calculates the initial bearing (sometimes referred to as forward azimuth) which if followed in a straight line along a great-circle arc will take you from the start point to the end point (in degrees).
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var bearing = core.maths.bearing ;
- *
+ * @name bearing
+ * @memberof core.maths
+ * @function
+ * @example
  * var position1 = { x : 37.422045 , y : -122.084347 } ; // Google HQ
  * var position2 = { x :  37.77493 , y : -122.419416 } ; // San Francisco, CA
  *
  * trace( bearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 323.1477743368166
  * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
  * @return The bearing in degrees from North.
  */
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
@@ -2307,8 +2593,10 @@ var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
 
 /**
  * Bounds a numeric value between 2 numbers.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name clamp
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  *
  * n = core.maths.clamp(4, 5, 10) ;
@@ -2322,10 +2610,9 @@ var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
  *
  * n = core.maths.clamp(NaN, 5, 10) ;
  * trace ("n : " + n) ; // NaN
- * </pre>
- * @param value the value to clamp.
- * @param min the min value of the range.
- * @param max the max value of the range.
+ * @param {number} value - The value to clamp.
+ * @param {number} min - The min value of the range.
+ * @param {number} max - The max value of the range.
  * @return a bound numeric value between 2 numbers.
  */
 
@@ -2344,13 +2631,14 @@ var clamp = function clamp(value, min, max) {
 
 /**
  * Short for 'boing-like interpolation', this method will first overshoot, then waver back and forth around the end value before coming to a rest.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name berp
+ * @memberof core.maths
+ * @function
+ * @example
  * trace( berp( 0 , 100 , 0.5 ) ;
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+ * @param {number} start - The begining value.
+ * @param {number} end - The ending value.
  * @return The interpolated value between two numbers at a specific increment.
  */
 var berp = function berp(amount, start, end) {
@@ -2364,13 +2652,13 @@ var berp = function berp(amount, start, end) {
 
 /**
  * Returns a value between 0 and 1 that can be used to easily make bouncing GUI items (a la OS X's Dock)
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * import core.maths.bounce ;
+ * @name bounce
+ * @memberof core.maths
+ * @function
+ * @example
  * trace( bounce( 0.5 ) ) ;
- * </pre>
- * @param amount The amount to bounce a value between 0 and 1.
- * @return a value between 0 and 1 that can be used to easily make bouncing GUI items (a la OS X's Dock)
+ * @param {number} amount - The amount to bounce a value between 0 and 1.
+ * @return a value between <code>0</code> and <code>1</code> that can be used to easily make bouncing GUI items (a la OS X's Dock)
  */
 
 var bounce = function bounce(amount) {
@@ -2379,8 +2667,11 @@ var bounce = function bounce(amount) {
 
 /**
  * Converts a vector in cartesian in a polar vector. Return a generic object with the properties angle and radius.
- * @param vector The cartesian vector to transform.
- * @param degrees Indicates if the angle attribute in the return polar object is in degrees or not (default this parameter is false).
+ * @name cartesianToPolar
+ * @memberof core.maths
+ * @function
+ * @param {graphics.geom.Vector2|graphics.geom.Point|Objectj} vector - The cartesian vector to transform.
+ * @param {boolean} degrees - Indicates if the angle attribute in the return polar object is in degrees or not (default this parameter is false).
  * @return a vector in cartesian in a polar vector.
  */
 var cartesianToPolar = function cartesianToPolar(vector, degrees) {
@@ -2390,28 +2681,25 @@ var cartesianToPolar = function cartesianToPolar(vector, degrees) {
 /**
  * Rounds and returns the ceiling of the specified number or expression.
  * The ceiling of a number is the closest integer that is greater than or equal to the number.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var n ;
- *
- * n = core.maths.ceil(4.572525153, 2) ;
- * trace ("n : " + n) ; // n : 4.58
- *
- * n = core.maths.ceil(4.572525153, -1) ;
- * trace ("n : " + n) ; // n : 5
- * </pre>
- * @param n the number to round.
- * @param floatCount the count of number after the point.
+ * @name ceil
+ * @memberof core.maths
+ * @function
+ * @example
+ * trace(ceil(4.572525153, 2)) ; 4.58
+ * trace(ceil(4.572525153, -1)) ; // 5
+ * @param {number} n - The number to round.
+ * @param {number} [floatCount=0] the count of number after the point.
  * @return the ceil value of a number by a count of floating points.
  */
 
-function ceil(n /*Number*/, floatCount /*Number*/) /*Number*/
-{
+function ceil(n) {
+    var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
     if (isNaN(n)) {
         return NaN;
     }
-    var r /*Number*/ = 1;
-    var i /*Number*/ = -1;
+    var r = 1;
+    var i = -1;
     while (++i < floatCount) {
         r *= 10;
     }
@@ -2422,13 +2710,14 @@ function ceil(n /*Number*/, floatCount /*Number*/) /*Number*/
  * Circular Lerp is like lerp but handles the wraparound from 0 to 360.
  * This is useful when interpolating eulerAngles and the object crosses the 0/360 boundary.
  * The standard Lerp function causes the object to rotate in the wrong direction and looks stupid, clerp() fixes that.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.clerp( 0 , 180 , 0.5 ) ; // 90
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name clerp
+ * @memberof core.maths
+ * @function
+ * @example
+ * trace( clerp( 0 , 180 , 0.5 ) ; // 90
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+ * @param {number} start - The begining value.
+ * @param {number} end - The ending value.
  * @return The interpolated value between two numbers at a specific increment.
  */
 
@@ -2447,7 +2736,10 @@ var clerp = function clerp(amount, start, end) {
 
 /**
  * Calculates the cosine of the passed angle.
- * @param angle a value representing angle in degrees.
+ * @name cosD
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - A value representing angle in degrees.
  * @return the cosine of the passed angle, a number between -1 and 1 inclusive.
  */
 var cosD = function cosD(angle) {
@@ -2456,13 +2748,14 @@ var cosD = function cosD(angle) {
 
 /**
  * Short for 'cosinusoidal interpolation', this method will interpolate while easing around the end, when value is near one.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.coserp( 0 , 100 , 0.5 ) ;
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name coserp
+ * @memberof core.maths
+ * @function
+ * @example
+ * trace( coserp( 0 , 100 , 0.5 ) ;
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
+ * @param {number} start - The begining value.
+ * @param {number} end - The ending value.
  * @return The interpolated value between two numbers at a specific increment.
  */
 
@@ -2476,6 +2769,10 @@ var coserp = function coserp(amount, start, end) {
 
 /**
  * Hyperbolic cosine.
+ * @name cosH
+ * @memberof core.maths
+ * @function
+ * @param {number} x - A value to calculate the Hyperbolic cosine.
  */
 
 var cosH = function cosH(x) {
@@ -2520,13 +2817,19 @@ function distanceByObject(p1 /*Object*/, p2 /*Object*/) /*Number*/
 }
 
 /**
- * This constant defines the radius of the earth in meter ( 6371 km ).
+ * This constant defines the radius of the earth in meter : <code>6371 km</code>.
+ * @name EARTH_RADIUS_IN_METERS
+ * @memberof core.maths
+ * @const
  */
 
 var EARTH_RADIUS_IN_METERS = 6371000;
 
 /**
  * Represents the smallest positive Single value greater than zero.
+ * @name EPSILON
+ * @memberof core.maths
+ * @const
  */
 
 var EPSILON = 0.000000001;
@@ -2757,6 +3060,9 @@ var isOdd = function isOdd(value) {
 * n->oo ( k=1 )
 * </pre>
 * </p>
+ * @name LAMBDA
+ * @memberof core.maths
+ * @const
 */
 
 var LAMBDA = 0.57721566490143;
@@ -2878,7 +3184,10 @@ var midPoint = function midPoint(latitude1, longitude1, latitude2, longitude2) {
 };
 
 /**
- * This constant change mile distance to meter : 1 mile = 1609 m.
+ * This constant change mile distance to meter : <code>1 mile = 1609 m</code>.
+ * @name MILE_TO_METER
+ * @memberof core.maths
+ * @const
  */
 
 var MILE_TO_METER = 1609;
@@ -3178,8 +3487,10 @@ function vincenty(latitude1, longitude1, latitude2, longitude2) /*Number*/
 
 /**
  * The VEGAS.js framework - The core.maths library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.maths
+ * @memberof core
  */
 var maths = Object.assign({
     acosD: acosD,
@@ -3245,8 +3556,10 @@ var maths = Object.assign({
 
 /**
  * The VEGAS.js framework - The core.numbers library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.numbers
+ * @memberof core
  */
 var numbers = Object.assign({
   toUnicodeNotation: toUnicodeNotation
@@ -3355,15 +3668,15 @@ function fuse(src /*Object*/, srcPos /*int*/, dest /*Object*/, destPos /*int*/, 
 
 /**
  * Returns all the public members of an object, either by key or by value.
- * @param o The target object to enumerate.
- * @param byValue The optional flag indicates if the function return an Array of strings (keys) or of values (default false).
- * <p><b>Example :</b></p>
- * <code class="prettyprint">
+ * @example
+ * <pre><code>
  * var o = { a : 5 , b : 6 } ;
  * trace( core.dump( core.objects.members( o ) ) ) ; // [a,b]
  * trace( core.dump( core.objects.members( o , true ) ) ) ; // [5,6]
- * </code>
- * @return Array containing all the string key names or values (if the byValue argument is true). The method returns null if no members are finding.
+ * </code></pre>
+ * @param {object} o The target object to enumerate.
+ * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
+ * @return {array} An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
  */
 
 function members(o /*Object*/, byValue /*Boolean*/) /*Array*/
@@ -3391,8 +3704,8 @@ function members(o /*Object*/, byValue /*Boolean*/) /*Array*/
  * @param target The target object to merge.
  * @param source The source object reference.
  * @param overwrite The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
- * <p><b>Example :</b></p>
- * <code class="prettyprint">
+ * @example
+ * <code>
  * var target = { a : 5 , b : 6 } ;
  * var from   = { a : 1 , b : 2 , c: 3 } ;
  * trace( core.dump( core.objects.merge( target , from ) ) ) ; // {a:1,b:2,c:3}
@@ -3421,8 +3734,10 @@ function merge(target /*Object*/, source /*Object*/, overwrite /*Boolean*/) /*Ob
 
 /**
  * The VEGAS.js framework - The core.objects library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.objects
+ * @memberof core
  */
 var objects = Object.assign({
   forEach: forEach,
@@ -3446,8 +3761,10 @@ function generateUUID() /*String*/
 
 /**
  * The VEGAS.js framework - The core.random library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.random
+ * @memberof core
  */
 var random = Object.assign({
   generateUUID: generateUUID
@@ -3621,8 +3938,10 @@ function invoke(c /*Function*/) {
 
 /**
  * The VEGAS.js framework - The core.reflect library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.reflect
+ * @memberof core
  */
 var reflect = Object.assign({
   getDefinitionByName: getDefinitionByName,
@@ -4489,8 +4808,10 @@ function ucWords(str /*String*/) /*String*/
 
 /**
  * The VEGAS.js framework - The core.strings library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.strings
+ * @memberof core
  */
 var strings = Object.assign({
     camelCase: camelCase,
@@ -4520,9 +4841,9 @@ var strings = Object.assign({
 
 /**
  * The VEGAS.js framework - The core library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace core
  */
 var core = Object.assign({
     global: exports.global,
@@ -4548,11 +4869,14 @@ var core = Object.assign({
 
 /**
  * This class determinates a basic implementation to creates enumeration objects.
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
+ * @param {number} value The value of the enumeration.
+ * @param {string} name The name key of the enumeration.
+ * @name Enum
+ * @memberof system
+ * @class
  */
 
-function Enum(value /*int*/, name /*String*/) {
+function Enum(value, name) {
     Object.defineProperties(this, {
         _name: {
             value: typeof name === "string" || name instanceof String ? name : "",
@@ -4569,15 +4893,14 @@ function Enum(value /*int*/, name /*String*/) {
     });
 }
 
-/**
- * @extends Object
- */
 Enum.prototype = Object.create(Object.prototype);
 Enum.prototype.constructor = Enum;
 
 /**
  * Compares the specified object with this object for equality.
  * @return <code>true</code> if the the specified object is equal with this object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.equals = function (object) /*Boolean*/
 {
@@ -4595,6 +4918,8 @@ Enum.prototype.equals = function (object) /*Boolean*/
 /**
  * Returns the String representation of the object.
  * @return the String representation of the object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.toString = function () /*String*/
 {
@@ -4604,6 +4929,8 @@ Enum.prototype.toString = function () /*String*/
 /**
  * Returns the primitive value of the object.
  * @return the primitive value of the object.
+ * @memberof system.Enum
+ * @instance
  */
 Enum.prototype.valueOf = function () {
     return this._value;
@@ -4612,6 +4939,8 @@ Enum.prototype.valueOf = function () {
 /*jshint unused: false*/
 /**
  * Indicates if the specific objet is Equatable.
+ * @function
+ * @memberof system
  */
 
 function isEquatable(target) {
@@ -4624,30 +4953,32 @@ function isEquatable(target) {
 
 /**
  * This interface is implemented by classes that can compare an object with their objects.
+ * @name Equatable
+ * @memberof system
+ * @interface
  */
 function Equatable() {}
 
-/**
- * @extends Object
- */
 Equatable.prototype = Object.create(Object.prototype);
 Equatable.prototype.constructor = Equatable;
 
 /**
  * Compares the specified object with this object for equality.
- * @return true if the the specified object is equal with this object.
+ * @memberof system.Equatable
+ * @param {*} object - The object to evaluates.
+ * @return {boolean} true if the the specified object is equal with this object.
  */
-Equatable.prototype.equals = function (o) /*Boolean*/
+Equatable.prototype.equals = function (object) /*Boolean*/
 {}
 //
 
 
 /**
  * Returns the string representation of this instance.
+ * @memberof system.Equatable
  * @return the string representation of this instance.
  */
-;Equatable.prototype.toString = function () /*String*/
-{
+;Equatable.prototype.toString = function () {
   return "[Equatable]";
 };
 
@@ -5644,8 +5975,10 @@ ArrayMap.prototype.values = function () /*Array*/
 
 /**
  * The VEGAS.js framework - The system.data library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.data
+ * @memberof system
  */
 var data = Object.assign({
     // singletons
@@ -5784,15 +6117,17 @@ NoSuchElementError.prototype.constructor = NoSuchElementError;
 
 /**
  * The VEGAS.js framework - The system.errors library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.errors
+ * @memberof system
  */
 var errors = Object.assign({
-    ConcurrencyError: ConcurrencyError,
-    InvalidChannelError: InvalidChannelError,
-    InvalidFilterError: InvalidFilterError,
-    NonUniqueKeyError: NonUniqueKeyError,
-    NoSuchElementError: NoSuchElementError
+  ConcurrencyError: ConcurrencyError,
+  InvalidChannelError: InvalidChannelError,
+  InvalidFilterError: InvalidFilterError,
+  NonUniqueKeyError: NonUniqueKeyError,
+  NoSuchElementError: NoSuchElementError
 });
 
 /**
@@ -6344,8 +6679,10 @@ RomanEvaluator.prototype.toString = function () /*String*/
 
 /**
  * The VEGAS.js framework - The system.evaluators library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.evaluators
+ * @memberof system
  */
 var evaluators = Object.assign({
   MultiEvaluator: MultiEvaluator,
@@ -6568,8 +6905,10 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
 
 /**
  * The VEGAS.js framework - The system.formatters library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.formatters
+ * @memberof system
  */
 var formatters = Object.assign({
   ExpressionFormatter: ExpressionFormatter
@@ -6577,26 +6916,28 @@ var formatters = Object.assign({
 
 /**
  * The <code>Receiver</code> interface is the primary method for receiving values from Signal objects.
- * @constructor
+ * @name Receiver
+ * @interface
+ * @memberof system.signals
  */
 
 function Receiver() {}
 
-/**
- * @extends Object
- */
 Receiver.prototype = Object.create(Object.prototype);
 Receiver.prototype.constructor = Receiver;
 
 /**
  * This method is called when the receiver is connected with a Signal object.
- * @param ...values All the values emitting by the signals connected with this object.
+ * @memberof system.signals.Receiver
+ * @function
  */
 Receiver.prototype.receive = function () {};
 
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.signals.Receiver
+ * @function
  */
 Receiver.prototype.toString = function () /*String*/
 {
@@ -6605,17 +6946,19 @@ Receiver.prototype.toString = function () /*String*/
 
 /*jslint unused: false */
 /**
- * The <code class="prettyprint">Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * The <code>Signaler</code> interface is the primary method for emit messages.
+ * @name Signaler
+ * @interface
+ * @memberof system.signals
  */
 
 function Signaler() {}
 
-/**
- * @extends Object
- */
 Signaler.prototype = Object.create(Object.prototype, {
     /**
      * Indicates the number of receivers connected.
+     * @memberof system.signals.Signaler
+     * @readonly
      */
     length: {
         get: function get() {
@@ -6628,19 +6971,24 @@ Signaler.prototype.constructor = Signaler;
 
 /**
  * Connects a Function or a Receiver object.
- * @param receiver The receiver to connect : a Function reference or a Receiver object.
- * @param priority Determinates the priority level of the receiver.
- * @param autoDisconnect Apply a disconnect after the first trigger
+ * @param {Function|system.signals.Receiver} receiver - The receiver to connect : a Function reference or a Receiver object.
+ * @param {number} [priority=0] Determinates the priority level of the receiver.
+ * @param {boolean} [autoDisconnect=false] Apply a disconnect after the first trigger
  * @return <code>true</code> If the receiver is connected with the signal emitter.
+ * @memberof system.signals.Signaler
  */
-Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*uint*/
-{}
+Signaler.prototype.connect = function (receiver) /*uint*/
+{
+    var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+}
 //
 
 
 /**
  * Returns <code>true</code> if one or more receivers are connected.
- * @return <code>true</code> if one or more receivers are connected.
+ * @memberof system.signals.Signaler
+ * @return {boolean} <code>true</code> if one or more receivers are connected.
  */
 ;Signaler.prototype.connected = function () /*Boolean*/
 {}
@@ -6649,7 +6997,8 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
 
 /**
  * Disconnect the specified object or all objects if the parameter is null.
- * @return <code>true</code> if the specified receiver exist and can be unregister.
+ * @return {boolean} <code>true</code> if the specified receiver exist and can be disconnected.
+ * @memberof system.signals.Signaler
  */
 ;Signaler.prototype.disconnect = function (receiver) /*Boolean*/
 {}
@@ -6658,7 +7007,8 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
 
 /**
  * Emit the specified values to the receivers.
- * @param ...values All values to emit to the receivers.
+ * @param {*} [values] All values to emit to the receivers.
+ * @memberof system.signals.Signaler
  */
 ;Signaler.prototype.emit = function () /*void*/
 {}
@@ -6666,16 +7016,9 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
 
 
 /**
- * Indicates the number of receivers connected.
- */
-;Signaler.prototype.getLength = function () /*uint*/
-{}
-//
-
-
-/**
  * Returns <code class="prettyprint">true</code> if the specified receiver is connected.
  * @return <code class="prettyprint">true</code> if the specified receiver is connected.
+ * @memberof system.signals.Signaler
  */
 ;Signaler.prototype.hasReceiver = function (receiver) /*Boolean*/
 {
@@ -6684,39 +7027,57 @@ Signaler.prototype.connect = function (receiver, priority /*uint*/, autoDisconne
 
 /**
  * A SignalEntry object contains all informations about a receiver entry in a Signal collection.
- * @param receiver The receiver reference.
- * @param priority The priority value of the entry.
- * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ * @name SignalEntry
+ * @memberof system.signals
+ * @class
+ * @constructs
+ * @param {system.signals.Receiver|Function} receiver The receiver to connect : a Function reference or a Receiver object.
+ * @param {number} [priority=0] The priority value of the entry.
+ * @param {boolean} [auto=false] This flag indicates if the receiver must be disconnected when handle the first time a signal.
  */
 
-function SignalEntry(receiver, priority /*uint*/, auto /*Boolean*/) {
+function SignalEntry(receiver) {
+  var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
   /**
    * Indicates if the receiver must be disconnected when handle the first time a signal.
+   * @memberof system.signals.SignalEntry
+   * @default false
+   * @type {boolean}
+   * @instance
    */
   this.auto = Boolean(auto);
 
   /**
    * The receiver reference of this entry.
+   * @memberof system.signals.SignalEntry
+   * @default null
+   * @type {system.signals.Receiver|Function}
+   * @instance
    */
   this.receiver = receiver || null;
 
   /**
    * Determinates the priority value of the object.
+   * @memberof system.signals.SignalEntry
+   * @default 0
+   * @type {number}
+   * @instance
    */
   this.priority = priority > 0 ? Math.ceil(priority) : 0;
 }
 
-///////////////////
-
-/**
- * @extends Object
- */
 SignalEntry.prototype = Object.create(Object.prototype);
 SignalEntry.prototype.constructor = SignalEntry;
 
 /**
  * Returns the String representation of the object.
+ * @name toString
+ * @memberof system.signals.SignalEntry
  * @return the String representation of the object.
+ * @function
+ * @instance
  */
 SignalEntry.prototype.toString = function () /*String*/
 {
@@ -6725,9 +7086,11 @@ SignalEntry.prototype.toString = function () /*String*/
 
 /**
  * Creates a new Signal instance.
- * @constructor
+ * @name Signal
+ * @class
+ * @implements system.signals.Signaler
+ * @memberof system.signals
  * @example
- * <pre>
  * function Slot( name )
  * {
  *     this.name = name ;
@@ -6761,12 +7124,15 @@ SignalEntry.prototype.toString = function () /*String*/
  * signal.connect( slot2 , 2 ) ;
  *
  * signal.emit( "hello world" ) ;
- * </pre>
  */
 function Signal() {
     Object.defineProperties(this, {
         /**
          * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+         * @memberof system.signals.Signal
+         * @default null
+         * @type {Object}
+         * @instance
          */
         proxy: { value: null, configurable: true, writable: true },
 
@@ -6777,9 +7143,6 @@ function Signal() {
     });
 }
 
-/**
- * @extends Signaler
- */
 Signal.prototype = Object.create(Signaler.prototype, {
     /**
      * The constructor reference of the object.
@@ -6788,6 +7151,11 @@ Signal.prototype = Object.create(Signaler.prototype, {
 
     /**
      * The number of receivers or slots register in the signal object.
+     * @memberof system.signals.Signal
+     * @default 0
+     * @type {number}
+     * @instance
+     * @readonly
      */
     length: { get: function get() {
             return this.receivers.length;
@@ -6795,13 +7163,19 @@ Signal.prototype = Object.create(Signaler.prototype, {
 
     /**
      * Connects a Function or a Receiver object.
-     * @param receiver The receiver to connect : a Function reference or a Receiver object.
-     * @param priority Determinates the priority level of the receiver.
-     * @param autoDisconnect Apply a disconnect after the first trigger
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
+     * @param {system.signals.Receiver|Function} receiver The receiver to connect : a Function reference or a Receiver object.
+     * @param {number} [priority=0] Determinates the priority level of the receiver.
+     * @param {boolean} [autoDisconnect=false] Apply a disconnect after the first trigger
      * @return {boolean} <code>true</code> If the receiver is connected with the signal emitter.
      */
-    connect: { value: function value(receiver, priority /*uint*/, autoDisconnect /*Boolean*/) /*Boolean*/
+    connect: { value: function value(receiver) /*Boolean*/
         {
+            var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
             if (receiver === null) {
                 return false;
             }
@@ -6856,15 +7230,22 @@ Signal.prototype = Object.create(Signaler.prototype, {
     /**
      * Returns <code>true</code> if one or more receivers are connected.
      * @return {boolean} <code>true</code> if one or more receivers are connected.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
-    connected: { value: function value() /*Boolean*/
-        {
+    connected: { value: function value() {
             return this.receivers.length > 0;
         } },
 
     /**
      * Disconnect the specified object or all objects if the parameter is null.
+     *
      * @return {boolean} <code>true</code> if the specified receiver exist and can be unregister.
+     * @param {system.signals.Receiver|Function} receiver The receiver to disconnect : a Function reference or a Receiver object.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     disconnect: { value: function value(receiver) {
             if (receiver === null) {
@@ -6890,8 +7271,11 @@ Signal.prototype = Object.create(Signaler.prototype, {
     /**
      * Emit the specified values to the receivers.
      * @param ...values All values to emit to the receivers.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
-    emit: { value: function value() /*Arguments*/ /*void*/
+    emit: { value: function value() /*Arguments*/ // FIXME use ...values
         {
             var values = Object.setPrototypeOf(arguments, Array.prototype);
 
@@ -6937,6 +7321,9 @@ Signal.prototype = Object.create(Signaler.prototype, {
     /**
      * Returns <code>true</code> if the specified receiver is connected.
      * @return {boolean} <code>true</code> if the specified receiver is connected.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     hasReceiver: { value: function value(receiver) /*Boolean*/
         {
@@ -6956,7 +7343,10 @@ Signal.prototype = Object.create(Signaler.prototype, {
 
     /**
      * Returns the Array representation of all receivers connected with the signal.
-     * @return {array} the Array representation of all receivers connected with the signal.
+     * @return {array} The Array representation of all receivers connected with the signal.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     toArray: { value: function value() /*Array*/
         {
@@ -6973,6 +7363,9 @@ Signal.prototype = Object.create(Signaler.prototype, {
     /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
+     * @memberof system.signals.Signal
+     * @instance
+     * @function
      */
     toString: { value: function value() {
             return '[Signal]';
@@ -11626,8 +12019,10 @@ Parameters.prototype = Object.create(Object.prototype, {
 
 /**
  * The VEGAS.js framework - The system.errors library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.ioc
+ * @memberof system
  */
 var ioc = Object.assign({
     // singleton
@@ -12085,8 +12480,10 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
 
 /**
  * The VEGAS.js framework - The system.logging library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logging
+ * @memberof system
  */
 var logging = Object.assign({
     isLoggable: isLoggable,
@@ -13306,8 +13703,10 @@ IfZero.prototype.toString = function () {
 
 /**
  * The VEGAS.js framework - The system.logics library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logics
+ * @memberof system
  */
 var logics = Object.assign({
     ElseIf: ElseIf,
@@ -14515,8 +14914,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
 /**
  * The VEGAS.js framework - The system.models library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.models
+ * @memberof system
  */
 var models = Object.assign({
     // classes
@@ -14881,8 +15282,10 @@ Range.prototype.toString = function () /*String*/
 
 /**
  * The VEGAS.js framework - The system.numeric library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.numeric
+ * @memberof system
  */
 var numeric = Object.assign({
   PRNG: PRNG,
@@ -15289,8 +15692,10 @@ function TaskGroup(mode /*String*/, actions /*Array*/) {
 
         /**
          * @private
-        _next : { value : null , writable : true , configurable : true },
-         /**
+         */
+        _next: { value: null, writable: true, configurable: true },
+
+        /**
          * @private
          */
         _stopped: { value: false, writable: true },
@@ -17240,8 +17645,10 @@ Unlock.prototype.toString = function () /*String*/
 
 /**
  * The VEGAS.js framework - The system.process library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.process
+ * @memberof system
  */
 var process = Object.assign({
     isLockable: isLockable,
@@ -18147,8 +18554,10 @@ Or.prototype.toString = function () /*String*/
 
 /**
  * The VEGAS.js framework - The system.rules library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.rules
+ * @memberof system
  */
 var rules = Object.assign({
     // singletons
@@ -18201,15 +18610,51 @@ var strings$2 = Object.defineProperties({}, {
 
 /**
  * The VEGAS.js framework - The system.signals library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.signals
+ * @memberof system
+ * @example
+ * function Slot( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Slot.prototype = Object.create( system.signals.Receiver.prototype );
+ * Slot.prototype.constructor = Slot;
+ *
+ * Slot.prototype.receive = function ( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * Slot.prototype.toString = function ()
+ * {
+ *     return "[Slot name:" + this.name + "]" ;
+ * }
+ *
+ * var slot1 = new Slot("slot1") ;
+ *
+ * var slot2 = function( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * var signal = new system.signals.Signal() ;
+ *
+ * //signal.proxy = slot1 ;
+ *
+ * signal.connect( slot1 , 0 ) ;
+ * signal.connect( slot2 , 2 ) ;
+ *
+ * signal.emit( "hello world" ) ;
  */
 var signals = Object.assign({
-    strings: strings$2,
-    Receiver: Receiver,
-    SignalEntry: SignalEntry,
-    Signaler: Signaler,
-    Signal: Signal
+  strings: strings$2,
+  Receiver: Receiver,
+  SignalEntry: SignalEntry,
+  Signaler: Signaler,
+  Signal: Signal
 });
 
 /**
@@ -18890,6 +19335,8 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
  * The VEGAS.js framework - The system.transitions library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.transitions
+ * @memberof system
  */
 var transitions = Object.assign({
   Motion: Motion,
@@ -18900,9 +19347,9 @@ var transitions = Object.assign({
 
 /**
  * The VEGAS.js framework - The system library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace system
  */
 var system = Object.assign({
     // interfaces
@@ -18977,100 +19424,140 @@ Directionable.prototype.toString = function () /*String*/
 /*jshint bitwise: false*/
 /**
  * The Align enumeration class provides constant values to align displays or components.
+ * @name Align
+ * @namespace graphics.Align
+ * @memberof graphics
  */
 
 var Align = Object.defineProperties({}, {
     /**
      * Defines the NONE value (0).
+     * @memberof graphics.Align
+     * @static
+     * @type {number}
+     * @default 0
      */
     NONE: { enumerable: true, value: 0 },
 
     /**
      * Defines the CENTER value (1).
+     * @memberof graphics.Align
+     * @default 1
      */
     CENTER: { enumerable: true, value: 1 },
 
     /**
      * Defines the LEFT value (2).
+     * @memberof graphics.Align
+     * @default 2
      */
     LEFT: { enumerable: true, value: 2 },
 
     /**
      * Defines the RIGHT value (4).
+     * @memberof graphics.Align
+     * @default 4
      */
     RIGHT: { enumerable: true, value: 4 },
 
     /**
      * Defines the TOP value (8).
+     * @memberof graphics.Align
+     * @property {object} TOP
+     * @default 8
      */
     TOP: { enumerable: true, value: 8 },
 
     /**
      * Defines the BOTTOM value (16).
+     * @memberof graphics.Align
+     * @default 16
      */
     BOTTOM: { enumerable: true, value: 16 },
 
     /**
      * Defines the REVERSE value (32).
+     * @memberof graphics.Align
+     * @default 32
      */
     REVERSE: { enumerable: true, value: 32 },
 
     /**
      * Defines the BOTTOM_LEFT value (18).
+     * @memberof graphics.Align
+     * @default graphics.Align.BOTTOM | graphics.Align.LEFT
      */
     BOTTOM_LEFT: { enumerable: true, value: 16 | 2 },
 
     /**
      * Defines the BOTTOM_RIGHT value (20).
+     * @memberof graphics.Align
+     * @default graphics.Align.BOTTOM | graphics.Align.RIGHT
      */
     BOTTOM_RIGHT: { enumerable: true, value: 16 | 4 },
 
     /**
      * Defines the CENTER_LEFT value (3).
+     * @memberof graphics.Align
+     * @default graphics.Align.CENTER | graphics.Align.LEFT
      */
     CENTER_LEFT: { enumerable: true, value: 1 | 2 },
 
     /**
      * Defines the CENTER_RIGHT value (5).
+     * @memberof graphics.Align
+     * @default graphics.Align.CENTER | graphics.Align.RIGHT
      */
     CENTER_RIGHT: { enumerable: true, value: 1 | 4 },
 
     /**
      * Defines the TOP_LEFT value (10).
+     * @memberof graphics.Align
+     * @default graphics.Align.TOP | graphics.Align.LEFT
      */
     TOP_LEFT: { enumerable: true, value: 8 | 2 },
 
     /**
      * Defines the TOP_RIGHT value (12).
+     * @memberof graphics.Align
+     * @default graphics.Align.TOP | graphics.Align.RIGHT
      */
     TOP_RIGHT: { enumerable: true, value: 8 | 4 },
 
     /**
      * Defines the LEFT_BOTTOM value (50).
+     * @memberof graphics.Align
+     * @default graphics.Align.LEFT | graphics.Align.BOTTOM
      */
     LEFT_BOTTOM: { enumerable: true, value: 16 | 2 | 32 },
 
     /**
      * Defines the RIGHT_BOTTOM value (52).
+     * @memberof graphics.Align
+     * @default graphics.Align.RIGHT | graphics.Align.BOTTOM
      */
     RIGHT_BOTTOM: { enumerable: true, value: 16 | 4 | 32 },
 
     /**
      * Defines the LEFT_TOP value (42).
+     * @memberof graphics.Align
+     * @default graphics.Align.LEFT | graphics.Align.TOP
      */
     LEFT_TOP: { enumerable: true, value: 8 | 2 | 32 },
 
     /**
      * Defines the RIGHT_TOP value (44).
+     * @memberof graphics.Align
+     * @default graphics.Align.RIGHT | graphics.Align.TOP
      */
     RIGHT_TOP: { enumerable: true, value: 8 | 4 | 32 },
 
     /**
      * Converts a string value in this Align value. If the String value isn't valid the Align.CENTER value is return.
+     * @memberof graphics.Align
+     * @function
      * @example
-     * <pre>
      * trace( Align.toNumber("l") == Align.LEFT ) ; // true
-     * </pre>
      */
     toNumber: { value: function value(str) {
             var none = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -19084,16 +19571,17 @@ var Align = Object.defineProperties({}, {
 
     /**
      * Returns the string representation of the specified Align value passed in argument.
+     * @memberof graphics.Align
+     * @function
+     * @param {number} value - The valid numeric value to convert in a string expression.
+     * @return the string representation of the specified Align value passed in argument.
      * @example
-     * <pre>
      * trace( Align.toString(Align.LEFT)) ; // "l"
      * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
      * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
-     * </pre>
-     * @return the string representation of the specified Align value passed in argument.
      */
-    toString: { value: function value(n) {
-            switch (n) {
+    toString: { value: function value(_value) {
+            switch (_value) {
                 case Align.NONE:
                     return "none";
                 case Align.BOTTOM:
@@ -19132,16 +19620,30 @@ var Align = Object.defineProperties({}, {
         } },
 
     /**
-     * Returns <code class="prettyprint">true</code> if the specified Align value in argument is a valid Align value else returns <code class="prettyprint">false</code>.
-     * @return <code class="prettyprint">true</code> if the specified Align value in argument is a valid Align value else returns <code class="prettyprint">false</code>.
+     * Returns <code>true</code> if the specified Align value in argument is a valid Align value else returns <code>false</code>.
+     * @memberof graphics.Align
+     * @function
+     * @example
+     * trace( Align.validate(Align.LEFT)) ; // true
+     * trace( Align.toString(1000)) ; // false
+     * @param {number} value - The numeric value to validate.
+     * @return <code>true</code> if the specified Align value in argument is a valid Align value else returns <code>false</code>.
      */
-    validate: { value: function value(_value) {
-            return Align.alignments.indexOf(_value) > -1;
+    validate: { value: function value(_value2) {
+            return Align.alignments.indexOf(_value2) > -1;
         } }
 });
 
+/**
+ * Defines the alignments collection of all valid aligment elements.
+ * @memberof graphics.Align
+ */
 Object.defineProperty(Align, 'alignments', { value: [Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.CENTER, Align.CENTER_LEFT, Align.CENTER_RIGHT, Align.LEFT, Align.LEFT_BOTTOM, Align.LEFT_TOP, Align.RIGHT, Align.RIGHT_BOTTOM, Align.RIGHT_TOP, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT, Align.NONE] });
 
+/**
+ * Defines the key/value map to register all aligments by name (string).
+ * @memberof graphics.Align
+ */
 Object.defineProperty(Align, 'stringToNumber', { value: {
         "b": Align.BOTTOM,
         "bl": Align.BOTTOM_LEFT,
@@ -19163,21 +19665,36 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
 
 /**
  * This static singleton to enumerates all types used to draw an Arc.
+ * @name ArcType
+ * @namespace graphics.ArcType
+ * @memberof graphics
  */
 
 var ArcType = Object.defineProperties({}, {
   /**
    * The 'chord' type.
+   * @memberof graphics.ArcType
+   * @static
+   * @type {string}
+   * @default 'chord'
    */
   CHORD: { enumerable: true, value: 'chord' },
 
   /**
    * The 'none' type.
+   * @memberof graphics.ArcType
+   * @static
+   * @type {string}
+   * @default 'none'
    */
   NONE: { enumerable: true, value: 'none' },
 
   /**
    * The 'pie' type.
+   * @memberof graphics.ArcType
+   * @static
+   * @type {string}
+   * @default 'pie'
    */
   PIE: { enumerable: true, value: 'pie' }
 });
@@ -19321,6 +19838,13 @@ Border.prototype = Object.create(Object.prototype, {
 /**
  * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
+ * @name CardinalDirection
+ * @memberof graphics
+ * @extends Object
+ * @class
+ * @param {number} [value=0] - The numeric value who define the direction.
+ * @param {string} [name] - The name of the direction.
+ * @param {number} [azimut=0] - The azimut angle.
  */
 
 function CardinalDirection() {
@@ -19333,17 +19857,25 @@ function CardinalDirection() {
          * @private
          */
         _value: { value: value, writable: true },
+
+        /**
+         * @private
+         */
         _name: { value: name, writable: true },
+
+        /**
+         * @private
+         */
         _azimut: { value: azimut, writable: true }
     });
 }
 
-/**
- * @extends Object
- */
 CardinalDirection.prototype = Object.create(Object.prototype, {
     /**
      * Indicates the angular measurement in a spherical coordinate system (in degrees).
+     * @memberof graphics.CardinalDirection
+     * @type {number}
+     * @instance
      */
     azimut: { value: function value() {
             return this._azimut;
@@ -19351,7 +19883,9 @@ CardinalDirection.prototype = Object.create(Object.prototype, {
 
     /**
      * Returns the String representation of the object.
-     * @return the String representation of the object.
+     * @memberof graphics.CardinalDirection
+     * @return {string} The String representation of the object.
+     * @instance
      */
     toString: { value: function value() {
             return this._name;
@@ -19360,6 +19894,7 @@ CardinalDirection.prototype = Object.create(Object.prototype, {
     /**
      * Returns the value of the object.
      * @return the value of the object.
+     * @instance
      */
     valueOf: { value: function value() {
             return this._value;
@@ -19369,81 +19904,97 @@ CardinalDirection.prototype = Object.create(Object.prototype, {
 Object.defineProperties(CardinalDirection, {
     /**
      * This represents the value to set all the sides of the Rectangle (30).
+     * @memberof graphics.CardinalDirection
      */
     E: { enumerable: true, value: new CardinalDirection(Math.PI / 2, "E", 90) },
 
     /**
      * The East-North-East cardinal point "ENE" : Azimut:67.5° Radians:3π/8
+     * @memberof graphics.CardinalDirection
      */
     ENE: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 8, "ENE", 67.5) },
 
     /**
      * The East-South-East cardinal point "ESE" : Azimut:112,5° Radians:5π/8
+     * @memberof graphics.CardinalDirection
      */
     ESE: { enumerable: true, value: new CardinalDirection(5 * Math.PI / 8, "ESE", 112.5) },
 
     /**
      * The North cardinal point "N" : Azimut:0° Radians:0
+     * @memberof graphics.CardinalDirection
      */
     N: { enumerable: true, value: new CardinalDirection(0, "N", 0) },
 
     /**
      * The North-East cardinal point "NE" : Azimut:45° Radians:π/4
+     * @memberof graphics.CardinalDirection
      */
     NE: { enumerable: true, value: new CardinalDirection(Math.PI / 4, "NE", 45) },
 
     /**
      * The North-North-East cardinal point "NNE" : Azimut:22.5° Radians:π/8
+     * @memberof graphics.CardinalDirection
      */
     NNE: { enumerable: true, value: new CardinalDirection(Math.PI / 8, "NNE", 22.5) },
 
     /**
      * The North-North-West cardinal point "NNW" : Azimut:337.5° Radians:15π/8
+     * @memberof graphics.CardinalDirection
      */
     NNW: { enumerable: true, value: new CardinalDirection(15 * Math.PI / 8, "NNW", 337.5) },
 
     /**
      * The North-West cardinal point "NW" : Azimut:315° Radians:7π/4
+     * @memberof graphics.CardinalDirection
      */
     NW: { enumerable: true, value: new CardinalDirection(7 * Math.PI / 4, "NW", 315) },
 
     /**
      * The South cardinal point "S" : Azimut:180° Radians:π
+     * @memberof graphics.CardinalDirection
      */
     S: { enumerable: true, value: new CardinalDirection(Math.PI, "S", 180) },
 
     /**
      * The South-East cardinal point "SE" : Azimut:135° Radians:3π/4
+     * @memberof graphics.CardinalDirection
      */
     SE: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 4, "SE", 135) },
 
     /**
      * The South-South-East cardinal point "SSE" : Azimut:157.5° Radians:7π/8
+     * @memberof graphics.CardinalDirection
      */
     SSE: { enumerable: true, value: new CardinalDirection(7 * Math.PI / 8, "SSE", 157.5) },
 
     /**
      * The South-South-West cardinal point "SSW" : Azimut:202.5° Radians:9π/8
+     * @memberof graphics.CardinalDirection
      */
     SSW: { enumerable: true, value: new CardinalDirection(9 * Math.PI / 8, "SSW", 202.5) },
 
     /**
      * The South-West cardinal point "SW" : Azimut:225° Radians:5π/4
+     * @memberof graphics.CardinalDirection
      */
     SW: { enumerable: true, value: new CardinalDirection(5 * Math.PI / 4, "SW", 225) },
 
     /**
      * The West cardinal point "W" : Azimut:270° Radians:3π/2
+     * @memberof graphics.CardinalDirection
      */
     W: { enumerable: true, value: new CardinalDirection(3 * Math.PI / 2, "W", 270) },
 
     /**
      * The West-North-West cardinal point "WNW" : Azimut:292.5° Radians:13π/8
+     * @memberof graphics.CardinalDirection
      */
     WNW: { enumerable: true, value: new CardinalDirection(13 * Math.PI / 8, "WNW", 292.5) },
 
     /**
      * The West-South-West cardinal point "WSW" : Azimut:247.5° Radians:11π/8
+     * @memberof graphics.CardinalDirection
      */
     WSW: { enumerable: true, value: new CardinalDirection(11 * Math.PI / 8, "WSW", 247.5) }
 });
@@ -19451,22 +20002,28 @@ Object.defineProperties(CardinalDirection, {
 Object.defineProperties(CardinalDirection, {
     /**
      * The set of all diagonal directions (northeast, southeast, southwest, northwest).
+     * @memberof graphics.CardinalDirection
      */
     ALL: { enumerable: true, value: [CardinalDirection.N, CardinalDirection.E, CardinalDirection.S, CardinalDirection.W, CardinalDirection.NE, CardinalDirection.SE, CardinalDirection.NW, CardinalDirection.SW, CardinalDirection.NNE, CardinalDirection.NNW, CardinalDirection.SSE, CardinalDirection.SSW, CardinalDirection.ENE, CardinalDirection.ESE, CardinalDirection.WNW, CardinalDirection.WSW] },
 
     /**
      * The set of all diagonal directions (northeast, southeast, southwest, northwest).
+     * @memberof graphics.CardinalDirection
      */
     DIAGONALS: { value: [CardinalDirection.NE, CardinalDirection.SE, CardinalDirection.NW, CardinalDirection.SW] },
 
     /**
      * The set of all orthogonals directions (north, south, south, north).
+     * @memberof graphics.CardinalDirection
      */
     ORTHOGONALS: { value: [CardinalDirection.N, CardinalDirection.E, CardinalDirection.S, CardinalDirection.W] },
 
     /**
      * Returns true if this is a diagonal direction (northeast, southeast, southwest, northwest).
+     * @param {graphics.CardinalDirection} direction - The direction to check.
      * @return true if this is a diagonal direction.
+     * @function
+     * @memberof graphics.CardinalDirection
      */
     isDiagonal: { value: function value(direction) {
             return CardinalDirection.DIAGONALS.indexOf(direction) > -1;
@@ -19474,7 +20031,10 @@ Object.defineProperties(CardinalDirection, {
 
     /**
      * Returns true if this is an orthogonal direction (north, east, south, west).
+     * @param {graphics.CardinalDirection} direction - The direction to check.
      * @return true if this is an orthogonal direction.
+     * @function
+     * @memberof graphics.CardinalDirection
      */
     isOrthogonal: { value: function value(direction) {
             return CardinalDirection.ORTHOGONALS.indexOf(direction) > -1;
@@ -19643,9 +20203,13 @@ var LayoutBufferMode = Object.defineProperties({}, {
 
 /**
  * The Dimension object encapsulates the width and height components of an object.
- * @constructor
- * @param {number} width the width value.
- * @param {number} height The height value.
+ * @name Dimension
+ * @memberof graphics.geom
+ * @class
+ * @constructs
+ * @extends Object
+ * @param {number} [width=0] the width value.
+ * @param {number} [height=0] The height value.
  */
 
 function Dimension() {
@@ -19655,23 +20219,30 @@ function Dimension() {
     Object.defineProperties(this, {
         /**
          * The height of the rectangle, in pixels.
+         * @memberof graphics.geom.Dimension
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         height: { value: isNaN(height) ? 0 : height, writable: true },
 
         /**
          * The width of the rectangle, in pixels.
+         * @memberof graphics.geom.Dimension
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         width: { value: isNaN(width) ? 0 : width, writable: true }
     });
 }
 
-/**
- * @extends Object
- */
 Dimension.prototype = Object.create(Object.prototype, {
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     clone: { writable: true, value: function value() {
             return new Dimension(this.width, this.height);
@@ -19679,6 +20250,8 @@ Dimension.prototype = Object.create(Object.prototype, {
 
     /**
      * Copies all of data from the source Dimension object into the calling Dimension object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     copyFrom: { value: function value(dim) {
             this.width = dim.width;
@@ -19688,8 +20261,10 @@ Dimension.prototype = Object.create(Object.prototype, {
 
     /**
      * Decreases the size by a specific width/height values and return its self(this).
-     * @param dWidth A number value to descrease the width component of the object (default 0).
-     * @param dHeight A number value to descrease the height component of the object (default 0).
+     * @param {number} [dWidth=0] - A number value to descrease the width component of the object (default 0).
+     * @param {number} [dHeight=0] - A number value to descrease the height component of the object (default 0).
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     decrease: { value: function value() {
             var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -19703,6 +20278,8 @@ Dimension.prototype = Object.create(Object.prototype, {
     /**
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Dimension) {
@@ -19714,9 +20291,11 @@ Dimension.prototype = Object.create(Object.prototype, {
 
     /**
      * Increases the size by a specific width/height values and return its self(this).
-     * @param dWidth A number value to increase the width component of the object (default 0).
-     * @param dHeight A number value to inscrease the height component of the object (default 0).
+     * @param {number} [dWidth=0] - A number value to increase the width component of the object (default 0).
+     * @param {number} [dHeight=0] - A number value to inscrease the height component of the object (default 0).
      * @return the current reference of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     increase: { value: function value() {
             var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -19730,6 +20309,8 @@ Dimension.prototype = Object.create(Object.prototype, {
     /**
      * Determines whether or not this Rectangle object is empty.
      * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     isEmpty: { value: function value() {
             return this.width <= 0 || this.height <= 0;
@@ -19737,9 +20318,11 @@ Dimension.prototype = Object.create(Object.prototype, {
 
     /**
      * Sets the members of Dimension to the specified values.
-     * @param {number} width The width component value to change (default 0).
-     * @param {number} height The height component value to change (default 0).
-     * @return {Dimension} The object reference.
+     * @param {number} width - The width component value to change (default 0).
+     * @param {number} height - The height component value to change (default 0).
+     * @return {graphics.geom.Dimension} The object reference.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     set: { value: function value() {
             var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -19753,6 +20336,8 @@ Dimension.prototype = Object.create(Object.prototype, {
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     toObject: { writable: true, value: function value() {
             return { width: this.width, height: this.height };
@@ -19761,6 +20346,8 @@ Dimension.prototype = Object.create(Object.prototype, {
     /**
      * Returns the string representation of this object.
      * @return the string representation of this object.
+     * @memberof graphics.geom.Dimension
+     * @instance
      */
     toString: { writable: true, value: function value() {
             return "[Dimension width:" + this.width + " height:" + this.height + "]";
@@ -19769,9 +20356,12 @@ Dimension.prototype = Object.create(Object.prototype, {
 
 /**
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @name Vector2
+ * @memberof graphics.geom
  * @constructor
- * @param x the x value of the object.
- * @param y the y value of the object.
+ * @class
+ * @param {number} x - The x value of the object.
+ * @param {number} y - The y value of the object.
  */
 
 function Vector2() {
@@ -19781,11 +20371,19 @@ function Vector2() {
     Object.defineProperties(this, {
         /**
          * Determinates the x value of this object.
+         * @memberof graphics.geom.Vector2
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         x: { value: isNaN(x) ? 0 : x, writable: true },
 
         /**
          * Determinates the y value of this object.
+         * @memberof graphics.geom.Vector2
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         y: { value: isNaN(y) ? 0 : y, writable: true }
     });
@@ -19798,6 +20396,8 @@ Vector2.prototype = Object.create(Object.prototype, {
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     clone: { writable: true, value: function value() {
             return new Vector2(this.x, this.y);
@@ -19805,7 +20405,9 @@ Vector2.prototype = Object.create(Object.prototype, {
 
     /**
      * Compares the passed-in object with this object for equality.
-     * @return <code>true</code> if the the specified object is equal with this object.
+     * @return {boolean} <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Vector2) {
@@ -19818,6 +20420,8 @@ Vector2.prototype = Object.create(Object.prototype, {
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     toObject: { writable: true, value: function value() {
             return { x: this.x, y: this.y };
@@ -19825,7 +20429,9 @@ Vector2.prototype = Object.create(Object.prototype, {
 
     /**
      * Returns the string representation of this instance.
-     * @return the string representation of this instance.
+     * @return {string} The string representation of this instance.
+     * @memberof graphics.geom.Vector2
+     * @instance
      */
     toString: { writable: true, value: function value() {
             return "[Vector2 x:" + this.x + " y:" + this.y + "]";
@@ -19834,9 +20440,12 @@ Vector2.prototype = Object.create(Object.prototype, {
 
 /**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
- * @constructor
- * @param x the x value of the object.
- * @param y the y value of the object.
+ * @name Point
+ * @memberof graphics.geom
+ * @extends graphics.geom.Vector2
+ * @class
+ * @param {number} [x=0] - The x value of the point.
+ * @param {number} [y=0] - The y value of the point.
  */
 function Point() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -19845,20 +20454,16 @@ function Point() {
     Vector2.call(this, x, y);
 }
 
-/**
- * @extends Vector2
- */
 Point.prototype = Object.create(Vector2.prototype, {
     /**
      * Returns the angle value of this Point object.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(0,10) ;
      * var p2 = new Point(10,10) ;
      * trace(p1.angle) ; // 90
      * trace(p2.angle) ; // 45
-     * </pre>
-     * @return the angle value of this Point object.
      */
     angle: {
         get: function get() {
@@ -19873,7 +20478,9 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Indicates the length of the line segment from (0,0) to this point.
-     * @example
+     * @memberof graphics.geom.Point
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
@@ -19883,12 +20490,12 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Transform the coordinates of this point to used absolute value for the x and y properties.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(-10, -20) ;
      * p.abs() ;
      * trace(p) ; // [Point x:10 y:20]
-     * </pre>
      */
     abs: { writable: true, value: function value() {
             this.x = Math.abs(this.x);
@@ -19897,7 +20504,9 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Adds the coordinates of another point to the coordinates of this point.
-     * @param point the point to be added. You can use an object with the properties x and y.
+     * @param {graphics.geom.Point} point - the point to be added. You can use an object with the properties x and y.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     add: { writable: true, value: function value(point) {
             this.x += point.x;
@@ -19907,12 +20516,13 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the angle value between this Point object and the specified Point passed in arguments.
-     * <p><b>Example :</b></p>
-     * {@code
+     * @memberof graphics.geom.Point
+     * @instance
+     * @example
      * var p1 = new Point(10, 20) ;
      * var p2 = new Point(50, 200) ;
      * var angle = p1.angleBetween(p2) ;
-     * }
+     * @param {graphics.geom.Point} point - The point reference.
      * @return the angle value between this Point object and the specified Point passed in arguments.
      */
     angleBetween: { value: function value(point) {
@@ -19921,6 +20531,8 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns a shallow copy of the object.
+     * @memberof graphics.geom.Point
+     * @instance
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -19929,12 +20541,13 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the cross value of the current Point object with the Point passed in argument.
-     * <pre>
+     * @memberof graphics.geom.Point
+     * @instance
+     * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace(p1.cross(p2)) ; // -200
-     * </pre>
-     * @param p The Point object use to calculate the cross value.
+     * @param {graphics.geom.Point} point - The Point object use to calculate the cross value.
      * @return The cross value of the current Point object with the Point passed in argument.
      */
     cross: { writable: true, value: function value(point) {
@@ -19943,13 +20556,13 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the dot value of the current Point and the specified Point passed in argument.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace(p1.dot(p2)) ; // 1600
-     * </pre>
-     * @param p the Point to calculate the dot value of the current Point.
+     * @param {graphics.geom.Point} point - The Point to calculate the dot value of the current Point.
      * @return the dot value of the current Point and the specified Point passed in argument.
      */
     dot: { writable: true, value: function value(point) {
@@ -19958,12 +20571,12 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the normal value of this Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(10,10) ;
      * var n = p.getNormal() ; // [Point x:-10 y:10]
      * trace(n) ;
-     * </pre>
      * @return the normal value of this Point.
      */
     getNormal: { value: function value() {
@@ -19972,13 +20585,13 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the size of the projection of this Point with an other Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(100,200) ;
      * var size = p1.getProjectionLength(p2) ;
      * trace(size) ; // 0.06
-     * </pre>
      * @param point the Point use to calculate the length of the projection.
      * @return the size of the projection of this Point with an other Point.
      */
@@ -19989,16 +20602,16 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns true if the Point is perpendicular with the passed-in Point.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(0,10) ;
      * var p2 = new Point(10,10) ;
      * var p3 = new Point(10,0) ;
      * trace(p1.isPerpTo(p2)) ; // false
      * trace(p1.isPerpTo(p3)) ; // true
-     * </pre>
-     * @param p the Point use to determinate if this Point object is perpendicular.
-     * @return {@code true} if the Point is perpendicular with the passed-in Point.
+     * @param {graphics.geom.Point} point - The Point use to determinate if this Point object is perpendicular.
+     * @return {boolean} True if the Point is perpendicular with the passed-in Point.
      */
     isPerpTo: { writable: true, value: function value(point) {
             return this.dot(point) === 0;
@@ -20006,15 +20619,15 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns the new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
      * var p3 = p1.max(p2) ;
      * trace(p3) ; // [Point x:100 y:100]
-     * </pre>
-     * @param point The Point passed in this method.
-     * @return The new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
+     * @param {graphics.geom.Point} point - The Point passed in this method.
+     * @return {graphics.geom.Point} The new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
      */
     max: { writable: true, value: function value(point) {
             return new Point(Math.max(this.x, point.x), Math.max(this.y, point.y));
@@ -20022,15 +20635,15 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Returns a new Point with the minimum horizontal coordinate and the minimize vertical coordinate.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
      * var p3 = p1.min(p2) ;
      * trace(p3) ; // [Point x:10 y:10]
-     * </pre>
-     * @param point The Point passed in this method
-     * @return A new Point with the min horizontal coordinate and the minimize vertical coordinate.
+     * @param {graphics.geom.Point} point - The Point passed in this method
+     * @return {graphics.geom.Point} A new Point with the min horizontal coordinate and the minimize vertical coordinate.
      */
     min: { writable: true, value: function value(point) {
             return new Point(Math.min(this.x, point.x), Math.min(this.y, point.y));
@@ -20038,15 +20651,15 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Sets this Point with negate coordinates.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(10,20) ;
      * trace(p) ; // [Point x:10 y:20]
      * p.negate() ;
      * trace(p) ; // [Point x:-10 y:-20]
      * p.negate() ;
      * trace(p) ; // [Point x:10 y:20]
-     * </pre>
      */
     negate: { writable: true, value: function value() {
             this.x = -this.x;
@@ -20055,14 +20668,14 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Scales the line segment between (0,0) and the current point to a set length.
+     * @memberof graphics.geom.Point
+     * @instance
      * @example
-     * <pre>
      * var p = new Point(0,5) ;
      * p.normalize() ;
      * trace(p) ; // [Point x:0 y:1]
-     * </pre>
-     * @param thickness The scaling value. For example, if the current point is (0,5), and you normalize it to 1, the point returned is at (0,1).
-     * @see #length
+     * @param {number} [thickness=1] The scaling value. For example, if the current point is (0,5), and you normalize it to 1, the point returned is at (0,1).
+     * @see graphics.geom.Point#length
      * @throws Error if a zero-length vector or a illegal NaN value is calculate in this method.
      */
     normalize: { writable: true, value: function value() {
@@ -20085,14 +20698,15 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Offsets the Point object by the specified amount.
      * The value of dx is added to the original value of x to create the new x value.
      * The value of dy is added to the original value of y to create the new y value.
-     * @param dx {number} The amount by which to offset the horizontal coordinate, x.
-     * @param dy {number} The amount by which to offset the vertical coordinate, y.
+     * @memberof graphics.geom.Point
+     * @instance
+     * @param {number} [dx=0] - The amount by which to offset the horizontal coordinate, x.
+     * @param {number} [dy=0] - The amount by which to offset the vertical coordinate, y.
      * @example
-     * <pre>
      * var p = new Point(10,10) ;
      * p.offset(10,10) ;
      * trace(p) ; // [Point x:20 y:20]
-     * </pre>
+     * @memberof graphics.geom.Point
      */
     offset: { writable: true, value: function value() {
             var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -20104,8 +20718,10 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Rotates the Point with the specified angle in argument.
-     * @param angle the angle to rotate this Point.
-     * @param anchor the anchor point to rotate this Point around (by default use the {0,0} position).
+     * @memberof graphics.geom.Point
+     * @instance
+     * @param {number} angle - The angle to rotate this Point.
+     * @param {Object} [anchor=null] - The anchor point to rotate this Point around (by default use the {0,0} position).
      */
     rotate: { value: function value(angle) {
             var anchor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -20132,7 +20748,9 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Scales the Point with the specified value in argument.
-     * @param value the value to scale this Point coordinates.
+     * @param {number} value - the value to scale this Point coordinates.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     scale: { value: function value(_value) {
             this.x *= isNaN(_value) ? 0 : _value;
@@ -20141,8 +20759,10 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Sets the horizontal and vertical coordinates of this Point. If the {@code x} and the {@code y} parameters are NaN or null the x value is 0 and y value is 0.
-     * @param x The x coordinates of the point.
-     * @param y The y coordinates of the point.
+     * @param {number} [x=0] - The x coordinates of the point.
+     * @param {number} [y=0] - The y coordinates of the point.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     set: { value: function value() {
             var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -20154,7 +20774,9 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Subtracts the coordinates of another point from the coordinates of this point.
-     * @param point The point to be subtracted.
+     * @param {graphics.geom.Point} point - The point to be subtracted.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     subtract: { value: function value(point) {
             this.x -= point.x;
@@ -20163,7 +20785,9 @@ Point.prototype = Object.create(Vector2.prototype, {
 
     /**
      * Swap the horizontal and vertical coordinates of two Point objects.
-     * @param point The point to be swap.
+     * @param {graphics.geom.Point} point - The point to be swap.
+     * @instance
+     * @memberof graphics.geom.Point
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(30,40) ;
@@ -20183,6 +20807,8 @@ Point.prototype = Object.create(Vector2.prototype, {
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @instance
+     * @memberof graphics.geom.Point
      */
     toString: { writable: true, value: function value() {
             return "[Point x:" + this.x + " y:" + this.y + "]";
@@ -20192,14 +20818,14 @@ Point.prototype = Object.create(Vector2.prototype, {
 Object.defineProperties(Point, {
     /**
      * Returns the distance between p1 and p2 the 2 Points reference passed in argument.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
      * trace( Point.distance(p1,p2) ) ; // 50
-     * </pre>
-     * @param p1 the first Point.
-     * @param p2 the second Point.
+     * @param {graphics.geom.Point} p1 - the first Point.
+     * @param {graphics.geom.Point} p2 - the second Point.
      * @return the distance between p1 and p2 the 2 Points reference passed in argument.
      */
     distance: { value: function value(p1, p2) {
@@ -20210,13 +20836,15 @@ Object.defineProperties(Point, {
 
     /**
      * Returns the middle Point between 2 Points.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(20,20) ;
      * var middle = Point.getMiddle(p1,p2) ;
      * trace(middle) ;
-     * </pre>
+     * @param {graphics.geom.Point} p1 - the first Point.
+     * @param {graphics.geom.Point} p2 - the second Point.
      * @return the middle Point between 2 Points.
      */
     getMiddle: { value: function value(p1, p2) {
@@ -20225,11 +20853,14 @@ Object.defineProperties(Point, {
 
     /**
      * Determines a point between two specified points.
-     * The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters {@code p1} and {@code p2}.
-     * The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter {@code p1}).
-     * The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter {@code p2}).
+     * <ul>
+     * <li>The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters p1 and p2.</li>
+     * <li>The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter p1).</li>
+     * <li>The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter p2).</li>
+     * </ul>
+     * @memberof graphics.geom.Point
+     * @static
      * @example
-     * <pre>
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(40,40) ;
      * var p3 ;
@@ -20242,10 +20873,9 @@ Object.defineProperties(Point, {
      *
      * p3 = Point.interpolate( p1 , p2 , 0.5 ) ;
      * trace(p3) ; // [Point x:25 y:25]
-     * </pre>
-     * @param p1 The first point.
-     * @param p2 The second Point.
-     * @param level the The level of interpolation between the two points. Indicates where the new point will be, along the line between p1 and p2. If level=1, pt1 is returned; if level=0, pt2 is returned.
+     * @param {graphics.geom.Point} p1 - the first Point.
+     * @param {graphics.geom.Point} p2 - the second Point.
+     * @param {number} [level=0] the The level of interpolation between the two points. Indicates where the new point will be, along the line between p1 and p2. If level=1, pt1 is returned; if level=0, pt2 is returned.
      * @return The new interpolated point.
      */
     interpolate: { value: function value(p1, p2) {
@@ -20268,6 +20898,8 @@ Object.defineProperties(Point, {
 
     /**
      * Converts a pair of polar coordinates to a Cartesian point coordinates.
+     * @memberof graphics.geom.Point
+     * @static
      * @example
      * <pre>
      * var polar = Point.polar( 5, Math.atan(3/4) ) ;
@@ -20286,7 +20918,11 @@ Object.defineProperties(Point, {
  * The Rectangle class is used to create and modify Rectangle objects.
  * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
  * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
+ * @name Rectangle
+ * @extends graphics.geom.Dimension
+ * @memberof graphics.geom
  * @constructor
+ * @class
  * @param {number} x the x value of the object.
  * @param {number} y the y value of the object.
  * @param {number} width the width value of the object.
@@ -20301,25 +20937,32 @@ function Rectangle() {
     Object.defineProperties(this, {
         /**
          * Determinates the x value of this object.
+         * @memberof graphics.geom.Rectangle
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         x: { value: isNaN(x) ? 0 : x, writable: true },
 
         /**
          * Determinates the y value of this object.
+         * @memberof graphics.geom.Rectangle
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         y: { value: isNaN(y) ? 0 : y, writable: true }
     });
     Dimension.call(this, width, height);
 }
 
-/**
- * @extends Object
- */
 Rectangle.prototype = Object.create(Dimension.prototype, {
     // ------- getters/setters
 
     /**
      * The sum of the y and height properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottom: {
         get: function get() {
@@ -20332,6 +20975,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The location of the Rectangle object's bottom-left corner, determined by the values of the left and bottom properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottomLeft: {
         get: function get() {
@@ -20346,6 +20991,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The location of the Rectangle object's bottom-right corner, determined by the values of the right and bottom properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     bottomRight: {
         get: function get() {
@@ -20359,6 +21006,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The location of the Rectangle object's center.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     center: {
         get: function get() {
@@ -20372,6 +21021,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The x coordinate of the top-left corner of the rectangle.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     left: {
         get: function get() {
@@ -20385,6 +21036,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The sum of the x and width properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     right: {
         get: function get() {
@@ -20397,6 +21050,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     size: {
         get: function get() {
@@ -20410,6 +21065,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The y coordinate of the top-left corner of the rectangle.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     top: {
         get: function get() {
@@ -20423,6 +21080,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The location of the Rectangle object's top-left corner, determined by the x and y coordinates of the point.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     topLeft: {
         get: function get() {
@@ -20438,6 +21097,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * The location of the Rectangle object's top-right corner, determined by the x and y coordinates of the point.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     topRight: {
         get: function get() {
@@ -20454,6 +21115,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -20462,6 +21125,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {number} x - The x position of the point to check.
+     * @param {number} y - The y position of the point to check.
      */
     contains: { value: function value(x, y) {
             return this.x <= x && this.x + this.width > x && this.y <= y && this.y + this.height > y;
@@ -20469,6 +21136,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {Object|graphics.geom.Point} point - The point to check.
      */
     containsPoint: { value: function value(point) {
             return this.x <= point.x && this.x + this.width > point.x && this.y <= point.y && this.y + this.height > point.y;
@@ -20476,6 +21146,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {Object|graphics.geom.Rectangle} rec - The rectangle area to check.
      */
     containsRect: { value: function value(rec) {
             var a = rec.x + rec.width;
@@ -20487,6 +21160,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Copies all of rectangle data from the source Rectangle object into the calling Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {graphics.geom.Rectangle|Object} rec - The rectangle object to copy.
      */
     copyFrom: { value: function value(rec) {
             this.x = rec.x;
@@ -20498,9 +21174,11 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
-     * @param toCompare {object} The object to evaluates.
-     * @param strict {boolean} If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
-     * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {object} toCompareThe - object to evaluates.
+     * @param {boolean} [strict=true] - If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
+     * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      */
     equals: { writable: true, value: function value(toCompare) {
             var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -20516,8 +21194,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     /**
      * Increases the size of the Rectangle object by the specified amounts, in pixels.
      * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
-     * @param dx {number} The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
-     * @param dy {number} The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {number} dx - The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
+     * @param {number} dy - The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
      */
     inflate: { value: function value(dx, dy) {
             this.x -= dx;
@@ -20529,7 +21209,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
-     * @param point {Point} The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @param {graphics.geom.Point} point - The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
      * @example
      * var rect  = new Rectangle(0,0,2,5);
      * var point = new Point(2,2);
@@ -20545,8 +21227,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * If the Rectangle object specified in the toIntersect parameter intersects with this Rectangle object, returns the area of intersection as a Rectangle object. If the rectangles do not intersect, this method returns an empty Rectangle object with its properties set to 0.
-     * @param toIntersect {Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
-     * @return {Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     * @param toIntersect {graphics.geom.Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
+     * @return {graphics.geom.Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     intersection: { value: function value(toIntersect) {
             var rec = new Rectangle();
@@ -20570,8 +21254,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Determines whether the object specified in the toIntersect parameter intersects with this Rectangle object. This method checks the x, y, width, and height properties of the specified Rectangle object to see if it intersects with this Rectangle object.
-     * @param toIntersect {Rectangle} The Rectangle object to compare against this Rectangle object.
+     * @param {graphics.geom.Rectangle} toIntersect - The Rectangle object to compare against this Rectangle object.
      * @return {boolean} A value of true if the specified object intersects with this Rectangle object; otherwise false.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     intersects: { value: function value(toIntersect) {
             return !this.intersection(toIntersect).isEmpty();
@@ -20579,8 +21265,10 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Adjusts the location of the object, as determined by its top-left corner, by the specified amounts.
-     * @param dx {number} Moves the x value of the Rectangle object by this amount.
-     * @param dy {number} Moves the y value of the Rectangle object by this amount.
+     * @param {number} [dx=0] - Moves the x value of the Rectangle object by this amount.
+     * @param {number} [dy=0] - Moves the y value of the Rectangle object by this amount.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     offset: { writable: true, value: function value() {
             var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -20593,7 +21281,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Adjusts the location of the Rectangle object using a Point object as a parameter. This method is similar to the Rectangle.offset() method, except that it takes a Point object as a parameter.
-     * @param point {Point} A Point object to use to offset this Rectangle object.
+     * @param {graphics.geom.Point} point - A Point object to use to offset this Rectangle object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     offsetPoint: { writable: true, value: function value(point) {
             this.x += point.x;
@@ -20603,11 +21293,13 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
     /**
      * Sets the members of Rectangle to the specified values.
-     * @param x {number} The x coordinate of the top-left corner of the rectangle (default 0).
-     * @param y {number} The y coordinate of the top-left corner of the rectangle (default 0).
-     * @param width {number} The width of the rectangle, in pixels (default 0).
-     * @param height {number} The height of the rectangle, in pixels (default 0).
+     * @param {number} [x=0] - The x coordinate of the top-left corner of the rectangle (default 0).
+     * @param {number} [y=0] - The y coordinate of the top-left corner of the rectangle (default 0).
+     * @param {number} [width=0] - The width of the rectangle, in pixels (default 0).
+     * @param {number} [height=0] - The height of the rectangle, in pixels (default 0).
      * @return {Rectangle} The object reference.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     set: { value: function value() {
             var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -20625,6 +21317,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     toObject: { value: function value() {
             return { x: this.x, y: this.y, width: this.width, height: this.height };
@@ -20633,6 +21327,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof graphics.geom.Rectangle
+     * @instance
      */
     toString: { value: function value() {
             return "[Rectangle x:" + this.x + " y:" + this.y + " width:" + this.width + " height:" + this.height + "]";
@@ -20641,6 +21337,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     /**
      * Adds two rectangles together to create a new Rectangle object, by filling in the horizontal and vertical space between the two rectangles.
      * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2 = new Rectangle(300,300,50,0);
+     * @memberof graphics.geom.Rectangle
+     * @instance
      * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
      * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
      */
@@ -20668,17 +21366,28 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 
 /**
  * Creates a new Layout instance.
- * @constructor
+ * @name Layout
+ * @memberof graphics
+ * @extends system.process.Task
+ * @class
  */
 function Layout() {
     Object.defineProperties(this, {
         /**
          * The signal invoked when the render method is called.
+         * @memberof graphics.Layout
+         * @type {system.signals.Signal}
+         * @const
+         * @instance
          */
         renderer: { value: new Signal() },
 
         /**
          * The signal invoked when the update method is called.
+         * @memberof graphics.Layout
+         * @type {system.signals.Signal}
+         * @const
+         * @instance
          */
         updater: { value: new Signal() },
 
@@ -20705,15 +21414,16 @@ function Layout() {
     });
 }
 
-/**
- * @extends Task
- */
 Layout.prototype = Object.create(Task.prototype, {
     // ------------- getters/setters
 
     /**
      * The alignement of the layout.
+     * @memberof graphics.Layout
+     * @type {number}
+     * @default graphics.Align.TOP_LEFT
      * @see graphics.Align
+     * @instance
      */
     align: {
         get: function get() {
@@ -20726,7 +21436,10 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * A rectangle that defines the current visible area of the layout.
+     * @memberof graphics.Layout
+     * @type {graphics.geom.Rectangle}
      * @readonly
+     * @instance
      */
     bounds: {
         get: function get() {
@@ -20736,7 +21449,11 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * A rectangle that defines the current visible area of the layout.
+     * @memberof graphics.Layout
+     * @type {graphics.LayoutBufferMode}
+     * @default LayoutBufferMode.AUTO
      * @readonly
+     * @instance
      */
     bufferMode: {
         get: function get() {
@@ -20752,6 +21469,8 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates the container reference to change with the layout.
+     * @memberof graphics.Layout
+     * @instance
      */
     container: {
         get: function get() {
@@ -20764,7 +21483,10 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * The default height of the layout, in pixels.
+     * @memberof graphics.Layout
      * @readonly
+     * @instance
+     * @type {number}
      */
     measuredHeight: { get: function get() {
             return this._bounds.height;
@@ -20772,7 +21494,10 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * The default width of the layout, in pixels.
+     * @memberof graphics.Layout
      * @readonly
+     * @instance
+     * @type {number}
      */
     measuredWidth: { get: function get() {
             return this._bounds.width;
@@ -20783,7 +21508,10 @@ Layout.prototype = Object.create(Task.prototype, {
     /*jshint -W098 */
     /**
      * Initialize the layout container with the specific elements. This method flush the layout container and remove all old elements register in the collection before initialize it.
-     * @param children an Array, a container or a list of element references to register. If this argument is null the layout is only flushed.
+     * @param {Array} [children=null] - An Array, a container or a list of element references to register. If this argument is null the layout is only flushed.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     initialize: { writable: true, value: function value() {
             var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -20793,16 +21521,25 @@ Layout.prototype = Object.create(Task.prototype, {
     /**
      * Calculates the default sizes and minimum and maximum values.
      * You can overrides this method in the specific layouts.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     measure: { writable: true, value: function value() {} },
 
     /**
      * Render the layout, refresh and change the position of all childs in a specific container.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     render: { writable: true, value: function value() {} },
 
     /**
      * Run the process.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     run: { writable: true, value: function value() {
             if (this.isLocked()) {
@@ -20822,6 +21559,9 @@ Layout.prototype = Object.create(Task.prototype, {
 
     /**
      * This method is invoked when the rendering is finished to finalize the it after the measure invokation.
+     * @memberof graphics.Layout
+     * @function
+     * @instance
      */
     update: { writable: true, value: function value() {} }
 });
@@ -20984,7 +21724,10 @@ var ZOrder = Object.defineProperties({}, {
 
 /**
  * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
+ * @name Matrix
+ * @memberof graphics.geom
  * @constructor
+ * @class
  * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
  * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
  * @param c The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
@@ -21003,31 +21746,55 @@ function Matrix() {
     Object.defineProperties(this, {
         /**
          * The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         a: { value: isNaN(a) ? 0 : a, writable: true },
 
         /**
          * The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         b: { value: isNaN(b) ? 0 : b, writable: true },
 
         /**
          * The value that affects the positioning of pixels along the <i>x</i> axis when rotating or skewing an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         c: { value: isNaN(c) ? 0 : c, writable: true },
 
         /**
          * The value that affects the positioning of pixels along the <i>y</i> axis when scaling or rotating an image.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         d: { value: isNaN(d) ? 0 : d, writable: true },
 
         /**
          * The distance by which to translate each point along the <i>x</i> axis.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         tx: { value: isNaN(tx) ? 0 : tx, writable: true },
 
         /**
          * The distance by which to translate each point along the <i>y</i> axis.
+         * @memberof graphics.geom.Matrix
+         * @default 0
+         * @type {Number}
+         * @instance
          */
         ty: { value: isNaN(ty) ? 0 : ty, writable: true }
     });
@@ -21043,6 +21810,8 @@ Object.defineProperties(Matrix, {
 Matrix.prototype = Object.create(Object.prototype, {
     /**
      * Returns a shallow copy of the object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -21053,7 +21822,9 @@ Matrix.prototype = Object.create(Object.prototype, {
      * Concatenates a matrix with the current matrix, effectively combining the geometric effects of the two. In mathematical terms, concatenating two matrixes is the same as combining them using matrix multiplication.
      * <p>For example, if matrix <code>m1</code> scales an object by a factor of four, and matrix <code>m2</code> rotates an object by 1.5707963267949 radians (<code>Math.PI/2</code>), then <code>m1.concat(m2)</code> transforms <code>m1</code> into a matrix that scales an object by a factor of four and rotates the object by <code>Math.PI/2</code> radians.</p>
      * <p>This method replaces the source matrix with the concatenated matrix. If you want to concatenate two matrixes without altering either of the two source matrixes, first copy the source matrix by using the <code>clone()</code> method, as shown in the Class Examples section.</p>
-     * @param matrix The matrix to be concatenated to the source matrix.
+     * @param {graphics.geom.Matrix|Object} matrix The matrix to be concatenated to the source matrix.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     concat: { value: function value(matrix) {
             var a = this.a;
@@ -21072,10 +21843,9 @@ Matrix.prototype = Object.create(Object.prototype, {
         } },
 
     /**
-     *Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
+     * Includes parameters for scaling, rotation, and translation. When applied to a matrix it sets the matrix's values based on those parameters.
      * <p>Using the <code>createBox()</code> method lets you obtain the same matrix as you would if you applied the <code>identity()</code>, <code>rotate()</code>, <code>scale()</code>, and <code>translate()</code> methods in succession. For example, <code>mat.createBox(2,2,Math.PI/4, 100, 100)</code> has the same effect as the following:</p>
-     * <p>
-     * <pre><code>
+     * @example
      * var mat = new Matrix();
      * mat.createBox(2,2,Math.PI/4, 100, 100)
      * // or
@@ -21083,13 +21853,13 @@ Matrix.prototype = Object.create(Object.prototype, {
      * mat.rotate(Math.PI/4);
      * mat.scale(2,2);
      * mat.translate(10,20);
-     * </code></pre>
-     * </p>
-     * @param scaleX The factor by which to scale horizontally.
-     * @param scaleY The factor by which scale vertically.
-     * @param rotation The amount to rotate, in radians.
-     * @param tx The number of pixels to translate (move) to the right along the <i>x</i> axis.
-     * @param ty The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @param {number} scaleX - The factor by which to scale horizontally.
+     * @param {number} scaleY - The factor by which scale vertically.
+     * @param {number} [rotation=0] - The amount to rotate, in radians.
+     * @param {number} [tx=0] - The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     createBox: { value: function value(scaleX, scaleY) {
             var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -21121,6 +21891,13 @@ Matrix.prototype = Object.create(Object.prototype, {
 
     /**
      * Creates the specific style of matrix expected by the <code>beginGradientFill()</code> and <code>lineGradientStyle()</code> methods of the Graphics class. Width and height are scaled to a <code>scaleX</code>/<code>scaleY</code> pair and the <code>tx</code>/<code>ty</code> values are offset by half the width and height.
+     * @param {number} width - The width of the box.
+     * @param {number} scaleY - The height of the box.
+     * @param {number} [rotation=0] - The amount to rotate, in radians.
+     * @param {number} [tx=0] - The number of pixels to translate (move) to the right along the <i>x</i> axis.
+     * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     createGradientBox: { value: function value(width, height) {
             var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -21132,9 +21909,10 @@ Matrix.prototype = Object.create(Object.prototype, {
 
     /**
      * Given a point in the pretransform coordinate space, returns the coordinates of that point after the transformation occurs. Unlike the standard transformation applied using the <code>transformPoint()</code> method, the <code>deltaTransformPoint()</code> method's transformation does not consider the translation parameters <code>tx</code> and <code>ty</code>.
-     * @param point The point for which you want to get the result of the matrix transformation.
-     *
+     * @param {graphics.geom.Point|Object} point - The point for which you want to get the result of the matrix transformation.
      * @return The point resulting from applying the matrix transformation.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     deltaTransformPoint: { value: function value(point) {
             return new Point(this.a * point.x + this.c * point.y, this.b * point.x + this.d * point.y);
@@ -21143,6 +21921,8 @@ Matrix.prototype = Object.create(Object.prototype, {
     /**
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Matrix) {
@@ -21154,6 +21934,8 @@ Matrix.prototype = Object.create(Object.prototype, {
 
     /**
      * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     identity: { value: function value() {
             this.a = this.d = 1;
@@ -21162,7 +21944,9 @@ Matrix.prototype = Object.create(Object.prototype, {
 
     /**
      * Applies a rotation transformation to the Matrix object.
-     * @param angle The rotation angle in radians.
+     * @param {number} angle - The rotation angle in radians.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     rotate: { value: function value(angle) {
             /*
@@ -21201,6 +21985,8 @@ Matrix.prototype = Object.create(Object.prototype, {
     /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     toObject: { writable: true, value: function value() {
             return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
@@ -21209,6 +21995,8 @@ Matrix.prototype = Object.create(Object.prototype, {
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof graphics.geom.Matrix
+     * @instance
      */
     toString: { writable: true, value: function value() {
             return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
@@ -21219,7 +22007,8 @@ Matrix.prototype = Object.create(Object.prototype, {
  * The VEGAS.js framework - The graphics.geom library.
  * @licence MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace graphics.geom
+ * @memberof graphics
  */
 var geom = Object.assign({
   Dimension: Dimension,
@@ -21230,9 +22019,9 @@ var geom = Object.assign({
 
 /**
  * The VEGAS.js framework - The graphics library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace
+ * @namespace graphics
  */
 var graphics = Object.assign({
     // ----- Singletons
