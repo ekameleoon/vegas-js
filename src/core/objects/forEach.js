@@ -28,7 +28,7 @@
  *
  * forEach( [1,2,3,4] , action ) ; // use the Array.forEach method over Array objects.
  */
-export function forEach( object , callback , context = null , breaker = null ) /*Object*/
+export function forEach( object , callback , context = null , breaker = null )
 {
     if( !object )
     {
@@ -42,7 +42,7 @@ export function forEach( object , callback , context = null , breaker = null ) /
     {
         for ( var key in object )
         {
-            if( object.hasOwnProperty(key) )
+            if( key in object )
             {
                 if( breaker !== null )
                 {

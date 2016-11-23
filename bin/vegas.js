@@ -393,7 +393,17 @@ function dumpObject(value) {
 
 /**
  * Returns the unicode string notation of the specified numeric value.
- * @return the unicode string notation of the specified numeric value.
+ * @name toUnicodeNotation
+ * @memberof core.numbers
+ * @function
+ * @param {number} num - The number to transform in a unicode string.
+ * @return The unicode string notation of the specified numeric value.
+ * @example
+ * trace( toUnicodeNotation(  0) ) ; // "0000"
+ * trace( toUnicodeNotation( 10) ) ; // "000a"
+ * trace( toUnicodeNotation( 15) ) ; // "000f"
+ * trace( toUnicodeNotation( 16) ) ; // "0010"
+ * trace( toUnicodeNotation(255) ) ; // "00ff"
  */
 
 function toUnicodeNotation(num) {
@@ -2326,6 +2336,7 @@ var sineOut = function sineOut(t, b, c, d) {
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @namespace core.easings
  * @memberof core
+ * @tutorial system.transitions
  */
 var easings = Object.assign({
     backIn: backIn,
@@ -3661,8 +3672,14 @@ var numbers = Object.assign({
 
 /**
  * Executes a function on each item in the object. Each invocation of iterator is called with three arguments: (value, key, ref).
+ * @name forEach
+ * @memberof core.objects
+ * @function
+ * @param {Object} object The reference of the object to enumerate.
+ * @param {Function} callback The function to run on each item in the object. This function can contain a simple command (for example, a trace() statement) or a more complex operation, and is invoked with three arguments; the value of an item, the key of an item, and the object reference : <code>function callback(item:*, key:*, ref:Object):void;</code>.
+ * @param {Object} [context=null] An object to use as this for the callback function.
+ * @param {*} [breaker=null] value to stop the enumeration. If this argument is null the behaviour is forgotten.
  * @example
- * <pre class="prettyprint">
  * var object = { one:1 , two:2 , three:3 , four:4 , five:5 } ;
  *
  * var action = function( value , key , ref )
@@ -3680,17 +3697,10 @@ var numbers = Object.assign({
  * trace( "----" ) ;
  *
  * forEach( [1,2,3,4] , action ) ; // use the Array.forEach method over Array objects.
- * </pre>
- * @param object The reference of the object to enumerate.
- * @param callback The function to run on each item in the object. This function can contain a simple command (for example, a trace() statement)
- * or a more complex operation, and is invoked with three arguments; the value of an item, the key of an item, and the object reference : <code>function callback(item:*, key:*, ref:Object):void;</code>.
- * @param context An object to use as this for the callback function.
- * @param An optional breaker value to stop the enumeration. If this argument is null the behaviour is forgotten.
  */
 
-function forEach(object /*Object*/, callback /*Function*/) /*Object*/
-{
-    var context /*Object*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+function forEach(object, callback) {
+    var context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var breaker = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     if (!object) {
@@ -3700,7 +3710,7 @@ function forEach(object /*Object*/, callback /*Function*/) /*Object*/
         object.forEach(callback, context);
     } else {
         for (var key in object) {
-            if (object.hasOwnProperty(key)) {
+            if (key in object) {
                 if (breaker !== null) {
                     if (callback.call(context, object[key], key, object) === breaker) {
                         return;
@@ -3722,27 +3732,23 @@ function forEach(object /*Object*/, callback /*Function*/) /*Object*/
  * copied into positions destPos through destPos+length-1 of the destination array.
  * <p>If src is null, then a ArgumentError is thrown and the destination array is not modified.</p>
  * <p>If dest is null, then dest is the src reference.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var dump = core.dump ;
- * var fuse = core.objects.fuse ;
- *
+ * @name fuse
+ * @memberof core.objects
+ * @function
+ * @param {Array|Object} src - The source array or vector to copy.
+ * @param {number} srcPos - The starting position in the source array.
+ * @param {Array|Object} dest - The destination array or vector.
+ * @param {number} destPos - The starting position in the destination data.
+ * @param {number} length - The number of array elements to be copied.
+ * @return The copy reference.
+ * @example
  * var ar1 = [1,2,3,4] ;
  * var ar2 = [5,6,7,8] ;
- *
  * fuse( ar1 , 2 , ar2 , 2 , 2 ) ;
- *
  * trace( dump( ar2 ) ) ; // [5,6,3,4]
- * </pre>
- * @param src The source array or vector to copy.
- * @param srcPos The starting position in the source array.
- * @param dest The destination array or vector.
- * @param destPos The starting position in the destination data.
- * @param length The number of array elements to be copied.
  */
 
-function fuse(src /*Object*/, srcPos /*int*/, dest /*Object*/, destPos /*int*/, length /*int*/) /*Object*/
-{
+function fuse(src, srcPos, dest, destPos, length) {
     if (!src) {
         throw new ReferenceError("fuse failed, if either src is null.");
     }
@@ -3762,19 +3768,21 @@ function fuse(src /*Object*/, srcPos /*int*/, dest /*Object*/, destPos /*int*/, 
 
 /**
  * Returns all the public members of an object, either by key or by value.
+ * @name members
+ * @memberof core.objects
+ * @function
+ * @param {object} o The target object to enumerate.
+ * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
+ * @return An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
  * @example
- * <pre><code>
  * var o = { a : 5 , b : 6 } ;
  * trace( core.dump( core.objects.members( o ) ) ) ; // [a,b]
  * trace( core.dump( core.objects.members( o , true ) ) ) ; // [5,6]
- * </code></pre>
- * @param {object} o The target object to enumerate.
- * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
- * @return {array} An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
  */
 
-function members(o /*Object*/, byValue /*Boolean*/) /*Array*/
-{
+function members(o) {
+    var byValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
     byValue = Boolean(byValue === true);
     var members /*Array*/ = [];
     if (byValue) {
@@ -3795,20 +3803,22 @@ function members(o /*Object*/, byValue /*Boolean*/) /*Array*/
 
 /**
  * Merging enumerable properties from a specific Object to a target Object.
- * @param target The target object to merge.
- * @param source The source object reference.
- * @param overwrite The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
+ * @name merge
+ * @memberof core.objects
+ * @function
+ * @param {Object} target - The target object to merge.
+ * @param {Object} source - The source object reference.
+ * @param {boolean} [overwrite=true] - The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
+ * @return The merged target reference.
  * @example
- * <code>
  * var target = { a : 5 , b : 6 } ;
  * var from   = { a : 1 , b : 2 , c: 3 } ;
- * trace( core.dump( core.objects.merge( target , from ) ) ) ; // {a:1,b:2,c:3}
- * </code>
- * @return The merged target reference.
+ * trace( dump( merge( target , from ) ) ) ; // {a:1,b:2,c:3}
  */
 
-function merge(target /*Object*/, source /*Object*/, overwrite /*Boolean*/) /*Object*/
-{
+function merge(target, source) {
+    var overwrite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
     if (overwrite === null || overwrite === undefined) {
         overwrite = true;
     }
@@ -3817,7 +3827,7 @@ function merge(target /*Object*/, source /*Object*/, overwrite /*Boolean*/) /*Ob
         source = {};
     }
 
-    for (var prop /*String*/ in source) {
+    for (var prop in source) {
         if (!(prop in target) || overwrite) {
             target[prop] = source[prop];
         }
@@ -18753,32 +18763,43 @@ var signals = Object.assign({
 
 /**
  * The internal MotionNextFrame Receiver.
+ * @name MotionNextFrame
+ * @memberof system.transitions
+ * @class
+ * @implements Receiver
+ * @constructor
+ * @param {system.transitions.Motion} motion - The Motion reference who emit the messages.
  */
 function MotionNextFrame(motion) {
-  this.motion = motion instanceof Motion ? motion : null;
+    this.motion = motion instanceof Motion ? motion : null;
 }
 
-/**
- * @extends Receiver
- */
 MotionNextFrame.prototype = Object.create(Receiver.prototype, {
-  /**
-   * The constructor reference of the instance.
-   */
-  constructor: { value: MotionNextFrame },
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: MotionNextFrame },
 
-  /**
-   * Receives the signal message.
-   */
-  receive: { value: function value() {
-      if (this.motion) {
-        this.motion.setTime(this.motion.useSeconds ? (performance$1.now() - this.motion._startTime) / 1000 : this.motion._time + 1);
-      }
-    } }
+    /**
+     * Receives the signal message.
+     * @name receive
+     * @memberof system.transitions.MotionNextFrame
+     * @function
+     * @instance
+     */
+    receive: { value: function value() {
+            if (this.motion) {
+                this.motion.setTime(this.motion.useSeconds ? (performance$1.now() - this.motion._startTime) / 1000 : this.motion._time + 1);
+            }
+        } }
 });
 
 /**
  * A simple Transition object.
+ * @name Transition
+ * @memberof system.transitions
+ * @extends {system.process.Task}
+ * @interface
  */
 function Transition() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -18804,6 +18825,10 @@ Transition.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates the id value of this object.
+     * @memberof system.transitions.Transition
+     * @default null
+     * @type {*}
+     * @instance
      */
     id: {
         get: function get() {
@@ -18817,6 +18842,10 @@ Transition.prototype = Object.create(Task.prototype, {
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Transition
+     * @abstract
+     * @instance
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Transition(this.id);
@@ -18824,7 +18853,11 @@ Transition.prototype = Object.create(Task.prototype, {
 
     /**
      * Compares the specified object with this object for equality. This method compares the ids of the objects with the <code>Identifiable.id</code> method.
+     * @param {system.transitions.Transition} o - The object to compare.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
      */
     equals: { writable: true, value: function value(o) {
             if (o === this) {
@@ -18839,6 +18872,9 @@ Transition.prototype = Object.create(Task.prototype, {
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
      */
     toString: { value: function value() {
             return '[' + this.constructor.name + ']';
@@ -18847,6 +18883,12 @@ Transition.prototype = Object.create(Task.prototype, {
 
 /**
  * The Motion class.
+ * @name Motion
+ * @memberof system.transitions
+ * @implements {system.transitions.Transition}
+ * @class
+ * @constructor
+ * @param {number} [id=null] The identfier of the object.
  */
 function Motion() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -18856,6 +18898,10 @@ function Motion() {
     Object.defineProperties(this, {
         /**
          * Defined if the Motion used seconds or not.
+         * @memberof system.transitions.Motion
+         * @default false
+         * @type {boolean}
+         * @instance
          */
         useSeconds: { writable: true, value: false },
 
@@ -18908,9 +18954,6 @@ function Motion() {
     this.setTimer(new FrameTimer());
 }
 
-/**
- * @extends Transition
- */
 Motion.prototype = Object.create(Transition.prototype, {
     // ------------- public properties
 
@@ -18923,6 +18966,10 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Indicates the duration of the tweened animation in frames or seconds (default 0).
+     * @memberof system.transitions.Motion
+     * @default false
+     * @type {number}
+     * @instance
      */
     duration: {
         get: function get() {
@@ -18935,6 +18982,10 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Indicates the number of frames per second of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @default NaN
+     * @type {number}
+     * @instance
      */
     fps: {
         get: function get() {
@@ -18955,6 +19006,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Indicates the internal previous time value.
+     * @memberof system.transitions.Motion
+     * @type {number}
+     * @instance
      */
     prevTime: {
         get: function get() {
@@ -18964,6 +19018,10 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Indicates if the motion is stopped.
+     * @memberof system.transitions.Motion
+     * @default false
+     * @type {boolean}
+     * @instance
      */
     stopped: {
         get: function get() {
@@ -18973,6 +19031,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Indicates the target reference of the object contrains by the Motion effect.
+     * @memberof system.transitions.Motion
+     * @type {Object}
+     * @instance
      */
     target: {
         get: function get() {
@@ -18988,6 +19049,9 @@ Motion.prototype = Object.create(Transition.prototype, {
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Motion(this.id);
@@ -18995,6 +19059,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Forwards the tweened animation to the next frame.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     nextFrame: { value: function value() {
             this.setTime(this.useSeconds ? (performance$1.now() - this._startTime) / 1000 : this._time + 1);
@@ -19002,6 +19069,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Directs the tweened animation to the frame previous to the current frame.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     prevFrame: { value: function value() {
             if (!this.useSeconds) {
@@ -19011,6 +19081,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Resumes a tweened animation from its stopped point in the animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     resume: { writable: true, value: function value() {
             if (this._stopped && this._time !== this._duration) {
@@ -19025,17 +19098,24 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Rewinds a tweened animation to the beginning of the tweened animation.
+     * @param {number} time - The time value to rewind the motion.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     rewind: { value: function value() {
-            var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
-            this._time = t > 0 ? t : 0;
+            this._time = time > 0 ? time : 0;
             this.fixTime();
             this.update();
         } },
 
     /**
      * Runs the object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     run: { writable: true, value: function value() {
             this._stopped = false;
@@ -19046,13 +19126,17 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Sets the current time within the duration of the animation.
+     * @param {number} time - The time value to rewind the motion.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
-    setTime: { value: function value(t) {
+    setTime: { value: function value(time) {
             this._prevTime = this._time;
-            if (t > this._duration) {
-                t = this._duration;
+            if (time > this._duration) {
+                time = this._duration;
                 if (this.looping) {
-                    this.rewind(t - this._duration);
+                    this.rewind(time - this._duration);
                     this.notifyLooped();
                 } else {
                     if (this.useSeconds) {
@@ -19062,16 +19146,19 @@ Motion.prototype = Object.create(Transition.prototype, {
                     this.stop();
                     this.notifyFinished();
                 }
-            } else if (t < 0) {
+            } else if (time < 0) {
                 this.rewind();
             } else {
-                this._time = t;
+                this._time = time;
                 this.update();
             }
         } },
 
     /**
      * Starts the internal interval of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     startInterval: { value: function value() {
             this._timer.start();
@@ -19080,6 +19167,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Stops the tweened animation at its current position.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     stop: { value: function value() {
             if (this._running) {
@@ -19091,6 +19181,9 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Stops the intenral interval of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     stopInterval: { value: function value() {
             this._timer.stop();
@@ -19098,8 +19191,12 @@ Motion.prototype = Object.create(Transition.prototype, {
         } },
 
     /**
-      * Update the current object.
-      */
+     * Update the current object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
+     * @abstract
+     */
     update: { writable: true, value: function value() {
             //
         } },
@@ -19107,7 +19204,7 @@ Motion.prototype = Object.create(Transition.prototype, {
     // ------------- private
 
     /**
-     * @private
+     * @protected
      */
     fixTime: { value: function value() {
             if (this.useSeconds) {
@@ -19117,6 +19214,7 @@ Motion.prototype = Object.create(Transition.prototype, {
 
     /**
      * Sets the internal timer of the tweened animation.
+     * @protected
      */
     setTimer: { value: function value(_value) {
             if (this._timer) {
@@ -19138,7 +19236,45 @@ Motion.prototype = Object.create(Transition.prototype, {
 });
 
 /**
- * The TweenUnit class interpolate in time a value between 0 and 1.
+ * The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
+ * @name TweenUnit
+ * @memberof system.transitions
+ * @class
+ * @constructor
+ * @extends {system.transitions.Motion}
+ * @tutorial system.transitions
+ * @example
+ * var change = function( tween )
+ * {
+ *     trace( 'progress ' + tween.position ) ;
+ * }
+ *
+ * var finish = function()
+ * {
+ *     trace( 'finish' ) ;
+ * }
+ *
+ * var start = function()
+ * {
+ *     trace( 'start' ) ;
+ * }
+ *
+ * var tween = new TweenUnit( core.easings.backOut , 48 ) ;
+ *
+ * //tween.easing = core.easings.cubicOut ;
+ * //tween.easing = core.easings.elasticOut ;
+ * //tween.easing = core.easings.sineOut ;
+ *
+ * /tween.fps = 24  ; // use the system.process.Timer class
+ * tween.fps = NaN ; // Use the system.process.FrameTimer
+ *
+ * //tween.looping = true ;
+ *
+ * tween.finishIt.connect( finish ) ;
+ * tween.changeIt.connect( change ) ;
+ * tween.startIt.connect( start ) ;
+ *
+ * tween.run() ;
  */
 function TweenUnit() {
     var easing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -19152,6 +19288,10 @@ function TweenUnit() {
     Object.defineProperties(this, {
         /**
          * The current position of this tween.
+         * @memberof system.transitions.TweenUnit
+         * @default 0
+         * @type {number}
+         * @instance
          */
         position: { writable: true, value: 0 },
 
@@ -19174,9 +19314,6 @@ function TweenUnit() {
     }
 }
 
-/**
- * @extends Motion
- */
 TweenUnit.prototype = Object.create(Motion.prototype, {
     /**
      * The constructor reference of the instance.
@@ -19185,6 +19322,10 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
 
     /**
      * Defines the easing method reference of this entry.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     * @see {core.easings}
      */
     easing: {
         get: function get() {
@@ -19198,6 +19339,9 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
      */
     clone: { writable: true, value: function value() {
             return new TweenUnit(this.easing, this.duration, this.useSeconds);
@@ -19205,9 +19349,13 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
 
     /**
      * Set the TweenUnit properties.
-     * @param easing the easing function of the tween entry.
-     * @param duration A number indicating the length of time or number of frames for the tween motion.
-     * @param useSeconds Indicates if the duration is in seconds.
+     * @param {Function} easing - The easing function of the tween entry.
+     * @param {number} [duration=0] - The length of time or number of frames for the tween motion.
+     * @param {boolean} [useSeconds=false] - Indicates if the duration is in seconds.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     * @see {core.easings}
      */
     set: { value: function value(easing) {
             var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -19219,8 +19367,11 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
         } },
 
     /**
-      * Update the current object.
-      */
+     * Update the current tween.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     */
     update: { writable: true, value: function value() {
             if (this._easing) {
                 this.position = this._easing(this._time, 0, this._change, this._duration);
@@ -19233,6 +19384,119 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
 
 /**
  * The Tween class interpolate in time a value between 0 and 1.
+ * @name Tween
+ * @memberof system.transitions
+ * @class
+ * @constructor
+ * @extends {system.transitions.Motion}
+ * @tutorial system.transitions
+ * @example
+ * "use strict" ;
+ *
+ * window.onload = function()
+ * {
+ *     if( !vegas )
+ *     {
+ *         throw new Error( "The VEGAS library is not found." ) ;
+ *     }
+ *
+ *     // ----- imports
+ *
+ *     var global   = vegas.global ; // jshint ignore:line
+ *     var trace    = vegas.trace  ; // jshint ignore:line
+ *     var core     = vegas.core   ; // jshint ignore:line
+ *     var system   = vegas.system ; // jshint ignore:line
+ *
+ *     var Tween = system.transitions.Tween ;
+ *
+ *     // ----- behaviors
+ *
+ *     var change = function( tween )
+ *     {
+ *         trace( 'progress ' + core.dump(tween.target) ) ;
+ *         render() ;
+ *     }
+ *
+ *     var finish = function()
+ *     {
+ *         trace( 'finish' ) ;
+ *         // tween.duration = 120 ;
+ *         // tween.from = null ;
+ *         // tween.to   = tween.to === to ? from : to ;
+ *         // tween.run() ;
+ *     }
+ *
+ *     var start = function()
+ *     {
+ *         trace( 'start' ) ;
+ *     }
+ *
+ *     // ----- initialize
+ *
+ *     var canvas  = document.getElementById('canvas') ;
+ *     var context = canvas.getContext('2d');
+ *
+ *     canvas.width  = 800;
+ *     canvas.height = 600;
+ *
+ *     var color   = '#FF0000' ;
+ *     var radius  = 25;
+ *
+ *     var from    = { x : 100 , y : 100 } ;
+ *     var to      = { x : 500 , y : 400 } ;
+ *     var target  = { x : 0   , y : 0 } ;
+ *
+ *     var easings = null ;
+ *
+ *     easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
+ *
+ *     var tween = new Tween
+ *     ({
+ *         auto       : false,
+ *         duration   : 48 ,
+ *         useSeconds : false ,
+ *         easing     : core.easings.backOut,
+ *         easings    : easings,
+ *         from       : from ,
+ *         target     : target ,
+ *         to         : to
+ *     }) ;
+ *
+ *     //tween.easing = core.easings.cubicOut ;
+ *     //tween.easing = core.easings.elasticOut ;
+ *     //tween.easing = core.easings.sineOut ;
+ *
+ *     // tween.fps = 60  ; // use an internal Timer instance or a FrameTimer instance if fps is NaN
+ *
+ *     tween.looping = true ;
+ *
+ *     tween.finishIt.connect( finish ) ;
+ *     tween.changeIt.connect( change ) ;
+ *     tween.startIt.connect( start ) ;
+ *
+ *     // ----- render
+ *
+ *     var render = function()
+ *     {
+ *         var width  = canvas.width ;
+ *         var height = canvas.height ;
+ *
+ *         context.clearRect(0, 0, width, height);
+ *
+ *         context.fillStyle = '#333333' ;
+ *         context.fillRect(0, 0, width, height );
+ *
+ *         context.beginPath();
+ *         context.arc( target.x, target.y, radius, 0, Math.PI * 2, false );
+ *         context.closePath();
+ *         context.fillStyle = color ;
+ *         context.fill();
+ *     }
+ *
+ *     render() ;
+ *
+ *     tween.run() ;
+ * }
  */
 function Tween(init) {
     TweenUnit.call(this);
@@ -19293,6 +19557,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
     /**
      * Determinates the generic object with all custom easing functions to interpolate the transition of the specific component in time.
      * If this object is null, the default numeric attributes of the target are used.
+     * @name easings
+     * @memberof system.transitions.Tween
+     * @type {Object}
+     * @instance
      */
     easings: {
         get: function get() {
@@ -19306,6 +19574,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
     /**
      * Determinates the generic object with all numeric attributes to start the transition.
      * If this object is null, the default numeric attributes of the target are used.
+     * @name from
+     * @memberof system.transitions.Tween
+     * @type {Object}
+     * @instance
      */
     from: {
         get: function get() {
@@ -19319,6 +19591,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 
     /**
      * Indicates the target reference of the object contrains by the Motion effect.
+     * @name target
+     * @memberof system.transitions.Tween
+     * @type {Object}
+     * @instance
      */
     target: {
         get: function get() {
@@ -19332,6 +19608,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 
     /**
      * Determinates the generic object with all properties to change inside.
+     * @name to
+     * @memberof system.transitions.Tween
+     * @type {Object}
+     * @instance
      */
     to: {
         get: function get() {
@@ -19346,6 +19626,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.transitions.Tween
+     * @instance
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Tween({
@@ -19361,6 +19645,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 
     /**
      * Notify when the process is finished.
+     * @name notifyFinished
+     * @memberof system.transitions.Tween
+     * @instance
+     * @function
      */
     notifyFinished: { value: function value() {
             this._changed = true;
@@ -19371,7 +19659,11 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
         } },
 
     /**
-     * Runs the object.
+     * Runs the process
+     * @name run
+     * @memberof system.transitions.Tween
+     * @instance
+     * @function
      */
     run: { writable: true, value: function value() {
             var to = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -19389,6 +19681,10 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 
     /**
       * Update the current object.
+     * @name update
+     * @memberof system.transitions.Tween
+     * @instance
+     * @function
       */
     update: { writable: true, value: function value() {
             if (this._changed) {
@@ -19426,11 +19722,119 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The system.transitions library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @see For more usage, read the {@tutorial system.transitions} tutorial.
+ * @example <caption>Javascript script</caption>
+ * "use strict" ;
+ *
+ * window.onload = function()
+ * {
+ *     if( !vegas )
+ *     {
+ *         throw new Error( "The VEGAS library is not found." ) ;
+ *     }
+ *
+ *     // ----- imports
+ *
+ *     var global   = vegas.global ; // jshint ignore:line
+ *     var trace    = vegas.trace  ; // jshint ignore:line
+ *     var core     = vegas.core   ; // jshint ignore:line
+ *     var system   = vegas.system ; // jshint ignore:line
+ *
+ *     var Tween = system.transitions.Tween ;
+ *
+ *     // ----- behaviors
+ *
+ *     var change = function( tween )
+ *     {
+ *         trace( 'progress ' + core.dump(tween.target) ) ;
+ *         render() ;
+ *     }
+ *
+ *     var finish = function()
+ *     {
+ *         trace( 'finish' ) ;
+ *         // tween.duration = 120 ;
+ *         // tween.from = null ;
+ *         // tween.to   = tween.to === to ? from : to ;
+ *         // tween.run() ;
+ *     }
+ *
+ *     var start = function()
+ *     {
+ *         trace( 'start' ) ;
+ *     }
+ *
+ *     // ----- initialize
+ *
+ *     var canvas  = document.getElementById('canvas') ;
+ *     var context = canvas.getContext('2d');
+ *
+ *     canvas.width  = 800;
+ *     canvas.height = 600;
+ *
+ *     var color   = '#FF0000' ;
+ *     var radius  = 25;
+ *
+ *     var from    = { x : 100 , y : 100 } ;
+ *     var to      = { x : 500 , y : 400 } ;
+ *     var target  = { x : 0   , y : 0 } ;
+ *
+ *     var easings = null ;
+ *
+ *     easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
+ *
+ *     var tween = new Tween
+ *     ({
+ *         auto       : false,
+ *         duration   : 48 ,
+ *         useSeconds : false ,
+ *         easing     : core.easings.backOut,
+ *         easings    : easings,
+ *         from       : from ,
+ *         target     : target ,
+ *         to         : to
+ *     }) ;
+ *
+ *     //tween.easing = core.easings.cubicOut ;
+ *     //tween.easing = core.easings.elasticOut ;
+ *     //tween.easing = core.easings.sineOut ;
+ *
+ *     // tween.fps = 60  ; // use an internal Timer instance or a FrameTimer instance if fps is NaN
+ *
+ *     tween.looping = true ;
+ *
+ *     tween.finishIt.connect( finish ) ;
+ *     tween.changeIt.connect( change ) ;
+ *     tween.startIt.connect( start ) ;
+ *
+ *     // ----- render
+ *
+ *     var render = function()
+ *     {
+ *         var width  = canvas.width ;
+ *         var height = canvas.height ;
+ *
+ *         context.clearRect(0, 0, width, height);
+ *
+ *         context.fillStyle = '#333333' ;
+ *         context.fillRect(0, 0, width, height );
+ *
+ *         context.beginPath();
+ *         context.arc( target.x, target.y, radius, 0, Math.PI * 2, false );
+ *         context.closePath();
+ *         context.fillStyle = color ;
+ *         context.fill();
+ *     }
+ *
+ *     render() ;
+ *
+ *     tween.run() ;
+ * }
  */
 var transitions = Object.assign({
   Motion: Motion,
@@ -19527,7 +19931,6 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the NONE value (0).
      * @memberof graphics.Align
-     * @static
      * @type {number}
      * @default 0
      */
@@ -19536,6 +19939,7 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the CENTER value (1).
      * @memberof graphics.Align
+     * @type {number}
      * @default 1
      */
     CENTER: { enumerable: true, value: 1 },
@@ -19543,13 +19947,18 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the LEFT value (2).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 2
      */
     LEFT: { enumerable: true, value: 2 },
 
     /**
      * Defines the RIGHT value (4).
+     * @type {number}
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 4
      */
     RIGHT: { enumerable: true, value: 4 },
@@ -19557,7 +19966,8 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the TOP value (8).
      * @memberof graphics.Align
-     * @property {object} TOP
+     * @type {number}
+     * @readonly
      * @default 8
      */
     TOP: { enumerable: true, value: 8 },
@@ -19565,6 +19975,8 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the BOTTOM value (16).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 16
      */
     BOTTOM: { enumerable: true, value: 16 },
@@ -19572,6 +19984,8 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the REVERSE value (32).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 32
      */
     REVERSE: { enumerable: true, value: 32 },
@@ -19579,6 +19993,8 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the BOTTOM_LEFT value (18).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default graphics.Align.BOTTOM | graphics.Align.LEFT
      */
     BOTTOM_LEFT: { enumerable: true, value: 16 | 2 },
@@ -19586,6 +20002,8 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the BOTTOM_RIGHT value (20).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default graphics.Align.BOTTOM | graphics.Align.RIGHT
      */
     BOTTOM_RIGHT: { enumerable: true, value: 16 | 4 },
@@ -19593,56 +20011,72 @@ var Align = Object.defineProperties({}, {
     /**
      * Defines the CENTER_LEFT value (3).
      * @memberof graphics.Align
-     * @default graphics.Align.CENTER | graphics.Align.LEFT
+     * @type {number}
+     * @readonly
+     * @default 3
      */
-    CENTER_LEFT: { enumerable: true, value: 1 | 2 },
+    CENTER_LEFT: { enumerable: true, value: 3 },
 
     /**
      * Defines the CENTER_RIGHT value (5).
      * @memberof graphics.Align
-     * @default graphics.Align.CENTER | graphics.Align.RIGHT
+     * @type {number}
+     * @readonly
+     * @default 5
      */
-    CENTER_RIGHT: { enumerable: true, value: 1 | 4 },
+    CENTER_RIGHT: { enumerable: true, value: 5 },
 
     /**
      * Defines the TOP_LEFT value (10).
      * @memberof graphics.Align
-     * @default graphics.Align.TOP | graphics.Align.LEFT
+     * @type {number}
+     * @readonly
+     * @default 10
      */
-    TOP_LEFT: { enumerable: true, value: 8 | 2 },
+    TOP_LEFT: { enumerable: true, value: 10 },
 
     /**
      * Defines the TOP_RIGHT value (12).
      * @memberof graphics.Align
-     * @default graphics.Align.TOP | graphics.Align.RIGHT
+     * @type {number}
+     * @readonly
+     * @default 12
      */
-    TOP_RIGHT: { enumerable: true, value: 8 | 4 },
+    TOP_RIGHT: { enumerable: true, value: 12 },
 
     /**
      * Defines the LEFT_BOTTOM value (50).
      * @memberof graphics.Align
-     * @default graphics.Align.LEFT | graphics.Align.BOTTOM
+     * @type {number}
+     * @readonly
+     * @default 50
      */
-    LEFT_BOTTOM: { enumerable: true, value: 16 | 2 | 32 },
+    LEFT_BOTTOM: { enumerable: true, value: 50 },
 
     /**
      * Defines the RIGHT_BOTTOM value (52).
      * @memberof graphics.Align
-     * @default graphics.Align.RIGHT | graphics.Align.BOTTOM
+     * @type {number}
+     * @readonly
+     * @default 52
      */
-    RIGHT_BOTTOM: { enumerable: true, value: 16 | 4 | 32 },
+    RIGHT_BOTTOM: { enumerable: true, value: 52 },
 
     /**
      * Defines the LEFT_TOP value (42).
      * @memberof graphics.Align
-     * @default graphics.Align.LEFT | graphics.Align.TOP
+     * @type {number}
+     * @readonly
+     * @default 42
      */
     LEFT_TOP: { enumerable: true, value: 8 | 2 | 32 },
 
     /**
      * Defines the RIGHT_TOP value (44).
      * @memberof graphics.Align
-     * @default graphics.Align.RIGHT | graphics.Align.TOP
+     * @type {number}
+     * @readonly
+     * @default 44
      */
     RIGHT_TOP: { enumerable: true, value: 8 | 4 | 32 },
 
@@ -19731,12 +20165,16 @@ var Align = Object.defineProperties({}, {
 /**
  * Defines the alignments collection of all valid aligment elements.
  * @memberof graphics.Align
+ * @type {Array}
+ * @readonly
  */
 Object.defineProperty(Align, 'alignments', { value: [Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.CENTER, Align.CENTER_LEFT, Align.CENTER_RIGHT, Align.LEFT, Align.LEFT_BOTTOM, Align.LEFT_TOP, Align.RIGHT, Align.RIGHT_BOTTOM, Align.RIGHT_TOP, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT, Align.NONE] });
 
 /**
  * Defines the key/value map to register all aligments by name (string).
  * @memberof graphics.Align
+ * @type {Object}
+ * @readonly
  */
 Object.defineProperty(Align, 'stringToNumber', { value: {
         "b": Align.BOTTOM,
