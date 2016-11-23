@@ -6,15 +6,18 @@ import { Motion }    from './Motion.js' ;
 
 /**
  * The internal MotionNextFrame Receiver.
+ * @name MotionNextFrame
+ * @memberof system.transitions
+ * @class
+ * @implements Receiver
+ * @constructor
+ * @param {system.transitions.Motion} motion - The Motion reference who emit the messages.
  */
 export function MotionNextFrame( motion )
 {
     this.motion = motion instanceof Motion ? motion : null ;
 }
 
-/**
- * @extends Receiver
- */
 MotionNextFrame.prototype = Object.create( Receiver.prototype ,
 {
     /**
@@ -24,6 +27,10 @@ MotionNextFrame.prototype = Object.create( Receiver.prototype ,
 
     /**
      * Receives the signal message.
+     * @name receive
+     * @memberof system.transitions.MotionNextFrame
+     * @function
+     * @instance
      */
     receive : { value : function()
     {

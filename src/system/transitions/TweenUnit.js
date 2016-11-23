@@ -4,7 +4,13 @@ import { linear } from '../../core/easings/linear.js' ;
 import { Motion } from './Motion.js' ;
 
 /**
- * The TweenUnit class interpolate in time a value between 0 and 1.
+ * The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
+ * @name TweenUnit
+ * @memberof system.transitions
+ * @class
+ * @constructor
+ * @extends {system.transitions.Motion}
+ * @tutorial system.transitions
  */
 export function TweenUnit( easing = null , duration = 0 , useSeconds = false , auto = false , id = null )
 {
@@ -37,9 +43,6 @@ export function TweenUnit( easing = null , duration = 0 , useSeconds = false , a
     }
 }
 
-/**
- * @extends Motion
- */
 TweenUnit.prototype = Object.create( Motion.prototype ,
 {
     /**

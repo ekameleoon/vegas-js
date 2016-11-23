@@ -11,6 +11,12 @@ import { Timer }      from '../process/Timer.js' ;
 
 /**
  * The Motion class.
+ * @name Motion
+ * @memberof system.transitions
+ * @extends {system.transitions.Transition}
+ * @class
+ * @constructor
+ * @param {number} [id=null] The identfier of the object.
  */
 export function Motion( id = null )
 {
@@ -72,9 +78,6 @@ export function Motion( id = null )
     this.setTimer( new FrameTimer() ) ;
 }
 
-/**
- * @extends Transition
- */
 Motion.prototype = Object.create( Transition.prototype ,
 {
     // ------------- public properties

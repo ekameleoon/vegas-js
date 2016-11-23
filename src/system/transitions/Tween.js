@@ -5,6 +5,12 @@ import { TweenUnit } from './TweenUnit.js' ;
 
 /**
  * The Tween class interpolate in time a value between 0 and 1.
+ * @name Tween
+ * @memberof system.transitions
+ * @class
+ * @constructor
+ * @extends {system.transitions.Motion}
+ * @tutorial system.transitions
  */
 export function Tween( init )
 {

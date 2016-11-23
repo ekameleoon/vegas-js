@@ -54,6 +54,7 @@ import { sineOut }       from './easings/sineOut.js' ;
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @namespace core.easings
  * @memberof core
+ * @tutorial system.transitions
  */
 export var easings = Object.assign
 ({

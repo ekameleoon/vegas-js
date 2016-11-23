@@ -46,7 +46,8 @@ var docs =
     } ,
     "opts" :
     {
-        "destination" : "./docs"
+        "destination" : "./docs/bin" ,
+        "tutorials"   : "./docs/tutorials"
     },
     "plugins":
     [
@@ -69,9 +70,6 @@ var docs =
         "syntaxTheme"    : "default" // dark or default
     }
 }
-
-
-
 
 // --------- Unit tests
 

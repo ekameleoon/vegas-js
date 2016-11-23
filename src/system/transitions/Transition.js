@@ -4,6 +4,10 @@ import { Task } from '../process/Task.js' ;
 
 /**
  * A simple Transition object.
+ * @name Transition
+ * @memberof system.transitions
+ * @extends {system.process.Task}
+ * @class
  */
 export function Transition ( id = null )
 {
