@@ -11,6 +11,38 @@ import { Motion } from './Motion.js' ;
  * @constructor
  * @extends {system.transitions.Motion}
  * @tutorial system.transitions
+ * @example
+ * var change = function( tween )
+ * {
+ *     trace( 'progress ' + tween.position ) ;
+ * }
+ *
+ * var finish = function()
+ * {
+ *     trace( 'finish' ) ;
+ * }
+ *
+ * var start = function()
+ * {
+ *     trace( 'start' ) ;
+ * }
+ *
+ * var tween = new TweenUnit( core.easings.backOut , 48 ) ;
+ *
+ * //tween.easing = core.easings.cubicOut ;
+ * //tween.easing = core.easings.elasticOut ;
+ * //tween.easing = core.easings.sineOut ;
+ *
+ * /tween.fps = 24  ; // use the system.process.Timer class
+ * tween.fps = NaN ; // Use the system.process.FrameTimer
+ *
+ * //tween.looping = true ;
+ *
+ * tween.finishIt.connect( finish ) ;
+ * tween.changeIt.connect( change ) ;
+ * tween.startIt.connect( start ) ;
+ *
+ * tween.run() ;
  */
 export function TweenUnit( easing = null , duration = 0 , useSeconds = false , auto = false , id = null )
 {

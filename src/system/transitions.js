@@ -6,13 +6,13 @@ import { Tween }      from './transitions/Tween.js' ;
 import { TweenUnit }  from './transitions/TweenUnit.js' ;
 
 /**
- * The VEGAS.js framework - The system.transitions library.
+ * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
- * @tutorial system.transitions
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @example
+ * @see For more usage, read the {@tutorial system.transitions} tutorial.
+ * @example <caption>Javascript script</caption>
  * "use strict" ;
  *
  * window.onload = function()

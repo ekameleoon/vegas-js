@@ -12,7 +12,6 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the NONE value (0).
      * @memberof graphics.Align
-     * @static
      * @type {number}
      * @default 0
      */
@@ -21,6 +20,7 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the CENTER value (1).
      * @memberof graphics.Align
+     * @type {number}
      * @default 1
      */
     CENTER : { enumerable : true , value : 1 },
@@ -28,13 +28,18 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the LEFT value (2).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 2
      */
     LEFT : { enumerable : true , value : 2 },
 
     /**
      * Defines the RIGHT value (4).
+     * @type {number}
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 4
      */
     RIGHT : { enumerable : true , value : 4 },
@@ -42,7 +47,8 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the TOP value (8).
      * @memberof graphics.Align
-     * @property {object} TOP
+     * @type {number}
+     * @readonly
      * @default 8
      */
     TOP : { enumerable : true , value : 8 },
@@ -50,6 +56,8 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the BOTTOM value (16).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 16
      */
     BOTTOM : { enumerable : true , value : 16 },
@@ -57,6 +65,8 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the REVERSE value (32).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default 32
      */
     REVERSE : { enumerable : true , value : 32 },
@@ -64,6 +74,8 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the BOTTOM_LEFT value (18).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default graphics.Align.BOTTOM | graphics.Align.LEFT
      */
     BOTTOM_LEFT : { enumerable : true , value : 16 | 2 } ,
@@ -71,6 +83,8 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the BOTTOM_RIGHT value (20).
      * @memberof graphics.Align
+     * @type {number}
+     * @readonly
      * @default graphics.Align.BOTTOM | graphics.Align.RIGHT
      */
     BOTTOM_RIGHT : { enumerable : true , value : 16 | 4 },
@@ -78,56 +92,72 @@ export var Align = Object.defineProperties( {} ,
     /**
      * Defines the CENTER_LEFT value (3).
      * @memberof graphics.Align
-     * @default graphics.Align.CENTER | graphics.Align.LEFT
+     * @type {number}
+     * @readonly
+     * @default 3
      */
-    CENTER_LEFT : { enumerable : true , value : 1 | 2  },
+    CENTER_LEFT : { enumerable : true , value : 3  },
 
     /**
      * Defines the CENTER_RIGHT value (5).
      * @memberof graphics.Align
-     * @default graphics.Align.CENTER | graphics.Align.RIGHT
+     * @type {number}
+     * @readonly
+     * @default 5
      */
-    CENTER_RIGHT : { enumerable : true , value : 1 | 4  },
+    CENTER_RIGHT : { enumerable : true , value : 5  },
 
     /**
      * Defines the TOP_LEFT value (10).
      * @memberof graphics.Align
-     * @default graphics.Align.TOP | graphics.Align.LEFT
+     * @type {number}
+     * @readonly
+     * @default 10
      */
-    TOP_LEFT : { enumerable : true , value : 8 | 2  },
+    TOP_LEFT : { enumerable : true , value : 10  },
 
     /**
      * Defines the TOP_RIGHT value (12).
      * @memberof graphics.Align
-     * @default graphics.Align.TOP | graphics.Align.RIGHT
+     * @type {number}
+     * @readonly
+     * @default 12
      */
-    TOP_RIGHT : { enumerable : true , value : 8 | 4  },
+    TOP_RIGHT : { enumerable : true , value : 12 },
 
     /**
      * Defines the LEFT_BOTTOM value (50).
      * @memberof graphics.Align
-     * @default graphics.Align.LEFT | graphics.Align.BOTTOM
+     * @type {number}
+     * @readonly
+     * @default 50
      */
-    LEFT_BOTTOM : { enumerable : true , value : 16 | 2 | 32  },
+    LEFT_BOTTOM : { enumerable : true , value : 50  },
 
     /**
      * Defines the RIGHT_BOTTOM value (52).
      * @memberof graphics.Align
-     * @default graphics.Align.RIGHT | graphics.Align.BOTTOM
+     * @type {number}
+     * @readonly
+     * @default 52
      */
-    RIGHT_BOTTOM : { enumerable : true , value : 16 | 4 | 32  },
+    RIGHT_BOTTOM : { enumerable : true , value : 52  },
 
     /**
      * Defines the LEFT_TOP value (42).
      * @memberof graphics.Align
-     * @default graphics.Align.LEFT | graphics.Align.TOP
+     * @type {number}
+     * @readonly
+     * @default 42
      */
     LEFT_TOP : { enumerable : true , value : 8 | 2 | 32  },
 
     /**
      * Defines the RIGHT_TOP value (44).
      * @memberof graphics.Align
-     * @default graphics.Align.RIGHT | graphics.Align.TOP
+     * @type {number}
+     * @readonly
+     * @default 44
      */
     RIGHT_TOP : { enumerable : true , value : 8 | 4 | 32  },
 
@@ -202,6 +232,8 @@ export var Align = Object.defineProperties( {} ,
 /**
  * Defines the alignments collection of all valid aligment elements.
  * @memberof graphics.Align
+ * @type {Array}
+ * @readonly
  */
 Object.defineProperty( Align , 'alignments' , { value :
 [
@@ -216,6 +248,8 @@ Object.defineProperty( Align , 'alignments' , { value :
 /**
  * Defines the key/value map to register all aligments by name (string).
  * @memberof graphics.Align
+ * @type {Object}
+ * @readonly
  */
 Object.defineProperty( Align , 'stringToNumber' , { value :
 {
