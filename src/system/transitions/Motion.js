@@ -13,7 +13,7 @@ import { Timer }      from '../process/Timer.js' ;
  * The Motion class.
  * @name Motion
  * @memberof system.transitions
- * @extends {system.transitions.Transition}
+ * @implements {system.transitions.Transition}
  * @class
  * @constructor
  * @param {number} [id=null] The identfier of the object.
@@ -26,6 +26,10 @@ export function Motion( id = null )
     {
         /**
          * Defined if the Motion used seconds or not.
+         * @memberof system.transitions.Motion
+         * @default false
+         * @type {boolean}
+         * @instance
          */
         useSeconds : { writable : true , value : false },
 
@@ -91,6 +95,10 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Indicates the duration of the tweened animation in frames or seconds (default 0).
+     * @memberof system.transitions.Motion
+     * @default false
+     * @type {number}
+     * @instance
      */
     duration :
     {
@@ -106,6 +114,10 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Indicates the number of frames per second of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @default NaN
+     * @type {number}
+     * @instance
      */
     fps :
     {
@@ -133,6 +145,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Indicates the internal previous time value.
+     * @memberof system.transitions.Motion
+     * @type {number}
+     * @instance
      */
     prevTime :
     {
@@ -144,6 +159,10 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Indicates if the motion is stopped.
+     * @memberof system.transitions.Motion
+     * @default false
+     * @type {boolean}
+     * @instance
      */
     stopped :
     {
@@ -155,6 +174,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Indicates the target reference of the object contrains by the Motion effect.
+     * @memberof system.transitions.Motion
+     * @type {Object}
+     * @instance
      */
     target :
     {
@@ -173,6 +195,9 @@ Motion.prototype = Object.create( Transition.prototype ,
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -181,6 +206,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Forwards the tweened animation to the next frame.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     nextFrame : { value : function()
     {
@@ -189,6 +217,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Directs the tweened animation to the frame previous to the current frame.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     prevFrame : { value : function()
     {
@@ -200,6 +231,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Resumes a tweened animation from its stopped point in the animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     resume : { writable : true , value : function()
     {
@@ -218,16 +252,23 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Rewinds a tweened animation to the beginning of the tweened animation.
+     * @param {number} time - The time value to rewind the motion.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
-    rewind : { value : function( t = 0 )
+    rewind : { value : function( time = 0 )
     {
-        this._time = t > 0 ? t : 0 ;
+        this._time = time > 0 ? time : 0 ;
         this.fixTime() ;
         this.update() ;
     }} ,
 
     /**
      * Runs the object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     run : { writable : true , value : function()
     {
@@ -239,16 +280,20 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Sets the current time within the duration of the animation.
+     * @param {number} time - The time value to rewind the motion.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
-    setTime : { value : function( t )
+    setTime : { value : function( time )
     {
         this._prevTime = this._time ;
-        if (t > this._duration)
+        if (time > this._duration)
         {
-            t = this._duration ;
+            time = this._duration ;
             if ( this.looping )
             {
-                this.rewind( t - this._duration );
+                this.rewind( time - this._duration );
                 this.notifyLooped() ;
             }
             else
@@ -262,19 +307,22 @@ Motion.prototype = Object.create( Transition.prototype ,
                 this.notifyFinished() ;
             }
         }
-        else if ( t < 0 )
+        else if ( time < 0 )
         {
             this.rewind() ;
         }
         else
         {
-            this._time = t ;
+            this._time = time ;
             this.update() ;
         }
     }},
 
     /**
      * Starts the internal interval of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     startInterval : { value : function()
     {
@@ -284,6 +332,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Stops the tweened animation at its current position.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     stop : { value : function()
     {
@@ -297,6 +348,9 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Stops the intenral interval of the tweened animation.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
      */
     stopInterval : { value : function()
     {
@@ -305,8 +359,12 @@ Motion.prototype = Object.create( Transition.prototype ,
     }},
 
     /**
-      * Update the current object.
-      */
+     * Update the current object.
+     * @memberof system.transitions.Motion
+     * @instance
+     * @function
+     * @abstract
+     */
     update : { writable : true , value : function()
     {
         //
@@ -315,7 +373,7 @@ Motion.prototype = Object.create( Transition.prototype ,
     // ------------- private
 
     /**
-     * @private
+     * @protected
      */
     fixTime : { value : function()
     {
@@ -327,6 +385,7 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Sets the internal timer of the tweened animation.
+     * @protected
      */
     setTimer : { value : function( value )
     {

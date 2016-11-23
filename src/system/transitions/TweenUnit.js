@@ -20,6 +20,10 @@ export function TweenUnit( easing = null , duration = 0 , useSeconds = false , a
     {
         /**
          * The current position of this tween.
+         * @memberof system.transitions.TweenUnit
+         * @default 0
+         * @type {number}
+         * @instance
          */
         position : { writable : true , value : 0 },
 
@@ -52,6 +56,10 @@ TweenUnit.prototype = Object.create( Motion.prototype ,
 
     /**
      * Defines the easing method reference of this entry.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     * @see {core.easings}
      */
     easing :
     {
@@ -68,6 +76,9 @@ TweenUnit.prototype = Object.create( Motion.prototype ,
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
      */
     clone : { writable : true , value : function()
     {
@@ -76,9 +87,13 @@ TweenUnit.prototype = Object.create( Motion.prototype ,
 
     /**
      * Set the TweenUnit properties.
-     * @param easing the easing function of the tween entry.
-     * @param duration A number indicating the length of time or number of frames for the tween motion.
-     * @param useSeconds Indicates if the duration is in seconds.
+     * @param {Function} easing - The easing function of the tween entry.
+     * @param {number} [duration=0] - The length of time or number of frames for the tween motion.
+     * @param {boolean} [useSeconds=false] - Indicates if the duration is in seconds.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     * @see {core.easings}
      */
     set : { value : function( easing , duration = 0 , useSeconds = false )
     {
@@ -88,8 +103,11 @@ TweenUnit.prototype = Object.create( Motion.prototype ,
     }},
 
     /**
-      * Update the current object.
-      */
+     * Update the current tween.
+     * @memberof system.transitions.TweenUnit
+     * @type {Function}
+     * @instance
+     */
     update : { writable : true , value : function()
     {
         if( this._easing )

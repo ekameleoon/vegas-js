@@ -7,7 +7,7 @@ import { Task } from '../process/Task.js' ;
  * @name Transition
  * @memberof system.transitions
  * @extends {system.process.Task}
- * @class
+ * @interface
  */
 export function Transition ( id = null )
 {
@@ -34,6 +34,10 @@ Transition.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates the id value of this object.
+     * @memberof system.transitions.Transition
+     * @default null
+     * @type {*}
+     * @instance
      */
     id :
     {
@@ -44,6 +48,10 @@ Transition.prototype = Object.create( Task.prototype ,
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Transition
+     * @abstract
+     * @instance
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -52,7 +60,11 @@ Transition.prototype = Object.create( Task.prototype ,
 
     /**
      * Compares the specified object with this object for equality. This method compares the ids of the objects with the <code>Identifiable.id</code> method.
+     * @param {system.transitions.Transition} o - The object to compare.
      * @return a shallow copy of this object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
      */
     equals : { writable : true , value : function( o )
     {
@@ -73,6 +85,9 @@ Transition.prototype = Object.create( Task.prototype ,
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
      */
     toString : { value : function()
     {
