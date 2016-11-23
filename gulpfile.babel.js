@@ -42,11 +42,11 @@ var docs =
 {
     "tags" :
     {
-        "allowUnknownTags": true
+        "allowUnknownTags" : true
     } ,
     "opts" :
     {
-        "destination": "./docs/gen"
+        "destination" : "./docs"
     },
     "plugins":
     [
@@ -54,17 +54,19 @@ var docs =
     ],
     "templates":
     {
+        "footer"         : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
+        "systemName"     : "VEGAS JS",
         "cleverLinks"    : false,
         "monospaceLinks" : false,
-        "default"        :
-        {
-            "outputSourceFiles" : true
-        },
-        "path"       : "ink-docstrap",
-        "theme"      : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
-        "navType"    : "vertical",
-        "linenums"   : true,
-        "dateFormat" : "YYYY Do MMMM, h:mm:ss a"
+        "analytics"      : { "ua" : "UA-87950715-1" , "domain":"auto" } ,
+        "default"        : { "outputSourceFiles" : true },
+        "path"           : "ink-docstrap",
+        "theme"          : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
+        "navType"        : "vertical",
+        "inverseNav"     : true,
+        "linenums"       : true,
+        "dateFormat"     : "YYYY Do MMMM, h:mm:ss a",
+        "syntaxTheme"    : "default" // dark or default
     }
 }
 

@@ -4,7 +4,10 @@ import { DEG2RAD } from './DEG2RAD.js' ;
 
 /**
  * Calculates the sine of the passed angle.
- * @param angle a value representing angle in degrees.
- * @return the sine of the passed angle, a number between -1 and 1 inclusive.
+ * @name sinD
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - A value in degrees.
+ * @return The sine of the passed angle, a number between <code>-1</code> and <code>1</code> inclusive.
  */
 export var sinD = ( angle ) => Math.sin( angle * DEG2RAD ) ;

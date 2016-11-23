@@ -3,6 +3,9 @@
 /**
  * Calculates with the fibonacci sequence the value with a specific level.
  * By definition, the first two numbers in the Fibonacci sequence are 0 and 1, and each subsequent number is the sum of the previous two.
+ * @name fibonacci
+ * @memberof core.maths
+ * @function
  */
 export var fibonacci = ( value ) =>
 {

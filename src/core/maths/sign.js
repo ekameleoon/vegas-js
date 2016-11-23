@@ -2,8 +2,10 @@
 
 /**
  * Returns 1 if the value is positive or -1.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name sign
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  *
  * n = core.maths.sign( -150 ) ;
@@ -14,10 +16,9 @@
  *
  * n = core.maths.sign( 0 ) ;
  * trace ("n : " + n) ; // 1
- * </pre>
- * @param n the number to defined this sign.
- * @return 1 if the value is positive or -1.
- * @throws Error if the passed-in value is NaN.
+ * @param {number} n - The number to defined this sign.
+ * @return <code>1</code> if the value is positive or <code>-1</code>.
+ * @throws Error if the passed-in value is <code>NaN</code>.
  */
 export var sign = ( n ) =>
 {

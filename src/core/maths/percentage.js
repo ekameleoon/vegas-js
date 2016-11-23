@@ -1,18 +1,19 @@
 "use strict" ;
 
 /**
- * Returns a percentage value or NaN.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.percentage( 50 , 100 ) + "%" ) ; // 50%
- * trace( core.maths.percentage( 68 , 425 ) + "%" ) ; // 16%
- * </pre>
- * @param value the current value.
- * @param maximum the max value.
- * @return a percentage value or null.
- */
+ * Calculates a percentage value.
+ * @name percentage
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The current value to calculates.
+ * @param {number} maximum - The max value.
+ * @return a percentage value or NaN.
+ * @example
+ * trace( percentage( 50 , 100 ) + "%" ) ; // 50%
+ * trace( percentage( 68 , 425 ) + "%" ) ; // 16%
+  */
 export var percentage = ( value , maximum ) =>
 {
-    var p /*Number*/ = (value / maximum) * 100 ;
+    let p = (value / maximum) * 100 ;
     return (isNaN( p ) || ! isFinite( p )) ? NaN : p ;
 }

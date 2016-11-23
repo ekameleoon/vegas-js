@@ -5,24 +5,20 @@ import { RAD2DEG } from './RAD2DEG.js' ;
 
 /**
  * Calculates the midpoint along a great circle path between the two points.
- * <p>See <a href="http://mathforum.org/library/drmath/view/51822.html">"Latitude and Longitude of a Point Halfway between Two Points"</a> question to calculate the derivation.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var midPoint = core.maths.midPoint ;
- *
+ * @see <a href="http://mathforum.org/library/drmath/view/51822.html">"Latitude and Longitude of a Point Halfway between Two Points"</a> question to calculate the derivation.</p>
+ * @name midPoint
+ * @memberof core.maths
+ * @function
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
+ * @return The midpoint (Object) along a great circle path between the two points.
+ * @example
  * var pos1 = { x : 34.122222   , y : 118.4111111 } ; // LA
  * var pos2 = { x : 40.66972222 , y : 73.94388889 } ; // NYC
- *
  * var result = midPoint( pos1.x , pos1.y , pos2.x , pos2.y )  ;
- *
- * trace( "midpt latitude:" + result.x + " longitude:" + result.y ) ;
- * // midpt latitude:39.547078603870254 longitude:97.2015133919303
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
- * @return The midpoint (Object) along a great circle path between the two points.
+ * trace( "midpt latitude:" + result.x + " longitude:" + result.y ) ;// midpt latitude:39.547078603870254 longitude:97.2015133919303
  */
 export var midPoint = ( latitude1, longitude1, latitude2, longitude2 ) =>
 {

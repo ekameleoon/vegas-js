@@ -3,7 +3,11 @@
 import { DEG2RAD } from './DEG2RAD.js' ;
 
 /**
- * Converts an angle in degrees in radians
- * @return an angle in degrees in radians.
+ * Converts degrees to radians.
+ * @name degreesToRadians
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - Value, in degrees, to convert to radians.
+ * @return The angle in radians.
  */
 export var degreesToRadians = ( angle ) => angle * DEG2RAD ;

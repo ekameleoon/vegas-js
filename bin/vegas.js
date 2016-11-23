@@ -2634,14 +2634,14 @@ var clamp = function clamp(value, min, max) {
  * @name berp
  * @memberof core.maths
  * @function
- * @example
- * trace( berp( 0 , 100 , 0.5 ) ;
- * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( berp( 0 , 100 , 0.5 ) ; // 105.1015801865505
  */
-var berp = function berp(amount, start, end) {
+var berp = function berp(start, end, amount) {
     if (start === end) {
         return start;
     }
@@ -2713,17 +2713,17 @@ function ceil(n) {
  * @name clerp
  * @memberof core.maths
  * @function
- * @example
- * trace( clerp( 0 , 180 , 0.5 ) ; // 90
- * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( clerp( 0 , 180 , 0.5 ) ; // 90
  */
 
-var clerp = function clerp(amount, start, end) {
+var clerp = function clerp(start, end, amount) {
     var max = 360;
-    var half = 180;
+    var half = 180; // abs((360-0)/2) == abs(max-min)/2
     var diff = end - start;
     if (diff < -half) {
         return start + (max - start + end) * amount;
@@ -2751,15 +2751,15 @@ var cosD = function cosD(angle) {
  * @name coserp
  * @memberof core.maths
  * @function
- * @example
- * trace( coserp( 0 , 100 , 0.5 ) ;
- * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( coserp( 0 , 100 , 0.5 ) ; // 29.28932188134524
  */
 
-var coserp = function coserp(amount, start, end) {
+var coserp = function coserp(start, end, amount) {
     if (start === end) {
         return start;
     }
@@ -2780,19 +2780,26 @@ var cosH = function cosH(x) {
 };
 
 /**
- * Converts an angle in degrees in radians
- * @return an angle in degrees in radians.
+ * Converts degrees to radians.
+ * @name degreesToRadians
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - Value, in degrees, to convert to radians.
+ * @return The angle in radians.
  */
 var degreesToRadians = function degreesToRadians(angle) {
   return angle * DEG2RAD;
 };
 
 /**
- * Returns the distance between 2 points with the coordinates of the 2 points.
- * @param x1 the x coordinate of the first point.
- * @param y1 the y coordinate of the first point.
- * @param x2 the x coordinate of the second point.
- * @param y2 the y coordinate of the second point.
+ * Calculates the distance between 2 points.
+ * @name distance
+ * @memberof core.maths
+ * @function
+ * @param {number} x1 - The x coordinate of the first point.
+ * @param {number} y1 - The y coordinate of the first point.
+ * @param {number} x2 - The x coordinate of the second point.
+ * @param {number} y2 - The y coordinate of the second point.
  * @return the length between 2 points.
  */
 
@@ -2804,13 +2811,15 @@ var distance = function distance(x1, y1, x2, y2) {
 
 /**
  * Returns the distance between 2 points with the coordinates of the 2 points.
- * @param p1 the first point to determinate the distance (defines with the x and y coordinates).
- * @param p2 the second point to determinate the distance (defines with the x and y coordinates).
+ * @name distanceByObject
+ * @memberof core.maths
+ * @function
+ * @param {graphics.geom.Vector2|graphics.geom.Point|Object} p1 the first point to determinate the distance (defines with the x and y coordinates).
+ * @param {graphics.geom.Vector2|graphics.geom.Point|Object} p2 the second point to determinate the distance (defines with the x and y coordinates).
  * @return the length between 2 points.
  */
 
-function distanceByObject(p1 /*Object*/, p2 /*Object*/) /*Number*/
-{
+function distanceByObject(p1, p2) {
   var dx = p2.x - p1.x;
   var dy = p2.y - p1.y;
   return Math.sqrt(dx * dx + dy * dy);
@@ -2826,7 +2835,7 @@ function distanceByObject(p1 /*Object*/, p2 /*Object*/) /*Number*/
 var EARTH_RADIUS_IN_METERS = 6371000;
 
 /**
- * Represents the smallest positive Single value greater than zero.
+ * Represents the smallest positive Single value greater than zero, <code>EPSILON=0.000000001</code>.
  * @name EPSILON
  * @memberof core.maths
  * @const
@@ -2837,6 +2846,9 @@ var EPSILON = 0.000000001;
 /**
  * Calculates with the fibonacci sequence the value with a specific level.
  * By definition, the first two numbers in the Fibonacci sequence are 0 and 1, and each subsequent number is the sum of the previous two.
+ * @name fibonacci
+ * @memberof core.maths
+ * @function
  */
 
 var fibonacci = function fibonacci(value) {
@@ -2853,19 +2865,17 @@ var fibonacci = function fibonacci(value) {
 
 /**
  * Calculates the final bearing from a specific points to a supplied point, in degrees. For final bearing, simply take the initial bearing from the end point to the start point and reverse it (using θ = (θ+180) % 360).
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var finalBearing = core.maths.finalBearing ;
- *
+ * @name finalBearing
+ * @memberof core.maths
+ * @function
+ * @example
  * var position1 = new Point( 37.422045 , -122.084347 ) ; // Google HQ
  * var position2 = new Point( 37.77493  , -122.419416 ) ; // San Francisco, CA
- *
  * trace( finalBearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 143.1477743368166
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
  * @return The bearing in degrees from North.
  */
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
@@ -2882,42 +2892,44 @@ var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longi
 
 /**
  * Fixs an angle in degrees between 0 and 360 degrees.
- * @param angle the passed angle value in degrees.
- * @return an angle in degrees between 0 and 360 degrees.
+ * @name fixAngle
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - The passed angle value.
+ * @return an angle fixed between 0 and 360 degrees.
  */
 
-function fixAngle(angle /*Number*/) /*Number*/
-{
+function fixAngle(angle) {
     if (isNaN(angle)) {
         angle = 0;
     }
+
     angle %= 360;
+
     return angle < 0 ? angle + 360 : angle;
 }
 
 /**
  * Rounds and returns a number by a count of floating points.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var n ;
- *
- * n = core.maths.floor(4.572525153, 2) ;
- * trace ("n : " + n) ; // n : 4.57
- *
- * n = core.maths.floor(4.572525153, -1) ;
- * trace ("n : " + n) ; // n : 4
- * </pre>
- * @param n the number to round.
- * @param floatCount the count of number after the point.
+ * @name floor
+ * @memberof core.maths
+ * @function
+ * @param {number} n - The number to round.
+ * @param {number} [floatCount=0] the count of number after the point.
  * @return the floor value of a number by a count of floating points.
+ * @example
+ * trace(floor(4.572525153, 2)) ; // 4.57
+ * trace(floor(4.572525153, -1)) ; // 4
  */
 
-var floor = function floor(n, floatCount) {
+var floor = function floor(n) {
+    var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
     if (isNaN(n)) {
         return NaN;
     }
-    var r /*Number*/ = 1;
-    var i /*Number*/ = -1;
+    var r = 1;
+    var i = -1;
     while (++i < floatCount) {
         r *= 10;
     }
@@ -2926,14 +2938,14 @@ var floor = function floor(n, floatCount) {
 
 /**
  * Returns the greatest common divisor with the Euclidean algorithm.
- * <p><b>Example :</b></p>
- * <pre>
- * var gcd = core.maths.gcd(320,240) ;
- * trace("gcd(320,240) : " + gcd ) ; // gcd(320,240) : 80
- * </pre>
- * @param i1 The first integer value.
- * @param i2 The second integer value.
+ * @name floor
+ * @memberof core.maths
+ * @function
+ * @param {number} i1 - The first integer value.
+ * @param {number} i2 - The second integer value.
  * @return the greatest common divisor with the Euclidean algorithm.
+ * @example
+ * trace("gcd(320,240) : " + gcd(320,240) ) ; // gcd(320,240) : 80
  */
 
 var gcd = function gcd(i1, i2) {
@@ -2953,26 +2965,26 @@ var gcd = function gcd(i1, i2) {
 };
 
 /**
- * The haversine formula is an equation important in navigation, giving great-circle distances between two points on a sphere from
- * their longitudes and latitudes.This algorithm is way faster than the Vincenty Formula but less accurate.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var haversine = core.maths.haversine ;
- *
- * var position1 = { x : 37.422045 , y : -122.084347  } ; // Google HQ
- * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA
- *
- * trace( haversine( position1.x , position1.y , position2.x , position2.y ) ) ; // 49 103.007 meters
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
- * @param radius The optional radius of the sphere (by default the function use the earth's radius, mean radius = 6,371km) .
+ * The haversine formula is an equation important in navigation, giving great-circle distances between two points on a sphere from their longitudes and latitudes.
+ * This algorithm is way faster than the <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty Formula</a> but less accurate.
+ * @name haversine
+ * @memberof core.maths
+ * @function
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
+ * @param {number} [radius={@link core.maths.EARTH_RADIUS_IN_METERS}] - The optional radius of the sphere (by default the function use the earth's radius, mean radius = 6,371km) .
  * @return The distance between two points on a sphere from their longitudes and latitudes.
  * @see core.maths.EARTH_RADIUS_IN_METERS
+ * @example
+ * var position1 = { x : 37.422045 , y : -122.084347  } ; // Google HQ
+ * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA
+ * trace( haversine( position1.x , position1.y , position2.x , position2.y ) ) ; // 49 103.007 meters
  */
-var haversine = function haversine(latitude1, longitude1, latitude2, longitude2, radius) {
+var haversine = function haversine(latitude1, longitude1, latitude2, longitude2) {
+    var radius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : EARTH_RADIUS_IN_METERS;
+
     if (isNaN(radius)) {
         radius = EARTH_RADIUS_IN_METERS;
     }
@@ -2988,30 +3000,36 @@ var haversine = function haversine(latitude1, longitude1, latitude2, longitude2,
 
 /**
  * This method will interpolate while easing in and out at the limits.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.hermite( 0 , 100 , 0.5 ) ; // 50
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name hermite
+ * @memberof core.maths
+ * @function
+ * @param {number} start the begining value.
+ * @param {number} end The ending value.
+ * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( hermite( 0 , 100 , 0.5 ) ; // 50
  */
 
-var hermite = function hermite(amount, start, end) {
+var hermite = function hermite(start, end, amount) {
     if (start === end) {
         return start;
     }
-    amount *= amount * (3 - 2 * amount);
+    amount = amount * amount * (3 - 2 * amount); // lerp(3-2*amount)
     return (1 - amount) * start + amount * end;
 };
 
 /**
- * Calculates the hypothenuse value of the two passed-in triangle sides value.
- * <p>A hypotenuse is the longest side of a right triangle (Right-angled triangle in British English),
- * the side opposite the right angle. The length of the hypotenuse of a right triangle can be found using
- * the Pythagorean theorem, which states that the square of the length of the hypotenuse equals the sum of the squares
- * of the lengths of the other two sides.</p>
+ * Computes square root of sum of two arguments (Computes hypotenuse).
+ * <p>A hypotenuse is the longest side of a right triangle (Right-angled triangle in British English), the side opposite the right angle. The length of the hypotenuse of a right triangle can be found using the Pythagorean theorem, which states that the square of the length of the hypotenuse equals the sum of the square of the lengths of the other two sides.</p>
+ * @name hypothenuse
+ * @memberof core.maths
+ * @function
+ * @param {number} x - Specifies the length of first side
+ * @param {number} y - Specifies the length of second side
+ * @return The length of the hypotenuse
+ * @example
+ * trace( hypothenuse(5,12) ) ; // 13
  */
 
 var hypothenuse = function hypothenuse(x, y) {
@@ -3020,22 +3038,32 @@ var hypothenuse = function hypothenuse(x, y) {
 
 /**
  * With a number value and a range this method returns the actual value for the interpolated value in that range.
- * <pre class="prettyprint">
- * trace( core.maths.interpolate( 0.5, 0 , 100 ) ) ; // 50
- * </pre>
- * @param value The normal number value to interpolate (value between 0 and 1).
- * @param minimum The minimum value of the interpolation.
- * @param maximum The maximum value of the interpolation.
+ * @name interpolate
+ * @memberof core.maths
+ * @function
+ * @param {number} value The normal number value to interpolate (value between min and max).
+ * @param {number} min The minimum value of the interpolation.
+ * @param {number} max The maximum value of the interpolation.
  * @return the actual value for the interpolated value in that range.
+ * @example
+ * trace( interpolate( 0.5 , 0 , 100 ) ) ; // 50
  */
 
-var interpolate = function interpolate(value, minimum, maximum) {
-  return minimum + (maximum - minimum) * value;
+var interpolate = function interpolate(value, min, max) {
+  return min + (max - min) * value;
 };
 
 /**
  * Indicates if an integer that is "evenly divisible" by 2.
- * @return True if the passed-in value is even.
+ * @name isEven
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The value to check.
+ * @return <code>true</code> if the passed-in value is even.
+ * @example
+ * trace( isEven(0) ) ; // true
+ * trace( isEven(2) ) ; // true
+ * trace( isEven(3) ) ; // false
  */
 
 var isEven = function isEven(value) {
@@ -3044,7 +3072,16 @@ var isEven = function isEven(value) {
 
 /**
  * Indicates if an integer that is not "evenly divisible" by 2.
- * @return True if the passed-in value is odd.
+ * @name isOdd
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The value to check.
+ * @return <code>true</code> if the passed-in value is odd.
+ * @example
+ * trace( isOdd(0) ) ; // false
+ * trace( isOdd(2) ) ; // false
+ * trace( isOdd(3) ) ; // true
+ * trace( isOdd(5) ) ; // true
  */
 
 var isOdd = function isOdd(value) {
@@ -3073,17 +3110,18 @@ var LAMBDA = 0.57721566490143;
  * <p>Lerp is an abbreviation for linear interpolation, which can also be used as a verb (Raymond 2003).</p>
  * <p>Linear interpolation is a method of curve fitting using linear polynomials.
  * It is heavily employed in mathematics (particularly numerical analysis), and numerous applications including computer graphics. It is a simple form of interpolation.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.lerp( 0 , 100 , 0.5 ) ; // 50
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name lerp
+ * @memberof core.maths
+ * @function
+ * @param {number} start the begining value.
+ * @param {number} end The ending value.
+ * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( lerp( 0 , 100 , 0.5 ) ; // 50
  */
 
-var lerp = function lerp(amount, start, end) {
+var lerp = function lerp(start, end, amount) {
     if (start === end) {
         return start;
     }
@@ -3092,35 +3130,47 @@ var lerp = function lerp(amount, start, end) {
 
 /**
  * Calculates the log10 of the specified value.
+ * @name log10
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The value to calculate.
  * @return The log10 of the specified value.
+ * @example
+ * trace( log10(10) ) ; // 1
  */
 
-function log10(value /*Number*/) /*Number*/
-{
+function log10(value) {
   return Math.log(value) / Math.LN10;
 }
 
 /**
  * Calculates the logN of the specified value.
- * @param value The value to calculate.
- * @param base The base to calculate the log of the value.
+ * @name log10
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The value to calculate.
+ * @param {number} base - The base to calculate the log of the value.
  * @return The logN of the specified value.
+ * @example
+ * trace( logN(10,10) ) ; // 1
  */
 
-function logN(value /*Number*/, base /*int*/) /*Number*/
-{
+function logN(value, base) {
   return Math.log(value) / Math.log(base);
 }
 
 /**
  * Takes a value within a given range and converts it to a number between 0 and 1.
  * Actually it can be outside that range if the original value is outside its range.
- * <pre>
- * trace( core.maths.normalize( 10, 0 , 100 ) ) ; // 0.1
- * </pre>
- * @param value The number value to normalize.
- * @param minimum The minimum value of the normalization.
- * @param maximum The maximum value of the normalization.
+ * @name normalize
+ * @memberof core.maths
+ * @function
+ * @param {number} value The normal number value to interpolate (value between min and max).
+ * @param {number} min The minimum value of the interpolation.
+ * @param {number} max The maximum value of the interpolation.
+ * @return The normalized value between 0 and 1.
+ * @example
+ * trace( normalize( 10, 0 , 100 ) ) ; // 0.1
  */
 
 var normalize = function normalize(value, minimum, maximum) {
@@ -3129,41 +3179,39 @@ var normalize = function normalize(value, minimum, maximum) {
 
 /**
  * Takes a value in a given range (minimum1, maximum1) and finds the corresponding value in the next range(minimum2, maximum2).
- * <pre class="prettyprint">
- * trace( core.maths.map( 10,  0, 100, 20, 80  ) ) ; // 26
- * trace( core.maths.map( 26, 20,  80,  0, 100 ) ) ; // 10
- * </pre>
- * @param value The number value to map.
- * @param minimum1 The minimum value of the first range of the value.
- * @param maximum1 The maximum value of the first range of the value.
- * @param minimum2 The minimum value of the second range of the value.
- * @param maximum2 The maximum value of the second range of the value.
+ * @name map
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The number value to map.
+ * @param {number} min1 - The minimum value of the first range of the value.
+ * @param {number} max1 - The maximum value of the first range of the value.
+ * @param {number} min2 - The minimum value of the second range of the value.
+ * @param {number} max2 - The maximum value of the second range of the value.
  * @return value in a given range (minimum1, maximum1) and finds the corresponding value in the next range(minimum2, maximum2).
+ * @example
+ * trace( map( 10,  0, 100, 20, 80  ) ) ; // 26
+ * trace( map( 26, 20,  80,  0, 100 ) ) ; // 10
  */
-var map = function map(value, minimum1, maximum1, minimum2, maximum2) {
-  return interpolate(normalize(value, minimum1, maximum1), minimum2, maximum2);
+var map = function map(value, min1, max1, min2, max2) {
+  return interpolate(normalize(value, min1, max1), min2, max2);
 };
 
 /**
  * Calculates the midpoint along a great circle path between the two points.
- * <p>See <a href="http://mathforum.org/library/drmath/view/51822.html">"Latitude and Longitude of a Point Halfway between Two Points"</a> question to calculate the derivation.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var midPoint = core.maths.midPoint ;
- *
+ * @see <a href="http://mathforum.org/library/drmath/view/51822.html">"Latitude and Longitude of a Point Halfway between Two Points"</a> question to calculate the derivation.</p>
+ * @name midPoint
+ * @memberof core.maths
+ * @function
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
+ * @return The midpoint (Object) along a great circle path between the two points.
+ * @example
  * var pos1 = { x : 34.122222   , y : 118.4111111 } ; // LA
  * var pos2 = { x : 40.66972222 , y : 73.94388889 } ; // NYC
- *
  * var result = midPoint( pos1.x , pos1.y , pos2.x , pos2.y )  ;
- *
- * trace( "midpt latitude:" + result.x + " longitude:" + result.y ) ;
- * // midpt latitude:39.547078603870254 longitude:97.2015133919303
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
- * @return The midpoint (Object) along a great circle path between the two points.
+ * trace( "midpt latitude:" + result.x + " longitude:" + result.y ) ;// midpt latitude:39.547078603870254 longitude:97.2015133919303
  */
 var midPoint = function midPoint(latitude1, longitude1, latitude2, longitude2) {
     var dLng = (longitude2 - longitude1) * DEG2RAD;
@@ -3196,9 +3244,14 @@ var MILE_TO_METER = 1609;
  * The % operator in ECMASCript returns the remainder of a / b, but differs from some other languages in that the result will have the same sign as the dividend.
  * For example, -1 % 8 == -1, whereas in some other languages (such as Python) the result would be 7.
  * This function emulates the more correct modulo behavior, which is useful for certain applications such as calculating an offset index in a circular list.
- * @param a The dividend.
- * @param b The divisor.
- * @return The a % b where the result is between 0 and b (either 0 <= x < b or b < x <= 0, depending on the sign of b).
+ * @name modulo
+ * @memberof core.maths
+ * @function
+ * @param {number} a - The dividend.
+ * @param {number} b - The divisor.
+ * @return The <code>a % b</code> where the result is between <code>0</code> and <code>b</code> (either <code>0 <= x < b or b < x <= 0</code>, depending on the sign of b).
+ * @example
+ * trace( modulo(-1,8) ) ; // 7
  */
 
 function modulo(a, b) {
@@ -3208,47 +3261,63 @@ function modulo(a, b) {
 
 /**
  * Evaluates whether the two values are equal to each other, within a certain tolerance to adjust for floating pount errors.
- * @param value1 a number to evaluate.
- * @param value2 a number to evaluate.
- * @param tolerance An optional tolerance range. Defaults to 0.000001. If specified, should be greater than 0.
- * @return True if value1 and value2 are nearly equal.
+ * @name nearlyEquals
+ * @memberof core.maths
+ * @function
+ * @param {number} value1 - A number to evaluate.
+ * @param {number} value2 - A number to evaluate.
+ * @param {number} [tolerance=0.000001] - An optional tolerance range. If specified, should be greater than 0.
+ * @return <code>true</code> if value1 and value2 are nearly equal.
  */
 
-var nearlyEquals = function nearlyEquals(value1, value2, tolerance) {
+var nearlyEquals = function nearlyEquals(value1, value2) {
+    var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.000001;
+
     if (isNaN(tolerance)) {
         tolerance = 0.000001;
+    } else if (tolerance < 0) {
+        tolerance = 0;
     }
     return Math.abs(value1 - value2) <= tolerance;
 };
 
 /**
- * Returns a percentage value or NaN.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.percentage( 50 , 100 ) + "%" ) ; // 50%
- * trace( core.maths.percentage( 68 , 425 ) + "%" ) ; // 16%
- * </pre>
- * @param value the current value.
- * @param maximum the max value.
- * @return a percentage value or null.
- */
+ * Calculates a percentage value.
+ * @name percentage
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The current value to calculates.
+ * @param {number} maximum - The max value.
+ * @return a percentage value or NaN.
+ * @example
+ * trace( percentage( 50 , 100 ) + "%" ) ; // 50%
+ * trace( percentage( 68 , 425 ) + "%" ) ; // 16%
+  */
 
 var percentage = function percentage(value, maximum) {
-  var p /*Number*/ = value / maximum * 100;
+  var p = value / maximum * 100;
   return isNaN(p) || !isFinite(p) ? NaN : p;
 };
 
 /**
- * The golden ratio (phi) : <b>( 1 + Math.sqrt(5) ) / 2</b>.
+ * The <b>golden ratio</b> (phi) : <code>( 1 + Math.sqrt(5) ) / 2</code>.
+ * @name PHI
+ * @memberof core.maths
+ * @const
  */
 
 var PHI = 1.61803398874989;
 
 /**
  * Converts a Polar object in a cartesian vector.
- * @param polar The polar generic object to transform (with the attributes angle and radius).
- * @param degrees Indicates if the angle of the polar object is in degrees or radians.
- * @return a generic Object with the cartesian representation of the specified Polar object (with the coordinates x and y).
+ * @name polarToCartesian
+ * @memberof core.maths
+ * @function
+ * @param {Object} polar The polar generic object to transform (with the attributes angle and radius).
+ * @param {number} polar.angle The angle of the polar coordinates.
+ * @param {number} polar.radius The radius of the polar coordinates.
+ * @param {number} degrees Indicates if the angle of the polar object is in degrees or radians.
+ * @return A generic Object with the cartesian representation of the specified Polar object (with the coordinates x and y).
  */
 var polarToCartesian = function polarToCartesian(vector, degrees /*Boolean*/) {
     var angle = vector.angle;
@@ -3261,12 +3330,17 @@ var polarToCartesian = function polarToCartesian(vector, degrees /*Boolean*/) {
 
 /**
  * Replace the passed-in Number value, if the value is NaN the return value is the default value in second argument.
- * @param value The Number value to replace, if this value is NaN the value is changed.
- * @param defaultValue The default value to apply over the specified value if this value is NaN (default 0).
+ * @name replaceNaN
+ * @memberof core.maths
+ * @function
+ * @param {number} value - The Number value to replace, if this value is NaN the value is changed.
+ * @param {number} [defaultValue=0] The default value to apply over the specified value if this value is NaN (default 0).
  * @return The replaced Number value.
  */
 
-var replaceNaN = function replaceNaN(value, defaultValue) {
+var replaceNaN = function replaceNaN(value) {
+    var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
     if (isNaN(defaultValue)) {
         defaultValue = 0;
     }
@@ -3275,21 +3349,24 @@ var replaceNaN = function replaceNaN(value, defaultValue) {
 
 /**
  * Rounds and returns a number by a count of floating points.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name replaceNaN
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  * n = core.maths.round(4.572525153, 2) ;
  * trace ("n : " + n) ; // 4.57
  *
  * n = core.maths.round(4.572525153, -1) ;
  * trace ("n : " + n) ; // 5
- * </pre>
- * @param n the number to round.
- * @param floatCount the count of number after the point.
- * @return the round of a number by a count of floating points.
+ * @param {number} n - The number to round.
+ * @param {number} [floatCount=0] - The count of number after the point.
+ * @return The round of a number by a count of floating points.
  */
 
-var round = function round(n, floatCount) {
+var round = function round(n) {
+    var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
     if (isNaN(n)) {
         return NaN;
     }
@@ -3303,8 +3380,10 @@ var round = function round(n, floatCount) {
 
 /**
  * Returns 1 if the value is positive or -1.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name sign
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  *
  * n = core.maths.sign( -150 ) ;
@@ -3315,10 +3394,9 @@ var round = function round(n, floatCount) {
  *
  * n = core.maths.sign( 0 ) ;
  * trace ("n : " + n) ; // 1
- * </pre>
- * @param n the number to defined this sign.
- * @return 1 if the value is positive or -1.
- * @throws Error if the passed-in value is NaN.
+ * @param {number} n - The number to defined this sign.
+ * @return <code>1</code> if the value is positive or <code>-1</code>.
+ * @throws Error if the passed-in value is <code>NaN</code>.
  */
 
 var sign = function sign(n) {
@@ -3330,8 +3408,11 @@ var sign = function sign(n) {
 
 /**
  * Calculates the sine of the passed angle.
- * @param angle a value representing angle in degrees.
- * @return the sine of the passed angle, a number between -1 and 1 inclusive.
+ * @name sinD
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - A value in degrees.
+ * @return The sine of the passed angle, a number between <code>-1</code> and <code>1</code> inclusive.
  */
 var sinD = function sinD(angle) {
   return Math.sin(angle * DEG2RAD);
@@ -3339,17 +3420,18 @@ var sinD = function sinD(angle) {
 
 /**
  * Short for 'cosinusoidal interpolation', this method will interpolate while easing around the end, when value is near one.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.sinerp( 0 , 100 , 0.5 ) ;
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name sinerp
+ * @memberof core.maths
+ * @function
+ * @param {number} start the begining value.
+ * @param {number} end The ending value.
+ * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( sinerp( 0 , 100 , 0.5 ) ; // 70.71067811865474
  */
 
-var sinerp = function sinerp(amount, start, end) {
+var sinerp = function sinerp(start, end, amount) {
     if (start === end) {
         return start;
     }
@@ -3359,6 +3441,11 @@ var sinerp = function sinerp(amount, start, end) {
 
 /**
  * Calculates the Hyperbolic sine.
+ * @name sinH
+ * @memberof core.maths
+ * @function
+ * @param {number} x - A value to calculates.
+* @return The Hyperbolic sine of the specified value.
  */
 
 var sinH = function sinH(x) {
@@ -3367,8 +3454,11 @@ var sinH = function sinH(x) {
 
 /**
  * Calculates the tangent of the passed angle.
- * @param angle a value representing angle in degrees.
- * @return the tangent of the passed angle.
+ * @name tanD
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - The angle in degrees.
+ * @return The tangent of the passed angle.
  */
 var tanD = function tanD(angle) {
   return Math.tan(angle * DEG2RAD);
@@ -3376,6 +3466,11 @@ var tanD = function tanD(angle) {
 
 /**
  * Calculates the Hyperbolic tangent.
+ * @name tanH
+ * @memberof core.maths
+ * @function
+ * @param {number} x - A value to calculates.
+ * @return The Hyperbolic tangent of the specified value.
  */
 var tanH = function tanH(x) {
   return sinH(x) / cosH(x);
@@ -3385,19 +3480,18 @@ var tanH = function tanH(x) {
  * Calculates geodesic distance in meter between two points specified by latitude and longitude (in numeric degrees)
  * using the Vincenty inverse formula for ellipsoids. This algorithm is slow but very accurate (down to 0.5 mm).
  * <p>See the original reference about this formula : <a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Direct and Inverse Solutions of Geodesics on the Ellipsoid with application of nested equations</a>.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var vincenty = core.maths.vincenty ;
- *
+ * @name vincenty
+ * @memberof core.maths
+ * @function
+ * @example
  * var position1 = { x : 37.422045,  y : -122.084347 } ; // Google HQ
  * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA
  *
  * trace( vincenty( position1.x , position1.y , position2.x , position2.y ) ) ; // 49 087.066 meters
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
  * @return The distance between two points on a sphere from their longitudes and latitudes.
  */
 function vincenty(latitude1, longitude1, latitude2, longitude2) /*Number*/

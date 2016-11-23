@@ -7,18 +7,18 @@
  * @name clerp
  * @memberof core.maths
  * @function
- * @example
- * trace( clerp( 0 , 180 , 0.5 ) ; // 90
- * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
+ * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( clerp( 0 , 180 , 0.5 ) ; // 90
  */
-export var clerp = ( amount , start , end ) =>
+export var clerp = ( start , end , amount ) =>
 {
-    var max  = 360 ;
-    var half = 180 ;
-    var diff = end - start ;
+    let max  = 360 ;
+    let half = 180 ; // abs((360-0)/2) == abs(max-min)/2
+    let diff = end - start ;
     if ( diff < -half )
     {
         return start + ( ( max - start ) + end ) * amount ;

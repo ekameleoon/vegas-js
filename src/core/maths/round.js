@@ -2,20 +2,21 @@
 
 /**
  * Rounds and returns a number by a count of floating points.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name replaceNaN
+ * @memberof core.maths
+ * @function
+ * @example
  * var n ;
  * n = core.maths.round(4.572525153, 2) ;
  * trace ("n : " + n) ; // 4.57
  *
  * n = core.maths.round(4.572525153, -1) ;
  * trace ("n : " + n) ; // 5
- * </pre>
- * @param n the number to round.
- * @param floatCount the count of number after the point.
- * @return the round of a number by a count of floating points.
+ * @param {number} n - The number to round.
+ * @param {number} [floatCount=0] - The count of number after the point.
+ * @return The round of a number by a count of floating points.
  */
-export var round = ( n , floatCount ) =>
+export var round = ( n , floatCount = 0 ) =>
 {
     if (isNaN( n ))
     {

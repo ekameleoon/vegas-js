@@ -6,19 +6,18 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * Calculates geodesic distance in meter between two points specified by latitude and longitude (in numeric degrees)
  * using the Vincenty inverse formula for ellipsoids. This algorithm is slow but very accurate (down to 0.5 mm).
  * <p>See the original reference about this formula : <a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf">Direct and Inverse Solutions of Geodesics on the Ellipsoid with application of nested equations</a>.</p>
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * var vincenty = core.maths.vincenty ;
- *
+ * @name vincenty
+ * @memberof core.maths
+ * @function
+ * @example
  * var position1 = { x : 37.422045,  y : -122.084347 } ; // Google HQ
  * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA
  *
  * trace( vincenty( position1.x , position1.y , position2.x , position2.y ) ) ; // 49 087.066 meters
- * </pre>
- * @param latitude1 The first latitude coordinate.
- * @param longitude1 The first longitude coordinate.
- * @param latitude2 The second latitude coordinate.
- * @param longitude2 The second longitude coordinate.
+ * @param {number} latitude1 - The first latitude coordinate.
+ * @param {number} longitude1 - The first longitude coordinate.
+ * @param {number} latitude2 - The second latitude coordinate.
+ * @param {number} longitude2 - The second longitude coordinate.
  * @return The distance between two points on a sphere from their longitudes and latitudes.
  */
 export function vincenty( latitude1, longitude1, latitude2, longitude2 ) /*Number*/

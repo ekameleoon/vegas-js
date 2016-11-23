@@ -3,8 +3,12 @@
 import { RAD2DEG } from './RAD2DEG.js' ;
 
 /**
- * Converts an angle in radians in degrees.
- * @return an angle in radians in degrees.
+ * Converts radians to degrees.
+ * @name radiansToDegrees
+ * @memberof core.maths
+ * @function
+ * @param {number} angle - Value, in radians, to convert to degrees.
+ * @return an angle in degrees.
  */
 export function radiansToDegrees( angle /*Number*/) /*Number*/
 {

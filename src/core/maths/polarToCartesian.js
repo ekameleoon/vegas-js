@@ -4,9 +4,14 @@ import { DEG2RAD } from './DEG2RAD.js' ;
 
 /**
  * Converts a Polar object in a cartesian vector.
- * @param polar The polar generic object to transform (with the attributes angle and radius).
- * @param degrees Indicates if the angle of the polar object is in degrees or radians.
- * @return a generic Object with the cartesian representation of the specified Polar object (with the coordinates x and y).
+ * @name polarToCartesian
+ * @memberof core.maths
+ * @function
+ * @param {Object} polar The polar generic object to transform (with the attributes angle and radius).
+ * @param {number} polar.angle The angle of the polar coordinates.
+ * @param {number} polar.radius The radius of the polar coordinates.
+ * @param {number} degrees Indicates if the angle of the polar object is in degrees or radians.
+ * @return A generic Object with the cartesian representation of the specified Polar object (with the coordinates x and y).
  */
 export var polarToCartesian = ( vector , degrees /*Boolean*/ ) =>
 {

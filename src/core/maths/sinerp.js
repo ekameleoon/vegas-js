@@ -2,16 +2,17 @@
 
 /**
  * Short for 'cosinusoidal interpolation', this method will interpolate while easing around the end, when value is near one.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( core.maths.sinerp( 0 , 100 , 0.5 ) ;
- * </pre>
- * @param amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
- * @param start the begining value.
- * @param end The ending value.
+ * @name sinerp
+ * @memberof core.maths
+ * @function
+ * @param {number} start the begining value.
+ * @param {number} end The ending value.
+ * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
  * @return The interpolated value between two numbers at a specific increment.
+ * @example
+ * trace( sinerp( 0 , 100 , 0.5 ) ; // 70.71067811865474
  */
-export var sinerp = ( amount , start , end ) =>
+export var sinerp = ( start , end , amount ) =>
 {
     if ( start === end )
     {
