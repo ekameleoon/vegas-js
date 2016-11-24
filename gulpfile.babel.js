@@ -87,12 +87,25 @@ if( argv && argv.match )
 /**
  * The reporters name of the unit tests : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'
  */
-var reporters = ['spec', 'dot', 'landing', 'dot', 'nyan', 'list'] ;
-var reporter  = 'spec' ;
+var reporters = ['spec', 'dot', 'landing', 'dot', 'nyan', 'list' , 'mochawesome' ] ;
+
+var reporter = 'spec' ;
+var reporterOptions = null ;
 
 if( argv && argv.reporter && reporters.indexOf(argv.reporter) > -1 )
 {
     reporter = argv.reporter ;
+}
+
+if( reporter === 'mochawesome' )
+{
+    reporterOptions =
+    {
+        reportDir    : './bin/tests',
+        reportName   : 'index',
+        reportTitle  : 'VEGAS JS - Unit tests',
+        inlineAssets : true
+    };
 }
 
 // --------- Actions
@@ -226,8 +239,9 @@ var unittest = ( done ) =>
         }),
         mocha
         ({
-            reporter : reporter ,
-            grep     : match ? match : null
+            reporter        : reporter ,
+            reporterOptions : reporterOptions ,
+            grep            : match ? match : null
         })
         .on( 'error' , function( error )
         {

@@ -1,5 +1,6 @@
 .DS_Store
 
+bin/tests/*
 docs/bin/*
 node_modules/*
 npm-debug.log
