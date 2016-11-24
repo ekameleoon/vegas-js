@@ -6,32 +6,31 @@ import { whiteSpaces } from './whiteSpaces.js' ;
 
 /**
  * Removes all occurrences of a set of characters specified in an array from the end of this instance.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( trimEnd("---hello world---" , Strings.whiteSpaces.concat("-") ) ); // ---hello world
- * </pre>
- * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
+ * @name trimEnd
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to trim.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
  * @return The new trimed string.
+ * @example
+ * trace( trimEnd("---hello world---" , ["-"] ) ) ; // ---hello world
  */
-export function trimEnd( source /*String*/ , chars /*Array*/ ) /*String*/
+export function trimEnd( source , chars = null )
 {
-    if( !(chars instanceof Array) )
+    if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
+    {
+        return '' ;
+    }
+
+    if( !chars || !(chars instanceof Array) )
     {
         chars = whiteSpaces ;
     }
 
-    if ( source === null || source === "" )
-    {
-        return "" ;
-    }
+    var i ;
+    var l = source.length ;
 
-    var i /*int*/ ;
-    var l /*int*/ = source.length ;
-
-    for( i = source.length - 1; (i >= 0) && (chars.indexOf( source.charAt( i ) ) > - 1) ; i-- )
-    {
-    }
+    for( i = source.length - 1; (i >= 0) && (chars.indexOf( source.charAt( i ) ) > - 1) ; i-- ){}
 
     return source.substring( 0, i + 1 );
 }

@@ -1110,22 +1110,6 @@ var arrays = Object.assign({
 });
 
 /**
- * Returns <code>0</code> if the passed string is lower case else <code>1</code>.
- * @name caseValue
- * @memberof core.strings
- * @function
- * @return <code>0</code> if the passed string is lower case else <code>1</code>.
- * @example
- * trace( caseValue("hello") ) ; // 0
- * trace( caseValue("helLo") ) ; // 1
- * trace( caseValue("HELLO") ) ; // 1
- */
-
-function caseValue(str) {
-  return str.toLowerCase().valueOf() === str.valueOf() ? 0 : 1;
-}
-
-/**
  * Compares the two caracteres passed in argument for order.
  * @name compare
  * @memberof core.chars
@@ -1138,8 +1122,8 @@ function caseValue(str) {
  * <li> 0 if charA and charB are equal.</li>
  * </p>
  */
-function compare(charA /*String*/, charB /*String*/) /*uint*/
-{
+
+function compare(charA, charB) {
     var a = charA.charAt(0);
     var b = charB.charAt(0);
     if (caseValue(a) < caseValue(b)) {
@@ -1155,6 +1139,10 @@ function compare(charA /*String*/, charB /*String*/) /*uint*/
         return 1;
     }
     return 0;
+}
+
+function caseValue(str) {
+    return str.toLowerCase().valueOf() === str.valueOf() ? 0 : 1;
 }
 
 /**
@@ -4158,10 +4146,9 @@ function center(source) {
 }
 
 /**
- * Contains all white space chars.
+ * This array contains all white space chars.
  * <p><b>Note :</b></p>
  * <ul>
- * <li>http://developer.mozilla.org/es4/proposals/string.html</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zs/list.htm</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zl/list.htm</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zp/list.htm</li>
@@ -4169,6 +4156,11 @@ function center(source) {
  * <li>http://www.fileformat.info/info/unicode/char/feff/index.htm</li>
  * <li>http://www.fileformat.info/info/unicode/char/2060/index.htm</li>
  * </ul>
+ * @see The ECMAScript specification.
+ * @name whiteSpaces
+ * @memberof core.strings
+ * @member
+ * @type {array}
  */
 
 var whiteSpaces$1 = ["\t" /*Horizontal tab*/
@@ -4202,44 +4194,44 @@ var whiteSpaces$1 = ["\t" /*Horizontal tab*/
 /*jslint noempty: false */
 /**
  * Removes all occurrences of a set of specified characters (or strings) from the beginning and end of this instance.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( trim("\r\t   hello world   \t ") ); // hello world
- * </pre>
- * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
+ * @name trim
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to trim.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
  * @return The new trimed string.
+ * @example
+ * trace( trim("\r\t   hello world   \t ") ); // hello world
+ * trace( trim("-_hello world_-",["-","_"]) ) ; // hello world
  */
-function trim(source /*String*/, chars /*Array*/) /*String*/
-{
-    if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaces$1;
+function trim(source) {
+    var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
     }
 
-    if (source === null || source === "") {
-        return "";
+    if (!chars || !(chars instanceof Array)) {
+        chars = whiteSpaces$1;
     }
 
     var i;
     var l;
 
-    ////// start
+    // ---- start
 
     l = source.length;
 
-    for (i = 0; i < l && chars.indexOf(source.charAt(i)) > -1; i++) {
-        //
-    }
-
+    for (i = 0; i < l && chars.indexOf(source.charAt(i)) > -1; i++) {}
     source = source.substring(i);
 
-    ////// end
+    // ---- end
 
     l = source.length;
     for (i = source.length - 1; i >= 0 && chars.indexOf(source.charAt(i)) > -1; i--) {}
     source = source.substring(0, i + 1);
 
-    //////
+    // ----
 
     return source;
 }
@@ -4275,12 +4267,14 @@ function clean(source) {
  */
 
 function endsWith(source, value) {
-    if (source !== null && value === "") {
-        return true;
-    }
-    if (source === null || value === null || source === "" || source.length < value.length) {
+    if (!(source instanceof String || typeof source === 'string') || !(value instanceof String || typeof value === 'string') || source.length < value.length) {
         return false;
     }
+
+    if (value === "") {
+        return true;
+    }
+
     return source.lastIndexOf(value) === source.length - value.length;
 }
 
@@ -4368,37 +4362,22 @@ function fastformatDate() {
 
 /**
  * Apply character padding to a string.
- * <p>
- * The padding amount is relative to the string length,
- * if you try to pad the string <code>"hello"</code> (5 chars) with an amount of 10,
- * you will not add 10 spacing chars to the original string,
- * but you will obtain <code>"     hello"</code>, exactly 10 chars after the padding.
- * </p>
- *
- * <p>
- * A positive <code>amount</code> value will pad the string on the left (right align),
- * and a negative <code>amount</code> value will pad the string on the right (left align),
- * </p>
- *
- * @example basic usage
- * <listing version="3.0">
- * <code class="prettyprint">
- * var word = "hello";
- *
- * trace( "[" + pad( word, 8 ) + "]" ); //align to the right
- * trace( "[" + pad( word, -8 ) + "]" ); //align to the left
- *
- * //output
- * //[   hello]
- * //[hello   ]
- * </code>
- * </listing>
- *
- * @example padding a list of names
- * <listing version="3.0">
- * <code class="prettyprint">
+ * <p>The padding amount is relative to the string length, if you try to pad the string <code>"hello"</code> (5 chars) with an amount of 10,
+ * you will not add 10 spacing chars to the original string, but you will obtain <code>".....hello"</code>, exactly 10 chars after the padding.</p>
+ * <p>A positive <code>amount</code> value will pad the string on the left (right align), and a negative <code>amount</code> value will pad the string on the right (left align).</p>
+ * @name pad
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to pad.
+ * @param {number} amount the amount of padding (number sign is the padding direction)
+ * @param char the character to pad with (default is space)
+ * @example <caption>Basic usage</caption>
+ * trace( "left  : [" + pad( "hello" , 8 )  + "]" ); //left  : [   hello]
+ * trace( "right : [" + pad( "hello" , -8 ) + "]" ); //right : [hello   ]
+ * @example <caption>Padding a list of names</caption>
  * var seinfeld = [ "jerry", "george", "kramer", "helen" ];
- * var len      = seinfeld.length ;
+ *
+ * var len = seinfeld.length ;
  * for( var i = 0 ; i<len ; i++ )
  * {
  *     trace( pad( seinfeld[i] , 10 , "." ) ) ;
@@ -4409,31 +4388,27 @@ function fastformatDate() {
  * //....george
  * //....kramer
  * //.....helen
- * </code>
- * </listing>
- *
- * @param source the string to pad
- * @param amount the amount of padding (number sign is the padding direction)
- * @param char the character to pad with (default is space)
  */
 
-function pad(source /*String*/, amount /*int*/, ch /*String*/) /*String*/
-{
-    if (source === null) {
-        return "";
+function pad(source) {
+    var amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var ch = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ";
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
     }
 
-    var left /*Boolean*/ = amount >= 0;
-    var width /*int*/ = amount > 0 ? amount : -amount;
+    var left = amount >= 0;
+    var width = amount > 0 ? amount : -amount;
 
     if (width < source.length || width === 0) {
         return source;
     }
 
     if (ch === null) {
-        ch = " "; // default
+        ch = " ";
     } else if (ch.length > 1) {
-        ch = ch.charAt(0); //we want only 1 char
+        ch = ch.charAt(0);
     }
 
     while (source.length !== width) {
@@ -4645,43 +4620,51 @@ function indexOfAny(source, anyOf) /*int*/
 
 /**
  * Inserts a specified instance of String at a specified index position in this instance.
- * <p>note : </p>
- * if index is null, we directly append the value to the end of the string.
- * if index is zero, we directly insert it to the begining of the string.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * result = core.strings.insert("hello", 0, "a" );  // ahello
- * trace(result) ;
- *
- * result = core.strings.insert("hello", -1, "a" ); // hellao
- * trace(result) ;
- *
- * result = core.strings.insert("hello", 10, "a" ); // helloa
- * trace(result) ;
- *
- * result = core.strings.insert("hello", 1, "a" );  // haello
- * trace(result) ;
- * </pre>
- * @param source The String to transform.
- * @param index The position to insert the new characters.
- * @param value The expression to insert in the source.
- * @return the string modified by the method.
+ * <p><b>Note :</b>
+ * <ul>
+ * <li>if <code>index >= source.length</code>, we directly append the value to the end of the string.</li>
+ * <li>if <code>index == 0</code>, we directly insert it to the begining of the string.</li>
+ * <li>if <code>index < 0</code>, we directly insert but searching backwards from the <code>source.length - index</code> position.</li>
+ * </ul>
+ * </p>
+ * @name insert
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to change.
+ * @param {number} [index=0] The position to insert the new characters.
+ * @param {string} value The expression to insert in the source.
+ * @return the modified string expression.
+ * @example
+ * trace( insert("hello",  0, "a" ) ) ; // ahello
+ * trace( insert("hello",  1, "a" ) ) ; // haello
+ * trace( insert("hello", 10, "a" ) ) ; // helloa
+ * trace( insert("hello", -1, "a" ) ) ; // helloa
+ * trace( insert("hello", -2, "a" ) ) ; // hellao
  */
 
-function insert(source /*String*/, index /*int*/, value /*String*/) /*String*/
-{
+function insert(source) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
+
+    if (!(value instanceof String || typeof value === 'string') || value === "") {
+        return source;
+    }
+
     var strA = "";
     var strB = "";
 
-    if (index === 0) {
+    if (index < 0) {
+        index = source.length - Math.abs(index) + 1;
+    } else if (index === 0) {
         return value + source;
-    } else if (index === source.length) {
+    } else if (index >= source.length) {
         return source + value;
     }
 
-    /* TODO:
-    review the logic when startIndex == -1
-     */
     strA = source.substr(0, index);
     strB = source.substr(index);
 
@@ -4747,11 +4730,13 @@ function lastIndexOfAny(source, anyOf) /*int*/
 
 /**
  * Like white space characters, line terminator characters are used to improve source text readability and to separate tokens (indivisible lexical units) from each other.
- * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar.
- * In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
- * A line terminator cannot occur within any token, not even a string.
- * Line terminators also affect the process of automatic semicolon insertion.
- * <p>ECMAScript specification.</p>
+ * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar. In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
+ * A line terminator cannot occur within any token, not even a string. Line terminators also affect the process of automatic semicolon insertion.
+ * @see The ECMAScript specification.
+ * @name lineTerminators
+ * @memberof core.strings
+ * @member
+ * @type {array}
  */
 
 var lineTerminators$1 = ["\n" /*LF : Line Feed*/
@@ -4825,28 +4810,29 @@ function repeat$1(source) {
 
 /**
  * Checks if this string starts with the specified prefix.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
+ * @name startsWith
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to evaluates.
+ * @param {string} value - The string expression to find in first in the source.
+ * @return <code>true</code> if the value is find in first.
+ * @example
  * trace( startsWith( "hello.txt" , "hello" ) ) ; // true
- * </pre>
- * @param source the string reference.
- * @param value the value to find in first in the source.
- * @return true if the value is find in first.
  */
 
-function startsWith(source /*String*/, value /*String*/) /*Boolean*/
-{
-    if (source !== null && value === "") {
-        return true;
+function startsWith(source, value) {
+    if (!(source instanceof String || typeof source === 'string') || !(value instanceof String || typeof value === 'string') || source.length < value.length) {
+        return false;
     }
 
-    if (source === null || value === null || source === "" || source.length < value.length) {
-        return false;
+    if (value === "") {
+        return true;
     }
 
     if (source.charAt(0) !== value.charAt(0)) {
         return false;
     }
+
     return source.indexOf(value) === 0;
 }
 
@@ -4854,26 +4840,28 @@ function startsWith(source /*String*/, value /*String*/) /*Boolean*/
 /*jslint unused: false */
 /**
  * Removes all occurrences of a set of characters specified in an array from the end of this instance.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( trimEnd("---hello world---" , Strings.whiteSpaces.concat("-") ) ); // ---hello world
- * </pre>
- * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
+ * @name trimEnd
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to trim.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
  * @return The new trimed string.
+ * @example
+ * trace( trimEnd("---hello world---" , ["-"] ) ) ; // ---hello world
  */
-function trimEnd(source /*String*/, chars /*Array*/) /*String*/
-{
-    if (!(chars instanceof Array)) {
+function trimEnd(source) {
+    var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
+
+    if (!chars || !(chars instanceof Array)) {
         chars = whiteSpaces$1;
     }
 
-    if (source === null || source === "") {
-        return "";
-    }
-
     var i;
-    var l /*int*/ = source.length;
+    var l = source.length;
 
     for (i = source.length - 1; i >= 0 && chars.indexOf(source.charAt(i)) > -1; i--) {}
 
@@ -4883,26 +4871,28 @@ function trimEnd(source /*String*/, chars /*Array*/) /*String*/
 /*jslint noempty: false */
 /**
  * Removes all occurrences of a set of characters specified in an array from the beginning of this instance.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( trimStart("---hello world---" , Strings.whiteSpaces.concat("-") ) ); // hello world---
- * </pre>
- * @param source The string to trim.
- * @param chars The optional Array of characters to trim. If this argument is null the <code class="prettyprint">core.strings.whiteSpaces</code> array is used.
+ * @name trimStart
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to trim.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
  * @return The new trimed string.
+ * @example
+ * trace( trimStart( "---hello world---" , ["-"] ) ); // hello world---
  */
-function trimStart(source /*String*/, chars /*Array*/) /*String*/
-{
+function trimStart(source) {
+    var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
+
     if (!chars || !(chars instanceof Array)) {
         chars = whiteSpaces$1;
     }
 
-    if (source === null || source === "") {
-        return "";
-    }
-
     var i;
-    var l /*int*/ = source.length;
+    var l = source.length;
 
     for (i = 0; i < l && chars.indexOf(source.charAt(i)) > -1; i++) {}
 
@@ -4910,11 +4900,17 @@ function trimStart(source /*String*/, chars /*Array*/) /*String*/
 }
 
 /**
- * Capitalize the first letter of a string, like the PHP function.
+ * Capitalize the first letter of a string.
+ * @name ucFirst
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to transform.
+ * @return The capitalized first expression.
+ * @example
+ * trace( ucFirst("hello world")) ; // Hello world
  */
 
-function ucFirst(str /*String*/) /*String*/
-{
+function ucFirst(str) {
     if (!(str instanceof String || typeof str === 'string') || str === "") {
         return '';
     }
@@ -4922,11 +4918,19 @@ function ucFirst(str /*String*/) /*String*/
 }
 
 /**
- * Capitalize each word in a string, like the PHP function.
+ * Capitalize each word in a string.
+ * @name ucWords
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to transform.
+ * @param {string} [separator=' '] - The optional separator expression.
+ * @return The new string expression with each word capitalized.
+ * @example
+ * trace( ucWords("hello world")) ; // Hello World
+ * trace( ucWords("hello-world","-")) ; // Hello-World
  */
 
-function ucWords(str /*String*/) /*String*/
-{
+function ucWords(str) {
     var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : " ";
 
     if (!(str instanceof String || typeof str === 'string') || str === "") {
@@ -5019,7 +5023,6 @@ var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{
 var strings = Object.assign({
     camelCase: camelCase,
     capitalize: capitalize,
-    caseValue: caseValue,
     center: center,
     clean: clean,
     endsWith: endsWith,

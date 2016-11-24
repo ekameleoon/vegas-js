@@ -14,13 +14,20 @@
  */
 export function endsWith( source , value )
 {
-    if( source !== null && value === "" )
+    if
+    (
+        !(source instanceof String || typeof(source) === 'string' ) ||
+        !(value instanceof String  || typeof(value)  === 'string' ) ||
+        source.length < value.length
+    )
+    {
+        return false ;
+    }
+
+    if( value === "" )
     {
         return true ;
     }
-    if( (source === null) || (value === null) || (source === "") || (source.length < value.length) )
-    {
-        return false;
-    }
+
     return source.lastIndexOf(value) === ( source.length - value.length ) ;
 }

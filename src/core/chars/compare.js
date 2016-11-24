@@ -1,7 +1,5 @@
 "use strict" ;
 
-import { caseValue } from '../strings/caseValue.js' ;
-
 /**
  * Compares the two caracteres passed in argument for order.
  * @name compare
@@ -15,7 +13,7 @@ import { caseValue } from '../strings/caseValue.js' ;
  * <li> 0 if charA and charB are equal.</li>
  * </p>
  */
-export function compare( charA /*String*/ , charB /*String*/ ) /*uint*/
+export function compare( charA , charB )
 {
     var a = charA.charAt(0) ;
     var b = charB.charAt(0) ;
@@ -36,4 +34,9 @@ export function compare( charA /*String*/ , charB /*String*/ ) /*uint*/
         return 1;
     }
     return 0 ;
+}
+
+function caseValue( str )
+{
+    return ( str.toLowerCase().valueOf() === str.valueOf() ) ? 0 : 1 ;
 }

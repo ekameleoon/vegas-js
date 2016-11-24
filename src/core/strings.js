@@ -4,7 +4,6 @@ import '../polyfill.js' ;
 
 import { camelCase }           from './strings/camelCase.js' ;
 import { capitalize }          from './strings/capitalize.js' ;
-import { caseValue }           from './strings/caseValue.js' ;
 import { center }              from './strings/center.js' ;
 import { clean }               from './strings/clean.js' ;
 import { endsWith }            from './strings/endsWith.js' ;
@@ -39,7 +38,6 @@ export var strings = Object.assign
 ({
     camelCase : camelCase ,
     capitalize : capitalize ,
-    caseValue : caseValue ,
     center : center ,
     clean : clean ,
     endsWith : endsWith ,

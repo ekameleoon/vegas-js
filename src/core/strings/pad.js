@@ -3,7 +3,7 @@
 /**
  * Apply character padding to a string.
  * <p>The padding amount is relative to the string length, if you try to pad the string <code>"hello"</code> (5 chars) with an amount of 10,
- * you will not add 10 spacing chars to the original string, but you will obtain <code>"     hello"</code>, exactly 10 chars after the padding.</p>
+ * you will not add 10 spacing chars to the original string, but you will obtain <code>".....hello"</code>, exactly 10 chars after the padding.</p>
  * <p>A positive <code>amount</code> value will pad the string on the left (right align), and a negative <code>amount</code> value will pad the string on the right (left align).</p>
  * @name pad
  * @memberof core.strings
