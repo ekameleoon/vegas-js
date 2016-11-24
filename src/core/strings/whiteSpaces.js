@@ -1,10 +1,9 @@
 "use strict" ;
 
 /**
- * Contains all white space chars.
+ * This array contains all white space chars.
  * <p><b>Note :</b></p>
  * <ul>
- * <li>http://developer.mozilla.org/es4/proposals/string.html</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zs/list.htm</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zl/list.htm</li>
  * <li>http://www.fileformat.info/info/unicode/category/Zp/list.htm</li>
@@ -12,6 +11,11 @@
  * <li>http://www.fileformat.info/info/unicode/char/feff/index.htm</li>
  * <li>http://www.fileformat.info/info/unicode/char/2060/index.htm</li>
  * </ul>
+ * @see The ECMAScript specification.
+ * @name whiteSpaces
+ * @memberof core.strings
+ * @member
+ * @type {array}
  */
 export var whiteSpaces =
 [
