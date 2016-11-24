@@ -1,6 +1,5 @@
 "use strict" ;
 
-//import { generateUUID } from '../../../src/core/random/generateUUID.js' ;
 import { validateUUID } from '../../../src/core/strings/validateUUID.js' ;
 
 import chai from 'chai' ;

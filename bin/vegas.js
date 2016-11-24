@@ -4258,10 +4258,8 @@ function clean(source /*String*/) /*String*/
 /**
  * Determines wether the end of a string matches the specified value.
  * @example basic usage
- * <code>
  * trace( endsWith( "hello world", "world" ) ); //true
  * trace( endsWith( "hello world", "hello" ) ); //false
- * </code>
  * @param source the string reference.
  * @param value the value to find in first in the source.
  * @return true if the value is find in first.
@@ -4924,14 +4922,31 @@ function ucWords(str /*String*/) /*String*/
 
 /*jshint bitwise: false*/
 /**
+ * Extracts the version from the UUID, which is (by definition) the M in xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
+ * @name versionUUID
+ * @memberof core.strings
+ * @function
+ * @param  {String} uuid The uuid expression
+ * @return {Number} The version number of the uuid expression.
+ * @example
+ * trace( versionUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // 4
+ */
+
+var versionUUID = function versionUUID(uuid) {
+  return uuid.charAt(14) | 0;
+};
+
+/**
  * Determines whether the uuid is valid, converting it from a buffer if necessary.
+ * @name validateUUID
+ * @memberof core.strings
+ * @function
  * @param  {String} uuid - The uuid expression to validate.
  * @param  {Number} vers - The optional version of the uuid to validate.
  * @return {Boolean} <code>true</code> if the uuid expression is valid.
  * @example
  * trace( validateUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // true
  */
-
 function validateUUID(source) {
     var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
@@ -4975,25 +4990,11 @@ function validateUUID(source) {
 var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Extracts the version from the UUID, which is (by definition) the M in xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
- * @name versionUUID
- * @memberof core.strings
- * @function
- * @param  {String} uuid The uuid expression
- * @return {Number} The version number of the uuid expression.
- * @example
- * trace( versionUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // 4
- */
-var versionUUID = function versionUUID(uuid) {
-    return uuid.charAt(14) | 0;
-};
-
-/**
- * The {@link core.string)s library provide a toolkit to transform and validate a string expression.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * The {@link core.strings} library provide a toolkit to transform and validate a string expression.
  * @namespace core.strings
  * @memberof core
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var strings = Object.assign({
     camelCase: camelCase,

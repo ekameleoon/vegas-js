@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { versionUUID } from '../../../src/core/strings/validateUUID.js' ;
+import { versionUUID } from '../../../src/core/strings/versionUUID.js' ;
 
 import chai from 'chai' ;
 

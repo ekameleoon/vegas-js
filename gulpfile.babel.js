@@ -257,7 +257,8 @@ var watch = () =>
 
 // --------- Tasks
 
-gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
+gulp.task( 'build'   , gulp.series( compile , compress ) ) ;
+gulp.task( 'default' , gulp.series( unittest , compile , compress , doc ) ) ;
 gulp.task( 'doc'     , gulp.series( doc ) ) ;
 gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
 gulp.task( 'ut'      , gulp.series( unittest ) ) ;

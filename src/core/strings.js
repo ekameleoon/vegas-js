@@ -25,15 +25,15 @@ import { trimStart }           from './strings/trimStart.js' ;
 import { ucFirst }             from './strings/ucFirst.js' ;
 import { ucWords }             from './strings/ucWords.js' ;
 import { validateUUID }        from './strings/validateUUID.js' ;
-import { versionUUID }         from './strings/validateUUID.js' ;
+import { versionUUID }         from './strings/versionUUID.js' ;
 import { whiteSpaces }         from './strings/whiteSpaces.js' ;
 
 /**
- * The {@link core.string)s library provide a toolkit to transform and validate a string expression.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * The {@link core.strings} library provide a toolkit to transform and validate a string expression.
  * @namespace core.strings
  * @memberof core
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 export var strings = Object.assign
 ({

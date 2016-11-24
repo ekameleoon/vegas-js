@@ -3,10 +3,8 @@
 /**
  * Determines wether the end of a string matches the specified value.
  * @example basic usage
- * <code>
  * trace( endsWith( "hello world", "world" ) ); //true
  * trace( endsWith( "hello world", "hello" ) ); //false
- * </code>
  * @param source the string reference.
  * @param value the value to find in first in the source.
  * @return true if the value is find in first.

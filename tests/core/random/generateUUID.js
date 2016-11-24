@@ -2,7 +2,7 @@
 
 import { generateUUID } from '../../../src/core/random/generateUUID.js' ;
 import { validateUUID } from '../../../src/core/strings/validateUUID.js' ;
-import { versionUUID  } from '../../../src/core/strings/validateUUID.js' ;
+import { versionUUID  } from '../../../src/core/strings/versionUUID.js' ;
 
 import chai from 'chai' ;
 
