@@ -7,6 +7,7 @@ import { camelCase }           from './strings/camelCase.js' ;
 import { capitalize }          from './strings/capitalize.js' ;
 import { center }              from './strings/center.js' ;
 import { clean }               from './strings/clean.js' ;
+import { compare }             from './strings/compare.js' ;
 import { endsWith }            from './strings/endsWith.js' ;
 import { fastformat }          from './strings/fastformat.js' ;
 import { fastformatDate }      from './strings/fastformatDate.js' ;
@@ -43,6 +44,7 @@ export var strings = Object.assign
     capitalize : capitalize ,
     center : center ,
     clean : clean ,
+    compare : compare ,
     endsWith : endsWith ,
     fastformat : fastformat ,
     fastformatDate : fastformatDate ,
