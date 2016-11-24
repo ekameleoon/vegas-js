@@ -53,9 +53,6 @@ export function EdgeMetrics( left = 0, top = 0, right = 0, bottom = 0 )
     });
 }
 
-/**
- * @extends Object
- */
 EdgeMetrics.prototype = Object.create( Object.prototype ,
 {
     /**
@@ -85,6 +82,7 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
      * @return a shallow copy of the object.
      * @memberof graphics.geom.EdgeMetrics
      * @instance
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -97,6 +95,7 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
      * @memberof graphics.geom.EdgeMetrics
      * @param {graphics.geom.EdgeMetrics} o - The object to evaluate.
      * @instance
+     * @function
      */
     equals : { writable : true , value : function( o )
     {
@@ -118,6 +117,7 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
      * @return the Object representation of this object.
      * @memberof graphics.geom.EdgeMetrics
      * @instance
+     * @function
      */
     toObject : { writable : true , value : function()
     {
@@ -129,6 +129,7 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
      * @return {string} the string representation of this instance.
      * @memberof graphics.geom.EdgeMetrics
      * @instance
+     * @function
      */
     toString : { writable : true , value : function()
     {

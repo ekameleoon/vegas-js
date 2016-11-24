@@ -41,6 +41,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return a shallow copy of the object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -51,6 +52,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * Copies all of data from the source Dimension object into the calling Dimension object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     copyFrom : { value : function( dim )
     {
@@ -65,6 +67,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @param {number} [dHeight=0] - A number value to descrease the height component of the object (default 0).
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     decrease : { value : function( dWidth = 0 , dHeight = 0 )
     {
@@ -78,6 +81,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     equals : { writable : true , value : function( o )
     {
@@ -98,6 +102,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return the current reference of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     increase : { value : function( dWidth = 0 , dHeight = 0 )
     {
@@ -111,6 +116,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     isEmpty : { value : function()
     {
@@ -124,6 +130,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return {graphics.geom.Dimension} The object reference.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     set : { value : function( width = 0 , height = 0 )
     {
@@ -137,6 +144,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return the Object representation of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     toObject : { writable : true , value : function()
     {
@@ -148,6 +156,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @return the string representation of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     toString : { writable : true , value : function()
     {

@@ -33,9 +33,6 @@ export function Vector2( x = 0 , y = 0 )
     });
 }
 
-/**
- * @extends Object
- */
 Vector2.prototype = Object.create( Object.prototype ,
 {
     /**
@@ -43,6 +40,7 @@ Vector2.prototype = Object.create( Object.prototype ,
      * @return a shallow copy of the object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -54,6 +52,7 @@ Vector2.prototype = Object.create( Object.prototype ,
      * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     equals : { writable : true , value : function( o )
     {
@@ -72,6 +71,7 @@ Vector2.prototype = Object.create( Object.prototype ,
      * @return the Object representation of this object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     toObject : { writable : true , value : function()
     {
@@ -83,6 +83,7 @@ Vector2.prototype = Object.create( Object.prototype ,
      * @return {string} The string representation of this instance.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     toString : { writable : true , value : function()
     {

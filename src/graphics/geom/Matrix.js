@@ -80,9 +80,6 @@ Object.defineProperties( Matrix ,
     MAGIC_GRADIENT_FACTOR : { value : 16384/10 }
 }) ;
 
-/**
- * @extends Object
- */
 Matrix.prototype = Object.create( Object.prototype ,
 {
     /**
@@ -90,6 +87,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @memberof graphics.geom.Matrix
      * @instance
      * @return a shallow copy of the object.
+     * @function
      */
     clone : { writable : true , value : function()
     {
@@ -103,6 +101,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @param {graphics.geom.Matrix|Object} matrix The matrix to be concatenated to the source matrix.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     concat : { value : function( matrix )
     {
@@ -139,6 +138,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     createBox : { value : function( scaleX, scaleY, rotation = 0, tx = 0, ty = 0 )
     {
@@ -179,6 +179,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     createGradientBox : { value : function( width, height, rotation = 0, tx = 0, ty = 0)
     {
@@ -198,6 +199,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @return The point resulting from applying the matrix transformation.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     deltaTransformPoint : { value : function( point)
     {
@@ -213,6 +215,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @return <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     equals : { writable : true , value : function( o )
     {
@@ -235,6 +238,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     identity : { value : function()
     {
@@ -247,6 +251,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @param {number} angle - The rotation angle in radians.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     rotate : { value : function( angle )
     {
@@ -290,6 +295,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @return the Object representation of this object.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     toObject : { writable : true , value : function()
     {
@@ -301,6 +307,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * @return the string representation of this instance.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     toString : { writable : true , value : function()
     {
