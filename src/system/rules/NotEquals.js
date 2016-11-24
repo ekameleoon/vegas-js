@@ -5,10 +5,15 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Used to perform a logical conjunction on two conditions and more.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name NotEquals
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {Object|system.rules.Rule|system.Equatable} [value1=null] - The first value to evaluate.
+ * @param {Object|system.rules.Rule|system.Equatable} [value2=null] - The second value to evaluate.
  * @example
- * <pre>
  * var BooleanRule = system.rules.BooleanRule ;
  * var NotEquals      =  system.rules.NotEquals ;
  *
@@ -56,22 +61,36 @@ import { Rule } from './Rule.js' ;
  *
  * e = new NotEquals( o1 , o3 ) ;
  * trace( e.eval() ) ; // false
- * </pre>
  */
 export function NotEquals( value1 = null , value2 = null )
 {
+    /**
+     * The first value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value1
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value1 = value1 ;
+    /**
+     * The second value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value2
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value2 = value2 ;
 }
 
-/**
- * @extends Rule
- */
 NotEquals.prototype = Object.create( Rule.prototype );
 NotEquals.prototype.constructor = NotEquals ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.NotEquals
+ * @inheritdoc
  */
 NotEquals.prototype.eval = function ()
 {
@@ -91,13 +110,4 @@ NotEquals.prototype.eval = function ()
     {
         return true ;
     }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-NotEquals.prototype.toString = function () /*String*/
-{
-    return "[NotEquals]" ;
 }

@@ -5,7 +5,13 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates if the condition is a string.
- * @param value The value to evaluate.
+ * @name IsString
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsString = system.rules.IsString ;
  *
@@ -13,32 +19,29 @@ import { Rule } from './Rule.js' ;
  * trace( (new IsString( 'hello' )).eval() ) ; // true
  * trace( (new IsString( '' )).eval() ) ; // true
  * trace( (new IsString( 1 )).eval() ) ; // false
- * </pre>
  */
-export function IsString( value )
+export function IsString( value = null )
 {
+    /**
+     * The value to evaluate.
+     * @memberof system.rules.IsString
+     * @name value
+     * @type {Object}
+     * @instance
+     * @default null
+     */
     this.value  = value ;
 }
 
-/**
- * @extends Rule
- */
 IsString.prototype = Object.create( Rule.prototype );
 IsString.prototype.constructor = IsString ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsString
+ * @inheritdoc
  */
 IsString.prototype.eval = function ()
 {
     return typeof(this.value) === 'string' || this.value instanceof String ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-IsString.prototype.toString = function () /*String*/
-{
-    return "[IsString]" ;
 }

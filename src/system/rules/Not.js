@@ -4,7 +4,13 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Used to perform logical negation on a specific condition.
- * @param condition The condition to evaluate.
+ * @name Not
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {boolean|system.rules.Rule} [condition=false] - The condition to evaluate.
  * @example
  * var BooleanRule = system.rules.BooleanRule ;
  * var Not         = system.rules.Not ;
@@ -21,32 +27,29 @@ import { Rule } from './Rule.js' ;
  * trace( no2.eval() ) ; // true
  * trace( no3.eval() ) ; // false
  * trace( no4.eval() ) ; // true
- * </pre>
  */
-export function Not( condition = null )
+export function Not( condition = false )
 {
+    /**
+     * The condition to evaluate.
+     * @memberof system.rules.Not
+     * @name value
+     * @type {boolean|system.rules.Rule}
+     * @instance
+     * @default false
+     */
     this.condition = condition ;
 }
 
-/**
- * @extends Rule
- */
 Not.prototype = Object.create( Rule.prototype );
 Not.prototype.constructor = Not ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Not
+ * @inheritdoc
  */
 Not.prototype.eval = function ()
 {
     return !( this.condition instanceof Rule ? this.condition.eval() : Boolean( this.condition ) ) ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Not.prototype.toString = function () /*String*/
-{
-    return "[Not]" ;
 }

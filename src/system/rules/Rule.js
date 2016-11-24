@@ -45,13 +45,13 @@ Rule.prototype.eval = function()
 
 /**
  * Returns the string representation of this instance.
+ * @return the string representation of this instance.
  * @name toString
  * @memberof system.rules.Rule
  * @function
  * @instance
- * @return the string representation of this instance.
  */
-Rule.prototype.toString = function () /*String*/
+Rule.prototype.toString = function()
 {
-    return "[Rule]" ;
+    return '[' + this.constructor.name + ']' ;
 }

@@ -9,6 +9,7 @@ import { Rule } from './Rule.js' ;
  * @class
  * @constructs
  * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
  * @param {number} [value1=NaN] - The first value to evaluate.
  * @param {number} [value2=NaN] - The second value to evaluate.
  * @example
@@ -48,25 +49,10 @@ DivBy.prototype.constructor = DivBy ;
 
 /**
  * Evaluates the specified object.
- * @name eval
  * @memberof system.rules.DivBy
- * @function
- * @instance
+ * @inheritdoc
  */
 DivBy.prototype.eval = function ()
 {
     return (this.value1 % this.value2) === 0 ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.rules.DivBy
- * @function
- * @instance
- */
-DivBy.prototype.toString = function () /*String*/
-{
-    return "[DivBy]" ;
 }

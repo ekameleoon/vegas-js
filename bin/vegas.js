@@ -3890,7 +3890,6 @@ var random = Object.assign({
  * @example
  * var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
  * trace( definition ) ;
- * </pre>
  */
 function getDefinitionByName(name) {
     var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -5326,6 +5325,7 @@ Equatable.prototype.constructor = Equatable;
 /**
  * Compares the specified object with this object for equality.
  * @memberof system.Equatable
+ * @function
  * @param {*} object - The object to evaluates.
  * @return {boolean} true if the the specified object is equal with this object.
  */
@@ -5336,6 +5336,7 @@ Equatable.prototype.equals = function (object) /*Boolean*/
 
 /**
  * Returns the string representation of this instance.
+ * @function
  * @memberof system.Equatable
  * @return the string representation of this instance.
  */
@@ -12866,6 +12867,10 @@ var logging = Object.assign({
 
 /**
  * Indicates if the specific objet is a Rule.
+ * @memberof system.rules
+ * @function
+ * @param {Object} target - The object to validate.
+ * @return <code>true</code> if the object is a {@link system.rules.Rule} instance.
  */
 
 function isRule(target) {
@@ -12877,36 +12882,48 @@ function isRule(target) {
 
 /**
  * Defines the rule to evaluate a basic or complex condition.
+ * @name Rule
+ * @memberof system.rules
+ * @interface
+ * @extends Object
  */
 function Rule() {}
 
-/**
- * @extends Object
- */
 Rule.prototype = Object.create(Object.prototype);
 Rule.prototype.constructor = Rule;
 
 /**
  * Evaluates the specified condition.
+ * @name eval
+ * @memberof system.rules.Rule
+ * @function
+ * @instance
  */
-Rule.prototype.eval = function () /*Boolean*/
-{}
+Rule.prototype.eval = function () {}
 //
 
 
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.rules.Rule
+ * @function
+ * @instance
  */
-;Rule.prototype.toString = function () /*String*/
-{
-  return "[Rule]";
+;Rule.prototype.toString = function () {
+  return '[' + this.constructor.name + ']';
 };
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @name BooleanRule
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
  * @example
- * <pre>
  * var BooleanRule = system.rules.BooleanRule ;
  *
  * var cond1 = new BooleanRule( true  ) ;
@@ -12916,37 +12933,29 @@ Rule.prototype.eval = function () /*Boolean*/
  * trace( cond1.eval() ) ; // true
  * trace( cond2.eval() ) ; // false
  * trace( cond3.eval() ) ; // true
- * </pre>
  */
 function BooleanRule(condition) {
   Object.defineProperties(this, {
     /**
      * The condition to evaluate.
+     * @memberof system.rules.BooleanRule
+     * @type {boolean|system.rules.Rule}
+     * @instance
      */
     condition: { value: condition, enumerable: true, writable: true }
   });
 }
 
-/**
- * @extends Rule
- */
 BooleanRule.prototype = Object.create(Rule.prototype);
 BooleanRule.prototype.constructor = BooleanRule;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.BooleanRule
+ * @inheritdoc
  */
 BooleanRule.prototype.eval = function () {
   return this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition);
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-BooleanRule.prototype.toString = function () /*String*/
-{
-  return "[BooleanRule]";
 };
 
 /**
@@ -12988,7 +12997,13 @@ ElseIf.prototype.toString = function () /*String*/
 
 /**
  * Evaluates if the value is an empty String.
- * @param value The value to evaluate.
+ * @name EmptyString
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {string} value - The value to evaluate.
  * @example
  * var EmptyString = system.rules.EmptyString ;
  *
@@ -12999,34 +13014,29 @@ ElseIf.prototype.toString = function () /*String*/
  * trace( cond1.eval() ) ; // false
  * trace( cond2.eval() ) ; // true
  * trace( cond3.eval() ) ; // false
- * </pre>
  */
 function EmptyString() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
+  /**
+   * @memberof system.rules.EmptyString
+   * @name value
+   * @type {string}
+   * @instance
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 EmptyString.prototype = Object.create(Rule.prototype);
 EmptyString.prototype.constructor = EmptyString;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.EmptyString
+ * @inheritdoc
  */
 EmptyString.prototype.eval = function () {
   return this.value === "";
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-EmptyString.prototype.toString = function () /*String*/
-{
-  return "[EmptyString]";
 };
 
 /**
@@ -13047,11 +13057,15 @@ ElseIfEmptyString.prototype.toString = function () {
 
 /**
  * Used to perform a logical conjunction on two conditions and more.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name Equals
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {Object|system.rules.Rule|system.Equatable} [value1=null] - The first value to evaluate.
+ * @param {Object|system.rules.Rule|system.Equatable} [value2=null] - The second value to evaluate.
  * @example
- * <pre>
- *
  * var BooleanRule = system.rules.BooleanRule ;
  * var Equals      =  system.rules.Equals ;
  *
@@ -13099,24 +13113,38 @@ ElseIfEmptyString.prototype.toString = function () {
  *
  * e = new Equals( o1 , o3 ) ;
  * trace( e.eval() ) ; // true
- * </pre>
  */
 function Equals() {
     var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
+    /**
+     * The first value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value1
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value1 = value1;
+    /**
+     * The second value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value2
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 Equals.prototype = Object.create(Rule.prototype);
 Equals.prototype.constructor = Equals;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Equals
+ * @inheritdoc
  */
 Equals.prototype.eval = function () {
     if (this.value1 === this.value2) {
@@ -13128,15 +13156,6 @@ Equals.prototype.eval = function () {
     } else {
         return false;
     }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Equals.prototype.toString = function () /*String*/
-{
-    return "[Equals]";
 };
 
 /**
@@ -13156,7 +13175,13 @@ ElseIfEquals.prototype.toString = function () {
 
 /**
  * Evaluates if the condition is false.
- * @param value The value to evaluate.
+ * @name False
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {boolean|system.rules.Rule} value - The value to evaluate.
  * @example
  * var False = system.rules.False ;
  *
@@ -13169,34 +13194,31 @@ ElseIfEquals.prototype.toString = function () {
  * trace( cond2.eval() ) ; // true
  * trace( cond3.eval() ) ; // true
  * trace( cond4.eval() ) ; // false
- * </pre>
  */
 function False() {
-  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.False
+   * @name value
+   * @type {boolean|system.rules.Rule}
+   * @instance
+   * @default false
+   */
   this.condition = condition;
 }
 
-/**
- * @extends Rule
- */
 False.prototype = Object.create(Rule.prototype);
 False.prototype.constructor = False;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.False
+ * @inheritdoc
  */
 False.prototype.eval = function () {
   return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === false;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-False.prototype.toString = function () /*String*/
-{
-  return "[False]";
 };
 
 /**
@@ -13217,7 +13239,14 @@ ElseIfFalse.prototype.toString = function () {
 /* jshint eqnull: true */
 /**
  * Evaluates if the condition is null.
- * @param value The value to evaluate.
+ * @name Null
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {object} [value=null] - The value to evaluate.
+ * @param {boolean} [strict=false] - This flag indicates if the condition use == or === to evalute the value.
  * @example
  * var Null = system.rules.Null ;
  *
@@ -13234,39 +13263,46 @@ ElseIfFalse.prototype.toString = function () {
  *
  * cond = new Null( "hello" ) ;
  * trace( cond.eval() ) ; // false
- * </pre>
  */
-function Null(value) {
-    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+function Null() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-    this.value = value;
-    this.strict = Boolean(strict);
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.Null
+   * @name value
+   * @type {object}
+   * @instance
+   * @default undefined
+   */
+  this.value = value;
+
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.Null
+   * @name strict
+   * @type {boolean}
+   * @instance
+   * @default false
+   */
+  this.strict = Boolean(strict);
 }
 
-/**
- * @extends Rule
- */
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Null
+ * @inheritdoc
  */
 Null.prototype.eval = function () {
-    if (this.strict) {
-        return this.value === null;
-    } else {
-        return this.value == null;
-    }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Null.prototype.toString = function () /*String*/
-{
-    return "[Null]";
+  if (this.strict) {
+    return this.value === null;
+  } else {
+    return this.value == null;
+  }
 };
 
 /**
@@ -13287,7 +13323,13 @@ ElseIfNull.prototype.toString = function () {
 
 /**
  * Evaluates if the condition is true.
- * @param value The value to evaluate.
+ * @name True
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {boolean|system.rules.Rule} value - The value to evaluate.
  * @example
  * var True = system.rules.True ;
  *
@@ -13305,29 +13347,27 @@ ElseIfNull.prototype.toString = function () {
 function True() {
   var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.True
+   * @name value
+   * @type {boolean|system.rules.Rule}
+   * @instance
+   * @default false
+   */
   this.condition = condition;
 }
 
-/**
- * @extends Rule
- */
 True.prototype = Object.create(Rule.prototype);
 True.prototype.constructor = True;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.True
+ * @inheritdoc
  */
 True.prototype.eval = function () {
   return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === true;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-True.prototype.toString = function () /*String*/
-{
-  return "[True]";
 };
 
 /**
@@ -13348,38 +13388,42 @@ ElseIfTrue.prototype.toString = function () {
 /* jshint eqnull: true */
 /**
  * Evaluates if the condition is undefined.
- * @param value The value to evaluate.
+ * @name Undefined
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {object} [value=null] - The value to evaluate.
  * @example
  * var Undefined = system.rules.Undefined ;
- *
  * trace( (new Undefined( undefined )).eval() ) ; // true
  * trace( (new Undefined( 'hello'   )).eval() ) ; // true
- * </pre>
  */
-function Undefined(value) {
+function Undefined() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.Undefined
+   * @name value
+   * @type {object}
+   * @instance
+   * @default undefined
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 Undefined.prototype = Object.create(Rule.prototype);
 Undefined.prototype.constructor = Undefined;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Undefined
+ * @inheritdoc
  */
 Undefined.prototype.eval = function () {
   return this.value === undefined;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Undefined.prototype.toString = function () /*String*/
-{
-  return "[Undefined]";
 };
 
 /**
@@ -13397,42 +13441,45 @@ ElseIfUndefined.prototype.toString = function () {
   return "[ElseIfUndefined]";
 };
 
-/* jshint eqnull: true */
 /**
  * Evaluates if the condition is undefined.
- * @param value The value to evaluate.
+ * @name Zero
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value=Nan] - The value to evaluate.
  * @example
  * var Zero = system.rules.Zero ;
- *
  * trace( (new Zero( 0 )).eval() ) ; // true
  * trace( (new Zero( 1 )).eval() ) ; // false
  * trace( (new Zero( 'test' )).eval() ) ; // false
- * </pre>
  */
-function Zero(value) {
+function Zero() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.True
+   * @name value
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 Zero.prototype = Object.create(Rule.prototype);
 Zero.prototype.constructor = Zero;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Zero
+ * @inheritdoc
  */
 Zero.prototype.eval = function () {
   return this.value === 0;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Zero.prototype.toString = function () /*String*/
-{
-  return "[Zero]";
 };
 
 /**
@@ -18051,8 +18098,13 @@ var process = Object.assign({
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name And
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @example
  * var And = system.rules.And ;
  * var BooleanRule = system.rules.BooleanRule ;
  *
@@ -18090,17 +18142,23 @@ var process = Object.assign({
  * trace( a.eval() ) ; // false
  * a.add(rule1) ;
  * trace( a.eval() ) ; // true
- * </pre>
  */
 function And(rule1 /*Rule*/, rule2 /*Rule*/) {
     Object.defineProperties(this, {
         /**
          * The collection of all rules to evaluate.
+         * @memberof system.rules.And
+         * @type {array}
+         * @instance
          */
         rules: { value: [], enumerable: true },
 
         /**
          * The number of rules to evaluate.
+         * @memberof system.rules.And
+         * @type {number}
+         * @instance
+         * @readonly
          */
         length: { get: function get() {
                 return this.rules instanceof Array ? this.rules.length : 0;
@@ -18128,14 +18186,17 @@ function And(rule1 /*Rule*/, rule2 /*Rule*/) {
     }
 }
 
-/**
- * @extends Rule
- */
 And.prototype = Object.create(Rule.prototype);
 And.prototype.constructor = And;
 
 /**
  * Insert a new Rule in the And condition.
+ * @name add
+ * @memberof system.rules.And
+ * @function
+ * @instance
+ * @param {system.rules.Rule} rule The rule to register.
+ * @return The current object reference.
  */
 And.prototype.add = function (rule) {
     if (rule instanceof Rule) {
@@ -18146,6 +18207,11 @@ And.prototype.add = function (rule) {
 
 /**
  * Clear all rules to evaluates.
+ * @name clear
+ * @memberof system.rules.And
+ * @function
+ * @instance
+ * @return The current object reference.
  */
 And.prototype.clear = function () {
     this.rules.length = 0;
@@ -18154,6 +18220,8 @@ And.prototype.clear = function () {
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.And
+ * @inheritdoc
  */
 And.prototype.eval = function () {
     if (this.rules.length > 0) {
@@ -18169,20 +18237,16 @@ And.prototype.eval = function () {
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-And.prototype.toString = function () /*String*/
-{
-    return "[And]";
-};
-
-/**
  * Evaluates if the division of a value by another returns 0.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name DivBy
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {number} [value1=NaN] - The first value to evaluate.
+ * @param {number} [value2=NaN] - The second value to evaluate.
  * @example
- * <pre>
  * var DivBy = system.rules.DivBy ;
  *
  * var cond ;
@@ -18192,41 +18256,51 @@ And.prototype.toString = function () /*String*/
  *
  * cond = new DivBy( 5 , 2 ) ;
  * trace( cond.eval() ) ; // false
- * </pre>
  */
 function DivBy() {
-  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
+  /**
+   * The first value to evaluate.
+   * @memberof system.rules.DivBy
+   * @name value1
+   * @type {number}
+   * @instance
+   */
   this.value1 = value1;
+
+  /**
+   * The second value to evaluate.
+   * @memberof system.rules.DivBy
+   * @name value2
+   * @type {number}
+   * @instance
+   */
   this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 DivBy.prototype = Object.create(Rule.prototype);
 DivBy.prototype.constructor = DivBy;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.DivBy
+ * @inheritdoc
  */
 DivBy.prototype.eval = function () {
   return this.value1 % this.value2 === 0;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-DivBy.prototype.toString = function () /*String*/
-{
-  return "[DivBy]";
-};
-
-/**
  * Evaluates if the value is even.
- * @param value The value to evaluate.
+ * @name Even
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {number} [value=NaN] ) The value to evaluate.
  * @example
  * var cond ;
  * var Even = system.rules.Even ;
@@ -18242,42 +18316,44 @@ DivBy.prototype.toString = function () /*String*/
  *
  * cond = new Even( 3 ) ;
  * trace( cond.eval() ) ; // false
- * </pre>
  */
 function Even() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
 
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.Even
+   * @name value
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 Even.prototype = Object.create(Rule.prototype);
 Even.prototype.constructor = Even;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Even
+ * @inheritdoc
  */
 Even.prototype.eval = function () {
   return this.value % 2 === 0;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Even.prototype.toString = function () /*String*/
-{
-  return "[Even]";
-};
-
-/**
  * Used to indicates if a value is greater or equal than another value.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name GreaterOrEqualsThan
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value1=Nan] - The first value to evaluate.
+ * @param {number} [value2=Nan] - The second value to evaluate.
  * @example
- * <pre>
  * var GreaterOrEqualsThan = system.rules.GreaterOrEqualsThan ;
  *
  * var rule ;
@@ -18290,44 +18366,54 @@ Even.prototype.toString = function () /*String*/
  *
  * rule = new GreaterOrEqualsThan( 3 , 2 ) ;
  * trace( rule.eval() ) ; // true
- * </pre>
  */
 function GreaterOrEqualsThan() {
-  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
+  /**
+   * The first value to evaluate.
+   * @memberof system.rules.GreaterOrEqualsThan
+   * @name value1
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value1 = value1;
+  /**
+   * The second value to evaluate.
+   * @memberof system.rules.GreaterOrEqualsThan
+   * @name value2
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 GreaterOrEqualsThan.prototype = Object.create(Rule.prototype);
 GreaterOrEqualsThan.prototype.constructor = GreaterOrEqualsThan;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.GreaterOrEqualsThan
+ * @inheritdoc
  */
 GreaterOrEqualsThan.prototype.eval = function () {
   return this.value1 >= this.value2;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-GreaterOrEqualsThan.prototype.toString = function () /*String*/
-{
-  return "[GreaterOrEqualsThan]";
-};
-
-/**
  * Used to indicates if a value is greater than another value.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name GreaterThan
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value1=Nan] - The first value to evaluate.
+ * @param {number} [value2=Nan] - The second value to evaluate.
  * @example
- * <pre>
  * var GreaterThan = system.rules.GreaterThan ;
  *
  * var rule ;
@@ -18343,39 +18429,51 @@ GreaterOrEqualsThan.prototype.toString = function () /*String*/
  * </pre>
  */
 function GreaterThan() {
-  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
+  /**
+   * The first value to evaluate.
+   * @memberof system.rules.GreaterThan
+   * @name value1
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value1 = value1;
+  /**
+   * The second value to evaluate.
+   * @memberof system.rules.GreaterThan
+   * @name value2
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 GreaterThan.prototype = Object.create(Rule.prototype);
 GreaterThan.prototype.constructor = GreaterThan;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.GreaterThan
+ * @inheritdoc
  */
 GreaterThan.prototype.eval = function () {
   return this.value1 > this.value2;
 };
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-GreaterThan.prototype.toString = function () /*String*/
-{
-  return "[GreaterThan]";
-};
-
 /* jshint eqnull: true */
 /**
  * Evaluates if the condition is a boolean.
- * @param value The value to evaluate.
+ * @name IsBoolean
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @implements {system.rules.Rule}
+ * @class
+ * @constructs
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsBoolean = system.rules.IsBoolean ;
  *
@@ -18387,38 +18485,105 @@ GreaterThan.prototype.toString = function () /*String*/
  *
  * trace( (new IsBoolean( new Boolean(true) )).eval() ) ; // true
  * trace( (new IsBoolean( new Boolean(false) )).eval() ) ; // true
- * </pre>
  */
-function IsBoolean(value) {
+function IsBoolean() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.IsBoolean
+   * @name value
+   * @type {Object}
+   * @instance
+   * @default null
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 IsBoolean.prototype = Object.create(Rule.prototype);
 IsBoolean.prototype.constructor = IsBoolean;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsBoolean
+ * @inheritdoc
  */
 IsBoolean.prototype.eval = function () {
   return typeof this.value === 'boolean' || this.value instanceof Boolean;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
+ * Evaluates if the condition is NaN.
+ * @name IsNaN
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value=NaN] - The value to evaluate.
+ * @example
+ * var IsNaN = system.rules.IsNaN ;
+ * trace( (new IsNaN( 0 )).eval() ) ; // false
+ * trace( (new IsNaN( 1 )).eval() ) ; // false
+ * trace( (new IsNaN( 'foo' )).eval() ) ; // false
+ * trace( (new IsNaN( NaN )).eval() ) ; // true
+ *
+ * trace( (new IsNaN( 0 , false )).eval() ) ; // false
+ * trace( (new IsNaN( 1 , false )).eval() ) ; // false
+ * trace( (new IsNaN( 'foo' , false )).eval() ) ; // true
+ * trace( (new IsNaN( NaN , false)).eval() ) ; // true
  */
-IsBoolean.prototype.toString = function () /*String*/
-{
-  return "[IsBoolean]";
+function IsNaN() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.True
+   * @name value
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
+  this.value = value;
+
+  /**
+   * The flag to indicates if the evaluation is strict (is <code>NaN</code> only) or not (test if the object is a <code>Number</code> and if not is <code>NaN</code>).
+   * @memberof system.rules.IsNaN
+   * @name strict
+   * @type {boolean}
+   * @instance
+   * @default true
+   */
+  this.strict = Boolean(strict);
+}
+
+IsNaN.prototype = Object.create(Rule.prototype);
+IsNaN.prototype.constructor = IsNaN;
+
+/**
+ * Evaluates the specified object.
+ * @memberof system.rules.IsNaN
+ * @inheritdoc
+ */
+IsNaN.prototype.eval = function () {
+  if (this.strict) {
+    return isNaN(this.value);
+  } else {
+    return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
+  }
 };
 
 /* jshint eqnull: true */
 /**
  * Evaluates if the condition is a boolean.
- * @param value The value to evaluate.
+ * @name IsNumber
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsNumber = system.rules.IsNumber ;
  *
@@ -18428,38 +18593,43 @@ IsBoolean.prototype.toString = function () /*String*/
  *
  * trace( (new IsNumber( true )).eval() ) ; // false
  * trace( (new IsNumber( null )).eval() ) ; // false
- * </pre>
  */
-function IsNumber(value) {
+function IsNumber() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.IsNumber
+   * @name value
+   * @type {Object}
+   * @instance
+   * @default null
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 IsNumber.prototype = Object.create(Rule.prototype);
 IsNumber.prototype.constructor = IsNumber;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsNumber
+ * @inheritdoc
  */
 IsNumber.prototype.eval = function () {
   return typeof this.value === 'number' || this.value instanceof Number;
 };
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-IsNumber.prototype.toString = function () /*String*/
-{
-  return "[IsNumber]";
-};
-
 /* jshint eqnull: true */
 /**
  * Evaluates if the condition is a string.
- * @param value The value to evaluate.
+ * @name IsString
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsString = system.rules.IsString ;
  *
@@ -18467,40 +18637,44 @@ IsNumber.prototype.toString = function () /*String*/
  * trace( (new IsString( 'hello' )).eval() ) ; // true
  * trace( (new IsString( '' )).eval() ) ; // true
  * trace( (new IsString( 1 )).eval() ) ; // false
- * </pre>
  */
-function IsString(value) {
+function IsString() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.IsString
+   * @name value
+   * @type {Object}
+   * @instance
+   * @default null
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 IsString.prototype = Object.create(Rule.prototype);
 IsString.prototype.constructor = IsString;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsString
+ * @inheritdoc
  */
 IsString.prototype.eval = function () {
   return typeof this.value === 'string' || this.value instanceof String;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-IsString.prototype.toString = function () /*String*/
-{
-  return "[IsString]";
-};
-
-/**
  * Used to indicates if a value is less or equal than another value.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name LessOrEqualsThan
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value1=Nan] - The first value to evaluate.
+ * @param {number} [value2=Nan] - The second value to evaluate.
  * @example
- * <pre>
  * var LessOrEqualsThan = system.rules.LessOrEqualsThan ;
  *
  * var rule ;
@@ -18513,44 +18687,54 @@ IsString.prototype.toString = function () /*String*/
  *
  * rule = new LessOrEqualsThan( 3 , 2 ) ;
  * trace( rule.eval() ) ; // false
- * </pre>
  */
 function LessOrEqualsThan() {
-  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
+  /**
+   * The first value to evaluate.
+   * @memberof system.rules.LessOrEqualsThan
+   * @name value1
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value1 = value1;
+  /**
+   * The second value to evaluate.
+   * @memberof system.rules.LessOrEqualsThan
+   * @name value2
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 LessOrEqualsThan.prototype = Object.create(Rule.prototype);
 LessOrEqualsThan.prototype.constructor = LessOrEqualsThan;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.LessOrEqualsThan
+ * @inheritdoc
  */
 LessOrEqualsThan.prototype.eval = function () {
   return this.value1 <= this.value2;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-LessOrEqualsThan.prototype.toString = function () /*String*/
-{
-  return "[LessOrEqualsThan]";
-};
-
-/**
  * Used to indicates if a value is greater than another value.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name LessThan
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value1=Nan] - The first value to evaluate.
+ * @param {number} [value2=Nan] - The second value to evaluate.
  * @example
- * <pre>
  * var LessThan = system.rules.LessThan ;
  *
  * var rule ;
@@ -18563,41 +18747,52 @@ LessOrEqualsThan.prototype.toString = function () /*String*/
  *
  * rule = new LessThan( 3 , 2 ) ;
  * trace( rule.eval() ) ; // false
- * </pre>
  */
 function LessThan() {
-  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+  var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
 
+  /**
+   * The first value to evaluate.
+   * @memberof system.rules.LessThan
+   * @name value1
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value1 = value1;
+  /**
+   * The second value to evaluate.
+   * @memberof system.rules.LessThan
+   * @name value2
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 LessThan.prototype = Object.create(Rule.prototype);
 LessThan.prototype.constructor = LessThan;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.LessThan
+ * @inheritdoc
  */
 LessThan.prototype.eval = function () {
   return this.value1 < this.value2;
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-LessThan.prototype.toString = function () /*String*/
-{
-  return "[LessThan]";
-};
-
-/**
  * Used to perform logical negation on a specific condition.
- * @param condition The condition to evaluate.
+ * @name Not
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {boolean|system.rules.Rule} [condition=false] - The condition to evaluate.
  * @example
  * var BooleanRule = system.rules.BooleanRule ;
  * var Not         = system.rules.Not ;
@@ -18614,42 +18809,44 @@ LessThan.prototype.toString = function () /*String*/
  * trace( no2.eval() ) ; // true
  * trace( no3.eval() ) ; // false
  * trace( no4.eval() ) ; // true
- * </pre>
  */
 function Not() {
-  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.Not
+   * @name value
+   * @type {boolean|system.rules.Rule}
+   * @instance
+   * @default false
+   */
   this.condition = condition;
 }
 
-/**
- * @extends Rule
- */
 Not.prototype = Object.create(Rule.prototype);
 Not.prototype.constructor = Not;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Not
+ * @inheritdoc
  */
 Not.prototype.eval = function () {
   return !(this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition));
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Not.prototype.toString = function () /*String*/
-{
-  return "[Not]";
-};
-
-/**
  * Used to perform a logical conjunction on two conditions and more.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name NotEquals
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {Object|system.rules.Rule|system.Equatable} [value1=null] - The first value to evaluate.
+ * @param {Object|system.rules.Rule|system.Equatable} [value2=null] - The second value to evaluate.
  * @example
- * <pre>
  * var BooleanRule = system.rules.BooleanRule ;
  * var NotEquals      =  system.rules.NotEquals ;
  *
@@ -18697,24 +18894,38 @@ Not.prototype.toString = function () /*String*/
  *
  * e = new NotEquals( o1 , o3 ) ;
  * trace( e.eval() ) ; // false
- * </pre>
  */
 function NotEquals() {
     var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
+    /**
+     * The first value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value1
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value1 = value1;
+    /**
+     * The second value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value2
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     * @default null
+     */
     this.value2 = value2;
 }
 
-/**
- * @extends Rule
- */
 NotEquals.prototype = Object.create(Rule.prototype);
 NotEquals.prototype.constructor = NotEquals;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.NotEquals
+ * @inheritdoc
  */
 NotEquals.prototype.eval = function () {
     if (this.value1 === this.value2) {
@@ -18729,17 +18940,14 @@ NotEquals.prototype.eval = function () {
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-NotEquals.prototype.toString = function () /*String*/
-{
-    return "[NotEquals]";
-};
-
-/**
  * Evaluates if the value is odd.
- * @param value The value to evaluate.
+ * @name Odd
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @param {number} [value=NaN] ) The value to evaluate.
  * @example
  * var cond ;
  * var Odd = system.rules.Odd ;
@@ -18758,19 +18966,26 @@ NotEquals.prototype.toString = function () /*String*/
  * </pre>
  */
 function Odd() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
 
+  /**
+   * The value to evaluate.
+   * @memberof system.rules.Even
+   * @name value
+   * @type {number}
+   * @instance
+   * @default NaN
+   */
   this.value = value;
 }
 
-/**
- * @extends Rule
- */
 Odd.prototype = Object.create(Rule.prototype);
 Odd.prototype.constructor = Odd;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Odd
+ * @inheritdoc
  */
 Odd.prototype.eval = function () {
   return this.value % 2 !== 0;
@@ -18787,8 +19002,13 @@ Odd.prototype.toString = function () /*String*/
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name Or
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @example
  * var Or = system.rules.Or ;
  * var BooleanRule = system.rules.BooleanRule ;
  *
@@ -18826,17 +19046,23 @@ Odd.prototype.toString = function () /*String*/
  * trace( o.eval() ) ; // false
  * o.add(rule1) ;
  * trace( o.eval() ) ; // true
- * </pre>
  */
 function Or(rule1 /*Rule*/, rule2 /*Rule*/) {
     Object.defineProperties(this, {
         /**
          * The collection of all rules to evaluate.
+         * @memberof system.rules.Or
+         * @type {array}
+         * @instance
          */
         rules: { value: [], enumerable: true },
 
         /**
          * The number of rules to evaluate.
+         * @memberof system.rules.Or
+         * @type {number}
+         * @instance
+         * @readonly
          */
         length: { get: function get() {
                 return this.rules instanceof Array ? this.rules.length : 0;
@@ -18864,14 +19090,17 @@ function Or(rule1 /*Rule*/, rule2 /*Rule*/) {
     }
 }
 
-/**
- * @extends Rule
- */
 Or.prototype = Object.create(Rule.prototype);
 Or.prototype.constructor = Or;
 
 /**
  * Insert a new Rule in the Or condition.
+ * @name add
+ * @memberof system.rules.Or
+ * @function
+ * @instance
+ * @param {system.rules.Rule} rule The rule to register.
+ * @return The current object reference.
  */
 Or.prototype.add = function (rule) {
     if (rule instanceof Rule) {
@@ -18882,6 +19111,11 @@ Or.prototype.add = function (rule) {
 
 /**
  * Clear all rules to evaluates.
+ * @name clear
+ * @memberof system.rules.Or
+ * @function
+ * @instance
+ * @return The current object reference.
  */
 Or.prototype.clear = function () {
     this.rules.length = 0;
@@ -18890,6 +19124,8 @@ Or.prototype.clear = function () {
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Or
+ * @inheritdoc
  */
 Or.prototype.eval = function () {
     if (this.rules.length > 0) {
@@ -18902,15 +19138,6 @@ Or.prototype.eval = function () {
     } else {
         return false;
     }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Or.prototype.toString = function () /*String*/
-{
-    return "[Or]";
 };
 
 /**
@@ -18935,6 +19162,7 @@ var rules = Object.assign({
     GreaterOrEqualsThan: GreaterOrEqualsThan,
     GreaterThan: GreaterThan,
     IsBoolean: IsBoolean,
+    IsNaN: IsNaN,
     IsNumber: IsNumber,
     IsString: IsString,
     LessOrEqualsThan: LessOrEqualsThan,
@@ -21032,6 +21260,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return a shallow copy of the object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Dimension(this.width, this.height);
@@ -21041,6 +21270,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * Copies all of data from the source Dimension object into the calling Dimension object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     copyFrom: { value: function value(dim) {
             this.width = dim.width;
@@ -21054,6 +21284,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @param {number} [dHeight=0] - A number value to descrease the height component of the object (default 0).
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     decrease: { value: function value() {
             var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -21069,6 +21300,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Dimension) {
@@ -21085,6 +21317,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return the current reference of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     increase: { value: function value() {
             var dWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -21100,6 +21333,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return {boolean} A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     isEmpty: { value: function value() {
             return this.width <= 0 || this.height <= 0;
@@ -21112,6 +21346,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return {graphics.geom.Dimension} The object reference.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     set: { value: function value() {
             var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -21127,6 +21362,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return the Object representation of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     toObject: { writable: true, value: function value() {
             return { width: this.width, height: this.height };
@@ -21137,6 +21373,7 @@ Dimension.prototype = Object.create(Object.prototype, {
      * @return the string representation of this object.
      * @memberof graphics.geom.Dimension
      * @instance
+     * @function
      */
     toString: { writable: true, value: function value() {
             return "[Dimension width:" + this.width + " height:" + this.height + "]";
@@ -21178,15 +21415,13 @@ function Vector2() {
     });
 }
 
-/**
- * @extends Object
- */
 Vector2.prototype = Object.create(Object.prototype, {
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Vector2(this.x, this.y);
@@ -21197,6 +21432,7 @@ Vector2.prototype = Object.create(Object.prototype, {
      * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Vector2) {
@@ -21211,6 +21447,7 @@ Vector2.prototype = Object.create(Object.prototype, {
      * @return the Object representation of this object.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     toObject: { writable: true, value: function value() {
             return { x: this.x, y: this.y };
@@ -21221,6 +21458,7 @@ Vector2.prototype = Object.create(Object.prototype, {
      * @return {string} The string representation of this instance.
      * @memberof graphics.geom.Vector2
      * @instance
+     * @function
      */
     toString: { writable: true, value: function value() {
             return "[Vector2 x:" + this.x + " y:" + this.y + "]";
@@ -21281,6 +21519,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Transform the coordinates of this point to used absolute value for the x and y properties.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p = new Point(-10, -20) ;
      * p.abs() ;
@@ -21295,6 +21534,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Adds the coordinates of another point to the coordinates of this point.
      * @param {graphics.geom.Point} point - the point to be added. You can use an object with the properties x and y.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      */
     add: { writable: true, value: function value(point) {
@@ -21307,6 +21547,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the angle value between this Point object and the specified Point passed in arguments.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10, 20) ;
      * var p2 = new Point(50, 200) ;
@@ -21322,6 +21563,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns a shallow copy of the object.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -21332,6 +21574,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the cross value of the current Point object with the Point passed in argument.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
@@ -21347,6 +21590,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the dot value of the current Point and the specified Point passed in argument.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10,20) ;
      * var p2 = new Point(40,60) ;
@@ -21362,6 +21606,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the normal value of this Point.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p = new Point(10,10) ;
      * var n = p.getNormal() ; // [Point x:-10 y:10]
@@ -21376,6 +21621,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the size of the projection of this Point with an other Point.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10,10) ;
      * var p2 = new Point(100,200) ;
@@ -21393,6 +21639,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns true if the Point is perpendicular with the passed-in Point.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(0,10) ;
      * var p2 = new Point(10,10) ;
@@ -21410,6 +21657,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the new Point with the maximum horizontal coordinate and the maximum vertical coordinate.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
@@ -21426,6 +21674,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns a new Point with the minimum horizontal coordinate and the minimize vertical coordinate.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p1 = new Point(10,100) ;
      * var p2 = new Point(100,10) ;
@@ -21442,6 +21691,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Sets this Point with negate coordinates.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p = new Point(10,20) ;
      * trace(p) ; // [Point x:10 y:20]
@@ -21459,6 +21709,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Scales the line segment between (0,0) and the current point to a set length.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @example
      * var p = new Point(0,5) ;
      * p.normalize() ;
@@ -21489,13 +21740,13 @@ Point.prototype = Object.create(Vector2.prototype, {
      * The value of dy is added to the original value of y to create the new y value.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @param {number} [dx=0] - The amount by which to offset the horizontal coordinate, x.
      * @param {number} [dy=0] - The amount by which to offset the vertical coordinate, y.
      * @example
      * var p = new Point(10,10) ;
      * p.offset(10,10) ;
      * trace(p) ; // [Point x:20 y:20]
-     * @memberof graphics.geom.Point
      */
     offset: { writable: true, value: function value() {
             var dx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -21509,6 +21760,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Rotates the Point with the specified angle in argument.
      * @memberof graphics.geom.Point
      * @instance
+     * @function
      * @param {number} angle - The angle to rotate this Point.
      * @param {Object} [anchor=null] - The anchor point to rotate this Point around (by default use the {0,0} position).
      */
@@ -21539,6 +21791,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Scales the Point with the specified value in argument.
      * @param {number} value - the value to scale this Point coordinates.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      */
     scale: { value: function value(_value) {
@@ -21551,6 +21804,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * @param {number} [x=0] - The x coordinates of the point.
      * @param {number} [y=0] - The y coordinates of the point.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      */
     set: { value: function value() {
@@ -21565,6 +21819,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Subtracts the coordinates of another point from the coordinates of this point.
      * @param {graphics.geom.Point} point - The point to be subtracted.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      */
     subtract: { value: function value(point) {
@@ -21576,6 +21831,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Swap the horizontal and vertical coordinates of two Point objects.
      * @param {graphics.geom.Point} point - The point to be swap.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      * @example
      * var p1 = new Point(10,20) ;
@@ -21597,6 +21853,7 @@ Point.prototype = Object.create(Vector2.prototype, {
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @instance
+     * @function
      * @memberof graphics.geom.Point
      */
     toString: { writable: true, value: function value() {
@@ -21906,6 +22163,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @return a shallow copy of the object.
      */
     clone: { writable: true, value: function value() {
@@ -21916,6 +22174,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {number} x - The x position of the point to check.
      * @param {number} y - The y position of the point to check.
      */
@@ -21927,6 +22186,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Determines whether the specified point is contained within the rectangular region defined by this Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {Object|graphics.geom.Point} point - The point to check.
      */
     containsPoint: { value: function value(point) {
@@ -21937,6 +22197,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {Object|graphics.geom.Rectangle} rec - The rectangle area to check.
      */
     containsRect: { value: function value(rec) {
@@ -21951,6 +22212,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Copies all of rectangle data from the source Rectangle object into the calling Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {graphics.geom.Rectangle|Object} rec - The rectangle object to copy.
      */
     copyFrom: { value: function value(rec) {
@@ -21965,6 +22227,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {object} toCompareThe - object to evaluates.
      * @param {boolean} [strict=true] - If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
      * @return {boolean} <code>true</code> if the the specified object is equal with this object.
@@ -21985,6 +22248,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {number} dx - The value to be added to the left and the right of the Rectangle object. The following equation is used to calculate the new width and position of the rectangle:  x -= dx; width += 2 * dx;
      * @param {number} dy - The value to be added to the top and the bottom of the Rectangle. The following equation is used to calculate the new height and position of the rectangle: y -= dy; height += 2 * dy;
      */
@@ -22000,6 +22264,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {graphics.geom.Point} point - The x property of this Point object is used to increase the horizontal dimension of the Rectangle object. The y property is used to increase the vertical dimension of the Rectangle object.
      * @example
      * var rect  = new Rectangle(0,0,2,5);
@@ -22019,6 +22284,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * @param toIntersect {graphics.geom.Rectangle} The Rectangle object to compare against to see if it intersects with this Rectangle object.
      * @return {graphics.geom.Rectangle}  A Rectangle object that equals the area of intersection. If the rectangles do not intersect, this method returns an empty Rectangle object; that is, a rectangle with its x, y, width, and height properties set to 0.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     intersection: { value: function value(toIntersect) {
@@ -22046,6 +22312,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * @param {graphics.geom.Rectangle} toIntersect - The Rectangle object to compare against this Rectangle object.
      * @return {boolean} A value of true if the specified object intersects with this Rectangle object; otherwise false.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     intersects: { value: function value(toIntersect) {
@@ -22057,6 +22324,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * @param {number} [dx=0] - Moves the x value of the Rectangle object by this amount.
      * @param {number} [dy=0] - Moves the y value of the Rectangle object by this amount.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     offset: { writable: true, value: function value() {
@@ -22072,6 +22340,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Adjusts the location of the Rectangle object using a Point object as a parameter. This method is similar to the Rectangle.offset() method, except that it takes a Point object as a parameter.
      * @param {graphics.geom.Point} point - A Point object to use to offset this Rectangle object.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     offsetPoint: { writable: true, value: function value(point) {
@@ -22088,6 +22357,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * @param {number} [height=0] - The height of the rectangle, in pixels (default 0).
      * @return {Rectangle} The object reference.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     set: { value: function value() {
@@ -22107,6 +22377,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     toObject: { value: function value() {
@@ -22117,6 +22388,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @memberof graphics.geom.Rectangle
+     * @function
      * @instance
      */
     toString: { value: function value() {
@@ -22128,6 +22400,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
      * <b>Note:</b> The union() method ignores rectangles with 0 as the height or width value, such as: var rect2 = new Rectangle(300,300,50,0);
      * @memberof graphics.geom.Rectangle
      * @instance
+     * @function
      * @param {Rectangle} toUnion A Rectangle object to add to this Rectangle object.
      * @return {Rectangle} A new Rectangle object that is the union of the two rectangles.
      */
@@ -22593,15 +22866,13 @@ Object.defineProperties(Matrix, {
     MAGIC_GRADIENT_FACTOR: { value: 16384 / 10 }
 });
 
-/**
- * @extends Object
- */
 Matrix.prototype = Object.create(Object.prototype, {
     /**
      * Returns a shallow copy of the object.
      * @memberof graphics.geom.Matrix
      * @instance
      * @return a shallow copy of the object.
+     * @function
      */
     clone: { writable: true, value: function value() {
             return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
@@ -22614,6 +22885,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @param {graphics.geom.Matrix|Object} matrix The matrix to be concatenated to the source matrix.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     concat: { value: function value(matrix) {
             var a = this.a;
@@ -22649,6 +22921,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     createBox: { value: function value(scaleX, scaleY) {
             var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -22687,6 +22960,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @param {number} [ty=0] - The number of pixels to translate (move) down along the <i>y</i> axis.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     createGradientBox: { value: function value(width, height) {
             var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -22702,6 +22976,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @return The point resulting from applying the matrix transformation.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     deltaTransformPoint: { value: function value(point) {
             return new Point(this.a * point.x + this.c * point.y, this.b * point.x + this.d * point.y);
@@ -22712,6 +22987,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @return <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     equals: { writable: true, value: function value(o) {
             if (o instanceof Matrix) {
@@ -22725,6 +23001,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * Sets each matrix property to a value that causes a null transformation. An object transformed by applying an identity matrix will be identical to the original.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     identity: { value: function value() {
             this.a = this.d = 1;
@@ -22736,6 +23013,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @param {number} angle - The rotation angle in radians.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     rotate: { value: function value(angle) {
             /*
@@ -22776,6 +23054,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @return the Object representation of this object.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     toObject: { writable: true, value: function value() {
             return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
@@ -22786,6 +23065,7 @@ Matrix.prototype = Object.create(Object.prototype, {
      * @return the string representation of this instance.
      * @memberof graphics.geom.Matrix
      * @instance
+     * @function
      */
     toString: { writable: true, value: function value() {
             return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";

@@ -5,7 +5,13 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates if the condition is a boolean.
- * @param value The value to evaluate.
+ * @name IsBoolean
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @implements {system.rules.Rule}
+ * @class
+ * @constructs
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsBoolean = system.rules.IsBoolean ;
  *
@@ -17,32 +23,29 @@ import { Rule } from './Rule.js' ;
  *
  * trace( (new IsBoolean( new Boolean(true) )).eval() ) ; // true
  * trace( (new IsBoolean( new Boolean(false) )).eval() ) ; // true
- * </pre>
  */
-export function IsBoolean( value )
+export function IsBoolean( value = null )
 {
-    this.value  = value ;
+    /**
+     * The value to evaluate.
+     * @memberof system.rules.IsBoolean
+     * @name value
+     * @type {Object}
+     * @instance
+     * @default null
+     */
+    this.value = value ;
 }
 
-/**
- * @extends Rule
- */
 IsBoolean.prototype = Object.create( Rule.prototype );
 IsBoolean.prototype.constructor = IsBoolean ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsBoolean
+ * @inheritdoc
  */
 IsBoolean.prototype.eval = function ()
 {
     return typeof(this.value) === 'boolean' || this.value instanceof Boolean ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-IsBoolean.prototype.toString = function () /*String*/
-{
-    return "[IsBoolean]" ;
 }

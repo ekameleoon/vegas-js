@@ -1,5 +1,6 @@
 'use strict' ;
 
+import './system/rules.js' ;
 import './system/signals.js' ;
 import './system/transitions.js' ;
 

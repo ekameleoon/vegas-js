@@ -5,7 +5,14 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates if the condition is null.
- * @param value The value to evaluate.
+ * @name Null
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {object} [value=null] - The value to evaluate.
+ * @param {boolean} [strict=false] - This flag indicates if the condition use == or === to evalute the value.
  * @example
  * var Null = system.rules.Null ;
  *
@@ -22,22 +29,37 @@ import { Rule } from './Rule.js' ;
  *
  * cond = new Null( "hello" ) ;
  * trace( cond.eval() ) ; // false
- * </pre>
  */
-export function Null( value , strict = false )
+export function Null( value = undefined , strict = false )
 {
-    this.value  = value ;
+    /**
+     * The value to evaluate.
+     * @memberof system.rules.Null
+     * @name value
+     * @type {object}
+     * @instance
+     * @default undefined
+     */
+    this.value = value ;
+
+    /**
+     * The value to evaluate.
+     * @memberof system.rules.Null
+     * @name strict
+     * @type {boolean}
+     * @instance
+     * @default false
+     */
     this.strict = Boolean(strict) ;
 }
 
-/**
- * @extends Rule
- */
 Null.prototype = Object.create( Rule.prototype );
 Null.prototype.constructor = Null ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Null
+ * @inheritdoc
  */
 Null.prototype.eval = function ()
 {
@@ -49,13 +71,4 @@ Null.prototype.eval = function ()
     {
         return (this.value == null) ;
     }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Null.prototype.toString = function () /*String*/
-{
-    return "[Null]" ;
 }

@@ -9,6 +9,7 @@ import { Rule } from './Rule.js' ;
  * @class
  * @constructs
  * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
  * @example
  * var And = system.rules.And ;
  * var BooleanRule = system.rules.BooleanRule ;
@@ -91,9 +92,6 @@ export function And( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
     }
 }
 
-/**
- * @extends Rule
- */
 And.prototype = Object.create( Rule.prototype );
 And.prototype.constructor = And ;
 
@@ -131,10 +129,8 @@ And.prototype.clear = function()
 
 /**
  * Evaluates the specified object.
- * @name eval
  * @memberof system.rules.And
- * @function
- * @instance
+ * @inheritdoc
  */
 And.prototype.eval = function ()
 {
@@ -152,17 +148,4 @@ And.prototype.eval = function ()
     {
         return false ;
     }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.rules.And
- * @function
- * @instance
- */
-And.prototype.toString = function () /*String*/
-{
-    return "[And]" ;
 }

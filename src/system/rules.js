@@ -12,6 +12,7 @@ import { False }               from './rules/False.js' ;
 import { GreaterOrEqualsThan } from './rules/GreaterOrEqualsThan.js' ;
 import { GreaterThan }         from './rules/GreaterThan.js' ;
 import { IsBoolean }           from './rules/IsBoolean.js' ;
+import { IsNaN }               from './rules/IsNaN.js' ;
 import { IsNumber }            from './rules/IsNumber.js' ;
 import { IsString }            from './rules/IsString.js' ;
 import { LessOrEqualsThan }    from './rules/LessOrEqualsThan.js' ;
@@ -51,6 +52,7 @@ export var rules = Object.assign
     GreaterOrEqualsThan : GreaterOrEqualsThan ,
     GreaterThan         : GreaterThan ,
     IsBoolean           : IsBoolean ,
+    IsNaN               : IsNaN ,
     IsNumber            : IsNumber ,
     IsString            : IsString ,
     LessOrEqualsThan    : LessOrEqualsThan ,

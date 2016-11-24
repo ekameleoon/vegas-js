@@ -9,6 +9,7 @@ import { Rule } from './Rule.js' ;
  * @class
  * @constructs
  * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
  * @example
  * var BooleanRule = system.rules.BooleanRule ;
  *
@@ -39,25 +40,10 @@ BooleanRule.prototype.constructor = BooleanRule ;
 
 /**
  * Evaluates the specified object.
- * @name eval
  * @memberof system.rules.BooleanRule
- * @function
- * @instance
+ * @inheritdoc
  */
 BooleanRule.prototype.eval = function ()
 {
     return ( this.condition instanceof Rule ) ? this.condition.eval() : Boolean( this.condition ) ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @name toString
- * @memberof system.rules.BooleanRule
- * @function
- * @instance
- * @return the string representation of this instance.
- */
-BooleanRule.prototype.toString = function () /*String*/
-{
-    return "[BooleanRule]" ;
 }

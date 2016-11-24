@@ -10,6 +10,7 @@ import { Rule } from './Rule.js' ;
  * @class
  * @constructs
  * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
  * @param {Object|system.rules.Rule|system.Equatable} [value1=null] - The first value to evaluate.
  * @param {Object|system.rules.Rule|system.Equatable} [value2=null] - The second value to evaluate.
  * @example
@@ -69,6 +70,7 @@ export function Equals( value1 = null , value2 = null )
      * @name value1
      * @type {Object|system.rules.Rule|system.Equatable}
      * @instance
+     * @default null
      */
     this.value1 = value1 ;
     /**
@@ -77,6 +79,7 @@ export function Equals( value1 = null , value2 = null )
      * @name value2
      * @type {Object|system.rules.Rule|system.Equatable}
      * @instance
+     * @default null
      */
     this.value2 = value2 ;
 }
@@ -86,10 +89,8 @@ Equals.prototype.constructor = Equals ;
 
 /**
  * Evaluates the specified object.
- * @name eval
  * @memberof system.rules.Equals
- * @function
- * @instance
+ * @inheritdoc
  */
 Equals.prototype.eval = function ()
 {
@@ -109,17 +110,4 @@ Equals.prototype.eval = function ()
     {
         return false ;
     }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.rules.Equals
- * @function
- * @instance
- */
-Equals.prototype.toString = function ()
-{
-    return "[Equals]" ;
 }

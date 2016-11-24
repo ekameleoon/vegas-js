@@ -5,7 +5,13 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates if the condition is a boolean.
- * @param value The value to evaluate.
+ * @name IsNumber
+ * @memberof system.rules
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @param {Object} [value=null] The value to evaluate.
  * @example
  * var IsNumber = system.rules.IsNumber ;
  *
@@ -15,32 +21,29 @@ import { Rule } from './Rule.js' ;
  *
  * trace( (new IsNumber( true )).eval() ) ; // false
  * trace( (new IsNumber( null )).eval() ) ; // false
- * </pre>
  */
-export function IsNumber( value )
+export function IsNumber( value = null )
 {
+    /**
+     * The value to evaluate.
+     * @memberof system.rules.IsNumber
+     * @name value
+     * @type {Object}
+     * @instance
+     * @default null
+     */
     this.value  = value ;
 }
 
-/**
- * @extends Rule
- */
 IsNumber.prototype = Object.create( Rule.prototype );
 IsNumber.prototype.constructor = IsNumber ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.IsNumber
+ * @inheritdoc
  */
 IsNumber.prototype.eval = function ()
 {
     return typeof(this.value) === 'number' || this.value instanceof Number ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-IsNumber.prototype.toString = function () /*String*/
-{
-    return "[IsNumber]" ;
 }

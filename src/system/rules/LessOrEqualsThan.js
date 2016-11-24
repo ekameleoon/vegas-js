@@ -4,10 +4,15 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Used to indicates if a value is less or equal than another value.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name LessOrEqualsThan
+ * @memberof system.rules
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructs
+ * @param {number} [value1=Nan] - The first value to evaluate.
+ * @param {number} [value2=Nan] - The second value to evaluate.
  * @example
- * <pre>
  * var LessOrEqualsThan = system.rules.LessOrEqualsThan ;
  *
  * var rule ;
@@ -20,33 +25,38 @@ import { Rule } from './Rule.js' ;
  *
  * rule = new LessOrEqualsThan( 3 , 2 ) ;
  * trace( rule.eval() ) ; // false
- * </pre>
  */
-export function LessOrEqualsThan( value1 = null , value2 = null )
+export function LessOrEqualsThan( value1 = NaN , value2 = NaN )
 {
+    /**
+     * The first value to evaluate.
+     * @memberof system.rules.LessOrEqualsThan
+     * @name value1
+     * @type {number}
+     * @instance
+     * @default NaN
+     */
     this.value1 = value1 ;
+    /**
+     * The second value to evaluate.
+     * @memberof system.rules.LessOrEqualsThan
+     * @name value2
+     * @type {number}
+     * @instance
+     * @default NaN
+     */
     this.value2 = value2 ;
 }
 
-/**
- * @extends Rule
- */
 LessOrEqualsThan.prototype = Object.create( Rule.prototype );
 LessOrEqualsThan.prototype.constructor = LessOrEqualsThan ;
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.LessOrEqualsThan
+ * @inheritdoc
  */
 LessOrEqualsThan.prototype.eval = function ()
 {
     return this.value1 <= this.value2 ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-LessOrEqualsThan.prototype.toString = function () /*String*/
-{
-    return "[LessOrEqualsThan]" ;
 }

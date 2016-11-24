@@ -4,8 +4,13 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name Or
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @example
  * var Or = system.rules.Or ;
  * var BooleanRule = system.rules.BooleanRule ;
  *
@@ -43,7 +48,6 @@ import { Rule } from './Rule.js' ;
  * trace( o.eval() ) ; // false
  * o.add(rule1) ;
  * trace( o.eval() ) ; // true
- * </pre>
  */
 export function Or( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
 {
@@ -51,11 +55,18 @@ export function Or( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
     {
         /**
          * The collection of all rules to evaluate.
+         * @memberof system.rules.Or
+         * @type {array}
+         * @instance
          */
         rules : { value : [] , enumerable : true },
 
         /**
          * The number of rules to evaluate.
+         * @memberof system.rules.Or
+         * @type {number}
+         * @instance
+         * @readonly
          */
         length : { get : function() { return (this.rules instanceof Array) ? this.rules.length : 0 ; } }
     });
@@ -81,14 +92,17 @@ export function Or( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
     }
 }
 
-/**
- * @extends Rule
- */
 Or.prototype = Object.create( Rule.prototype );
 Or.prototype.constructor = Or ;
 
 /**
  * Insert a new Rule in the Or condition.
+ * @name add
+ * @memberof system.rules.Or
+ * @function
+ * @instance
+ * @param {system.rules.Rule} rule The rule to register.
+ * @return The current object reference.
  */
 Or.prototype.add = function( rule )
 {
@@ -101,6 +115,11 @@ Or.prototype.add = function( rule )
 
 /**
  * Clear all rules to evaluates.
+ * @name clear
+ * @memberof system.rules.Or
+ * @function
+ * @instance
+ * @return The current object reference.
  */
 Or.prototype.clear = function()
 {
@@ -110,6 +129,8 @@ Or.prototype.clear = function()
 
 /**
  * Evaluates the specified object.
+ * @memberof system.rules.Or
+ * @inheritdoc
  */
 Or.prototype.eval = function ()
 {
@@ -127,13 +148,4 @@ Or.prototype.eval = function ()
     {
         return false ;
     }
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Or.prototype.toString = function () /*String*/
-{
-    return "[Or]" ;
 }
