@@ -2,11 +2,13 @@
 
 /**
  * Like white space characters, line terminator characters are used to improve source text readability and to separate tokens (indivisible lexical units) from each other.
- * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar.
- * In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
- * A line terminator cannot occur within any token, not even a string.
- * Line terminators also affect the process of automatic semicolon insertion.
- * <p>ECMAScript specification.</p>
+ * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar. In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
+ * A line terminator cannot occur within any token, not even a string. Line terminators also affect the process of automatic semicolon insertion.
+ * @see The ECMAScript specification.
+ * @name lineTerminators
+ * @memberof core.strings
+ * @member
+ * @type {array}
  */
 export var lineTerminators =
 [
