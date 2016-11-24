@@ -3,30 +3,30 @@
 
 /**
  * Invokes dynamically a class constructor.
- * @example
- * <pre class="prettyprint">
- * var dump   = core.dump ;
- * var invoke = core.reflect.invoke ;
- *
- * var ar = invoke( Array , [1,2,3]) ;
- *
- * trace( dump( ar ) ) ;
- * </pre>
- * @param c the Function (class) to invoke.
- * @param args (optional) the arguments to pass to the constructor (max 32).
+ * @name invoke
+ * @memberof core.reflect
+ * @function
+ * @param {function} c - The constructor (Function or Class) to invoke.
+ * @param {array} [args] - the array of all arguments to pass to the constructor (max 32).
  * @return an instance of the class, or null if class can not construct.
+ * @example
+ * var ar = invoke( Array , [1,2,3]) ;
+ * trace( dump( ar ) ) ; // 1,2,3
  */
-export function invoke( c /*Function*/ , a /*Array*/ = null )
+export function invoke( c , a = null )
 {
+    if( !(c instanceof Function) )
+    {
+        return null ;
+    }
+
     if( a === null || !(a instanceof Array) || (a.length === 0)  )
     {
         return new c();
     }
 
-    /* note:
-       if we ever need more than 32 args
-       will use CC for that special case
-    */
+    // Note: if we ever need more than 32 args will use CC for that special case
+
     switch( a.length )
     {
         case 0:

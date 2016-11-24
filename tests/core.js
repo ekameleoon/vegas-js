@@ -9,4 +9,5 @@ import './core/maths.js' ;
 import './core/numbers.js' ;
 import './core/objects.js' ;
 import './core/random.js' ;
+import './core/reflect.js' ;
 import './core/strings.js' ;

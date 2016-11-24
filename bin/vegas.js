@@ -3881,15 +3881,18 @@ var random = Object.assign({
 });
 
 /**
- * Returns the instance of a public definition in a specific <code>domain</code>.
- * @param name a string of the full qualified path of a definition.
- * @example (optional) the global scope object where to find the reference, default is <code>global</code>.
- * <pre class="prettyprint">
+ * Returns the instance of a public definition in a specific <code>domain</code> object.
+ * @name invoke
+ * @memberof core.reflect
+ * @function
+ * @param {string} name - The name of the full qualified path of a definition (instance, class, etc).
+ * @param {Object} [domain] - A global object or namespace who contains the definition object. By default, the function use the <code>global</code> scope object where to find the reference.
+ * @example
  * var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
  * trace( definition ) ;
  * </pre>
  */
-function getDefinitionByName(name /*String*/) {
+function getDefinitionByName(name) {
     var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     if (name instanceof String || typeof name === 'string') {
@@ -3916,31 +3919,30 @@ function getDefinitionByName(name /*String*/) {
 /*jslint bitwise: true */
 /**
  * Invokes dynamically a class constructor.
- * @example
- * <pre class="prettyprint">
- * var dump   = core.dump ;
- * var invoke = core.reflect.invoke ;
- *
- * var ar = invoke( Array , [1,2,3]) ;
- *
- * trace( dump( ar ) ) ;
- * </pre>
- * @param c the Function (class) to invoke.
- * @param args (optional) the arguments to pass to the constructor (max 32).
+ * @name invoke
+ * @memberof core.reflect
+ * @function
+ * @param {function} c - The constructor (Function or Class) to invoke.
+ * @param {array} [args] - the array of all arguments to pass to the constructor (max 32).
  * @return an instance of the class, or null if class can not construct.
+ * @example
+ * var ar = invoke( Array , [1,2,3]) ;
+ * trace( dump( ar ) ) ; // 1,2,3
  */
 
-function invoke(c /*Function*/) {
-        var a /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+function invoke(c) {
+        var a = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+        if (!(c instanceof Function)) {
+                return null;
+        }
 
         if (a === null || !(a instanceof Array) || a.length === 0) {
                 return new c();
         }
 
-        /* note:
-           if we ever need more than 32 args
-           will use CC for that special case
-        */
+        // Note: if we ever need more than 32 args will use CC for that special case
+
         switch (a.length) {
                 case 0:
                         return new c();

@@ -3,15 +3,18 @@
 import { global } from '../global.js' ;
 
 /**
- * Returns the instance of a public definition in a specific <code>domain</code>.
- * @param name a string of the full qualified path of a definition.
- * @example (optional) the global scope object where to find the reference, default is <code>global</code>.
- * <pre class="prettyprint">
+ * Returns the instance of a public definition in a specific <code>domain</code> object.
+ * @name invoke
+ * @memberof core.reflect
+ * @function
+ * @param {string} name - The name of the full qualified path of a definition (instance, class, etc).
+ * @param {Object} [domain] - A global object or namespace who contains the definition object. By default, the function use the <code>global</code> scope object where to find the reference.
+ * @example
  * var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
  * trace( definition ) ;
  * </pre>
  */
-export function getDefinitionByName( name /*String*/ , domain = null )
+export function getDefinitionByName( name , domain = null )
 {
     if( ( name instanceof String ) || typeof(name) === 'string' )
     {
