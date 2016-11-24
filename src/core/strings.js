@@ -22,6 +22,7 @@ import { startsWith }          from './strings/startsWith.js' ;
 import { trim }                from './strings/trim.js' ;
 import { trimEnd }             from './strings/trimEnd.js' ;
 import { trimStart }           from './strings/trimStart.js' ;
+import { truncate }            from './strings/truncate.js' ;
 import { ucFirst }             from './strings/ucFirst.js' ;
 import { ucWords }             from './strings/ucWords.js' ;
 import { validateUUID }        from './strings/validateUUID.js' ;
@@ -57,6 +58,7 @@ export var strings = Object.assign
     trim : trim ,
     trimEnd : trimEnd ,
     trimStart : trimStart ,
+    truncate : truncate ,
     ucFirst : ucFirst ,
     ucWords : ucWords ,
     validateUUID : validateUUID ,

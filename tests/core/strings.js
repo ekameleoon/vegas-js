@@ -22,6 +22,7 @@ import './strings/startsWith.js' ;
 import './strings/trim.js' ;
 import './strings/trimEnd.js' ;
 import './strings/trimStart.js' ;
+import './strings/truncate.js' ;
 import './strings/ucFirst.js' ;
 import './strings/ucWords.js' ;
 import './strings/validateUUID.js' ;
