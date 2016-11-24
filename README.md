@@ -96,6 +96,11 @@ gulp ut --reporter nyan
 
 If you use the 'mochawesome' reporter, gulp generate in the './bin/tests' folder an HTML page who contains all the unit tests. For more informations, read the official documentation of [Mochawesome](https://github.com/adamgruber/mochawesome).
 
+```
+#!shell
+gulp ut --reporter mochawesome
+```
+
 #### Documentation ####
 
 The documentation of the framework is based on [JSDoc](http://usejsdoc.org/). 
