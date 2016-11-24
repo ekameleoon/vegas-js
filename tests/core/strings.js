@@ -11,4 +11,6 @@ import './strings/lineTerminators.js' ;
 import './strings/repeat.js' ;
 import './strings/ucFirst.js' ;
 import './strings/ucWords.js' ;
+import './strings/validateUUID.js' ;
+import './strings/versionUUID.js' ;
 import './strings/whiteSpaces.js' ;

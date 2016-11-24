@@ -24,10 +24,12 @@ import { trimEnd }             from './strings/trimEnd.js' ;
 import { trimStart }           from './strings/trimStart.js' ;
 import { ucFirst }             from './strings/ucFirst.js' ;
 import { ucWords }             from './strings/ucWords.js' ;
+import { validateUUID }        from './strings/validateUUID.js' ;
+import { versionUUID }         from './strings/validateUUID.js' ;
 import { whiteSpaces }         from './strings/whiteSpaces.js' ;
 
 /**
- * The VEGAS.js framework - The core.strings library.
+ * The {@link core.string)s library provide a toolkit to transform and validate a string expression.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.strings
@@ -57,5 +59,7 @@ export var strings = Object.assign
     trimStart : trimStart ,
     ucFirst : ucFirst ,
     ucWords : ucWords ,
+    validateUUID : validateUUID ,
+    versionUUID : versionUUID ,
     whiteSpaces : whiteSpaces
 }) ;

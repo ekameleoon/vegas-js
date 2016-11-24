@@ -190,12 +190,13 @@ var unittest = ( done ) =>
             useStrict  : true ,
             globals    :
             {
-                chai    : 'chai',
-                core    : 'core',
-                system  : 'system',
-                global  : 'global',
-                trace   : 'trace',
-                version : 'version'
+                chai     : 'chai',
+                core     : 'core',
+                system   : 'system',
+                global   : 'global',
+                trace    : 'trace',
+                validate : 'validate' ,
+                version  : 'version'
             },
             plugins    :
             [

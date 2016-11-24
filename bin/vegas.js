@@ -3852,16 +3852,28 @@ var objects = Object.assign({
 
 /*jslint bitwise: true */
 /**
- * Generates a variant 2, version 4 (randomly generated number) UUID as per RFC 4122.
+ * Generates a version 4 (randomly generated number) UUID as per RFC 4122.
+ * @name generateUUID
+ * @memberof core.random
+ * @function
+ * @return The String expression of the UUID version 4.
+ * @example
+ * trace( generateUUID() ) ; // 1ba7bbbd-783c-44db-9fc7-3ca772c6a8d2
  */
 
-function generateUUID() /*String*/
-{
-    function S4() {
-        return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
-    }
-    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+function generateUUID() {
+  var d = new Date().getTime();
+  return pattern.replace(/[xy]/g, function (c) {
+    var r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+  });
 }
+
+/**
+ * The uuid pattern.
+ */
+var pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
 /**
  * The VEGAS.js framework - The core.random library.
@@ -4910,8 +4922,74 @@ function ucWords(str /*String*/) /*String*/
     return ar.join(separator);
 }
 
+/*jshint bitwise: false*/
 /**
- * The VEGAS.js framework - The core.strings library.
+ * Determines whether the uuid is valid, converting it from a buffer if necessary.
+ * @param  {String} uuid - The uuid expression to validate.
+ * @param  {Number} vers - The optional version of the uuid to validate.
+ * @return {Boolean} <code>true</code> if the uuid expression is valid.
+ * @example
+ * trace( validateUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // true
+ */
+
+function validateUUID(source) {
+    var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return false;
+    }
+
+    source = source.toLowerCase();
+
+    if (!pattern$1.test(source)) {
+        return false;
+    }
+
+    if (!version) {
+        version = versionUUID(source);
+    } else if (versionUUID(source) !== version) {
+        return false;
+    }
+
+    switch (version) {
+        case 1:
+        case 2:
+            {
+                return true;
+            }
+        case 3:
+        case 4:
+            {
+                return ['8', '9', 'a', 'b'].indexOf(source.charAt(19)) !== -1;
+            }
+        default:
+            {
+                throw new Error('Invalid version provided.');
+            }
+    }
+}
+
+/**
+ * Regular expression used for basic parsing of the uuid.
+ */
+var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Extracts the version from the UUID, which is (by definition) the M in xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
+ * @name versionUUID
+ * @memberof core.strings
+ * @function
+ * @param  {String} uuid The uuid expression
+ * @return {Number} The version number of the uuid expression.
+ * @example
+ * trace( versionUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // 4
+ */
+var versionUUID = function versionUUID(uuid) {
+    return uuid.charAt(14) | 0;
+};
+
+/**
+ * The {@link core.string)s library provide a toolkit to transform and validate a string expression.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.strings
@@ -4940,6 +5018,8 @@ var strings = Object.assign({
     trimStart: trimStart,
     ucFirst: ucFirst,
     ucWords: ucWords,
+    validateUUID: validateUUID,
+    versionUUID: versionUUID,
     whiteSpaces: whiteSpaces$1
 });
 
