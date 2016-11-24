@@ -5,11 +5,14 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Used to perform a logical conjunction on two conditions and more.
- * @param value1 The first value to evaluate.
- * @param value2 The second value to evaluate.
+ * @name Equals
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @param {Object|system.rules.Rule|system.Equatable} [value1=null] - The first value to evaluate.
+ * @param {Object|system.rules.Rule|system.Equatable} [value2=null] - The second value to evaluate.
  * @example
- * <pre>
- *
  * var BooleanRule = system.rules.BooleanRule ;
  * var Equals      =  system.rules.Equals ;
  *
@@ -57,22 +60,36 @@ import { Rule } from './Rule.js' ;
  *
  * e = new Equals( o1 , o3 ) ;
  * trace( e.eval() ) ; // true
- * </pre>
  */
 export function Equals( value1 = null , value2 = null )
 {
+    /**
+     * The first value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value1
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     */
     this.value1 = value1 ;
+    /**
+     * The second value to evaluate.
+     * @memberof system.rules.Equals
+     * @name value2
+     * @type {Object|system.rules.Rule|system.Equatable}
+     * @instance
+     */
     this.value2 = value2 ;
 }
 
-/**
- * @extends Rule
- */
 Equals.prototype = Object.create( Rule.prototype );
 Equals.prototype.constructor = Equals ;
 
 /**
  * Evaluates the specified object.
+ * @name eval
+ * @memberof system.rules.Equals
+ * @function
+ * @instance
  */
 Equals.prototype.eval = function ()
 {
@@ -97,8 +114,12 @@ Equals.prototype.eval = function ()
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.rules.Equals
+ * @function
+ * @instance
  */
-Equals.prototype.toString = function () /*String*/
+Equals.prototype.toString = function ()
 {
     return "[Equals]" ;
 }

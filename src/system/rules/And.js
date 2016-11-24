@@ -4,8 +4,12 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name And
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
+ * @example
  * var And = system.rules.And ;
  * var BooleanRule = system.rules.BooleanRule ;
  *
@@ -43,7 +47,6 @@ import { Rule } from './Rule.js' ;
  * trace( a.eval() ) ; // false
  * a.add(rule1) ;
  * trace( a.eval() ) ; // true
- * </pre>
  */
 export function And( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
 {
@@ -51,11 +54,18 @@ export function And( rule1 /*Rule*/ , rule2 /*Rule*/ , ...rules )
     {
         /**
          * The collection of all rules to evaluate.
+         * @memberof system.rules.And
+         * @type {array}
+         * @instance
          */
         rules : { value : [] , enumerable : true },
 
         /**
          * The number of rules to evaluate.
+         * @memberof system.rules.And
+         * @type {number}
+         * @instance
+         * @readonly
          */
         length : { get : function() { return (this.rules instanceof Array) ? this.rules.length : 0 ; } }
     });
@@ -89,6 +99,12 @@ And.prototype.constructor = And ;
 
 /**
  * Insert a new Rule in the And condition.
+ * @name add
+ * @memberof system.rules.And
+ * @function
+ * @instance
+ * @param {system.rules.Rule} rule The rule to register.
+ * @return The current object reference.
  */
 And.prototype.add = function( rule )
 {
@@ -101,6 +117,11 @@ And.prototype.add = function( rule )
 
 /**
  * Clear all rules to evaluates.
+ * @name clear
+ * @memberof system.rules.And
+ * @function
+ * @instance
+ * @return The current object reference.
  */
 And.prototype.clear = function()
 {
@@ -110,6 +131,10 @@ And.prototype.clear = function()
 
 /**
  * Evaluates the specified object.
+ * @name eval
+ * @memberof system.rules.And
+ * @function
+ * @instance
  */
 And.prototype.eval = function ()
 {
@@ -132,6 +157,10 @@ And.prototype.eval = function ()
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.rules.And
+ * @function
+ * @instance
  */
 And.prototype.toString = function () /*String*/
 {

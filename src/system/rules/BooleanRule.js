@@ -4,8 +4,12 @@ import { Rule } from './Rule.js' ;
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @name BooleanRule
+ * @memberof system.rules
+ * @class
+ * @constructs
+ * @implements {system.rules.Rule}
  * @example
- * <pre>
  * var BooleanRule = system.rules.BooleanRule ;
  *
  * var cond1 = new BooleanRule( true  ) ;
@@ -15,7 +19,6 @@ import { Rule } from './Rule.js' ;
  * trace( cond1.eval() ) ; // true
  * trace( cond2.eval() ) ; // false
  * trace( cond3.eval() ) ; // true
- * </pre>
  */
 export function BooleanRule( condition )
 {
@@ -23,19 +26,23 @@ export function BooleanRule( condition )
     {
         /**
          * The condition to evaluate.
+         * @memberof system.rules.BooleanRule
+         * @type {boolean|system.rules.Rule}
+         * @instance
          */
         condition : { value : condition , enumerable : true , writable : true }
     });
 }
 
-/**
- * @extends Rule
- */
 BooleanRule.prototype = Object.create( Rule.prototype );
 BooleanRule.prototype.constructor = BooleanRule ;
 
 /**
  * Evaluates the specified object.
+ * @name eval
+ * @memberof system.rules.BooleanRule
+ * @function
+ * @instance
  */
 BooleanRule.prototype.eval = function ()
 {
@@ -44,6 +51,10 @@ BooleanRule.prototype.eval = function ()
 
 /**
  * Returns the string representation of this instance.
+ * @name toString
+ * @memberof system.rules.BooleanRule
+ * @function
+ * @instance
  * @return the string representation of this instance.
  */
 BooleanRule.prototype.toString = function () /*String*/
