@@ -4060,6 +4060,37 @@ var reflect = Object.assign({
 
 /**
  * Converts a hyphenated string to a camelcased string.
+ * @name between
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to transform.
+ * @return The new extracted string.
+ * @example
+ * trace( between("<b>hello</b>" , "<b>" , "</b>" ) ) ; // hello
+ * trace( between("hello {world}" , "{" , "}" ) ) ; // world
+ */
+
+function between(source, left, right) {
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return '';
+    }
+
+    if (!(left instanceof String || typeof left === 'string') || left === "") {
+        return source;
+    }
+
+    var start = source.indexOf(left);
+    var end = source.indexOf(right, start + left.length);
+
+    if (end < 0 || !(right instanceof String || typeof right === 'string') || right === "") {
+        return source.substring(start + left.length);
+    }
+
+    return source.slice(start + left.length, end);
+}
+
+/**
+ * Converts a hyphenated string to a camelcased string.
  * @name camelCase
  * @memberof core.strings
  * @function
@@ -5021,6 +5052,7 @@ var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var strings = Object.assign({
+    between: between,
     camelCase: camelCase,
     capitalize: capitalize,
     center: center,

@@ -2,6 +2,7 @@
 
 import '../polyfill.js' ;
 
+import { between }             from './strings/between.js' ;
 import { camelCase }           from './strings/camelCase.js' ;
 import { capitalize }          from './strings/capitalize.js' ;
 import { center }              from './strings/center.js' ;
@@ -36,6 +37,7 @@ import { whiteSpaces }         from './strings/whiteSpaces.js' ;
  */
 export var strings = Object.assign
 ({
+    between : between ,
     camelCase : camelCase ,
     capitalize : capitalize ,
     center : center ,

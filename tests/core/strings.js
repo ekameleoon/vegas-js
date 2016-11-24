@@ -1,5 +1,6 @@
 'use strict' ;
 
+import './strings/between.js' ;
 import './strings/camelCase.js' ;
 import './strings/capitalize.js' ;
 import './strings/center.js' ;
