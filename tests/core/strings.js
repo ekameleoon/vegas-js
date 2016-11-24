@@ -13,6 +13,7 @@ import './strings/indexOfAny.js' ;
 import './strings/lastIndexOfAny.js' ;
 import './strings/latinize.js' ;
 import './strings/lineTerminators.js' ;
+import './strings/pad.js' ;
 import './strings/repeat.js' ;
 import './strings/ucFirst.js' ;
 import './strings/ucWords.js' ;
