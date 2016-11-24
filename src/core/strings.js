@@ -29,7 +29,7 @@ import { versionUUID }         from './strings/versionUUID.js' ;
 import { whiteSpaces }         from './strings/whiteSpaces.js' ;
 
 /**
- * The {@link core.strings} library provide a toolkit to transform and validate a string expression.
+ * The {@link core.strings} that provides extra String methods to transform and validate it.
  * @namespace core.strings
  * @memberof core
  * @license MPL 1.1/GPL 2.0/LGPL 2.1

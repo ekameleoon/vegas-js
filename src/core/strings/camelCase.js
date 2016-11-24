@@ -2,25 +2,19 @@
 
 /**
  * Converts a hyphenated string to a camelcased string.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( camelCase("hello-world" ) ) ; // helloWorld
- * </code>
+ * @name camelCase
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to camelcase.
  * @return The camelcased string.
+ * @example
+ * trace( camelCase("hello-world" ) ) ; // helloWorld
  */
-export function camelCase( source /*String*/ ) /*String*/
+export function camelCase( source )
 {
     if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {
         return '' ;
     }
-    return source.replace
-    (
-        /-\D/g ,
-        function( match )
-        {
-            return match.charAt(1).toUpperCase();
-        }
-    );
+    return source.replace( /-\D/g , ( match ) => match.charAt(1).toUpperCase() ) ;
 }

@@ -2,25 +2,26 @@
 
 /**
  * Returns the center string representation of the specified string value.
- * @param source The string to center.
- * @param size The number of character to center the String expression. (default 0)
- * @param separator The optional separator character use before and after the String to center. (default " ")
- * @return The center of the specified String value.
+ * @name center
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to center.
+ * @param {number} [size=0] The number of character to center the String expression.
+ * @param {string} [separator= ] The optional separator character use before and after the String to center.
+ * @return The center expression of the specified string.
  * @example
- * <code class="prettyprint">
- * trace( center("hello world", 0) )         ; // hello world
- * trace( center("hello world", 20) )        ; //     hello world
- * trace( center("hello world", 20, "_" ) )  ; // ____hello world_____
- * </code>
+ * trace( '<' + center("hello world", 0)  + '>' ) ; // <hello world>
+ * trace( '<' + center("hello world", 20) + '>' ) ; // <    hello world     >
+ * trace( '<' + center("hello world", 20, "_" ) + '>'  )  ; // <____hello world_____>
  */
-export function center( source /*String*/ , size = 0  , separator = " " ) /*String*/
+export function center( source , size = 0  , separator = " " )
 {
     if ( source === null || !(source instanceof String || typeof(source) === 'string' ) )
     {
         return "" ;
     }
 
-    if ( separator === null )
+    if ( separator === null || !(separator instanceof String || typeof(separator) === 'string' ) )
     {
         separator = " " ;
     }

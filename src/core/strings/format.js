@@ -4,39 +4,38 @@ import { pad } from './pad.js' ;
 
 /**
  * Format a string using indexed or named parameters.
- * @example
+ * <p><strong>Usage :</strong>
  * <ul>
- * <li><code>format( pattern:String, ...args:Array ):String</code></li>
- * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
- * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...], ...args:Array ):String</code></li>
- * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...} ):String</code></li>
- * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...}, ...args:Array ):String</code></li>
+ * <li><code>format( pattern, ...args )</code></li>
+ * <li><code>format( pattern, [arg0,arg1,arg, ...] )</code></li>
+ * <li><code>format( pattern, [arg0:*,arg1,arg2, ...], ...args )</code></li>
+ * <li><code>format( pattern, {name0:value0,name1:value1,name2:value2, ...} )</code></li>
+ * <li><code>format( pattern, {name0:value0,name1:value1,name2:value2, ...}, ...args )</code></li>
  * </ul>
+ * </p>
+ * @name format
+ * @memberof core.strings
+ * @function
+ * @param {string} pattern - The string expression to format.
+ * @param {...string|array|Object} args - A serie of strings values or of arrays of strings or an Object to fill the pattern expression.
+ * @return The formatted expression.
+ * @see {@link core.strings.fastformat}
+ * @throws <strong>Error</strong> when a token is malformed.
  * @example
- * <pre>
  * trace( core.strings.format( "{0},{1},{2}" , "apples" , "oranges", "grapes" ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{0},{1},{2}" , ["apples" , "oranges", "grapes"] ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{path}{0}{name}{1}" , { name : "format" , path:"core.strings" } , "." , "()" ) ) ; // core.strings.format()
- * </pre>
- * @see core.strings#fastformat
- * @throws Error When a token is malformed.
  */
-export function format( pattern /*String*/ ) /*String*/
+export function format( pattern , ...args ) /*String*/
 {
-    if( (pattern === null) || (pattern === "") )
+    if( (pattern === null) || !(pattern instanceof String || typeof(pattern) === 'string' ) )
     {
-        return "";
+        return "" ;
     }
 
-    Object.setPrototypeOf( arguments , Array.prototype ) ;
-
-    var args /*Array*/ = arguments ;
-
-    args.shift() ;
-
-    var formatted /*String*/ = pattern;
-    var len /*uint*/         = args.length;
-    var words /*Object*/     = {};
+    var formatted = pattern;
+    var len       = args.length;
+    var words     = {};
 
     if( (len === 1) && (args[0] instanceof Array) )
     {
@@ -44,8 +43,8 @@ export function format( pattern /*String*/ ) /*String*/
     }
     else if( args[0] instanceof Array )
     {
-        var a /*Array*/ = args[0];
-        args.shift();
+        let a = args[0] ;
+        args.shift() ;
         args = a.concat( args );
     }
     else if( (args[0] instanceof Object) && (String( args[0] ) === "[object Object]") )
@@ -64,18 +63,18 @@ export function format( pattern /*String*/ ) /*String*/
        but do use the multiline flag if a token can be replaced
        by a \n, \r, etc.
     */
-    var search /*RegExp*/ = new RegExp( "{([a-z0-9,:\\-]*)}", "m" );
-    var result /*Array*/  = search.exec( formatted );
+    var search = new RegExp( "{([a-z0-9,:\\-]*)}", "m" );
+    var result = search.exec( formatted );
 
-    var part /*String*/;
-    var token /*String*/;
-    var c /*String*/;
+    var part ;
+    var token ;
+    var c ;
 
-    var pos /*int*/ ;
+    var pos ;
 
-    var dirty /*Boolean*/ = false ;
+    var dirty = false ;
 
-    var padding /*int*/ = 0;
+    var padding = 0;
 
     /* note:
        the buffer will store special string parts of the form
@@ -87,13 +86,9 @@ export function format( pattern /*String*/ ) /*String*/
 
     while( result !== null )
     {
-        part = result[0];
-
-        /////// pad the token expression
-
+        part  = result[0];
         token = result[1] ;
-
-        pos = token.indexOf( "," );
+        pos   = token.indexOf( "," );
 
         if( pos > 0 )
         {
@@ -101,7 +96,7 @@ export function format( pattern /*String*/ ) /*String*/
             token   = token.substring( 0, pos );
         }
 
-        ////////////
+        // -----
 
         c = token.charAt( 0 ) ;
 
@@ -109,7 +104,7 @@ export function format( pattern /*String*/ ) /*String*/
         {
             formatted = formatted.replace( part, pad( String( args[token] ) , padding ) );
         }
-        else if( ( token === "" ) || ( token.indexOf( ":" ) > -1 ) ) // if the token is not valid
+        else if( ( token === "" ) || ( token.indexOf( ":" ) > -1 ) )
         {
             /* note:
                this is to deal with eden/json strings inside a format string
@@ -117,9 +112,7 @@ export function format( pattern /*String*/ ) /*String*/
                this will collide of the legit parsing of
                format( "hello {x,-8} and nhello {y,-8}" )
             */
-
             buffer.push( part );
-
             formatted = formatted.replace( new RegExp(part,"g"), "\uFFFC"+ ( buffer.length - 1 ) ) ;
             dirty     = true;
         }
@@ -127,17 +120,11 @@ export function format( pattern /*String*/ ) /*String*/
         {
             if( token in words || words.hasOwnProperty( token ) )
             {
-                /* note:
-                   here you want the part to have a global flag to replace all token instances
-                */
                 formatted = formatted.replace( new RegExp(part,"g"), pad( String( words[token] ) , padding ) );
             }
         }
         else
         {
-            /* note:
-               don't use format() within itself
-             */
             throw new Error( "core.strings.format failed, malformed token \"" + part + "\", can not start with \"" + c + "\"" ) ;
         }
 
@@ -146,8 +133,8 @@ export function format( pattern /*String*/ ) /*String*/
 
     if( dirty )
     {
-        var i /*int*/ ;
-        var bl /*int*/ = buffer.length ;
+        var i ;
+        var bl = buffer.length ;
         for( i = 0 ; i < bl ; i++ )
         {
             formatted = formatted.replace( new RegExp( "\uFFFC" + i , "g" ) , buffer[i] );

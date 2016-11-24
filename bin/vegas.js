@@ -1110,12 +1110,18 @@ var arrays = Object.assign({
 });
 
 /**
- * Returns 0 if the passed string is lower case else 1.
- * @return 0 if the passed string is lower case else 1.
+ * Returns <code>0</code> if the passed string is lower case else <code>1</code>.
+ * @name caseValue
+ * @memberof core.strings
+ * @function
+ * @return <code>0</code> if the passed string is lower case else <code>1</code>.
+ * @example
+ * trace( caseValue("hello") ) ; // 0
+ * trace( caseValue("helLo") ) ; // 1
+ * trace( caseValue("HELLO") ) ; // 1
  */
 
-function caseValue(str) /*uint*/
-{
+function caseValue(str) {
   return str.toLowerCase().valueOf() === str.valueOf() ? 0 : 1;
 }
 
@@ -4066,16 +4072,16 @@ var reflect = Object.assign({
 
 /**
  * Converts a hyphenated string to a camelcased string.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( camelCase("hello-world" ) ) ; // helloWorld
- * </code>
+ * @name camelCase
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to camelcase.
  * @return The camelcased string.
+ * @example
+ * trace( camelCase("hello-world" ) ) ; // helloWorld
  */
 
-function camelCase(source /*String*/) /*String*/
-{
+function camelCase(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
     }
@@ -4086,16 +4092,16 @@ function camelCase(source /*String*/) /*String*/
 
 /**
  * Converts the first letter of each word in a string to uppercase.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( capitalize( "hello world" ) ) ; // Hello World
- * </code>
+ * @name capitalize
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to transform.
  * @return The capitalized string.
+ * @example
+ * trace( capitalize( "hello world" ) ) ; // Hello World
  */
 
-function capitalize(source /*String*/) /*String*/
-{
+function capitalize(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
     }
@@ -4106,20 +4112,20 @@ function capitalize(source /*String*/) /*String*/
 
 /**
  * Returns the center string representation of the specified string value.
- * @param source The string to center.
- * @param size The number of character to center the String expression. (default 0)
- * @param separator The optional separator character use before and after the String to center. (default " ")
- * @return The center of the specified String value.
+ * @name center
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to center.
+ * @param {number} [size=0] The number of character to center the String expression.
+ * @param {string} [separator= ] The optional separator character use before and after the String to center.
+ * @return The center expression of the specified string.
  * @example
- * <code class="prettyprint">
- * trace( center("hello world", 0) )         ; // hello world
- * trace( center("hello world", 20) )        ; //     hello world
- * trace( center("hello world", 20, "_" ) )  ; // ____hello world_____
- * </code>
+ * trace( '<' + center("hello world", 0)  + '>' ) ; // <hello world>
+ * trace( '<' + center("hello world", 20) + '>' ) ; // <    hello world     >
+ * trace( '<' + center("hello world", 20, "_" ) + '>'  )  ; // <____hello world_____>
  */
 
-function center(source /*String*/) /*String*/
-{
+function center(source) {
     var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ";
 
@@ -4127,7 +4133,7 @@ function center(source /*String*/) /*String*/
         return "";
     }
 
-    if (separator === null) {
+    if (separator === null || !(separator instanceof String || typeof separator === 'string')) {
         separator = " ";
     }
 
@@ -4240,15 +4246,15 @@ function trim(source /*String*/, chars /*Array*/) /*String*/
 
 /**
  * Removes all extraneous whitespace from a string and trims it.
- * @param source The string to clean.
+ * @name clean
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to clean.
  * @return The cleaned string.
  * @example
- * <code>
  * trace( clean("   hello world \n\n" ) ) ; // hello world
- * </code>
  */
-function clean(source /*String*/) /*String*/
-{
+function clean(source) {
     if (source === null || !(source instanceof String || typeof source === 'string')) {
         return "";
     }
@@ -4257,16 +4263,18 @@ function clean(source /*String*/) /*String*/
 
 /**
  * Determines wether the end of a string matches the specified value.
- * @example basic usage
+ * @name endsWith
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to check.
+ * @param {string} value - The value to find in end in the source.
+ * @return <code>true</code> if the value is find in first.
+ * @example <caption>Basic usage</caption>
  * trace( endsWith( "hello world", "world" ) ); //true
  * trace( endsWith( "hello world", "hello" ) ); //false
- * @param source the string reference.
- * @param value the value to find in first in the source.
- * @return true if the value is find in first.
  */
 
-function endsWith(source /*String*/, value /*String*/) /*Boolean*/
-{
+function endsWith(source, value) {
     if (source !== null && value === "") {
         return true;
     }
@@ -4278,43 +4286,41 @@ function endsWith(source /*String*/, value /*String*/) /*Boolean*/
 
 /**
  * Quick and fast format of a string using indexed parameters only.
- * <p>Usage :</p>
+ * <p><strong>Usage :</strong>
  * <ul>
  * <li><code>fastformat( pattern:String, ...args:Array ):String</code></li>
  * <li><code>fastformat( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
  * </ul>
+ * </p>
+ * @name fastformat
+ * @memberof core.strings
+ * @function
+ * @param {string} pattern - The String pattern expression to format.
+ * @param {...string} args - A serie of strings values or of arrays of strings to fill the pattern expression.
+ * @return The formatted expression.
+ * @see {@link core.strings.format}
  * @example
- * <code class="prettyprint">
- * trace( fastformat( "hello {0}", "world" ) );
- * //output: "hello world"
- *
- * trace( fastformat( "hello {0} {1} {2}", [ "the", "big", "world" ] ) );
- * //output: "hello the big world"
- * </code>
- * @see: format
+ * trace( fastformat( "hello {0}", "world" ) ); // "hello world"
+ * trace( fastformat( "hello {0} {1} {2}", [ "the", "big", "world" ] ) ); // "hello the big world"
+ * trace( fastformat( "hello {0} {1} {2}", [ "the", "big" ] , "world" ) ); // "hello the big world"
  */
 
-function fastformat(pattern /*String*/) /*String*/
+function fastformat(pattern) /*String*/
 {
-    if (pattern === null || pattern === "") {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+    }
+
+    if (pattern === null || !(pattern instanceof String || typeof pattern === 'string')) {
         return "";
     }
 
-    Object.setPrototypeOf(arguments, Array.prototype);
-
-    var args = arguments;
-
-    args.shift();
-
-    var len /*int*/ = args.length;
-
-    if (len === 1 && args[0] instanceof Array) {
-        args = args[0];
-        len = args.length;
-    }
-
-    for (var i = 0; i < len; i++) {
-        pattern = pattern.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
+    if (args.length > 0) {
+        args = [].concat.apply([], args);
+        var len = args.length;
+        for (var i = 0; i < len; i++) {
+            pattern = pattern.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
+        }
     }
 
     return pattern;
@@ -4322,9 +4328,15 @@ function fastformat(pattern /*String*/) /*String*/
 
 /**
  * Returns the string representation of the specific date with the format "yyyy-mm-dd".
- * @param date The date to format (default the current Date if the argument is null).
- * @param separator The default separator of the format expression (by default '-').
- * @return the string representation of the specific date with the format "yyyy-mm-dd".
+ * @name fastformatDate
+ * @memberof core.strings
+ * @function
+ * @param {Date} [date=null] - The date object to format (default the current Date if the argument is null).
+ * @param {string} [separator=-] The default separator of the format expression.
+ * @return The string representation of the specific date with the format <code>"yyyy-mm-dd"</code>.
+ * @example
+ * trace( fastformatDate(new Date(2016,5,12)) ) ; // "2016-06-12"
+ * trace( fastformatDate(new Date(2016,5,12),"/") ) ; // "2016/06/12"
  */
 
 function fastformatDate() {
@@ -4437,43 +4449,46 @@ function pad(source /*String*/, amount /*int*/, ch /*String*/) /*String*/
 
 /**
  * Format a string using indexed or named parameters.
- * @example
+ * <p><strong>Usage :</strong>
  * <ul>
- * <li><code>format( pattern:String, ...args:Array ):String</code></li>
- * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...] ):String</code></li>
- * <li><code>format( pattern:String, [arg0:*,arg1:*,arg2:*, ...], ...args:Array ):String</code></li>
- * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...} ):String</code></li>
- * <li><code>format( pattern:String, {name0:value0,name1:value1,name2:value2, ...}, ...args:Array ):String</code></li>
+ * <li><code>format( pattern, ...args )</code></li>
+ * <li><code>format( pattern, [arg0,arg1,arg, ...] )</code></li>
+ * <li><code>format( pattern, [arg0:*,arg1,arg2, ...], ...args )</code></li>
+ * <li><code>format( pattern, {name0:value0,name1:value1,name2:value2, ...} )</code></li>
+ * <li><code>format( pattern, {name0:value0,name1:value1,name2:value2, ...}, ...args )</code></li>
  * </ul>
+ * </p>
+ * @name format
+ * @memberof core.strings
+ * @function
+ * @param {string} pattern - The string expression to format.
+ * @param {...string|array|Object} args - A serie of strings values or of arrays of strings or an Object to fill the pattern expression.
+ * @return The formatted expression.
+ * @see {@link core.strings.fastformat}
+ * @throws <strong>Error</strong> when a token is malformed.
  * @example
- * <pre>
  * trace( core.strings.format( "{0},{1},{2}" , "apples" , "oranges", "grapes" ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{0},{1},{2}" , ["apples" , "oranges", "grapes"] ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{path}{0}{name}{1}" , { name : "format" , path:"core.strings" } , "." , "()" ) ) ; // core.strings.format()
- * </pre>
- * @see core.strings#fastformat
- * @throws Error When a token is malformed.
  */
-function format(pattern /*String*/) /*String*/
+function format(pattern) /*String*/
 {
-    if (pattern === null || pattern === "") {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+    }
+
+    if (pattern === null || !(pattern instanceof String || typeof pattern === 'string')) {
         return "";
     }
 
-    Object.setPrototypeOf(arguments, Array.prototype);
-
-    var args /*Array*/ = arguments;
-
-    args.shift();
-
-    var formatted /*String*/ = pattern;
-    var len /*uint*/ = args.length;
-    var words /*Object*/ = {};
+    var formatted = pattern;
+    var len = args.length;
+    var words = {};
 
     if (len === 1 && args[0] instanceof Array) {
         args = args[0];
     } else if (args[0] instanceof Array) {
-        var a /*Array*/ = args[0];
+        var a = args[0];
         args.shift();
         args = a.concat(args);
     } else if (args[0] instanceof Object && String(args[0]) === "[object Object]") {
@@ -4489,8 +4504,8 @@ function format(pattern /*String*/) /*String*/
         but do use the multiline flag if a token can be replaced
        by a \n, \r, etc.
     */
-    var search /*RegExp*/ = new RegExp("{([a-z0-9,:\\-]*)}", "m");
-    var result /*Array*/ = search.exec(formatted);
+    var search = new RegExp("{([a-z0-9,:\\-]*)}", "m");
+    var result = search.exec(formatted);
 
     var part;
     var token;
@@ -4498,9 +4513,9 @@ function format(pattern /*String*/) /*String*/
 
     var pos;
 
-    var dirty /*Boolean*/ = false;
+    var dirty = false;
 
-    var padding /*int*/ = 0;
+    var padding = 0;
 
     /* note:
        the buffer will store special string parts of the form
@@ -4512,11 +4527,7 @@ function format(pattern /*String*/) /*String*/
 
     while (result !== null) {
         part = result[0];
-
-        /////// pad the token expression
-
         token = result[1];
-
         pos = token.indexOf(",");
 
         if (pos > 0) {
@@ -4524,36 +4535,27 @@ function format(pattern /*String*/) /*String*/
             token = token.substring(0, pos);
         }
 
-        ////////////
+        // -----
 
         c = token.charAt(0);
 
         if ("0" <= c && c <= "9") {
             formatted = formatted.replace(part, pad(String(args[token]), padding));
-        } else if (token === "" || token.indexOf(":") > -1) // if the token is not valid
-            {
-                /* note:
-                   this is to deal with eden/json strings inside a format string
-                   if you do a format( "expected: <{a:1,b:2,c:3}> but was: <{a:1,b:2,c:4}>", "test" )
-                   this will collide of the legit parsing of
-                   format( "hello {x,-8} and nhello {y,-8}" )
-                */
-
-                buffer.push(part);
-
-                formatted = formatted.replace(new RegExp(part, "g"), "\uFFFC" + (buffer.length - 1));
-                dirty = true;
-            } else if ("a" <= c && c <= "z") {
+        } else if (token === "" || token.indexOf(":") > -1) {
+            /* note:
+               this is to deal with eden/json strings inside a format string
+               if you do a format( "expected: <{a:1,b:2,c:3}> but was: <{a:1,b:2,c:4}>", "test" )
+               this will collide of the legit parsing of
+               format( "hello {x,-8} and nhello {y,-8}" )
+            */
+            buffer.push(part);
+            formatted = formatted.replace(new RegExp(part, "g"), '\uFFFC' + (buffer.length - 1));
+            dirty = true;
+        } else if ("a" <= c && c <= "z") {
             if (token in words || words.hasOwnProperty(token)) {
-                /* note:
-                   here you want the part to have a global flag to replace all token instances
-                */
                 formatted = formatted.replace(new RegExp(part, "g"), pad(String(words[token]), padding));
             }
         } else {
-            /* note:
-               don't use format() within itself
-             */
             throw new Error("core.strings.format failed, malformed token \"" + part + "\", can not start with \"" + c + "\"");
         }
 
@@ -4562,9 +4564,9 @@ function format(pattern /*String*/) /*String*/
 
     if (dirty) {
         var i;
-        var bl /*int*/ = buffer.length;
+        var bl = buffer.length;
         for (i = 0; i < bl; i++) {
-            formatted = formatted.replace(new RegExp("\uFFFC" + i, "g"), buffer[i]);
+            formatted = formatted.replace(new RegExp('\uFFFC' + i, "g"), buffer[i]);
         }
     }
 
@@ -4573,16 +4575,16 @@ function format(pattern /*String*/) /*String*/
 
 /**
  * Converts a camelcased string to a hyphenated string.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( hyphenate( "helloWorld" ) ) ; //"hello-world"
- * </code>
+ * @name hyphenate
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to hyphenate.
  * @return The hyphenated string.
+ * @example
+ * trace( hyphenate( "helloWorld" ) ) ; //"hello-world"
  */
 
-function hyphenate(source /*String*/) /*String*/
-{
+function hyphenate(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
     }
@@ -4592,45 +4594,52 @@ function hyphenate(source /*String*/) /*String*/
 }
 
 /**
- * Reports the index of the first occurrence in this instance of any character in a specified array of Unicode characters.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * result = indexOfAny("hello world", [2, "hello", 5]) ;
- * trace( result ) ; // 0
- *
- * result = indexOfAny("Five = 5", [2, "hello", 5]) ;
- * trace( result ) ; // 2
- *
- * result = indexOfAny("actionscript is good", [2, "hello", 5]) ;
- * trace( result ) ; // -1
- * </pre>
+ * Reports the index of the first occurrence in a string expression of any character in a specified array of Unicode characters.
+ * @name indexOfAny
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to check.
+ * @param {Array} anyOf - The Array of Unicode characters to find in the String.
+ * @param {number} [startIndex=0] - The init position of the search process.
+ * @param {number} [count=-1] - The number of character positions to examine.
  * @return the index of the first occurrence in this instance of any character in a specified array of Unicode characters.
+ * @example
+ * trace( indexOfAny( "hello world" , ["h","e","l"]) ) ; // 0
+ * trace( indexOfAny( "hello world" , ["w","a","i","t"]) ) ; // 6
+ * trace( indexOfAny( "hello world" , ["n","i"] ) ) ; // -1
  */
 
-function indexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/, count /*int*/) /*int*/
+function indexOfAny(source, anyOf) /*int*/
 {
-    startIndex = isNaN(startIndex) ? 0 : startIndex;
-    if (startIndex < 0) {
-        startIndex = 0;
+    var startIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var count = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : -1;
+
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
+        return -1;
     }
 
-    count = isNaN(count) ? -1 : count >= 0 ? count : -1;
+    if (!(anyOf instanceof Array)) {
+        return -1;
+    }
 
-    if (anyOf !== null && source !== null && source !== "") {
-        var i;
-        var l /*int*/ = anyOf.length;
-        var endIndex;
-        if (count < 0 || count > l - startIndex) {
-            endIndex = l - 1;
-        } else {
-            endIndex = startIndex + count - 1;
-        }
-        for (i = startIndex; i <= endIndex; i++) {
-            if (source.indexOf(anyOf[i]) > -1) {
-                return i;
-            }
+    startIndex = startIndex > 0 ? 0 : startIndex;
+    count = count < 0 ? -1 : count;
+
+    var l = source.length;
+    var endIndex = void 0;
+
+    if (count < 0 || count > l - startIndex) {
+        endIndex = l - 1;
+    } else {
+        endIndex = startIndex + count - 1;
+    }
+
+    for (var i = startIndex; i <= endIndex; i++) {
+        if (anyOf.indexOf(source[i]) > -1) {
+            return i;
         }
     }
+
     return -1;
 }
 
@@ -4681,49 +4690,55 @@ function insert(source /*String*/, index /*int*/, value /*String*/) /*String*/
 
 /**
  * Reports the index position of the last occurrence in this instance of one or more characters specified in a Unicode array.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( lastIndexOfAny("hello world", ["2", "hello", "5"]) ); // 0
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["2", "hello", "5"]) ); // 19
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"]) ); // 9
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"] , 8) ); // 5
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"] , 8 , 3) ); // -1
- * </pre>
- * @param source The string to transform.
- * @param anyOf The Array of Unicode characters to find in the String.
- * @param startIndex The init position of the search process.
- * @param count The number of elements to check.
+ * @name lastIndexOfAny
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to check.
+ * @param {Array} anyOf - The Array of Unicode characters to find in the String.
+ * @param {number} [startIndex] - The init position of the search process (by default the length-1 of the source).
+ * @param {number} [count=-1] - The number of character positions to check.
  * @return the index position of the last occurrence in this instance of one or more characters specified in a Unicode array.
+ * @example
+ * trace( lastIndexOfAny( "hello world" , ["n","i"] ) ) ; // -1
+ * trace( lastIndexOfAny( "hello world" , ["h","e","l"]) ) ; // 0
+ * trace( lastIndexOfAny( "hello world" , ["l","e","h"]) ) ; // 9
+ * trace( lastIndexOfAny( "hello world" , ["w","a","i","t"]) ) ; // 6
+ * trace( lastIndexOfAny( "hello world" , ["d","r","a","w"]) ) ; // 10
+ * trace( lastIndexOfAny( "hello world" , ["l"]) ) ; // 9
+ * trace( lastIndexOfAny( "hello world" , ["l"] , 9 ) ) ; // 3
+ * trace( lastIndexOfAny( "hello world" , ["w"] , 9 , 5 ) ) ; // 6
  */
 
-function lastIndexOfAny(source /*String*/, anyOf /*Array*/, startIndex /*uint*/, count /*int*/) /*int*/
+function lastIndexOfAny(source, anyOf) /*int*/
 {
-    var i;
-    var index;
+    var startIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;
+    var count = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Infinity;
 
-    startIndex = isNaN(startIndex) ? 0x7FFFFFFF : startIndex;
-    count = isNaN(count) ? 0x7FFFFFFF : count;
-
-    if (anyOf === null || source === null || source.length === 0) {
+    if (!(source instanceof String || typeof source === 'string') || source === "") {
         return -1;
     }
 
-    if (startIndex > source.length) {
+    if (!(anyOf instanceof Array) || anyOf.length === 0) {
+        return -1;
+    }
+
+    if (startIndex < 0) {
+        return -1;
+    } else if (isNaN(startIndex) || startIndex > source.length) {
         startIndex = source.length;
-    } else if (startIndex < 0) {
-        return -1;
     }
 
-    var endIndex /*int*/ = startIndex - count + 1;
-    if (endIndex < 0) {
-        endIndex = 0;
-    }
-    source = source.slice(endIndex, startIndex + 1);
-    var len /*uint*/ = anyOf.length;
-    for (i = 0; i < len; i++) {
-        index = source.lastIndexOf(anyOf[i], startIndex);
+    count = count > 0 ? count : 0;
+
+    var endIndex = Math.max(startIndex - count, 0);
+
+    source = source.slice(endIndex, startIndex);
+
+    var len = anyOf.length;
+    for (var i = 0; i < len; i++) {
+        var index = source.lastIndexOf(anyOf[i], startIndex);
         if (index > -1) {
-            return index + endIndex;
+            return endIndex + index;
         }
     }
 
@@ -4748,19 +4763,25 @@ var lineTerminators$1 = ["\n" /*LF : Line Feed*/
 /*jshint bitwise: false*/
 /**
  * Returns a new String value who contains the specified String characters repeated count times.
- * @param source The string expression to repeat.
- * @param count The number of time to repeat the passed-in expression.
+ * @name repeat
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to repeat.
+ * @param {number} [count=1] - The number of time to repeat the passed-in expression.
+ * @return A new expression who contains the specified String characters repeated count times.
  * @example
- * <pre>
- * trace( repeat( "hello" , 0 ) ) ; // hello
+ * trace( repeat( "hello" ) ) ; // hello
+ * trace( repeat( "hello" , 0 ) ) ; // ""
+ * trace( repeat( "hello" , 1 ) ) ; // hello
+ * trace( repeat( "hello" , 2 ) ) ; // hellohello
  * trace( repeat( "hello" , 3 ) ) ; // hellohellohello
- * </pre>
- * @return a new String who contains the specified String characters repeated count times.
+ *
+ * trace( repeat( "hello" , -1 ) ) ; // throws RangeError =>'repeat count must be non-negative'
+ * trace( repeat( "hello" , Infinity ) ) ; // throws RangeError =>'repeat count must be less than infinity'
  */
 
-function repeat$1(source /*String*/) /*String*/
-{
-    var count /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+function repeat$1(source) {
+    var count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
@@ -4778,9 +4799,8 @@ function repeat$1(source /*String*/) /*String*/
 
     count = Math.floor(count);
 
-    // Ensuring count is a 31-bit integer allows us to heavily optimize the
-    // main part. But anyway, most current (August 2014) browsers can't handle
-    // strings 1 << 28 chars or longer, so:
+    // Ensuring count is a 31-bit integer allows us to heavily optimize the main part.
+    // But anyway, most current (August 2014) browsers can't handlestrings 1 << 28 chars or longer, so:
     if (source.length * count >= 1 << 28) {
         throw new RangeError('repeat count must not overflow maximum string size');
     }
@@ -4990,7 +5010,7 @@ function validateUUID(source) {
 var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * The {@link core.strings} library provide a toolkit to transform and validate a string expression.
+ * The {@link core.strings} that provides extra String methods to transform and validate it.
  * @namespace core.strings
  * @memberof core
  * @license MPL 1.1/GPL 2.0/LGPL 2.1

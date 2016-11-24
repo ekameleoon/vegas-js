@@ -2,14 +2,15 @@
 
 /**
  * Converts a camelcased string to a hyphenated string.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( hyphenate( "helloWorld" ) ) ; //"hello-world"
- * </code>
+ * @name hyphenate
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to hyphenate.
  * @return The hyphenated string.
+ * @example
+ * trace( hyphenate( "helloWorld" ) ) ; //"hello-world"
  */
-export function hyphenate( source /*String*/ ) /*String*/
+export function hyphenate( source )
 {
     if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {
@@ -17,10 +18,6 @@ export function hyphenate( source /*String*/ ) /*String*/
     }
     return source.replace
     (
-        /[A-Z]/g,
-        function( match )
-        {
-            return ('-' + match.charAt(0).toLowerCase());
-        }
+        /[A-Z]/g, ( match ) => '-' + match.charAt(0).toLowerCase()
     );
 }

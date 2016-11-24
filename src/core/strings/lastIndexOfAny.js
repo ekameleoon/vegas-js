@@ -2,55 +2,58 @@
 
 /**
  * Reports the index position of the last occurrence in this instance of one or more characters specified in a Unicode array.
- * <p><b>Example :</b></p>
- * <pre class="prettyprint">
- * trace( lastIndexOfAny("hello world", ["2", "hello", "5"]) ); // 0
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["2", "hello", "5"]) ); // 19
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"]) ); // 9
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"] , 8) ); // 5
- * trace( lastIndexOfAny("Five 5 = 5 and not 2" , ["5", "hello", "2"] , 8 , 3) ); // -1
- * </pre>
- * @param source The string to transform.
- * @param anyOf The Array of Unicode characters to find in the String.
- * @param startIndex The init position of the search process.
- * @param count The number of elements to check.
+ * @name lastIndexOfAny
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to check.
+ * @param {Array} anyOf - The Array of Unicode characters to find in the String.
+ * @param {number} [startIndex] - The init position of the search process (by default the length-1 of the source).
+ * @param {number} [count=-1] - The number of character positions to check.
  * @return the index position of the last occurrence in this instance of one or more characters specified in a Unicode array.
+ * @example
+ * trace( lastIndexOfAny( "hello world" , ["n","i"] ) ) ; // -1
+ * trace( lastIndexOfAny( "hello world" , ["h","e","l"]) ) ; // 0
+ * trace( lastIndexOfAny( "hello world" , ["l","e","h"]) ) ; // 9
+ * trace( lastIndexOfAny( "hello world" , ["w","a","i","t"]) ) ; // 6
+ * trace( lastIndexOfAny( "hello world" , ["d","r","a","w"]) ) ; // 10
+ * trace( lastIndexOfAny( "hello world" , ["l"]) ) ; // 9
+ * trace( lastIndexOfAny( "hello world" , ["l"] , 9 ) ) ; // 3
+ * trace( lastIndexOfAny( "hello world" , ["w"] , 9 , 5 ) ) ; // 6
  */
-export function lastIndexOfAny( source /*String*/ , anyOf /*Array*/ , startIndex /*uint*/ , count /*int*/ ) /*int*/
+export function lastIndexOfAny( source , anyOf , startIndex = Infinity , count = Infinity  ) /*int*/
 {
-    var i /*int*/ ;
-    var index /*int*/ ;
-
-    startIndex = isNaN( startIndex ) ? 0x7FFFFFFF : startIndex ;
-    count      = isNaN( count )      ? 0x7FFFFFFF : count ;
-
-    if( anyOf === null || source === null || source.length === 0 )
+    if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {
-        return - 1;
+        return -1 ;
     }
 
-    if ( startIndex > source.length )
+    if( !(anyOf instanceof Array) || anyOf.length === 0 )
+    {
+        return -1 ;
+    }
+
+    if( startIndex < 0 )
+    {
+        return -1 ;
+    }
+    else if( isNaN(startIndex) || startIndex > source.length )
     {
         startIndex = source.length ;
     }
-    else if( startIndex < 0 )
-    {
-        return - 1 ;
-    }
 
-    var endIndex /*int*/ = startIndex - count + 1 ;
-    if ( endIndex < 0 )
+    count = count > 0 ? count : 0 ;
+
+    let endIndex = Math.max( startIndex - count , 0 ) ;
+
+    source = source.slice( endIndex, startIndex ) ;
+
+    let len = anyOf.length ;
+    for ( let i = 0 ; i < len ; i++ )
     {
-        endIndex = 0 ;
-    }
-    source = source.slice( endIndex, startIndex + 1 ) ;
-    var len /*uint*/ = anyOf.length ;
-    for ( i = 0 ; i < len ; i++ )
-    {
-        index = source.lastIndexOf( anyOf[i], startIndex ) ;
+        let index = source.lastIndexOf( anyOf[i] , startIndex ) ;
         if (index > - 1)
         {
-            return index + endIndex;
+            return endIndex + index ;
         }
     }
 

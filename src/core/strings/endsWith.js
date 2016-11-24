@@ -2,14 +2,17 @@
 
 /**
  * Determines wether the end of a string matches the specified value.
- * @example basic usage
+ * @name endsWith
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to check.
+ * @param {string} value - The value to find in end in the source.
+ * @return <code>true</code> if the value is find in first.
+ * @example <caption>Basic usage</caption>
  * trace( endsWith( "hello world", "world" ) ); //true
  * trace( endsWith( "hello world", "hello" ) ); //false
- * @param source the string reference.
- * @param value the value to find in first in the source.
- * @return true if the value is find in first.
  */
-export function endsWith( source /*String*/ , value/*String*/ ) /*Boolean*/
+export function endsWith( source , value )
 {
     if( source !== null && value === "" )
     {

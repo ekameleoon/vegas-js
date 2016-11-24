@@ -2,25 +2,19 @@
 
 /**
  * Converts the first letter of each word in a string to uppercase.
- * @param source The string to transform.
- * @example
- * <code class="prettyprint">
- * trace( capitalize( "hello world" ) ) ; // Hello World
- * </code>
+ * @name capitalize
+ * @memberof core.strings
+ * @function
+ * @param {string} source - The string reference to transform.
  * @return The capitalized string.
+ * @example
+ * trace( capitalize( "hello world" ) ) ; // Hello World
  */
-export function capitalize( source /*String*/ ) /*String*/
+export function capitalize( source )
 {
     if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {
         return '' ;
     }
-    return source.replace
-    (
-        /\b[a-z]/g,
-        function( match )
-        {
-            return match.toUpperCase();
-        }
-    );
+    return source.replace( /\b[a-z]/g , ( match ) => match.toUpperCase() ) ;
 }

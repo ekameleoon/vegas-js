@@ -1,18 +1,26 @@
 "use strict" ;
 
 /**
- * Compares two strings.
+ * Compares two strings, the default comparaison algorithm use an ascending alphabetic order with minuscule weighting less than majuscule.
+ * @name compare
+ * @memberof core.strings
+ * @function
+ * @param {string} str1 - The first string to compare with the second string
+ * @param {string} str2 - Thesecond string to compare with the first string
+ * @param {boolean} [strict=false] This flag indicates if the function take into account the string case, default to false
+ * @return An integer value :
  * <p>
- * The default comparaison algorithm use an ascending alphabetic order
- * with minuscule weighting less than majuscule.
+ * <ul>
+ * <li> 0 if the two strings are considered equals</li>
+ * <li>-1 if the first string is considered smaller (lower) than the second string</li>
+ * <li> 1 if the first string is considered bigger (higher) than the second string</li>
+ * </ul>
  * </p>
- *
- * @example basic usage
- * <code>
- * var s0:String = "HELLO";
- * var s1:String = "hello";
- * var s2:String = "welcome";
- * var s3:String = "world";
+ * @example
+ * var s0 = "HELLO";
+ * var s1 = "hello";
+ * var s2 = "welcome";
+ * var s3 = "world";
  *
  * trace( compare( s1, s2 ) ); //-1
  * trace( compare( s2, s1 ) ); //1
@@ -21,17 +29,6 @@
  * trace( compare( s1, s0 ) ); //0
  * trace( compare( s1, s0, true ) ); //-1
  * trace( compare( s0, s1, true ) ); //1
- * </code>
- * @param str1 first string to compare with the second string
- * @param str2 second string to compare with the first string
- * @param strict (optional) take into account the string case, default to false
- * @return <p>
- * <ul>
- * <li> 0 if the two strings are considered equals</li>
- * <li>-1 if the first string is considered smaller (lower) than the second string</li>
- * <li> 1 if the first string is considered bigger (higher) than the second string</li>
- * </ul>
- * </p>
  */
 export function compare( str1 /*String*/ , str2 /*String*/ , strict = false ) /*int*/
 {
