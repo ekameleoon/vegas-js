@@ -12,7 +12,6 @@ import { global } from '../global.js' ;
  * @example
  * var definition = core.reflect.getDefinitionByName('system.signals.Signal') ;
  * trace( definition ) ;
- * </pre>
  */
 export function getDefinitionByName( name , domain = null )
 {
