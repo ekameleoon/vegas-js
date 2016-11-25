@@ -3,7 +3,7 @@
 import { Task } from '../process/Task.js' ;
 
 /**
- * A simple Transition object.
+ * The basic implementation of all transitions classes.
  * @name Transition
  * @memberof system.transitions
  * @extends {system.process.Task}
@@ -22,9 +22,6 @@ export function Transition ( id = null )
     });
 }
 
-/**
- * @extends Task
- */
 Transition.prototype = Object.create( Task.prototype ,
 {
     /**

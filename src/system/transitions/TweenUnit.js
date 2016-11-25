@@ -5,6 +5,7 @@ import { Motion } from './Motion.js' ;
 
 /**
  * The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
+ * @summary The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
  * @name TweenUnit
  * @memberof system.transitions
  * @class

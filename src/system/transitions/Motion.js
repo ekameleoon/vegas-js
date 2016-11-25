@@ -10,7 +10,7 @@ import { Task }       from '../process/Task.js' ;
 import { Timer }      from '../process/Timer.js' ;
 
 /**
- * The Motion class.
+ * The abstract motion class.
  * @name Motion
  * @memberof system.transitions
  * @implements {system.transitions.Transition}

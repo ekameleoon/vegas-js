@@ -3,9 +3,13 @@
 import { Evaluable } from '../Evaluable.js' ;
 
 /**
- * This <b>Evaluator</b> combine a collection of evaluators to evaluate a specified value.
+ * This {@link system.Evaluable|Evaluable} combine a collection of evaluators to evaluates a specified value.
+ * @summary This {@link system.Evaluable|Evaluable} combine a collection of evaluators to evaluates a specified value.
+ * @name MultiEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
  * @example
- * <pre>
  * var MultiEvaluator    = system.evaluators.MultiEvaluator ;
  * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
  * var RomanEvaluator    =  system.evaluators.RomanEvaluator ;
@@ -22,14 +26,18 @@ import { Evaluable } from '../Evaluable.js' ;
  *
  * trace( evaluator.eval( 'id' ) ) ; // 12
  * trace( evaluator.eval( 'count' ) ) ; // C
- * </pre>
+ * @param {array} [elements] - An optional array of evaluators to group.
  */
-export function MultiEvaluator( elements )
+export function MultiEvaluator( elements = null )
 {
     Object.defineProperties( this ,
     {
         /**
-         * Indicates if the MultiEvaluator is cleared before insert new Evaluable objects (in the add method).
+         * Indicates if the MultiEvaluator is cleared before insert new {@link system.Evaluable|Evaluable} objects (in the add method).
+         * @memberof system.evaluators.MultiEvaluator
+         * @type {boolean}
+         * @instance
+         * @default false
          */
         autoClear : { value : false , writable : true } ,
 
@@ -45,13 +53,14 @@ export function MultiEvaluator( elements )
     }
 }
 
-/**
- * @extends Evaluable
- */
 MultiEvaluator.prototype = Object.create( Evaluable.prototype ,
 {
     /**
      * Indicates the number of elements registered in this collection.
+     * @memberof system.evaluators.MultiEvaluator
+     * @type {number}
+     * @instance
+     * @readonly
      */
     length :
     {
@@ -62,98 +71,98 @@ MultiEvaluator.prototype = Object.create( Evaluable.prototype ,
     },
 
     /**
-     * Inserts <code class="prettyprint">Evaluable</code> objects in the MultiEvaluator.
-     * @param ...evaluators The enumeration list of Evaluable objets or Arrays of Evaluator. Only Array and Evaluable are compatible to fill the MultiEvaluator.
+     * Inserts an {@link system.Evaluable|Evaluable} objects in the <code>MultiEvaluator</code>.
+     * @param {...system.Evaluable} evaluators - The enumeration list of {@link system.Evaluable|Evaluable} objets or Arrays of Evaluator. Only Array and Evaluable are compatible to fill the <b>MultiEvaluator</b>.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    add :
+    add : { value : function ( ...evaluators )
     {
-        value : function ( ...evaluators )
+        if ( this.autoClear )
         {
-            if ( this.autoClear )
-            {
-                this.clear() ;
-            }
+            this.clear() ;
+        }
 
-            var l = evaluators.length ;
-            if ( l > 0 )
+        var l = evaluators.length ;
+        if ( l > 0 )
+        {
+            var c, i, j ;
+            var e ;
+            for ( i = 0 ; i < l ; i++ )
             {
-                var c, i, j ;
-                var e ;
-                for ( i = 0 ; i < l ; i++ )
+                e = evaluators[i] ;
+                if ( e instanceof Evaluable )
                 {
-                    e = evaluators[i] ;
-                    if ( e instanceof Evaluable )
+                    this._evaluators.push( e ) ;
+                }
+                else if ( e instanceof Array )
+                {
+                    c = e.length ;
+                    for ( j = 0 ; j < c ; j++ )
                     {
-                        this._evaluators.push( e ) ;
-                    }
-                    else if ( e instanceof Array )
-                    {
-                        c = e.length ;
-                        for ( j = 0 ; j < c ; j++ )
+                        if ( e[j] instanceof Evaluable )
                         {
-                            if ( e[j] instanceof Evaluable )
-                            {
-                                this._evaluators.push( e[j] ) ;
-                            }
+                            this._evaluators.push( e[j] ) ;
                         }
                     }
                 }
             }
         }
-    },
+    }},
 
     /**
-     * Clear all the Evaluable objects.
+     * Clear all the {@link system.Evaluable|Evaluable} objects.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    clear :
+    clear : { value : function()
     {
-        value : function()
-        {
-            this._evaluators = [] ;
-        }
-    },
+        this._evaluators = [] ;
+    }},
 
     /**
      * Evaluates the specified object.
+     * @param {*} value - The object to evaluates.
+     * @return The result of the evaluation.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    eval :
+    eval : { value : function( value )
     {
-        value : function( o )
+        this._evaluators.forEach( ( element ) =>
         {
-            this._evaluators.forEach( ( element ) =>
+            if( element instanceof Evaluable )
             {
-                if( element instanceof Evaluable )
-                {
-                    o = element.eval( o ) ;
-                }
-            }) ;
-            return o ;
-        }
-    },
+                value = element.eval( value ) ;
+            }
+        }) ;
+        return value ;
+    }},
 
     /**
-     * Removes an <code class="prettyprint">Evaluable</code> objects in the MultiEvaluator if is register.
-     * @param evaluator The <code class="prettyprint">Evaluable</code> to find and remove.
-     * @return <code class="prettyprint">true</code> if the Evaluable is removed.
+     * Removes an {@link system.Evaluable|Evaluable} objects in the <b>MultiEvaluator</b> if is register.
+     * @param evaluator The {@link system.Evaluable|Evaluable} to find and remove.
+     * @return <code>true</code> if the Evaluable is removed.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    remove :
+    remove : { value : function( evaluator )
     {
-        value : function( evaluator )
+        if( evaluator instanceof Evaluable )
         {
-            if( evaluator instanceof Evaluable )
+            var index = this._evaluators.indexOf( evaluator ) ;
+            if( index > - 1 )
             {
-                var index = this._evaluators.indexOf( evaluator ) ;
-                if( index > - 1 )
-                {
-                    this._evaluators.splice( index , 1 ) ;
-                    return true ;
-                }
+                this._evaluators.splice( index , 1 ) ;
+                return true ;
             }
-            return false ;
         }
-    }
-
-
+        return false ;
+    }}
 });
 
 MultiEvaluator.prototype.constructor = MultiEvaluator ;
@@ -161,6 +170,9 @@ MultiEvaluator.prototype.constructor = MultiEvaluator ;
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.evaluators.MultiEvaluator
+ * @function
+ * @instance
  */
 MultiEvaluator.prototype.toString = function () /*String*/
 {

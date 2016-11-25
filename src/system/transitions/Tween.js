@@ -4,7 +4,10 @@ import { TaskPhase } from '../process/TaskPhase.js' ;
 import { TweenUnit } from './TweenUnit.js' ;
 
 /**
- * The Tween class interpolate in time a value between 0 and 1.
+ * The Tween class lets you use to move, resize, and fade visual elements easily on the stage of your applications by specifying a property of the target movieclips or sprites to be tween animated over a number of frames or seconds.
+ * <p>The Tween class also lets you specify a variety of {@link core.easings|easing} methods.</p>
+ * <p>Easing refers to gradual acceleration or deceleration during an animation, which helps your animations appear more realistic.</p>
+ * @summary The Tween class lets you use to move, resize, and fade visual elements easily on your applications.
  * @name Tween
  * @memberof system.transitions
  * @class

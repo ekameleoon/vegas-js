@@ -4,9 +4,13 @@ import { Evaluable }   from '../Evaluable.js' ;
 import { RomanNumber } from '../numeric/RomanNumber.js' ;
 
 /**
- * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * Evaluates an int value and transform it in roman numeral expression.
+ * @summary Evaluates an int value and transform it in roman numeral expression.
+ * @name RomanEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
+ * @example
  * var RomanEvaluator=  system.evaluators.RomanEvaluator ;
  *
  * var evaluator = new RomanEvaluator() ;
@@ -52,31 +56,30 @@ import { RomanNumber } from '../numeric/RomanNumber.js' ;
  * {
  *     trace( e.message ) ; // Min value for a RomanNumber is 0
  * }
- * </pre>
  */
-export function RomanEvaluator()
-{
+export function RomanEvaluator() {}
 
-}
-
-/**
- * @extends Evaluable
- */
 RomanEvaluator.prototype = Object.create( Evaluable.prototype );
 RomanEvaluator.prototype.constructor = RomanEvaluator;
 
 /**
  * Evaluates the specified object.
+ * @param {number} value - The object to evaluates.
+ * @return The string representation of the int value.
+ * @name eval
+ * @memberof system.evaluators.RomanEvaluator
+ * @function
+ * @instance
  */
-RomanEvaluator.prototype.eval = function ( o )
+RomanEvaluator.prototype.eval = function ( value )
 {
-    if( typeof(o) === 'string' || o instanceof String )
+    if( typeof(value) === 'string' || value instanceof String )
     {
-       return RomanNumber.parseRomanString( o );
+       return RomanNumber.parseRomanString( value );
     }
-    else if ( typeof(o) == 'number' || o instanceof Number )
+    else if ( typeof(value) === 'number' || value instanceof Number )
     {
-        return RomanNumber.parse( o );
+        return RomanNumber.parse( value );
     }
     else
     {
@@ -87,8 +90,9 @@ RomanEvaluator.prototype.eval = function ( o )
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.evaluators.RomanEvaluator
+ * @function
+ * @instance
  */
-RomanEvaluator.prototype.toString = function () /*String*/
-{
-    return "[RomanEvaluator]" ;
-}
+RomanEvaluator.prototype.toString = function () { return "[RomanEvaluator]" ; }

@@ -4,8 +4,12 @@ import { Evaluable } from '../Evaluable.js' ;
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @summary Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @name PropertyEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
+ * @example
  * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
  *
  * var obj =
@@ -54,7 +58,7 @@ import { Evaluable } from '../Evaluable.js' ;
  * {
  *     trace( e ) ; // ##EvalError: [object PropertyEvaluator] eval failed with the expression : test##
  * }
- * </pre>
+ * @param {object} target - The object to evaluates.
  */
 export function PropertyEvaluator( target )
 {
@@ -62,34 +66,52 @@ export function PropertyEvaluator( target )
     {
         /**
          * The separator character of the expression evaluator.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {string}
+         * @instance
+         * @default '.'
          */
         separator : { value : "." , writable : true } ,
 
         /**
          * The target reference use in the evaluator.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {object}
+         * @instance
          */
         target : { value : target , writable : true , configurable : true } ,
 
         /**
          * Indicates if the eval() method throws errors or return null when an error is throwing.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {boolean}
+         * @default false
+         * @instance
          */
         throwError : { value : false , writable : true } ,
 
         /**
          * Defines the value returns from the eval() method if the expression can't be evaluate.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {object}
+         * @default null
+         * @instance
          */
         undefineable : { value : null , writable : true }
     }) ;
 }
 
-/**
- * @extends Evaluable
- */
 PropertyEvaluator.prototype = Object.create( Evaluable.prototype );
 PropertyEvaluator.prototype.constructor = PropertyEvaluator;
 
 /**
  * Evaluates the specified object.
+ * @param {*} value - The object to evaluates.
+ * @return The result of the evaluation.
+ * @name eval
+ * @memberof system.evaluators.PropertyEvaluator
+ * @function
+ * @instance
  */
 PropertyEvaluator.prototype.eval = function ( o )
 {
@@ -125,6 +147,9 @@ PropertyEvaluator.prototype.eval = function ( o )
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.evaluators.PropertyEvaluator
+ * @function
+ * @instance
  */
 PropertyEvaluator.prototype.toString = function () /*String*/
 {

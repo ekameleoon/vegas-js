@@ -6595,10 +6595,15 @@ var data = Object.assign({
 });
 
 /**
- * The error throws when methods that have detected concurrent modification of an object when such modification is not permissible.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when methods that have detected concurrent modification of an object when such modification is not permissible.
+ * @summary Thrown when methods that have detected concurrent modification of an object when such modification is not permissible.
+ * @name ConcurrencyError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 
 function ConcurrencyError(message, fileName, lineNumber) {
@@ -6609,17 +6614,19 @@ function ConcurrencyError(message, fileName, lineNumber) {
   this.stack = new Error().stack;
 }
 
-/**
- * @extends Error
- */
 ConcurrencyError.prototype = Object.create(Error.prototype);
 ConcurrencyError.prototype.constructor = ConcurrencyError;
 
 /**
- * The error throws when an invalid channel is find.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when an invalid channel is find.
+ * @summary Thrown when an invalid channel is find.
+ * @name InvalidChannelError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 
 function InvalidChannelError(message, fileName, lineNumber) {
@@ -6630,17 +6637,19 @@ function InvalidChannelError(message, fileName, lineNumber) {
   this.stack = new Error().stack;
 }
 
-/**
- * @extends Error
- */
 InvalidChannelError.prototype = Object.create(Error.prototype);
 InvalidChannelError.prototype.constructor = InvalidChannelError;
 
 /**
- * The error throws when an invalid filter is find.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when an invalid filter is find.
+ * @summary Thrown when an invalid filter is find.
+ * @name InvalidFilterError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 
 function InvalidFilterError(message, fileName, lineNumber) {
@@ -6651,17 +6660,19 @@ function InvalidFilterError(message, fileName, lineNumber) {
   this.stack = new Error().stack;
 }
 
-/**
- * @extends Error
- */
 InvalidFilterError.prototype = Object.create(Error.prototype);
 InvalidFilterError.prototype.constructor = InvalidFilterError;
 
 /**
- * The error throws when a key is non unique.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when a key is non unique.
+ * @summary Thrown when a key is non unique.
+ * @name NonUniqueKeyError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 function NonUniqueKeyError(key, pattern, fileName, lineNumber) {
   this.name = 'NonUniqueKeyError';
@@ -6678,17 +6689,19 @@ function NonUniqueKeyError(key, pattern, fileName, lineNumber) {
  */
 NonUniqueKeyError.PATTERN = "attempting to insert the key '{0}'";
 
-/**
- * @extends Error
- */
 NonUniqueKeyError.prototype = Object.create(Error.prototype);
 NonUniqueKeyError.prototype.constructor = NonUniqueKeyError;
 
 /**
  * Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * @summary Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
+ * @name NoSuchElementError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 
 function NoSuchElementError(message, fileName, lineNumber) {
@@ -6699,9 +6712,6 @@ function NoSuchElementError(message, fileName, lineNumber) {
   this.stack = new Error().stack;
 }
 
-/**
- * @extends Error
- */
 NoSuchElementError.prototype = Object.create(Error.prototype);
 NoSuchElementError.prototype.constructor = NoSuchElementError;
 
