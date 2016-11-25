@@ -1,7 +1,12 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Startable.
+ * Indicates if the specific objet is Startable and contains a <code>start()</code> method.
+ * @name isStartable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Startable</code>.
  */
 export function isStartable( target )
 {
@@ -13,38 +18,28 @@ export function isStartable( target )
         }
         return ( 'start' in target ) && ( target.start instanceof Function )  ;
     }
-
     return false ;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be started.
+ * @name Startable
+ * @memberof system.process
+ * @interface
  */
 export function Startable()
 {
 
 }
 
-///////////////////
-
 Startable.prototype = Object.create( Object.prototype );
 Startable.prototype.constructor = Startable;
 
-///////////////////
-
 /**
  * Starts the process.
+ * @name start
+ * @memberof system.process.Startable
+ * @function
+ * @instance
  */
-Startable.prototype.start = function() /*void*/
-{
-    //
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Startable.prototype.toString = function () /*String*/
-{
-    return "[Startable]" ;
-}
+Startable.prototype.start = function() {}

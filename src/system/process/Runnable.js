@@ -1,7 +1,7 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Runnable.
+ * Indicates if the specific objet is Runnable and contains a <code>run()</code> method.
  * @name isRunnable
  * @function
  * @memberof system.process

@@ -1,7 +1,7 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Lockable.
+ * Indicates if the specific objet is Lockable and contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
  * @name isLockable
  * @memberof system.process
  * @function
@@ -83,17 +83,4 @@ Lockable.prototype.lock = function() /*void*/
 Lockable.prototype.unlock = function() /*void*/
 {
     this.__lock__ = false ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.process.Lockable
- * @function
- * @instance
- */
-Lockable.prototype.toString = function () /*String*/
-{
-    return '[' + this.constructor.name + ']' ;
 }

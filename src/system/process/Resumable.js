@@ -1,7 +1,12 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Resumable.
+ * Indicates if the specific objet is Resumable and contains a <code>resume()</code> method.
+ * @name isResumable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Resumable</code>.
  */
 export function isResumable( target )
 {
@@ -13,37 +18,28 @@ export function isResumable( target )
         }
         return ( 'resume' in target ) && ( target.resume instanceof Function )  ;
     }
-
     return false ;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be resumed.
+ * @name Resumable
+ * @memberof system.process
+ * @interface
  */
 export function Resumable()
 {
 
 }
-///////////////////
 
 Resumable.prototype = Object.create( Object.prototype );
 Resumable.prototype.constructor = Resumable;
 
-///////////////////
-
 /**
  * Resumes the process.
+ * @name resume
+ * @memberof system.process.Resumable
+ * @function
+ * @instance
  */
-Resumable.prototype.resume = function() /*void*/
-{
-    //
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Resumable.prototype.toString = function () /*String*/
-{
-    return "[Resumable]" ;
-}
+Resumable.prototype.resume = function() {}
