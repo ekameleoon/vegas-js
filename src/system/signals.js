@@ -9,9 +9,16 @@ import { Signaler    } from './signals/Signaler.js' ;
 import { Signal      } from './signals/Signal.js' ;
 
 /**
- * The {@link system.signals} library is the root package for the <strong>VEGAS JS</strong> application framework. It is the starting point of the RIA framework structure.
- * <p><b>Depencies :</b> The {@link system.signals}, reuse the module and building blocks of the {@link system.core} library.</p>
- * @summary The {@link system.signals} library is the root package for the <strong>VEGAS JS</strong> application framework.
+ * The {@link system.signals} library is light-weight, strongly-typed messaging tools. Wire your application with better APIs and less boilerplate than W3C DOMEvents..
+ * <p><b>Concept: </b>
+ * <ul>
+ * <li>A Signal is essentially a minimal emiter specific to one event, with its own <code>array</code> of receivers/slots ({@link system.signals.Receiver|Receiver} or <code>Function</code>).</li>
+ * <li>A Signal gives an event a concrete membership in a class.</li>
+ * <li>Receivers subscribe to real objects, not to string-based channels.</li>
+ * <li>Event string constants are no longer needed.</li>
+ * <li>Signals are inspired by {@link https://en.wikipedia.org/wiki/Signals_and_slots|signals/slots in Qt}.</li>
+ * <ul>
+ * @summary The {@link system.signals} library is light-weight, strongly-typed messaging tools.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.signals

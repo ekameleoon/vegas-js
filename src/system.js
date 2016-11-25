@@ -25,7 +25,9 @@ import { signals }     from './system/signals.js' ;
 import { transitions } from './system/transitions.js' ;
 
 /**
- * The VEGAS.js framework - The system library.
+ * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure.
+ * <p><b>Dependencies :</b> The {@link system} framework reuse the module and building blocks of the {@link core} library.</p>
+ * @summary The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system

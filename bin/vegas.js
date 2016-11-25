@@ -1091,7 +1091,8 @@ function swap(ar) {
 }
 
 /**
- * The VEGAS.js framework - The core.arrays library.
+ * The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
+ * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.arrays
@@ -1639,7 +1640,9 @@ function isWhiteSpace(c) {
 }
 
 /**
- * The VEGAS.js framework - The core.chars library.
+ * The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform the basic characters.
+ * <p>You can use this library for example to parse a string (JSON, csv, etc.).</p>
+ * @summary The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform a basic character.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.chars
@@ -2311,7 +2314,8 @@ var sineOut = function sineOut(t, b, c, d) {
 };
 
 /**
- * @description The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific tweening effects. These easings functions provide different flavors of math-based motion under a consistent API.
+ * The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific <b>tweening</b> effects.
+ * <p>These easings functions provide different flavors of math-based motion under a consistent API.</p>
  *
  * |  easing   |                         description                         |  in  | out  | inout  |
  * |:--------: |:----------------------------------------------------------: |:---: |:---: |:-----: |
@@ -2327,10 +2331,12 @@ var sineOut = function sineOut(t, b, c, d) {
  * |  quintic  | quintic easing : t^5                                        | yes  | yes  |  yes   |
  * |  regular  | regular easing                                              | yes  | yes  |  yes   |
  * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
+ * @summary The {@link core.easings} library contains all the easing functions to create the specific tweening effects.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @namespace core.easings
  * @memberof core
  * @tutorial system.transitions
+ * @see {@link system.transitions|system.transition library}
  */
 var easings = Object.assign({
     backIn: backIn,
@@ -2425,7 +2431,8 @@ var aop = function aop(func) {
 };
 
 /**
- * The VEGAS.js framework - The core.arrays library.
+ * The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
+ * @summary The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.functors
@@ -3585,7 +3592,8 @@ function vincenty(latitude1, longitude1, latitude2, longitude2) /*Number*/
 }
 
 /**
- * The VEGAS.js framework - The core.maths library.
+ * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
+ * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.maths
@@ -3654,7 +3662,8 @@ var maths = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The core.numbers library.
+ * The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
+ * @summary The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.numbers
@@ -3831,7 +3840,8 @@ function merge(target, source) {
 }
 
 /**
- * The VEGAS.js framework - The core.objects library.
+ * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
+ * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.objects
@@ -3870,7 +3880,8 @@ function generateUUID() {
 var pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
 /**
- * The VEGAS.js framework - The core.random library.
+ * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
+ * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.random
@@ -4048,7 +4059,8 @@ function invoke(c) {
 }
 
 /**
- * The VEGAS.js framework - The core.reflect library.
+ * The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
+ * @summary The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.reflect
@@ -5163,7 +5175,8 @@ function validateUUID(source) {
 var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * The {@link core.strings} that provides extra String methods to transform and validate it.
+ * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
+ * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
  * @namespace core.strings
  * @memberof core
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
@@ -5200,7 +5213,10 @@ var strings = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The core library.
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
+ * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
+ * <p>Those functions are allowed to reuse the builtin types (Object, Array, etc.), the Javascript API classes and packages, but nothing else.</p>
+ * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core
@@ -5349,14 +5365,18 @@ Equatable.prototype.equals = function (object) /*Boolean*/
 
 /*jshint unused: false*/
 /**
- * Indicates if the specific objet is Evaluable.
+ * Indicates if the specific objet is {@link system.Evaluable|Evaluable}.
+ * @name isEvaluable
+ * @function
+ * @memberof system
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link system.Evaluable|Evaluable}.
  */
 
 function isEvaluable(target) {
   if (target) {
     return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
   }
-
   return false;
 }
 
@@ -5364,31 +5384,25 @@ function isEvaluable(target) {
  * An Evaluable class can interpret an object to another object.
  * <p>It's not necessary a parser, but the most common cases would be a string being evaluated to an object structure.</p>
  * <p><b>Note:</b> eval always take one and only one argument, if you need to configure the evaluator pass different arguments in the constructor.</p>
+ * @name Evaluable
+ * @memberof system
+ * @interface
  */
 function Evaluable() {}
 
-/**
- * @extends Object
- */
 Evaluable.prototype = Object.create(Object.prototype);
 Evaluable.prototype.constructor = Evaluable;
 
 /**
  * Evaluates the specified object.
+ * @param {*} value - The object to evaluates.
+ * @return The result of the evaluation.
+ * @name eval
+ * @memberof system.Evaluable
+ * @function
+ * @instance
  */
-Evaluable.prototype.eval = function (o) /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Evaluable.prototype.toString = function () /*String*/
-{
-  return "[Evaluable]";
-};
+Evaluable.prototype.eval = function (value) {};
 
 /*jshint unused: false*/
 /**
@@ -6559,7 +6573,11 @@ ArrayMap.prototype.values = function () /*Array*/
 /**
  * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
  * <p>It reduces programming effort while increasing performance. It enables interoperability among unrelated APIs, reduces effort in designing and learning new APIs, and fosters software reuse.</p>
- * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p>
+ * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p></br>
+ * <p>An <strong>abstract data type</strong> (<b>ADT</b>) is a model for a certain class of data structures that have similar behavior; or for certain data types of one or more programming languages that have similar semantics. The collections framework is a unified architecture for representing and manipulating collections, allowing them to be manipulated independently of the details of their representation. It reduces programming effort while increasing performance.</p>
+ * <p>Originaly the {@link system.data} collection framework is loosely inspired on the <b>JAVA Collections Framework</b> and the <b>Jakarta Collections Framework</b> but with the new ES6 standard we change the basic implementation of the new <b>VEGAS</b> framework in the JS version of the library.</p>
+ * <p>This framework is inspired on interfaces to defines the different types of collections : * Map * Bag * Collections * Iterator * Set * Queue & Stack... </p>
+ * @summary The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.data
@@ -6731,9 +6749,13 @@ var errors = Object.assign({
 });
 
 /**
- * This <b>Evaluator</b> combine a collection of evaluators to evaluate a specified value.
+ * This {@link system.Evaluable|Evaluable} combine a collection of evaluators to evaluates a specified value.
+ * @summary This {@link system.Evaluable|Evaluable} combine a collection of evaluators to evaluates a specified value.
+ * @name MultiEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
  * @example
- * <pre>
  * var MultiEvaluator    = system.evaluators.MultiEvaluator ;
  * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
  * var RomanEvaluator    =  system.evaluators.RomanEvaluator ;
@@ -6750,12 +6772,18 @@ var errors = Object.assign({
  *
  * trace( evaluator.eval( 'id' ) ) ; // 12
  * trace( evaluator.eval( 'count' ) ) ; // C
- * </pre>
+ * @param {array} [elements] - An optional array of evaluators to group.
  */
-function MultiEvaluator(elements) {
+function MultiEvaluator() {
+    var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
     Object.defineProperties(this, {
         /**
-         * Indicates if the MultiEvaluator is cleared before insert new Evaluable objects (in the add method).
+         * Indicates if the MultiEvaluator is cleared before insert new {@link system.Evaluable|Evaluable} objects (in the add method).
+         * @memberof system.evaluators.MultiEvaluator
+         * @type {boolean}
+         * @instance
+         * @default false
          */
         autoClear: { value: false, writable: true },
 
@@ -6770,12 +6798,13 @@ function MultiEvaluator(elements) {
     }
 }
 
-/**
- * @extends Evaluable
- */
 MultiEvaluator.prototype = Object.create(Evaluable.prototype, {
     /**
      * Indicates the number of elements registered in this collection.
+     * @memberof system.evaluators.MultiEvaluator
+     * @type {number}
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
@@ -6784,11 +6813,13 @@ MultiEvaluator.prototype = Object.create(Evaluable.prototype, {
     },
 
     /**
-     * Inserts <code class="prettyprint">Evaluable</code> objects in the MultiEvaluator.
-     * @param ...evaluators The enumeration list of Evaluable objets or Arrays of Evaluator. Only Array and Evaluable are compatible to fill the MultiEvaluator.
+     * Inserts an {@link system.Evaluable|Evaluable} objects in the <code>MultiEvaluator</code>.
+     * @param {...system.Evaluable} evaluators - The enumeration list of {@link system.Evaluable|Evaluable} objets or Arrays of Evaluator. Only Array and Evaluable are compatible to fill the <b>MultiEvaluator</b>.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    add: {
-        value: function value() {
+    add: { value: function value() {
             if (this.autoClear) {
                 this.clear();
             }
@@ -6815,39 +6846,44 @@ MultiEvaluator.prototype = Object.create(Evaluable.prototype, {
                     }
                 }
             }
-        }
-    },
+        } },
 
     /**
-     * Clear all the Evaluable objects.
+     * Clear all the {@link system.Evaluable|Evaluable} objects.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    clear: {
-        value: function value() {
+    clear: { value: function value() {
             this._evaluators = [];
-        }
-    },
+        } },
 
     /**
      * Evaluates the specified object.
+     * @param {*} value - The object to evaluates.
+     * @return The result of the evaluation.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    eval: {
-        value: function value(o) {
+    eval: { value: function value(_value) {
             this._evaluators.forEach(function (element) {
                 if (element instanceof Evaluable) {
-                    o = element.eval(o);
+                    _value = element.eval(_value);
                 }
             });
-            return o;
-        }
-    },
+            return _value;
+        } },
 
     /**
-     * Removes an <code class="prettyprint">Evaluable</code> objects in the MultiEvaluator if is register.
-     * @param evaluator The <code class="prettyprint">Evaluable</code> to find and remove.
-     * @return <code class="prettyprint">true</code> if the Evaluable is removed.
+     * Removes an {@link system.Evaluable|Evaluable} objects in the <b>MultiEvaluator</b> if is register.
+     * @param evaluator The {@link system.Evaluable|Evaluable} to find and remove.
+     * @return <code>true</code> if the Evaluable is removed.
+     * @memberof system.evaluators.MultiEvaluator
+     * @function
+     * @instance
      */
-    remove: {
-        value: function value(evaluator) {
+    remove: { value: function value(evaluator) {
             if (evaluator instanceof Evaluable) {
                 var index = this._evaluators.indexOf(evaluator);
                 if (index > -1) {
@@ -6856,9 +6892,7 @@ MultiEvaluator.prototype = Object.create(Evaluable.prototype, {
                 }
             }
             return false;
-        }
-    }
-
+        } }
 });
 
 MultiEvaluator.prototype.constructor = MultiEvaluator;
@@ -6866,6 +6900,9 @@ MultiEvaluator.prototype.constructor = MultiEvaluator;
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.evaluators.MultiEvaluator
+ * @function
+ * @instance
  */
 MultiEvaluator.prototype.toString = function () /*String*/
 {
@@ -6874,8 +6911,12 @@ MultiEvaluator.prototype.toString = function () /*String*/
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * @summary Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @name PropertyEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
+ * @example
  * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
  *
  * var obj =
@@ -6924,40 +6965,58 @@ MultiEvaluator.prototype.toString = function () /*String*/
  * {
  *     trace( e ) ; // ##EvalError: [object PropertyEvaluator] eval failed with the expression : test##
  * }
- * </pre>
+ * @param {object} target - The object to evaluates.
  */
 function PropertyEvaluator(target) {
     Object.defineProperties(this, {
         /**
          * The separator character of the expression evaluator.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {string}
+         * @instance
+         * @default '.'
          */
         separator: { value: ".", writable: true },
 
         /**
          * The target reference use in the evaluator.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {object}
+         * @instance
          */
         target: { value: target, writable: true, configurable: true },
 
         /**
          * Indicates if the eval() method throws errors or return null when an error is throwing.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {boolean}
+         * @default false
+         * @instance
          */
         throwError: { value: false, writable: true },
 
         /**
          * Defines the value returns from the eval() method if the expression can't be evaluate.
+         * @memberof system.evaluators.PropertyEvaluator
+         * @type {object}
+         * @default null
+         * @instance
          */
         undefineable: { value: null, writable: true }
     });
 }
 
-/**
- * @extends Evaluable
- */
 PropertyEvaluator.prototype = Object.create(Evaluable.prototype);
 PropertyEvaluator.prototype.constructor = PropertyEvaluator;
 
 /**
  * Evaluates the specified object.
+ * @param {*} value - The object to evaluates.
+ * @return The result of the evaluation.
+ * @name eval
+ * @memberof system.evaluators.PropertyEvaluator
+ * @function
+ * @instance
  */
 PropertyEvaluator.prototype.eval = function (o) {
     if (o !== null && (typeof o === "string" || o instanceof String) && this.target !== null) {
@@ -6985,6 +7044,9 @@ PropertyEvaluator.prototype.eval = function (o) {
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.evaluators.PropertyEvaluator
+ * @function
+ * @instance
  */
 PropertyEvaluator.prototype.toString = function () /*String*/
 {
@@ -7197,9 +7259,13 @@ RomanNumber.prototype.valueOf = function () /*uint*/
 };
 
 /**
- * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
- * <p><b>Example :</b></p>
- * <pre>
+ * Evaluates an int value and transform it in roman numeral expression.
+ * @summary Evaluates an int value and transform it in roman numeral expression.
+ * @name RomanEvaluator
+ * @class
+ * @memberof system.evaluators
+ * @extends system.Evaluable
+ * @example
  * var RomanEvaluator=  system.evaluators.RomanEvaluator ;
  *
  * var evaluator = new RomanEvaluator() ;
@@ -7245,24 +7311,26 @@ RomanNumber.prototype.valueOf = function () /*uint*/
  * {
  *     trace( e.message ) ; // Min value for a RomanNumber is 0
  * }
- * </pre>
  */
 function RomanEvaluator() {}
 
-/**
- * @extends Evaluable
- */
 RomanEvaluator.prototype = Object.create(Evaluable.prototype);
 RomanEvaluator.prototype.constructor = RomanEvaluator;
 
 /**
  * Evaluates the specified object.
+ * @param {number} value - The object to evaluates.
+ * @return The string representation of the int value.
+ * @name eval
+ * @memberof system.evaluators.RomanEvaluator
+ * @function
+ * @instance
  */
-RomanEvaluator.prototype.eval = function (o) {
-  if (typeof o === 'string' || o instanceof String) {
-    return RomanNumber.parseRomanString(o);
-  } else if (typeof o == 'number' || o instanceof Number) {
-    return RomanNumber.parse(o);
+RomanEvaluator.prototype.eval = function (value) {
+  if (typeof value === 'string' || value instanceof String) {
+    return RomanNumber.parseRomanString(value);
+  } else if (typeof value === 'number' || value instanceof Number) {
+    return RomanNumber.parse(value);
   } else {
     return null;
   }
@@ -7271,9 +7339,12 @@ RomanEvaluator.prototype.eval = function (o) {
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.evaluators.RomanEvaluator
+ * @function
+ * @instance
  */
-RomanEvaluator.prototype.toString = function () /*String*/
-{
+RomanEvaluator.prototype.toString = function () {
   return "[RomanEvaluator]";
 };
 
@@ -18856,7 +18927,8 @@ Unlock.prototype = Object.create(Action.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The {@link system.process} library.
+ * The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
+ * @summary The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
  * @namespace system.process
  * @memberof system
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
@@ -19996,7 +20068,16 @@ var strings$2 = Object.defineProperties({}, {
 });
 
 /**
- * The VEGAS.js framework - The system.signals library.
+ * The {@link system.signals} library is light-weight, strongly-typed messaging tools. Wire your application with better APIs and less boilerplate than W3C DOMEvents..
+ * <p><b>Concept: </b>
+ * <ul>
+ * <li>A Signal is essentially a minimal emiter specific to one event, with its own <code>array</code> of receivers/slots ({@link system.signals.Receiver|Receiver} or <code>Function</code>).</li>
+ * <li>A Signal gives an event a concrete membership in a class.</li>
+ * <li>Receivers subscribe to real objects, not to string-based channels.</li>
+ * <li>Event string constants are no longer needed.</li>
+ * <li>Signals are inspired by {@link https://en.wikipedia.org/wiki/Signals_and_slots|signals/slots in Qt}.</li>
+ * <ul>
+ * @summary The {@link system.signals} library is light-weight, strongly-typed messaging tools.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.signals
@@ -20078,7 +20159,7 @@ MotionNextFrame.prototype = Object.create(Receiver.prototype, {
 });
 
 /**
- * A simple Transition object.
+ * The basic implementation of all transitions classes.
  * @name Transition
  * @memberof system.transitions
  * @extends {system.process.Task}
@@ -20097,9 +20178,6 @@ function Transition() {
     });
 }
 
-/**
- * @extends Task
- */
 Transition.prototype = Object.create(Task.prototype, {
     /**
      * The constructor reference of the instance.
@@ -20165,7 +20243,7 @@ Transition.prototype = Object.create(Task.prototype, {
 });
 
 /**
- * The Motion class.
+ * The abstract motion class.
  * @name Motion
  * @memberof system.transitions
  * @implements {system.transitions.Transition}
@@ -20520,6 +20598,7 @@ Motion.prototype = Object.create(Transition.prototype, {
 
 /**
  * The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
+ * @summary The TweenUnit class interpolate in time a value between <code>0</code> and <code>1</code>.
  * @name TweenUnit
  * @memberof system.transitions
  * @class
@@ -20666,7 +20745,10 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
 });
 
 /**
- * The Tween class interpolate in time a value between 0 and 1.
+ * The Tween class lets you use to move, resize, and fade visual elements easily on the stage of your applications by specifying a property of the target movieclips or sprites to be tween animated over a number of frames or seconds.
+ * <p>The Tween class also lets you specify a variety of {@link core.easings|easing} methods.</p>
+ * <p>Easing refers to gradual acceleration or deceleration during an animation, which helps your animations appear more realistic.</p>
+ * @summary The Tween class lets you use to move, resize, and fade visual elements easily on your applications.
  * @name Tween
  * @memberof system.transitions
  * @class
@@ -21006,6 +21088,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
 
 /**
  * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
+ * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
@@ -21127,7 +21210,9 @@ var transitions = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The system library.
+ * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure.
+ * <p><b>Dependencies :</b> The {@link system} framework reuse the module and building blocks of the {@link core} library.</p>
+ * @summary The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system
