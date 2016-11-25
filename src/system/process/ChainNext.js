@@ -4,7 +4,8 @@ import { Receiver  } from '../signals/Receiver.js' ;
 import { TaskGroup } from './TaskGroup.js' ;
 
 /**
- * The internal <code>ChainNext</code> receiver.
+ * An internal class used in the <code>Chain</code> class.
+ * @summary The internal class used in the <code>Chain</code> class.
  * @name ChainNext
  * @class
  * @memberof system.process

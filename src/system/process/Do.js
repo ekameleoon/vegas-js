@@ -4,11 +4,11 @@ import { Action } from './Action.js' ;
 
 /**
  * A simple command to do something. Very usefull to test something in a complex process.
+ * @summary A simple command to do something.
  * @name Do
  * @class
  * @memberof system.process
  * @extends system.process.Action
- * @augments system.process.Action
  * @example
  * var action = new system.process.Do() ;
  *

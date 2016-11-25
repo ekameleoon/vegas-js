@@ -2,6 +2,7 @@
 
 /**
  * The enumeration of all phases in a task process.
+ * @summary The enumeration of all phases in the {@link system.process.Task|Task} objects.
  * @namespace system.process.TaskPhase
  * @memberof system.process
  */

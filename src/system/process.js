@@ -2,10 +2,6 @@
 
 import '../polyfill.js' ;
 
-import { Attribute }    from './process/caches/Attribute.js' ;
-import { Method    }    from './process/caches/Method.js' ;
-import { Property  }    from './process/caches/Property.js' ;
-
 import { Action }        from './process/Action.js' ;
 import { ActionEntry }   from './process/ActionEntry.js' ;
 import { Batch }         from './process/Batch.js' ;
@@ -37,11 +33,11 @@ import { isStartable } from './process/Startable.js' ;
 import { isStoppable } from './process/Stoppable.js' ;
 
 /**
- * The VEGAS.js framework - The system.process library.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * The VEGAS.js framework - The {@link system.process} library.
  * @namespace system.process
  * @memberof system
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 export var process = Object.assign
 ({
@@ -51,13 +47,6 @@ export var process = Object.assign
     isRunnable    : isRunnable ,
     isStartable   : isStartable ,
     isStoppable   : isStoppable ,
-
-    caches : Object.assign
-    ({
-        Attribute : Attribute ,
-        Method    : Method ,
-        Property  : Property
-    }),
 
     Action        : Action ,
     ActionEntry   : ActionEntry ,

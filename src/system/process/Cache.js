@@ -1,12 +1,14 @@
 "use strict" ;
 
-import { Action    } from './Action.js' ;
-import { Property  } from './caches/Property.js' ;
-import { Attribute } from './caches/Attribute.js' ;
-import { Method    } from './caches/Method.js' ;
+import { Property  } from '../data/Property.js' ;
+import { Attribute } from '../data/Attribute.js' ;
+import { Method    } from '../data/Method.js' ;
+
+import { Action } from './Action.js' ;
 
 /**
  * Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
+ * @summary Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
  * @name Cache
  * @class
  * @memberof system.process
@@ -56,29 +58,31 @@ import { Method    } from './caches/Method.js' ;
  * cache.run() ; // flush the cache and initialize the target or invoked this methods.
  *
  * trace( object ) ; // {a:10,b:20,c:30,d:90}
+ * @see system.data.Property
+ * @see system.data.Attribute
+ * @see system.data.Method
  */
-export function Cache ( target , init = null )
+export function Cache ( target = null , init = null )
 {
     Action.call( this ) ;
 
     Object.defineProperties( this ,
     {
-        _queue :
-        {
-            value    : [] ,
-            writable : true
-        }
+        /**
+         * The target reference.
+         * @memberof system.process.Cache
+         * @instance
+         * @type {object}
+         */
+        target : { value : target , writable : true } ,
+
+        /**
+         * @private
+         */
+        _queue : { value : [] , writable : true }
     }) ;
 
-    /**
-     * The target reference.
-     * @memberof system.process.Cache
-     * @type {Object}
-     * @instance
-     */
-    this.target = target ;
-
-    if ( init instanceof Array && init.length > 0 )
+    if ( init && init instanceof Array && init.length > 0 )
     {
         init.forEach( function( prop )
         {
@@ -116,8 +120,10 @@ Cache.prototype = Object.create( Action.prototype ,
  * @memberof system.process.Cache
  * @instance
  * @function
- * @param {system.process.caches.Property} property - The property to register.
+ * @param {system.data.Property} property - The property to register.
  * @return The current <code>Cache</code> reference.
+ * @see system.data.Attribute
+ * @see system.data.Method
  */
 Cache.prototype.add = function( property )
 {
@@ -174,10 +180,9 @@ Cache.prototype.addMethod = function ( name , ...args ) /*Cache*/
  * @function
  * @param {string} name - The name of the method to register.
  * @param {Array} args - The optional parameters to fill in the method.
- * @param {Object} scope - The optional scope object of the method.
  * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.addMethodWithArguments = function ( name , args ) // FIXME add the scope argument !
+Cache.prototype.addMethodWithArguments = function ( name , args )
 {
     if ( name !== '' && ( typeof(name) === 'string' || name instanceof String )  )
     {
@@ -250,7 +255,7 @@ Cache.prototype.run = function()
                     {
                         if ( this.target[name] instanceof Function )
                         {
-                            this.target[name].apply( item.scope || this.target, item.args ) ;
+                            this.target[name].apply( this.target , item.args ) ;
                         }
                     }
                 }

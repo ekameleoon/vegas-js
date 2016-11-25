@@ -6,7 +6,8 @@ import { Runnable }  from './Runnable.js' ;
 import { TaskPhase } from './TaskPhase.js' ;
 
 /**
- * Creates a new Action instance.
+ * This abstract class represents the basic definition implemented in the Action objects.
+ * @summary This abstract class represents the basic definition implemented in the Action objects.
  * @name Action
  * @class
  * @memberof system.process

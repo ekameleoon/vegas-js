@@ -3,8 +3,9 @@
 import { Task } from './Task.js' ;
 
 /**
- * The <code>Timer</code> class is the interface to timers, which let you run code on a specified time sequence.
+ * The <code>Timer</code> objects which let you run code on a specified time sequence.
  * This timer object use an internal <code>setInterval</code> function to calls or evaluates an expression at specified intervals
+ * @summary The <code>Timer</code> objects which let you run code on a specified time sequence.
  * @name Timer
  * @memberof system.process
  * @extends system.process.Task

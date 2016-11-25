@@ -6,6 +6,7 @@ import { TaskGroup } from './TaskGroup.js' ;
 
 /**
  * The internal BatchTaskNext Receiver.
+ * @summary The internal class used in the <code>BatchTask</code> class.
  * @name BatchTaskNext
  * @class
  * @memberof system.process

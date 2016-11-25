@@ -4,7 +4,8 @@ import { ChainNext } from './ChainNext.js' ;
 import { TaskGroup } from './TaskGroup.js' ;
 
 /**
- * Creates a new Chain instance.
+ * A chain is a sequence with a finite or infinite number of actions. All actions registered in the chain can be executed one by one with different strategies (loop, auto remove, etc).
+ * @summary A chain is a sequence with a finite or infinite number of actions.
  * @name Chain
  * @class
  * @memberof system.process

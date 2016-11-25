@@ -6,7 +6,8 @@ import { cancelAnimationFrame }  from '../../core/cancelAnimationFrame.js' ;
 import { requestAnimationFrame } from '../../core/requestAnimationFrame.js' ;
 
 /**
- * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * A FrameTimer let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * @summary A FrameTimer let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
  * @name FrameTimer
  * @memberof system.process
  * @class

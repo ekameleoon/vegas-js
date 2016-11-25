@@ -5433,47 +5433,52 @@ Formattable.prototype.format = function (value) /*String*/
   return "[Formattable]";
 };
 
-function isIdentifiable(target) {
-  if (target) {
-    return target instanceof Identifiable || 'id' in target;
-  }
+/**
+ * Indicates if the specific <code>target</code> is an {@link system.data.Identifiable|Identifiable} object.
+ * @name isIdentifiable
+ * @memberof system.data
+ * @function
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is an {@link system.data.Identifiable|Identifiable} object.
+ */
 
-  return false;
+function isIdentifiable(target) {
+    if (target) {
+        return target instanceof Identifiable || 'id' in target;
+    }
+    return false;
 }
 
 /**
- * This interface defines a common structure for identifiable classes (has an "id" property).
+ * This interface defines a common structure for <strong>identifiable</strong> classes (has an <code>id<code> property).
+ * @name Identifiable
+ * @interface
+ * @memberof system.data
  */
 function Identifiable() {
-  Object.defineProperties(this, {
-    /**
-     * Indicates the unique identifier value of this object.
-     */
-    id: { value: null, enumerable: true, writable: true }
-  });
+    Object.defineProperties(this, {
+        /**
+         * Indicates the unique identifier value of this object.
+         */
+        id: { value: null, enumerable: true, writable: true }
+    });
 }
 
-/**
- * @extends Object
- */
 Identifiable.prototype = Object.create(Object.prototype, {
-  /**
-   * Returns a reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: Identifiable, writable: true },
-
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return "[Identifiable]";
-    }, writable: true }
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: Identifiable, writable: true }
 });
 
 /*jshint unused: false*/
 /**
- * Indicates if the specific objet is an Iterator.
+ * Indicates if the specific objet is an {@link system.data.Iterator|Iterator}.
+ * @name isIterator
+ * @memberof system.data
+ * @function
+ * @param {object} target - The target object to evaluate.
+ * @return <code>true</code> if the object is an {@link system.data.Iterator|Iterator}.
  */
 
 function isIterator(target) {
@@ -5486,53 +5491,65 @@ function isIterator(target) {
 
 /**
  * This interface defines the iterator pattern over a collection.
+ * @name Iterator
+ * @interface
+ * @memberof system.data
  */
 function Iterator() {}
-//
 
-
-/**
- * @extends Object
- */
 Iterator.prototype = Object.create(Object.prototype);
 Iterator.prototype.constructor = Iterator;
 
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.hasNext = function () {};
 
 /**
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.key = function () {};
 
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.next = function () {};
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.remove = function () {};
 
 /**
  * Reset the internal pointer of the iterator (optional operation).
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.reset = function () {};
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.seek = function (position) {};
 
 /**
  * Returns the string representation of this instance.
- * @return the string representation of this instance
+ * @return the string representation of this instance.
+ * @memberof system.data.Iterator
+ * @function
  */
 Iterator.prototype.toString = function () {
   return '[Iterator]';
@@ -5540,111 +5557,133 @@ Iterator.prototype.toString = function () {
 
 /*jshint unused: false*/
 /**
- * Indicates if the specific objet is an OrderedIterator.
+ * Indicates if the specific objet is an {@link system.data.OrderedIterator|OrderedIterator}.
+ * @name isOrderedIterator
+ * @memberof system.data
+ * @function
+ * @param {object} target - The target object to evaluate.
+ * @return <code>true</code> if the object is an {@link system.data.OrderedIterator|OrderedIterator}.
  */
 function isOrderedIterator(target) {
-    var bool = false;
-    if (target) {
-        bool = target instanceof OrderedIterator || 'hasNext' in target && target.hasNext instanceof Function && 'hasPrevious' in target && target.hasPrevious instanceof Function && 'key' in target && target.key instanceof Function && 'next' in target && target.next instanceof Function && 'previous' in target && target.previous instanceof Function && 'remove' in target && target.remove instanceof Function && 'reset' in target && target.reset instanceof Function && 'seek' in target && target.seek instanceof Function;
-    }
-    return bool;
+  var bool = false;
+  if (target) {
+    bool = target instanceof OrderedIterator || 'hasNext' in target && target.hasNext instanceof Function && 'hasPrevious' in target && target.hasPrevious instanceof Function && 'key' in target && target.key instanceof Function && 'next' in target && target.next instanceof Function && 'previous' in target && target.previous instanceof Function && 'remove' in target && target.remove instanceof Function && 'reset' in target && target.reset instanceof Function && 'seek' in target && target.seek instanceof Function;
+  }
+  return bool;
 }
 
 /**
  * Defines an iterator that operates over an ordered collection. This iterator allows both forward and reverse iteration through the collection.
+ * @name OrderedIterator
+ * @extends Iterator
+ * @interface
+ * @memberof system.data
  */
 function OrderedIterator() {}
-//
 
-
-/**
- * @extends Iterator
- */
 OrderedIterator.prototype = Object.create(Iterator.prototype);
 OrderedIterator.prototype.constructor = OrderedIterator;
 
 /**
  * Checks to see if there is a previous element that can be iterated to.
+ * @memberof system.data.OrderedIterator
+ * @function
  */
 OrderedIterator.prototype.hasPrevious = function () {};
 
 /**
  * Returns the previous element in the collection.
  * @return the previous element in the collection.
+ * @memberof system.data.OrderedIterator
+ * @function
  */
 OrderedIterator.prototype.previous = function () {};
 
 /**
  * Returns the string representation of this instance.
- * @return the string representation of this instance
+ * @return the string representation of this instance.
+ * @memberof system.data.OrderedIterator
+ * @function
  */
 OrderedIterator.prototype.toString = function () {
-    return '[OrderedIterator]';
+  return '[OrderedIterator]';
 };
 
 /*jshint laxbreak : true*/
 /*jshint unused   : false*/
+/**
+ * Indicates if the specific <code>target</code> is a {@link system.data.Validator|Validator} object.
+ * @name isValidator
+ * @memberof system.data
+ * @function
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is a {@link system.data.Validator|Validator}.
+ */
+
 function isValidator(target) {
   if (target) {
-    return target instanceof Validator || 'supports' in target && target.supports instanceof Function || 'validate' in target && target.validate instanceof Function;
+    if (target instanceof Validator) {
+      return true;
+    }
+    return 'supports' in target && target.supports instanceof Function && 'validate' in target && target.validate instanceof Function;
   }
-
   return false;
 }
 
 /**
  * Defines the methods that objects that participate in a validation operation.
+ * @name Validator
+ * @interface
+ * @memberof system.data
  */
 function Validator() {}
-//
 
-
-/**
- * @extends Object
- */
 Validator.prototype = Object.create(Object.prototype);
 Validator.prototype.constructor = Validator;
 
 /**
- * Returns true if the specific value is valid.
- * @return true if the specific value is valid.
+ * Indicates if the validator supports the passed-in value.
+ * @param {*} value - The value to evaluate.
+ * @return <code>true</code> if the specific value is valid.
+ * @memberof system.data.Validator
+ * @function
  */
-Validator.prototype.supports = function (value) /*Boolean*/{};
+Validator.prototype.supports = function (value) {};
 
 /**
- * Evaluates the specified value and throw an Error object if the value is not valid.
- * @throws Error if the value is not valid.
+ * Evaluates the specified value and throw an <code>Error</code> if the value is not valid.
+ * @param {*} value - The value to evaluate.
+ * @memberof system.data.Validator
+ * @function
+ * @throws <code>Error</code> if the value is not valid.
  */
 Validator.prototype.validate = function (value) /*void*/{};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-Validator.prototype.toString = function () {
-  return '[Validator]';
-};
 
 /*jshint unused: false*/
 /**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
+ * <p><b>Note:</b> This class replace the old <code>system.data.Map</code> interface in the VEGAS framework. Today in Javascript the {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map|Map} class is a standard global <b>ECMAScript</b> definition.</p>
+ * @name KeyValuePair
+ * @summary An object that maps keys to values.
+ * @class
+ * @memberof system.data
  */
 
 function KeyValuePair() {}
-//
 
-
-/**
- * @extends Object
- */
 KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
-   * Returns a reference to the Object function that created the instance's prototype.
+   * The constructor reference of this instance.
    */
-  constructor: { value: KeyValuePair, writable: true, configurable: true },
+  constructor: { value: KeyValuePair, writable: true },
 
   /**
    * Returns the number of key-value mappings in this map.
+   * @name length
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @type {number}
+   * @readonly
    */
   length: { get: function get() {
       return 0;
@@ -5652,12 +5691,20 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
 
   /**
    * Removes all mappings from this map (optional operation).
+   * @name clear
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   clear: { value: function value() {}, writable: true },
 
   /**
    * Returns a shallow copy of the map.
    * @return a shallow copy of the map.
+   * @name clone
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   clone: { value: function value() {
       return new KeyValuePair();
@@ -5665,6 +5712,11 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
 
   /**
    * Removes the mapping for this key from this map if it is present (optional operation).
+   * @param {*} key - The key of the entry to remove.
+   * @name delete
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   delete: { value: function value(key) {}, writable: true },
 
@@ -5672,6 +5724,10 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * The forEach() method executes a provided function once per each key/value pair in the KeyValuePair object, in insertion order.
    * @param callback Function to execute for each element.
    * @param thisArg Value to use as this when executing callback.
+   * @name forEach
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   forEach: { value: function value(callback) {
       var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -5679,6 +5735,11 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
 
   /**
    * Returns the value to which this map maps the specified key.
+   * @param {*} key - The key of the entry to retrieve in the collection.
+   * @name get
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   get: { value: function value(key) {
       return null;
@@ -5686,7 +5747,12 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
 
   /**
    * Returns {@code true} if this map contains a mapping for the specified key.
+   * @param {*} key - The key of the entry to retrieve in the collection.
    * @return {@code true} if this map contains a mapping for the specified key.
+   * @name has
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   has: { value: function value(key) /*Boolean*/{
       return false;
@@ -5695,6 +5761,10 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Returns {@code true} if this map maps one or more keys to the specified value.
    * @return {@code true} if this map maps one or more keys to the specified value.
+   * @name hasValue
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   hasValue: { value: function value(_value) /*Boolean*/{
       return false;
@@ -5703,6 +5773,10 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Returns {@code true} if this map contains no key-value mappings.
    * @return {@code true} if this map contains no key-value mappings.
+   * @name isEmpty
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   isEmpty: { value: function value() /*Boolean*/{
       return false;
@@ -5711,6 +5785,10 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Returns the values iterator of this map.
    * @return the values iterator of this map.
+   * @name iterator
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   iterator: { value: function value() /*Iterator*/{
       return null;
@@ -5719,31 +5797,55 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Returns the keys iterator of this map.
    * @return the keys iterator of this map.
+   * @name keyIterator
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   keyIterator: { value: function value() /*Iterator*/{
       return null;
     }, writable: true },
 
   /**
-   * Returns an array of all the keys in the map.
+   * Returns an <code>Array</code> of all the keys in the map.
+   * @return an <code>Array</code> representation of all the keys register in this collection.
+   * @name keys
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
-  keys: { value: function value() /*Array*/{
+  keys: { value: function value() {
       return null;
     }, writable: true },
 
   /**
    * Associates the specified value with the specified key in this map (optional operation).
+   * @param {*} key - The key of the element to add to the Map object.
+   * @param {*} value - The value of the element to add to the Map object.
+   * @name set
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   set: { value: function value(key, _value2) {}, writable: true },
 
   /**
    * Copies all of the mappings from the specified map to this map (optional operation).
+   * @param {system.data.KeyValuePair} map - The map to fill the current map.
+   * @name setAll
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   setAll: { value: function value(map /*KeyValuePair*/) {}, writable: true },
 
   /**
    * Returns the string representation of this instance.
-   * @return the string representation of this instance
+   * @return the string representation of this instance.
+   * @name toString
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   toString: { value: function value() {
       return '[' + this.constructor.name + ']';
@@ -5751,9 +5853,125 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
 
   /**
    * Returns an array of all the values in the map.
+   * @return an <code>Array</code> representation of all the values register in this collection.
+   * @name values
+   * @memberof system.process.KeyValuePair
+   * @instance
+   * @function
    */
   values: { value: function value() /*Array*/{}, writable: true }
 });
+
+/**
+ * This interface should be implemented by any properties definition object.
+ * @name Property
+ * @interface
+ * @memberof system.data
+ * @see system.data.Attribute
+ * @see system.data.Method
+ * @see system.process.Cache
+ */
+
+function Property() {}
+
+Property.prototype = Object.create(Object.prototype);
+Property.prototype.constructor = Property;
+
+/**
+ * Determinates a basic <b>attribute</b> definition.
+ * @summary Determinates a basic <b>attribute</b> definition.
+ * @name Attribute
+ * @class
+ * @memberof system.data
+ * @implements system.data.Property
+ * @param {string} name The name of the attribute.
+ * @param {*} value The value of the attribute.
+ * @see system.data.Method
+ * @see system.process.Cache
+ */
+function Attribute() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+
+  /**
+   * The name of the attribute.
+   * @name name
+   * @memberof system.data.Attribute
+   * @type {string}
+   */
+  this.name = name instanceof String || typeof name === 'string' ? name : null;
+
+  /**
+   * The value of the attribute.
+   * @name name
+   * @memberof system.data.Attribute
+   * @type {*}
+   */
+  this.value = value;
+}
+
+Attribute.prototype = Object.create(Property.prototype);
+Attribute.prototype.constructor = Attribute;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.data.Attribute
+ * @function
+ * @instance
+ */
+Attribute.prototype.toString = function () {
+  return "[Attribute]";
+};
+
+/**
+ * Determinates a basic <b>method</b> definition.
+ * @summary Determinates a basic <b>method</b> definition.
+ * @name Method
+ * @class
+ * @memberof system.data
+ * @implements system.data.Property
+ * @param {string} name The name of the method.
+ * @param {array} [arg=null] The optional array of arguments of the method.
+ * @see system.data.Attribute
+ * @see system.process.Cache
+ */
+function Method() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+  /**
+   * The name of the method.
+   * @name name
+   * @memberof system.data.Method
+   * @type {string}
+   */
+  this.name = name instanceof String || typeof name === 'string' ? name : null;
+
+  /**
+   * The optional array of arguments of the method.
+   * @name args
+   * @memberof system.data.Method
+   * @type {array}
+   */
+  this.args = args instanceof Array ? args : null;
+}
+
+Method.prototype = Object.create(Property.prototype);
+Method.prototype.constructor = Method;
+
+/**
+ * Returns the string representation of this instance.
+ * @return the string representation of this instance.
+ * @name toString
+ * @memberof system.data.Method
+ * @function
+ * @instance
+ */
+Method.prototype.toString = function () {
+  return "[Method]";
+};
 
 /**
  * Converts a <code>Array</code> to an iterator.
@@ -6339,7 +6557,9 @@ ArrayMap.prototype.values = function () /*Array*/
 };
 
 /**
- * The VEGAS.js framework - The system.data library.
+ * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
+ * <p>It reduces programming effort while increasing performance. It enables interoperability among unrelated APIs, reduces effort in designing and learning new APIs, and fosters software reuse.</p>
+ * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p>
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.data
@@ -6357,7 +6577,12 @@ var data = Object.assign({
     Iterator: Iterator,
     KeyValuePair: KeyValuePair,
     OrderedIterator: OrderedIterator,
+    Property: Property,
     Validator: Validator,
+
+    // classes
+    Attribute: Attribute,
+    Method: Method,
 
     // packages
     iterators: {
@@ -10471,6 +10696,7 @@ Runnable.prototype = Object.create(Object.prototype, {
 
 /**
  * The enumeration of all phases in a task process.
+ * @summary The enumeration of all phases in the {@link system.process.Task|Task} objects.
  * @namespace system.process.TaskPhase
  * @memberof system.process
  */
@@ -10534,7 +10760,8 @@ var TaskPhase = Object.defineProperties({}, {
 });
 
 /**
- * Creates a new Action instance.
+ * This abstract class represents the basic definition implemented in the Action objects.
+ * @summary This abstract class represents the basic definition implemented in the Action objects.
  * @name Action
  * @class
  * @memberof system.process
@@ -10685,6 +10912,7 @@ Action.prototype = Object.create(Runnable.prototype, {
 
 /**
  * A Task object to create a set of complex commands or actions.
+ * @summary An abstract class to create a set of complex commands or actions.
  * @name Task
  * @class
  * @extends system.process.Action
@@ -15969,76 +16197,6 @@ var numeric = Object.assign({
 });
 
 /**
- * This interface should be implemented by any properties definition object.
- */
-
-function Property() {}
-/**
- * @extends Object
- */
-Property.prototype = Object.create(Object.prototype);
-Property.prototype.constructor = Property;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Property.prototype.toString = function () /*String*/
-{
-  return "[Property]";
-};
-
-/**
- * Determinates an "attribute" value object.
- * @param name The name of the attribute.
- * @param value The value of the attribute.
- */
-function Attribute(name, value) {
-  this.name = name;
-  this.value = value;
-}
-
-/**
- * @extends Object
- */
-Attribute.prototype = Object.create(Property.prototype);
-Attribute.prototype.constructor = Attribute;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Attribute.prototype.toString = function () /*String*/
-{
-  return "[Attribute]";
-};
-
-/**
- * Determinates a "method" value object.
- * @param name The name of the method.
- * @param arg The optional array of arguments of the method.
- */
-function Method(name, args) {
-  this.name = name;
-  this.args = args;
-}
-
-/**
- * @extends Object
- */
-Method.prototype = Object.create(Property.prototype);
-Method.prototype.constructor = Method;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Method.prototype.toString = function () /*String*/
-{
-  return "[Method]";
-};
-
-/**
  * The ActionEntry objects contains all informations about an Action in a {@link system.process.TaskGroup} object.
  * @name ActionEntry
  * @class
@@ -16096,7 +16254,10 @@ ActionEntry.prototype = Object.create(Object.prototype, {
 
 /*jshint laxbreak: true*/
 /**
- * Creates a new Batch instance.
+ * Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
+ * <p>All {@link system.process.Action|Action} objects are processed as a single unit.<p>
+ * <p>This class use an internal typed Collection to register all <code class="prettyprint">Runnable</code> objects.</p>
+ * @summary Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
  * @name Batch
  * @class
  * @memberof system.process
@@ -16389,7 +16550,8 @@ Batch.prototype = Object.create(Runnable.prototype, {
 
 /* jshint unused: false*/
 /**
- * A simple representation of the Action interface, to group some Action objects in one.
+ * A simple representation of the Action interface, to group some {@link system.process.Action|Action} objects in one.
+ * @summary The abstract class to creates collections who group some {@link system.process.Action|Action} objects in one.
  * @name TaskGroup
  * @class
  * @memberof system.process
@@ -16848,6 +17010,7 @@ TaskGroup.prototype = Object.create(Task.prototype, {
 
 /**
  * The internal BatchTaskNext Receiver.
+ * @summary The internal class used in the <code>BatchTask</code> class.
  * @name BatchTaskNext
  * @class
  * @memberof system.process
@@ -17108,6 +17271,7 @@ BatchTask.prototype.stop = function () /*void*/
 
 /**
  * Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
+ * @summary Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
  * @name Cache
  * @class
  * @memberof system.process
@@ -17157,28 +17321,32 @@ BatchTask.prototype.stop = function () /*void*/
  * cache.run() ; // flush the cache and initialize the target or invoked this methods.
  *
  * trace( object ) ; // {a:10,b:20,c:30,d:90}
+ * @see system.data.Property
+ * @see system.data.Attribute
+ * @see system.data.Method
  */
-function Cache(target) {
+function Cache() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     Action.call(this);
 
     Object.defineProperties(this, {
-        _queue: {
-            value: [],
-            writable: true
-        }
+        /**
+         * The target reference.
+         * @memberof system.process.Cache
+         * @instance
+         * @type {object}
+         */
+        target: { value: target, writable: true },
+
+        /**
+         * @private
+         */
+        _queue: { value: [], writable: true }
     });
 
-    /**
-     * The target reference.
-     * @memberof system.process.Cache
-     * @type {Object}
-     * @instance
-     */
-    this.target = target;
-
-    if (init instanceof Array && init.length > 0) {
+    if (init && init instanceof Array && init.length > 0) {
         init.forEach(function (prop) {
             if (prop instanceof Property) {
                 this._queue.push(prop);
@@ -17213,8 +17381,10 @@ Cache.prototype = Object.create(Action.prototype, {
  * @memberof system.process.Cache
  * @instance
  * @function
- * @param {system.process.caches.Property} property - The property to register.
+ * @param {system.data.Property} property - The property to register.
  * @return The current <code>Cache</code> reference.
+ * @see system.data.Attribute
+ * @see system.data.Method
  */
 Cache.prototype.add = function (property) {
     if (property instanceof Property) {
@@ -17271,11 +17441,9 @@ Cache.prototype.addMethod = function (name) /*Cache*/
  * @function
  * @param {string} name - The name of the method to register.
  * @param {Array} args - The optional parameters to fill in the method.
- * @param {Object} scope - The optional scope object of the method.
  * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.addMethodWithArguments = function (name, args) // FIXME add the scope argument !
-{
+Cache.prototype.addMethodWithArguments = function (name, args) {
     if (name !== '' && (typeof name === 'string' || name instanceof String)) {
         this._queue.push(new Method(name, args));
     }
@@ -17336,7 +17504,7 @@ Cache.prototype.run = function () {
                     name = item.name;
                     if (name && name in this.target) {
                         if (this.target[name] instanceof Function) {
-                            this.target[name].apply(item.scope || this.target, item.args);
+                            this.target[name].apply(this.target, item.args);
                         }
                     }
                 } else if (item instanceof Attribute) {
@@ -17352,7 +17520,8 @@ Cache.prototype.run = function () {
 };
 
 /**
- * The internal <code>ChainNext</code> receiver.
+ * An internal class used in the <code>Chain</code> class.
+ * @summary The internal class used in the <code>Chain</code> class.
  * @name ChainNext
  * @class
  * @memberof system.process
@@ -17442,7 +17611,8 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
 });
 
 /**
- * Creates a new Chain instance.
+ * A chain is a sequence with a finite or infinite number of actions. All actions registered in the chain can be executed one by one with different strategies (loop, auto remove, etc).
+ * @summary A chain is a sequence with a finite or infinite number of actions.
  * @name Chain
  * @class
  * @memberof system.process
@@ -17688,11 +17858,11 @@ Chain.prototype = Object.create(TaskGroup.prototype, {
 
 /**
  * A simple command to do something. Very usefull to test something in a complex process.
+ * @summary A simple command to do something.
  * @name Do
  * @class
  * @memberof system.process
  * @extends system.process.Action
- * @augments system.process.Action
  * @example
  * var action = new system.process.Do() ;
  *
@@ -17763,7 +17933,8 @@ Do.prototype = Object.create(Action.prototype, {
 });
 
 /**
- * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * A FrameTimer let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * @summary A FrameTimer let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
  * @name FrameTimer
  * @memberof system.process
  * @class
@@ -18059,6 +18230,7 @@ var FPMS = 0.06;
 
 /**
  * Invoked to lock a specific {@link system.process.Lockable} object.
+ * @summary Invoked to lock a specific {@link system.process.Lockable} object.
  * @name Lock
  * @class
  * @memberof system.process
@@ -18300,7 +18472,8 @@ Stoppable.prototype.constructor = Stoppable;
 Stoppable.prototype.stop = function () {};
 
 /**
- * Creates a new TimeoutPolicy instance.
+ * Defines the policy of the timeout states in your application.
+ * @summary Defines the policies of the timeout states in your application.
  * @name TimeoutPolicy
  * @class
  * @memberof system.process
@@ -18349,8 +18522,9 @@ Object.defineProperties(TimeoutPolicy, {
 });
 
 /**
- * The <code>Timer</code> class is the interface to timers, which let you run code on a specified time sequence.
+ * The <code>Timer</code> objects which let you run code on a specified time sequence.
  * This timer object use an internal <code>setInterval</code> function to calls or evaluates an expression at specified intervals
+ * @summary The <code>Timer</code> objects which let you run code on a specified time sequence.
  * @name Timer
  * @memberof system.process
  * @extends system.process.Task
@@ -18616,6 +18790,7 @@ Timer.prototype = Object.create(Task.prototype, {
 
 /**
  * Invoked this action to unlock a specific {@link system.process.Lockable} object.
+ * @summary Invoked to unlock a specific {@link system.process.Lockable} object.
  * @name Unlock
  * @class
  * @memberof system.process
@@ -18671,11 +18846,11 @@ Unlock.prototype = Object.create(Action.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The system.process library.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
- * @author Marc Alcaraz <ekameleon@gmail.com>
+ * The VEGAS.js framework - The {@link system.process} library.
  * @namespace system.process
  * @memberof system
+ * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var process = Object.assign({
     isLockable: isLockable,
@@ -18684,12 +18859,6 @@ var process = Object.assign({
     isRunnable: isRunnable,
     isStartable: isStartable,
     isStoppable: isStoppable,
-
-    caches: Object.assign({
-        Attribute: Attribute,
-        Method: Method,
-        Property: Property
-    }),
 
     Action: Action,
     ActionEntry: ActionEntry,

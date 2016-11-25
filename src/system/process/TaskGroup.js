@@ -6,7 +6,8 @@ import { ActionEntry } from './ActionEntry.js' ;
 import { Task }        from './Task.js' ;
 
 /**
- * A simple representation of the Action interface, to group some Action objects in one.
+ * A simple representation of the Action interface, to group some {@link system.process.Action|Action} objects in one.
+ * @summary The abstract class to creates collections who group some {@link system.process.Action|Action} objects in one.
  * @name TaskGroup
  * @class
  * @memberof system.process

@@ -3,7 +3,8 @@
 import { Enum } from '../Enum.js' ;
 
 /**
- * Creates a new TimeoutPolicy instance.
+ * Defines the policy of the timeout states in your application.
+ * @summary Defines the policies of the timeout states in your application.
  * @name TimeoutPolicy
  * @class
  * @memberof system.process

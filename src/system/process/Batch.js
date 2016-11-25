@@ -4,7 +4,10 @@
 import { Runnable } from './Runnable.js' ;
 
 /**
- * Creates a new Batch instance.
+ * Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
+ * <p>All {@link system.process.Action|Action} objects are processed as a single unit.<p>
+ * <p>This class use an internal typed Collection to register all <code class="prettyprint">Runnable</code> objects.</p>
+ * @summary Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
  * @name Batch
  * @class
  * @memberof system.process

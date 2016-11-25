@@ -7,6 +7,7 @@ import { TaskPhase } from './TaskPhase.js' ;
 
 /**
  * A Task object to create a set of complex commands or actions.
+ * @summary An abstract class to create a set of complex commands or actions.
  * @name Task
  * @class
  * @extends system.process.Action

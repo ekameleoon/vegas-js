@@ -5,6 +5,7 @@ import { Action } from './Action.js' ;
 
 /**
  * Invoked this action to unlock a specific {@link system.process.Lockable} object.
+ * @summary Invoked to unlock a specific {@link system.process.Lockable} object.
  * @name Unlock
  * @class
  * @memberof system.process
