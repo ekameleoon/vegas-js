@@ -1,6 +1,6 @@
 # VEGAS #
 
-Vegas JS is an Opensource Framework  based on ECMAScript for Rich Internet Application.
+*Vegas JS* is an *Opensource* Framewor based on *ECMAScript* for *Rich Internet Applications*.
 
 This repository contains the Javascript [ES6](http://es6-features.org/) version of the framework.
 
