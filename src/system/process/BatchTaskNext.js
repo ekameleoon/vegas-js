@@ -6,66 +6,85 @@ import { TaskGroup } from './TaskGroup.js' ;
 
 /**
  * The internal BatchTaskNext Receiver.
+ * @name BatchTaskNext
+ * @class
+ * @memberof system.process
+ * @implements system.signals.Receiver
+ * @constructor
+ * @param {system.process.BatchTask} BatchTask - The <code>BatchTask</code> reference of this receiver.
  */
 export function BatchTaskNext( batch )
 {
+    /**
+     * The batch to register in this helper.
+     * @memberof system.process.BatchTaskNext
+     * @type {system.process.BatchTask}
+     * @instance
+     */
     this.batch = batch ;
 }
 
-/**
- * @extends TaskGroup
- */
-BatchTaskNext.prototype = Object.create( Receiver.prototype ) ;
-BatchTaskNext.prototype.constructor = BatchTaskNext;
-
-/**
- * Receive the signal message.
- */
-BatchTaskNext.prototype.receive = function( action )
+BatchTaskNext.prototype = Object.create( Receiver.prototype ,
 {
-    var batch    = this.batch ;
-    var mode     = batch.mode ;
-    var actions  = batch._actions ;
-    var currents = batch._currents ;
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { value : BatchTaskNext } ,
 
-    if ( action && currents.has( action ) )
+    /**
+     * Receives the signal message.
+     * @name receive
+     * @memberof system.transitions.BatchTaskNext
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The <code>Action</code> reference received in this slot.
+     */
+    receive : { value : function( action )
     {
-        var entry = currents.get( action ) ;
+        var batch    = this.batch ;
+        var mode     = batch.mode ;
+        var actions  = batch._actions ;
+        var currents = batch._currents ;
 
-        if ( mode !== TaskGroup.EVERLASTING )
+        if ( action && currents.has( action ) )
         {
-            if ( mode === TaskGroup.TRANSIENT || ( entry.auto && mode === TaskGroup.NORMAL ) )
+            var entry = currents.get( action ) ;
+
+            if ( mode !== TaskGroup.EVERLASTING )
             {
-                var e ;
-                var l = actions.length ;
-                while( --l > -1 )
+                if ( mode === TaskGroup.TRANSIENT || ( entry.auto && mode === TaskGroup.NORMAL ) )
                 {
-                    e = actions[l] ;
-                    if( e && e.action === action )
+                    var e ;
+                    var l = actions.length ;
+                    while( --l > -1 )
                     {
-                        action.finishIt.disconnect( this ) ;
-                        actions.splice( l , 1 ) ;
-                        break ;
+                        e = actions[l] ;
+                        if( e && e.action === action )
+                        {
+                            action.finishIt.disconnect( this ) ;
+                            actions.splice( l , 1 ) ;
+                            break ;
+                        }
                     }
                 }
             }
+
+            currents.delete( action ) ;
         }
 
-        currents.delete( action ) ;
-    }
+        if( batch._current !== null )
+        {
+            batch.notifyChanged() ;
+        }
 
-    if( batch._current !== null )
-    {
-        batch.notifyChanged() ;
-    }
+        batch._current = action ;
 
-    batch._current = action ;
+        batch.notifyProgress() ;
 
-    batch.notifyProgress() ;
-
-    if( currents.length === 0 )
-    {
-        batch._current = null ;
-        batch.notifyFinished();
-    }
-}
+        if( currents.length === 0 )
+        {
+            batch._current = null ;
+            batch.notifyFinished();
+        }
+    }}
+}) ;

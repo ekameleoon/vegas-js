@@ -4,7 +4,12 @@ import { isLockable } from './Lockable.js' ;
 import { Action } from './Action.js' ;
 
 /**
- * Invoked to Unlock a specific Unlockable object.
+ * Invoked this action to unlock a specific {@link system.process.Lockable} object.
+ * @name Unlock
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var chain  = new system.process.Chain() ;
  * var unlock = new system.process.Unlock( chain ) ;
@@ -21,40 +26,40 @@ export function Unlock( target )
     this.target = target ;
 }
 
-/**
- * @extends Task
- */
-Unlock.prototype = Object.create( Action.prototype );
-Unlock.prototype.constructor = Unlock ;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Unlock.prototype.clone = function()
+Unlock.prototype = Object.create( Action.prototype ,
 {
-    return new Unlock( this.target ) ;
-}
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Unlock },
 
-
-/**
- * Run the process.
- */
-Unlock.prototype.run = function() /*void*/
-{
-    this.notifyStarted() ;
-    if( isLockable( this.target ) && this.target.isLocked() )
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Unlock
+     * @function
+     * @instance
+     */
+    clone : { writable : true , value : function()
     {
-        this.target.unlock() ;
-    }
-    this.notifyFinished() ;
-}
+        return new Unlock( this.target ) ;
+    }},
 
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Unlock.prototype.toString = function() /*String*/
-{
-    return '[Unlock]' ;
-}
+    /**
+     * Run the process.
+     * @name run
+     * @memberof system.process.Unlock
+     * @function
+     * @instance
+     */
+    run : { writable : true , value : function()
+    {
+        this.notifyStarted() ;
+        if( isLockable( this.target ) && this.target.isLocked() )
+        {
+            this.target.unlock() ;
+        }
+        this.notifyFinished() ;
+    }}
+});

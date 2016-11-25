@@ -7,73 +7,129 @@ import { TaskPhase } from './TaskPhase.js' ;
 
 /**
  * A Task object to create a set of complex commands or actions.
+ * @name Task
+ * @class
+ * @extends system.process.Action
+ * @augments system.process.Action
+ * @memberof system.process
+ * @implements system.process.Lockable
+ * @implements system.process.Resetable
+ * @implements system.process.Startable
+ * @implements system.process.Stoppable
+ * @constructor
  */
 export function Task()
 {
     Action.call( this ) ;
+
     Object.defineProperties( this ,
     {
         /**
          * The signal emit when the task is changed.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         changeIt : { value : new Signal() },
 
         /**
          * The signal emit when the task is cleared.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         clearIt : { value : new Signal() },
 
         /**
+         * The constructor reference of the instance.
+         */
+        constructor : { value : Task , writable : true },
+
+        /**
          * The signal emit when the task emit a message.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         infoIt : { value : new Signal() },
 
         /**
          * The flag to determinate if the task must be looped.
+         * @memberof system.process.Task
+         * @type {boolean}
+         * @instance
+         * @default false
          */
-        looping : { value : false  , enumerable : false , configurable : false , writable : true } ,
+        looping : { value : false  , writable : true } ,
 
         /**
          * The signal emit when the task is looped.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         loopIt : { value : new Signal() },
 
         /**
          * The signal emit when the task is paused.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         pauseIt : { value : new Signal() },
 
         /**
          * The signal emit when the task is in progress.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         progressIt : { value : new Signal() },
 
         /**
          * The signal emit when the task is resumed.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         resumeIt : { value : new Signal() },
 
         /**
          * This signal emit when the task is stopped.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         stopIt : { value : new Signal() },
 
         /**
          * The signal emit when the task is out of time.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         timeoutIt : { value : new Signal() }
     }) ;
 }
 
-/**
- * @extends Action
- */
 Task.prototype = Object.create( Action.prototype );
-
-Task.prototype.constructor = Task;
 
 /**
  * Creates a copy of the object.
+ * @name clone
+ * @memberof system.process.Task
+ * @function
+ * @instance
+ * @override
  */
 Task.prototype.clone = function()
 {
@@ -82,8 +138,12 @@ Task.prototype.clone = function()
 
 /**
  * Notify when the process is changed.
+ * @name notifyChanged
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyChanged = function() /*void*/
+Task.prototype.notifyChanged = function()
 {
     if ( !this.__lock__ )
     {
@@ -93,8 +153,12 @@ Task.prototype.notifyChanged = function() /*void*/
 
 /**
  * Notify when the process is cleared.
+ * @name notifyCleared
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyCleared = function() /*void*/
+Task.prototype.notifyCleared = function()
 {
     if ( !this.__lock__ )
     {
@@ -104,8 +168,12 @@ Task.prototype.notifyCleared = function() /*void*/
 
 /**
  * Notify a specific information when the process is changed.
+ * @name notifyInfo
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyInfo = function( info ) /*void*/
+Task.prototype.notifyInfo = function( info )
 {
     if ( !this.__lock__ )
     {
@@ -115,8 +183,12 @@ Task.prototype.notifyInfo = function( info ) /*void*/
 
 /**
  * Notify when the process is looped.
+ * @name notifyLooped
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyLooped = function() /*void*/
+Task.prototype.notifyLooped = function()
 {
     this._phase = TaskPhase.RUNNING ;
     if ( !this.__lock__ )
@@ -127,8 +199,12 @@ Task.prototype.notifyLooped = function() /*void*/
 
 /**
  * Notify when the process is paused.
+ * @name notifyPaused
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyPaused = function() /*void*/
+Task.prototype.notifyPaused = function()
 {
     this._running = false ;
     this._phase = TaskPhase.STOPPED ;
@@ -140,8 +216,12 @@ Task.prototype.notifyPaused = function() /*void*/
 
 /**
  * Notify when the process is progress.
+ * @name notifyProgress
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyProgress = function() /*void*/
+Task.prototype.notifyProgress = function()
 {
     if ( !this.__lock__ )
     {
@@ -151,8 +231,12 @@ Task.prototype.notifyProgress = function() /*void*/
 
 /**
  * Notify when the process is resumed.
+ * @name notifyResumed
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyResumed = function() /*void*/
+Task.prototype.notifyResumed = function()
 {
     this._phase = TaskPhase.RUNNING ;
     if ( !this.__lock__ )
@@ -163,8 +247,12 @@ Task.prototype.notifyResumed = function() /*void*/
 
 /**
  * Notify when the process is stopped.
+ * @name notifyStopped
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyStopped = function() /*void*/
+Task.prototype.notifyStopped = function()
 {
     this._running = false ;
     this._phase = TaskPhase.STOPPED ;
@@ -176,8 +264,12 @@ Task.prototype.notifyStopped = function() /*void*/
 
 /**
  * Notify when the process is out of time.
+ * @name notifyTimeout
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyTimeout = function() /*void*/
+Task.prototype.notifyTimeout = function()
 {
     this._running = false ;
     this._phase = TaskPhase.TIMEOUT ;
@@ -189,41 +281,39 @@ Task.prototype.notifyTimeout = function() /*void*/
 
 /**
  * Resumes the task.
+ * @name resume
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.resume = function() /*void*/
-{
-    //
-}
+Task.prototype.resume = function() {}
 
 /**
  * Resets the task.
+ * @name reset
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.reset = function() /*void*/
-{
-    //
-}
+Task.prototype.reset = function() {}
 
 /**
  * Starts the task.
+ * @name start
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.start = function() /*void*/
+Task.prototype.start = function()
 {
     this.run() ;
 }
 
 /**
  * Starts the process.
+ * @name stop
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.stop = function() /*void*/
-{
-    //
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Task.prototype.toString = function () /*String*/
-{
-    return '[Task]' ;
-}
+Task.prototype.stop = function() {}

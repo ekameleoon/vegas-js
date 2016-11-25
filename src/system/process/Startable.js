@@ -27,10 +27,7 @@ export function isStartable( target )
  * @memberof system.process
  * @interface
  */
-export function Startable()
-{
-
-}
+export function Startable() {}
 
 Startable.prototype = Object.create( Object.prototype );
 Startable.prototype.constructor = Startable;

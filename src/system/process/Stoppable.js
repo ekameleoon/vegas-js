@@ -27,10 +27,7 @@ export function isStoppable( target )
  * @memberof system.process
  * @interface
  */
-export function Stoppable()
-{
-
-}
+export function Stoppable() {}
 
 Stoppable.prototype = Object.create( Object.prototype );
 Stoppable.prototype.constructor = Stoppable;
@@ -42,7 +39,4 @@ Stoppable.prototype.constructor = Stoppable;
  * @function
  * @instance
  */
-Stoppable.prototype.stop = function() /*void*/
-{
-    //
-}
+Stoppable.prototype.stop = function() {}

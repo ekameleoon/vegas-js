@@ -4,8 +4,14 @@ import { Enum } from '../Enum.js' ;
 
 /**
  * Creates a new TimeoutPolicy instance.
+ * @name TimeoutPolicy
+ * @class
+ * @memberof system.process
+ * @extends system.Enum
+ * @constructor
+ * @param {number} value - The value of the enumeration.
+ * @param {string} name - The name key of the enumeration.
  * @example
- * <pre>
  * var TimeoutPolicy = system.process.TimeoutPolicy  ;
  *
  * trace( TimeoutPolicy.INFINITY ) ;
@@ -17,18 +23,12 @@ import { Enum } from '../Enum.js' ;
  * trace( "limit : " + TimeoutPolicy.LIMIT ) ;
  * trace( "toString : " + TimeoutPolicy.LIMIT.toString() ) ;
  * trace( "valueOf  : " + TimeoutPolicy.LIMIT.valueOf() ) ;
- * </pre>
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
  */
-export function TimeoutPolicy( value /*int*/ , name /*String*/ )
+export function TimeoutPolicy( value , name )
 {
     Enum.call( this , value , name ) ;
 }
 
-/**
- * @extends Object
- */
 TimeoutPolicy.prototype = Object.create( Enum.prototype );
 TimeoutPolicy.prototype.constructor = TimeoutPolicy;
 
@@ -36,11 +36,19 @@ Object.defineProperties( TimeoutPolicy ,
 {
     /**
      * Designates the infinity timeout policy (0).
+     * @name INFINITY
+     * @memberof system.process.TimeoutPolicy
+     * @const
+     * @type {system.process.TimeoutPolicy}
      */
     INFINITY : { value : new TimeoutPolicy( 0 , 'infinity' ) , enumerable : true } ,
 
     /**
      * Designates the limited timeout policy (1).
+     * @name LIMIT
+     * @memberof system.process.TimeoutPolicy
+     * @const
+     * @type {system.process.TimeoutPolicy}
      */
     LIMIT : { value : new TimeoutPolicy( 1 , 'limit' ) , enumerable : true }
 });

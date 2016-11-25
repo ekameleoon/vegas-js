@@ -7,6 +7,12 @@ import { Method    } from './caches/Method.js' ;
 
 /**
  * Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
+ * @name Cache
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @param {Object} target - The object to map with this cache process.
+ * @param {Array} init - The <code>Array</code> of <code>Property</code> to map in the target reference when the process is running.
  * @example
  * var Cache = system.process.Cache ;
  *
@@ -51,7 +57,7 @@ import { Method    } from './caches/Method.js' ;
  *
  * trace( object ) ; // {a:10,b:20,c:30,d:90}
  */
-export function Cache ( target , init /*Array*/ )
+export function Cache ( target , init = null )
 {
     Action.call( this ) ;
 
@@ -64,6 +70,12 @@ export function Cache ( target , init /*Array*/ )
         }
     }) ;
 
+    /**
+     * The target reference.
+     * @memberof system.process.Cache
+     * @type {Object}
+     * @instance
+     */
     this.target = target ;
 
     if ( init instanceof Array && init.length > 0 )
@@ -78,13 +90,19 @@ export function Cache ( target , init /*Array*/ )
     }
 }
 
-/**
- * @extends Action
- */
 Cache.prototype = Object.create( Action.prototype ,
 {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Cache },
+
+    /**
      * Returns the number of properties.
+     * @name length
+     * @memberof system.process.Cache
+     * @instance
+     * @readonly
      */
     length :
     {
@@ -92,12 +110,16 @@ Cache.prototype = Object.create( Action.prototype ,
     }
 }) ;
 
-Cache.prototype.constructor = Cache ;
-
 /**
  * Enqueues a specific Property definition.
+ * @name add
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {system.process.caches.Property} property - The property to register.
+ * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.add = function( property ) /*Cache*/
+Cache.prototype.add = function( property )
 {
     if ( property instanceof Property )
     {
@@ -108,6 +130,13 @@ Cache.prototype.add = function( property ) /*Cache*/
 
 /**
  * Enqueues an attribute name/value entry.
+ * @name addAttribute
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the attribute to register.
+ * @param {*} value - The value of the attribute to register.
+ * @return The current <code>Cache</code> reference.
  */
 Cache.prototype.addAttribute = function( name , value ) /*Cache*/
 {
@@ -120,8 +149,13 @@ Cache.prototype.addAttribute = function( name , value ) /*Cache*/
 
 /**
  * Enqueues a method definition.
- * @param name The name of the method.
- * @param args The optional arguments passed-in the method.
+ * @name addMethod
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the method to register.
+ * @param {Array} args - The optional parameters to fill in the method.
+ * @return The current <code>Cache</code> reference.
  */
 Cache.prototype.addMethod = function ( name , ...args ) /*Cache*/
 {
@@ -134,11 +168,16 @@ Cache.prototype.addMethod = function ( name , ...args ) /*Cache*/
 
 /**
  * Enqueues a method definition.
- * @param name The name of the method.
- * @param args The optional arguments passed-in the method.
- * @param scope The optional scope object of the method.
+ * @name addMethodWithArguments
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the method to register.
+ * @param {Array} args - The optional parameters to fill in the method.
+ * @param {Object} scope - The optional scope object of the method.
+ * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.addMethodWithArguments = function ( name , args ) /*Cache*/
+Cache.prototype.addMethodWithArguments = function ( name , args ) // FIXME add the scope argument !
 {
     if ( name !== '' && ( typeof(name) === 'string' || name instanceof String )  )
     {
@@ -149,6 +188,10 @@ Cache.prototype.addMethodWithArguments = function ( name , args ) /*Cache*/
 
 /**
  * Removes all commands in memory.
+ * @name clear
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
 Cache.prototype.clear = function()
 {
@@ -157,6 +200,10 @@ Cache.prototype.clear = function()
 
 /**
  * Returns a shallow copy of this object.
+ * @name clone
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  * @return a shallow copy of this object.
  */
 Cache.prototype.clone = function()
@@ -166,6 +213,10 @@ Cache.prototype.clone = function()
 
 /**
  * Indicates if the tracker cache is empty.
+ * @name isEmpty
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
 Cache.prototype.isEmpty = function()
 {
@@ -174,8 +225,12 @@ Cache.prototype.isEmpty = function()
 
 /**
  * Run the process.
+ * @name run
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
-Cache.prototype.run = function() /*void*/
+Cache.prototype.run = function()
 {
     this.notifyStarted() ;
     if ( this.target )
@@ -211,13 +266,4 @@ Cache.prototype.run = function() /*void*/
         }
     }
     this.notifyFinished() ;
-}
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Cache.prototype.toString = function() /*String*/
-{
-    return '[Cache]' ;
 }

@@ -7,7 +7,12 @@ import { Task }        from './Task.js' ;
 
 /**
  * A simple representation of the Action interface, to group some Action objects in one.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
+ * @name TaskGroup
+ * @class
+ * @memberof system.process
+ * @extends system.process.Task
+ * @constructor
+ * @param {string} [mode='normal'] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
  * @param actions A dynamic object who contains Action references to initialize the chain.
  * @example
  * var do1 = new system.process.Do() ;
@@ -54,7 +59,7 @@ import { Task }        from './Task.js' ;
  * // #2 something
  * // finish: [TaskGroup[[Do],[Do]]]
  */
-export function TaskGroup( mode /*String*/ , actions /*Array*/)
+export function TaskGroup( mode = 'normal' , actions = null )
 {
     Task.call(this) ;
 
@@ -62,6 +67,10 @@ export function TaskGroup( mode /*String*/ , actions /*Array*/)
     {
         /**
          * Indicates if the toString method must be verbose or not.
+         * @memberof system.process.TaskGroup
+         * @type {boolean}
+         * @instance
+         * @default <code>false</code>
          */
         verbose : { value : false , writable : true },
 
@@ -106,33 +115,38 @@ export function TaskGroup( mode /*String*/ , actions /*Array*/)
 Object.defineProperties( TaskGroup ,
 {
     /**
-     * Determinates the "everlasting" mode of the group.
+     * Determinates the <code>"everlasting"</code> mode of the group.
      * In this mode the action register in the task-group can't be auto-remove.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     EVERLASTING : { value : 'everlasting' , enumerable : true } ,
 
     /**
-     * Determinates the "normal" mode of the group.
+     * Determinates the <code>"normal"</code> mode of the group.
      * In this mode the task-group has a normal life cycle.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     NORMAL : { value : 'normal' , enumerable : true } ,
 
     /**
-     * Determinates the "transient" mode of the group.
+     * Determinates the <code>"transient"</code> mode of the group.
      * In this mode all actions are strictly auto-remove in the task-group when are invoked.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     TRANSIENT : { value : 'transient' , enumerable : true } ,
 }) ;
 
-/**
- * @extends Task
- */
 TaskGroup.prototype = Object.create( Task.prototype ,
 {
-    __className__ : { value : 'TaskGroup' , configurable : true } ,
-
     /**
      * Indicates the numbers of actions register in the group.
+     * @name length
+     * @memberof system.process.TaskGroup
+     * @instance
+     * @readonly
      */
     length :
     {
@@ -170,8 +184,11 @@ TaskGroup.prototype = Object.create( Task.prototype ,
     },
 
     /**
-     * Determinates the mode of the chain. The mode can be "normal", "transient" or "everlasting".
-     * @see TaskGroup.NORMAL, TaskGroup.EVERLASTING, TaskGroup.TRANSIENT
+     * Determinates the mode of the chain. The mode can be <code>"normal"</code>, <code>"transient"</code> or <code>"everlasting"</code>.
+     * @see {@link system.process.TaskGroup#NORMAL}, {@link system.process.TaskGroup#EVERLASTING}, {@link system.process.TaskGroup#TRANSIENT}
+     * @name mode
+     * @memberof system.process.TaskGroup
+     * @instance
      */
     mode :
     {
@@ -187,6 +204,10 @@ TaskGroup.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates if the chain is stopped.
+     * @name stopped
+     * @memberof system.process.TaskGroup
+     * @instance
+     * @readonly
      */
     stopped :
     {
@@ -194,258 +215,304 @@ TaskGroup.prototype = Object.create( Task.prototype ,
         {
             return this._stopped ;
         }
-    }
-});
+    },
 
-TaskGroup.prototype.constructor = TaskGroup;
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : TaskGroup },
 
-/**
- * Adds an action in the chain.
- * @param priority Determinates the priority level of the action in the chain.
- * @param autoRemove Apply a remove after the first finish notification.
- * @return <code>true</code> if the insert is success.
- */
-TaskGroup.prototype.add = function( action /*Action*/ , priority /*uint*/ , autoRemove /*Boolean*/ ) /*Boolean*/
-{
-    if ( this._running )
+    /**
+     * Adds an action in the chain.
+     * @name add
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The <code>Action</code> to register in this collection.
+     * @param {number} [priority=0] - Determinates the priority level of the action in the chain.
+     * @param {boolean} [autoRemove=false] - Apply a remove after the first finish notification.
+     * @return <code>true</code> if the insert is success.
+     */
+    add : { value : function( action , priority = 0 , autoRemove = false )
     {
-        throw new Error( this + " add failed, the process is in progress." ) ;
-    }
-
-    if ( action && ( action instanceof Action ) )
-    {
-        autoRemove = Boolean( autoRemove ) ;
-
-        priority   = ( priority > 0 ) ? Math.round(priority) : 0 ;
-
-        if( this._next )
+        if ( this._running )
         {
-            action.finishIt.connect( this._next ) ;
+            throw new Error( this + " add failed, the process is in progress." ) ;
         }
 
-        this._actions.push( new ActionEntry( action , priority , autoRemove ) ) ;
-
-        /////// bubble sorting
-
-        var i ;
-        var j ;
-
-        var a = this._actions ;
-
-        var swap = ( j , k ) =>
+        if ( action && ( action instanceof Action ) )
         {
-            var temp = a[j] ;
-            a[j]     = a[k] ;
-            a[k]     = temp ;
+            autoRemove = Boolean( autoRemove ) ;
+
+            priority   = ( priority > 0 ) ? Math.round(priority) : 0 ;
+
+            if( this._next )
+            {
+                action.finishIt.connect( this._next ) ;
+            }
+
+            this._actions.push( new ActionEntry( action , priority , autoRemove ) ) ;
+
+            /////// bubble sorting
+
+            var i ;
+            var j ;
+
+            var a = this._actions ;
+
+            var swap = ( j , k ) =>
+            {
+                var temp = a[j] ;
+                a[j]     = a[k] ;
+                a[k]     = temp ;
+                return true ;
+            }
+
+            var swapped = false;
+
+            var l = a.length ;
+
+            for( i = 1 ; i < l ; i++ )
+            {
+                for( j = 0 ; j < ( l - i ) ; j++ )
+                {
+                    if ( a[j+1].priority > a[j].priority )
+                    {
+                        swapped = swap(j, j+1) ;
+                    }
+                }
+                if ( !swapped )
+                {
+                    break;
+                }
+            }
+
+            //////
+
             return true ;
         }
+        return false ;
+    }},
 
-        var swapped = false;
-
-        var l = a.length ;
-
-        for( i = 1 ; i < l ; i++ )
-        {
-            for( j = 0 ; j < ( l - i ) ; j++ )
-            {
-                if ( a[j+1].priority > a[j].priority )
-                {
-                    swapped = swap(j, j+1) ;
-                }
-            }
-            if ( !swapped )
-            {
-                break;
-            }
-        }
-
-        //////
-
-        return true ;
-    }
-    return false ;
-}
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-TaskGroup.prototype.clone = function()
-{
-    return new TaskGroup( this._mode , ( this._actions.length > 0 ? this._actions : null ) ) ;
-}
-
-/**
- * Dispose the chain and disconnect all actions but don't remove them.
- */
-TaskGroup.prototype.dispose = function() /*void*/
-{
-    if ( this._actions.length > 0 )
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    clone : { writable : true , value : function()
     {
-        this._actions.forEach( ( entry ) =>
-        {
-            if ( entry instanceof ActionEntry )
-            {
-                entry.action.finishIt.disconnect( this._next ) ;
-            }
-        });
-    }
-}
+        return new TaskGroup( this._mode , ( this._actions.length > 0 ? this._actions : null ) ) ;
+    }},
 
-/**
- * Returns the action register in the chain at the specified index value or <code>null</code>.
- * @return the action register in the chain at the specified index value or <code>null</code>.
- */
-TaskGroup.prototype.get = function( index /*uint*/ ) /*Action*/
-{
-    if ( this._actions.length > 0 && index < this._actions.length )
-    {
-        var entry = this._actions[index] ;
-        if ( entry )
-        {
-            return entry.action ;
-        }
-    }
-    return null ;
-}
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
- * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
- */
-TaskGroup.prototype.contains = function( action /*Action*/ ) /*Action*/
-{
-    if ( action && action instanceof Action )
-    {
-        if ( this._actions.length > 0 )
-        {
-            var e /*ActionEntry*/ ;
-            var l /*int*/ = this._actions.length ;
-            while( --l > -1 )
-            {
-                e = this._actions[l] ;
-                if ( e && e.action === action )
-                {
-                    return true ;
-                }
-            }
-        }
-    }
-    return false ;
-}
-
-/**
- * Returns <code>true</code> if the chain is empty.
- * @return <code>true</code> if the chain is empty.
- */
-TaskGroup.prototype.isEmpty = function() /*Boolean*/
-{
-    return this._actions.length === 0 ;
-}
-
-/**
- * Invoked when a task is finished.
- */
-TaskGroup.prototype.next = function( action /*Action*/ ) /*void*/
-{
-    //
-}
-
-/**
- * Removes a specific action register in the chain and if the passed-in argument is null all actions register in the chain are removed.
- * If the chain is running the stop() method is called.
- * @return <code>true</code> if the method success.
- */
-TaskGroup.prototype.remove = function( action /*Action*/ ) /*Boolean*/
-{
-    if ( this._running )
-    {
-        throw new Error( this + " remove failed, the process is in progress." ) ;
-    }
-    this.stop() ;
-    if ( this._actions.length > 0 )
+    /**
+     * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
+     * @name contains
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
+     */
+    contains : { writable : true , value : function( action )
     {
         if ( action && action instanceof Action )
         {
-            var e /*ActionEntry*/ ;
-            var l /*int*/ = this._actions.length ;
-
-            this._actions.forEach( ( element ) =>
+            if ( this._actions.length > 0 )
             {
-                if ( element && (element instanceof ActionEntry) && element.action === action )
+                var e /*ActionEntry*/ ;
+                var l /*int*/ = this._actions.length ;
+                while( --l > -1 )
                 {
-                    if ( this._next )
+                    e = this._actions[l] ;
+                    if ( e && e.action === action )
                     {
-                        e.action.finishIt.disconnect( this._next ) ;
+                        return true ;
                     }
-                    this._actions.splice( l , 1 ) ;
-                    return true ;
                 }
-            });
+            }
         }
-        else
-        {
-            this.dispose() ;
-            this._actions.length = 0 ;
-            this.notifyCleared() ;
-            return true ;
-        }
-    }
-    return false ;
-}
+        return false ;
+    }},
 
-/**
- * Returns the Array representation of the chain.
- * @return the Array representation of the chain.
- */
-TaskGroup.prototype.toArray = function() /*Array*/
-{
-    if ( this._actions.length > 0 )
-    {
-        var output /*Array*/ = [] ;
-        if( this._actions.length > 0 )
-        {
-            this._actions.forEach( ( element ) =>
-            {
-                if ( element && element instanceof ActionEntry && element.action )
-                {
-                    output.push( element.action ) ;
-                }
-            });
-        }
-        return output ;
-    }
-    else
-    {
-        return [] ;
-    }
-}
-
-/**
- * Returns the String representation of the chain.
- * @return the String representation of the chain.
- */
-TaskGroup.prototype.toString = function() /*String*/
-{
-    var s /*String*/ = "[" + this.__className__ ;
-    if ( Boolean(this.verbose) )
+    /**
+     * Dispose the chain and disconnect all actions but don't remove them.
+     * @name dispose
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    dispose : { writable : true , value : function()
     {
         if ( this._actions.length > 0 )
         {
-            s += "[" ;
-            var i /*int*/ ;
-            var e /*ActionEntry*/ ;
-            var l /*int*/ = this._actions.length ;
-            var r /*Array*/ = [] ;
-            for( i = 0 ; i < l ; i++ )
+            this._actions.forEach( ( entry ) =>
             {
-                e = this._actions[i] ;
-                r.push( ( e && e.action ) ? e.action : null ) ;
-            }
-            s += r.toString() ;
-            s += "]" ;
+                if ( entry instanceof ActionEntry )
+                {
+                    entry.action.finishIt.disconnect( this._next ) ;
+                }
+            });
         }
-    }
-    s += "]" ;
-    return s ;
-}
+    }},
+
+    /**
+     * Gets the <code>Action</code> register in the collection at the specified index value or <code>null</code>.
+     * @name get
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {number} index - The index of the action element in the collection.
+     * @return the action register in the chain at the specified index value or <code>null</code>.
+     */
+    get : { writable : true , value : function( index /*uint*/ )
+    {
+        if ( this._actions.length > 0 && index < this._actions.length )
+        {
+            var entry = this._actions[index] ;
+            if ( entry )
+            {
+                return entry.action ;
+            }
+        }
+        return null ;
+    }},
+
+    /**
+     * Returns <code>true</code> if the collection is empty.
+     * @name isEmpty
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return <code>true</code> if the chain is empty.
+     */
+    isEmpty : { writable : true , value : function()
+    {
+        return this._actions.length === 0 ;
+    }},
+
+    /**
+     * Invoked when a task is finished.
+     * @name toArray
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    next : { writable : true , value : function( action /*Action*/ )
+    {
+        // overrides
+    }},
+
+    /**
+     * Removes a specific action register in the chain and if the passed-in argument is null all actions register in the chain are removed.
+     * If the chain is running the <code>stop()</code> method is called.
+     * @name remove
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The action to remove in the collection.
+     * @return <code>true</code> if the method succeeded.
+     */
+    remove : { writable : true , value : function( action )
+    {
+        if ( this._running )
+        {
+            throw new Error( this + " remove failed, the process is in progress." ) ;
+        }
+        this.stop() ;
+        if ( this._actions.length > 0 )
+        {
+            if ( action && action instanceof Action )
+            {
+                var e /*ActionEntry*/ ;
+                var l /*int*/ = this._actions.length ;
+
+                this._actions.forEach( ( element ) =>
+                {
+                    if ( element && (element instanceof ActionEntry) && element.action === action )
+                    {
+                        if ( this._next )
+                        {
+                            e.action.finishIt.disconnect( this._next ) ;
+                        }
+                        this._actions.splice( l , 1 ) ;
+                        return true ;
+                    }
+                });
+            }
+            else
+            {
+                this.dispose() ;
+                this._actions.length = 0 ;
+                this.notifyCleared() ;
+                return true ;
+            }
+        }
+        return false ;
+    }},
+
+    /**
+     * Returns the Array representation of the chain.
+     * @name toArray
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return the <code>Array</code> representation of the chain.
+     */
+    toArray : { writable : true , value : function()
+    {
+        if ( this._actions.length > 0 )
+        {
+            var output /*Array*/ = [] ;
+            if( this._actions.length > 0 )
+            {
+                this._actions.forEach( ( element ) =>
+                {
+                    if ( element && element instanceof ActionEntry && element.action )
+                    {
+                        output.push( element.action ) ;
+                    }
+                });
+            }
+            return output ;
+        }
+        else
+        {
+            return [] ;
+        }
+    }},
+
+    /**
+     * Returns the String representation of the chain.
+     * @name toString
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return the String representation of the chain.
+     */
+    toString : { writable : true , value : function()
+    {
+        var s /*String*/ = "[" + this.constructor.name ;
+        if ( Boolean(this.verbose) )
+        {
+            if ( this._actions.length > 0 )
+            {
+                s += "[" ;
+                var i /*int*/ ;
+                var e /*ActionEntry*/ ;
+                var l /*int*/ = this._actions.length ;
+                var r /*Array*/ = [] ;
+                for( i = 0 ; i < l ; i++ )
+                {
+                    e = this._actions[i] ;
+                    r.push( ( e && e.action ) ? e.action : null ) ;
+                }
+                s += r.toString() ;
+                s += "]" ;
+            }
+        }
+        s += "]" ;
+        return s ;
+    }}
+});

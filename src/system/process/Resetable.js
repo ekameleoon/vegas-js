@@ -27,10 +27,7 @@ export function isResetable( target )
  * @memberof system.process
  * @interface
  */
-export function Resetable()
-{
-
-}
+export function Resetable(){}
 
 Resetable.prototype = Object.create( Object.prototype );
 Resetable.prototype.constructor = Resetable;

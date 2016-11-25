@@ -8,9 +8,9 @@ import { TaskPhase } from './TaskPhase.js' ;
 /**
  * Creates a new Action instance.
  * @name Action
+ * @class
  * @memberof system.process
  * @augments system.process.Runnable
- * @class
  * @implements system.process.Runnable
  * @implements system.process.Lockable
  * @constructor
@@ -73,83 +73,89 @@ export function Action()
     }) ;
 }
 
-Action.prototype = Object.create( Runnable.prototype );
-Action.prototype.constructor = Action;
-
-/**
- * Creates a copy of the object.
- * @name clone
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.clone = function()
+Action.prototype = Object.create( Runnable.prototype ,
 {
-    return new Action() ;
-}
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Action },
 
-/**
- * Returns <code class="prettyprint">true</code> if the object is locked.
- * @return <code class="prettyprint">true</code> if the object is locked.
- * @name isLocked
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.isLocked = function() /*Boolean*/
-{
-    return this.__lock__ ;
-}
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    clone : { writable : true , value : function()
+    {
+        return new Action() ;
+    }},
 
-/**
- * Locks the object.
- * @name lock
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.lock = function() /*void*/
-{
-    this.__lock__ = true ;
-}
+    /**
+     * Returns <code>true</code> if the object is locked.
+     * @return <code>true</code> if the object is locked.
+     * @name isLocked
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    isLocked : { writable : true , value : function()
+    {
+        return this.__lock__ ;
+    }},
 
-/**
- * Notify when the process is finished.
- * @name notifyFinished
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.notifyFinished = function() /*Boolean*/
-{
-    this._running = false ;
-    this._phase = TaskPhase.FINISHED ;
-    this.finishIt.emit( this ) ;
-    this._phase = TaskPhase.INACTIVE ;
-}
+    /**
+     * Locks the object.
+     * @name lock
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    lock : { writable : true , value : function()
+    {
+        this.__lock__ = true ;
+    }},
 
-/**
- * Notify when the process is started.
- * @name notifyStarted
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.notifyStarted = function() /*void*/
-{
-    this._running = true ;
-    this._phase  = TaskPhase.RUNNING ;
-    this.startIt.emit( this ) ;
-}
+    /**
+     * Notify when the process is finished.
+     * @name notifyFinished
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    notifyFinished : { writable : true , value : function()
+    {
+        this._running = false ;
+        this._phase = TaskPhase.FINISHED ;
+        this.finishIt.emit( this ) ;
+        this._phase = TaskPhase.INACTIVE ;
+    }},
 
-/**
- * Unlocks the object.
- * @name unlock
- * @memberof system.process.Action
- * @function
- * @instance
- */
-Action.prototype.unlock = function() /*void*/
-{
-    this.__lock__ = false ;
-}
+    /**
+     * Notify when the process is started.
+     * @name notifyStarted
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    notifyStarted : { writable : true , value : function()
+    {
+        this._running = true ;
+        this._phase  = TaskPhase.RUNNING ;
+        this.startIt.emit( this ) ;
+    }},
+
+    /**
+     * Unlocks the object.
+     * @name unlock
+     * @memberof system.process.Action
+     * @function
+     * @instance
+     */
+    unlock : { writable : true , value : function()
+    {
+        this.__lock__ = false ;
+    }}
+});

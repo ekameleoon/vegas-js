@@ -3,7 +3,12 @@
 import { Action } from './Action.js' ;
 
 /**
- * A simple command to do something.
+ * A simple command to do something. Very usefull to test something in a complex process.
+ * @name Do
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var action = new system.process.Do() ;
  *
@@ -34,47 +39,47 @@ export function Do ()
     Action.call( this ) ;
 }
 
-/**
- * @extends Task
- */
-Do.prototype = Object.create( Action.prototype );
-Do.prototype.constructor = Do ;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Do.prototype.clone = function()
+Do.prototype = Object.create( Action.prototype ,
 {
-    return new Do() ;
-}
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Do },
 
-/**
- * The something method to overrides.
- */
-Do.prototype.something = function()
-{
-    // override
-}
-
-/**
- * Run the process.
- */
-Do.prototype.run = function() /*void*/
-{
-    this.notifyStarted() ;
-    if( 'something' in this && (this.something instanceof Function) )
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Do
+     * @function
+     * @instance
+     */
+    clone : { writable : true , value : function()
     {
-        this.something() ;
-    }
-    this.notifyFinished() ;
-}
+        return new Do() ;
+    }},
 
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Do.prototype.toString = function() /*String*/
-{
-    return '[Do]' ;
-}
+    /**
+     * Do something in this method (override it).
+     */
+    something : { enumerable : true , writable : true , value : function()
+    {
+        //
+    }},
+
+    /**
+     * Run the process.
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    run : { writable : true , value : function()
+    {
+        this.notifyStarted() ;
+        if( 'something' in this && (this.something instanceof Function) )
+        {
+            this.something() ;
+        }
+        this.notifyFinished() ;
+    }}
+});

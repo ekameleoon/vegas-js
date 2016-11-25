@@ -27,10 +27,7 @@ export function isResumable( target )
  * @memberof system.process
  * @interface
  */
-export function Resumable()
-{
-
-}
+export function Resumable() {}
 
 Resumable.prototype = Object.create( Object.prototype );
 Resumable.prototype.constructor = Resumable;

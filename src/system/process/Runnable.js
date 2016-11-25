@@ -18,7 +18,6 @@ export function isRunnable( target )
         }
         return ( 'run' in target ) && ( target.run instanceof Function )  ;
     }
-
     return false ;
 }
 
@@ -28,35 +27,36 @@ export function isRunnable( target )
  * @memberof system.process
  * @interface
  */
-export function Runnable()
+export function Runnable() {}
+
+Runnable.prototype = Object.create( Object.prototype ,
 {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Runnable },
 
-}
+    /**
+     * Run the process.
+     * @name run
+     * @memberof system.process.Runnable
+     * @function
+     * @instance
+     */
+    run : { writable : true , value : function()
+    {
+        // override
+    }},
 
-Runnable.prototype = Object.create( Object.prototype );
-Runnable.prototype.constructor = Runnable;
-
-/**
- * Run the process.
- * @name run
- * @memberof system.process.Runnable
- * @function
- * @instance
- */
-Runnable.prototype.run = function() /*void*/
-{
-    //
-}
-
-/**
- * Returns the string representation of this instance.
- * @name toString
- * @memberof system.process.Runnable
- * @function
- * @instance
- * @return the string representation of this instance.
- */
-Runnable.prototype.toString = function ()
-{
-    return '[' + this.constructor.name + ']' ;
-}
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

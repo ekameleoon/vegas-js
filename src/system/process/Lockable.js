@@ -24,7 +24,6 @@ export function isLockable( target )
             return isLocked && lock && unlock ;
         }
     }
-
     return false ;
 }
 

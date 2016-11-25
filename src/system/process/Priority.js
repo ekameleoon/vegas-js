@@ -12,6 +12,9 @@ export function Priority()
     {
         /**
          * Determinates the priority value.
+         * @memberof system.process.Priority
+         * @type {number}
+         * @instance
          */
         priority :
         {

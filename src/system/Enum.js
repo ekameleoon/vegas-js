@@ -2,11 +2,11 @@
 
 /**
  * This class determinates a basic implementation to creates enumeration objects.
- * @param {number} value The value of the enumeration.
- * @param {string} name The name key of the enumeration.
  * @name Enum
  * @memberof system
  * @class
+ * @param {number} value The value of the enumeration.
+ * @param {string} name The name key of the enumeration.
  */
 export function Enum( value , name )
 {
@@ -37,6 +37,7 @@ Enum.prototype.constructor = Enum;
  * @return <code>true</code> if the the specified object is equal with this object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.equals = function ( object ) /*Boolean*/
 {
@@ -58,6 +59,7 @@ Enum.prototype.equals = function ( object ) /*Boolean*/
  * @return the String representation of the object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.toString = function() /*String*/
 {
@@ -69,6 +71,7 @@ Enum.prototype.toString = function() /*String*/
  * @return the primitive value of the object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.valueOf = function()
 {

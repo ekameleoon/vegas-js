@@ -5229,11 +5229,11 @@ var core = Object.assign({
 
 /**
  * This class determinates a basic implementation to creates enumeration objects.
- * @param {number} value The value of the enumeration.
- * @param {string} name The name key of the enumeration.
  * @name Enum
  * @memberof system
  * @class
+ * @param {number} value The value of the enumeration.
+ * @param {string} name The name key of the enumeration.
  */
 
 function Enum(value, name) {
@@ -5261,6 +5261,7 @@ Enum.prototype.constructor = Enum;
  * @return <code>true</code> if the the specified object is equal with this object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.equals = function (object) /*Boolean*/
 {
@@ -5280,6 +5281,7 @@ Enum.prototype.equals = function (object) /*Boolean*/
  * @return the String representation of the object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.toString = function () /*String*/
 {
@@ -5291,6 +5293,7 @@ Enum.prototype.toString = function () /*String*/
  * @return the primitive value of the object.
  * @memberof system.Enum
  * @instance
+ * @function
  */
 Enum.prototype.valueOf = function () {
     return this._value;
@@ -9028,7 +9031,12 @@ LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
 });
 
 /**
- * Indicates if the specific objet is Lockable.
+ * Indicates if the specific objet is Lockable and contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
+ * @name isLockable
+ * @memberof system.process
+ * @function
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Lockable</code>.
  */
 
 function isLockable(target) {
@@ -9042,25 +9050,34 @@ function isLockable(target) {
             return isLocked && lock && unlock;
         }
     }
-
     return false;
 }
 
 /**
  * This interface is implemented by all objects lockable.
+ * @name Lockable
+ * @memberof system.process
+ * @interface
  */
-function Lockable() {}
-
-///////////////////
+function Lockable() {
+    Object.defineProperties(this, {
+        /**
+         * @protected
+         */
+        __lock__: { value: false, writable: true }
+    });
+}
 
 Lockable.prototype = Object.create(Object.prototype);
 Lockable.prototype.constructor = Lockable;
 
-///////////////////
-
 /**
  * Returns <code>true</code> if the object is locked.
  * @return <code>true</code> if the object is locked.
+ * @name isLocked
+ * @memberof system.process.Lockable
+ * @function
+ * @instance
  */
 Lockable.prototype.isLocked = function () /*void*/
 {
@@ -9069,6 +9086,10 @@ Lockable.prototype.isLocked = function () /*void*/
 
 /**
  * Locks the object.
+ * @name lock
+ * @memberof system.process.Lockable
+ * @function
+ * @instance
  */
 Lockable.prototype.lock = function () /*void*/
 {
@@ -9077,25 +9098,15 @@ Lockable.prototype.lock = function () /*void*/
 
 /**
  * Unlocks the object.
+ * @name unlock
+ * @memberof system.process.Lockable
+ * @function
+ * @instance
  */
 Lockable.prototype.unlock = function () /*void*/
 {
     this.__lock__ = false;
 };
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Lockable.prototype.toString = function () /*String*/
-{
-    return "[Lockable]";
-};
-
-/**
- * @private
- */
-Lockable.prototype.__lock__ = false;
 
 /**
  * Creates the Array of all arguments.
@@ -10402,7 +10413,12 @@ function createObjectDefinition(o) /*ObjectDefinition*/
 }
 
 /**
- * Indicates if the specific objet is Runnable.
+ * Indicates if the specific objet is Runnable and contains a <code>run()</code> method.
+ * @name isRunnable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Runnable</code>.
  */
 
 function isRunnable(target) {
@@ -10412,64 +10428,138 @@ function isRunnable(target) {
         }
         return 'run' in target && target.run instanceof Function;
     }
-
     return false;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be executed.
+ * @name Runnable
+ * @memberof system.process
+ * @interface
  */
 function Runnable() {}
-///////////////////
 
-Runnable.prototype = Object.create(Object.prototype);
-Runnable.prototype.constructor = Runnable;
+Runnable.prototype = Object.create(Object.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Runnable },
 
-///////////////////
+    /**
+     * Run the process.
+     * @name run
+     * @memberof system.process.Runnable
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            // override
+        } },
 
-/**
- * Run the process.
- */
-Runnable.prototype.run = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Runnable.prototype.toString = function () /*String*/
-{
-    return "[Runnable]";
-};
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 /**
  * The enumeration of all phases in a task process.
+ * @namespace system.process.TaskPhase
+ * @memberof system.process
  */
 
 var TaskPhase = Object.defineProperties({}, {
-    ERROR: { value: 'error', enumerable: true },
-    DELAYED: { value: 'delayed', enumerable: true },
-    FINISHED: { value: 'finished', enumerable: true },
-    INACTIVE: { value: 'inactive', enumerable: true },
-    RUNNING: { value: 'running', enumerable: true },
-    STOPPED: { value: 'stopped', enumerable: true },
-    TIMEOUT: { value: 'timeout', enumerable: true }
+  /**
+   * The 'error' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  ERROR: { value: 'error', enumerable: true },
+
+  /**
+   * The 'delayed' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  DELAYED: { value: 'delayed', enumerable: true },
+
+  /**
+   * The 'finished' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  FINISHED: { value: 'finished', enumerable: true },
+
+  /**
+   * The 'inactive' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  INACTIVE: { value: 'inactive', enumerable: true },
+
+  /**
+   * The 'running' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  RUNNING: { value: 'running', enumerable: true },
+
+  /**
+   * The 'stopped' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  STOPPED: { value: 'stopped', enumerable: true },
+
+  /**
+   * The 'timeout' type.
+   * @memberof system.process.TaskPhase
+   * @const
+   * @type {string}
+   */
+  TIMEOUT: { value: 'timeout', enumerable: true }
 });
 
 /**
  * Creates a new Action instance.
+ * @name Action
+ * @class
+ * @memberof system.process
+ * @augments system.process.Runnable
+ * @implements system.process.Runnable
+ * @implements system.process.Lockable
+ * @constructor
  */
 function Action() {
   Object.defineProperties(this, {
     /**
      * This signal emit when the action is finished.
+     * @memberof system.process.Action
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     finishIt: { value: new Signal() },
 
     /**
      * Indicates the current phase.
+     * @memberof system.process.Action
+     * @type {string}
+     * @see {@link system.process.TaskPhase}
+     * @instance
+     * @readonly
      */
     phase: { get: function get() {
         return this._phase;
@@ -10477,6 +10567,10 @@ function Action() {
 
     /**
      * Indicates action is running.
+     * @memberof system.process.Action
+     * @type {boolean}
+     * @instance
+     * @readonly
      */
     running: { get: function get() {
         return this._running;
@@ -10484,165 +10578,233 @@ function Action() {
 
     /**
      * This signal emit when the action is started.
+     * @memberof system.process.Action
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     startIt: { value: new Signal() },
 
-    __lock__: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _phase: {
-      value: TaskPhase.INACTIVE,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    },
-    _running: {
-      value: false,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
+    /**
+     * @private
+     */
+    __lock__: { writable: true, value: false },
+
+    /**
+     * @protected
+     */
+    _phase: { writable: true, value: TaskPhase.INACTIVE },
+
+    /**
+     * @protected
+     */
+    _running: { writable: true, value: false }
   });
 }
 
-/**
- * @extends Runnable
- */
-Action.prototype = Object.create(Runnable.prototype);
-Action.prototype.constructor = Action;
+Action.prototype = Object.create(Runnable.prototype, {
+  /**
+   * The constructor reference of the instance.
+   */
+  constructor: { writable: true, value: Action },
 
-/**
- * Creates a copy of the object.
- */
-Action.prototype.clone = function () {
-  return new Action();
-};
+  /**
+   * Creates a copy of the object.
+   * @return a shallow copy of this object.
+   * @name clone
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  clone: { writable: true, value: function value() {
+      return new Action();
+    } },
 
-/**
- * Returns <code class="prettyprint">true</code> if the object is locked.
- * @return <code class="prettyprint">true</code> if the object is locked.
- */
-Action.prototype.isLocked = function () /*Boolean*/
-{
-  return this.__lock__;
-};
+  /**
+   * Returns <code>true</code> if the object is locked.
+   * @return <code>true</code> if the object is locked.
+   * @name isLocked
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  isLocked: { writable: true, value: function value() {
+      return this.__lock__;
+    } },
 
-/**
- * Locks the object.
- */
-Action.prototype.lock = function () /*void*/
-{
-  this.__lock__ = true;
-};
+  /**
+   * Locks the object.
+   * @name lock
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  lock: { writable: true, value: function value() {
+      this.__lock__ = true;
+    } },
 
-/**
- * Notify when the process is finished.
- */
-Action.prototype.notifyFinished = function () /*Boolean*/
-{
-  this._running = false;
-  this._phase = TaskPhase.FINISHED;
-  this.finishIt.emit(this);
-  this._phase = TaskPhase.INACTIVE;
-};
+  /**
+   * Notify when the process is finished.
+   * @name notifyFinished
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  notifyFinished: { writable: true, value: function value() {
+      this._running = false;
+      this._phase = TaskPhase.FINISHED;
+      this.finishIt.emit(this);
+      this._phase = TaskPhase.INACTIVE;
+    } },
 
-/**
- * Notify when the process is started.
- */
-Action.prototype.notifyStarted = function () /*void*/
-{
-  this._running = true;
-  this._phase = TaskPhase.RUNNING;
-  this.startIt.emit(this);
-};
+  /**
+   * Notify when the process is started.
+   * @name notifyStarted
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  notifyStarted: { writable: true, value: function value() {
+      this._running = true;
+      this._phase = TaskPhase.RUNNING;
+      this.startIt.emit(this);
+    } },
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Action.prototype.toString = function () /*String*/
-{
-  return '[Action]';
-};
-
-/**
- * Unlocks the object.
- */
-Action.prototype.unlock = function () /*void*/
-{
-  this.__lock__ = false;
-};
+  /**
+   * Unlocks the object.
+   * @name unlock
+   * @memberof system.process.Action
+   * @function
+   * @instance
+   */
+  unlock: { writable: true, value: function value() {
+      this.__lock__ = false;
+    } }
+});
 
 /**
  * A Task object to create a set of complex commands or actions.
+ * @name Task
+ * @class
+ * @extends system.process.Action
+ * @augments system.process.Action
+ * @memberof system.process
+ * @implements system.process.Lockable
+ * @implements system.process.Resetable
+ * @implements system.process.Startable
+ * @implements system.process.Stoppable
+ * @constructor
  */
 function Task() {
   Action.call(this);
+
   Object.defineProperties(this, {
     /**
      * The signal emit when the task is changed.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     changeIt: { value: new Signal() },
 
     /**
      * The signal emit when the task is cleared.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     clearIt: { value: new Signal() },
 
     /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: Task, writable: true },
+
+    /**
      * The signal emit when the task emit a message.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     infoIt: { value: new Signal() },
 
     /**
      * The flag to determinate if the task must be looped.
+     * @memberof system.process.Task
+     * @type {boolean}
+     * @instance
+     * @default false
      */
-    looping: { value: false, enumerable: false, configurable: false, writable: true },
+    looping: { value: false, writable: true },
 
     /**
      * The signal emit when the task is looped.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     loopIt: { value: new Signal() },
 
     /**
      * The signal emit when the task is paused.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     pauseIt: { value: new Signal() },
 
     /**
      * The signal emit when the task is in progress.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     progressIt: { value: new Signal() },
 
     /**
      * The signal emit when the task is resumed.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     resumeIt: { value: new Signal() },
 
     /**
      * This signal emit when the task is stopped.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     stopIt: { value: new Signal() },
 
     /**
      * The signal emit when the task is out of time.
+     * @memberof system.process.Task
+     * @type {system.signals.Signal}
+     * @instance
+     * @const
      */
     timeoutIt: { value: new Signal() }
   });
 }
 
-/**
- * @extends Action
- */
 Task.prototype = Object.create(Action.prototype);
-
-Task.prototype.constructor = Task;
 
 /**
  * Creates a copy of the object.
+ * @name clone
+ * @memberof system.process.Task
+ * @function
+ * @instance
+ * @override
  */
 Task.prototype.clone = function () {
   return new Task();
@@ -10650,9 +10812,12 @@ Task.prototype.clone = function () {
 
 /**
  * Notify when the process is changed.
+ * @name notifyChanged
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyChanged = function () /*void*/
-{
+Task.prototype.notifyChanged = function () {
   if (!this.__lock__) {
     this.changeIt.emit(this);
   }
@@ -10660,9 +10825,12 @@ Task.prototype.notifyChanged = function () /*void*/
 
 /**
  * Notify when the process is cleared.
+ * @name notifyCleared
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyCleared = function () /*void*/
-{
+Task.prototype.notifyCleared = function () {
   if (!this.__lock__) {
     this.clearIt.emit(this);
   }
@@ -10670,9 +10838,12 @@ Task.prototype.notifyCleared = function () /*void*/
 
 /**
  * Notify a specific information when the process is changed.
+ * @name notifyInfo
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyInfo = function (info) /*void*/
-{
+Task.prototype.notifyInfo = function (info) {
   if (!this.__lock__) {
     this.infoIt.emit(this, info);
   }
@@ -10680,9 +10851,12 @@ Task.prototype.notifyInfo = function (info) /*void*/
 
 /**
  * Notify when the process is looped.
+ * @name notifyLooped
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyLooped = function () /*void*/
-{
+Task.prototype.notifyLooped = function () {
   this._phase = TaskPhase.RUNNING;
   if (!this.__lock__) {
     this.loopIt.emit(this);
@@ -10691,9 +10865,12 @@ Task.prototype.notifyLooped = function () /*void*/
 
 /**
  * Notify when the process is paused.
+ * @name notifyPaused
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyPaused = function () /*void*/
-{
+Task.prototype.notifyPaused = function () {
   this._running = false;
   this._phase = TaskPhase.STOPPED;
   if (!this.__lock__) {
@@ -10703,9 +10880,12 @@ Task.prototype.notifyPaused = function () /*void*/
 
 /**
  * Notify when the process is progress.
+ * @name notifyProgress
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyProgress = function () /*void*/
-{
+Task.prototype.notifyProgress = function () {
   if (!this.__lock__) {
     this.progressIt.emit(this);
   }
@@ -10713,9 +10893,12 @@ Task.prototype.notifyProgress = function () /*void*/
 
 /**
  * Notify when the process is resumed.
+ * @name notifyResumed
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyResumed = function () /*void*/
-{
+Task.prototype.notifyResumed = function () {
   this._phase = TaskPhase.RUNNING;
   if (!this.__lock__) {
     this.resumeIt.emit(this);
@@ -10724,9 +10907,12 @@ Task.prototype.notifyResumed = function () /*void*/
 
 /**
  * Notify when the process is stopped.
+ * @name notifyStopped
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyStopped = function () /*void*/
-{
+Task.prototype.notifyStopped = function () {
   this._running = false;
   this._phase = TaskPhase.STOPPED;
   if (!this.__lock__) {
@@ -10736,9 +10922,12 @@ Task.prototype.notifyStopped = function () /*void*/
 
 /**
  * Notify when the process is out of time.
+ * @name notifyTimeout
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.notifyTimeout = function () /*void*/
-{
+Task.prototype.notifyTimeout = function () {
   this._running = false;
   this._phase = TaskPhase.TIMEOUT;
   if (!this.__lock__) {
@@ -10748,44 +10937,41 @@ Task.prototype.notifyTimeout = function () /*void*/
 
 /**
  * Resumes the task.
+ * @name resume
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.resume = function () /*void*/
-{}
-//
-
+Task.prototype.resume = function () {};
 
 /**
  * Resets the task.
+ * @name reset
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-;Task.prototype.reset = function () /*void*/
-{}
-//
-
+Task.prototype.reset = function () {};
 
 /**
  * Starts the task.
+ * @name start
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-;Task.prototype.start = function () /*void*/
-{
+Task.prototype.start = function () {
   this.run();
 };
 
 /**
  * Starts the process.
+ * @name stop
+ * @memberof system.process.Task
+ * @function
+ * @instance
  */
-Task.prototype.stop = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Task.prototype.toString = function () /*String*/
-{
-  return '[Task]';
-};
+Task.prototype.stop = function () {};
 
 /**
  * Creates a container to register all the Object define by the corresponding IObjectDefinition objects.
@@ -13499,11 +13685,16 @@ ElseIfZero.prototype.toString = function () {
 
 /**
  * Perform some tasks based on whether a given condition holds true or not.
- * @example
+ * @name IfTask
+ * @memberof system.logics
+ * @implements system.process.Action
+ * @augments system.process.Action
+ * @class
+ * @constructor
+ * @example <caption><strong>Usage </strong>:</caption>
  * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
  * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )
- * @example
- * <pre>
+ * @example <caption><strong>Basic example </strong>:</caption>
  * // -------- Imports
  *
  * var IfTask      = system.logics.IfTask ;
@@ -13611,7 +13802,6 @@ ElseIfZero.prototype.toString = function () {
  * task.throwError = false ;
  *
  * task.run() ;
- * </pre>
  */
 function IfTask() // jshint ignore:line
 {
@@ -13624,6 +13814,9 @@ function IfTask() // jshint ignore:line
     Object.defineProperties(this, {
         /**
          * The collection of condition/action invokable if the main rule is not true.
+         * @memberof system.logics.IfTask
+         * @type {array}
+         * @instance
          */
         elseIfTask: { get: function get() {
                 return this._elseIfTask;
@@ -13631,6 +13824,9 @@ function IfTask() // jshint ignore:line
 
         /**
          * The action invoked if all the conditions failed.
+         * @memberof system.logics.IfTask
+         * @type {system.process.Action}
+         * @instance
          */
         elseTask: { get: function get() {
                 return this._elseTask;
@@ -13638,11 +13834,18 @@ function IfTask() // jshint ignore:line
 
         /**
          * This signal emit when the action failed.
+         * @memberof system.logics.IfTask
+         * @type {system.signals.Signal}
+         * @instance
+         * @readonly
          */
         errorIt: { value: new Signal() },
 
         /**
          * The rule reference of this task.
+         * @memberof system.logics.IfTask
+         * @type {system.rules.Rule}
+         * @instance
          */
         rule: {
             get: function get() {
@@ -13655,6 +13858,9 @@ function IfTask() // jshint ignore:line
 
         /**
          * The action to execute if the main condition if true.
+         * @memberof system.logics.IfTask
+         * @type {system.process.Action}
+         * @instance
          */
         thenTask: { get: function get() {
                 return this._thenTask;
@@ -13662,6 +13868,10 @@ function IfTask() // jshint ignore:line
 
         /**
          * Indicates if the class throws errors or notify a finished event when the task failed.
+         * @memberof system.logics.IfTask
+         * @type {boolean}
+         * @default false
+         * @instance
          */
         throwError: { value: false, writable: true, enumerable: true },
 
@@ -13709,18 +13919,18 @@ function IfTask() // jshint ignore:line
     }
 }
 
-/**
- * @extends TaskGroup
- */
 IfTask.prototype = Object.create(Action.prototype, {
     /**
      * Defines the action when the condition block use the else condition.
-     * @param action The action to defines with the else condition in the IfTask reference.
+     * @name addElse
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.process.Action} action The action to defines with the else condition in the {system.logics.IfTask} reference.
      * @return The current IfTask reference.
      * @throws Error if an 'else' action is already register.
      */
-    addElse: { value: function value(action /*Action*/) /*IfTask*/
-        {
+    addElse: { value: function value(action) {
             if (this._elseTask) {
                 throw new Error(this + " addElse failed, you must not nest more than one <else> into <if>");
             } else if (action instanceof Action) {
@@ -13731,10 +13941,41 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Defines an action when the condition block use the elseif condition.
-     * @param condition The condition of the 'elseif' element.
-     * @param task The task to invoke if the 'elseif' condition is succeed.
+     * @name addElseIf
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {...system.logics.ElseIf|system.rules.Rule|system.process.Action} condition - A {system.logics.ElseIf} instance or a serie of {system.rules.Rule}/{system.process.Action}.
      * @return The current IfTask reference.
-     * @throws Error The condition and action reference not must be null.
+     * @example
+     *
+     * var IfTask      = system.logics.IfTask ;
+     * var Do          = system.process.Do ;
+     * var ElseIf      = system.logics.ElseIf ;
+     * var EmptyString = system.rules.EmptyString ;
+     * var Equals      = system.rules.Equals ;
+     *
+     * var do1 = new Do() ;
+     * var do2 = new Do() ;
+     * var do3 = new Do() ;
+     * var do4 = new Do() ;
+     *
+     * do1.something = function() { trace("do1 ###") } ;
+     * do2.something = function() { trace("do2 ###") } ;
+     * do3.something = function() { trace("do3 ###") } ;
+     * do4.something = function() { trace("do4 ###") } ;
+     *
+     * var task = new IfTask() ;
+     *
+     * task.addRule( new Equals(1,2) )
+     *     .addThen( do1 )
+     *     .addElseIf
+     *     (
+     *         new ElseIf( new Equals(2,1) , do3 ) ,
+     *         new Equals(2,2) , do4
+     *     )
+     *     .addElse( do2 )
+     *     .run() ; // do4 ###
      */
     addElseIf: { value: function value() /*IfTask*/
         {
@@ -13765,7 +14006,11 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Defines the main conditional rule of the task.
-     * @param rule The main Rule of the task.
+     * @name addRule
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.rules.Rule} rule - The main <code>Rule</code> of the task.
      * @return The current IfTask reference.
      * @throws Error if a 'condition' is already register.
      */
@@ -13781,12 +14026,15 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Defines the action when the condition block success and must run the 'then' action.
-     * @param action Defines the 'then' action in the IfTask reference.
-     * @return The current IfTask reference.
-     * @throws Error if the 'then' action is already register.
+     * @name addThen
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.process.Action} action - Defines the '<b>then</b>' action in the <code>IfTask</code> reference.
+     * @return The current <code>IfTask</code> reference.
+     * @throws <code>Error</code> if the 'then' action is already register.
      */
-    addThen: { value: function value(action /*Action*/) /*IfTask*/
-        {
+    addThen: { value: function value(action) {
             if (this._thenTask) {
                 throw new Error(this + " addThen failed, you must not nest more than one <then> into <if>");
             } else if (action instanceof Action) {
@@ -13797,17 +14045,27 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Clear all elements conditions and conditional tasks in the process.
+     * @name clear
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     clear: { value: function value() {
             this._rule = null;
             this._elseIfTasks.length = 0;
             this._elseTask = null;
             this._thenTask = null;
+            return this;
         } },
 
     /**
      * Removes the 'elseIf' action.
-     * @return The current IfTask reference.
+     * @name deleteElseIf
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     deleteElseIf: { value: function value() /*IfTask*/
         {
@@ -13817,7 +14075,11 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Removes the 'else' action.
-     * @return The current IfTask reference.
+     * @name deleteElse
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     deleteElse: { value: function value() /*IfTask*/
         {
@@ -13847,6 +14109,10 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Notify when the process is started.
+     * @name notifyError
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     notifyError: { value: function value(message) /*void*/
         {
@@ -13860,6 +14126,7 @@ IfTask.prototype = Object.create(Action.prototype, {
 
     /**
      * Run the process.
+     * @memberof system.logics.IfTask
      */
     run: { value: function value() {
             if (this.running) {
@@ -15772,32 +16039,60 @@ Method.prototype.toString = function () /*String*/
 };
 
 /**
- * The ActionEntry objects contains all informations about an Action in a TaskGroup.
- * @param action The Action reference.
- * @param priority The priority value of the entry.
- * @param auto This flag indicates if the receiver must be disconnected when handle the first time a signal.
+ * The ActionEntry objects contains all informations about an Action in a {@link system.process.TaskGroup} object.
+ * @name ActionEntry
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
+ * @param {system.process.Action} action - The Action reference register in this entry.
+ * @param {number} [priority=0] - The priority value of the entry.
+ * @param {boolean} [auto=false] - This flag indicates if the receiver must be disconnected when handle the first time a signal.
  */
 
-function ActionEntry(action, priority /*uint*/, auto /*Boolean*/) {
+function ActionEntry(action) {
+  var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+  /**
+   * The Action reference register in this entry.
+   * @memberof system.process.ActionEntry
+   * @type {system.process.Action}
+   * @instance
+   */
   this.action = action;
+
+  /**
+   * This flag indicates if the receiver must be disconnected when handle the first time a signal.
+   * @memberof system.process.ActionEntry
+   * @type {boolean}
+   * @instance
+   */
   this.auto = Boolean(auto);
+
+  /**
+   * The priority value of the entry.
+   * @memberof system.process.ActionEntry
+   * @type {number}
+   * @instance
+   */
   this.priority = priority > 0 ? Math.ceil(priority) : 0;
 }
 
-/**
- * @extends Object
- */
-ActionEntry.prototype = Object.create(Object.prototype);
-ActionEntry.prototype.constructor = ActionEntry;
+ActionEntry.prototype = Object.create(Object.prototype, {
+  /**
+   * The constructor reference of the instance.
+   */
+  constructor: { value: ActionEntry },
 
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-ActionEntry.prototype.toString = function () /*String*/
-{
-  return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
-};
+  /**
+   * Returns the String representation of the object.
+   * @return the String representation of the object.
+   */
+  toString: { value: function value() {
+      return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
+    } }
+});
 
 /*jshint laxbreak: true*/
 /**
@@ -16035,7 +16330,12 @@ Batch.prototype.toString = function () /*Array*/
 /* jshint unused: false*/
 /**
  * A simple representation of the Action interface, to group some Action objects in one.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
+ * @name TaskGroup
+ * @class
+ * @memberof system.process
+ * @extends system.process.Task
+ * @constructor
+ * @param {string} [mode='normal'] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
  * @param actions A dynamic object who contains Action references to initialize the chain.
  * @example
  * var do1 = new system.process.Do() ;
@@ -16082,14 +16382,21 @@ Batch.prototype.toString = function () /*Array*/
  * // #2 something
  * // finish: [TaskGroup[[Do],[Do]]]
  */
-function TaskGroup(mode /*String*/, actions /*Array*/) {
+function TaskGroup() {
     var _this = this;
+
+    var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'normal';
+    var actions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     Task.call(this);
 
     Object.defineProperties(this, {
         /**
          * Indicates if the toString method must be verbose or not.
+         * @memberof system.process.TaskGroup
+         * @type {boolean}
+         * @instance
+         * @default <code>false</code>
          */
         verbose: { value: false, writable: true },
 
@@ -16129,32 +16436,37 @@ function TaskGroup(mode /*String*/, actions /*Array*/) {
 
 Object.defineProperties(TaskGroup, {
     /**
-     * Determinates the "everlasting" mode of the group.
+     * Determinates the <code>"everlasting"</code> mode of the group.
      * In this mode the action register in the task-group can't be auto-remove.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     EVERLASTING: { value: 'everlasting', enumerable: true },
 
     /**
-     * Determinates the "normal" mode of the group.
+     * Determinates the <code>"normal"</code> mode of the group.
      * In this mode the task-group has a normal life cycle.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     NORMAL: { value: 'normal', enumerable: true },
 
     /**
-     * Determinates the "transient" mode of the group.
+     * Determinates the <code>"transient"</code> mode of the group.
      * In this mode all actions are strictly auto-remove in the task-group when are invoked.
+     * @memberof system.process.TaskGroup
+     * @type {boolean}
      */
     TRANSIENT: { value: 'transient', enumerable: true }
 });
 
-/**
- * @extends Task
- */
 TaskGroup.prototype = Object.create(Task.prototype, {
-    __className__: { value: 'TaskGroup', configurable: true },
-
     /**
      * Indicates the numbers of actions register in the group.
+     * @name length
+     * @memberof system.process.TaskGroup
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
@@ -16183,8 +16495,11 @@ TaskGroup.prototype = Object.create(Task.prototype, {
     },
 
     /**
-     * Determinates the mode of the chain. The mode can be "normal", "transient" or "everlasting".
-     * @see TaskGroup.NORMAL, TaskGroup.EVERLASTING, TaskGroup.TRANSIENT
+     * Determinates the mode of the chain. The mode can be <code>"normal"</code>, <code>"transient"</code> or <code>"everlasting"</code>.
+     * @see {@link system.process.TaskGroup#NORMAL}, {@link system.process.TaskGroup#EVERLASTING}, {@link system.process.TaskGroup#TRANSIENT}
+     * @name mode
+     * @memberof system.process.TaskGroup
+     * @instance
      */
     mode: {
         get: function get() {
@@ -16197,292 +16512,354 @@ TaskGroup.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates if the chain is stopped.
+     * @name stopped
+     * @memberof system.process.TaskGroup
+     * @instance
+     * @readonly
      */
     stopped: {
         get: function get() {
             return this._stopped;
         }
-    }
-});
+    },
 
-TaskGroup.prototype.constructor = TaskGroup;
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: TaskGroup },
 
-/**
- * Adds an action in the chain.
- * @param priority Determinates the priority level of the action in the chain.
- * @param autoRemove Apply a remove after the first finish notification.
- * @return <code>true</code> if the insert is success.
- */
-TaskGroup.prototype.add = function (action /*Action*/, priority /*uint*/, autoRemove /*Boolean*/) /*Boolean*/
-{
-    if (this._running) {
-        throw new Error(this + " add failed, the process is in progress.");
-    }
+    /**
+     * Adds an action in the chain.
+     * @name add
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The <code>Action</code> to register in this collection.
+     * @param {number} [priority=0] - Determinates the priority level of the action in the chain.
+     * @param {boolean} [autoRemove=false] - Apply a remove after the first finish notification.
+     * @return <code>true</code> if the insert is success.
+     */
+    add: { value: function value(action) {
+            var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var autoRemove = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-    if (action && action instanceof Action) {
-        autoRemove = Boolean(autoRemove);
+            if (this._running) {
+                throw new Error(this + " add failed, the process is in progress.");
+            }
 
-        priority = priority > 0 ? Math.round(priority) : 0;
+            if (action && action instanceof Action) {
+                autoRemove = Boolean(autoRemove);
 
-        if (this._next) {
-            action.finishIt.connect(this._next);
-        }
+                priority = priority > 0 ? Math.round(priority) : 0;
 
-        this._actions.push(new ActionEntry(action, priority, autoRemove));
-
-        /////// bubble sorting
-
-        var i;
-        var j;
-
-        var a = this._actions;
-
-        var swap = function swap(j, k) {
-            var temp = a[j];
-            a[j] = a[k];
-            a[k] = temp;
-            return true;
-        };
-
-        var swapped = false;
-
-        var l = a.length;
-
-        for (i = 1; i < l; i++) {
-            for (j = 0; j < l - i; j++) {
-                if (a[j + 1].priority > a[j].priority) {
-                    swapped = swap(j, j + 1);
+                if (this._next) {
+                    action.finishIt.connect(this._next);
                 }
-            }
-            if (!swapped) {
-                break;
-            }
-        }
 
-        //////
+                this._actions.push(new ActionEntry(action, priority, autoRemove));
 
-        return true;
-    }
-    return false;
-};
+                /////// bubble sorting
 
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-TaskGroup.prototype.clone = function () {
-    return new TaskGroup(this._mode, this._actions.length > 0 ? this._actions : null);
-};
+                var i;
+                var j;
 
-/**
- * Dispose the chain and disconnect all actions but don't remove them.
- */
-TaskGroup.prototype.dispose = function () /*void*/
-{
-    var _this2 = this;
+                var a = this._actions;
 
-    if (this._actions.length > 0) {
-        this._actions.forEach(function (entry) {
-            if (entry instanceof ActionEntry) {
-                entry.action.finishIt.disconnect(_this2._next);
-            }
-        });
-    }
-};
-
-/**
- * Returns the action register in the chain at the specified index value or <code>null</code>.
- * @return the action register in the chain at the specified index value or <code>null</code>.
- */
-TaskGroup.prototype.get = function (index /*uint*/) /*Action*/
-{
-    if (this._actions.length > 0 && index < this._actions.length) {
-        var entry = this._actions[index];
-        if (entry) {
-            return entry.action;
-        }
-    }
-    return null;
-};
-
-/**
- * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
- * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
- */
-TaskGroup.prototype.contains = function (action /*Action*/) /*Action*/
-{
-    if (action && action instanceof Action) {
-        if (this._actions.length > 0) {
-            var e;
-            var l /*int*/ = this._actions.length;
-            while (--l > -1) {
-                e = this._actions[l];
-                if (e && e.action === action) {
+                var swap = function swap(j, k) {
+                    var temp = a[j];
+                    a[j] = a[k];
+                    a[k] = temp;
                     return true;
-                }
-            }
-        }
-    }
-    return false;
-};
+                };
 
-/**
- * Returns <code>true</code> if the chain is empty.
- * @return <code>true</code> if the chain is empty.
- */
-TaskGroup.prototype.isEmpty = function () /*Boolean*/
-{
-    return this._actions.length === 0;
-};
+                var swapped = false;
 
-/**
- * Invoked when a task is finished.
- */
-TaskGroup.prototype.next = function (action /*Action*/) /*void*/
-{}
-//
+                var l = a.length;
 
-
-/**
- * Removes a specific action register in the chain and if the passed-in argument is null all actions register in the chain are removed.
- * If the chain is running the stop() method is called.
- * @return <code>true</code> if the method success.
- */
-;TaskGroup.prototype.remove = function (action /*Action*/) /*Boolean*/
-{
-    var _this3 = this;
-
-    if (this._running) {
-        throw new Error(this + " remove failed, the process is in progress.");
-    }
-    this.stop();
-    if (this._actions.length > 0) {
-        if (action && action instanceof Action) {
-            var e;
-            var l /*int*/ = this._actions.length;
-
-            this._actions.forEach(function (element) {
-                if (element && element instanceof ActionEntry && element.action === action) {
-                    if (_this3._next) {
-                        e.action.finishIt.disconnect(_this3._next);
+                for (i = 1; i < l; i++) {
+                    for (j = 0; j < l - i; j++) {
+                        if (a[j + 1].priority > a[j].priority) {
+                            swapped = swap(j, j + 1);
+                        }
                     }
-                    _this3._actions.splice(l, 1);
-                    return true;
-                }
-            });
-        } else {
-            this.dispose();
-            this._actions.length = 0;
-            this.notifyCleared();
-            return true;
-        }
-    }
-    return false;
-};
-
-/**
- * Returns the Array representation of the chain.
- * @return the Array representation of the chain.
- */
-TaskGroup.prototype.toArray = function () /*Array*/
-{
-    if (this._actions.length > 0) {
-        var output /*Array*/ = [];
-        if (this._actions.length > 0) {
-            this._actions.forEach(function (element) {
-                if (element && element instanceof ActionEntry && element.action) {
-                    output.push(element.action);
-                }
-            });
-        }
-        return output;
-    } else {
-        return [];
-    }
-};
-
-/**
- * Returns the String representation of the chain.
- * @return the String representation of the chain.
- */
-TaskGroup.prototype.toString = function () /*String*/
-{
-    var s /*String*/ = "[" + this.__className__;
-    if (Boolean(this.verbose)) {
-        if (this._actions.length > 0) {
-            s += "[";
-            var i;
-            var e;
-            var l /*int*/ = this._actions.length;
-            var r /*Array*/ = [];
-            for (i = 0; i < l; i++) {
-                e = this._actions[i];
-                r.push(e && e.action ? e.action : null);
-            }
-            s += r.toString();
-            s += "]";
-        }
-    }
-    s += "]";
-    return s;
-};
-
-/**
- * The internal BatchTaskNext Receiver.
- */
-function BatchTaskNext(batch) {
-    this.batch = batch;
-}
-
-/**
- * @extends TaskGroup
- */
-BatchTaskNext.prototype = Object.create(Receiver.prototype);
-BatchTaskNext.prototype.constructor = BatchTaskNext;
-
-/**
- * Receive the signal message.
- */
-BatchTaskNext.prototype.receive = function (action) {
-    var batch = this.batch;
-    var mode = batch.mode;
-    var actions = batch._actions;
-    var currents = batch._currents;
-
-    if (action && currents.has(action)) {
-        var entry = currents.get(action);
-
-        if (mode !== TaskGroup.EVERLASTING) {
-            if (mode === TaskGroup.TRANSIENT || entry.auto && mode === TaskGroup.NORMAL) {
-                var e;
-                var l = actions.length;
-                while (--l > -1) {
-                    e = actions[l];
-                    if (e && e.action === action) {
-                        action.finishIt.disconnect(this);
-                        actions.splice(l, 1);
+                    if (!swapped) {
                         break;
                     }
                 }
+
+                //////
+
+                return true;
             }
-        }
+            return false;
+        } },
 
-        currents.delete(action);
-    }
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    clone: { writable: true, value: function value() {
+            return new TaskGroup(this._mode, this._actions.length > 0 ? this._actions : null);
+        } },
 
-    if (batch._current !== null) {
-        batch.notifyChanged();
-    }
+    /**
+     * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
+     * @name contains
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
+     */
+    contains: { writable: true, value: function value(action) {
+            if (action && action instanceof Action) {
+                if (this._actions.length > 0) {
+                    var e;
+                    var l /*int*/ = this._actions.length;
+                    while (--l > -1) {
+                        e = this._actions[l];
+                        if (e && e.action === action) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        } },
 
-    batch._current = action;
+    /**
+     * Dispose the chain and disconnect all actions but don't remove them.
+     * @name dispose
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    dispose: { writable: true, value: function value() {
+            var _this2 = this;
 
-    batch.notifyProgress();
+            if (this._actions.length > 0) {
+                this._actions.forEach(function (entry) {
+                    if (entry instanceof ActionEntry) {
+                        entry.action.finishIt.disconnect(_this2._next);
+                    }
+                });
+            }
+        } },
 
-    if (currents.length === 0) {
-        batch._current = null;
-        batch.notifyFinished();
-    }
-};
+    /**
+     * Gets the <code>Action</code> register in the collection at the specified index value or <code>null</code>.
+     * @name get
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {number} index - The index of the action element in the collection.
+     * @return the action register in the chain at the specified index value or <code>null</code>.
+     */
+    get: { writable: true, value: function value(index /*uint*/) {
+            if (this._actions.length > 0 && index < this._actions.length) {
+                var entry = this._actions[index];
+                if (entry) {
+                    return entry.action;
+                }
+            }
+            return null;
+        } },
+
+    /**
+     * Returns <code>true</code> if the collection is empty.
+     * @name isEmpty
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return <code>true</code> if the chain is empty.
+     */
+    isEmpty: { writable: true, value: function value() {
+            return this._actions.length === 0;
+        } },
+
+    /**
+     * Invoked when a task is finished.
+     * @name toArray
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     */
+    next: { writable: true, value: function value(action /*Action*/) {
+            // overrides
+        } },
+
+    /**
+     * Removes a specific action register in the chain and if the passed-in argument is null all actions register in the chain are removed.
+     * If the chain is running the <code>stop()</code> method is called.
+     * @name remove
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The action to remove in the collection.
+     * @return <code>true</code> if the method succeeded.
+     */
+    remove: { writable: true, value: function value(action) {
+            var _this3 = this;
+
+            if (this._running) {
+                throw new Error(this + " remove failed, the process is in progress.");
+            }
+            this.stop();
+            if (this._actions.length > 0) {
+                if (action && action instanceof Action) {
+                    var e;
+                    var l /*int*/ = this._actions.length;
+
+                    this._actions.forEach(function (element) {
+                        if (element && element instanceof ActionEntry && element.action === action) {
+                            if (_this3._next) {
+                                e.action.finishIt.disconnect(_this3._next);
+                            }
+                            _this3._actions.splice(l, 1);
+                            return true;
+                        }
+                    });
+                } else {
+                    this.dispose();
+                    this._actions.length = 0;
+                    this.notifyCleared();
+                    return true;
+                }
+            }
+            return false;
+        } },
+
+    /**
+     * Returns the Array representation of the chain.
+     * @name toArray
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return the <code>Array</code> representation of the chain.
+     */
+    toArray: { writable: true, value: function value() {
+            if (this._actions.length > 0) {
+                var output /*Array*/ = [];
+                if (this._actions.length > 0) {
+                    this._actions.forEach(function (element) {
+                        if (element && element instanceof ActionEntry && element.action) {
+                            output.push(element.action);
+                        }
+                    });
+                }
+                return output;
+            } else {
+                return [];
+            }
+        } },
+
+    /**
+     * Returns the String representation of the chain.
+     * @name toString
+     * @memberof system.process.TaskGroup
+     * @function
+     * @instance
+     * @return the String representation of the chain.
+     */
+    toString: { writable: true, value: function value() {
+            var s /*String*/ = "[" + this.constructor.name;
+            if (Boolean(this.verbose)) {
+                if (this._actions.length > 0) {
+                    s += "[";
+                    var i;
+                    var e;
+                    var l /*int*/ = this._actions.length;
+                    var r /*Array*/ = [];
+                    for (i = 0; i < l; i++) {
+                        e = this._actions[i];
+                        r.push(e && e.action ? e.action : null);
+                    }
+                    s += r.toString();
+                    s += "]";
+                }
+            }
+            s += "]";
+            return s;
+        } }
+});
+
+/**
+ * The internal BatchTaskNext Receiver.
+ * @name BatchTaskNext
+ * @class
+ * @memberof system.process
+ * @implements system.signals.Receiver
+ * @constructor
+ * @param {system.process.BatchTask} BatchTask - The <code>BatchTask</code> reference of this receiver.
+ */
+function BatchTaskNext(batch) {
+    /**
+     * The batch to register in this helper.
+     * @memberof system.process.BatchTaskNext
+     * @type {system.process.BatchTask}
+     * @instance
+     */
+    this.batch = batch;
+}
+
+BatchTaskNext.prototype = Object.create(Receiver.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: BatchTaskNext },
+
+    /**
+     * Receives the signal message.
+     * @name receive
+     * @memberof system.transitions.BatchTaskNext
+     * @function
+     * @instance
+     * @param {system.process.Action} action - The <code>Action</code> reference received in this slot.
+     */
+    receive: { value: function value(action) {
+            var batch = this.batch;
+            var mode = batch.mode;
+            var actions = batch._actions;
+            var currents = batch._currents;
+
+            if (action && currents.has(action)) {
+                var entry = currents.get(action);
+
+                if (mode !== TaskGroup.EVERLASTING) {
+                    if (mode === TaskGroup.TRANSIENT || entry.auto && mode === TaskGroup.NORMAL) {
+                        var e;
+                        var l = actions.length;
+                        while (--l > -1) {
+                            e = actions[l];
+                            if (e && e.action === action) {
+                                action.finishIt.disconnect(this);
+                                actions.splice(l, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                currents.delete(action);
+            }
+
+            if (batch._current !== null) {
+                batch.notifyChanged();
+            }
+
+            batch._current = action;
+
+            batch.notifyProgress();
+
+            if (currents.length === 0) {
+                batch._current = null;
+                batch.notifyFinished();
+            }
+        } }
+});
 
 /**
  * Batchs a serie of Action and run it in the same time.
@@ -16869,71 +17246,94 @@ Cache.prototype.toString = function () /*String*/
 };
 
 /**
- * The internal ChainNext Receiver.
+ * The internal <code>ChainNext</code> receiver.
+ * @name ChainNext
+ * @class
+ * @memberof system.process
+ * @implements system.signals.Receiver
+ * @constructor
+ * @param {system.process.Chain} chain - The <code>Chain</code> reference of this receiver.
  */
-function ChainNext(chain) {
+function ChainNext() {
+    var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    /**
+     * The chain to register in this helper.
+     * @memberof system.process.ChainNext
+     * @type {system.process.Chain}
+     * @instance
+     */
     this.chain = chain;
 }
 
-/**
- * @extends Receiver
- */
-ChainNext.prototype = Object.create(Receiver.prototype);
-ChainNext.prototype.constructor = ChainNext;
+ChainNext.prototype = Object.create(Receiver.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { value: ChainNext },
 
-/**
- * Receive the signal message.
- */
-ChainNext.prototype.receive = function () {
-    var chain = this.chain;
-    var mode = chain._mode;
-
-    if (chain._current) {
-        if (mode !== TaskGroup.EVERLASTING) {
-            if (mode === TaskGroup.TRANSIENT || chain._current.auto && mode === TaskGroup.NORMAL) {
-                chain._current.action.finishIt.disconnect(this);
-                chain._position--;
-                chain._actions.splice(this._position, 1);
+    /**
+     * Receives the signal message.
+     * @name receive
+     * @memberof system.transitions.ChainNext
+     * @function
+     * @instance
+     */
+    receive: { value: function value() {
+            if (this.chain === null) {
+                return;
             }
-        }
-        chain.notifyChanged();
-        chain._current = null;
-    }
 
-    if (chain._actions.length > 0) {
-        if (chain.hasNext()) {
-            chain._current = chain._actions[chain._position++];
+            var chain = this.chain;
+            var mode = chain._mode;
 
-            chain.notifyProgress();
-
-            if (chain._current && chain._current.action) {
-                chain._current.action.run();
-            } else {
-                this.receive();
+            if (chain._current) {
+                if (mode !== TaskGroup.EVERLASTING) {
+                    if (mode === TaskGroup.TRANSIENT || chain._current.auto && mode === TaskGroup.NORMAL) {
+                        chain._current.action.finishIt.disconnect(this);
+                        chain._position--;
+                        chain._actions.splice(this._position, 1);
+                    }
+                }
+                chain.notifyChanged();
+                chain._current = null;
             }
-        } else if (this.looping) {
-            chain._position = 0;
-            if (chain.numLoop === 0) {
-                chain.notifyLooped();
-                chain._currentLoop = 0;
-                this.receive();
-            } else if (chain._currentLoop < chain.numLoop) {
-                chain._currentLoop++;
-                chain.notifyLooped();
-                this.receive();
+
+            if (chain._actions.length > 0) {
+                if (chain.hasNext()) {
+                    chain._current = chain._actions[chain._position++];
+
+                    chain.notifyProgress();
+
+                    if (chain._current && chain._current.action) {
+                        chain._current.action.run();
+                    } else {
+                        this.receive();
+                    }
+                } else if (this.looping) {
+                    chain._position = 0;
+                    if (chain.numLoop === 0) {
+                        chain.notifyLooped();
+                        chain._currentLoop = 0;
+                        this.receive();
+                    } else if (chain._currentLoop < chain.numLoop) {
+                        chain._currentLoop++;
+                        chain.notifyLooped();
+                        this.receive();
+                    } else {
+                        chain._currentLoop = 0;
+                        chain.notifyFinished();
+                    }
+                } else {
+                    chain._currentLoop = 0;
+                    chain._position = 0;
+                    chain.notifyFinished();
+                }
             } else {
-                chain._currentLoop = 0;
                 chain.notifyFinished();
             }
-        } else {
-            chain._currentLoop = 0;
-            chain._position = 0;
-            chain.notifyFinished();
-        }
-    } else {
-        chain.notifyFinished();
-    }
-};
+        } }
+});
 
 /**
  * Creates a new Chain instance.
@@ -17135,7 +17535,12 @@ Chain.prototype.stop = function () /*void*/
 };
 
 /**
- * A simple command to do something.
+ * A simple command to do something. Very usefull to test something in a complex process.
+ * @name Do
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var action = new system.process.Do() ;
  *
@@ -17162,50 +17567,48 @@ Chain.prototype.stop = function () /*void*/
  * action.run() ;
  */
 function Do() {
-  Action.call(this);
+    Action.call(this);
 }
 
-/**
- * @extends Task
- */
-Do.prototype = Object.create(Action.prototype);
-Do.prototype.constructor = Do;
+Do.prototype = Object.create(Action.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Do },
 
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Do.prototype.clone = function () {
-  return new Do();
-};
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Do
+     * @function
+     * @instance
+     */
+    clone: { writable: true, value: function value() {
+            return new Do();
+        } },
 
-/**
- * The something method to overrides.
- */
-Do.prototype.something = function () {}
-// override
+    /**
+     * Do something in this method (override it).
+     */
+    something: { enumerable: true, writable: true, value: function value() {
+            //
+        } },
 
-
-/**
- * Run the process.
- */
-;Do.prototype.run = function () /*void*/
-{
-  this.notifyStarted();
-  if ('something' in this && this.something instanceof Function) {
-    this.something();
-  }
-  this.notifyFinished();
-};
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Do.prototype.toString = function () /*String*/
-{
-  return '[Do]';
-};
+    /**
+     * Run the process.
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if ('something' in this && this.something instanceof Function) {
+                this.something();
+            }
+            this.notifyFinished();
+        } }
+});
 
 /**
  * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the requestAnimationFrame method.
@@ -17457,7 +17860,12 @@ FrameTimer.prototype = Object.create(Task.prototype, {
 var FPMS = 0.06;
 
 /**
- * Invoked to lock a specific Lockable object.
+ * Invoked to lock a specific {@link system.process.Lockable} object.
+ * @name Lock
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var chain = new system.process.Chain() ;
  * var lock  = new system.process.Lock( chain ) ;
@@ -17471,65 +17879,53 @@ function Lock(target) {
     this.target = target;
 }
 
-/**
- * @extends Task
- */
-Lock.prototype = Object.create(Action.prototype);
-Lock.prototype.constructor = Lock;
+Lock.prototype = Object.create(Action.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Lock },
+
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    clone: { writable: true, value: function value() {
+            return new Lock(this.target);
+        } },
+
+    /**
+     * Run the process.
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if (isLockable(this.target) && !this.target.isLocked()) {
+                this.target.lock();
+            }
+            this.notifyFinished();
+        } }
+});
 
 /**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Lock.prototype.clone = function () {
-    return new Lock(this.target);
-};
-
-/**
- * Indicates if the specific objet is Lockable.
- */
-Lock.prototype.isLockable = function (target) {
-    target = target || this.target;
-
-    if (target) {
-        var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
-        var lock = 'lock' in target && target.lock instanceof Function;
-        var unlock = 'unlock' in target && target.unlock instanceof Function;
-        return isLocked && lock && unlock;
-    }
-
-    return false;
-};
-
-/**
- * Run the process.
- */
-Lock.prototype.run = function () /*void*/
-{
-    this.notifyStarted();
-    if (isLockable(this.target) && !this.target.isLocked()) {
-        this.target.lock();
-    }
-    this.notifyFinished();
-};
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Lock.prototype.toString = function () /*String*/
-{
-    return '[Lock]';
-};
-
-/**
- * Creates a new Priority instance.
+ * Creates a new Priority instance and contains a <code>priority</code> property.
+ * @name Priority
+ * @memberof system.process
+ * @interface
  */
 
 function Priority() {
     Object.defineProperties(this, {
         /**
          * Determinates the priority value.
+         * @memberof system.process.Priority
+         * @type {number}
+         * @instance
          */
         priority: {
             get: function get() {
@@ -17539,199 +17935,179 @@ function Priority() {
                 this._priority = value > 0 || value < 0 ? value : 0;
             }
         },
-        _priority: {
-            value: 0,
-            enumerable: false,
-            writable: true,
-            configurable: false
-        }
+        /**
+         * @private
+         */
+        _priority: { value: 0, writable: true }
     });
 }
 
-/**
- * @extends Object
- */
 Priority.prototype = Object.create(Object.prototype);
 Priority.prototype.constructor = Priority;
 
 /**
- * Indicates if the specific objet is Resetable.
+ * Indicates if the specific objet is Resetable  and contains a <code>reset()</code> method.
+ * @name isResetable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Resetable</code>.
  */
 
 function isResetable(target) {
-    if (target) {
-        if (target instanceof Resetable) {
-            return true;
-        }
-        return 'reset' in target && target.reset instanceof Function;
+  if (target) {
+    if (target instanceof Resetable) {
+      return true;
     }
-
-    return false;
+    return 'reset' in target && target.reset instanceof Function;
+  }
+  return false;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be reseted.
+ * @name Resetable
+ * @memberof system.process
+ * @interface
  */
 function Resetable() {}
-///////////////////
 
 Resetable.prototype = Object.create(Object.prototype);
 Resetable.prototype.constructor = Resetable;
 
-///////////////////
-
 /**
  * Resets the process.
+ * @name reset
+ * @memberof system.process.Resetable
+ * @function
+ * @instance
  */
-Resetable.prototype.reset = function () /*void*/
-{}
-//
-
+Resetable.prototype.reset = function () {};
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Resetable.prototype.toString = function () /*String*/
-{
-    return "[Resetable]";
-};
-
-/**
- * Indicates if the specific objet is Resumable.
+ * Indicates if the specific objet is Resumable and contains a <code>resume()</code> method.
+ * @name isResumable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Resumable</code>.
  */
 
 function isResumable(target) {
-    if (target) {
-        if (target instanceof Resumable) {
-            return true;
-        }
-        return 'resume' in target && target.resume instanceof Function;
+  if (target) {
+    if (target instanceof Resumable) {
+      return true;
     }
-
-    return false;
+    return 'resume' in target && target.resume instanceof Function;
+  }
+  return false;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be resumed.
+ * @name Resumable
+ * @memberof system.process
+ * @interface
  */
 function Resumable() {}
-///////////////////
 
 Resumable.prototype = Object.create(Object.prototype);
 Resumable.prototype.constructor = Resumable;
 
-///////////////////
-
 /**
  * Resumes the process.
+ * @name resume
+ * @memberof system.process.Resumable
+ * @function
+ * @instance
  */
-Resumable.prototype.resume = function () /*void*/
-{}
-//
-
+Resumable.prototype.resume = function () {};
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Resumable.prototype.toString = function () /*String*/
-{
-    return "[Resumable]";
-};
-
-/**
- * Indicates if the specific objet is Startable.
+ * Indicates if the specific objet is Startable and contains a <code>start()</code> method.
+ * @name isStartable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Startable</code>.
  */
 
 function isStartable(target) {
-    if (target) {
-        if (target instanceof Startable) {
-            return true;
-        }
-        return 'start' in target && target.start instanceof Function;
+  if (target) {
+    if (target instanceof Startable) {
+      return true;
     }
-
-    return false;
+    return 'start' in target && target.start instanceof Function;
+  }
+  return false;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be started.
+ * @name Startable
+ * @memberof system.process
+ * @interface
  */
 function Startable() {}
-
-///////////////////
 
 Startable.prototype = Object.create(Object.prototype);
 Startable.prototype.constructor = Startable;
 
-///////////////////
-
 /**
  * Starts the process.
+ * @name start
+ * @memberof system.process.Startable
+ * @function
+ * @instance
  */
-Startable.prototype.start = function () /*void*/
-{}
-//
-
+Startable.prototype.start = function () {};
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Startable.prototype.toString = function () /*String*/
-{
-    return "[Startable]";
-};
-
-/**
- * Indicates if the specific objet is Stoppable.
+ * Indicates if the specific objet is Stoppable and contains a <code>stop()</code> method.
+ * @name isStoppable
+ * @function
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Stoppable</code>.
  */
 
 function isStoppable(target) {
-    if (target) {
-        if (target instanceof Stoppable) {
-            return true;
-        }
-        return 'stop' in target && target.stop instanceof Function;
+  if (target) {
+    if (target instanceof Stoppable) {
+      return true;
     }
-
-    return false;
+    return 'stop' in target && target.stop instanceof Function;
+  }
+  return false;
 }
 
 /**
  * This interface should be implemented by any class whose instances are intended to be stopped.
+ * @name Stoppable
+ * @memberof system.process
+ * @interface
  */
 function Stoppable() {}
-
-///////////////////
 
 Stoppable.prototype = Object.create(Object.prototype);
 Stoppable.prototype.constructor = Stoppable;
 
-///////////////////
-
 /**
  * Stop the process.
+ * @name stop
+ * @memberof system.process.Stoppable
+ * @function
+ * @instance
  */
-Stoppable.prototype.stop = function () /*void*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Stoppable.prototype.toString = function () /*String*/
-{
-    return "[Stoppable]";
-};
+Stoppable.prototype.stop = function () {};
 
 /**
  * Creates a new TimeoutPolicy instance.
+ * @name TimeoutPolicy
+ * @class
+ * @memberof system.process
+ * @extends system.Enum
  * @example
- * <pre>
  * var TimeoutPolicy = system.process.TimeoutPolicy  ;
  *
  * trace( TimeoutPolicy.INFINITY ) ;
@@ -17744,27 +18120,32 @@ Stoppable.prototype.stop = function () /*void*/
  * trace( "toString : " + TimeoutPolicy.LIMIT.toString() ) ;
  * trace( "valueOf  : " + TimeoutPolicy.LIMIT.valueOf() ) ;
  * </pre>
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
+ * @param {number} value - The value of the enumeration.
+ * @param {string} name - The name key of the enumeration.
  */
-function TimeoutPolicy(value /*int*/, name /*String*/) {
+function TimeoutPolicy(value, name) {
   Enum.call(this, value, name);
 }
 
-/**
- * @extends Object
- */
 TimeoutPolicy.prototype = Object.create(Enum.prototype);
 TimeoutPolicy.prototype.constructor = TimeoutPolicy;
 
 Object.defineProperties(TimeoutPolicy, {
   /**
    * Designates the infinity timeout policy (0).
+   * @name INFINITY
+   * @memberof system.process.TimeoutPolicy
+   * @const
+   * @type {system.process.TimeoutPolicy}
    */
   INFINITY: { value: new TimeoutPolicy(0, 'infinity'), enumerable: true },
 
   /**
    * Designates the limited timeout policy (1).
+   * @name LIMIT
+   * @memberof system.process.TimeoutPolicy
+   * @const
+   * @type {system.process.TimeoutPolicy}
    */
   LIMIT: { value: new TimeoutPolicy(1, 'limit'), enumerable: true }
 });
@@ -18000,7 +18381,12 @@ Timer.prototype = Object.create(Task.prototype, {
 });
 
 /**
- * Invoked to Unlock a specific Unlockable object.
+ * Invoked this action to unlock a specific {@link system.process.Lockable} object.
+ * @name Unlock
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var chain  = new system.process.Chain() ;
  * var unlock = new system.process.Unlock( chain ) ;
@@ -18012,44 +18398,43 @@ Timer.prototype = Object.create(Task.prototype, {
  * trace( chain.isLocked() ) ;
  */
 function Unlock(target) {
-  Action.call(this);
-  this.target = target;
+    Action.call(this);
+    this.target = target;
 }
 
-/**
- * @extends Task
- */
-Unlock.prototype = Object.create(Action.prototype);
-Unlock.prototype.constructor = Unlock;
+Unlock.prototype = Object.create(Action.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Unlock },
 
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Unlock.prototype.clone = function () {
-  return new Unlock(this.target);
-};
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Unlock
+     * @function
+     * @instance
+     */
+    clone: { writable: true, value: function value() {
+            return new Unlock(this.target);
+        } },
 
-/**
- * Run the process.
- */
-Unlock.prototype.run = function () /*void*/
-{
-  this.notifyStarted();
-  if (isLockable(this.target) && this.target.isLocked()) {
-    this.target.unlock();
-  }
-  this.notifyFinished();
-};
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Unlock.prototype.toString = function () /*String*/
-{
-  return '[Unlock]';
-};
+    /**
+     * Run the process.
+     * @name run
+     * @memberof system.process.Unlock
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if (isLockable(this.target) && this.target.isLocked()) {
+                this.target.unlock();
+            }
+            this.notifyFinished();
+        } }
+});
 
 /**
  * The VEGAS.js framework - The system.process library.

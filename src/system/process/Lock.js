@@ -4,7 +4,12 @@ import { isLockable } from './Lockable.js' ;
 import { Action } from './Action.js' ;
 
 /**
- * Invoked to lock a specific Lockable object.
+ * Invoked to lock a specific {@link system.process.Lockable} object.
+ * @name Lock
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @augments system.process.Action
  * @example
  * var chain = new system.process.Chain() ;
  * var lock  = new system.process.Lock( chain ) ;
@@ -19,57 +24,39 @@ export function Lock( target )
     this.target = target ;
 }
 
-/**
- * @extends Task
- */
-Lock.prototype = Object.create( Action.prototype );
-Lock.prototype.constructor = Lock ;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Lock.prototype.clone = function()
+Lock.prototype = Object.create( Action.prototype ,
 {
-    return new Lock( this.target ) ;
-}
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Lock },
 
-/**
- * Indicates if the specific objet is Lockable.
- */
-Lock.prototype.isLockable = function( target )
-{
-    target = target || this.target ;
-
-    if( target )
+    /**
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    clone : { writable : true , value : function()
     {
-        let isLocked = ( 'isLocked' in target ) && ( target.isLocked instanceof Function )  ;
-        let lock     = ( 'lock'     in target ) && ( target.lock     instanceof Function )  ;
-        let unlock   = ( 'unlock'   in target ) && ( target.unlock   instanceof Function )  ;
-        return isLocked && lock && unlock ;
-    }
+        return new Lock( this.target ) ;
+    }},
 
-    return false ;
-}
-
-/**
- * Run the process.
- */
-Lock.prototype.run = function() /*void*/
-{
-    this.notifyStarted() ;
-    if( isLockable( this.target ) && !this.target.isLocked() )
+    /**
+     * Run the process.
+     * @memberof system.process.Lock
+     * @function
+     * @instance
+     */
+    run : { writable : true , value : function()
     {
-        this.target.lock() ;
-    }
-    this.notifyFinished() ;
-}
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Lock.prototype.toString = function() /*String*/
-{
-    return '[Lock]' ;
-}
+        this.notifyStarted() ;
+        if( isLockable( this.target ) && !this.target.isLocked() )
+        {
+            this.target.lock() ;
+        }
+        this.notifyFinished() ;
+    }}
+});
