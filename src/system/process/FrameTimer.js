@@ -6,9 +6,14 @@ import { cancelAnimationFrame }  from '../../core/cancelAnimationFrame.js' ;
 import { requestAnimationFrame } from '../../core/requestAnimationFrame.js' ;
 
 /**
- * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the requestAnimationFrame method.
+ * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * @name FrameTimer
+ * @memberof system.process
+ * @class
+ * @extends system.process.Task
+ * @constructor
+ * @see {@link https://developer.mozilla.org/fr/docs/Web/API/Window/requestAnimationFrame|requestAnimationFrame} for further information.
  * @example
- * <pre>
  * var finish = function( action )
  * {
  *     trace( action + " finish" ) ;
@@ -48,7 +53,6 @@ import { requestAnimationFrame } from '../../core/requestAnimationFrame.js' ;
  * action.stopIt.connect( stop ) ;
  *
  * action.run() ;
- * </pre>
  */
 export function FrameTimer()
 {
@@ -59,8 +63,11 @@ export function FrameTimer()
         /**
          * Scalar time value from last frame to this frame.
          * This value is capped by setting minFPS and is scaled with "speed".
-         * @member {number}
+         * @type {number}
          * @default 1
+         * @name deltaTime
+         * @memberof system.process.FrameTimer
+         * @instance
          */
         deltaTime : { value : 1 , writable : true },
 
@@ -72,15 +79,20 @@ export function FrameTimer()
          * this value will have a precision of 1 µs.
          * @member {number}
          * @default 1 / FPMS
+         * @name elapsedMS
+         * @memberof system.process.FrameTimer
+         * @instance
          */
         elapsedMS : { value : 1 / FPMS , writable : true } ,
 
         /**
          * The frames per second at which this timer is running.
          * The default is approximately 60 in most modern browsers.
-         * **Note:** This does not factor in the value of {@link FrameTimer#speed},
-         * which is specific to scaling {@link FrameTimer#deltaTime}.
+         * **Note:** This does not factor in the value of {@link FrameTimer#speed}, which is specific to scaling {@link FrameTimer#deltaTime}.
          * @readonly
+         * @name fps
+         * @memberof system.process.FrameTimer
+         * @instance
          */
         fps : { get : function()
         {
@@ -91,19 +103,20 @@ export function FrameTimer()
          * Manages the maximum amount of milliseconds allowed to elapse between invoking {@link FrameTimer#next}.
          * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link FrameTimer#fps}.
          * When setting this property it is clamped to a value between `0` and `FPMS * 1000`.
-         * @member {number}
-         * @default 10
+         * @type {number}
+         * @name minFPS
+         * @memberof system.process.FrameTimer
+         * @instance
          */
         minFPS :
         {
             get : function()
             {
-                return 1000 / this._maxElapsedMS
+                return 1000 / this._maxElapsedMS ;
             },
             set : function(fps)
             {
-                const minFPMS = Math.min(Math.max(0, fps) / 1000, FPMS);
-                this._maxElapsedMS = 1 / minFPMS;
+                this._maxElapsedMS = 1 / Math.min(Math.max(0, fps) / 1000, FPMS);
             }
         },
 
@@ -111,18 +124,24 @@ export function FrameTimer()
          * The last time the next method was invoked.
          * This value is also reset internally outside of invoking update, but only when a new animation frame is requested.
          * If the platform supports DOMHighResTimeStamp, this value will have a precision of 1 µs.
-         * @member {number}
+         * @type {number}
          * @default 0
+         * @name lastTime
+         * @memberof system.process.FrameTimer
+         * @instance
          */
         lastTime : { value : 0 , writable : true } ,
 
         /**
          * Factor of current deltaTime.
-         * @member {number}
+         * @type {number}
          * @default 1
-         * @example
-         * // Scales ticker.deltaTime to what would be the equivalent of approximately 120 FPS
-         * ticker.speed = 2;
+         * @name speed
+         * @memberof system.process.FrameTimer
+         * @instance
+         * @example <caption>Scales <code>deltaTime</code> to what would be the equivalent of approximately <strong>120 FPS</strong></caption>
+         * var timer = new FrameTimer() ;
+         * timer.speed = 2;
          */
         speed : { value : 1 , writable : true } ,
 
@@ -145,9 +164,6 @@ export function FrameTimer()
     }) ;
 }
 
-/**
- * @extends Task
- */
 FrameTimer.prototype = Object.create( Task.prototype ,
 {
     /**
@@ -157,12 +173,20 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates true if the timer is stopped.
+     * @name stopped
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @readonly
      */
     stopped : { get : function () { return this._stopped ; } },
 
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      */
     clone : { value : function()
     {
@@ -170,7 +194,11 @@ FrameTimer.prototype = Object.create( Task.prototype ,
     }} ,
 
     /**
-     * Restarts the timer. The timer is stopped, and then started.
+     * Restarts the timer. The timer is <code>stopped</code>, and then started.
+     * @name resume
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      */
     resume : { value : function()
     {
@@ -185,6 +213,10 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 
     /**
      * Reset the timer and stop it before if it's running.
+     * @name reset
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      */
     reset : { value : function()
     {
@@ -194,6 +226,10 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 
     /**
      * Run the timer.
+     * @name run
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      */
     run : { value : function ()
     {
@@ -208,6 +244,10 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 
     /**
      * Stops the timer.
+     * @name stop
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      */
     stop : { value : function()
     {
@@ -223,6 +263,10 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 
     /**
      * Returns the string representation of this instance.
+     * @name toString
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
      * @return the string representation of this instance.
      */
     toString : { value : function ()
@@ -268,6 +312,8 @@ FrameTimer.prototype = Object.create( Task.prototype ,
 });
 
 /**
- * The target frames per millisecond.
+ * The target frames per millisecond used in the {@link system.process.FrameTimer} instances.
+ * @name FPMS
+ * @memberof system.process
  */
 export var FPMS = 0.06 ;

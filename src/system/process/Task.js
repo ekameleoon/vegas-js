@@ -10,7 +10,6 @@ import { TaskPhase } from './TaskPhase.js' ;
  * @name Task
  * @class
  * @extends system.process.Action
- * @augments system.process.Action
  * @memberof system.process
  * @implements system.process.Lockable
  * @implements system.process.Resetable

@@ -12,8 +12,8 @@ import { Task }        from './Task.js' ;
  * @memberof system.process
  * @extends system.process.Task
  * @constructor
- * @param {string} [mode='normal'] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -142,6 +142,11 @@ Object.defineProperties( TaskGroup ,
 TaskGroup.prototype = Object.create( Task.prototype ,
 {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : TaskGroup },
+
+    /**
      * Indicates the numbers of actions register in the group.
      * @name length
      * @memberof system.process.TaskGroup
@@ -216,11 +221,6 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             return this._stopped ;
         }
     },
-
-    /**
-     * The constructor reference of the instance.
-     */
-    constructor : { writable : true , value : TaskGroup },
 
     /**
      * Adds an action in the chain.

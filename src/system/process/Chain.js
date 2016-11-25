@@ -5,10 +5,11 @@ import { TaskGroup } from './TaskGroup.js' ;
 
 /**
  * Creates a new Chain instance.
- * @param looping Specifies whether playback of the clip should continue, or loop (default false).
- * @param numLoop Specifies the number of the times the presentation should loop during playback.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @name Chain
+ * @class
+ * @memberof system.process
+ * @extends system.process.TaskGroup
+ * @constructor
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -62,8 +63,12 @@ import { TaskGroup } from './TaskGroup.js' ;
  * trace('---------') ;
  *
  * chain.run() ;
+ * @param {boolean} [looping=false] Specifies whether playback of the clip should continue, or loop (default false).
+ * @param {number} [numLoop=0] Specifies the number of the times the presentation should loop during playback.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  */
-export function Chain( looping /*Boolean*/ , numLoop /*uint*/ , mode /*String*/ , actions /*Array*/)
+export function Chain( looping = false , numLoop = 0 , mode = 'normal' , actions = null )
 {
     TaskGroup.call( this , mode , actions ) ;
 
@@ -71,11 +76,19 @@ export function Chain( looping /*Boolean*/ , numLoop /*uint*/ , mode /*String*/ 
     {
         /**
          * Indicates if the chain loop when is finished.
+         * @memberof system.process.Chain
+         * @type {boolean}
+         * @instance
+         * @default <code>false</code>
          */
         looping : { value : Boolean( looping ) , writable : true } ,
 
         /**
          * The number of loops.
+         * @memberof system.process.Chain
+         * @type {number}
+         * @instance
+         * @default 0
          */
         numLoop :
         {
@@ -93,123 +106,154 @@ export function Chain( looping /*Boolean*/ , numLoop /*uint*/ , mode /*String*/ 
     }) ;
 }
 
-/**
- * @extends TaskGroup
- */
 Chain.prototype = Object.create( TaskGroup.prototype ,
 {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor : { writable : true , value : Chain },
+
+    /**
      * Indicates the current Action reference when the process is in progress.
+     * @memberof system.process.Chain
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
      */
     current : { get : function() { return this._current ? this._current.action : null ; } } ,
 
     /**
      * Indicates the current countdown loop value.
+     * @memberof system.process.Chain
+     * @type {number}
+     * @instance
+     * @readonly
      */
     currentLoop : { get : function() { return this._currentLoop ; } } ,
 
     /**
      * Indicates the current numeric position of the chain when is running.
+     * @memberof system.process.Chain
+     * @type {number}
+     * @instance
+     * @readonly
      */
-    position : { get: function() { return this._position ; } } ,
+    position : { get: function() { return this._position ; } },
 
     /**
-     * @private
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Chain
+     * @function
+     * @instance
      */
-    __className__ : { value : 'Chain' , configurable : true }
-}) ;
-
-Chain.prototype.constructor = Chain;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Chain.prototype.clone = function()
-{
-    return new Chain( this.looping , this.numLoop , this._mode , ( this._actions.length > 0 ? this._actions : null ) ) ;
-}
-
-/**
- * Retrieves the next action reference in the chain with the current position.
- */
-Chain.prototype.element = function()
-{
-    return this.hasNext() ? ( this._actions[ this._position ] ).action : null ;
-}
-
-/**
- * Retrieves the next action reference in the chain with the current position.
- */
-Chain.prototype.hasNext = function()
-{
-    return this._position < this._actions.length ;
-}
-
-/**
- * Resume the chain.
- */
-Chain.prototype.resume = function() /*void*/
-{
-    if ( this._stopped )
+    clone : { writable : true , value : function()
     {
-        this._running = true ;
-        this._stopped = false ;
+        return new Chain( this.looping , this.numLoop , this._mode , ( this._actions.length > 0 ? this._actions : null ) ) ;
+    }},
 
-        this.notifyResumed() ;
+    /**
+     * Retrieves the next action reference in the chain with the current position.
+     * @name element
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    element : { writable : true , value : function()
+    {
+        return this.hasNext() ? ( this._actions[ this._position ] ).action : null ;
+    }},
 
-        if ( this._current && this._current.action )
+    /**
+     * Retrieves the next action reference in the chain with the current position.
+     * @name hasNext
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    hasNext : { writable : true , value : function()
+    {
+        return this._position < this._actions.length ;
+    }},
+
+    /**
+     * Resume the chain.
+     * @name resume
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    resume : { writable : true , value : function()
+    {
+        if ( this._stopped )
         {
-            if ( "resume" in this._current.action )
+            this._running = true ;
+            this._stopped = false ;
+
+            this.notifyResumed() ;
+
+            if ( this._current && this._current.action )
             {
-                this._current.action.resume() ;
+                if ( "resume" in this._current.action )
+                {
+                    this._current.action.resume() ;
+                }
+            }
+            else
+            {
+                this._next.receive() ;
             }
         }
         else
         {
+            this.run() ;
+        }
+    }},
+
+    /**
+     * Launchs the chain process.
+     * @name run
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    run : { writable : true , value : function()
+    {
+        if ( !this._running )
+        {
+            this.notifyStarted() ;
+
+            this._current     = null  ;
+            this._stopped     = false ;
+            this._position    = 0 ;
+            this._currentLoop = 0 ;
+
             this._next.receive() ;
         }
-    }
-    else
+    }},
+
+    /**
+     * Stops the task group.
+     * @name stop
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    stop : { writable : true , value : function()
     {
-        this.run() ;
-    }
-}
-
-/**
- * Launchs the chain process.
- */
-Chain.prototype.run = function() /*void*/
-{
-    if ( !this._running )
-    {
-        this.notifyStarted() ;
-
-        this._current     = null  ;
-        this._stopped     = false ;
-        this._position    = 0 ;
-        this._currentLoop = 0 ;
-
-        this._next.receive() ;
-    }
-}
-
-/**
- * Stops the task group.
- */
-Chain.prototype.stop = function() /*void*/
-{
-    if ( this._running )
-    {
-        if ( this._current && this._current.action )
+        if ( this._running )
         {
-            if ( 'stop' in this._current.action && this._current.action instanceof Function )
+            if ( this._current && this._current.action )
             {
-                this._current.action.stop() ;
-                this._running = false ;
-                this._stopped = true ;
-                this.notifyStopped() ;
+                if ( 'stop' in this._current.action && this._current.action instanceof Function )
+                {
+                    this._current.action.stop() ;
+                    this._running = false ;
+                    this._stopped = true ;
+                    this.notifyStopped() ;
+                }
             }
         }
-    }
-}
+    }}
+}) ;
