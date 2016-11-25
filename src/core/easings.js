@@ -35,7 +35,8 @@ import { sineInOut }     from './easings/sineInOut.js' ;
 import { sineOut }       from './easings/sineOut.js' ;
 
 /**
- * @description The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific tweening effects. These easings functions provide different flavors of math-based motion under a consistent API.
+ * The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific <b>tweening</b> effects.
+ * <p>These easings functions provide different flavors of math-based motion under a consistent API.</p>
  *
  * |  easing   |                         description                         |  in  | out  | inout  |
  * |:--------: |:----------------------------------------------------------: |:---: |:---: |:-----: |
@@ -51,10 +52,12 @@ import { sineOut }       from './easings/sineOut.js' ;
  * |  quintic  | quintic easing : t^5                                        | yes  | yes  |  yes   |
  * |  regular  | regular easing                                              | yes  | yes  |  yes   |
  * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
+ * @summary The {@link core.easings} library contains all the easing functions to create the specific tweening effects.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @namespace core.easings
  * @memberof core
  * @tutorial system.transitions
+ * @see {@link system.transitions|system.transition library}
  */
 export var easings = Object.assign
 ({

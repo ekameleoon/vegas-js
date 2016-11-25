@@ -63,7 +63,8 @@ import { tanH }                   from './maths/tanH.js' ;
 import { vincenty }               from './maths/vincenty.js' ;
 
 /**
- * The VEGAS.js framework - The core.maths library.
+ * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
+ * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.maths

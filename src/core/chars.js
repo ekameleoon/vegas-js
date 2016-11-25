@@ -24,7 +24,9 @@ import { symbols }           from './chars/symbols.js' ;
 import { whiteSpaces }       from './chars/whiteSpaces.js' ;
 
 /**
- * The VEGAS.js framework - The core.chars library.
+ * The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform the basic characters.
+ * <p>You can use this library for example to parse a string (JSON, csv, etc.).</p>
+ * @summary The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform a basic character.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.chars

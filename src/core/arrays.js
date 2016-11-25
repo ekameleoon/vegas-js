@@ -13,7 +13,8 @@ import { spliceInto } from './arrays/spliceInto.js' ;
 import { swap }       from './arrays/swap.js' ;
 
 /**
- * The VEGAS.js framework - The core.arrays library.
+ * The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
+ * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.arrays

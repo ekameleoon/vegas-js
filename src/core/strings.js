@@ -31,7 +31,8 @@ import { versionUUID }         from './strings/versionUUID.js' ;
 import { whiteSpaces }         from './strings/whiteSpaces.js' ;
 
 /**
- * The {@link core.strings} that provides extra String methods to transform and validate it.
+ * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
+ * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
  * @namespace core.strings
  * @memberof core
  * @license MPL 1.1/GPL 2.0/LGPL 2.1

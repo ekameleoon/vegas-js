@@ -9,7 +9,9 @@ import { Signaler    } from './signals/Signaler.js' ;
 import { Signal      } from './signals/Signal.js' ;
 
 /**
- * The VEGAS.js framework - The system.signals library.
+ * The {@link system.signals} library is the root package for the <strong>VEGAS JS</strong> application framework. It is the starting point of the RIA framework structure.
+ * <p><b>Depencies :</b> The {@link system.signals}, reuse the module and building blocks of the {@link system.core} library.</p>
+ * @summary The {@link system.signals} library is the root package for the <strong>VEGAS JS</strong> application framework.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.signals

@@ -12,7 +12,7 @@
  * @example
  * var start = performance.now() ;
  *
- * function tick( timestamp )
+ * function step( timestamp )
  * {
  *     var progress = timestamp - start;
  *     console.log( 'tick: ' + progress ) ;

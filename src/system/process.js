@@ -33,7 +33,8 @@ import { isStartable } from './process/Startable.js' ;
 import { isStoppable } from './process/Stoppable.js' ;
 
 /**
- * The VEGAS.js framework - The {@link system.process} library.
+ * The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
+ * @summary The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
  * @namespace system.process
  * @memberof system
  * @license MPL 1.1/GPL 2.0/LGPL 2.1

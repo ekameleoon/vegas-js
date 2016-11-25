@@ -25,7 +25,11 @@ import { ArrayMap } from './data/maps/ArrayMap.js' ;
 /**
  * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
  * <p>It reduces programming effort while increasing performance. It enables interoperability among unrelated APIs, reduces effort in designing and learning new APIs, and fosters software reuse.</p>
- * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p>
+ * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p></br>
+ * <p>An <strong>abstract data type</strong> (<b>ADT</b>) is a model for a certain class of data structures that have similar behavior; or for certain data types of one or more programming languages that have similar semantics. The collections framework is a unified architecture for representing and manipulating collections, allowing them to be manipulated independently of the details of their representation. It reduces programming effort while increasing performance.</p>
+ * <p>Originaly the {@link system.data} collection framework is loosely inspired on the <b>JAVA Collections Framework</b> and the <b>Jakarta Collections Framework</b> but with the new ES6 standard we change the basic implementation of the new <b>VEGAS</b> framework in the JS version of the library.</p>
+ * <p>This framework is inspired on interfaces to defines the different types of collections : * Map * Bag * Collections * Iterator * Set * Queue & Stack... </p>
+ * @summary The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.data

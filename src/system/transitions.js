@@ -7,6 +7,7 @@ import { TweenUnit }  from './transitions/TweenUnit.js' ;
 
 /**
  * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
+ * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
