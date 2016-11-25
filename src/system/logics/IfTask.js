@@ -11,11 +11,16 @@ import { TaskPhase }   from '../process/TaskPhase.js' ;
 
 /**
  * Perform some tasks based on whether a given condition holds true or not.
- * @example
+ * @name IfTask
+ * @memberof system.logics
+ * @implements system.process.Action
+ * @augments system.process.Action
+ * @class
+ * @constructor
+ * @example <caption><strong>Usage </strong>:</caption>
  * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
  * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )
- * @example
- * <pre>
+ * @example <caption><strong>Basic example </strong>:</caption>
  * // -------- Imports
  *
  * var IfTask      = system.logics.IfTask ;
@@ -123,7 +128,6 @@ import { TaskPhase }   from '../process/TaskPhase.js' ;
  * task.throwError = false ;
  *
  * task.run() ;
- * </pre>
  */
 export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
 {
@@ -133,21 +137,34 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
     {
         /**
          * The collection of condition/action invokable if the main rule is not true.
+         * @memberof system.logics.IfTask
+         * @type {array}
+         * @instance
          */
         elseIfTask : { get : function() { return this._elseIfTask ; } } ,
 
         /**
          * The action invoked if all the conditions failed.
+         * @memberof system.logics.IfTask
+         * @type {system.process.Action}
+         * @instance
          */
         elseTask : { get : function() { return this._elseTask ; } } ,
 
         /**
          * This signal emit when the action failed.
+         * @memberof system.logics.IfTask
+         * @type {system.signals.Signal}
+         * @instance
+         * @readonly
          */
         errorIt : { value : new Signal() } ,
 
         /**
          * The rule reference of this task.
+         * @memberof system.logics.IfTask
+         * @type {system.rules.Rule}
+         * @instance
          */
         rule :
         {
@@ -160,11 +177,18 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
 
         /**
          * The action to execute if the main condition if true.
+         * @memberof system.logics.IfTask
+         * @type {system.process.Action}
+         * @instance
          */
         thenTask : { get : function() { return this._thenTask ; } } ,
 
         /**
          * Indicates if the class throws errors or notify a finished event when the task failed.
+         * @memberof system.logics.IfTask
+         * @type {boolean}
+         * @default false
+         * @instance
          */
         throwError : { value : false , writable : true , enumerable : true } ,
 
@@ -212,18 +236,19 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
     }
 }
 
-/**
- * @extends TaskGroup
- */
 IfTask.prototype = Object.create( Action.prototype ,
 {
     /**
      * Defines the action when the condition block use the else condition.
-     * @param action The action to defines with the else condition in the IfTask reference.
+     * @name addElse
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.process.Action} action The action to defines with the else condition in the {system.logics.IfTask} reference.
      * @return The current IfTask reference.
      * @throws Error if an 'else' action is already register.
      */
-    addElse : { value : function( action /*Action*/ ) /*IfTask*/
+    addElse : { value : function( action )
     {
         if ( this._elseTask )
         {
@@ -238,10 +263,41 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Defines an action when the condition block use the elseif condition.
-     * @param condition The condition of the 'elseif' element.
-     * @param task The task to invoke if the 'elseif' condition is succeed.
+     * @name addElseIf
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {...system.logics.ElseIf|system.rules.Rule|system.process.Action} condition - A {system.logics.ElseIf} instance or a serie of {system.rules.Rule}/{system.process.Action}.
      * @return The current IfTask reference.
-     * @throws Error The condition and action reference not must be null.
+     * @example
+     *
+     * var IfTask      = system.logics.IfTask ;
+     * var Do          = system.process.Do ;
+     * var ElseIf      = system.logics.ElseIf ;
+     * var EmptyString = system.rules.EmptyString ;
+     * var Equals      = system.rules.Equals ;
+     *
+     * var do1 = new Do() ;
+     * var do2 = new Do() ;
+     * var do3 = new Do() ;
+     * var do4 = new Do() ;
+     *
+     * do1.something = function() { trace("do1 ###") } ;
+     * do2.something = function() { trace("do2 ###") } ;
+     * do3.something = function() { trace("do3 ###") } ;
+     * do4.something = function() { trace("do4 ###") } ;
+     *
+     * var task = new IfTask() ;
+     *
+     * task.addRule( new Equals(1,2) )
+     *     .addThen( do1 )
+     *     .addElseIf
+     *     (
+     *         new ElseIf( new Equals(2,1) , do3 ) ,
+     *         new Equals(2,2) , do4
+     *     )
+     *     .addElse( do2 )
+     *     .run() ; // do4 ###
      */
     addElseIf : { value : function( ...elseIfTask  ) /*IfTask*/
     {
@@ -274,7 +330,11 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Defines the main conditional rule of the task.
-     * @param rule The main Rule of the task.
+     * @name addRule
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.rules.Rule} rule - The main <code>Rule</code> of the task.
      * @return The current IfTask reference.
      * @throws Error if a 'condition' is already register.
      */
@@ -293,11 +353,15 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Defines the action when the condition block success and must run the 'then' action.
-     * @param action Defines the 'then' action in the IfTask reference.
-     * @return The current IfTask reference.
-     * @throws Error if the 'then' action is already register.
+     * @name addThen
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @param {system.process.Action} action - Defines the '<b>then</b>' action in the <code>IfTask</code> reference.
+     * @return The current <code>IfTask</code> reference.
+     * @throws <code>Error</code> if the 'then' action is already register.
      */
-    addThen : { value : function( action /*Action*/ ) /*IfTask*/
+    addThen : { value : function( action )
     {
         if ( this._thenTask )
         {
@@ -312,6 +376,11 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Clear all elements conditions and conditional tasks in the process.
+     * @name clear
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     clear : { value : function()
     {
@@ -319,11 +388,16 @@ IfTask.prototype = Object.create( Action.prototype ,
         this._elseIfTasks.length = 0 ;
         this._elseTask = null ;
         this._thenTask = null ;
+        return this ;
     }},
 
     /**
      * Removes the 'elseIf' action.
-     * @return The current IfTask reference.
+     * @name deleteElseIf
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     deleteElseIf : { value : function() /*IfTask*/
     {
@@ -333,7 +407,11 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Removes the 'else' action.
-     * @return The current IfTask reference.
+     * @name deleteElse
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
+     * @return The current <code>IfTask</code> reference.
      */
     deleteElse : { value : function() /*IfTask*/
     {
@@ -363,6 +441,10 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Notify when the process is started.
+     * @name notifyError
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     notifyError : { value : function( message ) /*void*/
     {
@@ -377,6 +459,7 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Run the process.
+     * @memberof system.logics.IfTask
      */
     run : { value : function()
     {
