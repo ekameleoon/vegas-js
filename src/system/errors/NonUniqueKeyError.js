@@ -3,10 +3,15 @@
 import { fastformat } from '../../core/strings/fastformat.js' ;
 
 /**
- * The error throws when a key is non unique.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when a key is non unique.
+ * @summary Thrown when a key is non unique.
+ * @name NonUniqueKeyError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 export function NonUniqueKeyError( key , pattern , fileName , lineNumber )
 {

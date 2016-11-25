@@ -1,10 +1,15 @@
 "use strict" ;
 
 /**
- * The error throws when methods that have detected concurrent modification of an object when such modification is not permissible.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when methods that have detected concurrent modification of an object when such modification is not permissible.
+ * @summary Thrown when methods that have detected concurrent modification of an object when such modification is not permissible.
+ * @name ConcurrencyError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 export function ConcurrencyError( message , fileName , lineNumber )
 {
@@ -15,8 +20,5 @@ export function ConcurrencyError( message , fileName , lineNumber )
     this.stack      = (new Error()).stack;
 }
 
-/**
- * @extends Error
- */
 ConcurrencyError.prototype = Object.create( Error.prototype );
 ConcurrencyError.prototype.constructor = ConcurrencyError;

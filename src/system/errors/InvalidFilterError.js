@@ -1,10 +1,15 @@
 "use strict" ;
 
 /**
- * The error throws when an invalid filter is find.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * Thrown when an invalid filter is find.
+ * @summary Thrown when an invalid filter is find.
+ * @name InvalidFilterError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 export function InvalidFilterError( message , fileName , lineNumber )
 {

@@ -2,9 +2,14 @@
 
 /**
  * Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
- * @param message Optional. Human-readable description of the error.
- * @param fileName Optional. Human-readable description of the error.
- * @param lineNumber Optional. Human-readable description of the error.
+ * @summary Thrown by an Enumeration to indicate that there are no more elements in the enumeration.
+ * @name NoSuchElementError
+ * @class
+ * @memberof system.errors
+ * @extends Error
+ * @param {string} [message] - Human-readable description of the error.
+ * @param {string} [fileName] - Human-readable description of the error.
+ * @param {string} [lineNumber] - Human-readable description of the error.
  */
 export function NoSuchElementError( message , fileName , lineNumber )
 {
