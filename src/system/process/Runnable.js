@@ -22,7 +22,8 @@ export function isRunnable( target )
 }
 
 /**
- * This interface should be implemented by any class whose instances are intended to be executed.
+ * Represents a single command. The base interface for all commands. If only this interface is implemented by a command, it is treated as a synchronous command. For additional features like asynchronous execution, cancellation or suspension, several subinterfaces are available.
+ * This interface is used by all internal command executors and builders.
  * @name Runnable
  * @memberof system.process
  * @interface

@@ -3,9 +3,14 @@
 import { Task } from './Task.js' ;
 
 /**
- * The Timer class is the interface to timers, which let you run code on a specified time sequence.
+ * The <code>Timer</code> class is the interface to timers, which let you run code on a specified time sequence.
+ * This timer object use an internal <code>setInterval</code> function to calls or evaluates an expression at specified intervals
+ * @name Timer
+ * @memberof system.process
+ * @extends system.process.Task
+ * @class
+ * @constructor
  * @example
- * <pre>
  * var finish = function( action )
  * {
  *     trace( action + " finish" ) ;
@@ -47,9 +52,11 @@ import { Task } from './Task.js' ;
  * action.stopIt.connect( stop ) ;
  *
  * action.run() ;
- * </pre>
+ * @param {number} [delay=0] The delay in <strong>ms</strong> or in seconds if the <code>useSeconds</code> property is <code>true</code>. If this value is 0, the timer emit with the minimum delay possible.
+ * @param {number} [repeatCount=0] Indicates the number or repeat of the timer, if the <code>repeatCount</code> value is > <code>0/<code>.
+ * @param {boolean} [useSeconds=false] Specifies if the timer use a delay in seconds or not.
  */
-export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 0, useSeconds /*Boolean*/ = false )
+export function Timer( delay =  0 , repeatCount = 0, useSeconds = false )
 {
     Task.call(this) ;
 
@@ -87,9 +94,6 @@ export function Timer( delay /*uint*/ , repeatCount /*uint*/ = 0, useSeconds /*B
     }) ;
 }
 
-/**
- * @extends Task
- */
 Timer.prototype = Object.create( Task.prototype ,
 {
     /**
@@ -98,13 +102,21 @@ Timer.prototype = Object.create( Task.prototype ,
     constructor : { value : Timer , writable : true } ,
 
     /**
-     * The total number of times the timer has fired since it started at zero.
+     * The current count value if the timer use the <code>repeatCount</code> option.
+     * @type {number}
+     * @name currentCount
+     * @memberof system.process.Timer
+     * @instance
+     * @readonly
      */
     currentCount : { get : function() { return this._count ; } } ,
 
     /**
-     * Indicates the delay between timer events, in milliseconds.
-     * @member {number}
+     * Indicates the delay between timer events, in milliseconds (or seconds it the <code>useSeconds</code> is <code>true</code>).
+     * @type {number}
+     * @name delay
+     * @memberof system.process.Timer
+     * @instance
      */
     delay :
     {
@@ -122,7 +134,10 @@ Timer.prototype = Object.create( Task.prototype ,
     /**
      * Indicates the number of repetitions. If zero, the timer repeats infinitely.
      * If nonzero, the timer runs the specified number of times and then stops.
-     * @member {number}
+     * @type {boolean}
+     * @name repeatCount
+     * @memberof system.process.Timer
+     * @instance
      */
     repeatCount :
     {
@@ -138,12 +153,20 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Indicates true if the timer is stopped.
+     * @type {boolean}
+     * @name stopped
+     * @memberof system.process.Timer
+     * @instance
+     * @readonly
      */
     stopped : { get : function () { return this._stopped ; } },
 
     /**
      * Indicates if the timer delaty is in seconds or in milliseconds (default milliseconds).
-     * @member {boolean}
+     * @type {boolean}
+     * @name useSeconds
+     * @memberof system.process.Timer
+     * @instance
      */
     useSeconds :
     {
@@ -161,6 +184,10 @@ Timer.prototype = Object.create( Task.prototype ,
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     clone : { value : function()
     {
@@ -169,6 +196,10 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Restarts the timer. The timer is stopped, and then started.
+     * @name resume
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     resume : { value : function()
     {
@@ -187,6 +218,10 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Reset the timer and stop it before if it's running.
+     * @name reset
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     reset : { value : function()
     {
@@ -199,6 +234,10 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Run the timer.
+     * @name run
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     run : { value : function ()
     {
@@ -217,6 +256,10 @@ Timer.prototype = Object.create( Task.prototype ,
 
     /**
      * Stops the timer.
+     * @name stop
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     stop : { value : function()
     {
@@ -227,15 +270,6 @@ Timer.prototype = Object.create( Task.prototype ,
             clearInterval( this._itv ) ;
             this.notifyStopped() ;
         }
-    }},
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString : { value : function ()
-    {
-        return '[Timer]' ;
     }},
 
     /**

@@ -10432,7 +10432,8 @@ function isRunnable(target) {
 }
 
 /**
- * This interface should be implemented by any class whose instances are intended to be executed.
+ * Represents a single command. The base interface for all commands. If only this interface is implemented by a command, it is treated as a synchronous command. For additional features like asynchronous execution, cancellation or suspension, several subinterfaces are available.
+ * This interface is used by all internal command executors and builders.
  * @name Runnable
  * @memberof system.process
  * @interface
@@ -10687,7 +10688,6 @@ Action.prototype = Object.create(Runnable.prototype, {
  * @name Task
  * @class
  * @extends system.process.Action
- * @augments system.process.Action
  * @memberof system.process
  * @implements system.process.Lockable
  * @implements system.process.Resetable
@@ -16097,7 +16097,13 @@ ActionEntry.prototype = Object.create(Object.prototype, {
 /*jshint laxbreak: true*/
 /**
  * Creates a new Batch instance.
- * @param init The optional Array of Runnable objects to fill the batch.
+ * @name Batch
+ * @class
+ * @memberof system.process
+ * @augments system.process.Runnable
+ * @implements system.process.Runnable
+ * @constructor
+ * @param {array} [init=null] - The optional Array of Runnable objects to fill the batch.
  * @example
  * function Command( name )
  * {
@@ -16126,8 +16132,10 @@ ActionEntry.prototype = Object.create(Object.prototype, {
  *
  * batch.run() ;
  */
-function Batch(init /*Array*/) {
+function Batch() {
     var _this = this;
+
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
     Object.defineProperties(this, {
         _entries: {
@@ -16147,185 +16155,237 @@ function Batch(init /*Array*/) {
     }
 }
 
-/**
- * @extends Runnable
- */
 Batch.prototype = Object.create(Runnable.prototype, {
+    /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Batch },
+
     /**
      * Retrieves the number of elements in this batch.
      * @return the number of elements in this batch.
+     * @name length
+     * @memberof system.process.Batch
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
             return this._entries.length;
         }
-    }
-});
-Batch.prototype.constructor = Batch;
+    },
 
-/**
- * Adds the specified Runnable object in batch.
- */
-Batch.prototype.add = function (command /*Runnable*/) /*Boolean*/
-{
-    if (command && command instanceof Runnable) {
-        this._entries.push(command);
-        return true;
-    }
-    return false;
-};
-
-/**
- * Removes all of the elements from this batch.
- */
-Batch.prototype.clear = function () /*void*/
-{
-    this._entries.length = 0;
-};
-
-/**
- * Returns a shallow copy of the object.
- * @return a shallow copy of the object.
- */
-Batch.prototype.clone = function () {
-    var b = new Batch();
-    var l = this._entries.length;
-    for (var i = 0; i < l; i++) {
-        b.add(this._entries[i]);
-    }
-    return b;
-};
-
-/**
- * Returns {@code true} if this batch contains the specified element.
- * @return {@code true} if this batch contains the specified element.
- */
-Batch.prototype.contains = function (command /*Runnable*/) /*Boolean*/
-{
-    if (command instanceof Runnable) {
-        var l = this._entries.length;
-        while (--l > -1) {
-            if (this._entries[l] === command) {
+    /**
+     * Adds the specified Runnable object in batch.
+     * @param {system.process.Runnable} command - The command to register in the batch.
+     * @return <code>true</code> if the command is registered.
+     * @name add
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    add: { writable: true, value: function value(command) {
+            if (command && command instanceof Runnable) {
+                this._entries.push(command);
                 return true;
             }
-        }
-    }
-    return false;
-};
+            return false;
+        } },
 
-/**
- * Returns the command from this batch at the passed index.
- * @return the command from this batch at the passed index.
- */
-Batch.prototype.get = function (key) {
-    return this._entries[key];
-};
+    /**
+     * Removes all of the elements from this batch.
+     * @name clear
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    clear: { writable: true, value: function value() {
+            this._entries.length = 0;
+        } },
 
-/**
- * Returns the position of the passed object in the batch.
- * @param command the Runnable object to search in the collection.
- * @param fromIndex the index to begin the search in the collection.
- * @return the index of the object or -1 if the object isn't find in the batch.
- */
-Batch.prototype.indexOf = function (command, fromIndex /*uint*/) /*int*/
-{
-    if (isNaN(fromIndex)) {
-        fromIndex = 0;
-    }
-    fromIndex = fromIndex > 0 ? Math.round(fromIndex) : 0;
-    if (command instanceof Runnable) {
-        var l = this._entries.length;
-        var i = fromIndex;
-        for (i; i < l; i++) {
-            if (this._entries[i] === command) {
-                return i;
+    /**
+     * Returns a shallow copy of the object.
+     * @return a shallow copy of the object.
+     * @name clone
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    clone: { writable: true, value: function value() {
+            var b = new Batch();
+            var l = this._entries.length;
+            for (var i = 0; i < l; i++) {
+                b.add(this._entries[i]);
             }
-        }
-    }
-    return -1;
-};
+            return b;
+        } },
 
-/**
- * Returns {@code true} if this batch contains no elements.
- * @return {@code true} if this batch is empty else {@code false}.
- */
-Batch.prototype.isEmpty = function () /*Boolean*/
-{
-    return this._entries.length === 0;
-};
-
-/**
- * Removes a single instance of the specified element from this collection, if it is present (optional operation).
- */
-Batch.prototype.remove = function (command /*Runnable*/) /*Boolean*/
-{
-    var index = this.indexOf(command);
-    if (index > -1) {
-        this._entries.splice(index, 1);
-        return true;
-    }
-    return false;
-};
-
-/**
- * Run the process.
- */
-Batch.prototype.run = function () /*void*/
-{
-    var l = this._entries.length;
-    if (l > 0) {
-        var i = -1;
-        while (++i < l) {
-            this._entries[i].run();
-        }
-    }
-};
-
-/**
- * Stops all commands in the batch.
- */
-Batch.prototype.stop = function () /*void*/
-{
-    var l = this._entries.length;
-    if (l > 0) {
-        this._entries.forEach(function (element) {
-            if (element instanceof Runnable && 'stop' in element && element.stop instanceof Function) {
-                element.stop();
+    /**
+     * Returns {@code true} if this batch contains the specified element.
+     * @param {system.process.Runnable} command - The command to search in the batch.
+     * @return {@code true} if this batch contains the specified element.
+     * @name contains
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    contains: { writable: true, value: function value(command) {
+            if (command instanceof Runnable) {
+                var l = this._entries.length;
+                while (--l > -1) {
+                    if (this._entries[l] === command) {
+                        return true;
+                    }
+                }
             }
-        });
-    }
-};
+            return false;
+        } },
 
-/**
- * Returns an array containing all of the elements in this batch.
- * @return an array containing all of the elements in this batch.
- */
-Batch.prototype.toArray = function () /*Array*/
-{
-    return this._entries.slice();
-};
+    /**
+     * Returns the command from this batch at the passed index.
+     * @param {*} key - The key to find a specific command in the batch.
+     * @return the command from this batch at the passed index.
+     * @name get
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    get: { writable: true, value: function value(key) {
+            return this._entries[key];
+        } },
 
-/**
- * Returns the source code string representation of the object.
- * @return the source code string representation of the object.
- */
-Batch.prototype.toString = function () /*Array*/
-{
-    var r = "[Batch";
-    var l = this._entries.length;
-    if (l > 0) {
-        r += '[';
-        this._entries.forEach(function (element, index) {
-            r += element;
-            if (index < l - 1) {
-                r += ",";
+    /**
+     * Returns the position of the passed object in the batch.
+     * @param command the Runnable object to search in the collection.
+     * @param fromIndex the index to begin the search in the collection.
+     * @return the index of the object or -1 if the object isn't find in the batch.
+     * @name indexOf
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    indexOf: { writable: true, value: function value(command, fromIndex /*uint*/) /*int*/
+        {
+            if (isNaN(fromIndex)) {
+                fromIndex = 0;
             }
-        });
-        r += ']';
-    }
-    r += "]";
-    return r;
-};
+            fromIndex = fromIndex > 0 ? Math.round(fromIndex) : 0;
+            if (command instanceof Runnable) {
+                var l = this._entries.length;
+                var i = fromIndex;
+                for (i; i < l; i++) {
+                    if (this._entries[i] === command) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        } },
+
+    /**
+     * Returns {@code true} if this batch contains no elements.
+     * @return {@code true} if this batch is empty else {@code false}.
+     * @name isEmpty
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    isEmpty: { writable: true, value: function value() /*Boolean*/
+        {
+            return this._entries.length === 0;
+        } },
+
+    /**
+     * Removes a single instance of the specified element from this collection, if it is present (optional operation).
+     * @param {system.process.Runnable} command - The command to register in the batch.
+     * @return <code>true</code> if the command is removed.
+     * @name remove
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    remove: { writable: true, value: function value(command) {
+            var index = this.indexOf(command);
+            if (index > -1) {
+                this._entries.splice(index, 1);
+                return true;
+            }
+            return false;
+        } },
+
+    /**
+     * Run the process.
+     * @name run
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            var l = this._entries.length;
+            if (l > 0) {
+                var i = -1;
+                while (++i < l) {
+                    this._entries[i].run();
+                }
+            }
+        } },
+
+    /**
+     * Stops all commands in the batch.
+     * @name stop
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     */
+    stop: { writable: true, value: function value() {
+            var l = this._entries.length;
+            if (l > 0) {
+                this._entries.forEach(function (element) {
+                    if (element instanceof Runnable && 'stop' in element && element.stop instanceof Function) {
+                        element.stop();
+                    }
+                });
+            }
+        } },
+
+    /**
+     * Returns an array containing all of the elements in this batch.
+     * @name toArray
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     * @return an array containing all of the elements in this batch.
+     */
+    toArray: { writable: true, value: function value() {
+            return this._entries.slice();
+        } },
+
+    /**
+     * Returns the source code string representation of the object.
+     * @name toString
+     * @memberof system.process.Batch
+     * @function
+     * @instance
+     * @return the source code string representation of the object.
+     */
+    toString: { writable: true, value: function value() /*Array*/
+        {
+            var r = "[Batch";
+            var l = this._entries.length;
+            if (l > 0) {
+                r += '[';
+                this._entries.forEach(function (element, index) {
+                    r += element;
+                    if (index < l - 1) {
+                        r += ",";
+                    }
+                });
+                r += ']';
+            }
+            r += "]";
+            return r;
+        } }
+});
 
 /* jshint unused: false*/
 /**
@@ -16335,8 +16395,8 @@ Batch.prototype.toString = function () /*Array*/
  * @memberof system.process
  * @extends system.process.Task
  * @constructor
- * @param {string} [mode='normal'] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -16462,6 +16522,11 @@ Object.defineProperties(TaskGroup, {
 
 TaskGroup.prototype = Object.create(Task.prototype, {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: TaskGroup },
+
+    /**
      * Indicates the numbers of actions register in the group.
      * @name length
      * @memberof system.process.TaskGroup
@@ -16522,11 +16587,6 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             return this._stopped;
         }
     },
-
-    /**
-     * The constructor reference of the instance.
-     */
-    constructor: { writable: true, value: TaskGroup },
 
     /**
      * Adds an action in the chain.
@@ -17048,6 +17108,12 @@ BatchTask.prototype.stop = function () /*void*/
 
 /**
  * Enqueue a collection of members definitions (commands) to apply or invoke with the specified target object.
+ * @name Cache
+ * @class
+ * @memberof system.process
+ * @extends system.process.Action
+ * @param {Object} target - The object to map with this cache process.
+ * @param {Array} init - The <code>Array</code> of <code>Property</code> to map in the target reference when the process is running.
  * @example
  * var Cache = system.process.Cache ;
  *
@@ -17092,7 +17158,9 @@ BatchTask.prototype.stop = function () /*void*/
  *
  * trace( object ) ; // {a:10,b:20,c:30,d:90}
  */
-function Cache(target, init /*Array*/) {
+function Cache(target) {
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
     Action.call(this);
 
     Object.defineProperties(this, {
@@ -17102,6 +17170,12 @@ function Cache(target, init /*Array*/) {
         }
     });
 
+    /**
+     * The target reference.
+     * @memberof system.process.Cache
+     * @type {Object}
+     * @instance
+     */
     this.target = target;
 
     if (init instanceof Array && init.length > 0) {
@@ -17113,12 +17187,18 @@ function Cache(target, init /*Array*/) {
     }
 }
 
-/**
- * @extends Action
- */
 Cache.prototype = Object.create(Action.prototype, {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Cache },
+
+    /**
      * Returns the number of properties.
+     * @name length
+     * @memberof system.process.Cache
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
@@ -17127,13 +17207,16 @@ Cache.prototype = Object.create(Action.prototype, {
     }
 });
 
-Cache.prototype.constructor = Cache;
-
 /**
  * Enqueues a specific Property definition.
+ * @name add
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {system.process.caches.Property} property - The property to register.
+ * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.add = function (property) /*Cache*/
-{
+Cache.prototype.add = function (property) {
     if (property instanceof Property) {
         this._queue.push(property);
     }
@@ -17142,6 +17225,13 @@ Cache.prototype.add = function (property) /*Cache*/
 
 /**
  * Enqueues an attribute name/value entry.
+ * @name addAttribute
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the attribute to register.
+ * @param {*} value - The value of the attribute to register.
+ * @return The current <code>Cache</code> reference.
  */
 Cache.prototype.addAttribute = function (name, value) /*Cache*/
 {
@@ -17153,8 +17243,13 @@ Cache.prototype.addAttribute = function (name, value) /*Cache*/
 
 /**
  * Enqueues a method definition.
- * @param name The name of the method.
- * @param args The optional arguments passed-in the method.
+ * @name addMethod
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the method to register.
+ * @param {Array} args - The optional parameters to fill in the method.
+ * @return The current <code>Cache</code> reference.
  */
 Cache.prototype.addMethod = function (name) /*Cache*/
 {
@@ -17170,11 +17265,16 @@ Cache.prototype.addMethod = function (name) /*Cache*/
 
 /**
  * Enqueues a method definition.
- * @param name The name of the method.
- * @param args The optional arguments passed-in the method.
- * @param scope The optional scope object of the method.
+ * @name addMethodWithArguments
+ * @memberof system.process.Cache
+ * @instance
+ * @function
+ * @param {string} name - The name of the method to register.
+ * @param {Array} args - The optional parameters to fill in the method.
+ * @param {Object} scope - The optional scope object of the method.
+ * @return The current <code>Cache</code> reference.
  */
-Cache.prototype.addMethodWithArguments = function (name, args) /*Cache*/
+Cache.prototype.addMethodWithArguments = function (name, args) // FIXME add the scope argument !
 {
     if (name !== '' && (typeof name === 'string' || name instanceof String)) {
         this._queue.push(new Method(name, args));
@@ -17184,6 +17284,10 @@ Cache.prototype.addMethodWithArguments = function (name, args) /*Cache*/
 
 /**
  * Removes all commands in memory.
+ * @name clear
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
 Cache.prototype.clear = function () {
     this._queue.length = 0;
@@ -17191,6 +17295,10 @@ Cache.prototype.clear = function () {
 
 /**
  * Returns a shallow copy of this object.
+ * @name clone
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  * @return a shallow copy of this object.
  */
 Cache.prototype.clone = function () {
@@ -17199,6 +17307,10 @@ Cache.prototype.clone = function () {
 
 /**
  * Indicates if the tracker cache is empty.
+ * @name isEmpty
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
 Cache.prototype.isEmpty = function () {
     return this._queue.length === 0;
@@ -17206,9 +17318,12 @@ Cache.prototype.isEmpty = function () {
 
 /**
  * Run the process.
+ * @name run
+ * @memberof system.process.Cache
+ * @function
+ * @instance
  */
-Cache.prototype.run = function () /*void*/
-{
+Cache.prototype.run = function () {
     this.notifyStarted();
     if (this.target) {
         var l = this._queue.length;
@@ -17234,15 +17349,6 @@ Cache.prototype.run = function () /*void*/
         }
     }
     this.notifyFinished();
-};
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-Cache.prototype.toString = function () /*String*/
-{
-    return '[Cache]';
 };
 
 /**
@@ -17337,10 +17443,11 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
 
 /**
  * Creates a new Chain instance.
- * @param looping Specifies whether playback of the clip should continue, or loop (default false).
- * @param numLoop Specifies the number of the times the presentation should loop during playback.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * @name Chain
+ * @class
+ * @memberof system.process
+ * @extends system.process.TaskGroup
+ * @constructor
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -17394,18 +17501,35 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
  * trace('---------') ;
  *
  * chain.run() ;
+ * @param {boolean} [looping=false] Specifies whether playback of the clip should continue, or loop (default false).
+ * @param {number} [numLoop=0] Specifies the number of the times the presentation should loop during playback.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  */
-function Chain(looping /*Boolean*/, numLoop /*uint*/, mode /*String*/, actions /*Array*/) {
+function Chain() {
+    var looping = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var numLoop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'normal';
+    var actions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
     TaskGroup.call(this, mode, actions);
 
     Object.defineProperties(this, {
         /**
          * Indicates if the chain loop when is finished.
+         * @memberof system.process.Chain
+         * @type {boolean}
+         * @instance
+         * @default <code>false</code>
          */
         looping: { value: Boolean(looping), writable: true },
 
         /**
          * The number of loops.
+         * @memberof system.process.Chain
+         * @type {number}
+         * @instance
+         * @default 0
          */
         numLoop: {
             value: numLoop > 0 ? Math.round(numLoop) : 0,
@@ -17422,12 +17546,18 @@ function Chain(looping /*Boolean*/, numLoop /*uint*/, mode /*String*/, actions /
     });
 }
 
-/**
- * @extends TaskGroup
- */
 Chain.prototype = Object.create(TaskGroup.prototype, {
     /**
+     * The constructor reference of the instance.
+     */
+    constructor: { writable: true, value: Chain },
+
+    /**
      * Indicates the current Action reference when the process is in progress.
+     * @memberof system.process.Chain
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
      */
     current: { get: function get() {
             return this._current ? this._current.action : null;
@@ -17435,6 +17565,10 @@ Chain.prototype = Object.create(TaskGroup.prototype, {
 
     /**
      * Indicates the current countdown loop value.
+     * @memberof system.process.Chain
+     * @type {number}
+     * @instance
+     * @readonly
      */
     currentLoop: { get: function get() {
             return this._currentLoop;
@@ -17442,97 +17576,115 @@ Chain.prototype = Object.create(TaskGroup.prototype, {
 
     /**
      * Indicates the current numeric position of the chain when is running.
+     * @memberof system.process.Chain
+     * @type {number}
+     * @instance
+     * @readonly
      */
     position: { get: function get() {
             return this._position;
         } },
 
     /**
-     * @private
+     * Creates a copy of the object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Chain
+     * @function
+     * @instance
      */
-    __className__: { value: 'Chain', configurable: true }
+    clone: { writable: true, value: function value() {
+            return new Chain(this.looping, this.numLoop, this._mode, this._actions.length > 0 ? this._actions : null);
+        } },
+
+    /**
+     * Retrieves the next action reference in the chain with the current position.
+     * @name element
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    element: { writable: true, value: function value() {
+            return this.hasNext() ? this._actions[this._position].action : null;
+        } },
+
+    /**
+     * Retrieves the next action reference in the chain with the current position.
+     * @name hasNext
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    hasNext: { writable: true, value: function value() {
+            return this._position < this._actions.length;
+        } },
+
+    /**
+     * Resume the chain.
+     * @name resume
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    resume: { writable: true, value: function value() {
+            if (this._stopped) {
+                this._running = true;
+                this._stopped = false;
+
+                this.notifyResumed();
+
+                if (this._current && this._current.action) {
+                    if ("resume" in this._current.action) {
+                        this._current.action.resume();
+                    }
+                } else {
+                    this._next.receive();
+                }
+            } else {
+                this.run();
+            }
+        } },
+
+    /**
+     * Launchs the chain process.
+     * @name run
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    run: { writable: true, value: function value() {
+            if (!this._running) {
+                this.notifyStarted();
+
+                this._current = null;
+                this._stopped = false;
+                this._position = 0;
+                this._currentLoop = 0;
+
+                this._next.receive();
+            }
+        } },
+
+    /**
+     * Stops the task group.
+     * @name stop
+     * @memberof system.process.Chain
+     * @function
+     * @instance
+     */
+    stop: { writable: true, value: function value() {
+            if (this._running) {
+                if (this._current && this._current.action) {
+                    if ('stop' in this._current.action && this._current.action instanceof Function) {
+                        this._current.action.stop();
+                        this._running = false;
+                        this._stopped = true;
+                        this.notifyStopped();
+                    }
+                }
+            }
+        } }
 });
-
-Chain.prototype.constructor = Chain;
-
-/**
- * Returns a shallow copy of this object.
- * @return a shallow copy of this object.
- */
-Chain.prototype.clone = function () {
-    return new Chain(this.looping, this.numLoop, this._mode, this._actions.length > 0 ? this._actions : null);
-};
-
-/**
- * Retrieves the next action reference in the chain with the current position.
- */
-Chain.prototype.element = function () {
-    return this.hasNext() ? this._actions[this._position].action : null;
-};
-
-/**
- * Retrieves the next action reference in the chain with the current position.
- */
-Chain.prototype.hasNext = function () {
-    return this._position < this._actions.length;
-};
-
-/**
- * Resume the chain.
- */
-Chain.prototype.resume = function () /*void*/
-{
-    if (this._stopped) {
-        this._running = true;
-        this._stopped = false;
-
-        this.notifyResumed();
-
-        if (this._current && this._current.action) {
-            if ("resume" in this._current.action) {
-                this._current.action.resume();
-            }
-        } else {
-            this._next.receive();
-        }
-    } else {
-        this.run();
-    }
-};
-
-/**
- * Launchs the chain process.
- */
-Chain.prototype.run = function () /*void*/
-{
-    if (!this._running) {
-        this.notifyStarted();
-
-        this._current = null;
-        this._stopped = false;
-        this._position = 0;
-        this._currentLoop = 0;
-
-        this._next.receive();
-    }
-};
-
-/**
- * Stops the task group.
- */
-Chain.prototype.stop = function () /*void*/
-{
-    if (this._running) {
-        if (this._current && this._current.action) {
-            if ('stop' in this._current.action && this._current.action instanceof Function) {
-                this._current.action.stop();
-                this._running = false;
-                this._stopped = true;
-                this.notifyStopped();
-            }
-        }
-    }
-};
 
 /**
  * A simple command to do something. Very usefull to test something in a complex process.
@@ -17611,9 +17763,14 @@ Do.prototype = Object.create(Action.prototype, {
 });
 
 /**
- * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the requestAnimationFrame method.
+ * The FrameTimer class is the interface to timers, which let you run code on a specified time sequence and use the <code>requestAnimationFrame</code> method.
+ * @name FrameTimer
+ * @memberof system.process
+ * @class
+ * @extends system.process.Task
+ * @constructor
+ * @see {@link https://developer.mozilla.org/fr/docs/Web/API/Window/requestAnimationFrame|requestAnimationFrame} for further information.
  * @example
- * <pre>
  * var finish = function( action )
  * {
  *     trace( action + " finish" ) ;
@@ -17653,209 +17810,250 @@ Do.prototype = Object.create(Action.prototype, {
  * action.stopIt.connect( stop ) ;
  *
  * action.run() ;
- * </pre>
  */
 function FrameTimer() {
-  Task.call(this);
+    Task.call(this);
 
-  Object.defineProperties(this, {
-    /**
-     * Scalar time value from last frame to this frame.
-     * This value is capped by setting minFPS and is scaled with "speed".
-     * @member {number}
-     * @default 1
-     */
-    deltaTime: { value: 1, writable: true },
+    Object.defineProperties(this, {
+        /**
+         * Scalar time value from last frame to this frame.
+         * This value is capped by setting minFPS and is scaled with "speed".
+         * @type {number}
+         * @default 1
+         * @name deltaTime
+         * @memberof system.process.FrameTimer
+         * @instance
+         */
+        deltaTime: { value: 1, writable: true },
 
-    /**
-     * Time elapsed in milliseconds from last frame to this frame.
-     * Opposed to what the scalar {@link FrameTimer#deltaTime}
-     * is based, this value is neither capped nor scaled.
-     * If the platform supports DOMHighResTimeStamp,
-     * this value will have a precision of 1 µs.
-     * @member {number}
-     * @default 1 / FPMS
-     */
-    elapsedMS: { value: 1 / FPMS, writable: true },
+        /**
+         * Time elapsed in milliseconds from last frame to this frame.
+         * Opposed to what the scalar {@link FrameTimer#deltaTime}
+         * is based, this value is neither capped nor scaled.
+         * If the platform supports DOMHighResTimeStamp,
+         * this value will have a precision of 1 µs.
+         * @member {number}
+         * @default 1 / FPMS
+         * @name elapsedMS
+         * @memberof system.process.FrameTimer
+         * @instance
+         */
+        elapsedMS: { value: 1 / FPMS, writable: true },
 
-    /**
-     * The frames per second at which this timer is running.
-     * The default is approximately 60 in most modern browsers.
-     * **Note:** This does not factor in the value of {@link FrameTimer#speed},
-     * which is specific to scaling {@link FrameTimer#deltaTime}.
-     * @readonly
-     */
-    fps: { get: function get() {
-        return 1000 / this.elapsedMS;
-      } },
+        /**
+         * The frames per second at which this timer is running.
+         * The default is approximately 60 in most modern browsers.
+         * **Note:** This does not factor in the value of {@link FrameTimer#speed}, which is specific to scaling {@link FrameTimer#deltaTime}.
+         * @readonly
+         * @name fps
+         * @memberof system.process.FrameTimer
+         * @instance
+         */
+        fps: { get: function get() {
+                return 1000 / this.elapsedMS;
+            } },
 
-    /**
-     * Manages the maximum amount of milliseconds allowed to elapse between invoking {@link FrameTimer#next}.
-     * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link FrameTimer#fps}.
-     * When setting this property it is clamped to a value between `0` and `FPMS * 1000`.
-     * @member {number}
-     * @default 10
-     */
-    minFPS: {
-      get: function get() {
-        return 1000 / this._maxElapsedMS;
-      },
-      set: function set(fps) {
-        var minFPMS = Math.min(Math.max(0, fps) / 1000, FPMS);
-        this._maxElapsedMS = 1 / minFPMS;
-      }
-    },
+        /**
+         * Manages the maximum amount of milliseconds allowed to elapse between invoking {@link FrameTimer#next}.
+         * This value is used to cap {@link FrameTimer#deltaTime}, but does not effect the measured value of {@link FrameTimer#fps}.
+         * When setting this property it is clamped to a value between `0` and `FPMS * 1000`.
+         * @type {number}
+         * @name minFPS
+         * @memberof system.process.FrameTimer
+         * @instance
+         */
+        minFPS: {
+            get: function get() {
+                return 1000 / this._maxElapsedMS;
+            },
+            set: function set(fps) {
+                this._maxElapsedMS = 1 / Math.min(Math.max(0, fps) / 1000, FPMS);
+            }
+        },
 
-    /**
-     * The last time the next method was invoked.
-     * This value is also reset internally outside of invoking update, but only when a new animation frame is requested.
-     * If the platform supports DOMHighResTimeStamp, this value will have a precision of 1 µs.
-     * @member {number}
-     * @default 0
-     */
-    lastTime: { value: 0, writable: true },
+        /**
+         * The last time the next method was invoked.
+         * This value is also reset internally outside of invoking update, but only when a new animation frame is requested.
+         * If the platform supports DOMHighResTimeStamp, this value will have a precision of 1 µs.
+         * @type {number}
+         * @default 0
+         * @name lastTime
+         * @memberof system.process.FrameTimer
+         * @instance
+         */
+        lastTime: { value: 0, writable: true },
 
-    /**
-     * Factor of current deltaTime.
-     * @member {number}
-     * @default 1
-     * @example
-     * // Scales ticker.deltaTime to what would be the equivalent of approximately 120 FPS
-     * ticker.speed = 2;
-     */
-    speed: { value: 1, writable: true },
+        /**
+         * Factor of current deltaTime.
+         * @type {number}
+         * @default 1
+         * @name speed
+         * @memberof system.process.FrameTimer
+         * @instance
+         * @example <caption>Scales <code>deltaTime</code> to what would be the equivalent of approximately <strong>120 FPS</strong></caption>
+         * var timer = new FrameTimer() ;
+         * timer.speed = 2;
+         */
+        speed: { value: 1, writable: true },
 
-    /**
-     * @private
-     */
-    _requestID: { value: null, writable: true },
+        /**
+         * @private
+         */
+        _requestID: { value: null, writable: true },
 
-    /**
-     * Internal value managed by minFPS property setter and getter.
-     * This is the maximum allowed milliseconds between updates.
-     * @private
-     */
-    _maxElapsedMS: { value: 100, writable: true },
+        /**
+         * Internal value managed by minFPS property setter and getter.
+         * This is the maximum allowed milliseconds between updates.
+         * @private
+         */
+        _maxElapsedMS: { value: 100, writable: true },
 
-    /**
-     * @private
-     */
-    _stopped: { value: false, writable: true }
-  });
+        /**
+         * @private
+         */
+        _stopped: { value: false, writable: true }
+    });
 }
 
-/**
- * @extends Task
- */
 FrameTimer.prototype = Object.create(Task.prototype, {
-  /**
-   * Indicates the reference to the Object function that created the instance's prototype.
-   */
-  constructor: { value: FrameTimer, writable: true },
+    /**
+     * Indicates the reference to the Object function that created the instance's prototype.
+     */
+    constructor: { value: FrameTimer, writable: true },
 
-  /**
-   * Indicates true if the timer is stopped.
-   */
-  stopped: { get: function get() {
-      return this._stopped;
-    } },
+    /**
+     * Indicates true if the timer is stopped.
+     * @name stopped
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @readonly
+     */
+    stopped: { get: function get() {
+            return this._stopped;
+        } },
 
-  /**
-   * Returns a shallow copy of this object.
-   * @return a shallow copy of this object.
-   */
-  clone: { value: function value() {
-      return new FrameTimer();
-    } },
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     */
+    clone: { value: function value() {
+            return new FrameTimer();
+        } },
 
-  /**
-   * Restarts the timer. The timer is stopped, and then started.
-   */
-  resume: { value: function value() {
-      if (this._stopped) {
-        this._running = true;
-        this._stopped = false;
-        this.notifyResumed();
-        this._requestID = requestAnimationFrame(this._next.bind(this));
-      }
-    } },
+    /**
+     * Restarts the timer. The timer is <code>stopped</code>, and then started.
+     * @name resume
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     */
+    resume: { value: function value() {
+            if (this._stopped) {
+                this._running = true;
+                this._stopped = false;
+                this.notifyResumed();
+                this._requestID = requestAnimationFrame(this._next.bind(this));
+            }
+        } },
 
-  /**
-   * Reset the timer and stop it before if it's running.
-   */
-  reset: { value: function value() {
-      this.stop();
-      this._stopped = false;
-    } },
+    /**
+     * Reset the timer and stop it before if it's running.
+     * @name reset
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     */
+    reset: { value: function value() {
+            this.stop();
+            this._stopped = false;
+        } },
 
-  /**
-   * Run the timer.
-   */
-  run: { value: function value() {
-      if (!this._running) {
-        this._stopped = false;
-        this.lastTime = performance.now();
-        this.notifyStarted();
-        this._requestID = requestAnimationFrame(this._next.bind(this));
-      }
-    } },
+    /**
+     * Run the timer.
+     * @name run
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     */
+    run: { value: function value() {
+            if (!this._running) {
+                this._stopped = false;
+                this.lastTime = performance.now();
+                this.notifyStarted();
+                this._requestID = requestAnimationFrame(this._next.bind(this));
+            }
+        } },
 
-  /**
-   * Stops the timer.
-   */
-  stop: { value: function value() {
-      if (this._running && !this._stopped) {
-        this._running = false;
-        this._stopped = true;
-        cancelAnimationFrame(this._requestID);
-        this._requestID = null;
-        this.notifyStopped();
-      }
-    } },
+    /**
+     * Stops the timer.
+     * @name stop
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     */
+    stop: { value: function value() {
+            if (this._running && !this._stopped) {
+                this._running = false;
+                this._stopped = true;
+                cancelAnimationFrame(this._requestID);
+                this._requestID = null;
+                this.notifyStopped();
+            }
+        } },
 
-  /**
-   * Returns the string representation of this instance.
-   * @return the string representation of this instance.
-   */
-  toString: { value: function value() {
-      return '[FrameTimer]';
-    } },
+    /**
+     * Returns the string representation of this instance.
+     * @name toString
+     * @memberof system.process.FrameTimer
+     * @instance
+     * @function
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return '[FrameTimer]';
+        } },
 
-  /**
-   * @private
-   */
-  _next: { value: function value() {
-      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : performance.now();
+    /**
+     * @private
+     */
+    _next: { value: function value() {
+            var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : performance.now();
 
-      if (this._requestID !== null && (this._stopped || !this._running)) {
-        cancelAnimationFrame(this._requestID);
-        this._requestID = null;
-        return;
-      }
-      var elapsedMS = void 0;
+            if (this._requestID !== null && (this._stopped || !this._running)) {
+                cancelAnimationFrame(this._requestID);
+                this._requestID = null;
+                return;
+            }
+            var elapsedMS = void 0;
 
-      if (time > this.lastTime) {
-        elapsedMS = this.elapsedMS = time - this.lastTime;
+            if (time > this.lastTime) {
+                elapsedMS = this.elapsedMS = time - this.lastTime;
 
-        if (elapsedMS > this._maxElapsedMS) {
-          elapsedMS = this._maxElapsedMS;
-        }
+                if (elapsedMS > this._maxElapsedMS) {
+                    elapsedMS = this._maxElapsedMS;
+                }
 
-        this.deltaTime = elapsedMS * FPMS * this.speed;
+                this.deltaTime = elapsedMS * FPMS * this.speed;
 
-        this.notifyProgress();
-      } else {
-        this.deltaTime = this.elapsedMS = 0;
-      }
+                this.notifyProgress();
+            } else {
+                this.deltaTime = this.elapsedMS = 0;
+            }
 
-      this.lastTime = time;
+            this.lastTime = time;
 
-      this._requestID = requestAnimationFrame(this._next.bind(this));
-    } }
+            this._requestID = requestAnimationFrame(this._next.bind(this));
+        } }
 });
 
 /**
- * The target frames per millisecond.
+ * The target frames per millisecond used in the {@link system.process.FrameTimer} instances.
+ * @name FPMS
+ * @memberof system.process
  */
 var FPMS = 0.06;
 
@@ -18107,6 +18305,9 @@ Stoppable.prototype.stop = function () {};
  * @class
  * @memberof system.process
  * @extends system.Enum
+ * @constructor
+ * @param {number} value - The value of the enumeration.
+ * @param {string} name - The name key of the enumeration.
  * @example
  * var TimeoutPolicy = system.process.TimeoutPolicy  ;
  *
@@ -18119,9 +18320,6 @@ Stoppable.prototype.stop = function () {};
  * trace( "limit : " + TimeoutPolicy.LIMIT ) ;
  * trace( "toString : " + TimeoutPolicy.LIMIT.toString() ) ;
  * trace( "valueOf  : " + TimeoutPolicy.LIMIT.valueOf() ) ;
- * </pre>
- * @param {number} value - The value of the enumeration.
- * @param {string} name - The name key of the enumeration.
  */
 function TimeoutPolicy(value, name) {
   Enum.call(this, value, name);
@@ -18151,9 +18349,14 @@ Object.defineProperties(TimeoutPolicy, {
 });
 
 /**
- * The Timer class is the interface to timers, which let you run code on a specified time sequence.
+ * The <code>Timer</code> class is the interface to timers, which let you run code on a specified time sequence.
+ * This timer object use an internal <code>setInterval</code> function to calls or evaluates an expression at specified intervals
+ * @name Timer
+ * @memberof system.process
+ * @extends system.process.Task
+ * @class
+ * @constructor
  * @example
- * <pre>
  * var finish = function( action )
  * {
  *     trace( action + " finish" ) ;
@@ -18195,11 +18398,14 @@ Object.defineProperties(TimeoutPolicy, {
  * action.stopIt.connect( stop ) ;
  *
  * action.run() ;
- * </pre>
+ * @param {number} [delay=0] The delay in <strong>ms</strong> or in seconds if the <code>useSeconds</code> property is <code>true</code>. If this value is 0, the timer emit with the minimum delay possible.
+ * @param {number} [repeatCount=0] Indicates the number or repeat of the timer, if the <code>repeatCount</code> value is > <code>0/<code>.
+ * @param {boolean} [useSeconds=false] Specifies if the timer use a delay in seconds or not.
  */
-function Timer(delay /*uint*/) {
-    var repeatCount /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var useSeconds /*Boolean*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+function Timer() {
+    var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var repeatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var useSeconds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     Task.call(this);
 
@@ -18236,9 +18442,6 @@ function Timer(delay /*uint*/) {
     });
 }
 
-/**
- * @extends Task
- */
 Timer.prototype = Object.create(Task.prototype, {
     /**
      * Returns a reference to the Object function that created the instance's prototype.
@@ -18246,15 +18449,23 @@ Timer.prototype = Object.create(Task.prototype, {
     constructor: { value: Timer, writable: true },
 
     /**
-     * The total number of times the timer has fired since it started at zero.
+     * The current count value if the timer use the <code>repeatCount</code> option.
+     * @type {number}
+     * @name currentCount
+     * @memberof system.process.Timer
+     * @instance
+     * @readonly
      */
     currentCount: { get: function get() {
             return this._count;
         } },
 
     /**
-     * Indicates the delay between timer events, in milliseconds.
-     * @member {number}
+     * Indicates the delay between timer events, in milliseconds (or seconds it the <code>useSeconds</code> is <code>true</code>).
+     * @type {number}
+     * @name delay
+     * @memberof system.process.Timer
+     * @instance
      */
     delay: {
         get: function get() {
@@ -18271,7 +18482,10 @@ Timer.prototype = Object.create(Task.prototype, {
     /**
      * Indicates the number of repetitions. If zero, the timer repeats infinitely.
      * If nonzero, the timer runs the specified number of times and then stops.
-     * @member {number}
+     * @type {boolean}
+     * @name repeatCount
+     * @memberof system.process.Timer
+     * @instance
      */
     repeatCount: {
         get: function get() {
@@ -18284,6 +18498,11 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates true if the timer is stopped.
+     * @type {boolean}
+     * @name stopped
+     * @memberof system.process.Timer
+     * @instance
+     * @readonly
      */
     stopped: { get: function get() {
             return this._stopped;
@@ -18291,7 +18510,10 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Indicates if the timer delaty is in seconds or in milliseconds (default milliseconds).
-     * @member {boolean}
+     * @type {boolean}
+     * @name useSeconds
+     * @memberof system.process.Timer
+     * @instance
      */
     useSeconds: {
         get: function get() {
@@ -18308,6 +18530,10 @@ Timer.prototype = Object.create(Task.prototype, {
     /**
      * Returns a shallow copy of this object.
      * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     clone: { value: function value() {
             return new Timer(this._delay, this._repeatCount);
@@ -18315,6 +18541,10 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Restarts the timer. The timer is stopped, and then started.
+     * @name resume
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     resume: { value: function value() {
             if (this._stopped) {
@@ -18327,6 +18557,10 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Reset the timer and stop it before if it's running.
+     * @name reset
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     reset: { value: function value() {
             if (this.running) {
@@ -18337,6 +18571,10 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Run the timer.
+     * @name run
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     run: { value: function value() {
             if (!this._running) {
@@ -18349,6 +18587,10 @@ Timer.prototype = Object.create(Task.prototype, {
 
     /**
      * Stops the timer.
+     * @name stop
+     * @memberof system.process.Timer
+     * @instance
+     * @function
      */
     stop: { value: function value() {
             if (this._running && !this._stopped) {
@@ -18357,14 +18599,6 @@ Timer.prototype = Object.create(Task.prototype, {
                 clearInterval(this._itv);
                 this.notifyStopped();
             }
-        } },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     */
-    toString: { value: function value() {
-            return '[Timer]';
         } },
 
     /**

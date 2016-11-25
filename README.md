@@ -1,6 +1,6 @@
 # VEGAS #
 
-Vegas is an opensource framework based on ECMAScript.
+Vegas JS is an Opensource Framework  based on ECMAScript for Rich Internet Application.
 
 This repository contains the Javascript [ES6](http://es6-features.org/) version of the framework.
 
@@ -71,7 +71,7 @@ gulp test
 
 **Note** : You can use the two options **--match** and **--reporter** in the unit tests gulp task.
 
-The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples : 
+The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples :
 
 ```
 #!shell
@@ -86,7 +86,7 @@ gulp ut --match graphics.CardinalDimension
 Run only the graphics.CardinalDimension unit tests.
 
 
-The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list', 'mochawesome'. By default the 'spec' value is used. 
+The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list', 'mochawesome'. By default the 'spec' value is used.
 
 ```
 #!shell
@@ -103,7 +103,7 @@ gulp ut --reporter mochawesome
 
 #### Documentation ####
 
-The documentation of the framework is based on [JSDoc](http://usejsdoc.org/). 
+The documentation of the framework is based on [JSDoc](http://usejsdoc.org/).
 
 Run the documentation build with gulp :
 ```
