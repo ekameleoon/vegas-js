@@ -29,8 +29,5 @@ export function NonUniqueKeyError( key , pattern , fileName , lineNumber )
  */
 NonUniqueKeyError.PATTERN = "attempting to insert the key '{0}'" ;
 
-/**
- * @extends Error
- */
 NonUniqueKeyError.prototype = Object.create( Error.prototype );
 NonUniqueKeyError.prototype.constructor = NonUniqueKeyError;

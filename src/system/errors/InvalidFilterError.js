@@ -20,8 +20,5 @@ export function InvalidFilterError( message , fileName , lineNumber )
     this.stack      = (new Error()).stack;
 }
 
-/**
- * @extends Error
- */
 InvalidFilterError.prototype = Object.create( Error.prototype );
 InvalidFilterError.prototype.constructor = InvalidFilterError;

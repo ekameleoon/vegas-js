@@ -20,8 +20,5 @@ export function NoSuchElementError( message , fileName , lineNumber )
     this.stack      = (new Error()).stack;
 }
 
-/**
- * @extends Error
- */
 NoSuchElementError.prototype = Object.create( Error.prototype );
 NoSuchElementError.prototype.constructor = NoSuchElementError;

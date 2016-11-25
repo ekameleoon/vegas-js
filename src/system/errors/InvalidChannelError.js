@@ -20,8 +20,5 @@ export function InvalidChannelError( message , fileName , lineNumber )
     this.stack      = (new Error()).stack;
 }
 
-/**
- * @extends Error
- */
 InvalidChannelError.prototype = Object.create( Error.prototype );
 InvalidChannelError.prototype.constructor = InvalidChannelError;
