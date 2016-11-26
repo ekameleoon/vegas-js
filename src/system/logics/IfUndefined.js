@@ -6,8 +6,18 @@ import { IfTask } from './IfTask.js' ;
 
 /**
  * Perform some tasks based on whether a given value is undefined.
+ * @name IfUndefined
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Undefined
+ * @param {Object} condition - The object to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
-export function IfUndefined( value , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
+export function IfUndefined( value , thenTask = null , elseTask = null , ...elseIfTasks ) // jshint ignore:line
 {
     IfTask.call( this , new Undefined(value) , thenTask , elseTask ) ;
     if( elseIfTasks.length > 0 )
@@ -16,6 +26,7 @@ export function IfUndefined( value , thenTask /*Action*/ = null , elseTask /*Act
     }
 }
 
-IfUndefined.prototype             = Object.create( IfTask.prototype );
-IfUndefined.prototype.constructor = IfUndefined ;
-IfUndefined.prototype.toString    = function () { return "[IfUndefined]" }
+IfUndefined.prototype = Object.create( IfTask.prototype ,
+{
+    constructor : { value : IfUndefined , writable : true }
+});

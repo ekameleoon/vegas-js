@@ -70,8 +70,6 @@ import { TaskPhase }   from '../process/TaskPhase.js' ;
  *
  * task.run() ;
  *
- * task.clear() ;
- *
  * trace(' -------- test 2');
  *
  * task.clear() ;
