@@ -128,29 +128,17 @@ import { TaskPhase }   from '../process/TaskPhase.js' ;
  * task.throwError = false ;
  *
  * task.run() ;
+ * @param {system.rules.Rule} rule - The initial condition.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
-export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
+export function IfTask( rule = null , thenTask = null , elseTask = null , ...elseIfTasks ) // jshint ignore:line
 {
     Action.call( this ) ;
 
     Object.defineProperties( this ,
     {
-        /**
-         * The collection of condition/action invokable if the main rule is not true.
-         * @memberof system.logics.IfTask
-         * @type {array}
-         * @instance
-         */
-        elseIfTask : { get : function() { return this._elseIfTask ; } } ,
-
-        /**
-         * The action invoked if all the conditions failed.
-         * @memberof system.logics.IfTask
-         * @type {system.process.Action}
-         * @instance
-         */
-        elseTask : { get : function() { return this._elseTask ; } } ,
-
         /**
          * This signal emit when the action failed.
          * @memberof system.logics.IfTask
@@ -159,29 +147,6 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
          * @readonly
          */
         errorIt : { value : new Signal() } ,
-
-        /**
-         * The rule reference of this task.
-         * @memberof system.logics.IfTask
-         * @type {system.rules.Rule}
-         * @instance
-         */
-        rule :
-        {
-            get : function() { return this._rule ; } ,
-            set : function( rule )
-            {
-                this._rule = ( rule instanceof Rule ) ? rule : new BooleanRule(rule) ;
-            }
-        } ,
-
-        /**
-         * The action to execute if the main condition if true.
-         * @memberof system.logics.IfTask
-         * @type {system.process.Action}
-         * @instance
-         */
-        thenTask : { get : function() { return this._thenTask ; } } ,
 
         /**
          * Indicates if the class throws errors or notify a finished event when the task failed.
@@ -238,6 +203,52 @@ export function IfTask( rule = null , thenTask /*Action*/ = null , elseTask /*Ac
 
 IfTask.prototype = Object.create( Action.prototype ,
 {
+    /**
+     * The constructor reference.
+     */
+    constructor : { value : IfTask , writable : true } ,
+
+    /**
+     * The collection of condition/action invokable if the main rule is not true.
+     * @memberof system.logics.IfTask
+     * @type {array}
+     * @instance
+     * @readonly
+     */
+    elseIfTask : { get : function() { return this._elseIfTask ; } } ,
+
+    /**
+     * The action invoked if all the conditions failed.
+     * @memberof system.logics.IfTask
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
+     */
+    elseTask : { get : function() { return this._elseTask ; } } ,
+
+    /**
+     * The rule reference of this task.
+     * @memberof system.logics.IfTask
+     * @type {system.rules.Rule}
+     * @instance
+     */
+    rule :
+    {
+        get : function() { return this._rule ; } ,
+        set : function( rule )
+        {
+            this._rule = ( rule instanceof Rule ) ? rule : new BooleanRule(rule) ;
+        }
+    } ,
+
+    /**
+     * The action to execute if the main condition if <code>true</code>.
+     * @memberof system.logics.IfTask
+     * @type {system.process.Action}
+     * @instance
+     */
+    thenTask : { get : function() { return this._thenTask ; } } ,
+
     /**
      * Defines the action when the condition block use the else condition.
      * @name addElse
@@ -551,5 +562,3 @@ IfTask.prototype = Object.create( Action.prototype ,
         }
     }
 }) ;
-
-IfTask.prototype.constructor = IfTask;

@@ -5,7 +5,13 @@ import { Null } from '../rules/Null.js' ;
 import { IfTask } from './IfTask.js' ;
 
 /**
- * Perform some tasks based on whether a given value is undefined.
+ * Perform some tasks based on whether a given value is <code>null</code>.
+ * @name IfNull
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Null
  */
 export function IfNull( value , strict = false , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
 {
@@ -16,6 +22,7 @@ export function IfNull( value , strict = false , thenTask /*Action*/ = null , el
     }
 }
 
-IfNull.prototype             = Object.create( IfTask.prototype );
-IfNull.prototype.constructor = IfNull ;
-IfNull.prototype.toString    = function () { return "[IfNull]" }
+IfNull.prototype = Object.create( IfTask.prototype ,
+{
+    constructor : { writable : true , value : IfNull  }
+});

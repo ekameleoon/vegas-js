@@ -5,9 +5,15 @@ import { False } from '../rules/False.js' ;
 import { IfTask } from './IfTask.js' ;
 
 /**
- * Perform some tasks based on whether a given condition holds false.
+ * Performs some tasks based on whether a given condition holds false.
+ * @name IfFalse
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.False
  */
-export function IfFalse( condition , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
+export function IfFalse( condition , thenTask = null , elseTask = null , ...elseIfTasks )  // jshint ignore:line
 {
     IfTask.call( this , new False(condition) , thenTask , elseTask ) ;
     if( elseIfTasks.length > 0 )
@@ -16,6 +22,7 @@ export function IfFalse( condition , thenTask /*Action*/ = null , elseTask /*Act
     }
 }
 
-IfFalse.prototype             = Object.create( IfTask.prototype );
-IfFalse.prototype.constructor = IfFalse ;
-IfFalse.prototype.toString    = function () { return "[IfFalse]" }
+IfFalse.prototype = Object.create( IfTask.prototype ,
+{
+    constructor : { value : IfFalse , writable : true }
+});
