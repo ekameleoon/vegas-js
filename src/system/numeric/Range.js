@@ -9,7 +9,7 @@
  * @param {number} [min=NaN] - The minimum range value.
  * @param {number} [max=NaN] - The maximum range value.
  * @example
- * Range = system.numeric.Range ;
+ * var Range = system.numeric.Range ;
  *
  * var r1 = new Range(10, 120) ;
  * var r2 = new Range(100, 150) ;
@@ -151,8 +151,8 @@ Range.prototype.combine = function ( range ) /*Range*/
 }
 
 /**
- * Returns {@code true} if the Range instance contains the value passed in argument.
- * @return {@code true} if the Range instance contains the value passed in argument.
+ * Returns <code>true/<code> if the Range instance contains the value passed in argument.
+ * @return <code>true/<code> if the Range instance contains the value passed in argument.
  */
 Range.prototype.contains = function ( value )
 {
@@ -226,8 +226,8 @@ Range.prototype.getRandomInteger = function() /*Number*/
 }
 
 /**
- * Returns {@code true} if the value is out of the range.
- * @return {@code true} if the value is out of the range.
+ * Returns <code>true/<code> if the value is out of the range.
+ * @return <code>true/<code> if the value is out of the range.
  */
 Range.prototype.isOutOfRange = function (value /*Number*/)
 {
@@ -235,8 +235,8 @@ Range.prototype.isOutOfRange = function (value /*Number*/)
 }
 
 /**
- * Returns {@code true} if the range in argument overlap the current range.
- * @return {@code true} if the range in argument overlap the current range.
+ * Returns <code>true/<code> if the range in argument overlap the current range.
+ * @return <code>true/<code> if the range in argument overlap the current range.
  */
 Range.prototype.overlap = function ( r /*Range*/ ) /*Boolean*/
 {
