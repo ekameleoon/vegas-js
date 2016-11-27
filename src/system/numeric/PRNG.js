@@ -2,10 +2,10 @@
 
 /**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
- * <p>Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
- * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/</p>
- * <p>The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
- * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.</p>
+ * <p>Implementation of the <b>Park Miller</b> (1988) "<i>minimal standard</i>" linear congruential pseudo-random number generator.
+ * For a full explanation visit: {@link http://www.firstpr.com.au/dsp/rand31/}</p>
+ * <p>The generator uses a modulus constant <code>((m) of 2^31 - 1)</code> which is a <b>Mersenne Prime number</b> and a full-period-multiplier of <code>16807</code>.
+ * Output is a 31 bit unsigned integer. The range of values output is <code>1</code> to <code>2147483646</code> (2^31-1) and the seed must be in this range too.</p>
  * @name PRNG
  * @memberof system.numeric
  * @class

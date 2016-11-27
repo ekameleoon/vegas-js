@@ -29,37 +29,60 @@ export function Range( min = NaN , max = NaN )
     {
         throw new RangeError( "The Range constructor failed, the 'max' argument is < of 'min' argument" ) ;
     }
-    this.min = min ;
+    /**
+     * The maximum range value.
+     * @memberof system.numeric.Range
+     * @type number
+     * @instance
+     */
     this.max = max ;
+
+    /**
+     * The minimum range value.
+     * @memberof system.numeric.Range
+     * @type number
+     * @instance
+     */
+    this.min = min ;
 }
 
 Object.defineProperties( Range ,
 {
     /**
-     * Range between -255 and 255.
+     * Range between <code>-255</code> and <code>255</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
     COLOR : { value : new Range( -255 , 255 ) , enumerable : true } ,
 
     /**
      * Range between 0 and 360.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
     DEGREE : { value : new Range( 0 , 360 ) , enumerable : true } ,
 
     /**
      * Range between 0 and 100.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
     PERCENT : { value : new Range( 0 , 100 ) , enumerable : true }  ,
 
     /**
      * Range between 0 and 1.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
     UNITY : { value : new Range( 0 , 1 ) , enumerable : true } ,
 
     /**
      * Filters the passed-in Number value, if the value is NaN the return value is the default value in second argument.
-     * @param value The Number value to filter, if this value is NaN the value is changed.
-     * @param defaultValue The default value to apply over the specified value if this value is NaN (default 0).
-     * @return The filter Number value.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
+     * @param {number} value - The Number value to filter, if this value is <code>NaN</code> the value is changed.
+     * @param {number} [defaultValue=0] - The default value to apply over the specified value if this value is <code>NaN</code>.
+     * @return The filtered number value.
      */
     filterNaNValue :
     {
@@ -70,8 +93,13 @@ Object.defineProperties( Range ,
     }
 }) ;
 
-Range.prototype = Object.create( Object.prototype ) ;
-Range.prototype.constructor = Range ;
+Range.prototype = Object.create( Object.prototype ,
+{
+    /**
+     * The constructor reference.
+     */
+    constructor : { writable : true , value : Range }
+}) ;
 
 /**
  * Clamps a specific value in the current range.
