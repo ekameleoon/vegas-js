@@ -5,13 +5,22 @@ import { False } from '../rules/False.js' ;
 import { ElseIf } from './ElseIf.js' ;
 
 /**
- * Defines if condition is false in an <elseif> conditional block.
+ * Defines if condition is <code>false</code> in an <elseif> conditional block.
+ * @name ElseIfFalse
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the value is <code>false</code>.
+ * @see system.rules.False
  */
-export function ElseIfFalse( condition , then /*Action*/ = null  )
+export function ElseIfFalse( value , then = null  )
 {
-    ElseIf.call( this , new False(condition) , then ) ;
+    ElseIf.call( this , new False(value) , then ) ;
 }
 
-ElseIfFalse.prototype             = Object.create( ElseIf.prototype );
-ElseIfFalse.prototype.constructor = ElseIfFalse ;
-ElseIfFalse.prototype.toString    = function () { return "[ElseIfFalse]" }
+ElseIfFalse.prototype = Object.create( ElseIf.prototype ,
+{
+    constructor : { writable : true , value : ElseIfFalse }
+});

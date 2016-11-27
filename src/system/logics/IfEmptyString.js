@@ -28,5 +28,5 @@ export function IfEmptyString( value , thenTask = null , elseTask = null , ...el
 
 IfEmptyString.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfEmptyString , writable : true }
+    constructor : { writable : true , value : IfEmptyString }
 });

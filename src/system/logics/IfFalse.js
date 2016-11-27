@@ -29,5 +29,5 @@ export function IfFalse( condition , thenTask = null , elseTask = null , ...else
 
 IfFalse.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfFalse , writable : true }
+    constructor : { writable : true , value : IfFalse }
 });

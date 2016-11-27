@@ -28,5 +28,5 @@ export function IfUndefined( value , thenTask = null , elseTask = null , ...else
 
 IfUndefined.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfUndefined , writable : true }
+    constructor : { writable : true , value : IfUndefined }
 });

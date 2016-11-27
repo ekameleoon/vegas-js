@@ -2,6 +2,12 @@
 
 /**
  * Represents an immutable range of values.
+ * @name Range
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number} [min=NaN] - The minimum range value.
+ * @param {number} [max=NaN] - The maximum range value.
  * @example
  * Range = system.numeric.Range ;
  *
@@ -64,9 +70,6 @@ Object.defineProperties( Range ,
     }
 }) ;
 
-/**
- * @extends Object
- */
 Range.prototype = Object.create( Object.prototype ) ;
 Range.prototype.constructor = Range ;
 

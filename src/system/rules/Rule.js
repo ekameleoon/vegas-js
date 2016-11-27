@@ -1,7 +1,7 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is a Rule.
+ * Indicates if the specific objet is a {@link system.rules.Rule} object and contains an <code>eval</code> method.
  * @memberof system.rules
  * @function
  * @param {Object} target - The object to validate.
@@ -23,35 +23,37 @@ export function isRule( target )
  * @interface
  * @extends Object
  */
-export function Rule()
+export function Rule() {}
+
+Rule.prototype = Object.create( Object.prototype ,
 {
+    /**
+     * The constructor reference.
+     */
+    constructor : { writable : true , value : Rule } ,
 
-}
+    /**
+     * Evaluates the specified condition.
+     * @name eval
+     * @memberof system.rules.Rule
+     * @function
+     * @instance
+     */
+    eval : { writable : true , value : function()
+    {
+        //
+    }},
 
-Rule.prototype = Object.create( Object.prototype );
-Rule.prototype.constructor = Rule;
-
-/**
- * Evaluates the specified condition.
- * @name eval
- * @memberof system.rules.Rule
- * @function
- * @instance
- */
-Rule.prototype.eval = function()
-{
-    //
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.rules.Rule
- * @function
- * @instance
- */
-Rule.prototype.toString = function()
-{
-    return '[' + this.constructor.name + ']' ;
-}
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.rules.Rule
+     * @function
+     * @instance
+     */
+    toString : { value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

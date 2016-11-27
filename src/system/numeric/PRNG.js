@@ -2,13 +2,17 @@
 
 /**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
- * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
- * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
- * The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
- * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.
- * @param value The optional default value of the PRNG object, if the passed-in value is >=1 a random value is generated with the Math.random() static method (default 0).
+ * <p>Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
+ * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/</p>
+ * <p>The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
+ * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.</p>
+ * @name PRNG
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number} [value=0] - The optional default value of the <code>PRNG</code> object, if the passed-in value is <code>>=1</code> a random value is generated with the <code>Math.random()</code> static method.
  */
-export function PRNG( value = 0 )
+export function PRNG( value = 1 )
 {
     Object.defineProperties( this ,
     {
@@ -18,13 +22,13 @@ export function PRNG( value = 0 )
     this.value = (value > 0) ? value : Math.random() * 0X7FFFFFFE ;
 }
 
-/**
- * @extends Object
- */
 PRNG.prototype = Object.create( Object.prototype ,
 {
     /**
-     * Sets the current random value with a 31 bit unsigned integer between 1 and 0X7FFFFFFE inclusive (don't use 0).
+     * Defines the current random value with a 31 bit unsigned integer between <code>1</code> and <code>0X7FFFFFFE</code> inclusive (don't use 0).
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @type number
      */
     value :
     {
@@ -37,21 +41,32 @@ PRNG.prototype = Object.create( Object.prototype ,
         }
     }
 }) ;
+
 PRNG.prototype.constructor = PRNG ;
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits)
+ * Provides the next pseudo random number as an unsigned integer (31 bits).
+ * @return The next pseudo random number as an unsigned integer (31 bits).
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomInt = function() /*int*/
+PRNG.prototype.randomInt = function()
 {
     this._value = (this._value * 16807) % 2147483647 ;
     return this._value ;
 }
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a minimum value and maximum value.
+ * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+ * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+ * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomIntByMinMax = function( min /*Number*/ , max /*Number*/ ) /*int*/
+PRNG.prototype.randomIntByMinMax = function( min = 0 , max = 1 )
 {
     if ( isNaN( min ) )
     {
@@ -68,18 +83,27 @@ PRNG.prototype.randomIntByMinMax = function( min /*Number*/ , max /*Number*/ ) /
 }
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a given range.
+ * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
+ * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
+ * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomIntByRange = function( r /*Range*/ ) /*int*/
+PRNG.prototype.randomIntByRange = function( r ) /*int*/
 {
-    var min /*Number*/ = r.min - 0.4999;
-    var max /*Number*/ = r.max + 0.4999;
+    var min = r.min - 0.4999;
+    var max = r.max + 0.4999;
     this._value = (this._value * 16807) % 2147483647 ;
     return Math.round(min + ( ( max - min ) * this._value / 2147483647 ) );
 }
 
 /**
  * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
+ * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.randomNumber = function() /*Number*/
 {
@@ -89,8 +113,14 @@ PRNG.prototype.randomNumber = function() /*Number*/
 
 /**
  * Provides the next pseudo random number as a float between a minimum value and maximum value.
+ * @return The next pseudo random number as a float between a minimum value and maximum value.
+ * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+ * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomNumberByMinMax = function( min /*Number*/ , max /*Number*/ ) /*Number*/
+PRNG.prototype.randomNumberByMinMax = function( min , max )
 {
     if ( isNaN( min ) )
     {
@@ -106,6 +136,11 @@ PRNG.prototype.randomNumberByMinMax = function( min /*Number*/ , max /*Number*/ 
 
 /**
  * Provides the next pseudo random number as a float between a given range.
+ * @return The next pseudo random number as a float in a specific range.
+ * @param {system.numeric.Range} range - The range to born the number.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.randomNumberByRange = function( r /*Range*/ ) /*Number*/
 {
@@ -116,8 +151,11 @@ PRNG.prototype.randomNumberByRange = function( r /*Range*/ ) /*Number*/
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.toString = function () /*String*/
+PRNG.prototype.toString = function ()
 {
     return String( this._value ) ;
 }
@@ -125,6 +163,9 @@ PRNG.prototype.toString = function () /*String*/
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.valueOf = function () /*int*/
 {

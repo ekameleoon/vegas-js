@@ -204,7 +204,7 @@ IfTask.prototype = Object.create( Action.prototype ,
     /**
      * The constructor reference.
      */
-    constructor : { value : IfTask , writable : true } ,
+    constructor : { writable : true , value : IfTask } ,
 
     /**
      * The collection of condition/action invokable if the main rule is not true.

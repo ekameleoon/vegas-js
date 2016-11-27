@@ -13361,7 +13361,7 @@ var logging = Object.assign({
 });
 
 /**
- * Indicates if the specific objet is a Rule.
+ * Indicates if the specific objet is a {@link system.rules.Rule} object and contains an <code>eval</code> method.
  * @memberof system.rules
  * @function
  * @param {Object} target - The object to validate.
@@ -13384,31 +13384,35 @@ function isRule(target) {
  */
 function Rule() {}
 
-Rule.prototype = Object.create(Object.prototype);
-Rule.prototype.constructor = Rule;
+Rule.prototype = Object.create(Object.prototype, {
+  /**
+   * The constructor reference.
+   */
+  constructor: { writable: true, value: Rule },
 
-/**
- * Evaluates the specified condition.
- * @name eval
- * @memberof system.rules.Rule
- * @function
- * @instance
- */
-Rule.prototype.eval = function () {}
-//
+  /**
+   * Evaluates the specified condition.
+   * @name eval
+   * @memberof system.rules.Rule
+   * @function
+   * @instance
+   */
+  eval: { writable: true, value: function value() {
+      //
+    } },
 
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @name toString
- * @memberof system.rules.Rule
- * @function
- * @instance
- */
-;Rule.prototype.toString = function () {
-  return '[' + this.constructor.name + ']';
-};
+  /**
+   * Returns the string representation of this instance.
+   * @return the string representation of this instance.
+   * @name toString
+   * @memberof system.rules.Rule
+   * @function
+   * @instance
+   */
+  toString: { value: function value() {
+      return '[' + this.constructor.name + ']';
+    } }
+});
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
@@ -13454,41 +13458,62 @@ BooleanRule.prototype.eval = function () {
 };
 
 /**
- * Defines a conditional rule to defines a specific 'elseif' block in a IfTask reference.
+ * Defines a conditional rule to defines an <code>elseif</code> block in a {@link system.logics.IfTask|IfTask} reference.
+ * @name ElseIf
+ * @memberof system.logics
+ * @implements {system.rules.Rule}
+ * @augments system.rules.Rule
+ * @class
+ * @constructor
+ * @param {system.rules.Rule} [rule=null] - The condition to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the condition is <code>true</code>.
  */
 function ElseIf() {
-    var rule /*Rule*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-    this.rule = rule instanceof Rule ? rule : new BooleanRule(rule);
-    this.then = then;
+  /**
+   * The condition to evaluate.
+   * @memberof system.rules.ElseIf
+   * @name rule
+   * @type system.rules.Rule
+   * @instance
+   * @default null
+   */
+  this.rule = rule instanceof Rule ? rule : new BooleanRule(rule);
+
+  /**
+   * The {@link system.process.Action|Action} to execute if the condition is <code>true</code>.
+   * @memberof system.rules.ElseIf
+   * @name then
+   * @type system.process.Action
+   * @instance
+   * @default null
+   */
+  this.then = then;
 }
 
-/**
- * @extends Rule
- */
-ElseIf.prototype = Object.create(Rule.prototype);
-ElseIf.prototype.constructor = ElseIf;
+ElseIf.prototype = Object.create(Rule.prototype, {
+  /**
+   * The constructor reference.
+   */
+  constructor: { value: ElseIf, writable: true },
 
-/**
- * Evaluates the specified object.
- */
-ElseIf.prototype.eval = function () {
-    if (this.rule && this.rule instanceof Rule) {
+  /**
+   * Evaluates the specified object.
+   * @name eval
+   * @memberof system.rules.ElseIf
+   * @function
+   * @instance
+   */
+  eval: { writable: true, value: function value() {
+      if (this.rule && this.rule instanceof Rule) {
         return this.rule.eval();
-    } else {
+      } else {
         return false;
-    }
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-ElseIf.prototype.toString = function () /*String*/
-{
-    return "[ElseIf]";
-};
+      }
+    } }
+});
 
 /**
  * Evaluates if the value is an empty String.
@@ -13536,19 +13561,25 @@ EmptyString.prototype.eval = function () {
 
 /**
  * Evaluates if the value is an empty String.
+ * @name ElseIfEmptyString
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} [value=null] - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the value is an empty <code>string</code>.
+ * @see system.rules.EmptyString
  */
 function ElseIfEmptyString() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ElseIf.call(this, new EmptyString(value), then);
+    ElseIf.call(this, new EmptyString(value), then);
 }
 
-ElseIfEmptyString.prototype = Object.create(ElseIf.prototype);
-ElseIfEmptyString.prototype.constructor = ElseIfEmptyString;
-ElseIfEmptyString.prototype.toString = function () {
-  return "[ElseIfEmptyString]";
-};
+ElseIfEmptyString.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfEmptyString }
+});
 
 /**
  * Used to perform a logical conjunction on two conditions and more.
@@ -13655,18 +13686,25 @@ Equals.prototype.eval = function () {
 
 /**
  * Defines an equality between two values in an <elseif> conditional block.
+ * @name ElseIfEquals
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} [value1] - The condition to evaluate.
+ * @param {Object} [value2] - The condition to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the two values are equals.
+ * @see system.rules.Equals
  */
 function ElseIfEquals(value1, value2) {
-  var then /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var then = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-  ElseIf.call(this, new Equals(value1, value2), then);
+    ElseIf.call(this, new Equals(value1, value2), then);
 }
 
-ElseIfEquals.prototype = Object.create(ElseIf.prototype);
-ElseIfEquals.prototype.constructor = ElseIfEquals;
-ElseIfEquals.prototype.toString = function () {
-  return "[ElseIfEquals]";
-};
+ElseIfEquals.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfEquals }
+});
 
 /**
  * Evaluates if the condition is false.
@@ -13717,19 +13755,25 @@ False.prototype.eval = function () {
 };
 
 /**
- * Defines if condition is false in an <elseif> conditional block.
+ * Defines if condition is <code>false</code> in an <elseif> conditional block.
+ * @name ElseIfFalse
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the value is <code>false</code>.
+ * @see system.rules.False
  */
-function ElseIfFalse(condition) {
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+function ElseIfFalse(value) {
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ElseIf.call(this, new False(condition), then);
+    ElseIf.call(this, new False(value), then);
 }
 
-ElseIfFalse.prototype = Object.create(ElseIf.prototype);
-ElseIfFalse.prototype.constructor = ElseIfFalse;
-ElseIfFalse.prototype.toString = function () {
-  return "[ElseIfFalse]";
-};
+ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfFalse }
+});
 
 /* jshint eqnull: true */
 /**
@@ -13741,7 +13785,7 @@ ElseIfFalse.prototype.toString = function () {
  * @class
  * @constructs
  * @param {object} [value=null] - The value to evaluate.
- * @param {boolean} [strict=false] - This flag indicates if the condition use == or === to evalute the value.
+ * @param {boolean} [strict=false] - This flag indicates if the condition use <code>==</code> or <code>===</code> to evalute the value.
  * @example
  * var Null = system.rules.Null ;
  *
@@ -13801,20 +13845,27 @@ Null.prototype.eval = function () {
 };
 
 /**
- * Defines if a value is null in an <elseif> conditional block.
+ * Defines if a value is <code>null</code> in an <elseif> conditional block.
+ * @name ElseIfNull
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the value is <code>null</code>.
+ * @param {boolean} [strict=false] - This flag indicates if the condition use <code>==</code> or <code>===</code> to evalute the value.
+ * @see system.rules.Null
  */
 function ElseIfNull(value) {
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var strict = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var strict = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-  ElseIf.call(this, new Null(value, strict), then);
+    ElseIf.call(this, new Null(value, strict), then);
 }
 
-ElseIfNull.prototype = Object.create(ElseIf.prototype);
-ElseIfNull.prototype.constructor = ElseIfNull;
-ElseIfNull.prototype.toString = function () {
-  return "[ElseIfNull]";
-};
+ElseIfNull.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfNull }
+});
 
 /**
  * Evaluates if the condition is true.
@@ -13866,19 +13917,25 @@ True.prototype.eval = function () {
 };
 
 /**
- * Defines if condition is true in an <elseif> conditional block.
+ * Defines if condition is <code>true</code> in an <elseif> conditional block.
+ * @name ElseIfTrue
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the value is <code>true</code>.
+ * @see system.rules.True
  */
 function ElseIfTrue(condition) {
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ElseIf.call(this, new True(condition), then);
+    ElseIf.call(this, new True(condition), then);
 }
 
-ElseIfTrue.prototype = Object.create(ElseIf.prototype);
-ElseIfTrue.prototype.constructor = ElseIfTrue;
-ElseIfTrue.prototype.toString = function () {
-  return "[ElseIfTrue]";
-};
+ElseIfTrue.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfTrue }
+});
 
 /* jshint eqnull: true */
 /**
@@ -13889,7 +13946,7 @@ ElseIfTrue.prototype.toString = function () {
  * @augments system.rules.Rule
  * @class
  * @constructs
- * @param {object} [value=null] - The value to evaluate.
+ * @param {object} [value=undefined] - The value to evaluate.
  * @example
  * var Undefined = system.rules.Undefined ;
  * trace( (new Undefined( undefined )).eval() ) ; // true
@@ -13922,19 +13979,25 @@ Undefined.prototype.eval = function () {
 };
 
 /**
- * Defines if a value is undefined in an <elseif> conditional block.
+ * Defines if a value is <code>undefined</code> in an <elseif> conditional block.
+ * @name ElseIfUndefined
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the values is <code>undefined</code>.
+ * @see system.rules.Undefined
  */
 function ElseIfUndefined(value) {
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ElseIf.call(this, new Undefined(value), then);
+    ElseIf.call(this, new Undefined(value), then);
 }
 
-ElseIfUndefined.prototype = Object.create(ElseIf.prototype);
-ElseIfUndefined.prototype.constructor = ElseIfUndefined;
-ElseIfUndefined.prototype.toString = function () {
-  return "[ElseIfUndefined]";
-};
+ElseIfUndefined.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfUndefined }
+});
 
 /**
  * Evaluates if the condition is undefined.
@@ -13978,19 +14041,25 @@ Zero.prototype.eval = function () {
 };
 
 /**
- * Defines if a value is 0 in an <elseif> conditional block.
+ * Defines if a value <code>=== 0</code> in an <elseif> conditional block.
+ * @name ElseIfZero
+ * @memberof system.logics
+ * @extends system.logics.ElseIf
+ * @class
+ * @constructor
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} [then=null] - The action to execute if the values equals <code>0</code>.
+ * @see system.rules.Zero
  */
 function ElseIfZero(value) {
-  var then /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  ElseIf.call(this, new Zero(value), then);
+    ElseIf.call(this, new Zero(value), then);
 }
 
-ElseIfZero.prototype = Object.create(ElseIf.prototype);
-ElseIfZero.prototype.constructor = ElseIfZero;
-ElseIfZero.prototype.toString = function () {
-  return "[ElseIfZero]";
-};
+ElseIfZero.prototype = Object.create(ElseIf.prototype, {
+    constructor: { writable: true, value: ElseIfZero }
+});
 
 /**
  * Perform some tasks based on whether a given condition holds true or not.
@@ -14053,8 +14122,6 @@ ElseIfZero.prototype.toString = function () {
  *
  * task.run() ;
  *
- * task.clear() ;
- *
  * trace(' -------- test 2');
  *
  * task.clear() ;
@@ -14111,36 +14178,20 @@ ElseIfZero.prototype.toString = function () {
  * task.throwError = false ;
  *
  * task.run() ;
+ * @param {system.rules.Rule} rule - The initial condition.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
 function IfTask() // jshint ignore:line
 {
     var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     Action.call(this);
 
     Object.defineProperties(this, {
-        /**
-         * The collection of condition/action invokable if the main rule is not true.
-         * @memberof system.logics.IfTask
-         * @type {array}
-         * @instance
-         */
-        elseIfTask: { get: function get() {
-                return this._elseIfTask;
-            } },
-
-        /**
-         * The action invoked if all the conditions failed.
-         * @memberof system.logics.IfTask
-         * @type {system.process.Action}
-         * @instance
-         */
-        elseTask: { get: function get() {
-                return this._elseTask;
-            } },
-
         /**
          * This signal emit when the action failed.
          * @memberof system.logics.IfTask
@@ -14149,31 +14200,6 @@ function IfTask() // jshint ignore:line
          * @readonly
          */
         errorIt: { value: new Signal() },
-
-        /**
-         * The rule reference of this task.
-         * @memberof system.logics.IfTask
-         * @type {system.rules.Rule}
-         * @instance
-         */
-        rule: {
-            get: function get() {
-                return this._rule;
-            },
-            set: function set(rule) {
-                this._rule = rule instanceof Rule ? rule : new BooleanRule(rule);
-            }
-        },
-
-        /**
-         * The action to execute if the main condition if true.
-         * @memberof system.logics.IfTask
-         * @type {system.process.Action}
-         * @instance
-         */
-        thenTask: { get: function get() {
-                return this._thenTask;
-            } },
 
         /**
          * Indicates if the class throws errors or notify a finished event when the task failed.
@@ -14229,6 +14255,58 @@ function IfTask() // jshint ignore:line
 }
 
 IfTask.prototype = Object.create(Action.prototype, {
+    /**
+     * The constructor reference.
+     */
+    constructor: { writable: true, value: IfTask },
+
+    /**
+     * The collection of condition/action invokable if the main rule is not true.
+     * @memberof system.logics.IfTask
+     * @type {array}
+     * @instance
+     * @readonly
+     */
+    elseIfTask: { get: function get() {
+            return this._elseIfTask;
+        } },
+
+    /**
+     * The action invoked if all the conditions failed.
+     * @memberof system.logics.IfTask
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
+     */
+    elseTask: { get: function get() {
+            return this._elseTask;
+        } },
+
+    /**
+     * The rule reference of this task.
+     * @memberof system.logics.IfTask
+     * @type {system.rules.Rule}
+     * @instance
+     */
+    rule: {
+        get: function get() {
+            return this._rule;
+        },
+        set: function set(rule) {
+            this._rule = rule instanceof Rule ? rule : new BooleanRule(rule);
+        }
+    },
+
+    /**
+     * The action to execute if the main condition if <code>true</code>.
+     * @memberof system.logics.IfTask
+     * @type {system.process.Action}
+     * @instance
+     */
+    thenTask: { get: function get() {
+            return this._thenTask;
+        } },
+
     /**
      * Defines the action when the condition block use the else condition.
      * @name addElse
@@ -14507,15 +14585,23 @@ IfTask.prototype = Object.create(Action.prototype, {
     }
 });
 
-IfTask.prototype.constructor = IfTask;
-
 /**
- * Perform some tasks based on whether a given value is an empty string ("").
+ * Perform some tasks based on whether a given value is an empty string <code>""</code>.
+ * @name IfEmptyString
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.EmptyString
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
 function IfEmptyString(value) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new EmptyString(value), thenTask, elseTask);
 
@@ -14528,19 +14614,28 @@ function IfEmptyString(value) // jshint ignore:line
     }
 }
 
-IfEmptyString.prototype = Object.create(IfTask.prototype);
-IfEmptyString.prototype.constructor = IfEmptyString;
-IfEmptyString.prototype.toString = function () {
-    return "[IfEmptyString]";
-};
+IfEmptyString.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfEmptyString }
+});
 
 /**
  * Perform some tasks based on whether a given condition holds equality of two values.
+ * @name IfEquals
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Equals
+ * @param {Object} value1 - The first value to evaluate.
+ * @param {Object} value2 - The second value to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
 function IfEquals(value1, value2) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    var elseTask /*Action*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     IfTask.call(this, new Equals(value1, value2), thenTask, elseTask);
 
@@ -14553,19 +14648,28 @@ function IfEquals(value1, value2) // jshint ignore:line
     }
 }
 
-IfEquals.prototype = Object.create(IfTask.prototype);
-IfEquals.prototype.constructor = IfEquals;
-IfEquals.prototype.toString = function () {
-    return "[IfEquals]";
-};
+IfEquals.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfEquals }
+});
 
 /**
- * Perform some tasks based on whether a given condition holds false.
+ * Performs some tasks based on whether a given condition holds false.
+ * @name IfFalse
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.False
+ * @param {Object} condition - The object to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
+
  */
 function IfFalse(condition) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new False(condition), thenTask, elseTask);
 
@@ -14578,14 +14682,23 @@ function IfFalse(condition) // jshint ignore:line
     }
 }
 
-IfFalse.prototype = Object.create(IfTask.prototype);
-IfFalse.prototype.constructor = IfFalse;
-IfFalse.prototype.toString = function () {
-    return "[IfFalse]";
-};
+IfFalse.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfFalse }
+});
 
 /**
- * Perform some tasks based on whether a given value is undefined.
+ * Perform some tasks based on whether a given value is <code>null</code>.
+ * @name IfNull
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Null
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
+
  */
 function IfNull(value) // jshint ignore:line
 {
@@ -14604,19 +14717,28 @@ function IfNull(value) // jshint ignore:line
     }
 }
 
-IfNull.prototype = Object.create(IfTask.prototype);
-IfNull.prototype.constructor = IfNull;
-IfNull.prototype.toString = function () {
-    return "[IfNull]";
-};
+IfNull.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfNull }
+});
 
 /**
  * Perform some tasks based on whether a given condition holds true.
+ * @name IfTrue
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.True
+ * @param {Object} condition - The object to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
+
  */
 function IfTrue(condition) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new True(condition), thenTask, elseTask);
 
@@ -14629,19 +14751,27 @@ function IfTrue(condition) // jshint ignore:line
     }
 }
 
-IfTrue.prototype = Object.create(IfTask.prototype);
-IfTrue.prototype.constructor = IfTrue;
-IfTrue.prototype.toString = function () {
-    return "[IfTrue]";
-};
+IfTrue.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfTrue }
+});
 
 /**
  * Perform some tasks based on whether a given value is undefined.
+ * @name IfUndefined
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Undefined
+ * @param {Object} condition - The object to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
 function IfUndefined(value) // jshint ignore:line
 {
-    var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var elseTask /*Action*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elseTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     IfTask.call(this, new Undefined(value), thenTask, elseTask);
 
@@ -14654,14 +14784,22 @@ function IfUndefined(value) // jshint ignore:line
     }
 }
 
-IfUndefined.prototype = Object.create(IfTask.prototype);
-IfUndefined.prototype.constructor = IfUndefined;
-IfUndefined.prototype.toString = function () {
-    return "[IfUndefined]";
-};
+IfUndefined.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfUndefined }
+});
 
 /**
- * Perform some tasks based on whether a given value is 0.
+ * Perform some tasks based on whether a given value is <code>0</code>.
+ * @name IfZero
+ * @memberof system.logics
+ * @extends system.logics.IfTask
+ * @class
+ * @constructor
+ * @see system.rules.Zero
+ * @param {Object} value - The value to evaluate.
+ * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
+ * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
+ * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
 function IfZero(value) // jshint ignore:line
 {
@@ -14679,37 +14817,146 @@ function IfZero(value) // jshint ignore:line
     }
 }
 
-IfZero.prototype = Object.create(IfTask.prototype);
-IfZero.prototype.constructor = IfZero;
-IfZero.prototype.toString = function () {
-    return "[IfZero]";
-};
+IfZero.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfZero }
+});
 
 /**
- * The VEGAS.js framework - The system.logics library.
+ * The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
+ * <p>This task is heavily based on the Condition framework that can be found in the {@link system.rules} library.</p>
+ * <p>In addition to the {@link system.rules.Rule|Rule} condition, you can specify three different child actions based on the {@link system.process.Action|Action} :  <code>elseif</code>, <code>then</code> and <code>else</code>. All three subelements are optional. Both <code>then</code> and <code>else</code> must not be used more than once inside the if task. Both are containers for tasks, just like {@link system.process.BatchTask|BatchTask} and {@link system.process.Chain|Chain} tasks.</p>
+ * @summary The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logics
  * @memberof system
+ * @example
+ * // -------- Imports
+ *
+ * var IfTask      = system.logics.IfTask ;
+ * var Do          = system.process.Do ;
+ * var ElseIf      = system.logics.ElseIf ;
+ * var EmptyString = system.rules.EmptyString ;
+ * var Equals      = system.rules.Equals ;
+ *
+ * // -------- init
+ *
+ * var task ;
+ *
+ * var do1 = new Do() ;
+ * var do2 = new Do() ;
+ * var do3 = new Do() ;
+ * var do4 = new Do() ;
+ *
+ * do1.something = function() { trace("do1 ###") } ;
+ * do2.something = function() { trace("do2 ###") } ;
+ * do3.something = function() { trace("do3 ###") } ;
+ * do4.something = function() { trace("do4 ###") } ;
+ *
+ * // -------- behaviors
+ *
+ * var error = function( message , action  )
+ * {
+ *     trace( "error:" + action + " message:" + message ) ;
+ * };
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * trace(' -------- test 1');
+ *
+ * task = new IfTask( new EmptyString('') , do1 , do2 ) ;
+ *
+ * task.finishIt.connect(finish) ;
+ * task.errorIt.connect(error) ;
+ * task.startIt.connect(start) ;
+ *
+ * task.run() ;
+ *
+ * task.clear() ;
+ *
+ * trace(' -------- test 2');
+ *
+ * task.clear() ;
+ *
+ * task.rule = new Equals(1,2) ;
+ *
+ * task.addThen( do1 )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 3 : <elseIf>');
+ *
+ * task.clear() ;
+ *
+ * task.addRule( new Equals(1,2) )
+ *     .addThen( do1 )
+ *     .addElseIf
+ *     (
+ *         new ElseIf( new Equals(2,1) , do3 ) ,
+ *         new ElseIf( new Equals(2,2) , do4 )
+ *     )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 4 : <then> is already register');
+ *
+ * task.clear() ;
+ * task.throwError = true ;
+ *
+ * try
+ * {
+ *     task.addThen( do1 )
+ *         .addElse( do2 )
+ *         .addThen( do3 )
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 5 : <rule> is not defined');
+ *
+ * try
+ * {
+ *     task.run() ;
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 6 : <rule> is not defined and throwError = false');
+ *
+ * task.throwError = false ;
+ *
+ * task.run() ;
  */
 var logics = Object.assign({
-    ElseIf: ElseIf,
-    ElseIfEmptyString: ElseIfEmptyString,
-    ElseIfEquals: ElseIfEquals,
-    ElseIfFalse: ElseIfFalse,
-    ElseIfNull: ElseIfNull,
-    ElseIfTrue: ElseIfTrue,
-    ElseIfUndefined: ElseIfUndefined,
-    ElseIfZero: ElseIfZero,
+  ElseIf: ElseIf,
+  ElseIfEmptyString: ElseIfEmptyString,
+  ElseIfEquals: ElseIfEquals,
+  ElseIfFalse: ElseIfFalse,
+  ElseIfNull: ElseIfNull,
+  ElseIfTrue: ElseIfTrue,
+  ElseIfUndefined: ElseIfUndefined,
+  ElseIfZero: ElseIfZero,
 
-    IfEmptyString: IfEmptyString,
-    IfEquals: IfEquals,
-    IfFalse: IfFalse,
-    IfNull: IfNull,
-    IfTask: IfTask,
-    IfTrue: IfTrue,
-    IfUndefined: IfUndefined,
-    IfZero: IfZero
+  IfEmptyString: IfEmptyString,
+  IfEquals: IfEquals,
+  IfFalse: IfFalse,
+  IfNull: IfNull,
+  IfTask: IfTask,
+  IfTrue: IfTrue,
+  IfUndefined: IfUndefined,
+  IfZero: IfZero
 });
 
 /**
@@ -15923,15 +16170,19 @@ var models = Object.assign({
 
 /**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
- * Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
- * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/
- * The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
- * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.
- * @param value The optional default value of the PRNG object, if the passed-in value is >=1 a random value is generated with the Math.random() static method (default 0).
+ * <p>Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
+ * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/</p>
+ * <p>The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
+ * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.</p>
+ * @name PRNG
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number} [value=0] - The optional default value of the <code>PRNG</code> object, if the passed-in value is <code>>=1</code> a random value is generated with the <code>Math.random()</code> static method.
  */
 
 function PRNG() {
-    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
     Object.defineProperties(this, {
         _value: { value: 1, writable: true }
@@ -15940,12 +16191,12 @@ function PRNG() {
     this.value = value > 0 ? value : Math.random() * 0X7FFFFFFE;
 }
 
-/**
- * @extends Object
- */
 PRNG.prototype = Object.create(Object.prototype, {
     /**
-     * Sets the current random value with a 31 bit unsigned integer between 1 and 0X7FFFFFFE inclusive (don't use 0).
+     * Defines the current random value with a 31 bit unsigned integer between <code>1</code> and <code>0X7FFFFFFE</code> inclusive (don't use 0).
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @type number
      */
     value: {
         get: function get() {
@@ -15958,22 +16209,34 @@ PRNG.prototype = Object.create(Object.prototype, {
         }
     }
 });
+
 PRNG.prototype.constructor = PRNG;
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits)
+ * Provides the next pseudo random number as an unsigned integer (31 bits).
+ * @return The next pseudo random number as an unsigned integer (31 bits).
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomInt = function () /*int*/
-{
+PRNG.prototype.randomInt = function () {
     this._value = this._value * 16807 % 2147483647;
     return this._value;
 };
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a minimum value and maximum value.
+ * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+ * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+ * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomIntByMinMax = function (min /*Number*/, max /*Number*/) /*int*/
-{
+PRNG.prototype.randomIntByMinMax = function () {
+    var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
     if (isNaN(min)) {
         min = 0;
     }
@@ -15987,18 +16250,27 @@ PRNG.prototype.randomIntByMinMax = function (min /*Number*/, max /*Number*/) /*i
 };
 
 /**
- * Provides the next pseudorandom number as an unsigned integer (31 bits) betweeen a given range.
+ * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
+ * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
+ * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomIntByRange = function (r /*Range*/) /*int*/
+PRNG.prototype.randomIntByRange = function (r) /*int*/
 {
-    var min /*Number*/ = r.min - 0.4999;
-    var max /*Number*/ = r.max + 0.4999;
+    var min = r.min - 0.4999;
+    var max = r.max + 0.4999;
     this._value = this._value * 16807 % 2147483647;
     return Math.round(min + (max - min) * this._value / 2147483647);
 };
 
 /**
  * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
+ * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.randomNumber = function () /*Number*/
 {
@@ -16008,9 +16280,14 @@ PRNG.prototype.randomNumber = function () /*Number*/
 
 /**
  * Provides the next pseudo random number as a float between a minimum value and maximum value.
+ * @return The next pseudo random number as a float between a minimum value and maximum value.
+ * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+ * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.randomNumberByMinMax = function (min /*Number*/, max /*Number*/) /*Number*/
-{
+PRNG.prototype.randomNumberByMinMax = function (min, max) {
     if (isNaN(min)) {
         min = 0;
     }
@@ -16023,6 +16300,11 @@ PRNG.prototype.randomNumberByMinMax = function (min /*Number*/, max /*Number*/) 
 
 /**
  * Provides the next pseudo random number as a float between a given range.
+ * @return The next pseudo random number as a float in a specific range.
+ * @param {system.numeric.Range} range - The range to born the number.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.randomNumberByRange = function (r /*Range*/) /*Number*/
 {
@@ -16033,15 +16315,20 @@ PRNG.prototype.randomNumberByRange = function (r /*Range*/) /*Number*/
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
-PRNG.prototype.toString = function () /*String*/
-{
+PRNG.prototype.toString = function () {
     return String(this._value);
 };
 
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @memberof system.numeric.PRNG
+ * @instance
+ * @function
  */
 PRNG.prototype.valueOf = function () /*int*/
 {
@@ -16050,6 +16337,12 @@ PRNG.prototype.valueOf = function () /*int*/
 
 /**
  * Represents an immutable range of values.
+ * @name Range
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number} [min=NaN] - The minimum range value.
+ * @param {number} [max=NaN] - The maximum range value.
  * @example
  * Range = system.numeric.Range ;
  *
@@ -16113,9 +16406,6 @@ Object.defineProperties(Range, {
     }
 });
 
-/**
- * @extends Object
- */
 Range.prototype = Object.create(Object.prototype);
 Range.prototype.constructor = Range;
 

@@ -28,5 +28,5 @@ export function IfZero( value , thenTask /*Action*/ = null , elseTask /*Action*/
 
 IfZero.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfZero , writable : true }
+    constructor : { writable : true , value : IfZero }
 });

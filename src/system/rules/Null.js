@@ -12,7 +12,7 @@ import { Rule } from './Rule.js' ;
  * @class
  * @constructs
  * @param {object} [value=null] - The value to evaluate.
- * @param {boolean} [strict=false] - This flag indicates if the condition use == or === to evalute the value.
+ * @param {boolean} [strict=false] - This flag indicates if the condition use <code>==</code> or <code>===</code> to evalute the value.
  * @example
  * var Null = system.rules.Null ;
  *

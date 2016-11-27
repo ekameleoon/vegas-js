@@ -18,7 +18,7 @@ import { IfTask } from './IfTask.js' ;
  * @param {system.process.Action} elseTask - The action invoked if all the conditions failed.
  * @param {array} elseTask - The optional collection of {@link system.logics.ElseIf} tasks.
  */
-export function IfEquals( value1 , value2 , thenTask /*Action*/ = null , elseTask /*Action*/ = null , ...elseIfTasks ) // jshint ignore:line
+export function IfEquals( value1 , value2 , thenTask = null , elseTask = null , ...elseIfTasks ) // jshint ignore:line
 {
     IfTask.call( this , new Equals(value1,value2) , thenTask , elseTask ) ;
     if( elseIfTasks.length > 0 )
@@ -29,5 +29,5 @@ export function IfEquals( value1 , value2 , thenTask /*Action*/ = null , elseTas
 
 IfEquals.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfEquals , writable : true }
+    constructor : { writable : true , value : IfEquals }
 });

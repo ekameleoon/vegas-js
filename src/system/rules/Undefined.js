@@ -11,7 +11,7 @@ import { Rule } from './Rule.js' ;
  * @augments system.rules.Rule
  * @class
  * @constructs
- * @param {object} [value=null] - The value to evaluate.
+ * @param {object} [value=undefined] - The value to evaluate.
  * @example
  * var Undefined = system.rules.Undefined ;
  * trace( (new Undefined( undefined )).eval() ) ; // true

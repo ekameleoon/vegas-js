@@ -29,5 +29,5 @@ export function IfNull( value , strict = false , thenTask /*Action*/ = null , el
 
 IfNull.prototype = Object.create( IfTask.prototype ,
 {
-    constructor : { value : IfNull , writable : true }
+    constructor : { writable : true , value : IfNull }
 });
