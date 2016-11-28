@@ -35,9 +35,9 @@ Equatable.prototype.constructor = Equatable;
  * @memberof system.Equatable
  * @function
  * @param {*} object - The object to evaluates.
- * @return {boolean} true if the the specified object is equal with this object.
+ * @return {boolean} true if the the specified object is <b>equal to</b> this object.
  */
-Equatable.prototype.equals = function( object ) /*Boolean*/
+Equatable.prototype.equals = function( object )
 {
     //
 }
