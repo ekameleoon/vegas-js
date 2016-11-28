@@ -25,7 +25,7 @@
  * var seinfeld = [ "jerry", "george", "kramer", "helen" ];
  *
  * var len = seinfeld.length ;
- * for( var i = 0 ; i&lt;len ; i++ )
+ * for( var i = 0 ; i<len ; i++ )
  * {
  *     trace( pad( seinfeld[i] , 10 , "." ) ) ;
  * }

@@ -86,8 +86,8 @@ var docs =
 
         "footer"         : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
         "systemName"     : "VEGAS JS",
-        "cleverLinks"    : false,
-        "monospaceLinks" : false,
+        "cleverLinks"    : true,
+        "monospaceLinks" : true,
         "analytics"      : { "ua" : "UA-87950715-1" , "domain":"auto" } ,
         "default"        :
         {
