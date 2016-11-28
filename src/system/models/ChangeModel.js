@@ -5,8 +5,11 @@ import { Signal } from "../signals/Signal.js" ;
 
 /**
  * This model can keep an object in memory and emit messages if this object is changing.
+ * @name ChangeModel
+ * @class
+ * @memberof system.models
+ * @implements system.models.Model
  * @example
- * <pre>
  * var beforeChanged = function( value , model )
  * {
  *     trace( "before:" + value + " current:" + model.current ) ;
@@ -22,6 +25,8 @@ import { Signal } from "../signals/Signal.js" ;
  *     trace( "clear current:" + model.current ) ;
  * }
  *
+ * var model = new ChangeModel() ;
+ *
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
  * model.cleared.connect( cleared ) ;
@@ -29,7 +34,6 @@ import { Signal } from "../signals/Signal.js" ;
  * model.current = "hello" ;
  * model.current = "world" ;
  * model.current = null ;
- * </pre>
  */
 export function ChangeModel()
 {
@@ -37,21 +41,41 @@ export function ChangeModel()
     {
         /**
          * Emits a message before the current object in the model is changed.
+         * @name beforeChanged
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         beforeChanged : { value : new Signal() } ,
 
         /**
          * Emits a message when the current object in the model is changed.
+         * @name changed
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         changed : { value : new Signal() } ,
 
         /**
          * Emits a message when the current object in the model is cleared.
+         * @name cleared
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         cleared : { value : new Signal() } ,
 
         /**
          * This property defined if the current property can accept the same object in argument as the current one.
+         * @name security
+         * @memberof system.models.ChangeModel
+         * @type boolean
+         * @instance
+         * @default true
          */
         security : { value : true , writable : true } ,
 
@@ -62,9 +86,6 @@ export function ChangeModel()
     });
 }
 
-/**
- * @extends Model
- */
 ChangeModel.prototype = Object.create( Model.prototype ,
 {
     /**
@@ -73,7 +94,10 @@ ChangeModel.prototype = Object.create( Model.prototype ,
     constructor : { writable : true , value : ChangeModel } ,
 
     /**
-     * Determinates the selected value in this model.
+     * Determinates the current selected value in this model.
+     * @name current
+     * @memberof system.models.ChangeModel
+     * @instance
      */
     current :
     {
@@ -109,6 +133,10 @@ ChangeModel.prototype = Object.create( Model.prototype ,
 
     /**
      * Clear the model.
+     * @name clear
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     clear : { writable : true , value : function()
     {
@@ -118,6 +146,10 @@ ChangeModel.prototype = Object.create( Model.prototype ,
 
     /**
      * Notify a signal before the specified value is changed.
+     * @name notifyBeforeChange
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyBeforeChange : { value : function( value )
     {
@@ -129,6 +161,10 @@ ChangeModel.prototype = Object.create( Model.prototype ,
 
     /**
      * Notify a signal when the model is changed.
+     * @name notifyChange
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyChange : { value : function( value )
     {
@@ -140,6 +176,10 @@ ChangeModel.prototype = Object.create( Model.prototype ,
 
     /**
      * Notify a signal when the model is cleared.
+     * @name notifyClear
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyClear : { value : function()
     {

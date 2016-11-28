@@ -5,10 +5,11 @@ import { NoSuchElementError }  from "../errors/NoSuchElementError.js" ;
 
 /**
  * This model can keep an object in memory and emit messages if this object is changing.
+ * @name MemoryModel
+ * @class
+ * @memberof system.models
+ * @extends system.models.ChangeModel
  * @example
- * <pre>
- * var model = new MemoryModel();
- *
  * var beforeChanged = function( value , model )
  * {
  *     trace( "[-] before:" + value + " current:" + model.current + " size:" + model.size ) ;
@@ -23,6 +24,8 @@ import { NoSuchElementError }  from "../errors/NoSuchElementError.js" ;
  * {
  *     trace( "[x] clear current:" + model.current + " size:" + model.size ) ;
  * }
+ *
+ * var model = new MemoryModel();
  *
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
@@ -53,7 +56,6 @@ import { NoSuchElementError }  from "../errors/NoSuchElementError.js" ;
  * trace( "--" ) ;
  *
  * model.clear() ;
- * </pre>
  */
 export function MemoryModel()
 {
@@ -63,6 +65,11 @@ export function MemoryModel()
     {
         /**
          * Indicates if the model throws errors.
+         * @name enableErrorChecking
+         * @memberof system.models.MemoryModel
+         * @instance
+         * @type boolean
+         * @default false
          */
         enableErrorChecking : { writable : true , value : false } ,
 
@@ -85,9 +92,6 @@ export function MemoryModel()
     this.header.next = this.header.previous = this.header ;
 }
 
-/**
- * @extends ChangeModel
- */
 MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 {
     /**

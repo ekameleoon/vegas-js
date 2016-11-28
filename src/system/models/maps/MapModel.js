@@ -6,9 +6,13 @@ import { KeyValuePair } from "../../data/KeyValuePair.js" ;
 import { Signal }       from "../../signals/Signal.js" ;
 
 /**
- * This model use an internal <code>KeyValuePair</code> map to register objects.
+ * This model use an internal {@link system.data.KeyValuePair|KeyValuePair} map to register objects.
+ * @name MapModel
+ * @extends system.models.ChangeModel
+ * @implements system.data.Iterator
+ * @memberof system.models.maps
+ * @class
  * @example
- * <pre>
  * var o1 = { id : "key1" } ;
  * var o2 = { id : "key2" } ;
  * var o3 = { id : "key3" } ;
@@ -44,6 +48,8 @@ import { Signal }       from "../../signals/Signal.js" ;
  *     trace( "[u] update entry:" + dump(entry) + " size:" + model.length ) ;
  * }
  *
+ * var model = new MapModel() ;
+ *
  * model.added.connect( added ) ;
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
@@ -62,7 +68,6 @@ import { Signal }       from "../../signals/Signal.js" ;
  *
  * model.current = o1 ;
  * model.current = o2 ;
- * </pre>
  */
 export function MapModel( factory = null , key = "id" )
 {
@@ -72,16 +77,31 @@ export function MapModel( factory = null , key = "id" )
     {
         /**
          * Emits a message when an entry is added in the model.
+         * @name added
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         added : { value : new Signal() } ,
 
         /**
          * Emits a message when an entry is removed in the model.
+         * @name removed
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         removed : { value : new Signal() } ,
 
         /**
          * Emits a message when an entry is updated in the model.
+         * @name updated
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         updated : { value : new Signal() } ,
 
@@ -103,12 +123,14 @@ export function MapModel( factory = null , key = "id" )
 
 /**
  * Indicates the default primary key value ("id").
+ * @name DEFAULT_PRIMARY_KEY
+ * @memberof system.models.maps.MapModel
+ * @type {string}
+ * @default <code>"id"</code>
+ * @const
  */
 Object.defineProperty( MapModel , 'DEFAULT_PRIMARY_KEY' , { value : "id" } ) ;
 
-/**
- * @extends ChangeModel
- */
 MapModel.prototype = Object.create( ChangeModel.prototype ,
 {
     /**
@@ -118,6 +140,11 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Indicates the number of elements register in the model.
+     * @name length
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @type number
+     * @readonly
      */
     length : { get : function() { return this._map.length ; } },
 
@@ -126,6 +153,9 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
      * By default the model use the "id" primary key in the objects.
      * <p><b>Note:</b> If you use this property and if the model contains entries, all entries will be removing.</p>
      * @see MapModel.DEFAULT_PRIMARY_KEY
+     * @name primaryKey
+     * @memberof system.models.maps.MapModel
+     * @instance
      */
     primaryKey :
     {
@@ -151,6 +181,11 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
      * Inserts an entry in the model, must be identifiable and contains an id property.
      * @throws ReferenceError if the argument of this method is 'null' or 'undefined'.
      * @throws ReferenceError if the passed-in entry is already register in the model.
+     * @name add
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {system.data.Identifiable} entry - The identifiable object to register in the model.
      */
     add : { value : function ( entry )
     {
@@ -179,6 +214,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Removes all entries register in the model.
+     * @name clear
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     clear : { value : function()
     {
@@ -188,7 +227,12 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Returns the entry defined by the key passed-in argument.
-     * @return the entry defined by the key passed-in argument.
+     * @return The entry defined by the key passed-in argument.
+     * @name add
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {*} key - The key to search a specific entry in the model.
      */
     get : { value : function( key )
     {
@@ -198,6 +242,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Returns an entry defines in the model with the specified member.
      * @return an entry defines in the model with the specified member.
+     * @name getByProperty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     getByProperty : { value : function( propName , value )
     {
@@ -229,8 +277,12 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Returns <code>true</code> if the model contains the specified entry.
-     * @param entry The entry reference to verify.
+     * @param {system.data.Identifiable} entry - The entry reference to verify.
      * @return <code>true</code> if the model contains the specified entry.
+     * @name has
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     has : { value : function( entry )
     {
@@ -240,6 +292,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Returns <code>true</code> if the model contains the specified attribute value.
      * @return <code>true</code> if the model contains the specified key in argument
+     * @name hasByProperty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     hasByProperty : { value : function( propName , value )
     {
@@ -263,8 +319,12 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     }},
 
     /**
-     * Returns <code class="prettyprint">true</code> if the model contains the specified id key in argument.
-     * @return <code class="prettyprint">true</code> if the model contains the specified id key in argument
+     * Returns <code>true</code> if the model contains the specified id key in argument.
+     * @return <code>true</code> if the model contains the specified id key in argument
+     * @name hasKey
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     hasKey : { value : function( key )
     {
@@ -272,8 +332,12 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     }},
 
     /**
-     * Returns <code class="prettyprint">true</code> if this model is empty.
-     * @return <code class="prettyprint">true</code> if this model is empty.
+     * Returns <code>true</code> if this model is empty.
+     * @return <code>true</code> if this model is empty.
+     * @name isEmpty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     isEmpty : { value : function()
     {
@@ -283,6 +347,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Returns the iterator of this model.
      * @return the iterator of this model.
+     * @name iterator
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     iterator : { value : function()
     {
@@ -292,6 +360,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Returns the keys iterator of this model.
      * @return the keys iterator of this model.
+     * @name keyIterator
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     keyIterator : { value : function()
     {
@@ -300,6 +372,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Notify a signal when a new entry is inserted in the model.
+     * @name notifyAdd
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyAdd : { value : function( entry )
     {
@@ -311,6 +387,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Notify a signal when a new entry is removed in the model.
+     * @name notifyRemove
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyRemove : { value : function( entry )
     {
@@ -322,6 +402,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Notify a signal when a new entry is updated in the model.
+     * @name notifyUpdate
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyUpdate : { value : function( entry )
     {
@@ -333,6 +417,10 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Removes an entry in the model.
+     * @name remove
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     remove : { value : function( entry )
     {
@@ -360,6 +448,11 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Enforce to set the internal KeyValuePair collection of this model (default use a new Array instance). This method change the model without notification.
+     * @name setMap
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {system.data.KeyValuePair} map - The map reference to initialize this model.
      */
     setMap : { value : function( map )
     {
@@ -368,7 +461,11 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Update an entry in the model.
-     * @param entry the new value to insert in the model.
+     * @param {system.data.Identifiable} entry - The new value to insert in the model with a specific id.
+     * @name update
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     update : { value : function( entry )
     {
@@ -391,8 +488,12 @@ MapModel.prototype = Object.create( ChangeModel.prototype ,
     }},
 
     /**
-     * Returns the internal KeyValuePair (map) representation of this model.
-     * @return the internal KeyValuePair (map) representation of this model.
+     * Returns the internal {@link system.data.KeyValuePair|KeyValuePair} (map) representation of this model.
+     * @return The internal  {@link system.data.KeyValuePair|KeyValuePair} (map) representation of this model.
+     * @name update
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     toMap : { value : function()
     {

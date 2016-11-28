@@ -16,6 +16,31 @@ import { MapModel }   from './models/maps/MapModel.js' ;
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.models
  * @memberof system
+ * @example
+ * var beforeChanged = function( value , model )
+ * {
+ *     trace( "before:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var changed = function( value , model )
+ * {
+ *     trace( "change:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var cleared = function( model )
+ * {
+ *     trace( "clear current:" + model.current ) ;
+ * }
+ *
+ * var model = new ChangeModel() ;
+ *
+ * model.beforeChanged.connect( beforeChanged ) ;
+ * model.changed.connect( changed ) ;
+ * model.cleared.connect( cleared ) ;
+ *
+ * model.current = "hello" ;
+ * model.current = "world" ;
+ * model.current = null ;
  */
 export var models = Object.assign
 ({
@@ -27,11 +52,19 @@ export var models = Object.assign
 
     // packages
 
+    /**
+     * @namespace system.models.arrays
+     * @memberof system.models
+     */
     arrays : Object.assign
     ({
         ArrayModel
     }),
 
+    /**
+     * @namespace system.models.maps
+     * @memberof system.models
+     */
     maps : Object.assign
     ({
         MapModel
