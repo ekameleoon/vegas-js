@@ -32,7 +32,7 @@ Get started with the the **Vegas JS** API :
 
  * [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
 
-#### Tutorials ####
+### Tutorials ###
 
 These tutorials helps you to understand the **VEGAS JS** Framework philosophy.
 

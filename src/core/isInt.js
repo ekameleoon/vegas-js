@@ -5,6 +5,7 @@
  * @name isInt
  * @memberof core
  * @function
+ * @instance
  * @param {number} value - The value to evaluates.
  * @return <code>true</code> if the passed-in value is an integer.
  * @example

@@ -5,6 +5,7 @@
  * @name isFloat
  * @memberof core
  * @function
+ * @instance
  * @param {number} value - The value to evaluates.
  * @return <code>true</code> if the passed-in value is a float.
  * @example
