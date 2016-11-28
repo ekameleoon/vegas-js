@@ -25,7 +25,13 @@ export function PRNG( value = 1 )
 PRNG.prototype = Object.create( Object.prototype ,
 {
     /**
+     * The constructor reference.
+     */
+    constructor : { writable : true , value : PRNG } ,
+
+    /**
      * Defines the current random value with a 31 bit unsigned integer between <code>1</code> and <code>0X7FFFFFFE</code> inclusive (don't use 0).
+     * @name value
      * @memberof system.numeric.PRNG
      * @instance
      * @type number
@@ -39,135 +45,141 @@ PRNG.prototype = Object.create( Object.prototype ,
             value = value > 0X7FFFFFFE ? 0X7FFFFFFE : value ;
             this._value = value ;
         }
-    }
+    },
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits).
+     * @return The next pseudo random number as an unsigned integer (31 bits).
+     * @name randomInt
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomInt : { value : function()
+    {
+        this._value = (this._value * 16807) % 2147483647 ;
+        return this._value ;
+    }},
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+     * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+     * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @name randomIntByMinMax
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomIntByMinMax : { value : function( min = 0 , max = 1 )
+    {
+        if ( isNaN( min ) )
+        {
+            min = 0 ;
+        }
+        if ( isNaN( max ) )
+        {
+            max = 1 ;
+        }
+        min -= 0.4999;
+        max += 0.4999;
+        this._value = (this._value * 16807) % 2147483647 ;
+        return Math.round(min + ( ( max - min ) * this._value / 2147483647 ) );
+    }},
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
+     * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
+     * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @name randomIntByRange
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomIntByRange : { value : function( r ) /*int*/
+    {
+        var min = r.min - 0.4999;
+        var max = r.max + 0.4999;
+        this._value = (this._value * 16807) % 2147483647 ;
+        return Math.round(min + ( ( max - min ) * this._value / 2147483647 ) );
+    }},
+
+    /**
+     * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
+     * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
+     * @name randomNumber
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumber : { value : function() /*Number*/
+    {
+        this._value = (this._value * 16807) % 2147483647 ;
+        return this._value / 2147483647 ;
+    }},
+
+    /**
+     * Provides the next pseudo random number as a float between a minimum value and maximum value.
+     * @return The next pseudo random number as a float between a minimum value and maximum value.
+     * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+     * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+     * @name randomNumberByMinMax
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumberByMinMax : { value : function( min , max )
+    {
+        if ( isNaN( min ) )
+        {
+            min = 0 ;
+        }
+        if ( isNaN( max ) )
+        {
+            max = 1 ;
+        }
+        this._value = (this._value * 16807) % 2147483647 ;
+        return min + ((max - min) * this._value / 2147483647 ) ;
+    }},
+
+    /**
+     * Provides the next pseudo random number as a float between a given range.
+     * @return The next pseudo random number as a float in a specific range.
+     * @param {system.numeric.Range} range - The range to born the number.
+     * @name randomNumberByRange
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumberByRange : { value : function( r /*Range*/ ) /*Number*/
+    {
+        this._value = (this._value * 16807) % 2147483647 ;
+        return r.min + ((r.max - r.min) * this._value / 2147483647 ) ;
+    }},
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    toString : { value : function ()
+    {
+        return String( this._value ) ;
+    }},
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name valueOf
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    valueOf : { value : function () /*int*/
+    {
+        return this._value ;
+    }}
 }) ;
-
-PRNG.prototype.constructor = PRNG ;
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits).
- * @return The next pseudo random number as an unsigned integer (31 bits).
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomInt = function()
-{
-    this._value = (this._value * 16807) % 2147483647 ;
-    return this._value ;
-}
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
- * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
- * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomIntByMinMax = function( min = 0 , max = 1 )
-{
-    if ( isNaN( min ) )
-    {
-        min = 0 ;
-    }
-    if ( isNaN( max ) )
-    {
-        max = 1 ;
-    }
-    min -= 0.4999;
-    max += 0.4999;
-    this._value = (this._value * 16807) % 2147483647 ;
-    return Math.round(min + ( ( max - min ) * this._value / 2147483647 ) );
-}
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
- * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
- * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomIntByRange = function( r ) /*int*/
-{
-    var min = r.min - 0.4999;
-    var max = r.max + 0.4999;
-    this._value = (this._value * 16807) % 2147483647 ;
-    return Math.round(min + ( ( max - min ) * this._value / 2147483647 ) );
-}
-
-/**
- * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
- * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumber = function() /*Number*/
-{
-    this._value = (this._value * 16807) % 2147483647 ;
-    return this._value / 2147483647 ;
-}
-
-/**
- * Provides the next pseudo random number as a float between a minimum value and maximum value.
- * @return The next pseudo random number as a float between a minimum value and maximum value.
- * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
- * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumberByMinMax = function( min , max )
-{
-    if ( isNaN( min ) )
-    {
-        min = 0 ;
-    }
-    if ( isNaN( max ) )
-    {
-        max = 1 ;
-    }
-    this._value = (this._value * 16807) % 2147483647 ;
-    return min + ((max - min) * this._value / 2147483647 ) ;
-}
-
-/**
- * Provides the next pseudo random number as a float between a given range.
- * @return The next pseudo random number as a float in a specific range.
- * @param {system.numeric.Range} range - The range to born the number.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumberByRange = function( r /*Range*/ ) /*Number*/
-{
-    this._value = (this._value * 16807) % 2147483647 ;
-    return r.min + ((r.max - r.min) * this._value / 2147483647 ) ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.toString = function ()
-{
-    return String( this._value ) ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.valueOf = function () /*int*/
-{
-    return this._value ;
-}

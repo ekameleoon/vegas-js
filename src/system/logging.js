@@ -17,7 +17,8 @@ import { LineFormattedTarget } from './logging/targets/LineFormattedTarget.js' ;
 import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
 
 /**
- * The VEGAS.js framework - The system.logging library.
+ * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
+ * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging

@@ -7,7 +7,8 @@ import { Range } from './numeric/Range.js' ;
 import { RomanNumber } from './numeric/RomanNumber.js' ;
 
 /**
- * The VEGAS.js framework - The system.numeric library.
+ * The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
+ * @summary The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.numeric

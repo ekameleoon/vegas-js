@@ -5,6 +5,8 @@
  * Indicates if the specific objet is Equatable.
  * @function
  * @memberof system
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link system.Equatable|Equatable}.
  */
 export function isEquatable( target )
 {
@@ -40,15 +42,4 @@ Equatable.prototype.constructor = Equatable;
 Equatable.prototype.equals = function( object )
 {
     //
-}
-
-/**
- * Returns the string representation of this instance.
- * @function
- * @memberof system.Equatable
- * @return the string representation of this instance.
- */
-Equatable.prototype.toString = function ()
-{
-    return "[Equatable]" ;
 }

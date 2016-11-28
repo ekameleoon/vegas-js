@@ -3,6 +3,11 @@
 
 /**
  * Indicates if the specific objet is Formattable.
+ * @name isFormattable
+ * @function
+ * @memberof system
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link system.Formattable|Formattable}.
  */
 export function isFormattable( target )
 {
@@ -16,33 +21,28 @@ export function isFormattable( target )
 
 /**
  * Interface implemented by classes that can format a value in a specific string expression.
+ * @name Formattable
+ * @memberof system
+ * @interface
  */
 export function Formattable()
 {
 
 }
 
-/**
- * @extends Object
- */
 Formattable.prototype = Object.create( Object.prototype );
 Formattable.prototype.constructor = Formattable;
 
 /**
  * Formats the specified value.
- * @param value The object to format.
+ * @param {*} value - The object to evaluates.
  * @return the string representation of the formatted value.
+ * @name eval
+ * @memberof system.Formattable
+ * @function
+ * @instance
  */
 Formattable.prototype.format = function( value ) /*String*/
 {
     //
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Formattable.prototype.toString = function () /*String*/
-{
-    return "[Formattable]" ;
 }

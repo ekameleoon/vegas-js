@@ -9,6 +9,8 @@ import { cancelAnimationFrame  } from './core/cancelAnimationFrame.js' ;
 import { requestAnimationFrame } from './core/requestAnimationFrame.js' ;
 
 import { isBoolean } from './core/isBoolean.js' ;
+import { isFloat   } from './core/isFloat.js' ;
+import { isInt     } from './core/isInt.js' ;
 import { isNumber  } from './core/isNumber.js' ;
 import { isString  } from './core/isString.js' ;
 
@@ -40,6 +42,8 @@ export var core = Object.assign
     requestAnimationFrame : requestAnimationFrame ,
 
     isBoolean : isBoolean ,
+    isFloat   : isFloat ,
+    isInt     : isInt ,
     isNumber  : isNumber ,
     isString  : isString ,
 

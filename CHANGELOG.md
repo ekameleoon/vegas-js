@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * Adds the JSDoc task : gulp doc.
 * Adds the core.arrays.swap function.
 * Adds the core.functors.aop function.
+* Adds the core.isInt, core.isFloat functions.
 * Adds the graphics package with this first implementations : Align, Border, CardinalCoordinates, Corner, ZOrder, etc.
 * Adds the graphics.geom Package : Dimension, EdgeMetrics, Point, Rectangle
 * Adds the graphics.Layout basic class + the graphics.LayoutBufferMode enumeration singleton.
@@ -17,7 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 * Updates the core.arrays.sortOn method.
 * Refactoring of the polyfill files.
-* Refactoring of all the JSDoc.
+* Refactoring of all the documentation of the framework (JSDoc).
 
 ### Fixed
 * Fix the performance.now() method.

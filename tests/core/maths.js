@@ -28,11 +28,8 @@ import './maths/nearlyEquals.js' ;
 import './maths/normalize.js' ;
 import './maths/percentage.js' ;
 import './maths/PHI.js' ;
-
 import './maths/RAD2DEG.js' ;
-
+import './maths/replaceNaN.js' ;
 import './maths/sinerp.js'
-
 import './maths/smooth.js' ;
-
 import './maths/vincenty.js' ;

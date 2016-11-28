@@ -1,5 +1,11 @@
 'use strict' ;
 
+import './core/isBoolean.js' ;
+import './core/isFloat.js' ;
+import './core/isInt.js' ;
+import './core/isNumber.js' ;
+import './core/isString.js' ;
+
 import './core/global.js' ;
 import './core/arrays.js' ;
 import './core/chars.js' ;

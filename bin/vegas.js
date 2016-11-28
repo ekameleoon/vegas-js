@@ -570,12 +570,53 @@ function dump(o, prettyprint /*Boolean*/, indent /*int*/, indentor /*String*/) /
  * @function
  * @instance
  * @param {Object} object - The object to check.
- * @return <code>true</code> if the object is a Boolean.
+ * @return {boolean} <code>true</code> if the object is a Boolean.
+ * @example
+ * trace( isBoolean(0) ) ; // false
+ * trace( isBoolean(true) ) ; // true
+ * trace( isBoolean(false) ) ; // true
+ * trace( isBoolean(3>2) ) ; // true
+ * trace( isBoolean(null) ) ; // false
  */
 
 function isBoolean(object) {
   return typeof object === 'boolean' || object instanceof Boolean;
 }
+
+/**
+ * Indicates if an value is a float number.
+ * @name isFloat
+ * @memberof core
+ * @function
+ * @param {number} value - The value to evaluates.
+ * @return <code>true</code> if the passed-in value is a float.
+ * @example
+ * trace( isFloat(0) ) ; // false
+ * trace( isFloat(0.5) ) ; // true
+ * trace( isFloat(1) ) ; // false
+ */
+
+var isFloat = function isFloat(value) {
+  return Number(value) === value && value % 1 !== 0;
+};
+
+/**
+ * Indicates if an value is an integer.
+ * @name isInt
+ * @memberof core
+ * @function
+ * @param {number} value - The value to evaluates.
+ * @return <code>true</code> if the passed-in value is an integer.
+ * @example
+ * trace( isInt(-1) ) ; // true
+ * trace( isInt(0) ) ; // true
+ * trace( isInt(0.5) ) ; // false
+ * trace( isInt(1) ) ; // true
+ */
+
+var isInt = function isInt(value) {
+  return Number(value) === value && value % 1 === 0;
+};
 
 /**
  * Indicates if the specific object is a Number.
@@ -584,7 +625,13 @@ function isBoolean(object) {
  * @function
  * @instance
  * @param {Object} object - The object to check.
- * @return <code>true</code> if the object is a Number.
+ * @return {boolean} <code>true</code> if the object is a Number.
+ * @example
+ * trace( isNumber(0) ) ; // true
+ * trace( isNumber(0.5) ) ; // true
+ * trace( isNumber(true) ) ; // true
+ * trace( isBoolean(null) ) ; // false
+ * trace( isBoolean(NaN) ) ; // true
  */
 
 function isNumber(object) {
@@ -3345,18 +3392,20 @@ var polarToCartesian = function polarToCartesian(vector, degrees /*Boolean*/) {
  * @name replaceNaN
  * @memberof core.maths
  * @function
- * @param {number} value - The Number value to replace, if this value is NaN the value is changed.
- * @param {number} [defaultValue=0] The default value to apply over the specified value if this value is NaN (default 0).
- * @return The replaced Number value.
+ * @param {number} value - The <code>Number</code> value to replace, if this value is <code>NaN</code> the value is changed.
+ * @param {*} [defaultValue=0] The default value to apply over the specified value if this value is <code>NaN</code>.
+ * @return The replaced value.
+ * @example
+ * trace( replaceNaN(1,2) ) ; // 1
+ * trace( replaceNaN(NaN) ) ; // 0
+ * trace( replaceNaN(NaN,2) ) ; // 2
+ * trace( replaceNaN(NaN,"foo") ) ; // "foo"
  */
 
 var replaceNaN = function replaceNaN(value) {
-    var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-    if (isNaN(defaultValue)) {
-        defaultValue = 0;
-    }
-    return isNaN(value) ? defaultValue : value;
+  return isNaN(value) ? defaultValue : value;
 };
 
 /**
@@ -5228,6 +5277,8 @@ var core = Object.assign({
     requestAnimationFrame: requestAnimationFrame,
 
     isBoolean: isBoolean,
+    isFloat: isFloat,
+    isInt: isInt,
     isNumber: isNumber,
     isString: isString,
 
@@ -5346,10 +5397,9 @@ Equatable.prototype.constructor = Equatable;
  * @memberof system.Equatable
  * @function
  * @param {*} object - The object to evaluates.
- * @return {boolean} true if the the specified object is equal with this object.
+ * @return {boolean} true if the the specified object is <b>equal to</b> this object.
  */
-Equatable.prototype.equals = function (object) /*Boolean*/
-{}
+Equatable.prototype.equals = function (object) {}
 //
 
 
@@ -16170,10 +16220,10 @@ var models = Object.assign({
 
 /**
  * A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
- * <p>Implementation of the Park Miller (1988) "minimal standard" linear congruential pseudo-random number generator.
- * For a full explanation visit: http://www.firstpr.com.au/dsp/rand31/</p>
- * <p>The generator uses a modulus constant ((m) of 2^31 - 1) which is a Mersenne Prime number and a full-period-multiplier of 16807.
- * Output is a 31 bit unsigned integer. The range of values output is 1 to 2147483646 (2^31-1) and the seed must be in this range too.</p>
+ * <p>Implementation of the <b>Park Miller</b> (1988) "<i>minimal standard</i>" linear congruential pseudo-random number generator.
+ * For a full explanation visit: {@link http://www.firstpr.com.au/dsp/rand31/}</p>
+ * <p>The generator uses a modulus constant <code>((m) of 2^31 - 1)</code> which is a <b>Mersenne Prime number</b> and a full-period-multiplier of <code>16807</code>.
+ * Output is a 31 bit unsigned integer. The range of values output is <code>1</code> to <code>2147483646</code> (2^31-1) and the seed must be in this range too.</p>
  * @name PRNG
  * @memberof system.numeric
  * @class
@@ -16193,7 +16243,13 @@ function PRNG() {
 
 PRNG.prototype = Object.create(Object.prototype, {
     /**
+     * The constructor reference.
+     */
+    constructor: { writable: true, value: PRNG },
+
+    /**
      * Defines the current random value with a 31 bit unsigned integer between <code>1</code> and <code>0X7FFFFFFE</code> inclusive (don't use 0).
+     * @name value
      * @memberof system.numeric.PRNG
      * @instance
      * @type number
@@ -16207,133 +16263,139 @@ PRNG.prototype = Object.create(Object.prototype, {
             value = value > 0X7FFFFFFE ? 0X7FFFFFFE : value;
             this._value = value;
         }
-    }
+    },
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits).
+     * @return The next pseudo random number as an unsigned integer (31 bits).
+     * @name randomInt
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomInt: { value: function value() {
+            this._value = this._value * 16807 % 2147483647;
+            return this._value;
+        } },
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+     * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+     * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @name randomIntByMinMax
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomIntByMinMax: { value: function value() {
+            var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+            if (isNaN(min)) {
+                min = 0;
+            }
+            if (isNaN(max)) {
+                max = 1;
+            }
+            min -= 0.4999;
+            max += 0.4999;
+            this._value = this._value * 16807 % 2147483647;
+            return Math.round(min + (max - min) * this._value / 2147483647);
+        } },
+
+    /**
+     * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
+     * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
+     * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
+     * @name randomIntByRange
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomIntByRange: { value: function value(r) /*int*/
+        {
+            var min = r.min - 0.4999;
+            var max = r.max + 0.4999;
+            this._value = this._value * 16807 % 2147483647;
+            return Math.round(min + (max - min) * this._value / 2147483647);
+        } },
+
+    /**
+     * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
+     * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
+     * @name randomNumber
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumber: { value: function value() /*Number*/
+        {
+            this._value = this._value * 16807 % 2147483647;
+            return this._value / 2147483647;
+        } },
+
+    /**
+     * Provides the next pseudo random number as a float between a minimum value and maximum value.
+     * @return The next pseudo random number as a float between a minimum value and maximum value.
+     * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
+     * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
+     * @name randomNumberByMinMax
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumberByMinMax: { value: function value(min, max) {
+            if (isNaN(min)) {
+                min = 0;
+            }
+            if (isNaN(max)) {
+                max = 1;
+            }
+            this._value = this._value * 16807 % 2147483647;
+            return min + (max - min) * this._value / 2147483647;
+        } },
+
+    /**
+     * Provides the next pseudo random number as a float between a given range.
+     * @return The next pseudo random number as a float in a specific range.
+     * @param {system.numeric.Range} range - The range to born the number.
+     * @name randomNumberByRange
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    randomNumberByRange: { value: function value(r /*Range*/) /*Number*/
+        {
+            this._value = this._value * 16807 % 2147483647;
+            return r.min + (r.max - r.min) * this._value / 2147483647;
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    toString: { value: function value() {
+            return String(this._value);
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name valueOf
+     * @memberof system.numeric.PRNG
+     * @instance
+     * @function
+     */
+    valueOf: { value: function value() /*int*/
+        {
+            return this._value;
+        } }
 });
-
-PRNG.prototype.constructor = PRNG;
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits).
- * @return The next pseudo random number as an unsigned integer (31 bits).
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomInt = function () {
-    this._value = this._value * 16807 % 2147483647;
-    return this._value;
-};
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
- * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
- * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomIntByMinMax = function () {
-    var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-
-    if (isNaN(min)) {
-        min = 0;
-    }
-    if (isNaN(max)) {
-        max = 1;
-    }
-    min -= 0.4999;
-    max += 0.4999;
-    this._value = this._value * 16807 % 2147483647;
-    return Math.round(min + (max - min) * this._value / 2147483647);
-};
-
-/**
- * Provides the next pseudo random number as an unsigned integer (31 bits) between a given range.
- * @param {system.numeric.Range} range - The range object to evaluate the pseudo random number.
- * @return The next pseudo random number as an unsigned integer (31 bits) between a minimum value and maximum value.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomIntByRange = function (r) /*int*/
-{
-    var min = r.min - 0.4999;
-    var max = r.max + 0.4999;
-    this._value = this._value * 16807 % 2147483647;
-    return Math.round(min + (max - min) * this._value / 2147483647);
-};
-
-/**
- * Provides the next pseudo random number as a float between nearly 0 and nearly 1.0.
- * @return The next pseudo random number as a float between nearly 0 and nearly 1.0.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumber = function () /*Number*/
-{
-    this._value = this._value * 16807 % 2147483647;
-    return this._value / 2147483647;
-};
-
-/**
- * Provides the next pseudo random number as a float between a minimum value and maximum value.
- * @return The next pseudo random number as a float between a minimum value and maximum value.
- * @param {number} [min=0] - The minimum range value to evaluates the pseudo random number.
- * @param {number} [max=1] - The maximum range value to evaluates the pseudo random number.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumberByMinMax = function (min, max) {
-    if (isNaN(min)) {
-        min = 0;
-    }
-    if (isNaN(max)) {
-        max = 1;
-    }
-    this._value = this._value * 16807 % 2147483647;
-    return min + (max - min) * this._value / 2147483647;
-};
-
-/**
- * Provides the next pseudo random number as a float between a given range.
- * @return The next pseudo random number as a float in a specific range.
- * @param {system.numeric.Range} range - The range to born the number.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.randomNumberByRange = function (r /*Range*/) /*Number*/
-{
-    this._value = this._value * 16807 % 2147483647;
-    return r.min + (r.max - r.min) * this._value / 2147483647;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.toString = function () {
-    return String(this._value);
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @memberof system.numeric.PRNG
- * @instance
- * @function
- */
-PRNG.prototype.valueOf = function () /*int*/
-{
-    return this._value;
-};
 
 /**
  * Represents an immutable range of values.
@@ -16341,10 +16403,12 @@ PRNG.prototype.valueOf = function () /*int*/
  * @memberof system.numeric
  * @class
  * @constructor
+ * @implements system.Equatable
  * @param {number} [min=NaN] - The minimum range value.
  * @param {number} [max=NaN] - The maximum range value.
+ * @param {boolean} [writable=true] - Indicates if the min and max values must be freezed. Prevents existing <code>min</code> and <code>max</code> properties from being removed or their enumerability, configurability, or writability, from being changed.
  * @example
- * Range = system.numeric.Range ;
+ * var Range = system.numeric.Range ;
  *
  * var r1 = new Range(10, 120) ;
  * var r2 = new Range(100, 150) ;
@@ -16362,197 +16426,332 @@ PRNG.prototype.valueOf = function () /*int*/
 function Range() {
     var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+    var writable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
     if (max < min) {
         throw new RangeError("The Range constructor failed, the 'max' argument is < of 'min' argument");
     }
-    this.min = min;
-    this.max = max;
+
+    Object.defineProperties(this, {
+        /**
+         * The maximum range value.
+         * @memberof system.numeric.Range
+         * @type number
+         * @instance
+         */
+        max: { writable: writable, value: isNaN(max) ? NaN : max },
+
+        /**
+         * The minimum range value.
+         * @memberof system.numeric.Range
+         * @type number
+         * @instance
+         */
+        min: { writable: writable, value: isNaN(min) ? NaN : min }
+    });
 }
+
+Range.prototype = Object.create(Object.prototype, {
+    /**
+     * The constructor reference.
+     */
+    constructor: { writable: true, value: Range },
+
+    /**
+     * Clamps a specific value in the current range.
+     * @name clamp
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {number} value - The number to clamp between the minimum and maximum value of the current range.
+     * @return {number} The clamped value.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.clamp(1) ) ; // 2
+     * trace( range.clamp(2) ) ; // 2
+     * trace( range.clamp(5) ) ; // 5
+     * trace( range.clamp(8) ) ; // 8
+     * trace( range.clamp(9) ) ; // 8
+     */
+    clamp: { value: function value(_value) {
+            if (isNaN(_value)) {
+                return NaN;
+            }
+            var mi = this.min;
+            var ma = this.max;
+            if (isNaN(mi)) {
+                mi = _value;
+            }
+            if (isNaN(ma)) {
+                ma = _value;
+            }
+            return Math.max(Math.min(_value, ma), mi);
+        } },
+
+    /**
+     * Returns a shallow copy of the object.
+     * @name clone
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return a shallow copy of the object.
+     */
+    clone: { writable: true, value: function value() {
+            return new Range(this.min, this.max);
+        } },
+
+    /**
+     * Creates a new range by combining two existing ranges.
+     * @name combine
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {system.numeric.Range} [range=null] - The range to combine, <code>null</code> permitted to create a clone of the current range.
+     * @return {system.numeric.Range} The new range combined between the curred and passed-in range.
+     * @example
+     * var range1 = new Range(2,8) ;
+     * var range2 = new Range(1,8) ;
+     * var range3 = new Range(5,10) ;
+     *
+     * trace( range1.combine( range2 ) ) ; // [Range min:1 max:8]
+     * trace( range1.combine( range3 ) ) ; // [Range min:2 max:10]
+     */
+    combine: { value: function value() {
+            var range = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+            if (!(range instanceof Range)) {
+                return this.clone();
+            } else {
+                return new Range(Math.min(this.min, range.min), Math.max(this.max, range.max));
+            }
+        } },
+
+    /**
+     * Returns <code>true</code> if the {@link system.numeric.Range|Range} instance contains the value passed in argument.
+     * @name contains
+     * @param {number} value - The value to check.
+     * @return {boolean} <code>true</code> if the Range instance contains the value passed in argument.
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.contains(2) ) ; // true
+     * trace( range.contains(5) ) ; // true
+     * trace( range.contains(8) ) ; // true
+     * trace( range.contains(0) ) ; // false
+     * trace( range.contains(9) ) ; // false
+     */
+    contains: { value: function value(_value2) {
+            return !(_value2 > this.max || _value2 < this.min);
+        } },
+
+    /**
+     * Indicates whether some other object is <b>equal to</b> this one.
+     * @name equals
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {*} object - The object to evaluates.
+     * @return {boolean} true if the the specified object is <b>equal to</b> this one.
+     * @example
+     * var range1 = new Range(2,8) ;
+     * var range2 = new Range(2,8) ;
+     * var range3 = new Range(5,10) ;
+     *
+     * trace( range1.equals(range2) ) ; // true
+     * trace( range1.equals(range3) ) ; // false
+     */
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Range) {
+                return o.min === this.min && o.max === this.max;
+            } else {
+                return false;
+            }
+        } },
+
+    /**
+     * Creates a new range by adding margins to an existing range.
+     * @name expand
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {number} [lowerMargin=0] - The lower margin expressed as a normalized value of the range length (between <code>0</code> and <code>1</code>).
+     * @param {number} [upperMargin=0] - The upper margin expressed as a normalized value of the range length (between <code>0</code> and <code>1</code>).
+     * @return {system.numeric.Range} The new expanded range.
+     * @example
+     * var range = new Range(4,8) ;
+     * trace( range.expand( 0.5 , 0.5 ) ) ; // [Range min:2 max:12]
+     */
+    expand: { value: function value() {
+            var lowerMargin = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var upperMargin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+            if (isNaN(lowerMargin)) {
+                lowerMargin = 1;
+            }
+            if (isNaN(upperMargin)) {
+                upperMargin = 1;
+            }
+
+            var delta = this.max - this.min;
+
+            return new Range(this.min - delta * lowerMargin, this.max + delta * upperMargin);
+        } },
+
+    /**
+     * Indicates the central value for the range.
+     * @name getCentralValue
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return {number} The central value of the current range.
+     * @example
+     * var range = new Range(4,8) ;
+     * trace( range.getCentralValue() ) ; //  6
+     */
+    getCentralValue: { value: function value() {
+            return (this.min + this.max) / 2;
+        } },
+
+    /**
+     * Returns a random floating-point number between two numbers.
+     * @name getRandomFloat
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return {number} A random floating-point number between two numbers.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.getRandomFloat() ) ; // a float between 2 and 8
+     */
+    getRandomFloat: { value: function value() {
+            return Math.random() * (this.max - this.min) + this.min;
+        } },
+
+    /**
+     * Returns a random integer integet between two numbers.
+     * @name getRandomInteger
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return {number} A random integer number between two numbers.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.getRandomInteger() ) ; // an integer between 2 and 8
+     */
+    getRandomInteger: { value: function value() {
+            return Math.floor(Math.random() * (this.max - this.min) + this.min);
+        } },
+
+    /**
+     * Indicates <code>true</code> if the specified value is out of the range.
+     * @name isOutOfRange
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {number} value - The numeric value to evaluates.
+     * @return {boolean} <code>true</code> if the value is out of the range.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.isOutOfRange(1) ) ; // true
+     * trace( range.isOutOfRange(9) ) ; // true
+     * trace( range.isOutOfRange(2) ) ; // false
+     * trace( range.isOutOfRange(5) ) ; // false
+     * trace( range.isOutOfRange(8) ) ; // false
+     */
+    isOutOfRange: { value: function value(_value3) {
+            return _value3 > this.max || _value3 < this.min;
+        } },
+
+    /**
+     * Returns <code>true</code> if the range in argument overlap the current range.
+     * @name overlap
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @param {system.numeric.Range} range - The range to evaluates.
+     * @return {boolean} <code>true</code> if the range in argument overlap the current range.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.overlap(new Range(1,2)) ) ; // true
+     * trace( range.overlap(new Range(3,5)) ) ; // true
+     * trace( range.overlap(new Range(5,9)) ) ; // true
+     * trace( range.overlap(new Range(8,9)) ) ; // true
+     * trace( range.overlap(new Range(0,1)) ) ; // false
+     * trace( range.overlap(new Range(9,10)) ) ; // false
+     */
+    overlap: { value: function value(range) {
+            return this.max >= range.min && range.max >= this.min;
+        } },
+
+    /**
+     * Returns the length of the range.
+     * @name size
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return {number} the length of the range.
+     * @example
+     * var range = new Range(2,8) ;
+     * trace( range.size() ) ; // 6
+     */
+    size: { value: function value() {
+            return this.max - this.min;
+        } },
+
+    /**
+     * Returns the string representation of this instance.
+     * @name toString
+     * @memberof system.numeric.Range
+     * @function
+     * @instance
+     * @return {string} the string representation of this instance.
+     * @example
+     * var range = new Range(4,8) ;
+     * trace( range ) ; [Range min:4 max:8]
+     */
+    toString: { writable: true, value: function value() {
+            return "[Range min:" + this.min + " max:" + this.max + "]";
+        } }
+});
 
 Object.defineProperties(Range, {
     /**
-     * Range between -255 and 255.
+     * Range between <code>-255</code> and <code>255</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
-    COLOR: { value: new Range(-255, 255), enumerable: true },
+    COLOR: { value: new Range(-255, 255, false), enumerable: true },
 
     /**
-     * Range between 0 and 360.
+     * Range between <code>0</code> and <code>360</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
-    DEGREE: { value: new Range(0, 360), enumerable: true },
+    DEGREE: { value: new Range(0, 360, false), enumerable: true },
 
     /**
-     * Range between 0 and 100.
+     * Range between <code>0</code> and <code>100</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
-    PERCENT: { value: new Range(0, 100), enumerable: true },
+    PERCENT: { value: new Range(0, 100, false), enumerable: true },
 
     /**
-     * Range between 0 and 1.
+     * Range between <code>0</code> and <code>Math.PI*2</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
-    UNITY: { value: new Range(0, 1), enumerable: true },
+    RADIAN: { value: new Range(0, Math.PI * 2, false), enumerable: true },
 
     /**
-     * Filters the passed-in Number value, if the value is NaN the return value is the default value in second argument.
-     * @param value The Number value to filter, if this value is NaN the value is changed.
-     * @param defaultValue The default value to apply over the specified value if this value is NaN (default 0).
-     * @return The filter Number value.
+     * Range between <code>0</code> and <code>1</code>.
+     * @memberof system.numeric.Range
+     * @type system.numeric.Range
      */
-    filterNaNValue: {
-        value: function value(_value) {
-            var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-            return isNaN(_value) ? defaultValue : _value;
-        }
-    }
+    UNITY: { value: new Range(0, 1, false), enumerable: true }
 });
-
-Range.prototype = Object.create(Object.prototype);
-Range.prototype.constructor = Range;
-
-/**
- * Clamps a specific value in the current range.
- */
-Range.prototype.clamp = function (value) {
-    if (isNaN(value)) {
-        return NaN;
-    }
-    var mi = this.min;
-    var ma = this.max;
-    if (isNaN(mi)) {
-        mi = value;
-    }
-    if (isNaN(ma)) {
-        ma = value;
-    }
-    return Math.max(Math.min(value, ma), mi);
-};
-
-/**
- * Returns a shallow copy of the object.
- * @return a shallow copy of the object.
- */
-Range.prototype.clone = function () {
-    return new Range(this.min, this.max);
-};
-
-/**
- * Creates a new range by combining two existing ranges.
- * @param range the range to combine, <code class="prettyprint">null</code> permitted.
- */
-Range.prototype.combine = function (range) /*Range*/
-{
-    if (!range) {
-        return this.clone();
-    } else {
-        var lower = Math.min(this.min, range.min);
-        var upper = Math.max(this.max, range.max);
-        return new Range(lower, upper);
-    }
-};
-
-/**
- * Returns {@code true} if the Range instance contains the value passed in argument.
- * @return {@code true} if the Range instance contains the value passed in argument.
- */
-Range.prototype.contains = function (value) {
-    return !this.isOutOfRange(value);
-};
-
-/**
- * Indicates whether some other object is "equal to" this one.
- */
-Range.prototype.equals = function (o) /*Boolean*/
-{
-    if (o instanceof Range) {
-        return o.min === this.min && o.max === this.max;
-    } else {
-        return false;
-    }
-};
-
-/**
- * Creates a new range by adding margins to an existing range.
- * @param range the range {@code null} not permitted.
- * @param lowerMargin the lower margin (expressed as a percentage of the range length).
- * @param upperMargin the upper margin (expressed as a percentage of the range length).
- * @return The expanded range.
- * @throws IllegalArgumentError if the range argument is {@code null}
- */
-Range.prototype.expand = function (lowerMargin /*Number*/, upperMargin /*Number*/) /*Range*/
-{
-    if (isNaN(lowerMargin)) {
-        lowerMargin = 1;
-    }
-    if (isNaN(upperMargin)) {
-        upperMargin = 1;
-    }
-    var delta = this.max - this.min;
-    var lower = delta * lowerMargin;
-    var upper = delta * upperMargin;
-    return new Range(this.min - lower, this.max + upper);
-};
-
-/**
- * Returns the central value for the range.
- * @return The central value.
- */
-Range.prototype.getCentralValue = function () /*Number*/
-{
-    return (this.min + this.max) / 2;
-};
-
-/**
- * Returns a random floating-point number between two numbers.
- * @return a random floating-point number between two numbers.
- */
-Range.prototype.getRandomFloat = function () /*Number*/
-{
-    return Math.random() * (this.max - this.min) + this.min;
-};
-
-/**
- * Returns a random floating-point number between two numbers.
- * @return a random floating-point number between two numbers.
- */
-Range.prototype.getRandomInteger = function () /*Number*/
-{
-    return Math.floor(this.getRandomFloat());
-};
-
-/**
- * Returns {@code true} if the value is out of the range.
- * @return {@code true} if the value is out of the range.
- */
-Range.prototype.isOutOfRange = function (value /*Number*/) {
-    return value > this.max || value < this.min;
-};
-
-/**
- * Returns {@code true} if the range in argument overlap the current range.
- * @return {@code true} if the range in argument overlap the current range.
- */
-Range.prototype.overlap = function (r /*Range*/) /*Boolean*/
-{
-    return this.max >= r.min && r.max >= this.min;
-};
-
-/**
- * Returns the length of the range.
- * @return the length of the range.
- */
-Range.prototype.size = function () /*Number*/
-{
-    return this.max - this.min;
-};
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Range.prototype.toString = function () /*String*/
-{
-    return "[Range min:" + this.min + " max:" + this.max + "]";
-};
 
 /**
  * The VEGAS.js framework - The system.numeric library.

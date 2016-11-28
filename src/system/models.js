@@ -10,7 +10,8 @@ import { ArrayModel } from './models/arrays/ArrayModel.js' ;
 import { MapModel }   from './models/maps/MapModel.js' ;
 
 /**
- * The VEGAS.js framework - The system.models library.
+ * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
+ * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.models

@@ -7,7 +7,8 @@ import { PropertyEvaluator } from './evaluators/PropertyEvaluator.js' ;
 import { RomanEvaluator    } from './evaluators/RomanEvaluator.js' ;
 
 /**
- * The VEGAS.js framework - The system.evaluators library.
+ * The {@link system.evaluators} library contains classes to evaluates some objects with a collection of specific strategies.
+ * @summary The {@link system.evaluators} library contains classes to evaluates some objects.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.evaluators

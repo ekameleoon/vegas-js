@@ -4,12 +4,17 @@
  * Roman numerals are a numeral system originating in ancient Rome, adapted from Etruscan numerals.
  * <p>Roman numerals are commonly used in numbered lists (in outline format), clock faces, pages preceding the main body of a book, chord triads in music analysis, the numbering of movie publication dates, successive political leaders or children with identical names, and the numbering of some annual sport events.</p>
  * <p><b>Links :</b>
+ * <ul>
  * <li><a href="http://en.wikipedia.org/wiki/Roman_numerals">http://en.wikipedia.org/wiki/Roman_numerals</a></li>
  * <li><a href="http://netzreport.googlepages.com/online_converter_for_dec_roman.html">http://netzreport.googlepages.com/online_converter_for_dec_roman.html</a></li>
+ * </ul>
  * </p>
- * @param value The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
+ * @name RomanNumber
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number|string} [value=0] - The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
  * @example
- * var RomanNumber = system.numeric.RomanNumber ;
  * trace( RomanNumber.parse(12) ) ; // XII
  * trace( RomanNumber.parseRomanString('II') ) ; // 2
  */
@@ -41,31 +46,46 @@ export function RomanNumber( value = 0 )
 Object.defineProperties( RomanNumber ,
 {
     /**
-     * The maximum parsing value.
+     * The maximum parsing value (<code>3999</code>).
+     * @memberof system.numeric.RomanNumber
+     * @type number
+     * @const
      */
     MAX : { value : 3999 , enumerable : true } ,
 
     /**
-     * The minimum parsing value.
+     * The minimum parsing value (<code>0</code>).
+     * @memberof system.numeric.RomanNumber
+     * @type number
+     * @const
      */
     MIN : { value : 0 , enumerable : true } ,
 
     /**
      * The array representation of all numeric values.
+     * @memberof system.numeric.RomanNumber
+     * @type array
      */
     NUMERIC : { value : [ 1000, 500, 100,  50, 10, 5, 1 ] , enumerable : true } ,
 
     /**
      * The array representation of all roman expressions.
+     * @memberof system.numeric.RomanNumber
+     * @type array
      */
     ROMAN : { value : [ "M", "D", "C", "L", "X", "V", "I" ] , enumerable : true } ,
 
     /**
      * Parse the specified value and return this roman numerals String representation.
+     * @name parse
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @param {number} num - The number value to convert in a roman numerals string representation.
+     * @return {string} The roman numerals String representation of the specific number.
      */
     parse :
     {
-        value : function( num ) /*String*/
+        value : function( num )
         {
             var MAX     = RomanNumber.MAX ;
             var MIN     = RomanNumber.MIN ;
@@ -140,10 +160,15 @@ Object.defineProperties( RomanNumber ,
 
     /**
      * Parses a roman String representation in this uint decimal representation.
+     * @name parseRomanString
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @param {string} roman - The roman string expression to parse and transform in a valid number.
+     * @return {number} The uint decimal representation of the roman string expression.
      */
     parseRomanString :
     {
-        value : function( roman /*String*/ ) /*uint*/
+        value : function( roman )
         {
             var NUMERIC = RomanNumber.NUMERIC ;
             var ROMAN   = RomanNumber.ROMAN   ;
@@ -199,35 +224,53 @@ Object.defineProperties( RomanNumber ,
     }
 }) ;
 
-/**
- * @extends Object
- */
-RomanNumber.prototype = Object.create( Object.prototype ) ;
-RomanNumber.prototype.constructor = RomanNumber ;
-
-/**
- * Parse the specified value.
- */
-RomanNumber.prototype.parse = function ( value ) /*String*/
+RomanNumber.prototype = Object.create( Object.prototype ,
 {
-    value = ( (typeof(value) === "number" || value instanceof Number) ) ? value : this._num  ;
-    return RomanNumber.parse( value );
-}
+    /**
+     * The constructor reference.
+     */
+    constructor : { writable : true , value : RomanNumber } ,
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-RomanNumber.prototype.toString = function () /*String*/
-{
-    return this.parse( this._num ) ;
-}
+    /**
+     * Parse the specified value.
+     * @name parse
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @param {number} value - The number to convert in a roman string expression.
+     * @return {string} The string representation of the passed-in number.
+     */
+    parse : { value : function ( value )
+    {
+        return RomanNumber.parse
+        (
+            ( (typeof(value) === "number" || value instanceof Number) ) ? value : this._num
+        );
+    }},
 
-/**
- * Returns the primitive value of this object.
- * @return the primitive value of this object.
- */
-RomanNumber.prototype.valueOf = function () /*uint*/
-{
-    return this._num ;
-}
+    /**
+     * Returns the string representation of this instance.
+     * @name toString
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @return the string representation of this instance.
+     */
+    toString : { value : function ()
+    {
+        return this.parse( this._num ) ;
+    }},
+
+    /**
+     * Returns the primitive value of this object.
+     * @name valueOf
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @return the primitive value of this object.
+     */
+    valueOf : { value : function () /*uint*/
+    {
+        return this._num ;
+    }}
+}) ;
