@@ -18,9 +18,19 @@ Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
  * License GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
  * License LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
 
+## Resources ##
+
+### Download ###
+
+Download on **Bitbucket** the latest code, report an issue, ask a question or contribute :
+
+ * [http://bitbucket.org/ekameleon/vegas-js](http://bitbucket.org/ekameleon/vegas-js)
+
 ### Documentation ###
 
-Get started with the the **Vegas JS** API : [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
+Get started with the the **Vegas JS** API :
+
+ * [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
 
 #### Tutorials ####
 
@@ -34,9 +44,9 @@ These tutorials helps you to understand the **VEGAS JS** Framework philosophy.
 
 Send us your email to join the **VEGAS** community on Slack !
 
-### Install ###
+## Install ##
 
-#### YARN / NPM ####
+### YARN / NPM ###
 
 You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js) or [Yarn](https://yarnpkg.com/).
 
@@ -52,14 +62,14 @@ or
 npm install vegas-js --save-dev
 ```
 
-#### Bower ####
+### Bower ###
 
 ```
 #!shell
 bower install vegas-js
 ```
 
-#### Unit tests ####
+### Unit tests ###
 
 We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
 
@@ -107,7 +117,7 @@ If you use the 'mochawesome' reporter, gulp generate in the './bin/tests' folder
 gulp ut --reporter mochawesome
 ```
 
-#### Documentation ####
+### Generates the documentation ###
 
 The documentation of the framework is based on [JSDoc](http://usejsdoc.org/).
 
@@ -119,7 +129,7 @@ gulp doc
 
 The documentation is generated in the main project folder : **./docs**
 
-### History ###
+## History ##
 
  * 1998 : Flash
  * 2000 : First framework concept and first libraries (components, tools, design patterns)
