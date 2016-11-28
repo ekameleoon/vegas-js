@@ -18,6 +18,16 @@ Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
  * License GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
  * License LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
 
+### Documentation ###
+
+Get started with the the **Vegas JS** API : [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
+
+#### Tutorials ####
+
+These tutorials helps you to understand the **VEGAS JS** Framework philosophy.
+
+* The system.transitions package](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions)
+
 ### Slack Community ###
 
 ![slack-logo-vector-download.jpg](https://bitbucket.org/repo/AEbB9b/images/3509366499-slack-logo-vector-download.jpg)
@@ -48,10 +58,6 @@ npm install vegas-js --save-dev
 #!shell
 bower install vegas-js
 ```
-
-#### Tutorials ####
-
-* [The system.transitions package](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions)
 
 #### Unit tests ####
 
