@@ -5,6 +5,7 @@
  * @name isLower
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the specified character is lowercase.
@@ -15,7 +16,7 @@
  * trace( isLower( "#" ) ) ; // false
  * trace( isLower( "1" ) ) ; // false
  */
-export function isLower( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isLower( c , index = 0 ) /*Boolean*/
 {
     if( index > 0 )
     {

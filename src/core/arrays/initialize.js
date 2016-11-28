@@ -5,6 +5,7 @@
  * @name initialize
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {number} [elements=1] - The number of elements to fill the Array.
  * @param {*} [value=null] - The value to inject in the Array.
  * @return A new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.

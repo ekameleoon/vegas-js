@@ -5,6 +5,7 @@
  * @name swap
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The Array of values to change.
  * @param {number} [from=0] The first index position to swap.
  * @param {number} [to=0] The second index position to swap.

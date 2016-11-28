@@ -3,13 +3,14 @@
 /**
  * @name isAlpha
  * @function
+ * @instance
  * @memberof core.chars
  * @description Indicates if the specified character is an alpha (A-Z or a-z) character.
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
- * @return {boolean} True if the specified character is an alpha character.
+ * @return {boolean} <code>true</code> if the specified character is an alpha character.
  */
-export function isAlpha( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isAlpha( c , index = 0 )
 {
     if( index > 0 )
     {

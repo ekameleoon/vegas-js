@@ -5,6 +5,7 @@
  * @memberof core.arrays
  * @name pierce
  * @function
+ * @instance
  * @param {Array} ar - The array to pierce.
  * @param {number} index - The index of the array element to remove from the array (default 0).
  * @param {boolean} flag - A boolean <code>true</code> to return a new spliced array of false to return the removed element.

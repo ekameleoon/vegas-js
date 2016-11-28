@@ -5,9 +5,9 @@
  * @memberof core.arrays
  * @instance
  * @function
- * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
- * for all values of i between 0 and array.length - 1, inclusive.
- * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
+ * @instance
+ * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <code>index(i-n)%array.length</code>, for all values of i between <code>0 and <code>array.length-1</code>, inclusive.
+ * <p>For example, suppose list comprises <code>[l, o, v, e]</code>. After invoking <code>rotate(array, 1)</code> (or <code>rotate(array, -3)</code>), array will comprise <code>[e,l,o,v]</code>.</p>
  * @param {Array} ar - The array to rotate.
  * @param {number} [amount=1] The amount to rotate.
  * @return {Array} The rotated Array reference.

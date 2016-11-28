@@ -5,13 +5,18 @@
  * @name compare
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} charA - The first char to compare.
  * @param {string} charB - The second char to compare.
- * @return {number} <p>
+ * @return {number} <p>An integer value :
  * <li>-1 if charA is "lower" than (less than, before, etc.) charB ;</li>
  * <li> 1 if charA is "higher" than (greater than, after, etc.) charB ;</li>
  * <li> 0 if charA and charB are equal.</li>
  * </p>
+ * @example
+ * trace( compare("a","a") ) ; // 0
+ * trace( compare("a","b") ) ; // -1
+ * trace( compare("b","a") ) ; // 1
  */
 export function compare( charA , charB )
 {

@@ -15,6 +15,7 @@
  * @memberof core.chars
  * @const
  * @type {Array}
+ * @instance
  */
 export var whiteSpaces =
 [

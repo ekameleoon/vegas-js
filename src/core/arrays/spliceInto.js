@@ -5,6 +5,7 @@
  * @name spliceInto
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {array} inserted - The Array of values inserted in the Array container.
  * @param {array} container - The container modified in place.
  * @param {number} position - The position in the container to inserted the Array of chars.

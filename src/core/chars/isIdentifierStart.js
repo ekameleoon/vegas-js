@@ -5,6 +5,7 @@
  * @name isIdentifierStart
  * @memberof core.chars
  * @function
+ * @instance
  * @see <a href="http://www.ecma-international.org/ecma-262/5.1/Ecma-262.pdf">ECMA-262 spec 7.6 (PDF)</a>
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.

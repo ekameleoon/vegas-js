@@ -5,6 +5,7 @@
  * @name repeat
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The array to repeat.
  * @param {number} count - The number of repeat.
  * @return {Array} A new Array who contains the specified Array elements repeated count times.

@@ -7,6 +7,7 @@ import { whiteSpaces } from './whiteSpaces.js' ;
  * @name isWhiteSpace
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a white space defines in the core.chars.whiteSpaces collection.

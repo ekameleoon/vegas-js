@@ -5,6 +5,7 @@
  * @name isOctalDigit
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the specified character is an octal digit.

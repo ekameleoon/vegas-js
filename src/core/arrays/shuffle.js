@@ -1,9 +1,11 @@
 "use strict" ;
+
 /**
  * Shuffles an array.
  * @name shuffle
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The array to shuffle.
  * @return {Array} the shuffled array.
  * @example

@@ -5,6 +5,7 @@
  * @name isDigit
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return {boolean} True if the specified character is a digit.
@@ -14,7 +15,7 @@
  * trace( isDigit( "0" ) ) ; // true
  * trace( isDigit( "9" ) ) ; // true
  */
-export function isDigit( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isDigit( c , index = 0 )
 {
     if( index > 0 )
     {
