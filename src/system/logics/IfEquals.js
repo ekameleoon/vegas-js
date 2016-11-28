@@ -10,7 +10,6 @@ import { IfTask } from './IfTask.js' ;
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.Equals
  * @param {Object} value1 - The first value to evaluate.
  * @param {Object} value2 - The second value to evaluate.

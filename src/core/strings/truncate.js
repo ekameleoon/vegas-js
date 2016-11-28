@@ -7,6 +7,7 @@ import { trimEnd } from './trimEnd.js' ;
  * @name truncate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @param {number} length - The number of character to keep.
  * @param {string} prune - The string suffix to finalize the truncated expression.

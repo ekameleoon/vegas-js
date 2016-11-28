@@ -7,8 +7,9 @@ import { versionUUID } from './versionUUID.js' ;
  * @name validateUUID
  * @memberof core.strings
  * @function
- * @param  {String} uuid - The uuid expression to validate.
- * @param  {Number} vers - The optional version of the uuid to validate.
+ * @instance
+ * @param {String} uuid - The uuid expression to validate.
+ * @param {Number} vers - The optional version of the uuid to validate.
  * @return {Boolean} <code>true</code> if the uuid expression is valid.
  * @example
  * trace( validateUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // true

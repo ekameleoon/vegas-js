@@ -5,6 +5,7 @@
  * @name merge
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Object} target - The target object to merge.
  * @param {Object} source - The source object reference.
  * @param {boolean} [overwrite=true] - The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).

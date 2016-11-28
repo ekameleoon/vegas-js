@@ -4,6 +4,7 @@
  * The ActionEntry objects contains all informations about an Action in a {@link system.process.TaskGroup} object.
  * @name ActionEntry
  * @class
+ * @private
  * @memberof system.process
  * @extends system.process.Action
  * @augments system.process.Action

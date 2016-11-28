@@ -4,6 +4,7 @@
  * Indicates if the specific objet is Resumable and contains a <code>resume()</code> method.
  * @name isResumable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Resumable</code>.

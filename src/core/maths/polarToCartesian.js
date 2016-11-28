@@ -7,6 +7,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name polarToCartesian
  * @memberof core.maths
  * @function
+ * @instance
  * @param {Object} polar The polar generic object to transform (with the attributes angle and radius).
  * @param {number} polar.angle The angle of the polar coordinates.
  * @param {number} polar.radius The radius of the polar coordinates.

@@ -6,6 +6,7 @@
  * @name repeat
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to repeat.
  * @param {number} [count=1] - The number of time to repeat the passed-in expression.
  * @return A new expression who contains the specified String characters repeated count times.

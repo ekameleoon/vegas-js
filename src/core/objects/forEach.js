@@ -5,6 +5,7 @@
  * @name forEach
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Object} object The reference of the object to enumerate.
  * @param {Function} callback The function to run on each item in the object. This function can contain a simple command (for example, a trace() statement) or a more complex operation, and is invoked with three arguments; the value of an item, the key of an item, and the object reference : <code>function callback(item:*, key:*, ref:Object):void;</code>.
  * @param {Object} [context=null] An object to use as this for the callback function.

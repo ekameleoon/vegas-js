@@ -5,6 +5,7 @@
  * @name replaceNaN
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The <code>Number</code> value to replace, if this value is <code>NaN</code> the value is changed.
  * @param {*} [defaultValue=0] The default value to apply over the specified value if this value is <code>NaN</code>.
  * @return The replaced value.

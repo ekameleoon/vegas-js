@@ -6,6 +6,7 @@
  * @name normalize
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value The normal number value to interpolate (value between min and max).
  * @param {number} min The minimum value of the interpolation.
  * @param {number} max The maximum value of the interpolation.

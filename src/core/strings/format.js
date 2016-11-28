@@ -16,6 +16,7 @@ import { pad } from './pad.js' ;
  * @name format
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} pattern - The string expression to format.
  * @param {...string|array|Object} args - A serie of strings values or of arrays of strings or an Object to fill the pattern expression.
  * @return The formatted expression.

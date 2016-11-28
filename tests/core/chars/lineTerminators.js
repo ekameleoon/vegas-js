@@ -1,12 +1,12 @@
 "use strict" ;
 
-import { lineTerminators } from '../../../src/core/strings/lineTerminators.js' ;
+import { lineTerminators } from '../../../src/core/chars/lineTerminators.js' ;
 
 import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'core.strings.lineTerminators' , () =>
+describe( 'core.chars.lineTerminators' , () =>
 {
     it('lineTerminators is Array', () =>
     {

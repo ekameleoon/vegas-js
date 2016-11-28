@@ -9,7 +9,6 @@ import { Motion } from './Motion.js' ;
  * @name TweenUnit
  * @memberof system.transitions
  * @class
- * @constructor
  * @extends {system.transitions.Motion}
  * @tutorial system.transitions
  * @example

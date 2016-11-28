@@ -2,33 +2,31 @@
 
 import '../polyfill.js' ;
 
-import { between }             from './strings/between.js' ;
-import { camelCase }           from './strings/camelCase.js' ;
-import { capitalize }          from './strings/capitalize.js' ;
-import { center }              from './strings/center.js' ;
-import { clean }               from './strings/clean.js' ;
-import { compare }             from './strings/compare.js' ;
-import { endsWith }            from './strings/endsWith.js' ;
-import { fastformat }          from './strings/fastformat.js' ;
-import { fastformatDate }      from './strings/fastformatDate.js' ;
-import { format }              from './strings/format.js' ;
-import { hyphenate }           from './strings/hyphenate.js' ;
-import { indexOfAny }          from './strings/indexOfAny.js' ;
-import { insert }              from './strings/insert.js' ;
-import { lastIndexOfAny }      from './strings/lastIndexOfAny.js' ;
-import { lineTerminators }     from './strings/lineTerminators.js' ;
-import { pad }                 from './strings/pad.js' ;
-import { repeat as arepeat }   from './strings/repeat.js' ;
-import { startsWith }          from './strings/startsWith.js' ;
-import { trim }                from './strings/trim.js' ;
-import { trimEnd }             from './strings/trimEnd.js' ;
-import { trimStart }           from './strings/trimStart.js' ;
-import { truncate }            from './strings/truncate.js' ;
-import { ucFirst }             from './strings/ucFirst.js' ;
-import { ucWords }             from './strings/ucWords.js' ;
-import { validateUUID }        from './strings/validateUUID.js' ;
-import { versionUUID }         from './strings/versionUUID.js' ;
-import { whiteSpaces }         from './strings/whiteSpaces.js' ;
+import { between }           from './strings/between.js' ;
+import { camelCase }         from './strings/camelCase.js' ;
+import { capitalize }        from './strings/capitalize.js' ;
+import { center }            from './strings/center.js' ;
+import { clean }             from './strings/clean.js' ;
+import { compare }           from './strings/compare.js' ;
+import { endsWith }          from './strings/endsWith.js' ;
+import { fastformat }        from './strings/fastformat.js' ;
+import { fastformatDate }    from './strings/fastformatDate.js' ;
+import { format }            from './strings/format.js' ;
+import { hyphenate }         from './strings/hyphenate.js' ;
+import { indexOfAny }        from './strings/indexOfAny.js' ;
+import { insert }            from './strings/insert.js' ;
+import { lastIndexOfAny }    from './strings/lastIndexOfAny.js' ;
+import { pad }               from './strings/pad.js' ;
+import { repeat as arepeat } from './strings/repeat.js' ;
+import { startsWith }        from './strings/startsWith.js' ;
+import { trim }              from './strings/trim.js' ;
+import { trimEnd }           from './strings/trimEnd.js' ;
+import { trimStart }         from './strings/trimStart.js' ;
+import { truncate }          from './strings/truncate.js' ;
+import { ucFirst }           from './strings/ucFirst.js' ;
+import { ucWords }           from './strings/ucWords.js' ;
+import { validateUUID }      from './strings/validateUUID.js' ;
+import { versionUUID }       from './strings/versionUUID.js' ;
 
 /**
  * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
@@ -54,7 +52,6 @@ export var strings = Object.assign
     indexOfAny : indexOfAny ,
     insert : insert ,
     lastIndexOfAny : lastIndexOfAny ,
-    lineTerminators : lineTerminators ,
     pad : pad ,
     repeat : arepeat ,
     startsWith : startsWith ,
@@ -65,6 +62,5 @@ export var strings = Object.assign
     ucFirst : ucFirst ,
     ucWords : ucWords ,
     validateUUID : validateUUID ,
-    versionUUID : versionUUID ,
-    whiteSpaces : whiteSpaces
+    versionUUID : versionUUID
 }) ;

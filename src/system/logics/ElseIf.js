@@ -10,7 +10,6 @@ import { Rule } from '../rules/Rule.js' ;
  * @implements {system.rules.Rule}
  * @augments system.rules.Rule
  * @class
- * @constructor
  * @param {system.rules.Rule} [rule=null] - The condition to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the condition is <code>true</code>.
  */

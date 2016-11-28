@@ -9,6 +9,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name midPoint
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} latitude1 - The first latitude coordinate.
  * @param {number} longitude1 - The first longitude coordinate.
  * @param {number} latitude2 - The second latitude coordinate.

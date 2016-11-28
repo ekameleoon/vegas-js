@@ -5,5 +5,6 @@
  * @name PHI
  * @memberof core.maths
  * @const
+ * @instance
  */
 export const PHI = 1.61803398874989 ;

@@ -6,6 +6,7 @@
  * @name generateUUID
  * @memberof core.random
  * @function
+ * @instance
  * @return The String expression of the UUID version 4.
  * @example
  * trace( generateUUID() ) ; // 1ba7bbbd-783c-44db-9fc7-3ca772c6a8d2

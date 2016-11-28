@@ -5,6 +5,7 @@
  * @name coserp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
  * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.

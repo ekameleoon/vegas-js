@@ -7,6 +7,7 @@ import { trim } from './trim.js' ;
  * @name clean
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to clean.
  * @return The cleaned string.
  * @example

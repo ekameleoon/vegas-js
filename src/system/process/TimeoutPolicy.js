@@ -9,7 +9,6 @@ import { Enum } from '../Enum.js' ;
  * @class
  * @memberof system.process
  * @extends system.Enum
- * @constructor
  * @param {number} value - The value of the enumeration.
  * @param {string} name - The name key of the enumeration.
  * @example

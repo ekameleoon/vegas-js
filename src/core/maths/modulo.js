@@ -7,6 +7,7 @@
  * @name modulo
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} a - The dividend.
  * @param {number} b - The divisor.
  * @return The <code>a % b</code> where the result is between <code>0</code> and <code>b</code> (either <code>0 <= x < b or b < x <= 0</code>, depending on the sign of b).

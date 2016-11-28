@@ -6,12 +6,13 @@
  * @name ceil
  * @memberof core.maths
  * @function
- * @example
- * trace(ceil(4.572525153, 2)) ; 4.58
- * trace(ceil(4.572525153, -1)) ; // 5
+ * @instance
  * @param {number} n - The number to round.
  * @param {number} [floatCount=0] the count of number after the point.
  * @return the ceil value of a number by a count of floating points.
+ * @example
+ * trace(ceil(4.572525153, 2)) ; 4.58
+ * trace(ceil(4.572525153, -1)) ; // 5
  */
 export function ceil( n , floatCount = 0 )
 {

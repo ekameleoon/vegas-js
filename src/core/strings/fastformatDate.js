@@ -5,6 +5,7 @@
  * @name fastformatDate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {Date} [date=null] - The date object to format (default the current Date if the argument is null).
  * @param {string} [separator=-] The default separator of the format expression.
  * @return The string representation of the specific date with the format <code>"yyyy-mm-dd"</code>.

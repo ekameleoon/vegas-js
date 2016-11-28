@@ -10,7 +10,6 @@ import { Formattable } from '../Formattable.js' ;
  * @memberof system.formatters
  * @implements system.Formattable
  * @class
- * @constructor
  * @example
  * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
  *

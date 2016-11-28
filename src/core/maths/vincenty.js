@@ -9,6 +9,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name vincenty
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var position1 = { x : 37.422045,  y : -122.084347 } ; // Google HQ
  * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA

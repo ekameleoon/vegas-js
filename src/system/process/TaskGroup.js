@@ -12,7 +12,6 @@ import { Task }        from './Task.js' ;
  * @class
  * @memberof system.process
  * @extends system.process.Task
- * @constructor
  * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
  * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  * @example

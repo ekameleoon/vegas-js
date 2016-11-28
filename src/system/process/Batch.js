@@ -13,7 +13,6 @@ import { Runnable } from './Runnable.js' ;
  * @memberof system.process
  * @augments system.process.Runnable
  * @implements system.process.Runnable
- * @constructor
  * @param {array} [init=null] - The optional Array of Runnable objects to fill the batch.
  * @example
  * function Command( name )

@@ -14,7 +14,6 @@ import { TaskPhase } from './TaskPhase.js' ;
  * @augments system.process.Runnable
  * @implements system.process.Runnable
  * @implements system.process.Lockable
- * @constructor
  */
 export function Action()
 {

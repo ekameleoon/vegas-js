@@ -8,6 +8,7 @@
  * @name pad
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to pad.
  * @param {number} amount the amount of padding (number sign is the padding direction)
  * @param char the character to pad with (default is space)

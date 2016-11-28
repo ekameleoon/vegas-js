@@ -5,6 +5,7 @@
  * @name lastIndexOfAny
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to check.
  * @param {Array} anyOf - The Array of Unicode characters to find in the String.
  * @param {number} [startIndex] - The init position of the search process (by default the length-1 of the source).

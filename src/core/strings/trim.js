@@ -1,15 +1,16 @@
 /*jslint noempty: false */
 "use strict" ;
 
-import { whiteSpaces } from './whiteSpaces.js' ;
+import { whiteSpaces } from '../chars/whiteSpaces.js' ;
 
 /**
  * Removes all occurrences of a set of specified characters (or strings) from the beginning and end of this instance.
  * @name trim
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to trim.
- * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.chars.whiteSpaces} array is used.
  * @return The new trimed string.
  * @example
  * trace( trim("\r\t   hello world   \t ") ); // hello world

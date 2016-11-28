@@ -7,6 +7,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name sinD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - A value in degrees.
  * @return The sine of the passed angle, a number between <code>-1</code> and <code>1</code> inclusive.
  */

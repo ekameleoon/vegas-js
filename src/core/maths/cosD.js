@@ -7,6 +7,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name cosD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - A value representing angle in degrees.
  * @return the cosine of the passed angle, a number between -1 and 1 inclusive.
  */

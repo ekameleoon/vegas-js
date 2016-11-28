@@ -4,7 +4,8 @@
  * The <code>expoInOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
  * @name expoInOut
- * @function expoInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

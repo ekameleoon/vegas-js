@@ -8,17 +8,16 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name bearing
  * @memberof core.maths
  * @function
- * @example
- * var position1 = { x : 37.422045 , y : -122.084347 } ; // Google HQ
- * var position2 = { x :  37.77493 , y : -122.419416 } ; // San Francisco, CA
- *
- * trace( bearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 323.1477743368166
- * </pre>
+ * @instance
  * @param {number} latitude1 - The first latitude coordinate.
  * @param {number} longitude1 - The first longitude coordinate.
  * @param {number} latitude2 - The second latitude coordinate.
  * @param {number} longitude2 - The second longitude coordinate.
  * @return The bearing in degrees from North.
+ * @example
+ * var position1 = { x : 37.422045 , y : -122.084347 } ; // Google HQ
+ * var position2 = { x :  37.77493 , y : -122.419416 } ; // San Francisco, CA
+ * trace( bearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 323.1477743368166
  */
 export var bearing = ( latitude1, longitude1, latitude2, longitude2 ) =>
 {

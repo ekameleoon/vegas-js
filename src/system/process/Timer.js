@@ -10,7 +10,6 @@ import { Task } from './Task.js' ;
  * @memberof system.process
  * @extends system.process.Task
  * @class
- * @constructor
  * @example
  * var finish = function( action )
  * {

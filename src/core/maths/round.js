@@ -2,9 +2,10 @@
 
 /**
  * Rounds and returns a number by a count of floating points.
- * @name replaceNaN
+ * @name round
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  * n = core.maths.round(4.572525153, 2) ;
@@ -18,12 +19,12 @@
  */
 export var round = ( n , floatCount = 0 ) =>
 {
-    if (isNaN( n ))
+    if ( isNaN(n) )
     {
         return NaN ;
     }
-    var r  = 1 ;
-    var i  = - 1 ;
+    let r  = 1 ;
+    let i  = - 1 ;
     while (++ i < floatCount)
     {
         r *= 10 ;

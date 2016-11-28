@@ -7,6 +7,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name degreesToRadians
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - Value, in degrees, to convert to radians.
  * @return The angle in radians.
  */

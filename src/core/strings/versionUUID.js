@@ -6,6 +6,7 @@
  * @name versionUUID
  * @memberof core.strings
  * @function
+ * @instance
  * @param  {String} uuid The uuid expression
  * @return {Number} The version number of the uuid expression.
  * @example

@@ -10,7 +10,6 @@ import { Point } from './Point.js' ;
  * @name Rectangle
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom
- * @constructor
  * @class
  * @param {number} x the x value of the object.
  * @param {number} y the y value of the object.

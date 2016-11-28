@@ -6,10 +6,10 @@
  * For a full explanation visit: {@link http://www.firstpr.com.au/dsp/rand31/}</p>
  * <p>The generator uses a modulus constant <code>((m) of 2^31 - 1)</code> which is a <b>Mersenne Prime number</b> and a full-period-multiplier of <code>16807</code>.
  * Output is a 31 bit unsigned integer. The range of values output is <code>1</code> to <code>2147483646</code> (2^31-1) and the seed must be in this range too.</p>
+ * @summary A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * @name PRNG
- * @memberof system.numeric
  * @class
- * @constructor
+ * @memberof system.numeric
  * @param {number} [value=0] - The optional default value of the <code>PRNG</code> object, if the passed-in value is <code>>=1</code> a random value is generated with the <code>Math.random()</code> static method.
  */
 export function PRNG( value = 1 )

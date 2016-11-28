@@ -12,6 +12,7 @@
  * @name insert
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to change.
  * @param {number} [index=0] The position to insert the new characters.
  * @param {string} value The expression to insert in the source.

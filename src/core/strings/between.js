@@ -5,6 +5,7 @@
  * @name between
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The new extracted string.
  * @example

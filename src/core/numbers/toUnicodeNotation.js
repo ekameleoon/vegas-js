@@ -5,6 +5,7 @@
  * @name toUnicodeNotation
  * @memberof core.numbers
  * @function
+ * @instance
  * @param {number} num - The number to transform in a unicode string.
  * @return The unicode string notation of the specified numeric value.
  * @example

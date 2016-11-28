@@ -16,7 +16,7 @@ import { lineTerminators } from './lineTerminators.js' ;
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a line terminator defines in the core.chars.lineTerminators collection.
- * @example
+  * @example
  * trace( isLineTerminator( "h" ) ) ; // false
  * trace( isLineTerminator( "\n" ) ) ; // true
  */

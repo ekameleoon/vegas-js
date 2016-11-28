@@ -11,6 +11,7 @@
  * @name fastformat
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} pattern - The String pattern expression to format.
  * @param {...string} args - A serie of strings values or of arrays of strings to fill the pattern expression.
  * @return The formatted expression.

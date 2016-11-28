@@ -5,6 +5,7 @@
  * @name center
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to center.
  * @param {number} [size=0] The number of character to center the String expression.
  * @param {string} [separator= ] The optional separator character use before and after the String to center.

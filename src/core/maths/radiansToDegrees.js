@@ -7,6 +7,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name radiansToDegrees
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - Value, in radians, to convert to degrees.
  * @return an angle in degrees.
  */

@@ -5,6 +5,7 @@
  * @name floor
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} i1 - The first integer value.
  * @param {number} i2 - The second integer value.
  * @return the greatest common divisor with the Euclidean algorithm.

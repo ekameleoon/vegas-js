@@ -16,7 +16,6 @@ import { TaskPhase } from './TaskPhase.js' ;
  * @implements system.process.Resetable
  * @implements system.process.Startable
  * @implements system.process.Stoppable
- * @constructor
  */
 export function Task()
 {

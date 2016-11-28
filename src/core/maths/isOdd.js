@@ -5,6 +5,7 @@
  * @name isOdd
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The value to check.
  * @return <code>true</code> if the passed-in value is odd.
  * @example

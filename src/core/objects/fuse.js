@@ -12,6 +12,7 @@
  * @name fuse
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Array|Object} src - The source array or vector to copy.
  * @param {number} srcPos - The starting position in the source array.
  * @param {Array|Object} dest - The destination array or vector.

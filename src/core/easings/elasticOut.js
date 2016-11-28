@@ -3,7 +3,8 @@
 /**
  * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * @name elasticOut
- * @function elasticOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

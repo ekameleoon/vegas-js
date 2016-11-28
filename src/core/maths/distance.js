@@ -5,6 +5,7 @@
  * @name distance
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x1 - The x coordinate of the first point.
  * @param {number} y1 - The y coordinate of the first point.
  * @param {number} x2 - The x coordinate of the second point.

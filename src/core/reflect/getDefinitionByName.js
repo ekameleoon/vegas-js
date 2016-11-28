@@ -7,6 +7,7 @@ import { global } from '../global.js' ;
  * @name invoke
  * @memberof core.reflect
  * @function
+ * @instance
  * @param {string} name - The name of the full qualified path of a definition (instance, class, etc).
  * @param {Object} [domain] - A global object or namespace who contains the definition object. By default, the function use the <code>global</code> scope object where to find the reference.
  * @example

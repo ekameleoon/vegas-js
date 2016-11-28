@@ -5,6 +5,7 @@
  * @name clamp
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  *

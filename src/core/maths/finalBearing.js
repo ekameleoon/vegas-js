@@ -8,6 +8,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name finalBearing
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var position1 = new Point( 37.422045 , -122.084347 ) ; // Google HQ
  * var position2 = new Point( 37.77493  , -122.419416 ) ; // San Francisco, CA

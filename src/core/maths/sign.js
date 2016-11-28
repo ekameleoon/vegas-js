@@ -5,6 +5,7 @@
  * @name sign
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  *
@@ -18,13 +19,13 @@
  * trace ("n : " + n) ; // 1
  * @param {number} n - The number to defined this sign.
  * @return <code>1</code> if the value is positive or <code>-1</code>.
- * @throws Error if the passed-in value is <code>NaN</code>.
+ * @throws TypeError if the passed-in value is <code>NaN</code>.
  */
 export var sign = ( n ) =>
 {
     if (isNaN( n ))
     {
-        throw new Error( "sign failed, the passed-in value not must be NaN." ) ;
+        throw new TypeError( "sign failed, the passed-in value not must be NaN." ) ;
     }
     return ( n < 0 ) ? -1 : 1 ;
 }

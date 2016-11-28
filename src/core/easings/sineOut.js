@@ -5,7 +5,8 @@
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
  * @name sineOut
- * @function sineOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

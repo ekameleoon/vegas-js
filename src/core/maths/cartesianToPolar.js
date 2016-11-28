@@ -7,6 +7,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name cartesianToPolar
  * @memberof core.maths
  * @function
+ * @instance
  * @param {graphics.geom.Vector2|graphics.geom.Point|Objectj} vector - The cartesian vector to transform.
  * @param {boolean} degrees - Indicates if the angle attribute in the return polar object is in degrees or not (default this parameter is false).
  * @return a vector in cartesian in a polar vector.

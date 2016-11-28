@@ -3,7 +3,8 @@
 /**
  * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * @name regularIn
- * @function regularIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

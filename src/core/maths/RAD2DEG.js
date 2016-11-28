@@ -5,5 +5,6 @@
  * @name RAD2DEG
  * @memberof core.maths
  * @const
+ * @instance
  */
 export const RAD2DEG = 180 / Math.PI ;

@@ -4,18 +4,19 @@
  * This collection contains all white space chars.
  * <p><b>Note :</b></p>
  * <ul>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zs/list.htm">http://www.fileformat.info/info/unicode/category/Zs/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zl/list.htm">http://www.fileformat.info/info/unicode/category/Zl/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zp/list.htm">http://www.fileformat.info/info/unicode/category/Zp/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/200b/index.htm">http://www.fileformat.info/info/unicode/char/200b/index.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/feff/index.htm">http://www.fileformat.info/info/unicode/char/feff/index.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/2060/index.htm">http://www.fileformat.info/info/unicode/char/2060/index.htm</a></li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zs/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zl/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zp/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/200b/index.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/feff/index.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/2060/index.htm</li>
  * </ul>
  * @name whiteSpaces
  * @memberof core.chars
+ * @instance
  * @const
  * @type {Array}
- * @instance
+ * @see The ECMAScript specification.
  */
 export var whiteSpaces =
 [
@@ -46,6 +47,3 @@ export var whiteSpaces =
     "\u205F" /*Medium mathematical space*/,
     "\u3000" /*Ideographic space*/
 ];
-
-// TODO We maybe could also define 0xFFEF and/or 0x2060, but not completely sure of all the implication,
-// 0xFFEF in byte order mark etc.

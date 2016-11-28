@@ -5,6 +5,7 @@
  * @name endsWith
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to check.
  * @param {string} value - The value to find in end in the source.
  * @return <code>true</code> if the value is find in first.

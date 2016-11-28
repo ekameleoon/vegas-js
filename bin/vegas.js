@@ -396,6 +396,7 @@ function dumpObject(value) {
  * @name toUnicodeNotation
  * @memberof core.numbers
  * @function
+ * @instance
  * @param {number} num - The number to transform in a unicode string.
  * @return The unicode string notation of the specified numeric value.
  * @example
@@ -588,6 +589,7 @@ function isBoolean(object) {
  * @name isFloat
  * @memberof core
  * @function
+ * @instance
  * @param {number} value - The value to evaluates.
  * @return <code>true</code> if the passed-in value is a float.
  * @example
@@ -605,6 +607,7 @@ var isFloat = function isFloat(value) {
  * @name isInt
  * @memberof core
  * @function
+ * @instance
  * @param {number} value - The value to evaluates.
  * @return <code>true</code> if the passed-in value is an integer.
  * @example
@@ -657,6 +660,7 @@ function isString(object) {
  * @name contains
  * @memberof core.arrays
  * @function contains
+ * @instance
  * @param {Array} ar - The search Array.
  * @param {*} value - The object to find in the array.
  * @return <code>true</code> if the specified object exists as an element in the array ; otherwise, <code>false</code>.
@@ -675,6 +679,7 @@ var contains = function contains(array /*Array*/, value) {
  * @name initialize
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {number} [elements=1] - The number of elements to fill the Array.
  * @param {*} [value=null] - The value to inject in the Array.
  * @return A new Array with an arbitrary number of elements (index), with every element containing the passed parameter value or by default the null value.
@@ -715,6 +720,7 @@ function initialize() /*Array*/
  * @memberof core.arrays
  * @name pierce
  * @function
+ * @instance
  * @param {Array} ar - The array to pierce.
  * @param {number} index - The index of the array element to remove from the array (default 0).
  * @param {boolean} flag - A boolean <code>true</code> to return a new spliced array of false to return the removed element.
@@ -745,6 +751,7 @@ function pierce(ar /*Array*/, index /*uint*/, flag /*Boolean*/) {
  * @name repeat
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The array to repeat.
  * @param {number} count - The number of repeat.
  * @return {Array} A new Array who contains the specified Array elements repeated count times.
@@ -775,9 +782,9 @@ function repeat(ar /*Array*/, count /*uint*/) /*Array*/
  * @memberof core.arrays
  * @instance
  * @function
- * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <strong>index (i - n) % array.length</strong>,
- * for all values of i between 0 and array.length - 1, inclusive.
- * For example, suppose list comprises [l, o, v, e]. After invoking rotate(array, 1) (or rotate(array, -3)), array will comprise [e,l,o,v].
+ * @instance
+ * @description Rotates an Array in-place. After calling this method, the element at index i will be the element previously at <code>index(i-n)%array.length</code>, for all values of i between <code>0 and <code>array.length-1</code>, inclusive.
+ * <p>For example, suppose list comprises <code>[l, o, v, e]</code>. After invoking <code>rotate(array, 1)</code> (or <code>rotate(array, -3)</code>), array will comprise <code>[e,l,o,v]</code>.</p>
  * @param {Array} ar - The array to rotate.
  * @param {number} [amount=1] The amount to rotate.
  * @return {Array} The rotated Array reference.
@@ -812,6 +819,7 @@ function rotate(ar /*Array*/) /*Array*/
  * @name shuffle
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The array to shuffle.
  * @return {Array} the shuffled array.
  * @example
@@ -1056,6 +1064,7 @@ Array.UNIQUESORT = 4;
  * @name spliceInto
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {array} inserted - The Array of values inserted in the Array container.
  * @param {array} container - The container modified in place.
  * @param {number} position - The position in the container to inserted the Array of chars.
@@ -1109,6 +1118,7 @@ function spliceInto(inserted /*Array*/, container /*Array*/, position /*Number*/
  * @name swap
  * @memberof core.arrays
  * @function
+ * @instance
  * @param {Array} ar - The Array of values to change.
  * @param {number} [from=0] The first index position to swap.
  * @param {number} [to=0] The second index position to swap.
@@ -1162,13 +1172,18 @@ var arrays = Object.assign({
  * @name compare
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} charA - The first char to compare.
  * @param {string} charB - The second char to compare.
- * @return {number} <p>
+ * @return {number} <p>An integer value :
  * <li>-1 if charA is "lower" than (less than, before, etc.) charB ;</li>
  * <li> 1 if charA is "higher" than (greater than, after, etc.) charB ;</li>
  * <li> 0 if charA and charB are equal.</li>
  * </p>
+ * @example
+ * trace( compare("a","a") ) ; // 0
+ * trace( compare("a","b") ) ; // -1
+ * trace( compare("b","a") ) ; // 1
  */
 
 function compare(charA, charB) {
@@ -1196,16 +1211,16 @@ function caseValue(str) {
 /**
  * @name isAlpha
  * @function
+ * @instance
  * @memberof core.chars
  * @description Indicates if the specified character is an alpha (A-Z or a-z) character.
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
- * @return {boolean} True if the specified character is an alpha character.
+ * @return {boolean} <code>true</code> if the specified character is an alpha character.
  */
 
-function isAlpha(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isAlpha(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1217,6 +1232,7 @@ function isAlpha(c /*String*/) /*Boolean*/
  * Indicates if the specified character is an alpha (A-Z or a-z) or a digit character.
  * @name isAlphaOrDigit
  * @memberof core.chars
+ * @instance
  * @function
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
@@ -1239,22 +1255,22 @@ function isAlphaOrDigit(c) {
 }
 
 /**
- * Indicates if the specified character is an ASCII character.
- * @param {string} c - The expression to evaluate.
+ * Indicates if the specified character is an <strong>{@link https://fr.wikipedia.org/wiki/American_Standard_Code_for_Information_Interchange|ASCII}</strong> character.
+ * @param {string} c - The character expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
- * @return {boolean} True if the specified character is a ASCII character.
+ * @return {boolean} <code>true</code> if the specified character is a <strong>{@link https://fr.wikipedia.org/wiki/American_Standard_Code_for_Information_Interchange|ASCII}</strong> character.
  * @memberof core.chars
  * @name isASCII
  * @function
+ * @instance
  * @example
  * trace( isASCII( "Z" ) ) ; // true
  * trace( isASCII( "a" ) ) ; // true
  * trace( isASCII( "+" ) ) ; // true
  */
 
-function isASCII(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isASCII(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1267,16 +1283,18 @@ function isASCII(c /*String*/) /*Boolean*/
  * @name isContained
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} index - The optional index to evaluate a specific character in the passed-in expression.
- * @param charset The list of characters to evaluate.
+ * @param {string} charset - The list of characters to evaluate.
  * @return True if the specified character is a digit.
+ * @example
+ * trace( isContained( "a" , "bubble" ) ) ; // false
+ * trace( isContained( "u" , "bubble" ) ) ; // true
  */
 
-function isContained(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+function isContained(c, charset) {
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1297,6 +1315,7 @@ function isContained(c /*String*/) /*Boolean*/
  * @name isDigit
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return {boolean} True if the specified character is a digit.
@@ -1307,9 +1326,8 @@ function isContained(c /*String*/) /*Boolean*/
  * trace( isDigit( "9" ) ) ; // true
  */
 
-function isDigit(c /*String*/) /*Boolean*/
-{
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function isDigit(c) {
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1322,6 +1340,7 @@ function isDigit(c /*String*/) /*Boolean*/
  * @name isHexDigit
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <true> if the specified character is an hexadecimal digit.
@@ -1350,6 +1369,7 @@ function isHexDigit(c) {
  * @name isIdentifierStart
  * @memberof core.chars
  * @function
+ * @instance
  * @see <a href="http://www.ecma-international.org/ecma-262/5.1/Ecma-262.pdf">ECMA-262 spec 7.6 (PDF)</a>
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
@@ -1374,6 +1394,7 @@ function isIdentifierStart(c) {
  * <p>ECMAScript specification.</p>
  * @name lineTerminators
  * @memberof core.chars
+ * @instance
  * @const
  * @type {Array}
  */
@@ -1393,11 +1414,12 @@ var lineTerminators = ["\n" /*LF : Line Feed*/
  * @name isLineTerminator
  * @memberof core.chars
  * @function
+ * @instance
  * @see <a href="http://www.ecma-international.org/ecma-262/5.1/Ecma-262.pdf">ECMA-262 spec 7.3 (PDF)</a>
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a line terminator defines in the core.chars.lineTerminators collection.
- * @example
+  * @example
  * trace( isLineTerminator( "h" ) ) ; // false
  * trace( isLineTerminator( "\n" ) ) ; // true
  */
@@ -1424,6 +1446,7 @@ function isLineTerminator(c /*String*/) /*Boolean*/
  * @name isLower
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the specified character is lowercase.
@@ -1435,9 +1458,9 @@ function isLineTerminator(c /*String*/) /*Boolean*/
  * trace( isLower( "1" ) ) ; // false
  */
 
-function isLower(c /*String*/) /*Boolean*/
+function isLower(c) /*Boolean*/
 {
-    var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     if (index > 0) {
         c = c.charAt(index);
@@ -1450,6 +1473,7 @@ function isLower(c /*String*/) /*Boolean*/
  * @name isOctalDigit
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the specified character is an octal digit.
@@ -1481,6 +1505,7 @@ function isOctalDigit(c /*String*/) /*Boolean*/
  * @memberof core.chars
  * @const
  * @type {Array}
+ * @instance
  */
 
 var operators = ["*", "/", "%", "+", "-", "«", "»", ">", "<", "›", "&", "^", "|"];
@@ -1490,6 +1515,7 @@ var operators = ["*", "/", "%", "+", "-", "«", "»", ">", "<", "›", "&", "^",
  * @name isOperator
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a operator digit.
@@ -1512,6 +1538,7 @@ function isOperator(c) {
  * @memberof core.chars
  * @const
  * @type {Array}
+ * @instance
  */
 
 var symbols = [" ", // The "space" unicode character
@@ -1553,6 +1580,7 @@ var symbols = [" ", // The "space" unicode character
  * @name isSymbol
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a symbol defines in the core.chars.symbols collection.
@@ -1572,6 +1600,7 @@ function isSymbol(c) {
  * @name isUnicode
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a unicode character.
@@ -1592,6 +1621,7 @@ function isUnicode(c /*String*/) /*Boolean*/
  * @name isUpper
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the specified character is lowercase.
@@ -1619,17 +1649,19 @@ function isUpper(c /*String*/) /*Boolean*/
  * This collection contains all white space chars.
  * <p><b>Note :</b></p>
  * <ul>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zs/list.htm">http://www.fileformat.info/info/unicode/category/Zs/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zl/list.htm">http://www.fileformat.info/info/unicode/category/Zl/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/category/Zp/list.htm">http://www.fileformat.info/info/unicode/category/Zp/list.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/200b/index.htm">http://www.fileformat.info/info/unicode/char/200b/index.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/feff/index.htm">http://www.fileformat.info/info/unicode/char/feff/index.htm</a></li>
- * <li><a href="http://www.fileformat.info/info/unicode/char/2060/index.htm">http://www.fileformat.info/info/unicode/char/2060/index.htm</a></li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zs/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zl/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/category/Zp/list.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/200b/index.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/feff/index.htm</li>
+ * <li>http://www.fileformat.info/info/unicode/char/2060/index.htm</li>
  * </ul>
  * @name whiteSpaces
  * @memberof core.chars
+ * @instance
  * @const
  * @type {Array}
+ * @see The ECMAScript specification.
  */
 
 var whiteSpaces = ["\t" /*Horizontal tab*/
@@ -1660,14 +1692,12 @@ var whiteSpaces = ["\t" /*Horizontal tab*/
 , "\u3000" /*Ideographic space*/
 ];
 
-// TODO We maybe could also define 0xFFEF and/or 0x2060, but not completely sure of all the implication,
-// 0xFFEF in byte order mark etc.
-
 /**
  * Indicates if the character is white space.
  * @name isWhiteSpace
  * @memberof core.chars
  * @function
+ * @instance
  * @param {string} c - The expression to evaluate.
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a white space defines in the core.chars.whiteSpaces collection.
@@ -1722,7 +1752,8 @@ var chars = Object.assign({
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
  * @name backIn
  * @memberof core.easings
- * @function backIn
+ * @function
+ * @instance
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
  * @param {number} c - Specifies the total change in the animation property.
@@ -1744,7 +1775,8 @@ var backIn = function backIn(t, b, c, d) {
  * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
  * @name backInOut
  * @memberof core.easings
- * @function backInOut
+ * @function
+ * @instance
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
  * @param {number} c - Specifies the total change in the animation property.
@@ -1769,7 +1801,8 @@ var backInOut = function backInOut(t, b, c, d) {
  * The <code>backIn</code> function starts the motion by moving towards the target, overshooting it slightly,
  * @name backOut
  * @memberof core.easings
- * @function backOut
+ * @function
+ * @instance
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
  * @param {number} c - Specifies the total change in the animation property.
@@ -1790,7 +1823,8 @@ var backOut = function backOut(t, b, c, d) {
 /**
  * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
  * @name bounceOut
- * @function bounceOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1814,7 +1848,8 @@ var bounceOut = function bounceOut(t, b, c, d) {
 /**
  * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
  * @name bounceIn
- * @function bounceIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1829,7 +1864,8 @@ var bounceIn = function bounceIn(t, b, c, d) {
 /**
  * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
  * @name bounceInOut
- * @function bounceInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1844,7 +1880,8 @@ var bounceInOut = function bounceInOut(t, b, c, d) {
 /**
  * The <code>circularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * @name circularIn
- * @function circularIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1860,7 +1897,8 @@ var circularIn = function circularIn(t, b, c, d) {
 /**
  * The <code>circularInOut</code> function combines the motion of the circularIn and circularOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * @name circularInOut
- * @function circularInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1879,7 +1917,8 @@ var circularInOut = function circularInOut(t, b, c, d) {
 /**
  * The <code>circularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * @name circularOut
- * @function circularOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1895,7 +1934,8 @@ var circularOut = function circularOut(t, b, c, d) {
 /**
  * The <code>cubicIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * @name cubicIn
- * @function cubicIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1911,8 +1951,9 @@ var cubicIn = function cubicIn(t, b, c, d) {
 /**
  * The <code>cubicOut</code> function combines the motion of the <b>cubicIn</b> and <b>cubicOut</b> functions to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
- * @name cubicOut
- * @function cubicOut
+ * @name cubicInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1932,7 +1973,8 @@ var cubicInOut = function cubicInOut(t, b, c, d) {
  * The <code>cubicOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * <p>A cubic equation is based on the power of three : <code>p(t) = t &#42; t &#42; t</code>.</p>
  * @name cubicOut
- * @function cubicOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1948,7 +1990,8 @@ var cubicOut = function cubicOut(t, b, c, d) {
 /**
  * The <code>elasticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * @name elasticIn
- * @function elasticIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -1990,7 +2033,8 @@ var elasticIn = function elasticIn(t, b, c, d) {
 /**
  * The <code>elasticInOut</code> function combines the motion of the elasticIn and elasticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * @name elasticInOut
- * @function elasticInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2033,7 +2077,8 @@ var elasticInOut = function elasticInOut(t, b, c, d) {
 /**
  * The <code>elasticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * @name elasticOut
- * @function elasticOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2075,7 +2120,8 @@ var elasticOut = function elasticOut(t, b, c, d) {
  * The <code>expoIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
  * @name expoIn
- * @function expoIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2092,7 +2138,8 @@ var expoIn = function expoIn(t, b, c, d) {
  * The <code>expoInOut</code> function combines the motion of the expoIn and expoOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
  * @name expoInOut
- * @function expoInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2118,7 +2165,8 @@ var expoInOut = function expoInOut(t, b, c, d) {
  * The <code>expoOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * The exponential functions is based on the number 2 raised to a multiple of <b>10</b> : <code>p(t) = 2^10(t-1)</code>
  * @name expoOut
- * @function expoOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2134,7 +2182,8 @@ var expoOut = function expoOut(t, b, c, d) {
 /**
  * The <code>linear</code> function starts a basic and linear motion.
  * @name linear
- * @function linear
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2151,7 +2200,8 @@ var linear = function linear(t, b, c, d) {
  * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
  * @name quarticIn
- * @function quarticIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2168,7 +2218,8 @@ var quarticIn = function quarticIn(t, b, c, d) {
  * The <code>quarticInOut</code> function combines the motion of the quarticIn and quarticOut methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
  * @name quarticInOut
- * @function quarticInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2188,7 +2239,8 @@ var quarticInOut = function quarticInOut(t, b, c, d) {
  * The <code>quarticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
  * @name quarticOut
- * @function quarticOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2205,7 +2257,8 @@ var quarticOut = function quarticOut(t, b, c, d) {
  * The <code>quinticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
  * @name quintic
- * @function quintic
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2222,7 +2275,8 @@ var quinticIn = function quinticIn(t, b, c, d) {
  * The <code>quinticInOut</code> function combines the motion of the quinticIn() and quinticOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
  * @name quinticInOut
- * @function quintic
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2242,7 +2296,8 @@ var quinticInOut = function quinticInOut(t, b, c, d) {
  * The <code>quinticOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * A quintic easing continues the upward trend, raises time to the fifth power : <code>p(t) = t &#42; t &#42; t &#42; t &#42; t</code>
  * @name quinticOut
- * @function quinticOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2258,7 +2313,8 @@ var quinticOut = function quinticOut(t, b, c, d) {
 /**
  * The <code>regularIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * @name regularIn
- * @function regularIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2274,7 +2330,8 @@ var regularIn = function regularIn(t, b, c, d) {
 /**
  * The <code>regularInOut</code> function combines the motion of the regularIn() and regularOut() methods to start the motion from a zero velocity, accelerate motion, then decelerate to a zero velocity.
  * @name regularInOut
- * @function regularInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2293,7 +2350,8 @@ var regularInOut = function regularInOut(t, b, c, d) {
 /**
  * The <code>regularOut</code> function starts motion fast and then decelerates motion to a zero velocity as it executes.
  * @name regularOut
- * @function regularOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2311,7 +2369,8 @@ var regularOut = function regularOut(t, b, c, d) {
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
  * @name sineIn
- * @function sineIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2329,7 +2388,8 @@ var sineIn = function sineIn(t, b, c, d) {
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
  * @name sineInOut
- * @function sineInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2347,7 +2407,8 @@ var sineInOut = function sineInOut(t, b, c, d) {
  * <p>A sinusoidal equation is based on a sine or cosine function. Either one produces a sine wave—a periodic oscillation of a specific shape.</p>
  * <p>This is the equation on which I based the easing curve : <code>p(t) = sin( t &#42; Math.PI / 2 )</code></p>
  * @name sineOut
- * @function sineOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
@@ -2424,6 +2485,7 @@ var easings = Object.assign({
  * @name aop
  * @memberof core.functors
  * @function
+ * @instance
  * @example
  * var scope = { toString : function() { return "scope" ; } } ;
  *
@@ -2494,6 +2556,7 @@ var functors = Object.assign({
  * @name RAD2DEG
  * @memberof core.maths
  * @const
+ * @instance
  */
 
 var RAD2DEG = 180 / Math.PI;
@@ -2503,6 +2566,7 @@ var RAD2DEG = 180 / Math.PI;
  * @name acosD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} ratio - A value between -1 and 1 inclusive.
  * @return the inverse cosine of a slope ratio and returns its angle in degrees.
  */
@@ -2515,6 +2579,7 @@ var acosD = function acosD(ratio) {
  * @name acosHm
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculate the Anti-hyperbolic cosine.
  */
 
@@ -2530,6 +2595,7 @@ var acosHm = function acosHm(x) {
  * @name acosHp
  * @memberof core.maths
  * @function
+ * @instance
  */
 
 var acosHp = function acosHp(x) {
@@ -2541,6 +2607,7 @@ var acosHp = function acosHp(x) {
  * @name angleOfLine
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x1 - The x coordinate of the first point.
  * @param {number} y1 - The y coordinate of the first point.
  * @param {number} x2 - The x coordinate of the second point.
@@ -2556,8 +2623,9 @@ var angleOfLine = function angleOfLine(x1, y1, x2, y2) {
  * @name asinD
  * @memberof core.maths
  * @function
- * @param {number} ratio - A value between -1 and 1 inclusive.
- * @return the arcsine of the passeds angle in degrees.
+ * @instance
+ * @param {number} ratio - A value between <code>-1</code> and <code>1</code> inclusive.
+ * @return the arcsine of the passed angle in degrees.
  */
 var asinD = function asinD(ratio) {
   return Math.asin(ratio) * RAD2DEG;
@@ -2568,6 +2636,7 @@ var asinD = function asinD(ratio) {
  * @name asinH
  * @memberof core.maths
  * @function
+ * @instance
  */
 
 var asinH = function asinH(x) {
@@ -2579,6 +2648,7 @@ var asinH = function asinH(x) {
  * @name atan2D
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} y - A value representing y-axis of angle vector.
  * @param {number} x - A value representing x-axis of angle vector.
  * @return the arctangent2 of the passed angle.
@@ -2592,6 +2662,7 @@ var atan2D = function atan2D(y, x) {
  * @name atanD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - A real number
  * @return the arctangent of the passed angle, a number between <code>-Math.PI/2</code> and <code>Math.PI/2</code> inclusive.
  */
@@ -2604,18 +2675,20 @@ var atanD = function atanD(angle) {
  * @name atanH
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A real number
  * @return the Anti-hyperbolic tangent of the passed angle.
  */
 
-function atanH(x) {
+var atanH = function atanH(x) {
   return Math.log((1 + x) / (1 - x)) / 2;
-}
+};
 
 /**
  * This constant change degrees to radians : <code>Math.PI/180</code>.
  * @name DEG2RAD
  * @memberof core.maths
+ * @instance
  * @const
  */
 
@@ -2626,17 +2699,16 @@ var DEG2RAD = Math.PI / 180;
  * @name bearing
  * @memberof core.maths
  * @function
- * @example
- * var position1 = { x : 37.422045 , y : -122.084347 } ; // Google HQ
- * var position2 = { x :  37.77493 , y : -122.419416 } ; // San Francisco, CA
- *
- * trace( bearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 323.1477743368166
- * </pre>
+ * @instance
  * @param {number} latitude1 - The first latitude coordinate.
  * @param {number} longitude1 - The first longitude coordinate.
  * @param {number} latitude2 - The second latitude coordinate.
  * @param {number} longitude2 - The second longitude coordinate.
  * @return The bearing in degrees from North.
+ * @example
+ * var position1 = { x : 37.422045 , y : -122.084347 } ; // Google HQ
+ * var position2 = { x :  37.77493 , y : -122.419416 } ; // San Francisco, CA
+ * trace( bearing( position1.x , position1.y , position2.x , position2.y ) ) ; // 323.1477743368166
  */
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
   latitude1 = latitude1 * DEG2RAD;
@@ -2655,6 +2727,7 @@ var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
  * @name clamp
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  *
@@ -2693,6 +2766,7 @@ var clamp = function clamp(value, min, max) {
  * @name berp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
  * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -2714,10 +2788,11 @@ var berp = function berp(start, end, amount) {
  * @name bounce
  * @memberof core.maths
  * @function
- * @example
- * trace( bounce( 0.5 ) ) ;
+ * @instance
  * @param {number} amount - The amount to bounce a value between 0 and 1.
  * @return a value between <code>0</code> and <code>1</code> that can be used to easily make bouncing GUI items (a la OS X's Dock)
+ * @example
+ * trace( bounce( 0.5 ) ) ;
  */
 
 var bounce = function bounce(amount) {
@@ -2729,6 +2804,7 @@ var bounce = function bounce(amount) {
  * @name cartesianToPolar
  * @memberof core.maths
  * @function
+ * @instance
  * @param {graphics.geom.Vector2|graphics.geom.Point|Objectj} vector - The cartesian vector to transform.
  * @param {boolean} degrees - Indicates if the angle attribute in the return polar object is in degrees or not (default this parameter is false).
  * @return a vector in cartesian in a polar vector.
@@ -2743,12 +2819,13 @@ var cartesianToPolar = function cartesianToPolar(vector, degrees) {
  * @name ceil
  * @memberof core.maths
  * @function
- * @example
- * trace(ceil(4.572525153, 2)) ; 4.58
- * trace(ceil(4.572525153, -1)) ; // 5
+ * @instance
  * @param {number} n - The number to round.
  * @param {number} [floatCount=0] the count of number after the point.
  * @return the ceil value of a number by a count of floating points.
+ * @example
+ * trace(ceil(4.572525153, 2)) ; 4.58
+ * trace(ceil(4.572525153, -1)) ; // 5
  */
 
 function ceil(n) {
@@ -2772,6 +2849,7 @@ function ceil(n) {
  * @name clerp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
  * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -2798,6 +2876,7 @@ var clerp = function clerp(start, end, amount) {
  * @name cosD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - A value representing angle in degrees.
  * @return the cosine of the passed angle, a number between -1 and 1 inclusive.
  */
@@ -2810,6 +2889,7 @@ var cosD = function cosD(angle) {
  * @name coserp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start - The begining value.
  * @param {number} end - The ending value.
  * @param {number} amount - The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -2831,6 +2911,7 @@ var coserp = function coserp(start, end, amount) {
  * @name cosH
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculate the Hyperbolic cosine.
  */
 
@@ -2843,6 +2924,7 @@ var cosH = function cosH(x) {
  * @name degreesToRadians
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - Value, in degrees, to convert to radians.
  * @return The angle in radians.
  */
@@ -2855,6 +2937,7 @@ var degreesToRadians = function degreesToRadians(angle) {
  * @name distance
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x1 - The x coordinate of the first point.
  * @param {number} y1 - The y coordinate of the first point.
  * @param {number} x2 - The x coordinate of the second point.
@@ -2873,6 +2956,7 @@ var distance = function distance(x1, y1, x2, y2) {
  * @name distanceByObject
  * @memberof core.maths
  * @function
+ * @instance
  * @param {graphics.geom.Vector2|graphics.geom.Point|Object} p1 the first point to determinate the distance (defines with the x and y coordinates).
  * @param {graphics.geom.Vector2|graphics.geom.Point|Object} p2 the second point to determinate the distance (defines with the x and y coordinates).
  * @return the length between 2 points.
@@ -2888,6 +2972,7 @@ function distanceByObject(p1, p2) {
  * This constant defines the radius of the earth in meter : <code>6371 km</code>.
  * @name EARTH_RADIUS_IN_METERS
  * @memberof core.maths
+ * @instance
  * @const
  */
 
@@ -2897,6 +2982,7 @@ var EARTH_RADIUS_IN_METERS = 6371000;
  * Represents the smallest positive Single value greater than zero, <code>EPSILON=0.000000001</code>.
  * @name EPSILON
  * @memberof core.maths
+ * @instance
  * @const
  */
 
@@ -2907,6 +2993,7 @@ var EPSILON = 0.000000001;
  * By definition, the first two numbers in the Fibonacci sequence are 0 and 1, and each subsequent number is the sum of the previous two.
  * @name fibonacci
  * @memberof core.maths
+ * @instance
  * @function
  */
 
@@ -2927,6 +3014,7 @@ var fibonacci = function fibonacci(value) {
  * @name finalBearing
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var position1 = new Point( 37.422045 , -122.084347 ) ; // Google HQ
  * var position2 = new Point( 37.77493  , -122.419416 ) ; // San Francisco, CA
@@ -2954,6 +3042,7 @@ var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longi
  * @name fixAngle
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - The passed angle value.
  * @return an angle fixed between 0 and 360 degrees.
  */
@@ -2973,6 +3062,7 @@ function fixAngle(angle) {
  * @name floor
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} n - The number to round.
  * @param {number} [floatCount=0] the count of number after the point.
  * @return the floor value of a number by a count of floating points.
@@ -3000,6 +3090,7 @@ var floor = function floor(n) {
  * @name floor
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} i1 - The first integer value.
  * @param {number} i2 - The second integer value.
  * @return the greatest common divisor with the Euclidean algorithm.
@@ -3029,6 +3120,7 @@ var gcd = function gcd(i1, i2) {
  * @name haversine
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} latitude1 - The first latitude coordinate.
  * @param {number} longitude1 - The first longitude coordinate.
  * @param {number} latitude2 - The second latitude coordinate.
@@ -3062,6 +3154,7 @@ var haversine = function haversine(latitude1, longitude1, latitude2, longitude2)
  * @name hermite
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start the begining value.
  * @param {number} end The ending value.
  * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -3084,6 +3177,7 @@ var hermite = function hermite(start, end, amount) {
  * @name hypothenuse
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - Specifies the length of first side
  * @param {number} y - Specifies the length of second side
  * @return The length of the hypotenuse
@@ -3100,6 +3194,7 @@ var hypothenuse = function hypothenuse(x, y) {
  * @name interpolate
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value The normal number value to interpolate (value between min and max).
  * @param {number} min The minimum value of the interpolation.
  * @param {number} max The maximum value of the interpolation.
@@ -3117,6 +3212,7 @@ var interpolate = function interpolate(value, min, max) {
  * @name isEven
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The value to check.
  * @return <code>true</code> if the passed-in value is even.
  * @example
@@ -3134,6 +3230,7 @@ var isEven = function isEven(value) {
  * @name isOdd
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The value to check.
  * @return <code>true</code> if the passed-in value is odd.
  * @example
@@ -3158,6 +3255,7 @@ var isOdd = function isOdd(value) {
 * </p>
  * @name LAMBDA
  * @memberof core.maths
+ * @instance
  * @const
 */
 
@@ -3172,6 +3270,7 @@ var LAMBDA = 0.57721566490143;
  * @name lerp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start the begining value.
  * @param {number} end The ending value.
  * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -3192,6 +3291,7 @@ var lerp = function lerp(start, end, amount) {
  * @name log10
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The value to calculate.
  * @return The log10 of the specified value.
  * @example
@@ -3207,6 +3307,7 @@ function log10(value) {
  * @name log10
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The value to calculate.
  * @param {number} base - The base to calculate the log of the value.
  * @return The logN of the specified value.
@@ -3224,6 +3325,7 @@ function logN(value, base) {
  * @name normalize
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value The normal number value to interpolate (value between min and max).
  * @param {number} min The minimum value of the interpolation.
  * @param {number} max The maximum value of the interpolation.
@@ -3241,6 +3343,7 @@ var normalize = function normalize(value, minimum, maximum) {
  * @name map
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The number value to map.
  * @param {number} min1 - The minimum value of the first range of the value.
  * @param {number} max1 - The maximum value of the first range of the value.
@@ -3261,6 +3364,7 @@ var map = function map(value, min1, max1, min2, max2) {
  * @name midPoint
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} latitude1 - The first latitude coordinate.
  * @param {number} longitude1 - The first longitude coordinate.
  * @param {number} latitude2 - The second latitude coordinate.
@@ -3295,6 +3399,7 @@ var midPoint = function midPoint(latitude1, longitude1, latitude2, longitude2) {
  * @name MILE_TO_METER
  * @memberof core.maths
  * @const
+ * @instance
  */
 
 var MILE_TO_METER = 1609;
@@ -3306,6 +3411,7 @@ var MILE_TO_METER = 1609;
  * @name modulo
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} a - The dividend.
  * @param {number} b - The divisor.
  * @return The <code>a % b</code> where the result is between <code>0</code> and <code>b</code> (either <code>0 <= x < b or b < x <= 0</code>, depending on the sign of b).
@@ -3323,6 +3429,7 @@ function modulo(a, b) {
  * @name nearlyEquals
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value1 - A number to evaluate.
  * @param {number} value2 - A number to evaluate.
  * @param {number} [tolerance=0.000001] - An optional tolerance range. If specified, should be greater than 0.
@@ -3345,6 +3452,7 @@ var nearlyEquals = function nearlyEquals(value1, value2) {
  * @name percentage
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The current value to calculates.
  * @param {number} maximum - The max value.
  * @return a percentage value or NaN.
@@ -3363,6 +3471,7 @@ var percentage = function percentage(value, maximum) {
  * @name PHI
  * @memberof core.maths
  * @const
+ * @instance
  */
 
 var PHI = 1.61803398874989;
@@ -3372,6 +3481,7 @@ var PHI = 1.61803398874989;
  * @name polarToCartesian
  * @memberof core.maths
  * @function
+ * @instance
  * @param {Object} polar The polar generic object to transform (with the attributes angle and radius).
  * @param {number} polar.angle The angle of the polar coordinates.
  * @param {number} polar.radius The radius of the polar coordinates.
@@ -3392,6 +3502,7 @@ var polarToCartesian = function polarToCartesian(vector, degrees /*Boolean*/) {
  * @name replaceNaN
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The <code>Number</code> value to replace, if this value is <code>NaN</code> the value is changed.
  * @param {*} [defaultValue=0] The default value to apply over the specified value if this value is <code>NaN</code>.
  * @return The replaced value.
@@ -3410,9 +3521,10 @@ var replaceNaN = function replaceNaN(value) {
 
 /**
  * Rounds and returns a number by a count of floating points.
- * @name replaceNaN
+ * @name round
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  * n = core.maths.round(4.572525153, 2) ;
@@ -3444,6 +3556,7 @@ var round = function round(n) {
  * @name sign
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var n ;
  *
@@ -3457,12 +3570,12 @@ var round = function round(n) {
  * trace ("n : " + n) ; // 1
  * @param {number} n - The number to defined this sign.
  * @return <code>1</code> if the value is positive or <code>-1</code>.
- * @throws Error if the passed-in value is <code>NaN</code>.
+ * @throws TypeError if the passed-in value is <code>NaN</code>.
  */
 
 var sign = function sign(n) {
     if (isNaN(n)) {
-        throw new Error("sign failed, the passed-in value not must be NaN.");
+        throw new TypeError("sign failed, the passed-in value not must be NaN.");
     }
     return n < 0 ? -1 : 1;
 };
@@ -3472,6 +3585,7 @@ var sign = function sign(n) {
  * @name sinD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - A value in degrees.
  * @return The sine of the passed angle, a number between <code>-1</code> and <code>1</code> inclusive.
  */
@@ -3484,6 +3598,7 @@ var sinD = function sinD(angle) {
  * @name sinerp
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} start the begining value.
  * @param {number} end The ending value.
  * @param {number} amount The amount to interpolate between the two values where 0.0 equal to the first point, 0.1 is very near the first point, 0.5 is half-way in between, etc.
@@ -3505,8 +3620,9 @@ var sinerp = function sinerp(start, end, amount) {
  * @name sinH
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculates.
-* @return The Hyperbolic sine of the specified value.
+ * @return The Hyperbolic sine of the specified value.
  */
 
 var sinH = function sinH(x) {
@@ -3518,6 +3634,7 @@ var sinH = function sinH(x) {
  * @name tanD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - The angle in degrees.
  * @return The tangent of the passed angle.
  */
@@ -3530,6 +3647,7 @@ var tanD = function tanD(angle) {
  * @name tanH
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculates.
  * @return The Hyperbolic tangent of the specified value.
  */
@@ -3544,6 +3662,7 @@ var tanH = function tanH(x) {
  * @name vincenty
  * @memberof core.maths
  * @function
+ * @instance
  * @example
  * var position1 = { x : 37.422045,  y : -122.084347 } ; // Google HQ
  * var position2 = { x : 37.77493  , y : -122.419416 } ; // San Francisco, CA
@@ -3727,6 +3846,7 @@ var numbers = Object.assign({
  * @name forEach
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Object} object The reference of the object to enumerate.
  * @param {Function} callback The function to run on each item in the object. This function can contain a simple command (for example, a trace() statement) or a more complex operation, and is invoked with three arguments; the value of an item, the key of an item, and the object reference : <code>function callback(item:*, key:*, ref:Object):void;</code>.
  * @param {Object} [context=null] An object to use as this for the callback function.
@@ -3787,6 +3907,7 @@ function forEach(object, callback) {
  * @name fuse
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Array|Object} src - The source array or vector to copy.
  * @param {number} srcPos - The starting position in the source array.
  * @param {Array|Object} dest - The destination array or vector.
@@ -3823,6 +3944,7 @@ function fuse(src, srcPos, dest, destPos, length) {
  * @name members
  * @memberof core.objects
  * @function
+ * @instance
  * @param {object} o The target object to enumerate.
  * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
  * @return An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
@@ -3858,6 +3980,7 @@ function members(o) {
  * @name merge
  * @memberof core.objects
  * @function
+ * @instance
  * @param {Object} target - The target object to merge.
  * @param {Object} source - The source object reference.
  * @param {boolean} [overwrite=true] - The optional flag to indicates if the merge function can override the already existing properties in the target reference (default true).
@@ -3909,6 +4032,7 @@ var objects = Object.assign({
  * @name generateUUID
  * @memberof core.random
  * @function
+ * @instance
  * @return The String expression of the UUID version 4.
  * @example
  * trace( generateUUID() ) ; // 1ba7bbbd-783c-44db-9fc7-3ca772c6a8d2
@@ -3945,6 +4069,7 @@ var random = Object.assign({
  * @name invoke
  * @memberof core.reflect
  * @function
+ * @instance
  * @param {string} name - The name of the full qualified path of a definition (instance, class, etc).
  * @param {Object} [domain] - A global object or namespace who contains the definition object. By default, the function use the <code>global</code> scope object where to find the reference.
  * @example
@@ -3981,6 +4106,7 @@ function getDefinitionByName(name) {
  * @name invoke
  * @memberof core.reflect
  * @function
+ * @instance
  * @param {function} c - The constructor (Function or Class) to invoke.
  * @param {array} [args] - the array of all arguments to pass to the constructor (max 32).
  * @return an instance of the class, or null if class can not construct.
@@ -4125,6 +4251,7 @@ var reflect = Object.assign({
  * @name between
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The new extracted string.
  * @example
@@ -4156,6 +4283,7 @@ function between(source, left, right) {
  * @name camelCase
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to camelcase.
  * @return The camelcased string.
  * @example
@@ -4176,6 +4304,7 @@ function camelCase(source) {
  * @name capitalize
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The capitalized string.
  * @example
@@ -4196,6 +4325,7 @@ function capitalize(source) {
  * @name center
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to center.
  * @param {number} [size=0] The number of character to center the String expression.
  * @param {string} [separator= ] The optional separator character use before and after the String to center.
@@ -4238,60 +4368,15 @@ function center(source) {
     }
 }
 
-/**
- * This array contains all white space chars.
- * <p><b>Note :</b></p>
- * <ul>
- * <li>http://www.fileformat.info/info/unicode/category/Zs/list.htm</li>
- * <li>http://www.fileformat.info/info/unicode/category/Zl/list.htm</li>
- * <li>http://www.fileformat.info/info/unicode/category/Zp/list.htm</li>
- * <li>http://www.fileformat.info/info/unicode/char/200b/index.htm</li>
- * <li>http://www.fileformat.info/info/unicode/char/feff/index.htm</li>
- * <li>http://www.fileformat.info/info/unicode/char/2060/index.htm</li>
- * </ul>
- * @see The ECMAScript specification.
- * @name whiteSpaces
- * @memberof core.strings
- * @member
- * @type {array}
- */
-
-var whiteSpaces$1 = ["\t" /*Horizontal tab*/
-, "\n" /*Line feed or New line*/
-, "\x0B" /*Vertical tab*/
-, "\f" /*Formfeed*/
-, "\r" /*Carriage return*/
-, " " /*Space*/
-, "\xA0" /*Non-breaking space*/
-, "\u1680" /*Ogham space mark*/
-, "\u180E" /*Mongolian vowel separator*/
-, "\u2000" /*En quad*/
-, "\u2001" /*Em quad*/
-, "\u2002" /*En space*/
-, "\u2003" /*Em space*/
-, "\u2004" /*Three-per-em space*/
-, "\u2005" /*Four-per-em space*/
-, "\u2006" /*Six-per-em space*/
-, "\u2007" /*Figure space*/
-, "\u2008" /*Punctuation space*/
-, "\u2009" /*Thin space*/
-, "\u200A" /*Hair space*/
-, "\u200B" /*Zero width space*/
-, "\u2028" /*Line separator*/
-, "\u2029" /*Paragraph separator*/
-, "\u202F" /*Narrow no-break space*/
-, "\u205F" /*Medium mathematical space*/
-, "\u3000" /*Ideographic space*/
-];
-
 /*jslint noempty: false */
 /**
  * Removes all occurrences of a set of specified characters (or strings) from the beginning and end of this instance.
  * @name trim
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to trim.
- * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.chars.whiteSpaces} array is used.
  * @return The new trimed string.
  * @example
  * trace( trim("\r\t   hello world   \t ") ); // hello world
@@ -4305,7 +4390,7 @@ function trim(source) {
     }
 
     if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaces$1;
+        chars = whiteSpaces;
     }
 
     var i;
@@ -4334,6 +4419,7 @@ function trim(source) {
  * @name clean
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to clean.
  * @return The cleaned string.
  * @example
@@ -4351,6 +4437,7 @@ function clean(source) {
  * @name compare
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} str1 - The first string to compare with the second string
  * @param {string} str2 - Thesecond string to compare with the first string
  * @param {boolean} [strict=false] This flag indicates if the function take into account the string case, default to false
@@ -4421,6 +4508,7 @@ function compare$1(str1 /*String*/, str2 /*String*/) /*int*/
  * @name endsWith
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to check.
  * @param {string} value - The value to find in end in the source.
  * @return <code>true</code> if the value is find in first.
@@ -4452,6 +4540,7 @@ function endsWith(source, value) {
  * @name fastformat
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} pattern - The String pattern expression to format.
  * @param {...string} args - A serie of strings values or of arrays of strings to fill the pattern expression.
  * @return The formatted expression.
@@ -4488,6 +4577,7 @@ function fastformat(pattern) /*String*/
  * @name fastformatDate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {Date} [date=null] - The date object to format (default the current Date if the argument is null).
  * @param {string} [separator=-] The default separator of the format expression.
  * @return The string representation of the specific date with the format <code>"yyyy-mm-dd"</code>.
@@ -4531,13 +4621,21 @@ function fastformatDate() {
  * @name pad
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to pad.
  * @param {number} amount the amount of padding (number sign is the padding direction)
  * @param char the character to pad with (default is space)
  * @example <caption>Basic usage</caption>
  * trace( "left  : [" + pad( "hello" , 8 )  + "]" ); //left  : [   hello]
  * trace( "right : [" + pad( "hello" , -8 ) + "]" ); //right : [hello   ]
- * @example <caption>Padding a list of names</caption>
+ * @example <caption>Padding a list of names
+ * <ul>
+ * <li>//.....jerry</li>
+ * <li>//....george</li>
+ * <li>//....kramer</li>
+ * <li>//.....helen</li>
+ * </ul>
+ * </caption>
  * var seinfeld = [ "jerry", "george", "kramer", "helen" ];
  *
  * var len = seinfeld.length ;
@@ -4545,12 +4643,6 @@ function fastformatDate() {
  * {
  *     trace( pad( seinfeld[i] , 10 , "." ) ) ;
  * }
- *
- * //output
- * //.....jerry
- * //....george
- * //....kramer
- * //.....helen
  */
 
 function pad(source) {
@@ -4599,6 +4691,7 @@ function pad(source) {
  * @name format
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} pattern - The string expression to format.
  * @param {...string|array|Object} args - A serie of strings values or of arrays of strings or an Object to fill the pattern expression.
  * @return The formatted expression.
@@ -4716,6 +4809,7 @@ function format(pattern) /*String*/
  * @name hyphenate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to hyphenate.
  * @return The hyphenated string.
  * @example
@@ -4736,6 +4830,7 @@ function hyphenate(source) {
  * @name indexOfAny
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to check.
  * @param {Array} anyOf - The Array of Unicode characters to find in the String.
  * @param {number} [startIndex=0] - The init position of the search process.
@@ -4793,6 +4888,7 @@ function indexOfAny(source, anyOf) /*int*/
  * @name insert
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to change.
  * @param {number} [index=0] The position to insert the new characters.
  * @param {string} value The expression to insert in the source.
@@ -4839,6 +4935,7 @@ function insert(source) {
  * @name lastIndexOfAny
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to check.
  * @param {Array} anyOf - The Array of Unicode characters to find in the String.
  * @param {number} [startIndex] - The init position of the search process (by default the length-1 of the source).
@@ -4891,29 +4988,13 @@ function lastIndexOfAny(source, anyOf) /*int*/
     return -1;
 }
 
-/**
- * Like white space characters, line terminator characters are used to improve source text readability and to separate tokens (indivisible lexical units) from each other.
- * However, unlike white space characters, line terminators have some influence over the behaviour of the syntactic grammar. In general, line terminators may occur between any two tokens, but there are a few places where they are forbidden by the syntactic grammar.
- * A line terminator cannot occur within any token, not even a string. Line terminators also affect the process of automatic semicolon insertion.
- * @see The ECMAScript specification.
- * @name lineTerminators
- * @memberof core.strings
- * @member
- * @type {array}
- */
-
-var lineTerminators$1 = ["\n" /*LF : Line Feed*/
-, "\r" /*CR : Carriage Return*/
-, "\u2028" /*LS : Line Separator*/
-, "\u2929" /*PS : Paragraphe Separator*/
-];
-
 /*jshint bitwise: false*/
 /**
  * Returns a new String value who contains the specified String characters repeated count times.
  * @name repeat
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to repeat.
  * @param {number} [count=1] - The number of time to repeat the passed-in expression.
  * @return A new expression who contains the specified String characters repeated count times.
@@ -4976,6 +5057,7 @@ function repeat$1(source) {
  * @name startsWith
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to evaluates.
  * @param {string} value - The string expression to find in first in the source.
  * @return <code>true</code> if the value is find in first.
@@ -5006,8 +5088,9 @@ function startsWith(source, value) {
  * @name trimEnd
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to trim.
- * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.chars.whiteSpaces} array is used.
  * @return The new trimed string.
  * @example
  * trace( trimEnd("---hello world---" , ["-"] ) ) ; // ---hello world
@@ -5020,7 +5103,7 @@ function trimEnd(source) {
     }
 
     if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaces$1;
+        chars = whiteSpaces;
     }
 
     var i;
@@ -5037,8 +5120,9 @@ function trimEnd(source) {
  * @name trimStart
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to trim.
- * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.strings.whiteSpaces} array is used.
+ * @param {array} [chars=null] - The optional Array of characters to trim. If this argument is null the {@link core.chars.whiteSpaces} array is used.
  * @return The new trimed string.
  * @example
  * trace( trimStart( "---hello world---" , ["-"] ) ); // hello world---
@@ -5051,7 +5135,7 @@ function trimStart(source) {
     }
 
     if (!chars || !(chars instanceof Array)) {
-        chars = whiteSpaces$1;
+        chars = whiteSpaces;
     }
 
     var i;
@@ -5067,6 +5151,7 @@ function trimStart(source) {
  * @name truncate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @param {number} length - The number of character to keep.
  * @param {string} prune - The string suffix to finalize the truncated expression.
@@ -5114,6 +5199,7 @@ function truncate(source) {
  * @name ucFirst
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The capitalized first expression.
  * @example
@@ -5132,6 +5218,7 @@ function ucFirst(str) {
  * @name ucWords
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @param {string} [separator=' '] - The optional separator expression.
  * @return The new string expression with each word capitalized.
@@ -5160,6 +5247,7 @@ function ucWords(str) {
  * @name versionUUID
  * @memberof core.strings
  * @function
+ * @instance
  * @param  {String} uuid The uuid expression
  * @return {Number} The version number of the uuid expression.
  * @example
@@ -5175,8 +5263,9 @@ var versionUUID = function versionUUID(uuid) {
  * @name validateUUID
  * @memberof core.strings
  * @function
- * @param  {String} uuid - The uuid expression to validate.
- * @param  {Number} vers - The optional version of the uuid to validate.
+ * @instance
+ * @param {String} uuid - The uuid expression to validate.
+ * @param {Number} vers - The optional version of the uuid to validate.
  * @return {Boolean} <code>true</code> if the uuid expression is valid.
  * @example
  * trace( validateUUID("c01bfdc3-405c-45a1-9dec-06e6e830bee1") ) ; // true
@@ -5246,7 +5335,6 @@ var strings = Object.assign({
     indexOfAny: indexOfAny,
     insert: insert,
     lastIndexOfAny: lastIndexOfAny,
-    lineTerminators: lineTerminators$1,
     pad: pad,
     repeat: repeat$1,
     startsWith: startsWith,
@@ -5257,8 +5345,7 @@ var strings = Object.assign({
     ucFirst: ucFirst,
     ucWords: ucWords,
     validateUUID: validateUUID,
-    versionUUID: versionUUID,
-    whiteSpaces: whiteSpaces$1
+    versionUUID: versionUUID
 });
 
 /**
@@ -5371,6 +5458,8 @@ Enum.prototype.valueOf = function () {
  * Indicates if the specific objet is Equatable.
  * @function
  * @memberof system
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link system.Equatable|Equatable}.
  */
 
 function isEquatable(target) {
@@ -5399,18 +5488,8 @@ Equatable.prototype.constructor = Equatable;
  * @param {*} object - The object to evaluates.
  * @return {boolean} true if the the specified object is <b>equal to</b> this object.
  */
-Equatable.prototype.equals = function (object) {}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @function
- * @memberof system.Equatable
- * @return the string representation of this instance.
- */
-;Equatable.prototype.toString = function () {
-  return "[Equatable]";
+Equatable.prototype.equals = function (object) {
+  //
 };
 
 /*jshint unused: false*/
@@ -5457,6 +5536,11 @@ Evaluable.prototype.eval = function (value) {};
 /*jshint unused: false*/
 /**
  * Indicates if the specific objet is Formattable.
+ * @name isFormattable
+ * @function
+ * @memberof system
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link system.Formattable|Formattable}.
  */
 
 function isFormattable(target) {
@@ -5469,32 +5553,27 @@ function isFormattable(target) {
 
 /**
  * Interface implemented by classes that can format a value in a specific string expression.
+ * @name Formattable
+ * @memberof system
+ * @interface
  */
 function Formattable() {}
 
-/**
- * @extends Object
- */
 Formattable.prototype = Object.create(Object.prototype);
 Formattable.prototype.constructor = Formattable;
 
 /**
  * Formats the specified value.
- * @param value The object to format.
+ * @param {*} value - The object to evaluates.
  * @return the string representation of the formatted value.
+ * @name eval
+ * @memberof system.Formattable
+ * @function
+ * @instance
  */
 Formattable.prototype.format = function (value) /*String*/
-{}
-//
-
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-;Formattable.prototype.toString = function () /*String*/
 {
-  return "[Formattable]";
+  //
 };
 
 /**
@@ -6784,7 +6863,8 @@ NoSuchElementError.prototype = Object.create(Error.prototype);
 NoSuchElementError.prototype.constructor = NoSuchElementError;
 
 /**
- * The VEGAS.js framework - The system.errors library.
+ * The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>), rather than part of the Javascript core language. The <strong>Javascript</strong> core language is the part of the language that complies with the <strong>ECMAScript</strong> standard.
+ * @summary The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>).
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.errors
@@ -7107,12 +7187,17 @@ PropertyEvaluator.prototype.toString = function () /*String*/
  * Roman numerals are a numeral system originating in ancient Rome, adapted from Etruscan numerals.
  * <p>Roman numerals are commonly used in numbered lists (in outline format), clock faces, pages preceding the main body of a book, chord triads in music analysis, the numbering of movie publication dates, successive political leaders or children with identical names, and the numbering of some annual sport events.</p>
  * <p><b>Links :</b>
+ * <ul>
  * <li><a href="http://en.wikipedia.org/wiki/Roman_numerals">http://en.wikipedia.org/wiki/Roman_numerals</a></li>
  * <li><a href="http://netzreport.googlepages.com/online_converter_for_dec_roman.html">http://netzreport.googlepages.com/online_converter_for_dec_roman.html</a></li>
+ * </ul>
  * </p>
- * @param value The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
+ * @name RomanNumber
+ * @memberof system.numeric
+ * @class
+ * @constructor
+ * @param {number|string} [value=0] - The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
  * @example
- * var RomanNumber = system.numeric.RomanNumber ;
  * trace( RomanNumber.parse(12) ) ; // XII
  * trace( RomanNumber.parseRomanString('II') ) ; // 2
  */
@@ -7139,31 +7224,45 @@ function RomanNumber() {
 
 Object.defineProperties(RomanNumber, {
     /**
-     * The maximum parsing value.
+     * The maximum parsing value (<code>3999</code>).
+     * @memberof system.numeric.RomanNumber
+     * @type number
+     * @const
      */
     MAX: { value: 3999, enumerable: true },
 
     /**
-     * The minimum parsing value.
+     * The minimum parsing value (<code>0</code>).
+     * @memberof system.numeric.RomanNumber
+     * @type number
+     * @const
      */
     MIN: { value: 0, enumerable: true },
 
     /**
      * The array representation of all numeric values.
+     * @memberof system.numeric.RomanNumber
+     * @type array
      */
     NUMERIC: { value: [1000, 500, 100, 50, 10, 5, 1], enumerable: true },
 
     /**
      * The array representation of all roman expressions.
+     * @memberof system.numeric.RomanNumber
+     * @type array
      */
     ROMAN: { value: ["M", "D", "C", "L", "X", "V", "I"], enumerable: true },
 
     /**
      * Parse the specified value and return this roman numerals String representation.
+     * @name parse
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @param {number} num - The number value to convert in a roman numerals string representation.
+     * @return {string} The roman numerals String representation of the specific number.
      */
     parse: {
-        value: function value(num) /*String*/
-        {
+        value: function value(num) {
             var MAX = RomanNumber.MAX;
             var MIN = RomanNumber.MIN;
 
@@ -7225,10 +7324,14 @@ Object.defineProperties(RomanNumber, {
 
     /**
      * Parses a roman String representation in this uint decimal representation.
+     * @name parseRomanString
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @param {string} roman - The roman string expression to parse and transform in a valid number.
+     * @return {number} The uint decimal representation of the roman string expression.
      */
     parseRomanString: {
-        value: function value(roman /*String*/) /*uint*/
-        {
+        value: function value(roman) {
             var NUMERIC = RomanNumber.NUMERIC;
             var ROMAN = RomanNumber.ROMAN;
 
@@ -7275,38 +7378,50 @@ Object.defineProperties(RomanNumber, {
     }
 });
 
-/**
- * @extends Object
- */
-RomanNumber.prototype = Object.create(Object.prototype);
-RomanNumber.prototype.constructor = RomanNumber;
+RomanNumber.prototype = Object.create(Object.prototype, {
+    /**
+     * The constructor reference.
+     */
+    constructor: { writable: true, value: RomanNumber },
 
-/**
- * Parse the specified value.
- */
-RomanNumber.prototype.parse = function (value) /*String*/
-{
-    value = typeof value === "number" || value instanceof Number ? value : this._num;
-    return RomanNumber.parse(value);
-};
+    /**
+     * Parse the specified value.
+     * @name parse
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @param {number} value - The number to convert in a roman string expression.
+     * @return {string} The string representation of the passed-in number.
+     */
+    parse: { value: function value(_value) {
+            return RomanNumber.parse(typeof _value === "number" || _value instanceof Number ? _value : this._num);
+        } },
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-RomanNumber.prototype.toString = function () /*String*/
-{
-    return this.parse(this._num);
-};
+    /**
+     * Returns the string representation of this instance.
+     * @name toString
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @return the string representation of this instance.
+     */
+    toString: { value: function value() {
+            return this.parse(this._num);
+        } },
 
-/**
- * Returns the primitive value of this object.
- * @return the primitive value of this object.
- */
-RomanNumber.prototype.valueOf = function () /*uint*/
-{
-    return this._num;
-};
+    /**
+     * Returns the primitive value of this object.
+     * @name valueOf
+     * @memberof system.numeric.RomanNumber
+     * @function
+     * @instance
+     * @return the primitive value of this object.
+     */
+    valueOf: { value: function value() /*uint*/
+        {
+            return this._num;
+        } }
+});
 
 /**
  * Evaluates an int value and transform it in roman numeral expression.
@@ -7399,7 +7514,8 @@ RomanEvaluator.prototype.toString = function () {
 };
 
 /**
- * The VEGAS.js framework - The system.evaluators library.
+ * The {@link system.evaluators} library contains classes to evaluates some objects with a collection of specific strategies.
+ * @summary The {@link system.evaluators} library contains classes to evaluates some objects.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.evaluators
@@ -7413,8 +7529,12 @@ var evaluators = Object.assign({
 
 /**
  * This object register formattable expression and format a String with all expressions register in this internal dictionnary.
- * <p><b>Example :</b></p>
- * <pre>
+ * @name ExpressionFormatter
+ * @memberof system.formatters
+ * @implements system.Formattable
+ * @class
+ * @constructor
+ * @example
  * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
  *
  * var formatter = new ExpressionFormatter() ;
@@ -7446,7 +7566,6 @@ var evaluators = Object.assign({
  *
  * trace( formatter.format( source ) ) ;
  * // the root : c: - the class : c:/project/system/data/maps/HashMap.as
- * </pre>
  */
 function ExpressionFormatter() {
     Object.defineProperties(this, {
@@ -7481,27 +7600,22 @@ function ExpressionFormatter() {
 
 Object.defineProperties(ExpressionFormatter, {
     /**
-     * The limit of the recursions in the formatter.
+     * The limit of the recursions in the formatter (<code>200</code>).
+     * @memberof system.formatters.ExpressionFormatter
+     * @const
+     * @type number
      */
-    MAX_RECURSION: { value: '200', enumerable: true }
+    MAX_RECURSION: { value: 200, enumerable: true }
 });
 
-/**
- * @extends Formattable
- */
 ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     constructor: { value: ExpressionFormatter },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[ExpressionFormatter]';
-        } },
-
-    /**
-     * The begin separator of the expression to format (default "{").
+     * The begin separator of the expression to format (default <code>"{"</code>).
+     * @name beginSeparator
+     * @memberof system.formatters.ExpressionFormatter
+     * @instance
      */
     beginSeparator: {
         get: function get() {
@@ -7514,7 +7628,10 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     },
 
     /**
-     * The end separator of the expression to format (default "}" ).
+     * The end separator of the expression to format (default <code>"}"</code> ).
+     * @name endSeparator
+     * @memberof system.formatters.ExpressionFormatter
+     * @instance
      */
     endSeparator: {
         get: function get() {
@@ -7528,6 +7645,10 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
 
     /**
      * Indicates the size of the expression dictionary.
+     * @name length
+     * @memberof system.formatters.ExpressionFormatter
+     * @instance
+     * @readonly
      */
     length: {
         get: function get() {
@@ -7537,8 +7658,10 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
 
     /**
      * Clear the expression formatter dictionary.
-     * @param value The object to format.
-     * @return the string representation of the formatted value.
+     * @name clear
+     * @memberof system.formatters.ExpressionFormatter
+     * @function
+     * @instance
      */
     clear: {
         value: function value() {
@@ -7548,24 +7671,31 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
 
     /**
      * Formats the specified value.
-     * @param value The object to format.
+     * @param {string} value - The string expression to format.
      * @return the string representation of the formatted value.
+     * @name format
+     * @memberof system.formatters.ExpressionFormatter
+     * @function
+     * @instance
      */
     format: {
-        value: function value(_value) /*String*/
-        {
+        value: function value(_value) {
             return this._format(String(_value), 0);
         }
     },
 
     /**
      * Sets a new expression in the formatter. If the expression already exist, the value in the collector is replaced.
-     * @param value The object to format.
-     * @return the string representation of the formatted value.
+     * @param {string} key - The key of the element to register.
+     * @param {string} value - The value of the element to register.
+     * @return {boolean} <code>true</code> if the value is register.
+     * @name set
+     * @memberof system.formatters.ExpressionFormatter
+     * @function
+     * @instance
      */
     set: {
-        value: function value(key /*String*/, _value2 /*String*/) /*Boolean*/
-        {
+        value: function value(key, _value2) {
             if (key === '' || !(key instanceof String || typeof key === 'string')) {
                 return false;
             }
@@ -7580,6 +7710,18 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     },
 
     /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @name toString
+     * @memberof system.formatters.ExpressionFormatter
+     * @function
+     * @instance
+     */
+    toString: { value: function value() {
+            return '[ExpressionFormatter]';
+        } },
+
+    /**
      * @private
      */
     _reset: {
@@ -7591,13 +7733,14 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
     /**
      * @private
      */
-    _format: {
-        value: function value(str, depth) {
+    _format: { value: function value(str) {
+            var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
             if (depth >= ExpressionFormatter.MAX_RECURSION) {
                 return str;
             }
 
-            var m /*Array*/ = str.match(this._reg);
+            var m = str.match(this._reg);
 
             if (m === null) {
                 return str;
@@ -7606,8 +7749,8 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
             var l = m.length;
 
             if (l > 0) {
-                var exp;
-                var key;
+                var exp = void 0;
+                var key = void 0;
                 for (var i = 0; i < l; i++) {
                     key = m[i].substr(1);
                     key = key.substr(0, key.length - 1);
@@ -7620,12 +7763,12 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
                 }
             }
             return str;
-        }
-    }
+        } }
 });
 
 /**
- * The VEGAS.js framework - The system.formatters library.
+ * The {@link system.formatters} library contains classes to format objects to a specific string expression.
+ * @summary The {@link system.formatters} library contains classes to format objects to a specific string expression.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.formatters
@@ -12925,7 +13068,10 @@ Parameters.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The system.errors library.
+ * The {@link system.ioc} library provides a simple and strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
+ * <p><b>IoC</b> is also known as <b>dependency injection</b> (DI). It is a process whereby objects define their dependencies, that is, the other objects they work with, only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.</p>
+ * <p> The container then injects those dependencies when it creates the <b>object definitions</b>. This process is fundamentally the inverse, hence the name Inversion of Control (IoC), of the <b>object definition</b> itself controlling the instantiation or location of its dependencies by using direct construction of classes, or a more complex mechanism.</p>
+ * @summary The {@link system.ioc} library provides a simple et strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.ioc
@@ -13386,7 +13532,8 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The system.logging library.
+ * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
+ * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging
@@ -16194,7 +16341,8 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The system.models library.
+ * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
+ * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.models
@@ -16754,7 +16902,8 @@ Object.defineProperties(Range, {
 });
 
 /**
- * The VEGAS.js framework - The system.numeric library.
+ * The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
+ * @summary The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.numeric
@@ -20500,7 +20649,8 @@ Or.prototype.eval = function () {
 };
 
 /**
- * The VEGAS.js framework - The system.rules library.
+ * The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
+ * @summary The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
  * @license MPL 1.1/GPL 2.0/LGPL 2.1
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.rules

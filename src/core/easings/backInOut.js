@@ -4,7 +4,8 @@
  * The <code>backInOut</code> method combines the motion of the <code>backIn</code> and <code>backOut</code> methods
  * @name backInOut
  * @memberof core.easings
- * @function backInOut
+ * @function
+ * @instance
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
  * @param {number} c - Specifies the total change in the animation property.

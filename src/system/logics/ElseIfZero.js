@@ -10,7 +10,6 @@ import { ElseIf } from './ElseIf.js' ;
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the values equals <code>0</code>.
  * @see system.rules.Zero

@@ -9,8 +9,8 @@ import { Motion }    from './Motion.js' ;
  * @name MotionNextFrame
  * @memberof system.transitions
  * @class
+ * @private
  * @implements Receiver
- * @constructor
  * @param {system.transitions.Motion} motion - The Motion reference who emit the messages.
  */
 export function MotionNextFrame( motion )

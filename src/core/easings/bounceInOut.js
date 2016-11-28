@@ -6,7 +6,8 @@ import { bounceOut } from './bounceOut.js' ;
 /**
  * The <code>bounceInOut</code> function combines the motion of the <code>bounceIn</code> and <code>bounceOut</code> functions
  * @name bounceInOut
- * @function bounceInOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

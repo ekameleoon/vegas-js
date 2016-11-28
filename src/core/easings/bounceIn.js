@@ -5,7 +5,8 @@ import { bounceOut } from './bounceOut.js' ;
 /**
  * The <code>bounceIn</code> function starts the bounce motion slowly and then accelerates motion as it executes.
  * @name bounceIn
- * @function bounceIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

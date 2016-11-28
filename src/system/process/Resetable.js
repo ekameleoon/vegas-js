@@ -4,6 +4,7 @@
  * Indicates if the specific objet is Resetable  and contains a <code>reset()</code> method.
  * @name isResetable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Resetable</code>.

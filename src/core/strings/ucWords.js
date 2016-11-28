@@ -5,6 +5,7 @@
  * @name ucWords
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @param {string} [separator=' '] - The optional separator expression.
  * @return The new string expression with each word capitalized.

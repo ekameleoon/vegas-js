@@ -5,6 +5,7 @@
  * @name nearlyEquals
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value1 - A number to evaluate.
  * @param {number} value2 - A number to evaluate.
  * @param {number} [tolerance=0.000001] - An optional tolerance range. If specified, should be greater than 0.

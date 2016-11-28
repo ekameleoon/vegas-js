@@ -9,7 +9,7 @@
 export var TaskPhase = Object.defineProperties( {} ,
 {
     /**
-     * The 'error' type.
+     * The <code>'error'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -17,7 +17,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     ERROR : { value : 'error' , enumerable : true } ,
 
     /**
-     * The 'delayed' type.
+     * The <code>'delayed'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -25,7 +25,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     DELAYED : { value : 'delayed'  , enumerable : true } ,
 
     /**
-     * The 'finished' type.
+     * The <code>'finished'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -33,7 +33,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     FINISHED : { value : 'finished' , enumerable : true } ,
 
     /**
-     * The 'inactive' type.
+     * The <code>'inactive'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -41,7 +41,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     INACTIVE : { value : 'inactive' , enumerable : true } ,
 
     /**
-     * The 'running' type.
+     * The <code>'running'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -49,7 +49,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     RUNNING : { value : 'running' , enumerable : true } ,
 
     /**
-     * The 'stopped' type.
+     * The <code>'stopped'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}
@@ -57,7 +57,7 @@ export var TaskPhase = Object.defineProperties( {} ,
     STOPPED : { value : 'stopped' , enumerable : true } ,
 
     /**
-     * The 'timeout' type.
+     * The <code>'timeout'</code> type.
      * @memberof system.process.TaskPhase
      * @const
      * @type {string}

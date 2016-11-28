@@ -10,7 +10,7 @@ import { TaskGroup } from './TaskGroup.js' ;
  * @class
  * @memberof system.process
  * @implements system.signals.Receiver
- * @constructor
+ * @private
  * @param {system.process.Chain} chain - The <code>Chain</code> reference of this receiver.
  */
 export function ChainNext( chain = null )

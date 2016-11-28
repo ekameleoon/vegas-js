@@ -8,5 +8,6 @@
  * @name acosHp
  * @memberof core.maths
  * @function
+ * @instance
  */
 export var acosHp = ( x ) => Math.log(x + Math.sqrt(x * x - 1));

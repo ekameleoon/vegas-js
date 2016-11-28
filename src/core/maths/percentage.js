@@ -5,6 +5,7 @@
  * @name percentage
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The current value to calculates.
  * @param {number} maximum - The max value.
  * @return a percentage value or NaN.

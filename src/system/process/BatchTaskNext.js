@@ -8,10 +8,10 @@ import { TaskGroup } from './TaskGroup.js' ;
  * The internal BatchTaskNext Receiver.
  * @summary The internal class used in the <code>BatchTask</code> class.
  * @name BatchTaskNext
- * @class
  * @memberof system.process
+ * @class
+ * @private
  * @implements system.signals.Receiver
- * @constructor
  * @param {system.process.BatchTask} BatchTask - The <code>BatchTask</code> reference of this receiver.
  */
 export function BatchTaskNext( batch )

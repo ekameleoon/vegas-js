@@ -10,7 +10,6 @@ import { ElseIf } from './ElseIf.js' ;
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the values is <code>undefined</code>.
  * @see system.rules.Undefined

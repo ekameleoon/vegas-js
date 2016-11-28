@@ -5,6 +5,7 @@
  * @name isLockable
  * @memberof system.process
  * @function
+ * @instance
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Lockable</code>.
  */

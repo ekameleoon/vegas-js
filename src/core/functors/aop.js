@@ -5,6 +5,7 @@
  * @name aop
  * @memberof core.functors
  * @function
+ * @instance
  * @example
  * var scope = { toString : function() { return "scope" ; } } ;
  *

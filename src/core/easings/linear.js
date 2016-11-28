@@ -3,7 +3,8 @@
 /**
  * The <code>linear</code> function starts a basic and linear motion.
  * @name linear
- * @function linear
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

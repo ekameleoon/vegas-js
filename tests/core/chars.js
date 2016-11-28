@@ -9,6 +9,7 @@ import './chars/isDigit.js' ;
 import './chars/isOperator.js' ;
 import './chars/isSymbol.js' ;
 import './chars/isWhiteSpace.js' ;
+import './chars/lineTerminators.js' ;
 import './chars/operators.js' ;
 import './chars/symbols.js' ;
 import './chars/whiteSpaces.js' ;

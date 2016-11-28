@@ -9,10 +9,10 @@
  * <li><a href="http://netzreport.googlepages.com/online_converter_for_dec_roman.html">http://netzreport.googlepages.com/online_converter_for_dec_roman.html</a></li>
  * </ul>
  * </p>
+ * @summary The tool class to parse and transforme the Roman numerals.
  * @name RomanNumber
  * @memberof system.numeric
  * @class
- * @constructor
  * @param {number|string} [value=0] - The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
  * @example
  * trace( RomanNumber.parse(12) ) ; // XII

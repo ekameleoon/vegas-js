@@ -8,6 +8,7 @@ import { sinH } from './sinH.js' ;
  * @name tanH
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculates.
  * @return The Hyperbolic tangent of the specified value.
  */

@@ -5,5 +5,6 @@
  * @name MILE_TO_METER
  * @memberof core.maths
  * @const
+ * @instance
  */
 export const MILE_TO_METER = 1609 ;

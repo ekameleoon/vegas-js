@@ -7,6 +7,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name acosD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} ratio - A value between -1 and 1 inclusive.
  * @return the inverse cosine of a slope ratio and returns its angle in degrees.
  */

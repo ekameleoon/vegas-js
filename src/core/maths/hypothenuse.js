@@ -6,6 +6,7 @@
  * @name hypothenuse
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - Specifies the length of first side
  * @param {number} y - Specifies the length of second side
  * @return The length of the hypotenuse

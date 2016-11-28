@@ -5,6 +5,7 @@
  * @name capitalize
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The capitalized string.
  * @example

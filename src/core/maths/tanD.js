@@ -7,6 +7,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @name tanD
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - The angle in degrees.
  * @return The tangent of the passed angle.
  */

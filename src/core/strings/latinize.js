@@ -6,6 +6,7 @@
  * @name latinize
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to latinize.
  * @return The latinized string.
  * @example
@@ -19,19 +20,19 @@ export function latinize( source )
     {
         return '' ;
     }
-    return source.replace( /[^A-Za-z0-9\[\] ]/g , ( match ) => latinCharacters[match] || match ) ;
+    return source.replace( /[^A-Za-z0-9\[\] ]/g , ( match ) => latins[match] || match ) ;
 }
 
 /**
  * The object to access the translation table or to change the mapping. This object is used in the <code>latinize</code> function.
  * <p><b>Note:</b> This object is only available in <strong>ES6</strong> with a module exportation. We don't include this function in the <code>vegas.js</code> and <code>vegas.min.js</code> libraries</p>
- * @name latinCharacters
+ * @name latins
  * @memberof core.strings
  * @example
- * import { latinCharacters } from './core/strings/latinize.js' ;
- * latinCharacters['Ω'] = 'O';
+ * import { latins } from './core/strings/latins.js' ;
+ * latins['Ω'] = 'O';
  */
-export var latinCharacters =
+export var latins =
 {
     'Á': 'A',
     'Ă': 'A',

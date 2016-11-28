@@ -5,6 +5,7 @@
  * @name fixAngle
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} angle - The passed angle value.
  * @return an angle fixed between 0 and 360 degrees.
  */

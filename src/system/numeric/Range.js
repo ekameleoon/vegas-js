@@ -1,11 +1,11 @@
 "use strict" ;
 
 /**
- * Represents an immutable range of values.
+ * Represents a range of numeric values. This range can be immutable.
+ * @summary Represents a range of numeric values. This range can be immutable.
  * @name Range
  * @memberof system.numeric
  * @class
- * @constructor
  * @implements system.Equatable
  * @param {number} [min=NaN] - The minimum range value.
  * @param {number} [max=NaN] - The maximum range value.

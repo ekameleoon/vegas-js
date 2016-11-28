@@ -4,7 +4,8 @@
  * The <code>backIn</code> function starts the motion by backtracking and then reversing direction and moving toward the target.
  * @name backIn
  * @memberof core.easings
- * @function backIn
+ * @function
+ * @instance
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.
  * @param {number} c - Specifies the total change in the animation property.

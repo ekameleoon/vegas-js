@@ -15,7 +15,7 @@
  * function step( timestamp )
  * {
  *     var progress = timestamp - start;
- *     console.log( 'tick: ' + progress ) ;
+ *     console.log( 'step: ' + progress ) ;
  *     if (progress < 2000)
  *     {
  *         id = requestAnimationFrame(step);

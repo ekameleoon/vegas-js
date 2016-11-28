@@ -5,6 +5,7 @@
  * @name floor
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} n - The number to round.
  * @param {number} [floatCount=0] the count of number after the point.
  * @return the floor value of a number by a count of floating points.

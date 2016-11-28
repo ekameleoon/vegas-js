@@ -5,6 +5,7 @@
  * @name ucFirst
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to transform.
  * @return The capitalized first expression.
  * @example

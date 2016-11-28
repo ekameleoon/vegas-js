@@ -9,7 +9,6 @@ import { ElseIf } from './ElseIf.js' ;
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the value is <code>null</code>.
  * @param {boolean} [strict=false] - This flag indicates if the condition use <code>==</code> or <code>===</code> to evalute the value.

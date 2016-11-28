@@ -7,6 +7,7 @@ import { RAD2DEG } from './RAD2DEG.js' ;
  * @name atan2D
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} y - A value representing y-axis of angle vector.
  * @param {number} x - A value representing x-axis of angle vector.
  * @return the arctangent2 of the passed angle.

@@ -12,7 +12,6 @@ import { requestAnimationFrame } from '../../core/requestAnimationFrame.js' ;
  * @memberof system.process
  * @class
  * @extends system.process.Task
- * @constructor
  * @see {@link https://developer.mozilla.org/fr/docs/Web/API/Window/requestAnimationFrame|requestAnimationFrame} for further information.
  * @example
  * var finish = function( action )

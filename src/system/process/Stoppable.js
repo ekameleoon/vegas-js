@@ -4,6 +4,7 @@
  * Indicates if the specific objet is Stoppable and contains a <code>stop()</code> method.
  * @name isStoppable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Stoppable</code>.

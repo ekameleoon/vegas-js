@@ -5,6 +5,7 @@
  * @name acosHm
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} x - A value to calculate the Anti-hyperbolic cosine.
  */
 export var acosHm = ( x ) => Math.log( x - Math.sqrt( x * x - 1 ) );

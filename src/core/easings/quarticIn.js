@@ -4,7 +4,8 @@
  * The <code>quarticIn</code> function starts motion from zero velocity and then accelerates motion as it executes.
  * A quartic equation is based on the power of four : <code>p(t) = t &#42; t &#42; t &#42; t</code>
  * @name quarticIn
- * @function quarticIn
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

@@ -5,6 +5,7 @@
  * @name compare
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} str1 - The first string to compare with the second string
  * @param {string} str2 - Thesecond string to compare with the first string
  * @param {boolean} [strict=false] This flag indicates if the function take into account the string case, default to false

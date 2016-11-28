@@ -10,7 +10,6 @@ import { IfTask } from './IfTask.js' ;
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.EmptyString
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.

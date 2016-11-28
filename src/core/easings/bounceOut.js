@@ -3,7 +3,8 @@
 /**
  * The <code>bounceOut</code> function starts the bounce motion fast and then decelerates motion as it executes.
  * @name bounceOut
- * @function bounceOut
+ * @function
+ * @instance
  * @memberof core.easings
  * @param {number} t - Specifies the current time, between 0 and duration inclusive.
  * @param {number} b - Specifies the initial value of the animation property.

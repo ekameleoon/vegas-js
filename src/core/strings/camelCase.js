@@ -5,6 +5,7 @@
  * @name camelCase
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to camelcase.
  * @return The camelcased string.
  * @example

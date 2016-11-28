@@ -15,7 +15,6 @@ import { Timer }      from '../process/Timer.js' ;
  * @memberof system.transitions
  * @implements {system.transitions.Transition}
  * @class
- * @constructor
  * @param {number} [id=null] The identfier of the object.
  */
 export function Motion( id = null )

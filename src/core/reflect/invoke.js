@@ -6,6 +6,7 @@
  * @name invoke
  * @memberof core.reflect
  * @function
+ * @instance
  * @param {function} c - The constructor (Function or Class) to invoke.
  * @param {array} [args] - the array of all arguments to pass to the constructor (max 32).
  * @return an instance of the class, or null if class can not construct.

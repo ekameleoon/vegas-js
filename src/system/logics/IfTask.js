@@ -16,7 +16,6 @@ import { TaskPhase }   from '../process/TaskPhase.js' ;
  * @implements system.process.Action
  * @augments system.process.Action
  * @class
- * @constructor
  * @example <caption><strong>Usage </strong>:</caption>
  * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
  * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )

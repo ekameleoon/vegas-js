@@ -9,9 +9,9 @@
  * <p>ECMAScript specification.</p>
  * @name lineTerminators
  * @memberof core.chars
+ * @instance
  * @const
  * @type {Array}
- * @instance
  */
 export var lineTerminators =
 [

@@ -8,6 +8,7 @@ import { normalize }   from './normalize.js' ;
  * @name map
  * @memberof core.maths
  * @function
+ * @instance
  * @param {number} value - The number value to map.
  * @param {number} min1 - The minimum value of the first range of the value.
  * @param {number} max1 - The maximum value of the first range of the value.

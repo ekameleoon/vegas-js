@@ -4,7 +4,6 @@
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Vector2
  * @memberof graphics.geom
- * @constructor
  * @class
  * @param {number} x - The x value of the object.
  * @param {number} y - The y value of the object.

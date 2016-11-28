@@ -5,6 +5,7 @@
  * @name hyphenate
  * @memberof core.strings
  * @function
+ * @instance
  * @param {string} source - The string reference to hyphenate.
  * @return The hyphenated string.
  * @example

@@ -10,7 +10,6 @@ import { TaskGroup } from './TaskGroup.js' ;
  * @class
  * @memberof system.process
  * @extends system.process.TaskGroup
- * @constructor
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;

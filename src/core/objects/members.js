@@ -5,6 +5,7 @@
  * @name members
  * @memberof core.objects
  * @function
+ * @instance
  * @param {object} o The target object to enumerate.
  * @param {boolean} [byValue=false] The optional flag indicates if the function return an Array of strings (keys) or of values.
  * @return An array containing all the string key names or values (if the #byValue argument is true). The method returns null if no members are finding.
