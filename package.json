@@ -66,6 +66,8 @@
     "gulp-util": "^3.0.7",
     "jshint": "^2.9.2",
     "jshint-stylish": "^2.2.1",
+    "leedian-jsdoc": "^1.0.5",
+    "loke-jsdoc-theme": "^2.1.0",
     "mocha-jsdom": "^1.1.0",
     "mochawesome": "^1.5.4",
     "pump": "^1.0.1",
