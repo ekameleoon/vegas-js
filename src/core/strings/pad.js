@@ -14,20 +14,21 @@
  * @example <caption>Basic usage</caption>
  * trace( "left  : [" + pad( "hello" , 8 )  + "]" ); //left  : [   hello]
  * trace( "right : [" + pad( "hello" , -8 ) + "]" ); //right : [hello   ]
- * @example <caption>Padding a list of names</caption>
+ * @example <caption>Padding a list of names
+ * <ul>
+ * <li>//.....jerry</li>
+ * <li>//....george</li>
+ * <li>//....kramer</li>
+ * <li>//.....helen</li>
+ * </ul>
+ * </caption>
  * var seinfeld = [ "jerry", "george", "kramer", "helen" ];
  *
  * var len = seinfeld.length ;
- * for( var i = 0 ; i<len ; i++ )
+ * for( var i = 0 ; i&lt;len ; i++ )
  * {
  *     trace( pad( seinfeld[i] , 10 , "." ) ) ;
  * }
- *
- * //output
- * //.....jerry
- * //....george
- * //....kramer
- * //.....helen
  */
 export function pad( source , amount = 0 , ch = " " )
 {

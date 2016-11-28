@@ -15,8 +15,8 @@ import uglify  from 'gulp-uglify' ;
 import util    from 'gulp-util' ;
 import yargs   from 'yargs' ;
 
-//import jsdoc from 'gulp-jsdoc3' ;
-import jsdoc from 'leedian-jsdoc' ; // https://www.npmjs.com/package/jaguarjs-jsdoc
+import jsdoc from 'gulp-jsdoc3' ;
+//import jsdoc from 'leedian-jsdoc' ; // https://www.npmjs.com/package/jaguarjs-jsdoc
 
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
@@ -54,8 +54,8 @@ var docs =
     {
         "recurse"     : true,
         "destination" : "./docs/bin" ,
-        "tutorials"   : "./docs/tutorials" ,
-        "template"    : "./node_modules/jaguarjs-jsdoc" // ./node_modules/loke-jsdoc-theme
+        "tutorials"   : "./docs/tutorials"
+        //"template"    : "./node_modules/jaguarjs-jsdoc" // ./node_modules/loke-jsdoc-theme
     },
     "plugins":
     [
@@ -63,44 +63,44 @@ var docs =
     ],
     "templates":
     {
-        "applicationName" : "VEGAS JS",
-        "cleverLinks"     : true,
-        "googleAnalytics" : "UA-87950715-1",
-        "monospaceLinks"  : true,
-        "default"         : { "outputSourceFiles" : true },
-        "linenums"        : true,
-        "openGraph"       :
-        {
-            "title"     : "VEGAS JS - The Javascript Opensource Framework",
-            "type"      : "website",
-            // "image" : "",
-            "site_name" : "VEGAS JS - The Javascript Opensource Framework",
-            "url"       : "http://vegasjs.ooopener.com/"
-        },
-        "meta":
-        {
-            "title"       : "VEGAS JS - The Javascript Opensource Framework",
-            "description" : "Vegas JS is an Opensource Framewor based on ECMAScript for develop crossplatfom Rich Internet Applications and Games.",
-            "keyword"     : "javascript,js,library,framework,npm,node,ioc,tasks,conditions,process,logics,logging,errors,game"
-        }
-
-        // "footer"         : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
-        // "systemName"     : "VEGAS JS",
-        // "cleverLinks"    : false,
-        // "monospaceLinks" : false,
-        // "analytics"      : { "ua" : "UA-87950715-1" , "domain":"auto" } ,
-        // "default"        :
+        // "applicationName" : "VEGAS JS",
+        // "cleverLinks"     : true,
+        // "googleAnalytics" : "UA-87950715-1",
+        // "monospaceLinks"  : true,
+        // "default"         : { "outputSourceFiles" : true },
+        // "linenums"        : true,
+        // "openGraph"       :
         // {
-        //     // "layoutFile"        : "./docs/templates/layout.tmpl" ,
-        //     "outputSourceFiles" : true
+        //     "title"     : "VEGAS JS - The Javascript Opensource Framework",
+        //     "type"      : "website",
+        //     // "image" : "",
+        //     "site_name" : "VEGAS JS - The Javascript Opensource Framework",
+        //     "url"       : "http://vegasjs.ooopener.com/"
         // },
-        // "path"           : "ink-docstrap",
-        // "theme"          : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
-        // "navType"        : "vertical",
-        // "inverseNav"     : true,
-        // "linenums"       : true,
-        // "dateFormat"     : "YYYY Do MMMM, h:mm:ss a",
-        // "syntaxTheme"    : "default" // dark or default
+        // "meta":
+        // {
+        //     "title"       : "VEGAS JS - The Javascript Opensource Framework",
+        //     "description" : "Vegas JS is an Opensource Framewor based on ECMAScript for develop crossplatfom Rich Internet Applications and Games.",
+        //     "keyword"     : "javascript,js,library,framework,npm,node,ioc,tasks,conditions,process,logics,logging,errors,game"
+        // }
+
+        "footer"         : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
+        "systemName"     : "VEGAS JS",
+        "cleverLinks"    : false,
+        "monospaceLinks" : false,
+        "analytics"      : { "ua" : "UA-87950715-1" , "domain":"auto" } ,
+        "default"        :
+        {
+            // "layoutFile"        : "./docs/templates/layout.tmpl" ,
+            "outputSourceFiles" : true
+        },
+        "path"           : "ink-docstrap",
+        "theme"          : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
+        "navType"        : "vertical",
+        "inverseNav"     : true,
+        "linenums"       : true,
+        "dateFormat"     : "YYYY Do MMMM, h:mm:ss a",
+        "syntaxTheme"    : "default" // dark or default
     }
 }
 
