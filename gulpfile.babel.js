@@ -179,6 +179,7 @@ var compile = ( done ) =>
                     ({
                         babelrc : false,
                         presets : ['es2015-rollup'],
+                        runtimeHelpers : true,
                         exclude : 'node_modules/**' ,
                         plugins :
                         [
@@ -261,6 +262,7 @@ var unittest = ( done ) =>
                 ({
                     babelrc : false,
                     presets : ['es2015-rollup'],
+                    runtimeHelpers : true,
                     exclude : 'node_modules/**' ,
                     plugins :
                     [

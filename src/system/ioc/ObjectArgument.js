@@ -3,12 +3,13 @@
 import { ObjectAttribute } from './ObjectAttribute.js' ;
 
 /**
- * Represents the log information for a single logging notification.
- * The loging system dispatches a single message each time a process requests information be logged.
- * This entry can be captured by any object for storage or formatting.
- * @param message The context or message of the log.
- * @param level The level of the log.
- * @param channel The Logger reference of this entry.
+ * This object defines an argument definition in an object definition.
+ * @name ObjectArgument
+ * @class
+ * @memberof system.ioc
+ * @param {*} value - The value of the argument.
+ * @param {string} [policy=value] - The policy of the property ({@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE})
+ * @param {array} [evaluators] - The optional Array representation of all evaluators who evaluate the value of the argument.
  */
 export function ObjectArgument( value , policy = "value" , evaluators = null )
 {
@@ -18,47 +19,63 @@ export function ObjectArgument( value , policy = "value" , evaluators = null )
          * @private
          */
         _policy : { value : null , writable : true } ,
-
-        /**
-         * Defines the policy of the property.
-         */
-        policy :
-        {
-            get : function policy()
-            {
-                return this._policy ;
-            },
-            set : function( str )
-            {
-                switch (str)
-                {
-                    case ObjectAttribute.REFERENCE :
-                    case ObjectAttribute.CONFIG    :
-                    case ObjectAttribute.LOCALE    :
-                    {
-                        this._policy = str ;
-                        break ;
-                    }
-                    default :
-                    {
-                        this._policy = ObjectAttribute.VALUE ;
-                    }
-                }
-            }
-        }
     });
 
-    this.policy     = policy ;
-    this.value      = value ;
-    this.evaluators = (evaluators instanceof Array) ?[].concat(evaluators) : null ;
+    this.policy = policy ;
+
+    /**
+     * Defines the policy of the property.
+     * @name value
+     * @memberof system.ioc.ObjectArgument
+     * @instance
+     */
+    this.value = value ;
+
+    /**
+     * Defines the policy of the property.
+     * @name evaluators
+     * @memberof system.ioc.ObjectArgument
+     * @instance
+     * @type Array
+     */
+    this.evaluators = (evaluators instanceof Array) ? [].concat(evaluators) : null ;
 }
 
-/**
- * @extends Object
- */
 ObjectArgument.prototype = Object.create( Object.prototype ,
 {
     constructor : { value : ObjectArgument } ,
+
+    /**
+     * Defines the policy of the property.
+     * @name policy
+     * @memberof system.ioc.ObjectArgument
+     * @type {string}
+     * @instance
+     */
+    policy :
+    {
+        get : function policy()
+        {
+            return this._policy ;
+        },
+        set : function( str )
+        {
+            switch (str)
+            {
+                case ObjectAttribute.REFERENCE :
+                case ObjectAttribute.CONFIG    :
+                case ObjectAttribute.LOCALE    :
+                {
+                    this._policy = str ;
+                    break ;
+                }
+                default :
+                {
+                    this._policy = ObjectAttribute.VALUE ;
+                }
+            }
+        }
+    },
 
     /**
      * Returns the String representation of the object.

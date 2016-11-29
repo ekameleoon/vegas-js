@@ -4,28 +4,40 @@ import { ObjectOrder } from './ObjectOrder.js' ;
 
 /**
  * This object defines a listener definition in an object definition.
- * @param dispatcher The dispatcher expression reference of the listener.
- * @param type type name of the event dispatched by the dispatcher of this listener.
- * @param method The name of the method to invoke when the event is handle.
- * @param useCapture Determinates if the event flow use capture or not.
- * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * @name ObjectListener
+ * @class
+ * @memberof system.ioc
+ * @param {string} dispatcher - The dispatcher expression reference of the listener.
+ * @param {string} type - The type name of the event dispatched by the dispatcher of this listener.
+ * @param {string} [method=null] - The name of the method to invoke when the event is handle.
+ * @param {boolean} [useCapture=false] -  Determinates if the event flow use capture or not.
+ * @param {string} [order=after] Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
-export function ObjectListener( dispatcher /*String*/ , type /*String*/ , method /*Boolean*/ = null , useCapture /*Boolean*/ = false, order /*String*/ = "after" )
+export function ObjectListener( dispatcher , type , method = null , useCapture = false, order = "after" )
 {
     Object.defineProperties( this ,
     {
         /**
          * The dispatcher expression reference of the listener.
+         * @name dispatcher
+         * @memberof system.ioc.ObjectListener
+         * @instance
          */
         dispatcher : { value : dispatcher , writable : true } ,
 
         /**
-         * The name of the method to invoke when the event is handle.
+         * The <b>name</b> of the method to invoke when the event is handle.
+         * @name method
+         * @memberof system.ioc.ObjectListener
+         * @instance
          */
         method : { value : method , writable : true } ,
 
         /**
-         * Determinates the order of the receiver registration ('after' or by default 'before').
+         * Determinates the <code>order</code> of the receiver registration (<code>'after'</code> or by default <code>'before'</code>).
+         * @name order
+         * @memberof system.ioc.ObjectListener
+         * @instance
          */
         order :
         {
@@ -38,11 +50,18 @@ export function ObjectListener( dispatcher /*String*/ , type /*String*/ , method
 
         /**
          * The type name of the event dispatched by the dispatcher.
+         * @name type
+         * @memberof system.ioc.ObjectListener
+         * @instance
          */
         type : { value : type , writable : true } ,
 
         /**
          * Determinates if the event flow use capture or not.
+         * @name useCapture
+         * @memberof system.ioc.ObjectListener
+         * @instance
+         * @type boolean
          */
         useCapture : { value : Boolean(useCapture) , writable : true } ,
 
@@ -57,43 +76,59 @@ Object.defineProperties(  ObjectListener ,
 {
     /**
      * Defines the "dispatcher" attribute in a listener object definition.
+     * @memberof system.ioc.ObjectListener
+     * @type string
+     * @default dispatcher
      */
     DISPATCHER : { value : "dispatcher" , enumerable : true } ,
 
     /**
      * Defines the "method" attribute in a listener object definition.
+     * @memberof system.ioc.ObjectListener
+     * @type string
+     * @default method
      */
     METHOD : { value : "method" , enumerable : true } ,
 
     /**
      * Defines the "order" attribute in a listener object definition.
+     * @memberof system.ioc.ObjectListener
+     * @type string
+     * @default order
      */
     ORDER : { value : "order" , enumerable : true } ,
 
     /**
      * Defines the "useCapture" attribute in a listener object definition.
+     * @memberof system.ioc.ObjectListener
+     * @type string
+     * @default useCapture
      */
     USE_CAPTURE : { value : "useCapture" , enumerable : true } ,
 
     /**
      * Defines the "type" attribute in a listener object definition.
+     * @memberof system.ioc.ObjectListener
+     * @type string
+     * @default type
      */
     TYPE : { value : "type" , enumerable : true }
 });
 
-/**
- * @extends Object
- */
- ObjectListener.prototype = Object.create( Object.prototype ,
+ObjectListener.prototype = Object.create( Object.prototype ,
 {
     /**
      * Returns a reference to the Object function that created the instance's prototype.
      */
-    constructor : { value :  ObjectListener },
+    constructor : { value :  ObjectListener } ,
 
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.ioc.ObjectListener
+     * @instance
+     * @function
      */
     toString : { value : function ()
     {

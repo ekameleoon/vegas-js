@@ -11,14 +11,21 @@ import { ObjectAttribute }    from './ObjectAttribute.js' ;
 import { TypePolicy }         from './TypePolicy.js' ;
 
 /**
- * This object contains the configuration of the IoC object factory.
+ * This object contains the configuration of the <b>IoC</b> factory.
+ * @name ObjectConfig
+ * @class
+ * @memberof system.ioc
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  */
-export function ObjectConfig( init )
+export function ObjectConfig( init = null )
 {
     Object.defineProperties( this ,
     {
         /**
          * The config object reference used in the factory to register values and expressions.
+         * @name config
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         config :
         {
@@ -37,6 +44,10 @@ export function ObjectConfig( init )
 
         /**
          * Returns the config evaluator reference.
+         * @name configEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.ConfigEvaluator
+         * @readonly
          */
         configEvaluator :
         {
@@ -45,31 +56,51 @@ export function ObjectConfig( init )
 
         /**
          * The default name of destroy callback method to invoke with object definition in the ObjectFactory.
+         * @name defaultDestroyMethod
+         * @memberof system.ioc.ObjectConfig
+         * @type string
          */
         defaultDestroyMethod : { value : null , writable : true , enumerable : true } ,
 
         /**
          * The default name of init callback method to invoke with object definition in the ObjectFactory.
+         * @name defaultInitMethod
+         * @memberof system.ioc.ObjectConfig
+         * @type string
          */
         defaultInitMethod : { value : null , writable : true , enumerable : true } ,
 
         /**
          * The optional domain used in the factory to creates the objects (by default use core.global if this property is not defined).
+         * @name domain
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         domain : { value : null , writable : true , enumerable : true } ,
 
         /**
-         * Indicates if the singleton objects in the ObjectFactory are identifiy if the type of the object implements the Identifiable interface.
+         * Indicates if the singleton objects in the <code>ObjectFactory</code> are identifiy if the type of the object implements the {@link system.data.Identifiable} interface.
+         * @name identifiy
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         identify : { value : false , writable : true , enumerable : true } ,
 
         /**
-         * Indicates if the factory lock this "run" method and allow the flush of the singletons buffer who must be initialized when the process is finished.
+         * Indicates if the factory lock this <code>run</code> method and allow the flush of the singletons buffer who must be initialized when the process is finished.
+         * @name lazyInit
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         lazyInit : { value : false , writable : true , enumerable : true } ,
 
         /**
          * The locale object of the factory. To evaluate locale expression in the object definitions.
+         * @name locale
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         locale :
         {
@@ -88,6 +119,10 @@ export function ObjectConfig( init )
 
         /**
          * Returns the local evaluator reference.
+         * @name locale
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.LocaleEvaluator
+         * @readonly
          */
         localeEvaluator :
         {
@@ -95,18 +130,28 @@ export function ObjectConfig( init )
         },
 
         /**
-         * Indicates if all the Lockable objects initialized in the object definitions in the factory must be locked during the invokation of this methods and the initialization of this properties.
+         * Indicates if all the {@link system.process.Lockable} objects initialized in the <b>object definitions</b> in the <b>factory</b> must be locked during the invokation of this methods and the initialization of this properties.
+         * @name lock
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         lock : { value : false , writable : true , enumerable : true } ,
 
         /**
          * The optional parameters object reference.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#params".
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#params"</code>.</p>
+         * @name parameters
+         * @memberof system.ioc.ObjectConfig
          */
         parameters : { value : null , writable : true , enumerable : true } ,
 
         /**
          * Indicates the reference evaluator object.
+         * @name referenceEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.ReferenceEvaluator
+         * @readonly
          */
         referenceEvaluator :
         {
@@ -114,24 +159,31 @@ export function ObjectConfig( init )
         },
 
         /**
-         * The root reference of the application.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#root".
+         * The <code>root</code> reference of the application.
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#root"</code>.</p>
+         * @name root
+         * @memberof system.ioc.ObjectConfig
          */
         root : { value : null , writable : true , enumerable : true } ,
 
         /**
          * The stage reference of the application.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#stage".
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#stage"</code>.</p>
+         * @name stage
+         * @memberof system.ioc.ObjectConfig
          */
         stage : { value : null , writable : true , enumerable : true } ,
 
         /**
          * Indicates if the class throws errors or return null when an error is throwing.
+         * @name throwError
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
          */
         throwError :
         {
             get : function() { return this._configEvaluator.throwError && this._localeEvaluator.throwError && this._typeEvaluator.throwError && this._referenceEvaluator.throwError ; } ,
-            set : function( flag /*Boolean*/ )
+            set : function( flag )
             {
                 this._configEvaluator.throwError    = flag ;
                 this._localeEvaluator.throwError    = flag ;
@@ -141,13 +193,13 @@ export function ObjectConfig( init )
         },
 
         /**
-         * Determinates the typeAliases reference of this config object.
+         * Determinates the <code>typeAliases</code> reference of this <b>config</b> object.
          * <p>The setter of this virtual property can be populated with a TypeAliases instance or an Array of typeAliases items.</p>
-         * <p>This setter attribute don't remove the old TypeAliases instance but fill it with new aliases.
-         * If you want cleanup the aliases of this configuration object you must use the <code class="prettyprint">typeAliases.clear()</code> method.</p>
-         * <p>The typeAliases items are generic objects with 2 attributes <b>alias</b> (the alias String expression) and <b>type</b> (the type String expression).</p>
+         * <p>This setter attribute don't remove the old TypeAliases instance but fill it with new aliases. If you want cleanup the aliases of this configuration object you must use the <code>typeAliases.clear()</code> method.</p>
+         * <p>The <code>typeAliases</code> items are generic objects with 2 attributes <code>alias</code> (the alias String expression) and <code>type</code> (the type String expression).</p>
+         * @name typeAliases
+         * @memberof system.ioc.ObjectConfig
          * @example
-         * <pre>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          *
          * var config  = new ObjectConfig() ;
@@ -156,7 +208,6 @@ export function ObjectConfig( init )
          * [
          *     { alias : "Sprite" , type : "flash.display.Sprite" }
          * ] ;
-         * </pre>
          */
         typeAliases :
         {
@@ -196,6 +247,10 @@ export function ObjectConfig( init )
 
         /**
          * Indicates the type evaluator reference.
+         * @name typeEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.TypeEvaluator
+         * @readonly
          */
         typeEvaluator :
         {
@@ -203,9 +258,10 @@ export function ObjectConfig( init )
         },
 
         /**
-         * Determinates the content of the typeExpression reference in this config object.
-         * @example Example 1 : basic usage
-         * <pre>
+         * Determinates the content of the <code>typeExpression</code> reference in this config object.
+         * @name typeExpression
+         * @memberof system.ioc.ObjectConfig
+         * @example <caption>Example 1 : basic usage</caption>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
          *
@@ -218,9 +274,7 @@ export function ObjectConfig( init )
          * var config  = new ObjectConfig() ;
          *
          * config.typeExpression = exp ;
-         * </pre>
-         * @example Example 2 : Use an Array of entries with the name/value members
-         * <pre>
+         * @example <caption>Example 2 : Use an Array of entries with the name/value members</caption>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          *
          * var expressions =
@@ -233,7 +287,6 @@ export function ObjectConfig( init )
          * var config = new ObjectConfig() ;
          *
          * config.typeExpression = expressions ;
-         * </pre>
          */
         typeExpression :
         {
@@ -274,7 +327,9 @@ export function ObjectConfig( init )
         /**
          * Indicates the type policy of the object factory who use this configuration object.
          * The default value of this attribute is <code>TypePolicy.NONE</code>.
-         * <p>You can use the TypePolicy.NONE, TypePolicy.ALL, TypePolicy.ALIAS, TypePolicy.EXPRESSION values.</p>
+         * <p>You can use the <code>TypePolicy.NONE</code>, <code>TypePolicy.ALL</code>, <code>TypePolicy.ALIAS</code>, <code>TypePolicy.EXPRESSION</code> values.</p>
+         * @name typePolicy
+         * @memberof system.ioc.ObjectConfig
          * @see system.ioc.TypePolicy
          */
         typePolicy :
@@ -300,7 +355,11 @@ export function ObjectConfig( init )
         },
 
         /**
-         * Indicates if the logger model is used in the IoC factory to log the warning and errors.
+         * Indicates if a {@link system.logging.Logger|Logger} is used in the <b>IoC factory</b> to log the warning and errors.
+         * @name useLogger
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         useLogger : { value : false , writable : true , enumerable : true } ,
 
@@ -322,16 +381,17 @@ export function ObjectConfig( init )
     this.initialize( init ) ;
 }
 
-/**
- * @extends Object
- */
 ObjectConfig.prototype = Object.create( Object.prototype ,
 {
     constructor : { value : ObjectConfig } ,
 
     /**
      * Initialize the config object.
-     * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+     * @name initialize
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
      */
     initialize : { value : function( init )
     {
@@ -350,6 +410,11 @@ ObjectConfig.prototype = Object.create( Object.prototype ,
 
     /**
      * This method is used to change the target of the internal config dynamic object.
+     * @name setConfigTarget
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {object} o - The object to target the configuration object of the <b>factory</b>.
      */
     setConfigTarget : { value : function( o = null )
     {
@@ -358,6 +423,11 @@ ObjectConfig.prototype = Object.create( Object.prototype ,
 
     /**
      * This method is used to change the target of the internal local dynamic object.
+     * @name setLocaleTarget
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {object} o - The object to target the i18n object of the <b>factory</b>.
      */
     setLocaleTarget : { value : function( o = null )
     {
@@ -367,6 +437,10 @@ ObjectConfig.prototype = Object.create( Object.prototype ,
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
      */
     toString : { value : function() { return '[ObjectConfig]' ; } }
 });

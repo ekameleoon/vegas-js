@@ -29,6 +29,69 @@ import { TypePolicy }       from './ioc/TypePolicy.js' ;
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.ioc
  * @memberof system
+ * @example
+ * var Point = function( x , y )
+ * {
+ *     this.x = x ;
+ *     this.y = y ;
+ *     console.log("constructor:" + this.toString() ) ;
+ * };
+ *
+ * Point.prototype.test = function( message = null )
+ * {
+ *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+ * }
+ *
+ * Point.prototype.toString = function()
+ * {
+ *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+ * } ;
+ *
+ * var ObjectFactory = system.ioc.ObjectFactory ;
+ *
+ * var factory = new ObjectFactory();
+ * var config  = factory.config ;
+ *
+ * config.setConfigTarget
+ * ({
+ *     origin : { x : 10 , y : 20 }
+ * })
+ *
+ * config.setLocaleTarget
+ * ({
+ *     messages :
+ *     {
+ *         test : 'test'
+ *     }
+ * })
+ *
+ * var objects =
+ * [
+ *     {
+ *         id   : "position" ,
+ *         type : "Point" ,
+ *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         properties :
+ *         [
+ *             { name : "x" , ref   :'origin.x' } ,
+ *             { name : "y" , value : 100       }
+ *         ]
+ *     },
+ *     {
+ *         id         : "origin" ,
+ *         type       : "Point" ,
+ *         singleton  : true ,
+ *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *         properties :
+ *         [
+ *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *         ]
+ *     }
+ * ];
+ *
+ * factory.run( objects );
+ *
+ * trace( factory.getObject('position') ) ;
  */
 export var ioc = Object.assign
 ({

@@ -16,12 +16,12 @@ import { TaskGroup } from './TaskGroup.js' ;
  *
  * do1.something = function()
  * {
- *     console.log( "do1 something" ) ;
+ *     trace( "do1 something" ) ;
  * }
  *
  * do2.something = function()
  * {
- *     console.log( "do2 something" ) ;
+ *     trace( "do2 something" ) ;
  * }
  *
  * var finish = function( action )
