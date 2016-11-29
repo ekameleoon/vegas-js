@@ -9,6 +9,7 @@ import { Vector2 } from './Vector2.js' ;
 
 /**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @summary The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Point
  * @memberof graphics.geom
  * @extends graphics.geom.Vector2

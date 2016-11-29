@@ -5,8 +5,9 @@ import { Point } from './Point.js' ;
 
 /**
  * The Rectangle class is used to create and modify Rectangle objects.
- * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
- * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
+ * <p>A Rectangle object is an area defined by its position, as indicated by its top-left corner point <code>(x, y)</code>, and by its width and its height.</p>
+ * <p>The <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.</p>
+ * @summary The Rectangle class is used to create and modify Rectangle objects.
  * @name Rectangle
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom

@@ -1,7 +1,8 @@
 "use strict" ;
 
 /**
- * The EdgeMetrics class specifies the thickness, in pixels, of the four edge regions around a visual component.
+ * The <code>EdgeMetrics</code> class specifies the thickness, in pixels, of the four edge regions around a visual component.
+ * @summary The <code>EdgeMetrics</code> class specifies the thickness, in pixels, of the four edge regions around a visual component.
  * @name EdgeMetrics
  * @memberof graphics.geom
  * @class

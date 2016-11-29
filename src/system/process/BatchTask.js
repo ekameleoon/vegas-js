@@ -204,9 +204,9 @@ BatchTask.prototype.stop = function() /*void*/
     {
         if ( this._actions.length > 0 )
         {
-            var a /*Action*/ ;
-            var e /*ActionEntry*/ ;
-            var l /*int*/ = this._actions.length ;
+            let a ;
+            let e ;
+            let l = this._actions.length ;
             while( --l > -1 )
             {
                 e = this._actions[l] ;

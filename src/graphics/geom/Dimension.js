@@ -2,6 +2,7 @@
 
 /**
  * The Dimension object encapsulates the width and height components of an object.
+ * @summary The Dimension object encapsulates the width and height components of an object.
  * @name Dimension
  * @memberof graphics.geom
  * @class

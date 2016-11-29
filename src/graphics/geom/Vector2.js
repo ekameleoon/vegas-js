@@ -2,11 +2,13 @@
 
 /**
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @summary A simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Vector2
  * @memberof graphics.geom
  * @class
  * @param {number} x - The x value of the object.
  * @param {number} y - The y value of the object.
+ * @see graphics.geom.Point
  */
 export function Vector2( x = 0 , y = 0 )
 {

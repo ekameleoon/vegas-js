@@ -2,7 +2,8 @@
 "use strict" ;
 
 /**
- * The Align enumeration class provides constant values to align displays or components.
+ * The {@link graphics.Align} enumeration provides constant values to align displays or components.
+ * @summary The {@link graphics.Align} enumeration provides constant values to align displays or components.
  * @name Align
  * @namespace graphics.Align
  * @memberof graphics

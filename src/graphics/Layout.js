@@ -8,7 +8,8 @@ import { LayoutBufferMode } from './LayoutBufferMode.js' ;
 import { Rectangle } from './geom/Rectangle.js' ;
 
 /**
- * Creates a new Layout instance.
+ * A base class that manages layouts in visual elements on the screen of your applications.
+ * @summary A base class that manages the layout rendering in visual elements on the screen of your applications.
  * @name Layout
  * @memberof graphics
  * @extends system.process.Task

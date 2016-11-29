@@ -8,8 +8,9 @@ import { Point }     from './geom/Point.js' ;
 import { Rectangle } from './geom/Rectangle.js' ;
 
 /**
- * The VEGAS.js framework - The graphics.geom library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @summary The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics.geom
  * @memberof graphics

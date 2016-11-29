@@ -3,6 +3,7 @@
 /**
  * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
+ * @summary The enumeration of the four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * @name CardinalDirection
  * @memberof graphics
  * @extends Object

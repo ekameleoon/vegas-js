@@ -1,7 +1,8 @@
 "use strict" ;
 
 /**
- * This static singleton to enumerates all types used to draw an Arc.
+ * This {@link graphics.ArcType} enumeration of all types used to draw an Arc.
+ * @summary This {@link graphics.ArcType} enumeration of all types used to draw an Arc.
  * @name ArcType
  * @namespace graphics.ArcType
  * @memberof graphics
