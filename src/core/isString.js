@@ -8,6 +8,12 @@
  * @instance
  * @param {Object} object - The object to check.
  * @return <code>true</code> if the object is a String.
+ * @example
+ * trace( isString(0) ) ; // false
+ * trace( isString(true) ) ; // false
+ * trace( isString(null) ) ; // false
+ * trace( isString('hello') ) ; // true
+ * trace( isString(new String('hello')) ) ; // true
  */
 export function isString( object )
 {
