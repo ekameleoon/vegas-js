@@ -1,4 +1,4 @@
-# VEGAS #
+# VEGAS JS #
 
 **Vegas JS** is an *Opensource* Framework based on **ECMAScript** for develop crossplatform **Rich Internet Applications** and **Games**.
 
