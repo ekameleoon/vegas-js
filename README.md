@@ -10,13 +10,13 @@ This project contains a set of libraries writing in **Javascript** and based on 
 | **[system](http://vegasjs.ooopener.com/system.html)**   | The [system](http://vegasjs.ooopener.com/system.html) package is the root for the **VEGAS JS** framework. It is the starting point of our RIA framework structure : signals, data, IoC, logger, tasks, transitions, logics, rules, models, etc.                                                                                                                                                                              |
 | **[graphics](http://vegasjs.ooopener.com/graphics.html)** | The [graphics](http://vegasjs.ooopener.com/graphics.html) library is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface. |
 
-## About
+### About
 
  * Author : Marc ALCARAZ (aka eKameleon)
  * Mail : ekameleon[at]gmail.com
  * Link : [http://www.ooopener.com](http://www.ooopener.com)
 
-### Licenses
+### License
 
 Under tree opensource licenses :
 
@@ -26,25 +26,25 @@ Under tree opensource licenses :
 
 ## Resources
 
-### Download
+#### ⌜ Download
 
 Download on **Bitbucket** the latest code, report an issue, ask a question or contribute :
 
  * [http://bitbucket.org/ekameleon/vegas-js](http://bitbucket.org/ekameleon/vegas-js)
 
-### Documentation ###
+#### ⌜ Documentation
 
 Get started with the the **Vegas JS** API :
 
  * [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
 
-### Tutorials
+#### ⌜ Tutorials
 
 These tutorials helps you to understand the **VEGAS JS** Framework philosophy.
 
 * [system.transitions](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions) : Creates animations and tween effects in your projects.
 
-### Slack Community
+#### ⌜ Slack Community
 
 ![slack-logo-vector-download.jpg](https://bitbucket.org/repo/AEbB9b/images/3509366499-slack-logo-vector-download.jpg)
 
@@ -52,13 +52,13 @@ Send us your email to join the **VEGAS** community on Slack !
 
 ## Install
 
-### YARN / NPM
+#### ⌜ YARN / NPM
 
 You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js) or [Yarn](https://yarnpkg.com/).
 
 ```
 #!shell
-yarn install vegas-js --save-dev
+yarn add vegas-js --dev
 ```
 
 or
@@ -68,18 +68,19 @@ or
 npm install vegas-js --save-dev
 ```
 
-### Bower
+#### ⌜ Bower
 
 ```
 #!shell
 bower install vegas-js
 ```
 
-## Build
+## Builds
 
 **VEGAS JS** use [Gulp](http://gulpjs.com/) and [Yarn](https://yarnpkg.com/) with a serie of powerful packages (Babel, Mocha, etc.) to build.
 
-### Simple Build
+
+#### ⌜ Simple Build
 
 1. The first time, clone the **VEGAS JS** repository
 
@@ -97,7 +98,7 @@ yarn install
 gulp
 ```
 
-### Unit tests
+#### ⌜ Unit tests
 
 We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
 
@@ -145,7 +146,7 @@ If you use the 'mochawesome' reporter, gulp generate in the './bin/tests' folder
 gulp ut --reporter mochawesome
 ```
 
-### Generates the documentation ###
+#### ⌜ Generates the documentation
 
 The documentation of the framework is based on [JSDoc](http://usejsdoc.org/).
 
@@ -157,7 +158,7 @@ gulp doc
 
 The documentation is generated in the main project folder : **./docs**
 
-## History ##
+## History
 
  * 1998 : Flash
  * 2000 : First framework concept and first libraries (components, tools, design patterns)
