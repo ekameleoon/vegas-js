@@ -5,19 +5,28 @@ import { Logger } from './Logger.js' ;
 
 /**
  * Indicates if the specific objet is Loggable.
+ * @name isLoggable
+ * @memberof system.logging
+ * @function
+ * @instance
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Loggable</code>.
  */
 export function isLoggable( target )
 {
     if( target )
     {
-        return ( 'logger' in target )
-            && ((target.logger === null ) || ( target.logger instanceof Logger ))  ;
+        return target instanceof Loggable ||
+               (( 'logger' in target ) && ((target.logger === null ) || ( target.logger instanceof Logger )) )  ;
     }
     return false ;
 }
 
 /**
- * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
+ * Implementing this interface allows an object who use a <code>Logger</code> object.
+ * @name Loggable
+ * @memberof system.logging
+ * @interface
  */
 export function Loggable()
 {
@@ -27,21 +36,16 @@ export function Loggable()
     }) ;
 }
 
-/**
- * @extends Object
- */
 Loggable.prototype = Object.create( Object.prototype ,
 {
     constructor : { value : Loggable } ,
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString : { value : function() { return '[Loggable]' ; } } ,
-
-    /**
      * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
+     * @name logger
+     * @memberof system.logging.Loggable
+     * @type system.logging.Logger
+     * @instance
      */
     logger :
     {

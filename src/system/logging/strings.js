@@ -2,6 +2,10 @@
 
 /**
  * The enumeration of all string expressions in the logging engine.
+ * @name strings
+ * @memberof system.logging
+ * @const
+ * @instance
  */
 export var strings = Object.defineProperties( {} ,
 {
