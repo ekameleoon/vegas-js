@@ -55,12 +55,24 @@ export var data = Object.assign
     Attribute : Attribute ,
     Method    : Method ,
 
-    // packages
+    /**
+     * This package contains all {@link system.data.Iterator|Iterator} implementations : {@link system.data.iterators.ArrayIterator|ArrayIterator}, {@link system.data.iterators.MapIterator|MapIterator}, etc.
+     * @summary This package contains all {@link system.data.Iterator|Iterator} implementations : {@link system.data.iterators.ArrayIterator|ArrayIterator}, {@link system.data.iterators.MapIterator|MapIterator}, etc.
+     * @namespace system.data.iterators
+     * @memberof system.data
+     */
     iterators :
     {
         ArrayIterator,
         MapIterator
     },
+
+    /**
+     * This package contains all {@link system.data.KeyValuePair|KeyValuePair} extended implementations : {@link system.data.maps.ArrayMap|ArrayMap}, etc.
+     * @summary This package contains all {@link system.data.KeyValuePair|KeyValuePair} extended implementations : {@link system.data.maps.ArrayMap|ArrayMap}, etc.
+     * @namespace system.data.maps
+     * @memberof system.data
+     */
     maps :
     {
         ArrayMap

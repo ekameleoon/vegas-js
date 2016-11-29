@@ -3,24 +3,23 @@
 import { KeyValuePair } from '../KeyValuePair.js' ;
 
 /**
- * Converts a Map to a custom string representation.
+ * Converts a {@link system.data.KeyValuePair|KeyValuePair} to a custom string representation.
+ * @summary Converts a {@link system.data.KeyValuePair|KeyValuePair} to a custom string representation.
+ * @name MapFormatter
+ * @class
+ * @memberof system.data.maps
  */
-export function MapFormatter()
-{
-}
+export function MapFormatter() {}
 
-/**
- * @extends Object
- */
 MapFormatter.prototype = Object.create( Object.prototype ) ;
 MapFormatter.prototype.constructor = MapFormatter ;
 
 /**
  * Formats the specified value.
- * @param value The object to format.
- * @return the string representation of the formatted value.
+ * @param {system.data.KeyValuePair} value - The {@link system.data.KeyValuePair|KeyValuePair} map to format.
+ * @return The string representation of the formatted value.
  */
-MapFormatter.prototype.format = function( value ) /*String*/
+MapFormatter.prototype.format = function( value )
 {
     if ( value && value instanceof KeyValuePair )
     {
@@ -48,4 +47,12 @@ MapFormatter.prototype.format = function( value ) /*String*/
     }
 }
 
+/**
+ * The {@link system.data.maps.MapFormatter|MapFormatter} singleton.
+ * @name MapFormatter
+ * @instance
+ * @const
+ * @type system.data.maps.MapFormatte
+ * @memberof system.data.maps
+ */
 export var formatter = new MapFormatter() ;

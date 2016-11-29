@@ -18,6 +18,7 @@ window.onload = function()
     map.set("key3", "value3") ;
 
     trace ("map : " + map) ;
+    trace ("map length: " + map.length) ;
 
     trace ("------ iterator") ;
 
@@ -27,10 +28,12 @@ window.onload = function()
         trace (iterator.next() + " : " + iterator.key()) ;
     }
 
+    trace ("------") ;
+
     trace( 'values : ' + map.values()) ;
-    trace( map.has('key2')) ;
-    trace( map.get('key2') ) ;
-    trace( map.indexOfKey('key2')) ;
+    trace( "map.has('key2') : " + map.has('key2')) ;
+    trace( "map.get('key2') : " + map.get('key2') ) ;
+    trace( "map.indexOfKey('key2') : " + map.indexOfKey('key2')) ;
 
     map.delete( 'key2' ) ;
 
