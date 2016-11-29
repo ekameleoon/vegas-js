@@ -6,7 +6,25 @@ import { Iterator }      from '../Iterator.js' ;
 import { KeyValuePair }  from '../KeyValuePair.js' ;
 
 /**
- * Converts a <code>KeyValuePair</code> to an iterator.
+ * Converts a {@link system.data.KeyValuePair|KeyValuePair} to an iterator.
+ * @name MapIterator
+ * @class
+ * @implements system.data.Iterator
+ * @memberof system.data.iterators
+ * @param {system.data.KeyValuePair} map - The <code>KeyValuePair</code> to iterate.
+ * @throws ReferenceError If the passed-in argument is <code>null</code> or not an {@link system.data.KeyValuePair|KeyValuePair} object.
+ * @example
+ * var map = new ArrayMap() ;
+ *
+ * map.set("key1", "value1") ;
+ * map.set("key2", "value2") ;
+ * map.set("key3", "value3") ;
+ *
+ * var it = map.iterator() ;
+ * while( it.hasNext() )
+ * {
+ *     trace (it.next() + " : " + it.key()) ;
+ * }
  */
 export function MapIterator( map )
 {
@@ -25,15 +43,16 @@ export function MapIterator( map )
     }
 }
 
-/**
- * @extends Object
- */
 MapIterator.prototype = Object.create( Iterator.prototype ) ;
 MapIterator.prototype.constructor = MapIterator ;
 
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @name hasNext
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.hasNext = function()
 {
@@ -43,6 +62,10 @@ MapIterator.prototype.hasNext = function()
 /**
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
+ * @name key
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.key = function()
 {
@@ -52,6 +75,10 @@ MapIterator.prototype.key = function()
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @name next
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.next = function()
 {
@@ -61,6 +88,10 @@ MapIterator.prototype.next = function()
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @name remove
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.remove = function()
 {
@@ -70,6 +101,10 @@ MapIterator.prototype.remove = function()
 
 /**
  * Reset the internal pointer of the iterator (optional operation).
+ * @name reset
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.reset = function()
 {
@@ -78,17 +113,12 @@ MapIterator.prototype.reset = function()
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @name seek
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.seek = function ( position )
 {
     throw new Error( "This Iterator does not support the seek() method.") ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-MapIterator.prototype.toString = function ()
-{
-    return '[MapIterator]' ;
 }

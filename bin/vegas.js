@@ -5651,6 +5651,12 @@ function isIterator(target) {
 
 /**
  * This interface defines the iterator pattern over a collection.
+ * <p><b>Implementors:</b>
+ * <ul>
+ * <li>{@link system.data.iterators.ArrayIterator|ArrayIterator}</li>
+ * <li>{@link system.data.iterators.MapIterator|MapIterator}</li>
+ * </ul>
+ * </p>
  * @name Iterator
  * @interface
  * @memberof system.data
@@ -5663,7 +5669,9 @@ Iterator.prototype.constructor = Iterator;
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @name hasNext
  * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.hasNext = function () {};
@@ -5672,6 +5680,9 @@ Iterator.prototype.hasNext = function () {};
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
  * @memberof system.data.Iterator
+ * @name key
+ * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.key = function () {};
@@ -5679,14 +5690,18 @@ Iterator.prototype.key = function () {};
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @name next
  * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.next = function () {};
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @name remove
  * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.remove = function () {};
@@ -5694,13 +5709,17 @@ Iterator.prototype.remove = function () {};
 /**
  * Reset the internal pointer of the iterator (optional operation).
  * @memberof system.data.Iterator
+ * @name reset
+ * @instance
  * @function
  */
 Iterator.prototype.reset = function () {};
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @name seek
  * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.seek = function (position) {};
@@ -5708,11 +5727,13 @@ Iterator.prototype.seek = function (position) {};
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
  * @memberof system.data.Iterator
+ * @instance
  * @function
  */
 Iterator.prototype.toString = function () {
-  return '[Iterator]';
+  return '[' + this.constructor.name + ']';
 };
 
 /*jshint unused: false*/
@@ -5823,8 +5844,8 @@ Validator.prototype.validate = function (value) /*void*/{};
 /**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  * <p><b>Note:</b> This class replace the old <code>system.data.Map</code> interface in the VEGAS framework. Today in Javascript the {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map|Map} class is a standard global <b>ECMAScript</b> definition.</p>
- * @name KeyValuePair
  * @summary An object that maps keys to values.
+ * @name KeyValuePair
  * @class
  * @memberof system.data
  */
@@ -5835,12 +5856,12 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * The constructor reference of this instance.
    */
-  constructor: { value: KeyValuePair, writable: true },
+  constructor: { writable: true, value: KeyValuePair },
 
   /**
    * Returns the number of key-value mappings in this map.
    * @name length
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @type {number}
    * @readonly
@@ -5852,7 +5873,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   /**
    * Removes all mappings from this map (optional operation).
    * @name clear
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5862,7 +5883,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns a shallow copy of the map.
    * @return a shallow copy of the map.
    * @name clone
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5874,7 +5895,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Removes the mapping for this key from this map if it is present (optional operation).
    * @param {*} key - The key of the entry to remove.
    * @name delete
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5885,7 +5906,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * @param callback Function to execute for each element.
    * @param thisArg Value to use as this when executing callback.
    * @name forEach
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5897,7 +5918,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns the value to which this map maps the specified key.
    * @param {*} key - The key of the entry to retrieve in the collection.
    * @name get
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5906,39 +5927,39 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
     }, writable: true },
 
   /**
-   * Returns {@code true} if this map contains a mapping for the specified key.
+   * Returns <code>true</code> if this map contains a mapping for the specified key.
    * @param {*} key - The key of the entry to retrieve in the collection.
-   * @return {@code true} if this map contains a mapping for the specified key.
+   * @return <code>true</code> if this map contains a mapping for the specified key.
    * @name has
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
-  has: { value: function value(key) /*Boolean*/{
+  has: { value: function value(key) {
       return false;
     }, writable: true },
 
   /**
-   * Returns {@code true} if this map maps one or more keys to the specified value.
-   * @return {@code true} if this map maps one or more keys to the specified value.
+   * Returns <code>true</code> if this map maps one or more keys to the specified value.
+   * @return <code>true</code> if this map maps one or more keys to the specified value.
    * @name hasValue
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
-  hasValue: { value: function value(_value) /*Boolean*/{
+  hasValue: { value: function value(_value) {
       return false;
     }, writable: true },
 
   /**
-   * Returns {@code true} if this map contains no key-value mappings.
-   * @return {@code true} if this map contains no key-value mappings.
+   * Returns <code>true</code> if this map contains no key-value mappings.
+   * @return <code>true</code> if this map contains no key-value mappings.
    * @name isEmpty
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
-  isEmpty: { value: function value() /*Boolean*/{
+  isEmpty: { value: function value() {
       return false;
     }, writable: true },
 
@@ -5946,7 +5967,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns the values iterator of this map.
    * @return the values iterator of this map.
    * @name iterator
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5958,7 +5979,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns the keys iterator of this map.
    * @return the keys iterator of this map.
    * @name keyIterator
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5970,7 +5991,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns an <code>Array</code> of all the keys in the map.
    * @return an <code>Array</code> representation of all the keys register in this collection.
    * @name keys
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5983,7 +6004,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * @param {*} key - The key of the element to add to the Map object.
    * @param {*} value - The value of the element to add to the Map object.
    * @name set
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -5993,7 +6014,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Copies all of the mappings from the specified map to this map (optional operation).
    * @param {system.data.KeyValuePair} map - The map to fill the current map.
    * @name setAll
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -6003,7 +6024,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns the string representation of this instance.
    * @return the string representation of this instance.
    * @name toString
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -6015,7 +6036,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
    * Returns an array of all the values in the map.
    * @return an <code>Array</code> representation of all the values register in this collection.
    * @name values
-   * @memberof system.process.KeyValuePair
+   * @memberof system.data.KeyValuePair
    * @instance
    * @function
    */
@@ -6135,6 +6156,12 @@ Method.prototype.toString = function () {
 
 /**
  * Converts a <code>Array</code> to an iterator.
+ * @name ArrayIterator
+ * @class
+ * @implements system.data.Iterator
+ * @memberof system.data.iterators
+ * @param {array} array - The array to iterate.
+ * @throws ReferenceError If the passed-in argument is not an array.
  * @example
  * var ArrayIterator = system.data.iterators.ArrayIterator ;
  *
@@ -6176,15 +6203,16 @@ function ArrayIterator(array) {
     });
 }
 
-/**
- * @extends Object
- */
 ArrayIterator.prototype = Object.create(Iterator.prototype);
 ArrayIterator.prototype.constructor = ArrayIterator;
 
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @name hasNext
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.hasNext = function () {
     return this._k < this._a.length - 1;
@@ -6193,6 +6221,10 @@ ArrayIterator.prototype.hasNext = function () {
 /**
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
+ * @name key
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.key = function () {
     return this._k;
@@ -6201,6 +6233,10 @@ ArrayIterator.prototype.key = function () {
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @name next
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.next = function () {
     return this._a[++this._k];
@@ -6208,6 +6244,10 @@ ArrayIterator.prototype.next = function () {
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @name remove
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.remove = function () {
     return this._a.splice(this._k--, 1)[0];
@@ -6215,6 +6255,10 @@ ArrayIterator.prototype.remove = function () {
 
 /**
  * Reset the internal pointer of the iterator (optional operation).
+ * @name reset
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.reset = function () {
     this._k = -1;
@@ -6222,23 +6266,37 @@ ArrayIterator.prototype.reset = function () {
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @name seek
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.seek = function (position) {
     position = Math.max(Math.min(position - 1, this._a.length), -1);
     this._k = isNaN(position) ? -1 : position;
 };
 
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-ArrayIterator.prototype.toString = function () {
-    return '[ArrayIterator]';
-};
-
 /*jshint unused: false*/
 /**
- * Converts a <code>KeyValuePair</code> to an iterator.
+ * Converts a {@link system.data.KeyValuePair|KeyValuePair} to an iterator.
+ * @name MapIterator
+ * @class
+ * @implements system.data.Iterator
+ * @memberof system.data.iterators
+ * @param {system.data.KeyValuePair} map - The <code>KeyValuePair</code> to iterate.
+ * @throws ReferenceError If the passed-in argument is <code>null</code> or not an {@link system.data.KeyValuePair|KeyValuePair} object.
+ * @example
+ * var map = new ArrayMap() ;
+ *
+ * map.set("key1", "value1") ;
+ * map.set("key2", "value2") ;
+ * map.set("key3", "value3") ;
+ *
+ * var it = map.iterator() ;
+ * while( it.hasNext() )
+ * {
+ *     trace (it.next() + " : " + it.key()) ;
+ * }
  */
 function MapIterator(map) {
     if (map && map instanceof KeyValuePair) {
@@ -6252,15 +6310,16 @@ function MapIterator(map) {
     }
 }
 
-/**
- * @extends Object
- */
 MapIterator.prototype = Object.create(Iterator.prototype);
 MapIterator.prototype.constructor = MapIterator;
 
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @name hasNext
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.hasNext = function () {
     return this._i.hasNext();
@@ -6269,6 +6328,10 @@ MapIterator.prototype.hasNext = function () {
 /**
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
+ * @name key
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.key = function () {
     return this._k;
@@ -6277,6 +6340,10 @@ MapIterator.prototype.key = function () {
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @name next
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.next = function () {
     this._k = this._i.next();
@@ -6285,6 +6352,10 @@ MapIterator.prototype.next = function () {
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @name remove
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.remove = function () {
     this._i.remove();
@@ -6293,6 +6364,10 @@ MapIterator.prototype.remove = function () {
 
 /**
  * Reset the internal pointer of the iterator (optional operation).
+ * @name reset
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.reset = function () {
     this._i.reset();
@@ -6300,39 +6375,47 @@ MapIterator.prototype.reset = function () {
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @name seek
+ * @memberof system.data.iterators.MapIterator
+ * @instance
+ * @function
  */
 MapIterator.prototype.seek = function (position) {
     throw new Error("This Iterator does not support the seek() method.");
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-MapIterator.prototype.toString = function () {
-    return '[MapIterator]';
-};
-
-/**
- * Represents a pair key/value entry in a Map.
- * @param key The key representation of the entry.
- * @param value The value representation of the entry.
+ * Represents a basic pair <code>key/value</code> entry in a {@link system.data.KeyValuePair|KeyValuePair}.
+ * @summary Represents a basic pair <code>key/value</code> entry in a {@link system.data.KeyValuePair|KeyValuePair}.
+ * @name MapEntry
+ * @class
+ * @memberof system.data.maps
+ * @param {*} key - The key representation of the entry.
+ * @param {*} value - The value representation of the entry.
  */
 
 function MapEntry(key, value) {
+  /**
+   * The key representation of the entry.
+   */
   this.key = key;
+
+  /**
+   * The value representation of the entry.
+   */
   this.value = value;
 }
 
-/**
- * @extends Object
- */
 MapEntry.prototype = Object.create(Object.prototype);
 MapEntry.prototype.constructor = MapEntry;
 
 /**
  * Creates and returns a shallow copy of the object.
  * @return A new object that is a shallow copy of this instance.
+ * @name clone
+ * @memberof system.data.maps.MapEntry
+ * @instance
+ * @function
  */
 MapEntry.prototype.clone = function () {
   return new MapEntry(this.key, this.value);
@@ -6341,30 +6424,33 @@ MapEntry.prototype.clone = function () {
 /**
  * Returns the String representation of the object.
  * @return the String representation of the object.
+ * @name toString
+ * @memberof system.data.maps.MapEntry
+ * @instance
+ * @function
  */
-MapEntry.prototype.toString = function () /*String*/
-{
+MapEntry.prototype.toString = function () {
   return "[MapEntry key:" + this.key + " value:" + this.value + "]";
 };
 
 /**
- * Converts a Map to a custom string representation.
+ * Converts a {@link system.data.KeyValuePair|KeyValuePair} to a custom string representation.
+ * @summary Converts a {@link system.data.KeyValuePair|KeyValuePair} to a custom string representation.
+ * @name MapFormatter
+ * @class
+ * @memberof system.data.maps
  */
 function MapFormatter() {}
 
-/**
- * @extends Object
- */
 MapFormatter.prototype = Object.create(Object.prototype);
 MapFormatter.prototype.constructor = MapFormatter;
 
 /**
  * Formats the specified value.
- * @param value The object to format.
- * @return the string representation of the formatted value.
+ * @param {system.data.KeyValuePair} value - The {@link system.data.KeyValuePair|KeyValuePair} map to format.
+ * @return The string representation of the formatted value.
  */
-MapFormatter.prototype.format = function (value) /*String*/
-{
+MapFormatter.prototype.format = function (value) {
     if (value && value instanceof KeyValuePair) {
         var r = "{";
         var keys = value.keys();
@@ -6385,14 +6471,26 @@ MapFormatter.prototype.format = function (value) /*String*/
     }
 };
 
+/**
+ * The {@link system.data.maps.MapFormatter|MapFormatter} singleton.
+ * @name MapFormatter
+ * @instance
+ * @const
+ * @type system.data.maps.MapFormatte
+ * @memberof system.data.maps
+ */
 var formatter = new MapFormatter();
 
 /**
  * Hash table based implementation of the Map interface.
- * <p><b>Attention :</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
+ * <p><b>Note:</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
+ * @summary Hash table based implementation of the Map interface.
+ * @name ArrayMap
+ * @class
+ * @memberof system.data.maps
+ * @extends system.data.KeyValuePair
  * @example
- * <pre>
- * var map = new system.data.maps.ArrayMap() ;
+ * var map = new ArrayMap() ;
  *
  * map.set("key1", "value1") ;
  * map.set("key2", "value2") ;
@@ -6408,7 +6506,6 @@ var formatter = new MapFormatter();
  *     trace (it.next() + " : " + it.key()) ;
  * }
  *
- *
  * trace( 'values : ' + map.values()) ;
  * trace( map.has('key2')) ;
  * trace( map.get('key2') ) ;
@@ -6417,11 +6514,13 @@ var formatter = new MapFormatter();
  * map.delete( 'key2' ) ;
  *
  * trace ("map : " + map) ;
- * </pre>
- * @param keys An optional Array of all keys to fill in this Map.
- * @param values An optional Array of all values to fill in this Map. This Array must have the same size like the 'keys' argument.
+ * @param {array} keys - An optional <code>Array</code> of all <b>keys</b> to fill in this <b>Map</b>.
+ * @param {array} values - An optional <code>Array</code> of all <b>values</b> to fill in this <b>Map</b>. This <code>Array</code> must have the same size like the 'keys' argument.
  */
-function ArrayMap(keys /*Array*/, values /*Array*/) {
+function ArrayMap() {
+    var keys = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var values = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
     Object.defineProperties(this, {
         /**
          * @private
@@ -6449,24 +6548,33 @@ function ArrayMap(keys /*Array*/, values /*Array*/) {
     }
 }
 
-/**
- * @extends KeyValuePair
- */
 ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
     /**
-     * Returns the number of key-value mappings in this map.
+     * The constructor reference of this instance.
      */
-    length: {
-        get: function get() {
+    constructor: { writable: true, value: ArrayMap },
+
+    /**
+     * The number of key-value mappings in this map.
+     * @name length
+     * @memberof system.data.maps.ArrayMap
+     * @instance
+     * @type {number}
+     * @readonly
+     */
+    length: { get: function get() {
             return this._keys.length;
-        }
-    }
+        } }
 });
 
 ArrayMap.prototype.constructor = ArrayMap;
 
 /**
  * Removes all mappings from this map (optional operation).
+ * @name clear
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.clear = function () {
     this._keys = [];
@@ -6476,6 +6584,10 @@ ArrayMap.prototype.clear = function () {
 /**
  * Returns a shallow copy of this ArrayMap instance: the keys and values themselves are not cloned.
  * @return a shallow copy of this ArrayMap instance: the keys and values themselves are not cloned.
+ * @name clone
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.clone = function () {
     return new ArrayMap(this._keys, this._values);
@@ -6483,8 +6595,12 @@ ArrayMap.prototype.clone = function () {
 
 /**
  * Removes the mapping for this key from this map if present.
- * @param o The key whose mapping is to be removed from the map.
- * @return previous value associated with specified key, or null if there was no mapping for key. A null return can also indicate that the map previously associated null with the specified key.
+ * @param {*} key - The key whose mapping is to be removed from the map.
+ * @return previous value associated with specified key, or null if there was no mapping for key. A <code>null</code> return can also indicate that the map previously associated null with the specified key.
+ * @name delete
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.delete = function (key) {
     var v = null;
@@ -6499,8 +6615,12 @@ ArrayMap.prototype.delete = function (key) {
 
 /**
  * The forEach() method executes a provided function once per each key/value pair in the Map object, in insertion order.
- * @param callback Function to execute for each element.
- * @param thisArg Value to use as this when executing callback.
+ * @param {function} callback - Function to execute for each element.
+ * @param {Object} thisArg - Value to use as this when executing callback.
+ * @name forEach
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.forEach = function (callback) {
     var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -6517,7 +6637,12 @@ ArrayMap.prototype.forEach = function (callback) {
 
 /**
  * Returns the value to which this map maps the specified key.
+ * @param {*} key - The key of the entry to retrieve in the collection.
  * @return the value to which this map maps the specified key.
+ * @name get
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.get = function (key) {
     return this._values[this.indexOfKey(key)];
@@ -6525,45 +6650,64 @@ ArrayMap.prototype.get = function (key) {
 
 /**
  * Returns the value to which this map maps the specified key.
+ * @param {number} index - The index of the key in the array map.
  * @return the value to which this map maps the specified key.
+ * @name getKeyAt
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.getKeyAt = function (index /*uint*/) {
+ArrayMap.prototype.getKeyAt = function (index) {
     return this._keys[index];
 };
 
 /**
  * Returns the value to which this map maps the specified key.
+ * @param {number} index - The index of the value in the array map.
  * @return the value to which this map maps the specified key.
+ * @name getValueAt
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.getValueAt = function (index /*uint*/) {
     return this._values[index];
 };
 
 /**
- * Returns {@code true} if this map contains a mapping for the specified key.
- * @return {@code true} if this map contains a mapping for the specified key.
+ * Returns <code>true</code> if this map contains a mapping for the specified key.
+ * @param {*} key - The key of the entry to retrieve in the collection.
+ * @name has
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.has = function (key) /*Boolean*/
-{
+ArrayMap.prototype.has = function (key) {
     return this.indexOfKey(key) > -1;
 };
 
 /**
- * Returns {@code true} if this map maps one or more keys to the specified value.
- * @return {@code true} if this map maps one or more keys to the specified value.
+ * Returns <code>true</code> if this map maps one or more keys to the specified value.
+ * @return <code>true</code> if this map maps one or more keys to the specified value.
+ * @name hasValue
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.hasValue = function (value) /*Boolean*/
-{
+ArrayMap.prototype.hasValue = function (value) {
     return this.indexOfValue(value) > -1;
 };
 
 /**
  * Returns the index of the specified key in argument.
- * @param key the key in the map to search.
- * @return the index of the specified key in argument.
+ * @param {*} key - The key in the map to search.
+ * @return The index of the specified key in argument.
+ * @name indexOfKey
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.indexOfKey = function (key) /*int*/
-{
+ArrayMap.prototype.indexOfKey = function (key) {
     var l = this._keys.length;
     while (--l > -1) {
         if (this._keys[l] === key) {
@@ -6575,11 +6719,14 @@ ArrayMap.prototype.indexOfKey = function (key) /*int*/
 
 /**
  * Returns the index of the specified value in argument.
- * @param value the value in the map to search.
+ * @param {*} value - The value in the map to search.
  * @return the index of the specified value in argument.
+ * @name indexOfValue
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.indexOfValue = function (value) /*int*/
-{
+ArrayMap.prototype.indexOfValue = function (value) {
     var l = this._values.length;
     while (--l > -1) {
         if (this._values[l] === value) {
@@ -6590,26 +6737,36 @@ ArrayMap.prototype.indexOfValue = function (value) /*int*/
 };
 
 /**
- * Returns true if this map contains no key-value mappings.
- * @return true if this map contains no key-value mappings.
+ * Returns <code>true</code> if this map contains no key-value mappings.
+ * @return <code>true</code> if this map contains no key-value mappings.
+ * @name isEmpty
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.isEmpty = function () /*Boolean*/
-{
+ArrayMap.prototype.isEmpty = function () {
     return this._keys.length === 0;
 };
 
 /**
  * Returns the values iterator of this map.
  * @return the values iterator of this map.
+ * @name iterator
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.iterator = function () /*Iterator*/
-{
+ArrayMap.prototype.iterator = function () {
     return new MapIterator(this);
 };
 
 /**
  * Returns the keys iterator of this map.
  * @return the keys iterator of this map.
+ * @name keyIterator
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.keyIterator = function () /*Iterator*/
 {
@@ -6619,20 +6776,27 @@ ArrayMap.prototype.keyIterator = function () /*Iterator*/
 /**
  * Returns an array representation of all keys in the map.
  * @return an array representation of all keys in the map.
+ * @name keys
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.keys = function () /*Array*/
-{
+ArrayMap.prototype.keys = function () {
     return this._keys.concat();
 };
 
 /**
  * Associates the specified value with the specified key in this map.
- * @param key the key to register the value.
- * @param value the value to be mapped in the map.
+ * @param {*} key - The key to register the value.
+ * @param {*} value - The value to be mapped in the map.
+ * @name set
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.set = function (key, value) {
     var r = null;
-    var i /*Number*/ = this.indexOfKey(key);
+    var i = this.indexOfKey(key);
     if (i < 0) {
         this._keys.push(key);
         this._values.push(value);
@@ -6645,8 +6809,13 @@ ArrayMap.prototype.set = function (key, value) {
 
 /**
  * Copies all of the mappings from the specified map to this one.
+ * @param {system.data.KeyValuePair} map - The map to fill the current map.
+ * @name setAll
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.setAll = function (map /*KeyValuePair*/) {
+ArrayMap.prototype.setAll = function (map) {
     if (!map || !(map instanceof KeyValuePair)) {
         return;
     }
@@ -6659,13 +6828,17 @@ ArrayMap.prototype.setAll = function (map /*KeyValuePair*/) {
 };
 
 /**
- * Sets the value of the "key" in the ArrayMap with the specified index.
- * @param index The position of the entry in the ArrayMap.
- * @param value The value of the entry to change.
- * @return A MapEntry who corresponding the old key/value entry or null if the key already exist or the specified index don't exist.
+ * Sets the value of the <code>"key"</code> in the <code>ArrayMap</code> with the specified index.
+ * @param {number} index - The position of the entry in the ArrayMap.
+ * @param {*} key - The key of the entry to change.
+ * @return A {@link system.data.maps.MapEntry|MapEntry} who corresponding the old key/value entry or null if the key already exist or the specified index don't exist.
  * @throws RangeError If the index is out of the range of the Map size.
+ * @name setKeyAt
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.setKeyAt = function (index /*uint*/, key) {
+ArrayMap.prototype.setKeyAt = function (index, key) {
     if (index >= this._keys.length) {
         throw new RangeError("ArrayMap.setKeyAt(" + index + ") failed with an index out of the range.");
     }
@@ -6684,9 +6857,15 @@ ArrayMap.prototype.setKeyAt = function (index /*uint*/, key) {
 
 /**
  * Sets the value of the "value" in the HashMap (ArrayMap) with the specified index.
- * @return the old value in the map if exist.
+ * @param {number} index - The position of the entry in the ArrayMap.
+ * @param {*} value - The value of the entry to change.
+ * @return A {@link system.data.maps.MapEntry|MapEntry} who corresponding the old key/value entry or null if the key already exist or the specified index don't exist.
+ * @name setValueAt
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.setValueAt = function (index /*Number*/, value) {
+ArrayMap.prototype.setValueAt = function (index, value) {
     if (index >= this._keys.length) {
         throw new RangeError("ArrayMap.setValueAt(" + index + ") failed with an index out of the range.");
     }
@@ -6702,6 +6881,10 @@ ArrayMap.prototype.setValueAt = function (index /*Number*/, value) {
 /**
  * Returns the string representation of this map.
  * @return the string representation of this map.
+ * @name toString
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
 ArrayMap.prototype.toString = function () {
     return formatter.format(this);
@@ -6710,9 +6893,12 @@ ArrayMap.prototype.toString = function () {
 /**
  * Returns an array representation of all values in the map.
  * @return an array representation of all values in the map.
+ * @name values
+ * @memberof system.data.maps.ArrayMap
+ * @instance
+ * @function
  */
-ArrayMap.prototype.values = function () /*Array*/
-{
+ArrayMap.prototype.values = function () {
     return this._values.concat();
 };
 
@@ -6730,32 +6916,44 @@ ArrayMap.prototype.values = function () /*Array*/
  * @memberof system
  */
 var data = Object.assign({
-    // singletons
-    isIdentifiable: isIdentifiable,
-    isIterator: isIterator,
-    isOrderedIterator: isOrderedIterator,
-    isValidator: isValidator,
+  // singletons
+  isIdentifiable: isIdentifiable,
+  isIterator: isIterator,
+  isOrderedIterator: isOrderedIterator,
+  isValidator: isValidator,
 
-    // interfaces
-    Identifiable: Identifiable,
-    Iterator: Iterator,
-    KeyValuePair: KeyValuePair,
-    OrderedIterator: OrderedIterator,
-    Property: Property,
-    Validator: Validator,
+  // interfaces
+  Identifiable: Identifiable,
+  Iterator: Iterator,
+  KeyValuePair: KeyValuePair,
+  OrderedIterator: OrderedIterator,
+  Property: Property,
+  Validator: Validator,
 
-    // classes
-    Attribute: Attribute,
-    Method: Method,
+  // classes
+  Attribute: Attribute,
+  Method: Method,
 
-    // packages
-    iterators: {
-        ArrayIterator: ArrayIterator,
-        MapIterator: MapIterator
-    },
-    maps: {
-        ArrayMap: ArrayMap
-    }
+  /**
+   * This package contains all {@link system.data.Iterator|Iterator} implementations : {@link system.data.iterators.ArrayIterator|ArrayIterator}, {@link system.data.iterators.MapIterator|MapIterator}, etc.
+   * @summary This package contains all {@link system.data.Iterator|Iterator} implementations : {@link system.data.iterators.ArrayIterator|ArrayIterator}, {@link system.data.iterators.MapIterator|MapIterator}, etc.
+   * @namespace system.data.iterators
+   * @memberof system.data
+   */
+  iterators: {
+    ArrayIterator: ArrayIterator,
+    MapIterator: MapIterator
+  },
+
+  /**
+   * This package contains all {@link system.data.KeyValuePair|KeyValuePair} extended implementations : {@link system.data.maps.ArrayMap|ArrayMap}, etc.
+   * @summary This package contains all {@link system.data.KeyValuePair|KeyValuePair} extended implementations : {@link system.data.maps.ArrayMap|ArrayMap}, etc.
+   * @namespace system.data.maps
+   * @memberof system.data
+   */
+  maps: {
+    ArrayMap: ArrayMap
+  }
 });
 
 /**
@@ -9261,243 +9459,426 @@ var logger = Log.getLogger("system.ioc.logger");
 
 /**
  * Enumeration of all "magic reference patterns" id can be use in the object definition to create a dependency with special object reference in the factory.
+ * @name MagicReference
+ * @namespace system.ioc.MagicReference
+ * @memberof system.ioc
  */
 
 var MagicReference = Object.defineProperties({}, {
   /**
    * The reference pattern who represents the current config reference of the application defines in the config object in the factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #config
+   * @const
    */
   CONFIG: { value: "#config", enumerable: true },
 
   /**
    * The reference pattern who represents the init magic name used in the property definitions to change the strategy of the current member initialisation.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #init
+   * @const
    */
   INIT: { value: "#init", enumerable: true },
 
   /**
    * The reference pattern who represents the current locale reference of the application defines in the config object in the factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #locale
+   * @const
    */
   LOCALE: { value: "#locale", enumerable: true },
 
   /**
    * The reference pattern who represents the current Parameters reference of the application defines in the config object in the factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #params
+   * @const
    */
   PARAMS: { value: "#params", enumerable: true },
 
   /**
    * The reference pattern who represents the current root reference of the application defines in the config object in the factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #root
+   * @const
    */
   ROOT: { value: "#root", enumerable: true },
 
   /**
    * The reference pattern who represents the current stage reference of the application defines in the config object in the factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #stage
+   * @const
    */
   STAGE: { value: "#stage", enumerable: true },
 
   /**
    * The reference pattern who represents the current factory.
+   * @memberof system.ioc.MagicReference
+   * @type {string}
+   * @default #this
+   * @const
    */
   THIS: { value: "#this", enumerable: true }
 });
 
 /**
- * The static enumeration list of all object attributes.
+ * The enumeration of all object attributes.
+ * @name ObjectAttribute
+ * @namespace system.ioc.ObjectAttribute
+ * @memberof system.ioc
  */
 
 var ObjectAttribute = Object.defineProperties({}, {
   /**
    * Defines the label of the arguments in a method or a constructor object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default args
+   * @const
    */
   ARGUMENTS: { value: 'args', enumerable: true }, // The Javascript keyword 'arguments' is reserved, use 'args' !
 
   /**
    * Defines the attribute name of the 'config' object in the configuration of the ioc factory.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default config
+   * @const
    */
   CONFIG: { value: 'config', enumerable: true },
 
   /**
    * Defines the label of the 'configuration' top-level attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default configuration
+   * @const
    */
   CONFIGURATION: { value: 'configuration', enumerable: true },
 
   /**
    * Defines the label of the 'evaluators' attribure.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default evaluators
+   * @const
    */
   EVALUATORS: { value: 'evaluators', enumerable: true },
 
   /**
    * Defines the label of the 'factory' attribure.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factory
+   * @const
    */
   FACTORY: { value: 'factory', enumerable: true },
 
   /**
    * Defines the label of the 'identify' property of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default identify
+   * @const
    */
   IDENTIFY: { value: 'identify', enumerable: true },
 
   /**
    * Defines the label of the 'i18n' top-level attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default i18n
+   * @const
    */
   I18N: { value: 'i18n', enumerable: true },
 
   /**
    * Defines the label of the 'imports' top-level attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default imports
+   * @const
    */
   IMPORTS: { value: 'imports', enumerable: true },
 
   /**
    * Defines the label of the lazyInit name property of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default lazyInit
+   * @const
    */
   LAZY_INIT: { value: 'lazyInit', enumerable: true },
 
   /**
    * Defines the attribute name of the 'locale' object in the configuration of the ioc factory and the object definition 'arguments' and 'properties'.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default locale
+   * @const
    */
   LOCALE: { value: 'locale', enumerable: true },
 
   /**
    * Defines the label of the 'lock' property of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default lock
+   * @const
    */
   LOCK: { value: 'lock', enumerable: true },
 
   /**
    * Defines the label of the name in a property object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default name
+   * @const
    */
   NAME: { value: 'name', enumerable: true },
 
   /**
    * The name of the 'dependsOn' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default dependsOn
+   * @const
    */
   OBJECT_DEPENDS_ON: { value: 'dependsOn', enumerable: true },
 
   /**
    * The name of the external object property to register the destroy method name.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default destroy
+   * @const
    */
   OBJECT_DESTROY_METHOD_NAME: { value: 'destroy', enumerable: true },
 
   /**
    * The name of the 'factoryLogic' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factoryLogic
+   * @const
    */
   OBJECT_FACTORY_LOGIC: { value: 'factoryLogic', enumerable: true },
 
   /**
    * The name of the 'factoryMethod' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factoryMethod
+   * @const
    */
   OBJECT_FACTORY_METHOD: { value: 'factoryMethod', enumerable: true },
 
   /**
    * The name of the 'factoryProperty' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factoryProperty
+   * @const
    */
   OBJECT_FACTORY_PROPERTY: { value: 'factoryProperty', enumerable: true },
 
   /**
    * The name of the 'factoryReference' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factoryReference
+   * @const
    */
   OBJECT_FACTORY_REFERENCE: { value: 'factoryReference', enumerable: true },
 
   /**
    * The name of the 'factoryValue' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default factoryValue
+   * @const
    */
   OBJECT_FACTORY_VALUE: { value: 'factoryValue', enumerable: true },
 
   /**
    * The name of the 'generates' object definition attribute.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default generates
+   * @const
    */
   OBJECT_GENERATES: { value: 'generates', enumerable: true },
 
   /**
    * The name of the external object property to define the identifier of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default id
+   * @const
    */
   OBJECT_ID: { value: 'id', enumerable: true },
 
   /**
    * The name of the external object property to register the init method name.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default init
+   * @const
    */
   OBJECT_INIT_METHOD_NAME: { value: 'init', enumerable: true },
 
   /**
    * Defines the label of the 'listeners' name property of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default listeners
+   * @const
    */
   OBJECT_LISTENERS: { value: 'listeners', enumerable: true },
 
   /**
    * The name of the external object property to register the properties.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default properties
+   * @const
    */
   OBJECT_PROPERTIES: { value: 'properties', enumerable: true },
 
   /**
    * Defines the label of the 'receivers' name property of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default receivers
+   * @const
    */
   OBJECT_RECEIVERS: { value: 'receivers', enumerable: true },
 
   /**
    * The name of the external object property to define the scope flag of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default scope
+   * @const
    */
   OBJECT_SCOPE: { value: 'scope', enumerable: true },
 
   /**
    * The name of the external object property to define the singleton flag of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default singleton
+   * @const
    */
   OBJECT_SINGLETON: { value: 'singleton', enumerable: true },
 
   /**
    * The name of the external object property to define the static factory flag of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default staticFactoryMethod
+   * @const
    */
   OBJECT_STATIC_FACTORY_METHOD: { value: 'staticFactoryMethod', enumerable: true },
 
   /**
    * The name of the external object property to define the static property flag of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default staticFactoryProperty
+   * @const
    */
   OBJECT_STATIC_FACTORY_PROPERTY: { value: 'staticFactoryProperty', enumerable: true },
 
   /**
    * Defines the label of the 'objects' top-level attribute.
+   * @memberof system.ioc.objects
+   * @type {string}
+   * @default args
+   * @const
    */
   OBJECTS: { value: 'objects', enumerable: true },
 
   /**
    * Defines the label of the 'resource' attribute in the imports objects.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default resource
+   * @const
    */
   RESOURCE: { value: 'resource', enumerable: true },
 
   /**
    * Defines the label of the type of the object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default type
+   * @const
    */
   TYPE: { value: 'type', enumerable: true },
 
   /**
    * Defines the attribute name of the alias expression in a typeAlias object in the configuration of the ioc factory.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default alias
+   * @const
    */
   TYPE_ALIAS: { value: 'alias', enumerable: true },
 
   /**
    * Defines the attribute name of the 'typeAliases' Array in the configuration of the ioc factory.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default typeAliases
+   * @const
    */
   TYPE_ALIASES: { value: 'typeAliases', enumerable: true },
 
   /**
    * Defines the attribute name of the 'typeExpression' Array in the configuration of the ioc factory.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default typeExpression
+   * @const
    */
   TYPE_EXPRESSION: { value: 'typeExpression', enumerable: true },
 
   /**
    * Defines the label of the reference in a property object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default ref
+   * @const
    */
   REFERENCE: { value: 'ref', enumerable: true },
 
   /**
    * Defines the label of the value in a property object.
+   * @memberof system.ioc.ObjectAttribute
+   * @type {string}
+   * @default value
+   * @const
    */
   VALUE: { value: 'value', enumerable: true }
 });
 
 /**
- * Represents the log information for a single logging notification.
- * The loging system dispatches a single message each time a process requests information be logged.
- * This entry can be captured by any object for storage or formatting.
- * @param message The context or message of the log.
- * @param level The level of the log.
- * @param channel The Logger reference of this entry.
+ * This object defines an argument definition in an object definition.
+ * @name ObjectArgument
+ * @class
+ * @memberof system.ioc
+ * @param {*} value - The value of the argument.
+ * @param {string} [policy=value] - The policy of the property ({@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE})
+ * @param {array} [evaluators] - The optional Array representation of all evaluators who evaluate the value of the argument.
  */
 function ObjectArgument(value) {
     var policy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "value";
@@ -9507,43 +9888,59 @@ function ObjectArgument(value) {
         /**
          * @private
          */
-        _policy: { value: null, writable: true },
-
-        /**
-         * Defines the policy of the property.
-         */
-        policy: {
-            get: function policy() {
-                return this._policy;
-            },
-            set: function set(str) {
-                switch (str) {
-                    case ObjectAttribute.REFERENCE:
-                    case ObjectAttribute.CONFIG:
-                    case ObjectAttribute.LOCALE:
-                        {
-                            this._policy = str;
-                            break;
-                        }
-                    default:
-                        {
-                            this._policy = ObjectAttribute.VALUE;
-                        }
-                }
-            }
-        }
+        _policy: { value: null, writable: true }
     });
 
     this.policy = policy;
+
+    /**
+     * Defines the policy of the property.
+     * @name value
+     * @memberof system.ioc.ObjectArgument
+     * @instance
+     */
     this.value = value;
+
+    /**
+     * Defines the policy of the property.
+     * @name evaluators
+     * @memberof system.ioc.ObjectArgument
+     * @instance
+     * @type Array
+     */
     this.evaluators = evaluators instanceof Array ? [].concat(evaluators) : null;
 }
 
-/**
- * @extends Object
- */
 ObjectArgument.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectArgument },
+
+    /**
+     * Defines the policy of the property.
+     * @name policy
+     * @memberof system.ioc.ObjectArgument
+     * @type {string}
+     * @instance
+     */
+    policy: {
+        get: function policy() {
+            return this._policy;
+        },
+        set: function set(str) {
+            switch (str) {
+                case ObjectAttribute.REFERENCE:
+                case ObjectAttribute.CONFIG:
+                case ObjectAttribute.LOCALE:
+                    {
+                        this._policy = str;
+                        break;
+                    }
+                default:
+                    {
+                        this._policy = ObjectAttribute.VALUE;
+                    }
+            }
+        }
+    },
 
     /**
      * Returns the String representation of the object.
@@ -9825,30 +10222,42 @@ var ObjectOrder = Object.defineProperties({}, {
 
 /**
  * This object defines a listener definition in an object definition.
- * @param dispatcher The dispatcher expression reference of the listener.
- * @param type type name of the event dispatched by the dispatcher of this listener.
- * @param method The name of the method to invoke when the event is handle.
- * @param useCapture Determinates if the event flow use capture or not.
- * @param order Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * @name ObjectListener
+ * @class
+ * @memberof system.ioc
+ * @param {string} dispatcher - The dispatcher expression reference of the listener.
+ * @param {string} type - The type name of the event dispatched by the dispatcher of this listener.
+ * @param {string} [method=null] - The name of the method to invoke when the event is handle.
+ * @param {boolean} [useCapture=false] -  Determinates if the event flow use capture or not.
+ * @param {string} [order=after] Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
-function ObjectListener(dispatcher /*String*/, type /*String*/) {
-  var method /*Boolean*/ = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var useCapture /*Boolean*/ = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var order /*String*/ = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
+function ObjectListener(dispatcher, type) {
+  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
 
   Object.defineProperties(this, {
     /**
      * The dispatcher expression reference of the listener.
+     * @name dispatcher
+     * @memberof system.ioc.ObjectListener
+     * @instance
      */
     dispatcher: { value: dispatcher, writable: true },
 
     /**
-     * The name of the method to invoke when the event is handle.
+     * The <b>name</b> of the method to invoke when the event is handle.
+     * @name method
+     * @memberof system.ioc.ObjectListener
+     * @instance
      */
     method: { value: method, writable: true },
 
     /**
-     * Determinates the order of the receiver registration ('after' or by default 'before').
+     * Determinates the <code>order</code> of the receiver registration (<code>'after'</code> or by default <code>'before'</code>).
+     * @name order
+     * @memberof system.ioc.ObjectListener
+     * @instance
      */
     order: {
       get: function get() {
@@ -9861,11 +10270,18 @@ function ObjectListener(dispatcher /*String*/, type /*String*/) {
 
     /**
      * The type name of the event dispatched by the dispatcher.
+     * @name type
+     * @memberof system.ioc.ObjectListener
+     * @instance
      */
     type: { value: type, writable: true },
 
     /**
      * Determinates if the event flow use capture or not.
+     * @name useCapture
+     * @memberof system.ioc.ObjectListener
+     * @instance
+     * @type boolean
      */
     useCapture: { value: Boolean(useCapture), writable: true },
 
@@ -9879,33 +10295,45 @@ function ObjectListener(dispatcher /*String*/, type /*String*/) {
 Object.defineProperties(ObjectListener, {
   /**
    * Defines the "dispatcher" attribute in a listener object definition.
+   * @memberof system.ioc.ObjectListener
+   * @type string
+   * @default dispatcher
    */
   DISPATCHER: { value: "dispatcher", enumerable: true },
 
   /**
    * Defines the "method" attribute in a listener object definition.
+   * @memberof system.ioc.ObjectListener
+   * @type string
+   * @default method
    */
   METHOD: { value: "method", enumerable: true },
 
   /**
    * Defines the "order" attribute in a listener object definition.
+   * @memberof system.ioc.ObjectListener
+   * @type string
+   * @default order
    */
   ORDER: { value: "order", enumerable: true },
 
   /**
    * Defines the "useCapture" attribute in a listener object definition.
+   * @memberof system.ioc.ObjectListener
+   * @type string
+   * @default useCapture
    */
   USE_CAPTURE: { value: "useCapture", enumerable: true },
 
   /**
    * Defines the "type" attribute in a listener object definition.
+   * @memberof system.ioc.ObjectListener
+   * @type string
+   * @default type
    */
   TYPE: { value: "type", enumerable: true }
 });
 
-/**
- * @extends Object
- */
 ObjectListener.prototype = Object.create(Object.prototype, {
   /**
    * Returns a reference to the Object function that created the instance's prototype.
@@ -9915,6 +10343,10 @@ ObjectListener.prototype = Object.create(Object.prototype, {
   /**
    * Returns the string representation of this instance.
    * @return the string representation of this instance.
+   * @name toString
+   * @memberof system.ioc.ObjectListener
+   * @instance
+   * @function
    */
   toString: { value: function value() {
       var s = '[ObjectListener';
@@ -11732,7 +12164,11 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
 });
 
 /**
- * The basic Inversion of Control container/factory class.
+ * The basic <b>Inversion of Control</b> container and factory.
+ * @name ObjectFactory
+ * @class
+ * @memberof system.ioc
+ * @extends system.ioc.ObjectDefinitionContainer
  * @example
  * var Point = function( x , y )
  * {
@@ -11796,41 +12232,19 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
  * factory.run( objects );
  *
  * trace( factory.getObject('position') ) ;
+ * @param {system.ioc.ObjectConfig} [config=null] - The configuration object of the factory.
+ * @param {array} [objects=null] - The object definitions collection to initialize the factory.
  */
 function ObjectFactory() {
-    var config /*ObjectConfig*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var objects /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var objects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     ObjectDefinitionContainer.call(this);
     Object.defineProperties(this, {
         /**
-         * The dispatcher expression reference of the listener.
-         */
-        config: {
-            get: function get() {
-                return this._config;
-            },
-            set: function set(config) {
-                if (this._config) {
-                    this._config.referenceEvaluator.factory = null;
-                }
-                this._config = config instanceof ObjectConfig ? config : new ObjectConfig();
-                this._config.referenceEvaluator.factory = this;
-            }
-        },
-
-        /**
          * This array contains objects to fill this factory with the run or create method.
          */
         objects: { value: objects instanceof Array ? objects : null, writable: true },
-
-        /**
-         * Returns the Map representation of all singletons register in this factory.
-         * @return the Map representation of all singletons register in this factory.
-         */
-        singletons: { get: function get() {
-                return this._singletons;
-            } },
 
         /**
          * @private
@@ -11866,34 +12280,72 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     constructor: { value: ObjectFactory },
 
     /**
-     * Returns a shallow copy of this object.
-     * @return a shallow copy of this object.
+     * Determinates the configuration object of the object factory.
+     * @name config
+     * @memberof system.ioc.ObjectFactory
+     * @type {system.ioc.ObjectConfig}
+     * @instance
      */
-    clone: {
-        value: function value() {
-            return new ObjectFactory(this.config, [].concat(this.objects));
+    config: {
+        get: function get() {
+            return this._config;
+        },
+        set: function set(config) {
+            if (this._config) {
+                this._config.referenceEvaluator.factory = null;
+            }
+            this._config = config instanceof ObjectConfig ? config : new ObjectConfig();
+            this._config.referenceEvaluator.factory = this;
         }
     },
+
+    /**
+     * The {@link system.data.maps.ArrayMap} representation of all <code>singletons</code> registered in this factory.
+     * @name singletons
+     * @memberof system.ioc.ObjectFactory
+     * @type {system.data.maps.ArrayMap}
+     * @instance
+     * @readonly
+     */
+    singletons: { get: function get() {
+            return this._singletons;
+        } },
+
+    /**
+     * Returns a shallow copy of this object.
+     * @return a shallow copy of this object.
+     * @name clone
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
+     */
+    clone: { value: function value() {
+            return new ObjectFactory(this.config, [].concat(this.objects));
+        } },
 
     /**
      * Indicates if a singleton reference is register in the factory with the specified id.
-     * @param The 'id' of the singleton.
-     * @return <code class="prettyprint">true</code> if the singleton reference exist in the factory.
+     * @param {string} id - The index expression of the singleton.
+     * @return <code>true</code> if the singleton reference is register in the factory.
+     * @name hasSingleton
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    hasSingleton: {
-        value: function value(id) /*Boolean*/
-        {
+    hasSingleton: { value: function value(id) {
             return this._singletons.has(id);
-        }
-    },
+        } },
 
     /**
-     * This method returns an object with the specified id in argument.
-     * @param id The 'id' of the object to return.
-     * @return the instance of the object with the id passed in argument.
+     * This method returns an object with the specified <code>id</code> in argument.
+     * @param {string} id - The index expression of the object to returns.
+     * @return The instance of the object with the id passed in argument.
+     * @name getObject
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    getObject: {
-        value: function value(id) {
+    getObject: { value: function value(id) {
             if (!(id instanceof String || typeof id === 'string')) {
                 return null;
             }
@@ -11971,25 +12423,31 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
 
             return instance || null;
-        }
-    },
+        } },
 
     /**
-     * Indicates if the factory is dirty, must flush this buffer of not lazy-init singleton object definitions.
-     * The user must execute the run or create methods to flush this buffer.
+     * Indicates if the <code>factory</code> is dirty, must flush this buffer of not lazy-init singleton object definitions. The user must execute the run or create methods to flush this buffer.
+     * @return <code>true</code> if the factory is dirty.
+     * @name isDirty
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    isDirty: { value: function value() /*Boolean*/
-        {
+    isDirty: { value: function value() {
             return this.bufferSingletons && this.bufferSingletons instanceof Array && this.bufferSingletons.length > 0;
         } },
 
     /**
-     * This method indicates if the specified object definition is lazy init.
-     * @param id The 'id' of the object definition to check..
-     * @return <code class="prettyprint">true</code> if the specified object definition is lazy init.
+     * Indicates whether an <b>object definition</b> is to be lazily initialized.
+     * <p><b>Note:</b> The default behavior for {@link system.ioc.ObjectFactory|ObjectFactory} implementations is to eagerly pre-instantiate all singleton object definitions at startup. If the <b>object definition</b> <code>lazyInit</code> attribute is set to true, the <b>singleton</b> will not be initialized until referenced by another <b>object definition</b> or explicitly retrieved from the enclosing <b>ObjectFactory</b>. If present and set to false, the <b>object definition</b> will be instantiated on startup by factories that perform eager initialization of singletons.</p>
+     * @param {string} id - The index expression of the object to check.
+     * @return <code>true</code> if the specified object definition is lazyly initialized.
+     * @name isLazyInit
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    isLazyInit: { value: function value(id) /*Boolean*/
-        {
+    isLazyInit: { value: function value(id) {
             if (this.hasObjectDefinition(id)) {
                 return this.getObjectDefinition(id).lazyInit;
             } else {
@@ -11998,12 +12456,15 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
 
     /**
-     * This method defined if the scope of the specified object definition is "singleton".
-     * @param The 'id' of the object.
-     * @return <code class="prettyprint">true</code> if the object is a singleton.
+     * This method defined if the scope of the specified <b>object definition</b> is <code>singleton</code>.
+     * @param {string} id - The index expression of the object to check.
+     * @return <code>true</code> if the object is a singleton.
+     * @name isSingleton
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    isSingleton: { value: function value(id) /*Boolean*/
-        {
+    isSingleton: { value: function value(id) {
             if (this.hasObjectDefinition(id)) {
                 return this.getObjectDefinition(id).singleton;
             } else {
@@ -12012,9 +12473,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
 
     /**
-     * Removes and destroy a singleton in the container.
-     * Invoke the <b>'destroy'</b> method of this object is it's define in the <code class="prettyprint">IObjectDefinition</code> of this singleton.
-     * @param id The id of the singleton to remove.
+     * Removes and destroy a singleton in the <b>factory</b>.
+     * <p>Invoke the <code>destroy</code> method of this object is it's define in the <code>ObjectDefinition</code> of this singleton.</p>
+     * @param {string} id - The index expression of the object to remove.
+     * @name removeSingleton
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
       */
     removeSingleton: { value: function value(id) {
             if (this.isSingleton(id) && this._singletons.has(id)) {
@@ -12025,38 +12490,72 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Run the initialization of the factory with new object definitions and create the not lazy-init singleton objects.
-     * <p><b>Example :</b></p>
-     * <pre class="prettyprint">
-     * import flash.text.TextField ;
-     * import flash.text.TextFormat ;
+     * @example
+     * var Point = function( x , y )
+     * {
+     *     this.x = x ;
+     *     this.y = y ;
+     * };
      *
-     * import system.ioc.ObjectFactory ;
+     * Point.prototype.test = function( message = null )
+     * {
+     *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+     * }
      *
-     * var factory:ObjectFactory = new ObjectFactory();
+     * Point.prototype.toString = function()
+     * {
+     *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+     * } ;
      *
-     * factory.objects =
+     * var ObjectFactory = system.ioc.ObjectFactory ;
+     *
+     * var factory = new ObjectFactory();
+     * var config  = factory.config ;
+     *
+     * config.setConfigTarget
+     * ({
+     *     origin : { x : 10 , y : 20 }
+     * })
+     *
+     * config.setLocaleTarget
+     * ({
+     *     messages :
+     *     {
+     *         test : 'test'
+     *     }
+     * })
+     *
+     * var objects =
      * [
      *     {
-     *         id         : "my_field" ,
-     *         type       : "flash.text.TextField" ,
+     *         id   : "position" ,
+     *         type : "Point" ,
+     *         args : [ { value : 2 } , { ref : 'origin.y' }],
      *         properties :
      *         [
-     *             { name:"defaultTextFormat" , value:new TextFormat("Verdana", 11) } ,
-     *             { name:"selectable"        , value:false                         } ,
-     *             { name:"text"              , value:"hello world"                 } ,
-     *             { name:"textColor"         , value:0xF7F744                      } ,
-     *             { name:"x"                 , value:100                           } ,
-     *             { name:"y"                 , value:100                           }
+     *             { name : "x" , ref   :'origin.x' } ,
+     *             { name : "y" , value : 100       }
+     *         ]
+     *     },
+     *     {
+     *         id         : "origin" ,
+     *         type       : "Point" ,
+     *         singleton  : true ,
+     *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+     *         properties :
+     *         [
+     *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
      *         ]
      *     }
      * ];
      *
-     * factory.run();
+     * factory.run( objects );
      *
-     * var field:TextField = factory.getObject("my_field") as TextField ;
-     *
-     * addChild(field) ;
-     * </pre>
+     * trace( factory.getObject('position') ) ;
+     * @name run
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     run: { value: function value() {
             if (this.running) {
@@ -12113,14 +12612,22 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    toString: { value: function value() {
+    toString: { writable: true, value: function value() {
             return '[ObjectFactory]';
         } },
 
     /**
      * The custom warn method of this factory to log a warning message in the application.
      * You can overrides this method, the prototype object is dynamic.
+     * @name warn
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     warn: { value: function value() {
             if (this.config.useLogger && logger) {
@@ -12176,8 +12683,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
 
     /**
-     * Creates a new Object with a specified IObjectFactoryStrategy instance.
-     * @return A new Object with a specified IObjectFactoryStrategy instance.
+     * Creates a new Object with a specified <code>ObjectFactoryStrategy</code> instance.
+     * @return A new Object with a specified <code>ObjectFactoryStrategy</code> instance.
+     * @private
+     * @name createObjectWithStrategy
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     createObjectWithStrategy: { value: function value(strategy) {
             if (strategy instanceof ObjectStrategy) {
@@ -12239,8 +12751,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     /**
      * Invoked to creates all object in the factory register in the dependsOn collection.
      * <p>All objects in the dependsOn collection are initialized before the initialization of the current object build in the factory.</p>
+     * @private
+     * @name dependsOn
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    dependsOn: { value: function value(definition /*ObjectDefinition*/) {
+    dependsOn: { value: function value(definition) {
             if (definition instanceof ObjectDefinition && definition.dependsOn instanceof Array && definition.dependsOn.length > 0) {
                 var id;
                 var len = definition.dependsOn.length;
@@ -12258,9 +12775,14 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * @param value The value to evaluate.
      * @param evaluators The Array who contains IEvaluator objects or String ids who representing a IEvaluator in the factory.
      * @return The new value after evaluation.
+     * @private
+     * @name eval
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     eval: { value: function value(_value) {
-            var evaluators /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var evaluators = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (!(evaluators instanceof Array) || evaluators.length === 0) {
                 return _value;
@@ -12294,6 +12816,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     /**
      * Invoked to creates all object in the factory register in the generates collection.
      * <p>All objects in the generates collection are initialized after the initialization of the current object build in the factory.</p>
+     * @private
+     * @name generates
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     generates: { value: function value(definition /*ObjectDefinition*/) {
             if (definition instanceof ObjectDefinition && definition.generates !== null) {
@@ -12313,9 +12840,14 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Invokes the destroy method of the specified object, if the init method is define in the IDefinition object.
+     * @private
+     * @name invokeDestroyMethod
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     invokeDestroyMethod: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var definition = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (definition && definition instanceof ObjectDefinition) {
                 var name = definition.destroyMethodName || null;
@@ -12330,6 +12862,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Invokes the init method of the specified object, if the init method is define in the IDefinition object.
+     * @private
+     * @name invokeInitMethod
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     invokeInitMethod: { value: function value(o) {
             var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12346,7 +12883,12 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
 
     /**
-     * Populates the <code class="prettyprint">Identifiable</code> singleton object, if the 'identify' flag is true the config of this factory and if specified the <code class="prettyprint">IObjectDefinition</code> object scope is singleton.
+     * Populates the <code>Identifiable</code> singleton object, if the 'identify' flag is true the config of this factory and if specified the <code>IObjectDefinition</code> object scope is singleton.
+     * @private
+     * @name populateIdentifiable
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     populateIdentifiable: { value: function value(o) {
             var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12362,6 +12904,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Populates all properties in the Map passed in argument.
+     * @private
+     * @name populateProperties
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     populateProperties: { value: function value(o) {
             var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12383,6 +12930,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
      * @param o The object to populate.
      * @param prop The ObjectProperty used to populate the object.
      * @param id The id of the current IObjectDefinition.
+     * @private
+     * @name populateProperty
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     populateProperty: { value: function value(o, prop /*ObjectProperty*/, id) {
             if (o === null) {
@@ -12457,8 +13009,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Initialize the listener callback of the specified object.
+     * @private
+     * @name registerListeners
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
-    registerListeners: { value: function value(o, listeners /*Array*/) {
+    registerListeners: { value: function value(o, listeners) {
             if (o === null || listeners === null) {
                 return;
             }
@@ -12491,6 +13048,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
 
     /**
      * Initialize the receiver callback of the specified object.
+     * @private
+     * @name registerReceivers
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      */
     registerReceivers: { value: function value(o) {
             var receivers /*Array*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12653,30 +13215,43 @@ ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
 
 /**
  * The enumeration of all type policies in the ObjectConfig object of the ioc factory.
+ * @name TypePolicy
+ * @namespace system.ioc.TypePolicy
+ * @memberof system.ioc
  */
 
 var TypePolicy = Object.defineProperties({}, {
   /**
-   * Defines the 'alias' TypePolicy value.
-   * Use it if you want use only type "alias" evaluation when a new object is created in the factory.
+   * Defines the <code>'alias'</code> policy value. Use it if you want use only type "alias" evaluation when a new object is created in the factory.
+   * @memberof system.ioc.TypePolicy
+   * @type string
+   * @default alias
+   * @const
    */
   ALIAS: { value: "alias", enumerable: true },
 
   /**
-   * Defines the 'all' TypePolicy value.
-   * Use it if you want use only all evaluation filters when a new object is created in the factory.
+   * Defines the <code>'all'</code> policy value. Use it if you want use only all evaluation filters when a new object is created in the factory.
+   * @memberof system.ioc.TypePolicy
+   * @type string
+   * @default all
+   * @const
    */
   ALL: { value: "all", enumerable: true },
 
   /**
-   * Defines the 'expression' TypePolicy value.
-   * Use it if you want use only type "expression" evaluation when a new object is created in the factory.
+   * Defines the <code>'expression'</code> policy value. Use it if you want use only type "expression" evaluation when a new object is created in the factory.
+   * @type string
+   * @default expression
+   * @const
    */
   EXPRESSION: { value: "expression", enumerable: true },
 
   /**
-   * Defines the 'none' TypePolicy value.
-   * Use it if you want no evaluation filter when a new object is created in the factory.
+   * Defines the <code>'none'</code> policy value. Use it if you want no evaluation filter when a new object is created in the factory.
+   * @type string
+   * @default none
+   * @const
    */
   NONE: { value: "none", enumerable: true }
 });
@@ -12790,12 +13365,21 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
 });
 
 /**
- * This object contains the configuration of the IoC object factory.
+ * This object contains the configuration of the <b>IoC</b> factory.
+ * @name ObjectConfig
+ * @class
+ * @memberof system.ioc
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  */
-function ObjectConfig(init) {
+function ObjectConfig() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
     Object.defineProperties(this, {
         /**
          * The config object reference used in the factory to register values and expressions.
+         * @name config
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         config: {
             get: function get() {
@@ -12812,6 +13396,10 @@ function ObjectConfig(init) {
 
         /**
          * Returns the config evaluator reference.
+         * @name configEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.ConfigEvaluator
+         * @readonly
          */
         configEvaluator: {
             get: function get() {
@@ -12821,31 +13409,51 @@ function ObjectConfig(init) {
 
         /**
          * The default name of destroy callback method to invoke with object definition in the ObjectFactory.
+         * @name defaultDestroyMethod
+         * @memberof system.ioc.ObjectConfig
+         * @type string
          */
         defaultDestroyMethod: { value: null, writable: true, enumerable: true },
 
         /**
          * The default name of init callback method to invoke with object definition in the ObjectFactory.
+         * @name defaultInitMethod
+         * @memberof system.ioc.ObjectConfig
+         * @type string
          */
         defaultInitMethod: { value: null, writable: true, enumerable: true },
 
         /**
          * The optional domain used in the factory to creates the objects (by default use core.global if this property is not defined).
+         * @name domain
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         domain: { value: null, writable: true, enumerable: true },
 
         /**
-         * Indicates if the singleton objects in the ObjectFactory are identifiy if the type of the object implements the Identifiable interface.
+         * Indicates if the singleton objects in the <code>ObjectFactory</code> are identifiy if the type of the object implements the {@link system.data.Identifiable} interface.
+         * @name identifiy
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         identify: { value: false, writable: true, enumerable: true },
 
         /**
-         * Indicates if the factory lock this "run" method and allow the flush of the singletons buffer who must be initialized when the process is finished.
+         * Indicates if the factory lock this <code>run</code> method and allow the flush of the singletons buffer who must be initialized when the process is finished.
+         * @name lazyInit
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         lazyInit: { value: false, writable: true, enumerable: true },
 
         /**
          * The locale object of the factory. To evaluate locale expression in the object definitions.
+         * @name locale
+         * @memberof system.ioc.ObjectConfig
+         * @type Object
          */
         locale: {
             get: function get() {
@@ -12862,6 +13470,10 @@ function ObjectConfig(init) {
 
         /**
          * Returns the local evaluator reference.
+         * @name locale
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.LocaleEvaluator
+         * @readonly
          */
         localeEvaluator: {
             get: function get() {
@@ -12870,18 +13482,28 @@ function ObjectConfig(init) {
         },
 
         /**
-         * Indicates if all the Lockable objects initialized in the object definitions in the factory must be locked during the invokation of this methods and the initialization of this properties.
+         * Indicates if all the {@link system.process.Lockable} objects initialized in the <b>object definitions</b> in the <b>factory</b> must be locked during the invokation of this methods and the initialization of this properties.
+         * @name lock
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         lock: { value: false, writable: true, enumerable: true },
 
         /**
          * The optional parameters object reference.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#params".
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#params"</code>.</p>
+         * @name parameters
+         * @memberof system.ioc.ObjectConfig
          */
         parameters: { value: null, writable: true, enumerable: true },
 
         /**
          * Indicates the reference evaluator object.
+         * @name referenceEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.ReferenceEvaluator
+         * @readonly
          */
         referenceEvaluator: {
             get: function get() {
@@ -12890,25 +13512,32 @@ function ObjectConfig(init) {
         },
 
         /**
-         * The root reference of the application.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#root".
+         * The <code>root</code> reference of the application.
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#root"</code>.</p>
+         * @name root
+         * @memberof system.ioc.ObjectConfig
          */
         root: { value: null, writable: true, enumerable: true },
 
         /**
          * The stage reference of the application.
-         * This property is optional and can be target in the IoC factory with the "ref" attribute with the value "#stage".
+         * <p>This property is optional and can be target in the <b>IoC factory</b> with the <code>"ref"</code> attribute with the value <code>"#stage"</code>.</p>
+         * @name stage
+         * @memberof system.ioc.ObjectConfig
          */
         stage: { value: null, writable: true, enumerable: true },
 
         /**
          * Indicates if the class throws errors or return null when an error is throwing.
+         * @name throwError
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
          */
         throwError: {
             get: function get() {
                 return this._configEvaluator.throwError && this._localeEvaluator.throwError && this._typeEvaluator.throwError && this._referenceEvaluator.throwError;
             },
-            set: function set(flag /*Boolean*/) {
+            set: function set(flag) {
                 this._configEvaluator.throwError = flag;
                 this._localeEvaluator.throwError = flag;
                 this._referenceEvaluator.throwError = flag;
@@ -12917,13 +13546,13 @@ function ObjectConfig(init) {
         },
 
         /**
-         * Determinates the typeAliases reference of this config object.
+         * Determinates the <code>typeAliases</code> reference of this <b>config</b> object.
          * <p>The setter of this virtual property can be populated with a TypeAliases instance or an Array of typeAliases items.</p>
-         * <p>This setter attribute don't remove the old TypeAliases instance but fill it with new aliases.
-         * If you want cleanup the aliases of this configuration object you must use the <code class="prettyprint">typeAliases.clear()</code> method.</p>
-         * <p>The typeAliases items are generic objects with 2 attributes <b>alias</b> (the alias String expression) and <b>type</b> (the type String expression).</p>
+         * <p>This setter attribute don't remove the old TypeAliases instance but fill it with new aliases. If you want cleanup the aliases of this configuration object you must use the <code>typeAliases.clear()</code> method.</p>
+         * <p>The <code>typeAliases</code> items are generic objects with 2 attributes <code>alias</code> (the alias String expression) and <code>type</code> (the type String expression).</p>
+         * @name typeAliases
+         * @memberof system.ioc.ObjectConfig
          * @example
-         * <pre>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          *
          * var config  = new ObjectConfig() ;
@@ -12932,7 +13561,6 @@ function ObjectConfig(init) {
          * [
          *     { alias : "Sprite" , type : "flash.display.Sprite" }
          * ] ;
-         * </pre>
          */
         typeAliases: {
             get: function get() {
@@ -12965,6 +13593,10 @@ function ObjectConfig(init) {
 
         /**
          * Indicates the type evaluator reference.
+         * @name typeEvaluator
+         * @memberof system.ioc.ObjectConfig
+         * @type system.ioc.evaluators.TypeEvaluator
+         * @readonly
          */
         typeEvaluator: {
             get: function get() {
@@ -12973,9 +13605,10 @@ function ObjectConfig(init) {
         },
 
         /**
-         * Determinates the content of the typeExpression reference in this config object.
-         * @example Example 1 : basic usage
-         * <pre>
+         * Determinates the content of the <code>typeExpression</code> reference in this config object.
+         * @name typeExpression
+         * @memberof system.ioc.ObjectConfig
+         * @example <caption>Example 1 : basic usage</caption>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
          *
@@ -12988,9 +13621,7 @@ function ObjectConfig(init) {
          * var config  = new ObjectConfig() ;
          *
          * config.typeExpression = exp ;
-         * </pre>
-         * @example Example 2 : Use an Array of entries with the name/value members
-         * <pre>
+         * @example <caption>Example 2 : Use an Array of entries with the name/value members</caption>
          * var ObjectConfig = system.ioc.ObjectConfig ;
          *
          * var expressions =
@@ -13003,7 +13634,6 @@ function ObjectConfig(init) {
          * var config = new ObjectConfig() ;
          *
          * config.typeExpression = expressions ;
-         * </pre>
          */
         typeExpression: {
             get: function get() {
@@ -13035,7 +13665,9 @@ function ObjectConfig(init) {
         /**
          * Indicates the type policy of the object factory who use this configuration object.
          * The default value of this attribute is <code>TypePolicy.NONE</code>.
-         * <p>You can use the TypePolicy.NONE, TypePolicy.ALL, TypePolicy.ALIAS, TypePolicy.EXPRESSION values.</p>
+         * <p>You can use the <code>TypePolicy.NONE</code>, <code>TypePolicy.ALL</code>, <code>TypePolicy.ALIAS</code>, <code>TypePolicy.EXPRESSION</code> values.</p>
+         * @name typePolicy
+         * @memberof system.ioc.ObjectConfig
          * @see system.ioc.TypePolicy
          */
         typePolicy: {
@@ -13060,7 +13692,11 @@ function ObjectConfig(init) {
         },
 
         /**
-         * Indicates if the logger model is used in the IoC factory to log the warning and errors.
+         * Indicates if a {@link system.logging.Logger|Logger} is used in the <b>IoC factory</b> to log the warning and errors.
+         * @name useLogger
+         * @memberof system.ioc.ObjectConfig
+         * @type boolean
+         * @default false
          */
         useLogger: { value: false, writable: true, enumerable: true },
 
@@ -13082,15 +13718,16 @@ function ObjectConfig(init) {
     this.initialize(init);
 }
 
-/**
- * @extends Object
- */
 ObjectConfig.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectConfig },
 
     /**
      * Initialize the config object.
-     * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+     * @name initialize
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
      */
     initialize: { value: function value(init) {
             if (init === null) {
@@ -13105,6 +13742,11 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
 
     /**
      * This method is used to change the target of the internal config dynamic object.
+     * @name setConfigTarget
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {object} o - The object to target the configuration object of the <b>factory</b>.
      */
     setConfigTarget: { value: function value() {
             var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -13114,6 +13756,11 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
 
     /**
      * This method is used to change the target of the internal local dynamic object.
+     * @name setLocaleTarget
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
+     * @param {object} o - The object to target the i18n object of the <b>factory</b>.
      */
     setLocaleTarget: { value: function value() {
             var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -13124,6 +13771,10 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof system.ioc.ObjectConfig
+     * @function
+     * @instance
      */
     toString: { value: function value() {
             return '[ObjectConfig]';
@@ -13219,27 +13870,90 @@ Parameters.prototype = Object.create(Object.prototype, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.ioc
  * @memberof system
+ * @example
+ * var Point = function( x , y )
+ * {
+ *     this.x = x ;
+ *     this.y = y ;
+ *     console.log("constructor:" + this.toString() ) ;
+ * };
+ *
+ * Point.prototype.test = function( message = null )
+ * {
+ *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+ * }
+ *
+ * Point.prototype.toString = function()
+ * {
+ *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+ * } ;
+ *
+ * var ObjectFactory = system.ioc.ObjectFactory ;
+ *
+ * var factory = new ObjectFactory();
+ * var config  = factory.config ;
+ *
+ * config.setConfigTarget
+ * ({
+ *     origin : { x : 10 , y : 20 }
+ * })
+ *
+ * config.setLocaleTarget
+ * ({
+ *     messages :
+ *     {
+ *         test : 'test'
+ *     }
+ * })
+ *
+ * var objects =
+ * [
+ *     {
+ *         id   : "position" ,
+ *         type : "Point" ,
+ *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         properties :
+ *         [
+ *             { name : "x" , ref   :'origin.x' } ,
+ *             { name : "y" , value : 100       }
+ *         ]
+ *     },
+ *     {
+ *         id         : "origin" ,
+ *         type       : "Point" ,
+ *         singleton  : true ,
+ *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *         properties :
+ *         [
+ *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *         ]
+ *     }
+ * ];
+ *
+ * factory.run( objects );
+ *
+ * trace( factory.getObject('position') ) ;
  */
 var ioc = Object.assign({
-    // singleton
-    logger: logger,
+  // singleton
+  logger: logger,
 
-    // classes
-    MagicReference: MagicReference,
-    ObjectArgument: ObjectArgument,
-    ObjectAttribute: ObjectAttribute,
-    ObjectConfig: ObjectConfig,
-    ObjectDefinition: ObjectDefinition,
-    ObjectDefinitionContainer: ObjectDefinitionContainer,
-    ObjectFactory: ObjectFactory,
-    ObjectListener: ObjectListener,
-    ObjectMethod: ObjectMethod,
-    ObjectOrder: ObjectOrder,
-    ObjectProperty: ObjectProperty,
-    ObjectReceiver: ObjectReceiver,
-    ObjectScope: ObjectScope,
-    Parameters: Parameters,
-    TypePolicy: TypePolicy
+  // classes
+  MagicReference: MagicReference,
+  ObjectArgument: ObjectArgument,
+  ObjectAttribute: ObjectAttribute,
+  ObjectConfig: ObjectConfig,
+  ObjectDefinition: ObjectDefinition,
+  ObjectDefinitionContainer: ObjectDefinitionContainer,
+  ObjectFactory: ObjectFactory,
+  ObjectListener: ObjectListener,
+  ObjectMethod: ObjectMethod,
+  ObjectOrder: ObjectOrder,
+  ObjectProperty: ObjectProperty,
+  ObjectReceiver: ObjectReceiver,
+  ObjectScope: ObjectScope,
+  Parameters: Parameters,
+  TypePolicy: TypePolicy
 });
 
 /*jshint laxbreak: true*/
@@ -18862,12 +19576,12 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
  *
  * do1.something = function()
  * {
- *     console.log( "do1 something" ) ;
+ *     trace( "do1 something" ) ;
  * }
  *
  * do2.something = function()
  * {
- *     console.log( "do2 something" ) ;
+ *     trace( "do2 something" ) ;
  * }
  *
  * var finish = function( action )

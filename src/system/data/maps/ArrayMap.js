@@ -9,7 +9,7 @@ import { MapIterator }   from '../iterators/MapIterator.js' ;
 
 /**
  * Hash table based implementation of the Map interface.
- * <p><b>Attention :</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
+ * <p><b>Note:</b> this class is the ArrayMap class in the AS3 version of VEGAS.</p>
  * @summary Hash table based implementation of the Map interface.
  * @name ArrayMap
  * @class
@@ -31,7 +31,6 @@ import { MapIterator }   from '../iterators/MapIterator.js' ;
  * {
  *     trace (it.next() + " : " + it.key()) ;
  * }
- *
  *
  * trace( 'values : ' + map.values()) ;
  * trace( map.has('key2')) ;

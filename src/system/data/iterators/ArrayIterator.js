@@ -4,6 +4,12 @@ import { Iterator } from '../Iterator.js' ;
 
 /**
  * Converts a <code>Array</code> to an iterator.
+ * @name ArrayIterator
+ * @class
+ * @implements system.data.Iterator
+ * @memberof system.data.iterators
+ * @param {array} array - The array to iterate.
+ * @throws ReferenceError If the passed-in argument is not an array.
  * @example
  * var ArrayIterator = system.data.iterators.ArrayIterator ;
  *
@@ -48,15 +54,16 @@ export function ArrayIterator( array )
     }) ;
 }
 
-/**
- * @extends Object
- */
 ArrayIterator.prototype = Object.create( Iterator.prototype ) ;
 ArrayIterator.prototype.constructor = ArrayIterator ;
 
 /**
  * Returns <code>true</code> if the iteration has more elements.
  * @return <code>true</code> if the iteration has more elements.
+ * @name hasNext
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.hasNext = function()
 {
@@ -66,6 +73,10 @@ ArrayIterator.prototype.hasNext = function()
 /**
  * Returns the current key of the internal pointer of the iterator (optional operation).
  * @return the current key of the internal pointer of the iterator (optional operation).
+ * @name key
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.key = function()
 {
@@ -75,6 +86,10 @@ ArrayIterator.prototype.key = function()
 /**
  * Returns the next element in the iteration.
  * @return the next element in the iteration.
+ * @name next
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.next = function()
 {
@@ -83,6 +98,10 @@ ArrayIterator.prototype.next = function()
 
 /**
  * Removes from the underlying collection the last element returned by the iterator (optional operation).
+ * @name remove
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.remove = function()
 {
@@ -91,6 +110,10 @@ ArrayIterator.prototype.remove = function()
 
 /**
  * Reset the internal pointer of the iterator (optional operation).
+ * @name reset
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.reset = function()
 {
@@ -99,18 +122,13 @@ ArrayIterator.prototype.reset = function()
 
 /**
  * Changes the position of the internal pointer of the iterator (optional operation).
+ * @name seek
+ * @memberof system.data.iterators.ArrayIterator
+ * @instance
+ * @function
  */
 ArrayIterator.prototype.seek = function ( position )
 {
     position = Math.max( Math.min( position - 1 , this._a.length ) , -1 ) ;
     this._k = isNaN(position) ? -1 : position ;
-}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance
- */
-ArrayIterator.prototype.toString = function ()
-{
-    return '[ArrayIterator]' ;
 }

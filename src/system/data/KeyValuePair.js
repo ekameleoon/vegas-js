@@ -4,8 +4,8 @@
 /**
  * An object that maps keys to values. A map cannot contain duplicate keys. Each key can map to at most one value.
  * <p><b>Note:</b> This class replace the old <code>system.data.Map</code> interface in the VEGAS framework. Today in Javascript the {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map|Map} class is a standard global <b>ECMAScript</b> definition.</p>
- * @name KeyValuePair
  * @summary An object that maps keys to values.
+ * @name KeyValuePair
  * @class
  * @memberof system.data
  */
