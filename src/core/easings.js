@@ -53,7 +53,7 @@ import { sineOut }       from './easings/sineOut.js' ;
  * |  regular  | regular easing                                              | yes  | yes  |  yes   |
  * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
  * @summary The {@link core.easings} library contains all the easing functions to create the specific tweening effects.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @namespace core.easings
  * @memberof core
  * @tutorial system.transitions

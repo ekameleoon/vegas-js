@@ -2,7 +2,9 @@
 
 /**
  * The string expression of the current VEGAS version.
- * @static
+ * @name version
+ * @type string
+ * @global
  */
 export const version = '<@VERSION@>' ;
 
@@ -13,7 +15,9 @@ var skip    = false ;
 /**
  * Logs out the version and renderer information for this running instance of VEGAS JS.
  * If you don't want to see this message you can run `vegas.skipHello()` before creating your application.
- * @static
+ * @name sayHello
+ * @global
+ * @function
  */
 export function sayHello()
 {
@@ -51,6 +55,9 @@ export function sayHello()
 
 /**
  * Skips the hello message of renderers that are created after this is run.
+ * @name skipHello
+ * @function
+ * @global
  */
 export function skipHello()
 {

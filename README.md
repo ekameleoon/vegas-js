@@ -7,16 +7,16 @@ This project contains all libraries writing in **Javascript** with the [ES6](htt
 ### About ###
 
  * Author : Marc ALCARAZ (aka eKameleon)
- * Mail : ekameleon@gmail.com
- * Link : http://www.ooopener.com
+ * Mail : ekameleon[at]gmail.com
+ * Link : [http://www.ooopener.com](http://www.ooopener.com)
 
 ### Licenses ###
 
-Under tree opensource licenses : **MPL 1.1/GPL 2.0/LGPL 2.1**
+Under tree opensource licenses :
 
- * License MPL 1.1 : http://www.mozilla.org/MPL/MPL-1.1.html
- * License GPL 2 : http://www.gnu.org/licenses/gpl-2.0.html
- * License LGPL 2.1 : http://www.gnu.org/licenses/lgpl-2.1.html
+ * [License MPL 1.1](http://www.mozilla.org/MPL/MPL-1.1.html)
+ * [License GPL 2](http://www.gnu.org/licenses/gpl-2.0.html)
+ * [License LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
 
 ## Resources ##
 
@@ -36,7 +36,7 @@ Get started with the the **Vegas JS** API :
 
 These tutorials helps you to understand the **VEGAS JS** Framework philosophy.
 
-* The system.transitions package](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions)
+* [system.transitions](https://bitbucket.org/ekameleon/vegas-js/wiki/system.transitions) : Creates animations and tween effects in your projects.
 
 ### Slack Community ###
 

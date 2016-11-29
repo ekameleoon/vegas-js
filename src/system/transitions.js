@@ -10,7 +10,7 @@ import { TweenUnit }  from './transitions/TweenUnit.js' ;
  * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @see For more usage, read the {@tutorial system.transitions} tutorial.
  * @example <caption>Javascript script</caption>

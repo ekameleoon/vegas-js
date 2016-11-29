@@ -1,8 +1,12 @@
 'use strict' ;
 
 /**
- * A basic trace() function based on the console.log method.
- * @static
+ * A basic <code>trace()</code> function based on the console.log method.
+ * @name trace
+ * @global
+ * @function
+ * @example
+ * trace( 'hello world' ) ;
  */
 export function trace( context )
 {
