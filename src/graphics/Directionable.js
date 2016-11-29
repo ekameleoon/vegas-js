@@ -1,7 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Directionable.
+ * Indicates if the specific objet is {@link graphics.Directionable} and contains the <code>direction</code> property.
+ * @name isDirectionable
+ * @function
+ * @instance
+ * @memberof graphics
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link graphics.Directionable}.
  */
 export function isDirectionable( target )
 {
@@ -9,35 +15,27 @@ export function isDirectionable( target )
     {
         return (target instanceof Directionable) || ('direction' in target) ;
     }
-
     return false ;
 }
 
 /**
  * This interface defines a graphic object or component with a direction.
+ * @summary This interface defines a graphic object or component with a direction.
+ * @name Directionable
+ * @memberof graphics
+ * @interface
  */
 export function Directionable()
 {
+    /**
+     * The direction of the object.
+     * @name direction
+     * @memberof graphics.Directionable
+     * @instance
+     * @default null
+     */
     this.direction = null ;
 }
 
-/**
- * @extends Object
- */
 Directionable.prototype = Object.create( Object.prototype );
 Directionable.prototype.constructor = Directionable;
-
-/**
- * Compares the specified object with this object for equality.
- * @return true if the the specified object is equal with this object.
- */
-Directionable.prototype.direction = null ;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Directionable.prototype.toString = function () /*String*/
-{
-    return "[Directionable]" ;
-}

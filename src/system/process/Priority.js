@@ -1,7 +1,26 @@
 "use strict" ;
 
 /**
- * Creates a new Priority instance and contains a <code>priority</code> property.
+ * Indicates if the specific objet implements the {@link system.process.Priority|Priority} interface or contains a <code>priority</code> attribute.
+ * @name isPrioritizable
+ * @function
+ * @instance
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object implements the {@link system.process.Priority|Priority} interface.
+ */
+export function isPrioritizable( target )
+{
+    if( target )
+    {
+        return (target instanceof Priority) || ('priority' in target) ;
+    }
+    return false ;
+}
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be prioritizable (Capable of being prioritized).
+ * @summary This interface should be implemented by any class whose instances are intended to be prioritizable (Capable of being prioritized).
  * @name Priority
  * @memberof system.process
  * @interface

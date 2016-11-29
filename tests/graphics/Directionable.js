@@ -39,9 +39,4 @@ describe( 'graphics.Directionable' , () =>
     {
         assert.isNull( o.direction );
     });
-
-    it('new Directionable().toString == [Directionable]', () =>
-    {
-        assert.equal( o.toString() , "[Directionable]" );
-    });
 }) ;

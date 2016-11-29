@@ -1,13 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Lockable and contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
+ * Indicates if the specific objet is {@link system.process.Lockable|Lockable} or contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
  * @name isLockable
  * @memberof system.process
  * @function
  * @instance
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Lockable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Lockable|Lockable}.
  */
 export function isLockable( target )
 {

@@ -1,13 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Startable and contains a <code>start()</code> method.
+ * Indicates if the specific objet is {@link system.process.Startable|Startable} and contains a <code>start()</code> method.
  * @name isStartable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Startable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Startable|Startable}.
  */
 export function isStartable( target )
 {

@@ -9673,13 +9673,13 @@ LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
 });
 
 /**
- * Indicates if the specific objet is Lockable and contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
+ * Indicates if the specific objet is {@link system.process.Lockable|Lockable} or contains the <code>lock()</code> / <code>unlock()</code> / <code>isLocked()</code> methods.
  * @name isLockable
  * @memberof system.process
  * @function
  * @instance
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Lockable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Lockable|Lockable}.
  */
 
 function isLockable(target) {
@@ -11056,13 +11056,13 @@ function createObjectDefinition(o) /*ObjectDefinition*/
 }
 
 /**
- * Indicates if the specific objet is Runnable and contains a <code>run()</code> method.
+ * Indicates if the specific objet is {@link system.process.Runnable|Runnable} and contains a <code>run()</code> method.
  * @name isRunnable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Runnable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Runnable|Runnable}.
  */
 
 function isRunnable(target) {
@@ -18304,9 +18304,14 @@ BatchTaskNext.prototype = Object.create(Receiver.prototype, {
 });
 
 /**
- * Batchs a serie of Action and run it in the same time.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * Batchs a serie of actions and run it in the same time.
+ * @summary Batchs a serie of actions and run it in the same time.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
+ * @name BatchTask
+ * @class
+ * @memberof system.process
+ * @extends system.process.TaskGroup
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -18347,7 +18352,10 @@ BatchTaskNext.prototype = Object.create(Receiver.prototype, {
  *
  * batch.run() ;
  */
-function BatchTask(mode /*String*/, actions /*Array*/) {
+function BatchTask() {
+    var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'normal';
+    var actions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
     TaskGroup.call(this, mode, actions);
 
     Object.defineProperties(this, {
@@ -18368,21 +18376,17 @@ function BatchTask(mode /*String*/, actions /*Array*/) {
     });
 }
 
-/**
- * @extends TaskGroup
- */
 BatchTask.prototype = Object.create(TaskGroup.prototype, {
     /**
      * Indicates the current Action reference when the batch is in progress.
+     * @memberof system.process.BatchTask
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
      */
     current: { get: function get() {
             return this._current;
-        } },
-
-    /**
-     * @private
-     */
-    __className__: { value: 'BatchTask', configurable: true }
+        } }
 });
 
 BatchTask.prototype.constructor = BatchTask;
@@ -18390,6 +18394,10 @@ BatchTask.prototype.constructor = BatchTask;
 /**
  * Returns a shallow copy of this object.
  * @return a shallow copy of this object.
+ * @name clone
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.clone = function () {
     return new BatchTask(this._mode, this._actions.length > 0 ? this._actions : null);
@@ -18397,6 +18405,10 @@ BatchTask.prototype.clone = function () {
 
 /**
  * Resume the chain.
+ * @name resume
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.resume = function () /*void*/
 {
@@ -18429,6 +18441,10 @@ BatchTask.prototype.resume = function () /*void*/
 
 /**
  * Launchs the chain process.
+ * @name run
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.run = function () /*void*/
 {
@@ -18462,14 +18478,18 @@ BatchTask.prototype.run = function () /*void*/
 
 /**
  * Stops the task group.
+ * @name stop
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.stop = function () /*void*/
 {
     if (this._running) {
         if (this._actions.length > 0) {
-            var a;
-            var e;
-            var l /*int*/ = this._actions.length;
+            var a = void 0;
+            var e = void 0;
+            var l = this._actions.length;
             while (--l > -1) {
                 e = this._actions[l];
                 if (e) {
@@ -19500,12 +19520,24 @@ Lock.prototype = Object.create(Action.prototype, {
 });
 
 /**
- * Creates a new Priority instance and contains a <code>priority</code> property.
+ * Indicates if the specific objet implements the {@link system.process.Priority|Priority} interface or contains a <code>priority</code> attribute.
+ * @name isPrioritizable
+ * @function
+ * @instance
+ * @memberof system.process
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object implements the {@link system.process.Priority|Priority} interface.
+ */
+
+
+
+/**
+ * This interface should be implemented by any class whose instances are intended to be prioritizable (Capable of being prioritized).
+ * @summary This interface should be implemented by any class whose instances are intended to be prioritizable (Capable of being prioritized).
  * @name Priority
  * @memberof system.process
  * @interface
  */
-
 function Priority() {
     Object.defineProperties(this, {
         /**
@@ -19533,13 +19565,13 @@ Priority.prototype = Object.create(Object.prototype);
 Priority.prototype.constructor = Priority;
 
 /**
- * Indicates if the specific objet is Resetable  and contains a <code>reset()</code> method.
+ * Indicates if the specific objet is {@link system.process.Resetable|Resetable} and contains a <code>reset()</code> method.
  * @name isResetable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Resetable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Resetable|Resetable}.
  */
 
 function isResetable(target) {
@@ -19573,13 +19605,13 @@ Resetable.prototype.constructor = Resetable;
 Resetable.prototype.reset = function () {};
 
 /**
- * Indicates if the specific objet is Resumable and contains a <code>resume()</code> method.
+ * Indicates if the specific objet is {@link system.process.Resumable|Resumable} and contains a <code>resume()</code> method.
  * @name isResumable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Resumable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Resumable|Resumable}.
  */
 
 function isResumable(target) {
@@ -19613,13 +19645,13 @@ Resumable.prototype.constructor = Resumable;
 Resumable.prototype.resume = function () {};
 
 /**
- * Indicates if the specific objet is Startable and contains a <code>start()</code> method.
+ * Indicates if the specific objet is {@link system.process.Startable|Startable} and contains a <code>start()</code> method.
  * @name isStartable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Startable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Startable|Startable}.
  */
 
 function isStartable(target) {
@@ -19653,13 +19685,13 @@ Startable.prototype.constructor = Startable;
 Startable.prototype.start = function () {};
 
 /**
- * Indicates if the specific objet is Stoppable and contains a <code>stop()</code> method.
+ * Indicates if the specific objet is {@link system.process.Stoppable|Stoppable} and contains a <code>stop()</code> method.
  * @name isStoppable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Stoppable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Stoppable|Stoppable}.
  */
 
 function isStoppable(target) {
@@ -22375,48 +22407,47 @@ var system = Object.assign({
 });
 
 /**
- * Indicates if the specific objet is Directionable.
+ * Indicates if the specific objet is {@link graphics.Directionable} and contains the <code>direction</code> property.
+ * @name isDirectionable
+ * @function
+ * @instance
+ * @memberof graphics
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is {@link graphics.Directionable}.
  */
 
 function isDirectionable(target) {
   if (target) {
     return target instanceof Directionable || 'direction' in target;
   }
-
   return false;
 }
 
 /**
  * This interface defines a graphic object or component with a direction.
+ * @summary This interface defines a graphic object or component with a direction.
+ * @name Directionable
+ * @memberof graphics
+ * @interface
  */
 function Directionable() {
+  /**
+   * The direction of the object.
+   * @name direction
+   * @memberof graphics.Directionable
+   * @instance
+   * @default null
+   */
   this.direction = null;
 }
 
-/**
- * @extends Object
- */
 Directionable.prototype = Object.create(Object.prototype);
 Directionable.prototype.constructor = Directionable;
 
-/**
- * Compares the specified object with this object for equality.
- * @return true if the the specified object is equal with this object.
- */
-Directionable.prototype.direction = null;
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Directionable.prototype.toString = function () /*String*/
-{
-  return "[Directionable]";
-};
-
 /*jshint bitwise: false*/
 /**
- * The Align enumeration class provides constant values to align displays or components.
+ * The {@link graphics.Align} enumeration provides constant values to align displays or components.
+ * @summary The {@link graphics.Align} enumeration provides constant values to align displays or components.
  * @name Align
  * @namespace graphics.Align
  * @memberof graphics
@@ -22691,7 +22722,8 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
     } });
 
 /**
- * This static singleton to enumerates all types used to draw an Arc.
+ * This {@link graphics.ArcType} enumeration of all types used to draw an Arc.
+ * @summary This {@link graphics.ArcType} enumeration of all types used to draw an Arc.
  * @name ArcType
  * @namespace graphics.ArcType
  * @memberof graphics
@@ -22728,12 +22760,16 @@ var ArcType = Object.defineProperties({}, {
 
 /*jshint bitwise: false*/
 /**
- * Enables/Disables the border on the specified sides. The border is specified as an integer bitwise combination of the constants: LEFT, RIGHT, TOP, BOTTOM.
+ * Enables and disables the border on the specified sides. The border is specified as an integer bitwise combination of the constants: {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+ * @summary Enables and disables the border on the specified sides.
+ * @name Border
+ * @class
+ * @memberof graphics
+ * @param {number} [side=30] - The side setting value to define the border configuration. By default is {@link graphics.Border.ALL} (30).
  * @example
- * <pre>
  * var Border = graphics.Border ;
  *
- * var border:Border = new Border( Border.NO_BORDER ) ;
+ * var border = new Border( Border.NO_BORDER ) ;
  *
  * trace( border ) ;
  * trace( border.hasBorders() ) ;
@@ -22749,7 +22785,6 @@ var ArcType = Object.defineProperties({}, {
  *
  * border.enableBorderSide( Border.RIGHT ) ;
  * trace( border ) ;
- * </pre>
  */
 
 function Border() {
@@ -22758,6 +22793,10 @@ function Border() {
     Object.defineProperties(this, {
         /**
          * The side value, an integer bitwise combination.
+         * @name value
+         * @memberof graphics.Border
+         * @instance
+         * @type number
          */
         value: { value: side, writable: true }
     });
@@ -22765,48 +22804,64 @@ function Border() {
 
 Object.defineProperties(Border, {
     /**
-     * This represents the value to set all the sides of the Rectangle (30).
+     * This represents the value to set all the sides of the Rectangle (<code>30</code>).
+     * @name ALL
+     * @memberof graphics.Border
      */
     ALL: { enumerable: true, value: 30 },
 
     /**
-     * Defines the NONE value (0).
+     * Defines the NONE value (<code>0</code>).
+     * @name NONE
+     * @memberof graphics.Border
      */
     NONE: { enumerable: true, value: 0 },
 
     /**
-     * This represents the bottom side of the border of the Rectangle (16).
+     * This represents the bottom side of the border of the Rectangle (<code>16</code>).
+     * @name BOTTOM
+     * @memberof graphics.Border
      */
     BOTTOM: { enumerable: true, value: 16 },
 
     /**
-     * This represents the left side of the border of the Rectangle (2).
+     * This represents the left side of the border of the Rectangle (<code>2</code>).
+     * @name LEFT
+     * @memberof graphics.Border
      */
     LEFT: { enumerable: true, value: 2 },
 
     /**
-     * This represents a rectangle without borders (0).
+     * This represents a rectangle without borders (<code>0</code>).
+     * @name NO_BORDER
+     * @alias NONE
+     * @memberof graphics.Border
      */
     NO_BORDER: { enumerable: true, value: 0 },
 
     /**
-     * This represents the right side of the border of the Rectangle (4).
+     * This represents the right side of the border of the Rectangle (<code>4</code>).
+     * @name RIGHT
+     * @memberof graphics.Border
      */
     RIGHT: { enumerable: true, value: 4 },
 
     /**
-     * This represents the top side of the border of the Rectangle (8).
+     * This represents the top side of the border of the Rectangle (<code>8</code>).
+     * @name TOP
+     * @memberof graphics.Border
      */
     TOP: { enumerable: true, value: 8 }
 });
 
-/**
- * @extends Object
- */
 Border.prototype = Object.create(Object.prototype, {
     /**
      * Enables the border on the specified side.
-     * @param side  the side to enable. One of LEFT, RIGHT, TOP, BOTTOM.
+     * @param {number} side - The side to enable. One of {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+     * @name enableBorderSide
+     * @memberof graphics.Border
+     * @instance
+     * @function
      */
     enableBorderSide: { value: function value(side) {
             this.toggleBorder(side, true);
@@ -22814,21 +22869,36 @@ Border.prototype = Object.create(Object.prototype, {
 
     /**
      * Disables the border on the specified side.
-     * @param side the side to disable. One of LEFT, RIGHT, TOP, BOTTOM.
+     * @param {number} side - The side to enable. One of {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+     * @name disableBorderSide
+     * @memberof graphics.Border
+     * @instance
+     * @function
      */
     disableBorderSide: { value: function value(side) {
             this.toggleBorder(side, false);
         } },
 
     /**
-     * Indicates whether the specified type of border is set. One of LEFT, RIGHT, TOP, BOTTOM.
+     * Indicates whether the specified type of border is set.
+     * @name hasBorder
+     * @memberof graphics.Border
+     * @instance
+     * @function
+     * @param {number} type - The side to verify. One of {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+     * @return <code>true</code> if the specified type of border is set.
      */
     hasBorder: { value: function value(type) {
             return Boolean(type & this.value);
         } },
 
     /**
-     * Indicates whether some type of border is set. One of LEFT, RIGHT, TOP, BOTTOM.
+     * Indicates whether some type of border is set. One of {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+     * @return <code>true</code> if some type of border is set.
+     * @name hasBorders
+     * @memberof graphics.Border
+     * @instance
+     * @function
      */
     hasBorders: { value: function value() {
             return this.hasBorder(Border.TOP) || this.hasBorder(Border.BOTTOM) || this.hasBorder(Border.LEFT) || this.hasBorder(Border.RIGHT);
@@ -22836,6 +22906,13 @@ Border.prototype = Object.create(Object.prototype, {
 
     /**
      * Toggle a side in this border object.
+     * @name toggleBorder
+     * @memberof graphics.Border
+     * @instance
+     * @function
+     * @param {number} side - The side to enable. One of {@link graphics.Border.LEFT}, {@link graphics.Border.RIGHT}, {@link graphics.Border.TOP}, {@link graphics.Border.BOTTOM}.
+     * @param {boolean} [side=false] - Indicates if the side element must be enabled or disabled.
+     * @return <code>true</code> if the function succeeded.
      */
     toggleBorder: { value: function value(side) {
             var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -22848,6 +22925,10 @@ Border.prototype = Object.create(Object.prototype, {
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof graphics.Border
+     * @instance
+     * @function
      */
     toString: { value: function value() {
             return "[Border " + this.value + "]";
@@ -22855,6 +22936,10 @@ Border.prototype = Object.create(Object.prototype, {
 
     /**
      * Returns the value of the object.
+     * @name valueOf
+     * @memberof graphics.Border
+     * @instance
+     * @function
      * @return the value of the object.
      */
     valueOf: { value: function value() {
@@ -22865,6 +22950,7 @@ Border.prototype = Object.create(Object.prototype, {
 /**
  * The four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * They are mostly used for geographic orientation on Earth but may be calculated anywhere on a rotating astronomical body.
+ * @summary The enumeration of the four cardinal directions or cardinal points are the directions of north, south, east, and west, commonly denoted by their initials: N, S, E, W.
  * @name CardinalDirection
  * @memberof graphics
  * @extends Object
@@ -23069,7 +23155,14 @@ Object.defineProperties(CardinalDirection, {
 });
 
 /**
- * Determinates the corner definition.This object is use to set for example the CornerRectanglePen implementation (Bevel, RoundedComplex, etc.)
+ * Determinates the corner settings to set a rectangular shape or a component, like rectangles, rounded rectangle, etc.
+ * @summary Determinates the corner settings to set a rectangular shape or a component.
+ * @name Corner
+ * @class
+ * @memberof graphics
+ * @example
+ * var corner = new Corner(true,true,false,false) ;
+ * trace( corner ) ;
  */
 
 function Corner() {
@@ -23081,33 +23174,54 @@ function Corner() {
     Object.defineProperties(this, {
         /**
          * The bottom left flag value.
+         * @name bl
+         * @memberof graphics.Corner
+         * @instance
+         * @type boolean
+         * @default true
          */
         bl: { value: bl === true, writable: true, enumerable: true },
 
         /**
          * The bottom right flag value.
+         * @name br
+         * @memberof graphics.Corner
+         * @instance
+         * @type boolean
+         * @default true
          */
         br: { value: br === true, writable: true, enumerable: true },
 
         /**
          * The top left flag value.
+         * @name tl
+         * @memberof graphics.Corner
+         * @instance
+         * @type boolean
+         * @default true
          */
         tl: { value: tl === true, writable: true, enumerable: true },
 
         /**
          * The top right flag value.
+         * @name tr
+         * @memberof graphics.Corner
+         * @instance
+         * @type boolean
+         * @default true
          */
         tr: { value: tr === true, writable: true, enumerable: true }
     });
 }
 
-/**
- * @extends Object
- */
 Corner.prototype = Object.create(Object.prototype, {
     /**
      * Creates and returns a shallow copy of the object.
      * @return A new object that is a shallow copy of this instance.
+     * @name clone
+     * @memberof graphics.Corner
+     * @instance
+     * @function
      */
     clone: { value: function value() {
             return new Corner(this.tl, this.tr, this.br, this.bl);
@@ -23115,7 +23229,12 @@ Corner.prototype = Object.create(Object.prototype, {
 
     /**
      * Compares the specified object with this object for equality.
+     * @param {object} o - The object to evaluates.
      * @return <code>true</code> if the the specified object is equal with this object.
+     * @name equals
+     * @memberof graphics.Corner
+     * @instance
+     * @function
      */
     equals: { value: function value(o) {
             if (o === this) {
@@ -23130,6 +23249,10 @@ Corner.prototype = Object.create(Object.prototype, {
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof graphics.Corner
+     * @instance
+     * @function
      */
     toString: { value: function value() {
             return "[Corner tl:" + this.tl + " tr:" + this.tr + " br:" + this.br + " bl:" + this.bl + "]";
@@ -23137,57 +23260,91 @@ Corner.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The most common relative directions are horizontal, vertical, both, left, right, forward, backward, none, up, and down.
+ * The {@link graphics.Direction} enumeration defines most common relative directions : <code>horizontal</code>, <code>vertical</code>, <code>both</code>, <code>left</code>, <code>right</code>, <code>forward</code>, <code>backward</code>, <code>none</code>, <code>up</code>, and <code>down</code>.
+ * @summary The {@link graphics.Direction} enumeration defines most common relative directions.
+ * @name Direction
+ * @namespace graphics.Direction
+ * @memberof graphics
  */
 
 var Direction = Object.defineProperties({}, {
   /**
    * Specifies the "backward" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default backward
    */
   BACKWARD: { enumerable: true, value: 'backward' },
 
   /**
    * Specifies the "both" value to represent both horizontal and vertical scrolling.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default both
    */
   BOTH: { enumerable: true, value: 'both' },
 
   /**
    * Specifies the "down" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default down
    */
   DOWN: { enumerable: true, value: 'down' },
 
   /**
    * Specifies the "forward" value to change the direction or scrolling of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default forward
    */
   FORWARD: { enumerable: true, value: 'forward' },
 
   /**
     * Specifies the "horizontal" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default horizontal
     */
   HORIZONTAL: { enumerable: true, value: 'horizontal' },
 
   /**
    * Specifies the "left" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default left
    */
   LEFT: { enumerable: true, value: 'left' },
 
   /**
    * Specifies the "none" value to represent no scrolling or an object without direction.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default none
    */
   NONE: { enumerable: true, value: 'none' },
 
   /**
    * Specifies the "right" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default right
    */
   RIGHT: { enumerable: true, value: 'right' },
 
   /**
    * Specifies the "up" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default up
    */
   UP: { enumerable: true, value: 'up' },
 
   /**
    * Specifies the "vertical" value to change the orientation of a Display or a component.
+   * @memberof graphics.Direction
+   * @type {string}
+   * @default vertical
    */
   VERTICAL: { enumerable: true, value: 'vertical' }
 });
@@ -23196,40 +23353,61 @@ var Direction = Object.defineProperties({}, {
  * Defines the order to display all children in a specific horizontal or vertical container.
  * Children within a horizontally oriented box are, by default, displayed from left to right in the same order as they appear in the source document.
  * Children within a vertically oriented box are displayed top to bottom in the same order.
+ * @summary Defines the order to display all children in a specific horizontal or vertical container.
+ * @name DirectionOrder
+ * @namespace graphics.DirectionOrder
+ * @memberof graphics
  */
 
 var DirectionOrder = Object.defineProperties({}, {
   /**
-   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
+   * Specifies the <code>"normal"</code> direction order.
+   * <p>The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.</p>
+   * @memberof graphics.DirectionOrder
+   * @type {string}
+   * @default normal
    */
   NORMAL: { enumerable: true, value: 'normal' },
 
   /**
-   * Specifies the "reverse" direction order. The horizontal containers displays its children from right to left and the vertical containers displays its children from bottom to top.
+   * Specifies the <code>"reverse"</code> direction order.
+   * <p>The horizontal containers displays its children from right to left and the vertical containers displays its children from bottom to top.</p>
+   * @memberof graphics.DirectionOrder
+   * @type {string}
+   * @default reverse
    */
   REVERSE: { enumerable: true, value: 'reverse' }
 });
 
 /**
- * The layout buffering modes.
+ * The enumeration of the {@link graphics.Layout} buffering modes.
+ * @summary The enumeration of the {@link graphics.Layout} buffering modes.
+ * @name LayoutBufferMode
+ * @namespace graphics.LayoutBufferMode
+ * @memberof graphics
  */
 
 var LayoutBufferMode = Object.defineProperties({}, {
   /**
-   * The "auto" buffering mode is used when the layout initialize
-   * this internal buffer with all childs registered in the container of the layout.
+   * The <code>"auto"</code> buffering mode is used when the layout initialize this internal buffer with all childs registered in the container of the layout.
+   * @memberof graphics.LayoutBufferMode
+   * @type {string}
+   * @default auto
    */
   AUTO: { enumerable: true, value: 'auto' },
 
   /**
-   * The "normal" buffering mode use the natural internal buffer of the layout,
-   * the user must fill the layout manually.
+   * The <code>"normal"</code> buffering mode use the natural internal buffer of the layout, the user must fill the layout manually.
+   * @memberof graphics.LayoutBufferMode
+   * @type {string}
+   * @default normal
    */
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
 /**
  * The Dimension object encapsulates the width and height components of an object.
+ * @summary The Dimension object encapsulates the width and height components of an object.
  * @name Dimension
  * @memberof graphics.geom
  * @class
@@ -23392,11 +23570,13 @@ Dimension.prototype = Object.create(Object.prototype, {
 
 /**
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @summary A simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Vector2
  * @memberof graphics.geom
  * @class
  * @param {number} x - The x value of the object.
  * @param {number} y - The y value of the object.
+ * @see graphics.geom.Point
  */
 
 function Vector2() {
@@ -23476,6 +23656,7 @@ Vector2.prototype = Object.create(Object.prototype, {
 
 /**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
+ * @summary The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Point
  * @memberof graphics.geom
  * @extends graphics.geom.Vector2
@@ -23971,8 +24152,9 @@ Object.defineProperties(Point, {
 
 /**
  * The Rectangle class is used to create and modify Rectangle objects.
- * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y), and by its width and its height.
- * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.
+ * <p>A Rectangle object is an area defined by its position, as indicated by its top-left corner point <code>(x, y)</code>, and by its width and its height.</p>
+ * <p>The <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.</p>
+ * @summary The Rectangle class is used to create and modify Rectangle objects.
  * @name Rectangle
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom
@@ -24435,7 +24617,8 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
 });
 
 /**
- * Creates a new Layout instance.
+ * A base class that manages layouts in visual elements on the screen of your applications.
+ * @summary A base class that manages the layout rendering in visual elements on the screen of your applications.
  * @name Layout
  * @memberof graphics
  * @extends system.process.Task
@@ -24637,72 +24820,121 @@ Layout.prototype = Object.create(Task.prototype, {
 });
 
 /**
- * Constants defining layout orientation options.
+ * The {@link graphics.Orientation} enumeration defines layout orientation options.
+ * @summary The {@link graphics.Orientation} enumeration defines layout orientation options.
+ * @name Orientation
+ * @namespace graphics.Orientation
+ * @memberof graphics
  */
 
 var Orientation = Object.defineProperties({}, {
     /**
      * Constant indicating a bottom-to-top layout orientation (4).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 4
      */
     BOTTOM_TO_TOP: { enumerable: true, value: 4 },
 
     /**
      * Constant indicating a none layout orientation, use the default orientation (0).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 0
      */
     NONE: { enumerable: true, value: 0 },
 
     /**
      * Constant indicating a left-to-right layout orientation (1).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 1
      */
     LEFT_TO_RIGHT: { enumerable: true, value: 1 },
 
     /**
      * Constant indicating a right-to-left layout orientation (2).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 2
      */
     RIGHT_TO_LEFT: { enumerable: true, value: 2 },
 
     /**
      * Constant indicating a bottom-to-top layout orientation (8).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 8
      */
     TOP_TO_BOTTOM: { enumerable: true, value: 8 },
 
     /**
      * Constant indicating a left-to-right layout orientation (5).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 5
      */
     LEFT_TO_RIGHT_BOTTOM_TO_TOP: { enumerable: true, value: 5 },
 
     /**
      * Constant indicating a left-to-right and top-to-bottom layout orientation (9).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 9
      */
     LEFT_TO_RIGHT_TOP_TO_BOTTOM: { enumerable: true, value: 9 },
 
     /**
      * Constant indicating a right-to-left layout orientation (6).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 6
      */
     RIGHT_TO_LEFT_BOTTOM_TO_TOP: { enumerable: true, value: 6 },
 
     /**
      * Constant indicating a right-to-left and top-to-bottom layout orientation (10).
+     * @memberof graphics.Orientation
+     * @type {number}
+     * @default 10
      */
     RIGHT_TO_LEFT_TOP_TO_BOTTOM: { enumerable: true, value: 10 }
 });
 
 Object.defineProperties(Orientation, {
     /**
-     * All the orientations defines in the Orientation singleton.
+     * All the orientations defines in the {@link graphics.Orientation} enumeration.
+     * @name ALL
+     * @memberof graphics.Orientation
+     * @type {array}
+     * @example
+     * Orientation.ALL =
+     * [
+     *     Orientation.NONE ,
+     *     Orientation.BOTTOM_TO_TOP ,
+     *     Orientation.LEFT_TO_RIGHT ,
+     *     Orientation.RIGHT_TO_LEFT ,
+     *     Orientation.TOP_TO_BOTTOM ,
+     *     Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP ,
+     *     Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM ,
+     *     Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP ,
+     *     Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM
+     * ];
      */
     ALL: { value: [Orientation.NONE, Orientation.BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT, Orientation.RIGHT_TO_LEFT, Orientation.TOP_TO_BOTTOM, Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP, Orientation.LEFT_TO_RIGHT_TOP_TO_BOTTOM, Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP, Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM] },
 
     /**
-     * Returns the string representation of the specified Align value passed in argument.
-     * <p><b>Example :</b></p>
-     * <pre class="prettyprint">
-     * import graphics.Align ;
-     * trace( Align.toString(Align.LEFT)) ; // "l"
-     * trace( Align.toString(Align.TOP_LEFT)) ; // "tl"
-     * trace( Align.toString(Align.RIGHT_BOTTOM)) ; // "rb"
-     * </pre>
-     * @return the string representation of the specified Align value passed in argument.
+     * Stringify the specific <code>Orientation</code> numeric value passed in argument.
+     * @name toString
+     * @function
+     * @memberof graphics.Orientation
+     * @param {number} value - The value of the specific <code>Orientation</code> to stringify.
+     * @param {string} byDefault - The default string representation if the <code>value</code> is not valid.
+     * @return the string representation of the specific <code>Orientation</code> numeric value passed in argument.
+     * @example
+     * trace( Orientation.toString(Orientation.BOTTOM_TO_TOP)) ; // "btt"
+     * trace( Orientation.toString(Orientation.LEFT_TO_RIGHT)) ; // "ltr"
+     * trace( Orientation.toString(Orientation.RIGHT_TO_LEFT)) ; // "rtl"
      */
     toString: { value: function value(_value) {
             var byDefault = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "none";
@@ -24732,8 +24964,12 @@ Object.defineProperties(Orientation, {
         } },
 
     /**
-     * Returns <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
-     * @return <code class="prettyprint">true</code> if the passed-in uint argument is a valid Orientation value else returns <code class="prettyprint">false</code>.
+     * Returns <code>true</code> if the passed-in uint argument is a valid <code>Orientation</code> value else returns <code>false</code>.
+     * @name validate
+     * @function
+     * @memberof graphics.Orientation
+     * @param {number} value - The numeric value to evaluate.
+     * @return <code>true</code> if the passed-in uint argument is a valid <code>Orientation</code> value else returns <code>false</code>.
      */
     validate: { value: function value(_value2) {
             return Orientation.ALL.indexOf(_value2) > -1;
@@ -24741,59 +24977,89 @@ Object.defineProperties(Orientation, {
 });
 
 /**
- * Constants defining the position declaration lets you declare what
- * the position of an element should be.
+ * Constants defining the position declaration lets you declare what the position of an element should be.
+ * @summary Constants defining the position declaration lets you declare what the position of an element should be.
+ * @name Position
+ * @namespace graphics.Position
+ * @memberof graphics
  */
 
 var Position = Object.defineProperties({}, {
   /**
-   * Constant indicating an "absolute" position. An element with position "absolute" is taken out of the normal flow of the page
-   * and positioned at the desired coordinates relative to its containing block.
+   * Constant indicating an <code>"absolute"</code> position.
+   * <p>An element with position "absolute" is taken out of the normal flow of the page and positioned at the desired coordinates relative to its containing block.</p>
+   * @memberof graphics.Position
+   * @type {string}
+   * @default absolute
    */
   ABSOLUTE: { enumerable: true, value: 'absolute' },
 
   /**
-   * Constant indicating a "fixed" position. An element with position "fixed" is taken out of the normal flow of the page and
-   * positioned at the desired coordinates relative to the browser window. It remains at that position regardless of scrolling.
+   * Constant indicating a <code>"fixed"</code> position.
+   * <p>An element with position "fixed" is taken out of the normal flow of the page and positioned at the desired coordinates relative to the browser window. It remains at that position regardless of scrolling.</p>
+   * @memberof graphics.Position
+   * @type {string}
+   * @default fixed
    */
   FIXED: { enumerable: true, value: 'fixed' },
 
   /**
-   * Specifies the "normal" direction order. The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.
+   * Specifies the <code>"normal"</code> direction order.
+   * <p>The horizontal containers displays its children from left to right and the vertical containers displays its children from top to bottom.</p>
+   * @memberof graphics.Position
+   * @type {string}
+   * @default normal
    */
   NORMAL: { enumerable: true, value: 'normal' },
 
   /**
-   * Constant indicating a "relative" position. An element with position: relative initially has the position the normal flow
-   * of the page gives it, but it is subsequently offset by the amount the top, bottom, left, and/or right declarations give.
+   * Constant indicating a <code>"relative"</code> position.
+   * <p>An element with position: relative initially has the position the normal flow of the page gives it, but it is subsequently offset by the amount the top, bottom, left, and/or right declarations give.</p>
+   * @memberof graphics.Position
+   * @type {string}
+   * @default relative
    */
   RELATIVE: { enumerable: true, value: 'relative' },
 
   /**
-   * Constant indicating a "static" position. An element with position "static" always has the position the normal flow of the page gives it.
-   * It cannot be moved from this position; a static element ignores any x, y, top, bottom, left, or right declarations.
+   * Constant indicating a <code>"static"</code> position.
+   * <p>An element with position "static" always has the position the normal flow of the page gives it. It cannot be moved from this position; a static element ignores any x, y, top, bottom, left, or right declarations.</p>
+   * @memberof graphics.Position
+   * @type {string}
+   * @default static
    */
   STATIC: { enumerable: true, value: 'static' }
 });
 
 /**
- * Represents the ZOrder of a display added to the document.
+ * The {@link graphics.ZOrder} enumeration provides constants to defines the z order depth of a display object added to the document.
+ * @summary The {@link graphics.ZOrder} enumeration provides constants to defines the z order depth of a display object added to stage of your application..
+ * @name ZOrder
+ * @namespace graphics.ZOrder
+ * @memberof graphics
  */
 
 var ZOrder = Object.defineProperties({}, {
   /**
-   * Back means the display will be behind an other object and has a value of 0.
+   * Back means the display will be behind an other object and has a value of <code>0</code>.
+   * @memberof graphics.ZOrder
+   * @type {number}
+   * @default 0
    */
   BACK: { enumerable: true, value: 0 },
 
   /**
-   * Front means the display will be in front of an other object and has a value of 1.
+   * Front means the display will be in front of an other object and has a value of <code>1</code>.
+   * @memberof graphics.ZOrder
+   * @type {number}
+   * @default 1
    */
   FRONT: { enumerable: true, value: 1 }
 });
 
 /**
  * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
+ * @summary The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another.
  * @name Matrix
  * @memberof graphics.geom
  * @class
@@ -25080,8 +25346,9 @@ Matrix.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The VEGAS.js framework - The graphics.geom library.
- * @licence MPL 1.1/GPL 2.0/LGPL 2.1
+ * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @summary The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics.geom
  * @memberof graphics

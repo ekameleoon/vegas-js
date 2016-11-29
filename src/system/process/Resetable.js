@@ -1,13 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Resetable  and contains a <code>reset()</code> method.
+ * Indicates if the specific objet is {@link system.process.Resetable|Resetable} and contains a <code>reset()</code> method.
  * @name isResetable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Resetable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Resetable|Resetable}.
  */
 export function isResetable( target )
 {

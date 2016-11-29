@@ -1,13 +1,13 @@
 "use strict" ;
 
 /**
- * Indicates if the specific objet is Runnable and contains a <code>run()</code> method.
+ * Indicates if the specific objet is {@link system.process.Runnable|Runnable} and contains a <code>run()</code> method.
  * @name isRunnable
  * @function
  * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is <code>Runnable</code>.
+ * @return <code>true</code> if the object is {@link system.process.Runnable|Runnable}.
  */
 export function isRunnable( target )
 {
