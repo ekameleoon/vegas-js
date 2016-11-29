@@ -53,12 +53,3 @@ Odd.prototype.eval = function ()
 {
     return this.value%2 !== 0 ;
 }
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Odd.prototype.toString = function () /*String*/
-{
-    return "[Odd]" ;
-}

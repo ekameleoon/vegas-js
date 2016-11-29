@@ -12,6 +12,11 @@ import { strings }             from './strings.js' ;
 /**
  * This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
  * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
+ * @name LoggerFactory
+ * @memberof system.logging
+ * @summary This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
+ * @class
+ * @implements system.signals.Receiver
  */
 export function LoggerFactory()
 {
@@ -23,222 +28,193 @@ export function LoggerFactory()
     }) ;
 }
 
-/**
- * @extends Object
- */
 LoggerFactory.prototype = Object.create( Receiver.prototype ,
 {
-    ///////////
-
     constructor : { value : LoggerFactory } ,
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString : { value : function() { return '[LoggerFactory]' ; } },
-
-    ///////////
-
-    /**
      * Allows the specified target to begin receiving notification of log events.
-     * @param target The specific target that should capture log events.
+     * @param {system.logging.LoggerTarget} target - The specific target that should capture log events.
      * @throws Error If the target is invalid.
+     * @name addTarget
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    addTarget :
+    addTarget : { value : function( target /*LoggerTarget*/ ) /*void*/
     {
-        value : function( target /*LoggerTarget*/ ) /*void*/
+        if( target && (target instanceof LoggerTarget) )
         {
-            if( target && (target instanceof LoggerTarget) )
+            var channel /*String*/ ;
+            var log /*Logger*/ ;
+
+            var filters /*Array*/ = target.filters ;
+            var it /*Iterator*/   = this._loggers.iterator() ;
+            while ( it.hasNext() )
             {
-                var channel /*String*/ ;
-                var log /*Logger*/ ;
-
-                var filters /*Array*/ = target.filters ;
-                var it /*Iterator*/   = this._loggers.iterator() ;
-                while ( it.hasNext() )
+                log     = it.next() ;
+                channel = it.key() ;
+                if( this._channelMatchInFilterList( channel, filters ) )
                 {
-                    log     = it.next() ;
-                    channel = it.key() ;
-                    if( this._channelMatchInFilterList( channel, filters ) )
-                    {
-                        target.addLogger( log ) ;
-                    }
-                }
-
-                this._targets.push( target );
-
-                if ( ( this._targetLevel === LoggerLevel.NONE ) || ( target.level.valueOf() < this._targetLevel.valueOf() ) )
-                {
-                    this._targetLevel = target.level ;
+                    target.addLogger( log ) ;
                 }
             }
-            else
+
+            this._targets.push( target );
+
+            if ( ( this._targetLevel === LoggerLevel.NONE ) || ( target.level.valueOf() < this._targetLevel.valueOf() ) )
             {
-                throw new Error( strings.INVALID_TARGET );
+                this._targetLevel = target.level ;
             }
         }
-    },
+        else
+        {
+            throw new Error( strings.INVALID_TARGET );
+        }
+    }},
 
     /**
      * This method removes all of the current loggers from the cache of the factory.
      * Subsquent calls to the <code>getLogger()</code> method return new instances of loggers rather than any previous instances with the same category.
      * This method is intended for use in debugging only.
+     * @name flush
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    flush :
+    flush : { value : function() /*void*/
     {
-        value : function() /*void*/
-        {
-            this._loggers.clear() ;
-            this._targets     = [] ;
-            this._targetLevel = LoggerLevel.NONE ;
-        }
-    },
+        this._loggers.clear() ;
+        this._targets     = [] ;
+        this._targetLevel = LoggerLevel.NONE ;
+    }},
 
     /**
      * Returns the logger associated with the specified channel.
-     * If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.
-     * Channels must be at least one character in length and may not contain any blanks or any of the following characters:
-     * []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
-     * This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.
-     * @param channel The channel of the logger that should be returned.
-     * @return An instance of a logger object for the specified name.
-     * If the name doesn't exist, a new instance with the specified name is returned.
+     * <p>If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.</p>
+     * <p>Channels must be at least one character in length and may not contain any blanks or any of the following characters: <code>[]~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;</code></p>
+     * <p>This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.</p>
+     * @param {string} channel - The channel of the logger that should be returned.
+     * @return An instance of a logger object for the specified name. If the name doesn't exist, a new instance with the specified name is returned.
+     * @name getLogger
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    getLogger :
+    getLogger : { value : function ( channel /*String*/ ) /*Logger*/
     {
-        value : function ( channel /*String*/ ) /*Logger*/
+        this._checkChannel( channel ) ;
+
+        let logger = this._loggers.get( channel ) ;
+        if( !logger )
         {
-            this._checkChannel( channel ) ;
-
-            var logger /*Logger*/ = this._loggers.get( channel ) ;
-            if( !logger )
-            {
-                logger = new Logger( channel ) ;
-                this._loggers.set( channel , logger ) ;
-            }
-
-            var target /*LoggerTarget*/ ;
-
-            var len /*int*/ = this._targets.length ;
-            for( var i /*int*/ = 0 ; i<len ; i++ )
-            {
-                target = this._targets[i] ;
-                if( this._channelMatchInFilterList( channel , target.filters ) )
-                {
-                    target.addLogger( logger ) ;
-                }
-            }
-
-            return logger ;
+            logger = new Logger( channel ) ;
+            this._loggers.set( channel , logger ) ;
         }
-    },
+
+        let target;
+
+        let len = this._targets.length ;
+        for( var i = 0 ; i<len ; i++ )
+        {
+            target = this._targets[i] ;
+            if( this._channelMatchInFilterList( channel , target.filters ) )
+            {
+                target.addLogger( logger ) ;
+            }
+        }
+
+        return logger ;
+    }},
 
     /**
      * This method checks the specified string value for illegal characters.
-     * @param value The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * @param {string} value - The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
      * @return <code>true</code> if there are any illegal characters found, <code>false</code> otherwise.
+     * @name hasIllegalCharacters
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    hasIllegalCharacters :
+    hasIllegalCharacters : { value : function ( value )
     {
-        value : function ( value /*String*/ ) /*Boolean*/
-        {
-            return indexOfAny( value , strings.ILLEGALCHARACTERS.split("") ) !== -1 ;
-        }
-    },
+        return indexOfAny( value , strings.ILLEGALCHARACTERS.split("") ) !== -1 ;
+    }},
 
     /**
      * Indicates whether a 'all' level log event will be processed by a log target.
-     * @return true if a 'all' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'all' level log event will be logged; otherwise <code>false</code>.
+     * @name isAll
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isAll :
-    {
-        value : function () /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.ALL ;
-        }
-    },
+    isAll : { value : function () { return this._targetLevel === LoggerLevel.ALL ; } },
 
     /**
      * Indicates whether a 'critical' level log event will be processed by a log target.
-     * @return true if a 'critical' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'critical' level log event will be logged; otherwise <code>false</code>.
+     * @name isCritical
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isCritical :
-    {
-        value : function () /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.CRITICAL ;
-        }
-    },
+    isCritical : { value : function () { return this._targetLevel === LoggerLevel.CRITICAL ; } },
 
     /**
      * Indicates whether a 'debug' level log event will be processed by a log target.
-     * @return true if a 'debug' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'debug' level log event will be logged; otherwise <code>false</code>.
+     * @name isDebug
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isDebug :
-    {
-        value : function() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.DEBUG ;
-        }
-    },
+    isDebug : { value : function() { return this._targetLevel === LoggerLevel.DEBUG ; } },
 
     /**
      * Indicates whether a 'error' level log event will be processed by a log target.
-     * @return true if a 'error' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'error' level log event will be logged; otherwise <code>false</code>.
+     * @name isError
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isError :
-    {
-        value : function () /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.ERROR ;
-        }
-    },
+    isError : { value : function () { return this._targetLevel === LoggerLevel.ERROR ; } },
 
     /**
      * Indicates whether a 'info' level log event will be processed by a log target.
-     * @return true if a 'info' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'info' level log event will be logged; otherwise <code>false</code>.
+     * @name isInfo
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isInfo :
-    {
-        value : function() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.INFO ;
-        }
-    },
+    isInfo : { value : function() { return this._targetLevel === LoggerLevel.INFO ; } },
 
     /**
      * Indicates whether a 'warn' level log event will be processed by a log target.
-     * @return true if a 'warn' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'warn' level log event will be logged; otherwise <code>false</code>.
+     * @name isWarning
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isWarning :
-    {
-        value : function() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.WARNING ;
-        }
-    },
+    isWarning : { value : function() { return this._targetLevel === LoggerLevel.WARNING ; } },
 
     /**
      * Indicates whether a 'wtf' level log event will be processed by a log target.
-     * @return true if a 'wtf' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'wtf' level log event will be logged; otherwise <code>false</code>.
+     * @name isWtf
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isWtf :
-    {
-        value : function() /*Boolean*/
-        {
-            return this._targetLevel === LoggerLevel.WTF ;
-        }
-    },
+    isWtf : { value : function() { return this._targetLevel === LoggerLevel.WTF ; } },
 
     /**
      * Stops the specified target from receiving notification of log events.
-     * @param target The specific target that should capture log events.
+     * @param {system.logging.LoggerTarget} target - The specific target that should capture log events.
      * @throws Error If the target is invalid.
+     * @name removeTarget
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
     removeTarget :
     {
-        value : function ( target /*LoggerTarget*/ ) /*void*/
+        value : function ( target )
         {
             if( target && target instanceof LoggerTarget )
             {
@@ -273,6 +249,15 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
     },
 
     /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @name toString
+     * @memberof system.logging.LoggerFactory
+     * @function
+     */
+    toString : { value : function() { return '[LoggerFactory]' ; } },
+
+    /**
      * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
      * @param category The category to match against.
      * @param filters A list of Strings to check category against.
@@ -281,7 +266,7 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      */
     _channelMatchInFilterList :
     {
-        value : function( channel /*String*/ , filters /*Array*/ ) /*Boolean*/
+        value : function( channel /*String*/ , filters /*Array*/ )
         {
             var filter /*String*/ ;
             var index /*int*/ = -1;

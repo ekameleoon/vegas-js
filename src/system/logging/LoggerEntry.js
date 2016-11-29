@@ -17,17 +17,5 @@ export function LoggerEntry( message , level /*LoggerLevel*/ , channel /*String*
     this.message = message ;
 }
 
-/**
- * @extends Object
- */
 LoggerEntry.prototype = Object.create( Object.prototype );
 LoggerEntry.prototype.constructor = LoggerEntry;
-
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-LoggerEntry.prototype.toString = function() /*String*/
-{
-    return '[LoggerEntry]' ;
-}

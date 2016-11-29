@@ -4,7 +4,7 @@
 import { Logger } from './Logger.js' ;
 
 /**
- * Indicates if the specific objet is Loggable.
+ * Indicates if the specific objet is {@link system.logging.Loggable|Loggable}.
  * @name isLoggable
  * @memberof system.logging
  * @function
@@ -23,7 +23,7 @@ export function isLoggable( target )
 }
 
 /**
- * Implementing this interface allows an object who use a <code>Logger</code> object.
+ * Implementing this interface allows an object who use a {@link system.logging.Logger|Logger} object.
  * @name Loggable
  * @memberof system.logging
  * @interface
@@ -44,7 +44,7 @@ Loggable.prototype = Object.create( Object.prototype ,
      * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
      * @name logger
      * @memberof system.logging.Loggable
-     * @type system.logging.Logger
+     * @type {system.logging.Logger}
      * @instance
      */
     logger :

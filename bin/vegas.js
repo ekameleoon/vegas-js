@@ -7192,10 +7192,10 @@ PropertyEvaluator.prototype.toString = function () /*String*/
  * <li><a href="http://netzreport.googlepages.com/online_converter_for_dec_roman.html">http://netzreport.googlepages.com/online_converter_for_dec_roman.html</a></li>
  * </ul>
  * </p>
+ * @summary The tool class to parse and transforme the Roman numerals.
  * @name RomanNumber
  * @memberof system.numeric
  * @class
- * @constructor
  * @param {number|string} [value=0] - The decimal uint value of the RomanNumber or a String representation of the roman numerals object.
  * @example
  * trace( RomanNumber.parse(12) ) ; // XII
@@ -7533,7 +7533,6 @@ var evaluators = Object.assign({
  * @memberof system.formatters
  * @implements system.Formattable
  * @class
- * @constructor
  * @example
  * var ExpressionFormatter = system.formatters.ExpressionFormatter ;
  *
@@ -8238,8 +8237,13 @@ Signal.prototype = Object.create(Signaler.prototype, {
 
 /**
  * The logger levels that is used within the logging framework.
- * @param value The value of the enumeration.
- * @param name The name key of the enumeration.
+ * @summary The logger levels that is used within the logging framework.
+ * @name LoggerLevel
+ * @class
+ * @memberof system.logging
+ * @extends system.Enum
+ * @param {number} value - The value of the enumeration.
+ * @param {string} name - The name key of the enumeration.
  * @example
  * var LoggerLevel = system.logging.LoggerLevel ;
  *
@@ -8251,106 +8255,138 @@ Signal.prototype = Object.create(Signaler.prototype, {
  *     }
  * }
  */
-function LoggerLevel(value /*int*/, name /*String*/) {
-  Enum.call(this, value, name);
+function LoggerLevel(value, name) {
+    Enum.call(this, value, name);
 }
 
-/**
- * @extends Object
- */
 LoggerLevel.prototype = Object.create(Enum.prototype);
 LoggerLevel.prototype.constructor = LoggerLevel;
 
 Object.defineProperties(LoggerLevel, {
-  /**
-   * Intended to force a target to process all messages (1).
-   */
-  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+    /**
+     * Intended to force a target to process all messages (1).
+     * @name ALL
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
 
-  /**
-   * Designates events that are very harmful and will eventually lead to application failure (16).
-   */
-  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+    /**
+     * Designates events that are very harmful and will eventually lead to application failure (16).
+     * @name CRITICAL
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
 
-  /**
-   * Designates informational level messages that are fine grained and most helpful when debugging an application (2).
-   */
-  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+    /**
+     * Designates informational level messages that are fine grained and most helpful when debugging an application (2).
+     * @name DEBUG
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
 
-  /**
-   * The default string level value in the getLevelString() method.
-   */
-  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+    /**
+     * The default string level value in the <code>getLevelString()</code> method ('UNKNOW').
+     * @name DEFAULT_LEVEL_STRING
+     * @memberof system.logging.LoggerLevel
+     * @type string
+     */
+    DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
 
-  /**
-   * Designates error events that might still allow the application to continue running (8).
-   */
-  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+    /**
+     * Designates error events that might still allow the application to continue running (8).
+     * @name ERROR
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
 
-  /**
-   * Designates informational messages that highlight the progress of the application at coarse-grained level (4).
-   */
-  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+    /**
+     * Designates informational messages that highlight the progress of the application at coarse-grained level (4).
+     * @name INFO
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
 
-  /**
-   * A special level that can be used to turn off logging (0).
-   */
-  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+    /**
+     * A special level that can be used to turn off logging (0).
+     * @name NONE
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
 
-  /**
-   * Designates events that could be harmful to the application operation (6).
-   */
-  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+    /**
+     * Designates events that could be harmful to the application operation (6).
+     * @name WARNING
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
 
-  /**
-   * What a Terrible Failure: designates an exception that should never happen. (32).
-   */
-  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+    /**
+     * What a Terrible Failure: designates an exception that should never happen. (32).
+     * @name WTF
+     * @memberof system.logging.LoggerLevel
+     * @type system.logging.LoggerLevel
+     */
+    WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
 
-  /**
-   * Returns <code>true</code> if the number level passed in argument is valid.
-   * @return <code>true</code> if the number level passed in argument is valid.
-   */
-  get: {
-    value: function value(_value /*int*/) /*LoggerLevel*/
-    {
-      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      var l = levels.length;
-      while (--l > -1) {
-        if (levels[l]._value === _value) {
-          return levels[l];
+    /**
+     * Search a <code>LoggerLevel</code> reference if the number level passed in argument is valid.
+     * @name get
+     * @memberof system.logging.LoggerLevel
+     * @function
+     * @param {number} value - The numeric value corresponding to a valid LoggerLevel object.
+     * @return {system.logging.LoggerLevel} The LoggerLevel reference.
+     */
+    get: {
+        value: function value(_value) {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            var l = levels.length;
+            while (--l > -1) {
+                if (levels[l]._value === _value) {
+                    return levels[l];
+                }
+            }
+            return null;
         }
-      }
-      return null;
-    }
-  },
+    },
 
-  /**
-   * Returns a String value representing the specific level.
-   * @return a String value representing the specific level.
-   */
-  getLevelString: {
-    value: function value(_value2 /*LoggerLevel*/) /*String*/
-    {
-      if (LoggerLevel.validate(_value2)) {
-        return _value2.toString();
-      } else {
-        return LoggerLevel.DEFAULT_LEVEL_STRING;
-      }
-    }
-  },
+    /**
+     * Returns a String value representing the specific level.
+     * @return a String value representing the specific level.
+     * @name getLevelString
+     * @memberof system.logging.LoggerLevel
+     * @function
+     */
+    getLevelString: {
+        value: function value(_value2) {
+            if (LoggerLevel.validate(_value2)) {
+                return _value2.toString();
+            } else {
+                return LoggerLevel.DEFAULT_LEVEL_STRING;
+            }
+        }
+    },
 
-  /**
-   * Returns <code>true</code> if the number level passed in argument is valid.
-   * @return <code>true</code> if the number level passed in argument is valid.
-   */
-  validate: {
-    value: function value(level /*LoggerLevel*/) /*Boolean*/
-    {
-      var levels /*Array*/ = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      return levels.indexOf(level) > -1;
+    /**
+     * Validates a passed-in level passed in argument.
+     * @return <code>true</code> if the level passed in argument is valid.
+     * @name validate
+     * @memberof system.logging.LoggerLevel
+     * @function
+     */
+    validate: {
+        value: function value(level /*LoggerLevel*/) /*Boolean*/
+        {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            return levels.indexOf(level) > -1;
+        }
     }
-  }
 });
 
 /**
@@ -8367,23 +8403,43 @@ function LoggerEntry(message, level /*LoggerLevel*/, channel /*String*/) {
   this.message = message;
 }
 
-/**
- * @extends Object
- */
 LoggerEntry.prototype = Object.create(Object.prototype);
 LoggerEntry.prototype.constructor = LoggerEntry;
 
 /**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- */
-LoggerEntry.prototype.toString = function () /*String*/
-{
-  return '[LoggerEntry]';
-};
-
-/**
- * API for sending log output.
+ * A <code>Logger</code> object is used to log messages for a specific system or application components. <b>Loggers</b> are normally named, using a hierarchical dot-separated namespace. Logger names can be arbitrary strings, but they should normally be based on the package name or class name of the logged component, such as com.mydomain or myapp.version.
+ * <p><b>Logger</b> objects may be obtained by calls on one of the <code>Log.getLogger</code> factory methods. These will either create a <code>new Logger</code> singleton or return a suitable existing <b>Logger</b>.</p>
+ * @summary A <code>Logger</code> object is used to log messages for a specific system or application components.
+ * @name Logger
+ * @memberof system.logging
+ * @class
+ * @param {string} channel - The channel of the logger.
+ * @example
+ * var Log = system.logging.Log ;
+ * var LoggerLevel = system.logging.LoggerLevel ;
+ * var ConsoleTarget = system.logging.targets.ConsoleTarget ;
+ *
+ * var logger = Log.getLogger('channel') ;
+ *
+ * var target = new ConsoleTarget
+ * ({
+ *     includeChannel      : true  ,
+ *     includeDate         : false ,
+ *     includeLevel        : true  ,
+ *     includeLines        : true  ,
+ *     includeMilliseconds : true  ,
+ *     includeTime         : true
+ * }) ;
+ *
+ * target.filters = ['*'] ;
+ * target.level   = LoggerLevel.ALL ;
+ *
+ * logger.debug( 'hello {0}, love it.' , 'VEGAS' ) ;
+ * logger.critical( 'hello {0}, it\'s critical.' , 'VEGAS' ) ;
+ * logger.info( 'hello, my name is {0}' , 'VEGAS' ) ;
+ * logger.error( 'hello {0}, an error is invoked.' , 'VEGAS' ) ;
+ * logger.warning( 'hello {0}, don\'t forget me.' , 'VEGAS' ) ;
+ * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 function Logger(channel) {
     Signal.call(this);
@@ -8393,102 +8449,115 @@ function Logger(channel) {
     });
 }
 
-/**
- * @extends Object
- */
 Logger.prototype = Object.create(Signal.prototype, {
-    ///////////
-
-    constructor: { value: Logger },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[Logger]';
-        } },
-
-    ///////////
+    constructor: { writable: true, value: Logger },
 
     /**
      * Indicates the channel value for the logger.
+     * @name channel
+     * @memberof system.logging.Logger
+     * @instance
+     * @type string
+     * @readonly
      */
-    channel: {
-        get: function get() {
+    channel: { get: function get() {
             return this._entry.channel;
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEventLevel.CRITICAL level.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.CRITICAL|LoggerLevel.CRITICAL} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name critical
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
-    critical: {
-        value: function value(context) {
+    critical: { value: function value(context) {
             for (var _len = arguments.length, options = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                 options[_key - 1] = arguments[_key];
             }
 
             this._log(LoggerLevel.CRITICAL, context, options);
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEventLevel.DEBUG level.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.DEBUG|LoggerLevel.DEBUG} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name debug
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
-    debug: {
-        value: function value(context) {
+    debug: { value: function value(context) {
             for (var _len2 = arguments.length, options = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
                 options[_key2 - 1] = arguments[_key2];
             }
 
             this._log(LoggerLevel.DEBUG, context, options);
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEventLevel.ERROR level.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.ERROR|LoggerLevel.ERROR} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name error
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
-    error: {
-        value: function value(context) {
+    error: { value: function value(context) {
             for (var _len3 = arguments.length, options = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
                 options[_key3 - 1] = arguments[_key3];
             }
 
             this._log(LoggerLevel.ERROR, context, options);
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEvent.INFO level.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.INFO|LoggerLevel.INFO} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name info
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
-    info: {
-        value: function value(context) {
+    info: { value: function value(context) {
             for (var _len4 = arguments.length, options = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
                 options[_key4 - 1] = arguments[_key4];
             }
 
             this._log(LoggerLevel.INFO, context, options);
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEvent.ALL level.
-     * @param ...args The information to log. This string can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
-     * @param ... Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.ALL|LoggerLevel.ALL} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name log
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
+     * @see {@link core.strings.fastformat}
      */
-    log: {
-        value: function value(context) {
+    log: { value: function value(context) {
             for (var _len5 = arguments.length, options = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
                 options[_key5 - 1] = arguments[_key5];
             }
 
             this._log(LoggerLevel.ALL, context, options);
-        }
-    },
+        } },
 
     /**
-     * Logs the specified data using the LogEventLevel.WARN level.
+     * Logs the specified data using the {@link system.logging.LoggerLevel.WARNING|LoggerLevel.WARNING} level.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name warning
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
     warning: {
         value: function value(context) {
@@ -8514,6 +8583,14 @@ Logger.prototype = Object.create(Signal.prototype, {
     },
 
     /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     */
+    toString: { value: function value() {
+            return '[Logger]';
+        } },
+
+    /**
      * What a Terrible Failure: Report an exception that should never happen.
      */
     _log: {
@@ -8536,6 +8613,10 @@ Logger.prototype = Object.create(Signal.prototype, {
 
 /**
  * The enumeration of all string expressions in the logging engine.
+ * @name strings
+ * @memberof system.logging
+ * @const
+ * @instance
  */
 
 var strings$1 = Object.defineProperties({}, {
@@ -8591,83 +8672,19 @@ var strings$1 = Object.defineProperties({}, {
 });
 
 /**
- * Represents the log information for a single logging notification.
- * The loging system dispatches a single message each time a process requests information be logged.
- * This entry can be captured by any object for storage or formatting.
+ * <b>LoggerTarget</b> are used to display, store, or pass log messages to another destination. There are two kinds of target; those that receive and handle the messages, and those that buffer or route the messages to another target.
+ * <p>The <b>logging</b> system dispatches a single message each time a process requests information be logged.</p>
+ * <p>This entry can be captured by any object for storage or formatting.</p>
+ * @summary Use the <b>LoggerTarget</b> objects to display, store, or pass log messages to another destination.
+ * @name LoggerTarget
+ * @memberof system.logging
+ * @class
  * @param message The context or message of the log.
  * @param level The level of the log.
  * @param logger The Logger reference of this entry.
  */
 function LoggerTarget() {
     Object.defineProperties(this, {
-        /**
-         * Determinates the LoggerFactory reference of the target,
-         * by default the target use the <code>system.logging.Log</code> singleton.
-         */
-        factory: {
-            get: function get() {
-                return this._factory;
-            },
-            set: function set(factory) {
-                if (this._factory) {
-                    this._factory.removeTarget(this);
-                }
-                this._factory = factory instanceof LoggerFactory ? factory : Log;
-                this._factory.addTarget(this);
-            }
-        },
-
-        /**
-         * Determinates the filters array representation of the target.
-         */
-        filters: {
-            get: function get() {
-                return [].concat(this._filters);
-            },
-            set: function set(value /*Array*/) /*void*/
-            {
-                var filters = [];
-                if (value && value instanceof Array && value.length > 0) {
-                    var filter;
-                    var length = value.length;
-                    for (var i = 0; i < length; i++) {
-                        filter = value[i];
-                        if (filters.indexOf(filter) === -1) {
-                            this._checkFilter(filter);
-                            filters.push(filter);
-                        }
-                    }
-                } else {
-                    filters.push('*');
-                }
-
-                if (this._count > 0) {
-                    this._factory.removeTarget(this);
-                }
-
-                this._filters = filters;
-
-                if (this._count > 0) {
-                    this._factory.addTarget(this);
-                }
-            }
-        },
-
-        /**
-         * Determinates the level (LoggerLevel of this target.
-         */
-        level: {
-            get: function get() {
-                return this._level;
-            },
-            set: function set(value /*LoggerLevel*/) /*void*/
-            {
-                this._factory.removeTarget(this);
-                this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
-                this._factory.addTarget(this);
-            }
-        },
-
         _count: { value: 0, writable: true },
         _factory: { value: null, writable: true },
         _filters: { value: ["*"], writable: true },
@@ -8677,25 +8694,97 @@ function LoggerTarget() {
     this.factory = Log;
 }
 
-/**
- * @extends Object
- */
-LoggerTarget.prototype = Object.create(Receiver.prototype);
+LoggerTarget.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: LoggerTarget, writable: true },
 
-Object.defineProperties(LoggerTarget.prototype, {
-    ////////////////////////////////////
+    /**
+     * Determinates the LoggerFactory reference of the target, by default the target use the <code>system.logging.Log</code> singleton.
+     * @name factory
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @type system.logging.LoggerFactory
+     */
+    factory: {
+        get: function get() {
+            return this._factory;
+        },
+        set: function set(factory) {
+            if (this._factory) {
+                this._factory.removeTarget(this);
+            }
+            this._factory = factory instanceof LoggerFactory ? factory : Log;
+            this._factory.addTarget(this);
+        }
+    },
 
-    constructor: { value: LoggerTarget, enumerable: true, writable: true, configurable: true },
+    /**
+     * Determinates the filters array representation of the target.
+     * @name filters
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     */
+    filters: {
+        get: function get() {
+            return [].concat(this._filters);
+        },
+        set: function set(value /*Array*/) /*void*/
+        {
+            var filters = [];
+            if (value && value instanceof Array && value.length > 0) {
+                var filter;
+                var length = value.length;
+                for (var i = 0; i < length; i++) {
+                    filter = value[i];
+                    if (filters.indexOf(filter) === -1) {
+                        this._checkFilter(filter);
+                        filters.push(filter);
+                    }
+                }
+            } else {
+                filters.push('*');
+            }
 
-    ////////////////////////////////////
+            if (this._count > 0) {
+                this._factory.removeTarget(this);
+            }
+
+            this._filters = filters;
+
+            if (this._count > 0) {
+                this._factory.addTarget(this);
+            }
+        }
+    },
+
+    /**
+     * Determinates the level (LoggerLevel of this target.
+     * @name level
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     */
+    level: {
+        get: function get() {
+            return this._level;
+        },
+        set: function set(value /*LoggerLevel*/) /*void*/
+        {
+            this._factory.removeTarget(this);
+            this._level = value || LoggerLevel.ALL; // FIXME filter and validate the level
+            this._factory.addTarget(this);
+        }
+    },
 
     /**
      * Inserts a channel in the fllters if this channel don't exist.
-     * Returns a boolean if the channel is add in the list.
+     * @name addFilter
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
+     * @param {string} channel - The channel to rgister.
+     * @return <code>true</code> if the channel is add in the list.
      */
     addFilter: {
-        value: function value(channel /*String*/) /*Boolean*/
-        {
+        value: function value(channel) {
             this._checkFilter(channel);
             var index = this._filters.indexOf(channel);
             if (index === -1) {
@@ -8708,11 +8797,15 @@ Object.defineProperties(LoggerTarget.prototype, {
 
     /**
      * Sets up this target with the specified logger.
-     * Note : this method is called by the framework and should not be called by the developer.
+     * <b>Note :</b> this method is called by the framework and should not be called by the developer.
+     * @name addLogger
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
+     * @param {system.logging.Logger} logger - The logger to register.
      */
     addLogger: {
-        value: function value(logger /*Logger*/) /*void*/
-        {
+        value: function value(logger) {
             if (logger && logger instanceof Logger) {
                 this._count++;
                 logger.connect(this);
@@ -8721,13 +8814,18 @@ Object.defineProperties(LoggerTarget.prototype, {
     },
 
     /**
-     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
-     *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
-     *  This method will be called only if the event's level is in range of the target's level.
-     *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     * This method receive a <code>LoggerEntry</code> from an associated logger.
+     * A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
+     * This method will be called only if the event's level is in range of the target's level.
+     * <b><i>Descendants need to override this method to make it useful.</i></b>
+     * @name logEntry
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
+     * @param {system.logging.LogEntry} entry - The log entry reference.
      */
     logEntry: {
-        value: function value(entry /*LoggerEntry*/) /*void*/ //jshint ignore:line
+        value: function value(entry) //jshint ignore:line
         {
             // override
         }
@@ -8735,7 +8833,11 @@ Object.defineProperties(LoggerTarget.prototype, {
 
     /**
      * This method is called when the receiver is connected with a Signal object.
-     * @param ...values All the values emitting by the signals connected with this object.
+     * @name logEntry
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
+     * @param {*} values - All the values emitting by the signals connected with this object.
      */
     receive: {
         value: function value(entry) {
@@ -8750,12 +8852,16 @@ Object.defineProperties(LoggerTarget.prototype, {
     },
 
     /**
-     * Remove a channel in the fllters if this channel exist.
-     * @return a boolean if the channel is removed.
+     * Removes a channel in the fllters collection if this channel exist.
+     * @param {string} channel - The channel to unregister.
+     * @return <code>true</code> if the channel is removed.
+     * @name removeFilter
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
      */
     removeFilter: {
-        value: function value(channel /*String*/) /*Boolean*/
-        {
+        value: function value(channel) {
             if (channel && (typeof channel === "string" || channel instanceof String) && channel !== "") {
                 var index /*int*/ = this._filters.indexOf(channel);
                 if (index > -1) {
@@ -8769,6 +8875,10 @@ Object.defineProperties(LoggerTarget.prototype, {
 
     /**
      * Stops this target from receiving events from the specified logger.
+     * @name removeLogger
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
      */
     removeLogger: {
         value: function value(logger /*Logger*/) /*void*/
@@ -8814,6 +8924,11 @@ Object.defineProperties(LoggerTarget.prototype, {
 /**
  * This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
  * <p>This class in an internal class in the package system.logging you can use the Log singleton to deploy all the loggers in your application.</p>
+ * @name LoggerFactory
+ * @memberof system.logging
+ * @summary This factory provides pseudo-hierarchical logging capabilities with multiple format and output options.
+ * @class
+ * @implements system.signals.Receiver
  */
 function LoggerFactory() {
     Object.defineProperties(this, {
@@ -8823,31 +8938,19 @@ function LoggerFactory() {
     });
 }
 
-/**
- * @extends Object
- */
 LoggerFactory.prototype = Object.create(Receiver.prototype, {
-    ///////////
-
     constructor: { value: LoggerFactory },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[LoggerFactory]';
-        } },
-
-    ///////////
-
-    /**
      * Allows the specified target to begin receiving notification of log events.
-     * @param target The specific target that should capture log events.
+     * @param {system.logging.LoggerTarget} target - The specific target that should capture log events.
      * @throws Error If the target is invalid.
+     * @name addTarget
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    addTarget: {
-        value: function value(target /*LoggerTarget*/) /*void*/
+    addTarget: { value: function value(target /*LoggerTarget*/) /*void*/
         {
             if (target && target instanceof LoggerTarget) {
                 var channel;
@@ -8871,48 +8974,50 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
             } else {
                 throw new Error(strings$1.INVALID_TARGET);
             }
-        }
-    },
+        } },
 
     /**
      * This method removes all of the current loggers from the cache of the factory.
      * Subsquent calls to the <code>getLogger()</code> method return new instances of loggers rather than any previous instances with the same category.
      * This method is intended for use in debugging only.
+     * @name flush
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    flush: {
-        value: function value() /*void*/
+    flush: { value: function value() /*void*/
         {
             this._loggers.clear();
             this._targets = [];
             this._targetLevel = LoggerLevel.NONE;
-        }
-    },
+        } },
 
     /**
      * Returns the logger associated with the specified channel.
-     * If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.
-     * Channels must be at least one character in length and may not contain any blanks or any of the following characters:
-     * []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
-     * This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.
-     * @param channel The channel of the logger that should be returned.
-     * @return An instance of a logger object for the specified name.
-     * If the name doesn't exist, a new instance with the specified name is returned.
+     * <p>If the category given doesn't exist a new instance of a logger will be returned and associated with that channel.</p>
+     * <p>Channels must be at least one character in length and may not contain any blanks or any of the following characters: <code>[]~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;</code></p>
+     * <p>This method will throw an <code>InvalidChannelError</code> if the category specified is malformed.</p>
+     * @param {string} channel - The channel of the logger that should be returned.
+     * @return An instance of a logger object for the specified name. If the name doesn't exist, a new instance with the specified name is returned.
+     * @name getLogger
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    getLogger: {
-        value: function value(channel /*String*/) /*Logger*/
+    getLogger: { value: function value(channel /*String*/) /*Logger*/
         {
             this._checkChannel(channel);
 
-            var logger /*Logger*/ = this._loggers.get(channel);
+            var logger = this._loggers.get(channel);
             if (!logger) {
                 logger = new Logger(channel);
                 this._loggers.set(channel, logger);
             }
 
-            var target;
+            var target = void 0;
 
-            var len /*int*/ = this._targets.length;
-            for (var i /*int*/ = 0; i < len; i++) {
+            var len = this._targets.length;
+            for (var i = 0; i < len; i++) {
                 target = this._targets[i];
                 if (this._channelMatchInFilterList(channel, target.filters)) {
                     target.addLogger(logger);
@@ -8920,106 +9025,108 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
             }
 
             return logger;
-        }
-    },
+        } },
 
     /**
      * This method checks the specified string value for illegal characters.
-     * @param value The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
+     * @param {string} value - The String to check for illegal characters. The following characters are not valid: []~$^&amp;\/(){}&lt;&gt;+=`!#%?,:;'"&#64;
      * @return <code>true</code> if there are any illegal characters found, <code>false</code> otherwise.
+     * @name hasIllegalCharacters
+     * @memberof system.logging.LoggerFactory
+     * @function
+     * @instance
      */
-    hasIllegalCharacters: {
-        value: function value(_value /*String*/) /*Boolean*/
-        {
+    hasIllegalCharacters: { value: function value(_value) {
             return indexOfAny(_value, strings$1.ILLEGALCHARACTERS.split("")) !== -1;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'all' level log event will be processed by a log target.
-     * @return true if a 'all' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'all' level log event will be logged; otherwise <code>false</code>.
+     * @name isAll
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isAll: {
-        value: function value() /*Boolean*/
-        {
+    isAll: { value: function value() {
             return this._targetLevel === LoggerLevel.ALL;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'critical' level log event will be processed by a log target.
-     * @return true if a 'critical' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'critical' level log event will be logged; otherwise <code>false</code>.
+     * @name isCritical
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isCritical: {
-        value: function value() /*Boolean*/
-        {
+    isCritical: { value: function value() {
             return this._targetLevel === LoggerLevel.CRITICAL;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'debug' level log event will be processed by a log target.
-     * @return true if a 'debug' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'debug' level log event will be logged; otherwise <code>false</code>.
+     * @name isDebug
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isDebug: {
-        value: function value() /*Boolean*/
-        {
+    isDebug: { value: function value() {
             return this._targetLevel === LoggerLevel.DEBUG;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'error' level log event will be processed by a log target.
-     * @return true if a 'error' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'error' level log event will be logged; otherwise <code>false</code>.
+     * @name isError
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isError: {
-        value: function value() /*Boolean*/
-        {
+    isError: { value: function value() {
             return this._targetLevel === LoggerLevel.ERROR;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'info' level log event will be processed by a log target.
-     * @return true if a 'info' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'info' level log event will be logged; otherwise <code>false</code>.
+     * @name isInfo
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isInfo: {
-        value: function value() /*Boolean*/
-        {
+    isInfo: { value: function value() {
             return this._targetLevel === LoggerLevel.INFO;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'warn' level log event will be processed by a log target.
-     * @return true if a 'warn' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'warn' level log event will be logged; otherwise <code>false</code>.
+     * @name isWarning
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isWarning: {
-        value: function value() /*Boolean*/
-        {
+    isWarning: { value: function value() {
             return this._targetLevel === LoggerLevel.WARNING;
-        }
-    },
+        } },
 
     /**
      * Indicates whether a 'wtf' level log event will be processed by a log target.
-     * @return true if a 'wtf' level log event will be logged; otherwise false.
+     * @return <code>true</code> if a 'wtf' level log event will be logged; otherwise <code>false</code>.
+     * @name isWtf
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
-    isWtf: {
-        value: function value() /*Boolean*/
-        {
+    isWtf: { value: function value() {
             return this._targetLevel === LoggerLevel.WTF;
-        }
-    },
+        } },
 
     /**
      * Stops the specified target from receiving notification of log events.
-     * @param target The specific target that should capture log events.
+     * @param {system.logging.LoggerTarget} target - The specific target that should capture log events.
      * @throws Error If the target is invalid.
+     * @name removeTarget
+     * @memberof system.logging.LoggerFactory
+     * @function
      */
     removeTarget: {
-        value: function value(target /*LoggerTarget*/) /*void*/
-        {
+        value: function value(target) {
             if (target && target instanceof LoggerTarget) {
                 var log;
                 var filters = target.filters;
@@ -9046,6 +9153,17 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     },
 
     /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @name toString
+     * @memberof system.logging.LoggerFactory
+     * @function
+     */
+    toString: { value: function value() {
+            return '[LoggerFactory]';
+        } },
+
+    /**
      * This method checks that the specified category matches any of the filter expressions provided in the <code>filters</code> Array.
      * @param category The category to match against.
      * @param filters A list of Strings to check category against.
@@ -9053,8 +9171,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
      * @private
      */
     _channelMatchInFilterList: {
-        value: function value(channel /*String*/, filters /*Array*/) /*Boolean*/
-        {
+        value: function value(channel /*String*/, filters /*Array*/) {
             var filter;
             var index /*int*/ = -1;
             var len /*int*/ = filters.length;
@@ -9112,6 +9229,15 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     }
 });
 
+/**
+ * The singleton factory to generates all the <b>loggers</b> in your application.
+ * @summary The singleton factory to generates all the <b>loggers</b> in your application.
+ * @name Log
+ * @memberof system.logging
+ * @type system.logging.LoggerFactory
+ * @const
+ * @instance
+ */
 var Log = new LoggerFactory();
 
 var logger = Log.getLogger("system.ioc.logger");
@@ -9534,6 +9660,7 @@ LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
  * @name isLockable
  * @memberof system.process
  * @function
+ * @instance
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Lockable</code>.
  */
@@ -10915,6 +11042,7 @@ function createObjectDefinition(o) /*ObjectDefinition*/
  * Indicates if the specific objet is Runnable and contains a <code>run()</code> method.
  * @name isRunnable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Runnable</code>.
@@ -10977,7 +11105,7 @@ Runnable.prototype = Object.create(Object.prototype, {
 
 var TaskPhase = Object.defineProperties({}, {
   /**
-   * The 'error' type.
+   * The <code>'error'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -10985,7 +11113,7 @@ var TaskPhase = Object.defineProperties({}, {
   ERROR: { value: 'error', enumerable: true },
 
   /**
-   * The 'delayed' type.
+   * The <code>'delayed'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -10993,7 +11121,7 @@ var TaskPhase = Object.defineProperties({}, {
   DELAYED: { value: 'delayed', enumerable: true },
 
   /**
-   * The 'finished' type.
+   * The <code>'finished'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -11001,7 +11129,7 @@ var TaskPhase = Object.defineProperties({}, {
   FINISHED: { value: 'finished', enumerable: true },
 
   /**
-   * The 'inactive' type.
+   * The <code>'inactive'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -11009,7 +11137,7 @@ var TaskPhase = Object.defineProperties({}, {
   INACTIVE: { value: 'inactive', enumerable: true },
 
   /**
-   * The 'running' type.
+   * The <code>'running'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -11017,7 +11145,7 @@ var TaskPhase = Object.defineProperties({}, {
   RUNNING: { value: 'running', enumerable: true },
 
   /**
-   * The 'stopped' type.
+   * The <code>'stopped'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -11025,7 +11153,7 @@ var TaskPhase = Object.defineProperties({}, {
   STOPPED: { value: 'stopped', enumerable: true },
 
   /**
-   * The 'timeout' type.
+   * The <code>'timeout'</code> type.
    * @memberof system.process.TaskPhase
    * @const
    * @type {string}
@@ -11042,7 +11170,6 @@ var TaskPhase = Object.defineProperties({}, {
  * @augments system.process.Runnable
  * @implements system.process.Runnable
  * @implements system.process.Lockable
- * @constructor
  */
 function Action() {
   Object.defineProperties(this, {
@@ -11195,7 +11322,6 @@ Action.prototype = Object.create(Runnable.prototype, {
  * @implements system.process.Resetable
  * @implements system.process.Startable
  * @implements system.process.Stoppable
- * @constructor
  */
 function Task() {
   Action.call(this);
@@ -13101,17 +13227,26 @@ var ioc = Object.assign({
 
 /*jshint laxbreak: true*/
 /**
- * Indicates if the specific objet is Loggable.
+ * Indicates if the specific objet is {@link system.logging.Loggable|Loggable}.
+ * @name isLoggable
+ * @memberof system.logging
+ * @function
+ * @instance
+ * @param {object} target - The object to evaluate.
+ * @return <code>true</code> if the object is <code>Loggable</code>.
  */
 function isLoggable(target) {
     if (target) {
-        return 'logger' in target && (target.logger === null || target.logger instanceof Logger);
+        return target instanceof Loggable || 'logger' in target && (target.logger === null || target.logger instanceof Logger);
     }
     return false;
 }
 
 /**
- * Implementing this interface allows an object who use a <code class="prettyprint">Logger</code> object.
+ * Implementing this interface allows an object who use a {@link system.logging.Logger|Logger} object.
+ * @name Loggable
+ * @memberof system.logging
+ * @interface
  */
 function Loggable() {
     Object.defineProperties(this, {
@@ -13119,22 +13254,15 @@ function Loggable() {
     });
 }
 
-/**
- * @extends Object
- */
 Loggable.prototype = Object.create(Object.prototype, {
     constructor: { value: Loggable },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[Loggable]';
-        } },
-
-    /**
      * Determinates the internal <code>Logger</code> reference of this <code>Loggable</code> object.
+     * @name logger
+     * @memberof system.logging.Loggable
+     * @type {system.logging.Logger}
+     * @instance
      */
     logger: {
         get: function get() {
@@ -13148,9 +13276,15 @@ Loggable.prototype = Object.create(Object.prototype, {
 
 /**
  * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.
- * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @name LineFormattedTarget
+ * @memberof system.logging.targets
+ * @class
+ * @extends system.logging.LoggerTarget
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  */
-function LineFormattedTarget(init /*Object*/) {
+function LineFormattedTarget() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
     LoggerTarget.call(this);
 
     Object.defineProperties(this, {
@@ -13159,38 +13293,73 @@ function LineFormattedTarget(init /*Object*/) {
 
     /**
      * Indicates if the channel for this target should added to the trace.
+     * @name includeChannel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeChannel /*Boolean*/ = false;
+    this.includeChannel = false;
 
     /**
      * Indicates if the date should be added to the trace.
+     * @name includeDate
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeDate /*Boolean*/ = false;
+    this.includeDate = false;
 
     /**
      * Indicates if the level for the event should added to the trace.
+     * @name includeLevel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeLevel /*Boolean*/ = false;
+    this.includeLevel = false;
 
     /**
      * Indicates if the line for the event should added to the trace.
+     * @name includeLines
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeLines /*Boolean*/ = false;
+    this.includeLines = false;
 
     /**
      * Indicates if the milliseconds should be added to the trace. Only relevant when includeTime is <code class="prettyprint">true</code>.
+     * @name includeMilliseconds
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeMilliseconds /*Boolean*/ = false;
+    this.includeMilliseconds = false;
 
     /**
      * Indicates if the time should be added to the trace.
+     * @name includeTime
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeTime /*Boolean*/ = false;
+    this.includeTime = false;
 
     /**
      * The separator string.
+     * @name separator
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type string
+     * @default
      */
-    this.separator /*String*/ = " ";
+    this.separator = " ";
 
     if (init) {
         for (var prop in init) {
@@ -13201,30 +13370,34 @@ function LineFormattedTarget(init /*Object*/) {
     }
 }
 
-/**
- * @extends Object
- */
 LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
+    constructor: { value: LineFormattedTarget, writable: true },
+
     /**
      * Descendants of this class should override this method to direct the specified message to the desired output.
-     * @param message String containing preprocessed log message which may include time, date, channel, etc.
-     * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+     * @param {string} message - String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code>includeDate</code>, <code>includeChannel</code>, etc.
+     * @param {system.logging.LoggerLevel} level - The level of the log message.
+     * @name internalLog
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    internalLog: {
-        value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
+    internalLog: { value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
         {
             // override this method
-        }
-    },
-
-    constructor: { value: LineFormattedTarget, enumerable: true, writable: true, configurable: true },
+        } },
 
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    toString: { value: function value() {
-            return '[LineFormattedTarget]';
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
         } },
 
     /**
@@ -13232,29 +13405,36 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
      *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
      *  This method will be called only if the event's level is in range of the target's level.
      *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     * @name logEntry
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    logEntry: {
-        value: function value(entry /*LoggerEntry*/) /*void*/
-        {
+    logEntry: { value: function value(entry) {
             var message = this.formatMessage(entry.message, LoggerLevel.getLevelString(entry.level), entry.channel, new Date());
             this.internalLog(message, entry.level);
-        }
-    },
+        } },
 
     /**
-     * Resets the internal line number value (set to 1).
+     * Resets the internal line number value (set to <code>1</code>).
+     * @name resetLineNumber
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    resetLineNumber: {
-        value: function value() /*void*/
-        {
+    resetLineNumber: { value: function value() {
             this._lineNumber = 1;
-        }
-    },
+        } },
 
     /////////
 
     /**
      * This method format the passed Date in arguments.
+     * @name formatDate
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatDate: {
         value: function value(d /*Date*/) /*String*/
@@ -13269,6 +13449,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
 
     /**
      * This method format the passed level in arguments.
+     * @name formatLevel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatLevel: {
         value: function value(level /*String*/) /*String*/
@@ -13279,6 +13464,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
 
     /**
      * This method format the current line value.
+     * @name formatLines
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatLines: {
         value: function value() /*String*/
@@ -13289,6 +13479,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
 
     /**
      * This method format the log message.
+     * @name formatMessage
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatMessage: {
         value: function value(message, level /*String*/, channel /*String*/, date /*Date*/) /*String*/
@@ -13319,6 +13514,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
 
     /**
      * This method format the current Date passed in argument.
+     * @name formatTime
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatTime: {
         value: function value(d /*Date*/) /*String*/
@@ -13337,6 +13537,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
     /**
      * Returns the string representation of a number and use digit conversion.
      * @return the string representation of a number and use digit conversion.
+     * @name getDigit
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     getDigit: {
         value: function value(n /*Number*/) /*String*/
@@ -13351,7 +13556,11 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
 
 /**
  * Provides a logger target that uses the global trace() method to output log messages.
- * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @name ConsoleTarget
+ * @memberof system.logging.targets
+ * @class
+ * @extends system.logging.targets.LineFormattedTarget
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  * @example
  * var Log           = system.logging.Log ;
  * var LoggerLevel   = system.logging.LoggerLevel ;
@@ -13385,35 +13594,27 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
  *
  * logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
  */
-function ConsoleTarget(init) {
+function ConsoleTarget() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
     LineFormattedTarget.call(this, init);
 }
 
-/**
- * @extends Object
- */
 ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
-    ///////////
-
     constructor: { value: ConsoleTarget },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString: { value: function value() {
-            return '[ConsoleTarget]';
-        } },
-
-    ///////////
-
-    /**
      * Descendants of this class should override this method to direct the specified message to the desired output.
-     * @param message String containing preprocessed log message which may include time, date, channel, etc.
-     * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+     * @param {string} message - String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code>includeDate</code>, <code>includeChannel</code>, etc.
+     * @param {system.logging.LoggerLevel} level - The level of the log message.
+     * @name internalLog
+     * @memberof system.logging.targets.ConsoleTarget
+     * @function
+     * @instance
      */
     internalLog: {
-        value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
+        value: function value(message, level) //jshint ignore:line
         {
             if (console) {
                 switch (level) {
@@ -13462,7 +13663,11 @@ ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
 
 /**
  * Provides a logger target that uses the global trace() method to output log messages.
- * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @name TraceTarget
+ * @memberof system.logging.targets
+ * @class
+ * @extends system.logging.targets.LineFormattedTarget
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  * @example
  * var Log         = system.logging.Log ;
  * var LoggerLevel = system.logging.LoggerLevel ;
@@ -13496,39 +13701,29 @@ ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  *
  * logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
  */
-function TraceTarget(init) {
-  LineFormattedTarget.call(this, init);
+function TraceTarget() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    LineFormattedTarget.call(this, init);
 }
 
-/**
- * @extends Object
- */
 TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
-  ///////////
+    constructor: { value: TraceTarget },
 
-  constructor: { value: TraceTarget },
-
-  /**
-   * Returns the String representation of the object.
-   * @return the String representation of the object.
-   */
-  toString: { value: function value() {
-      return '[TraceTarget]';
-    } },
-
-  ///////////
-
-  /**
-   * Descendants of this class should override this method to direct the specified message to the desired output.
-   * @param message String containing preprocessed log message which may include time, date, channel, etc.
-   * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
-   */
-  internalLog: {
-    value: function value(message, level /*LoggerLevel*/) //jshint ignore:line
-    {
-      trace(message);
-    }
-  }
+    /**
+     * Descendants of this class should override this method to direct the specified message to the desired output.
+     * @param {string} message - String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code>includeDate</code>, <code>includeChannel</code>, etc.
+     * @param {system.logging.LoggerLevel} level - The level of the log message.
+     * @name internalLog
+     * @memberof system.logging.targets.TraceTarget
+     * @function
+     * @instance
+     */
+    internalLog: { value: function value(message, level) //jshint ignore:line
+        {
+            trace(message);
+        } }
 });
 
 /**
@@ -13538,23 +13733,51 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging
  * @memberof system
+ * @example
+ * var logger = Log.getLogger('channel') ;
+ *
+ * var target = new ConsoleTarget
+ * ({
+ *     includeChannel      : true  ,
+ *     includeDate         : false ,
+ *     includeLevel        : true  ,
+ *     includeLines        : true  ,
+ *     includeMilliseconds : true  ,
+ *     includeTime         : true
+ * }) ;
+ *
+ * target.filters = ['*'] ;
+ * target.level   = LoggerLevel.ALL ;
+ *
+ * logger.debug( 'hello {0}, love it.' , 'VEGAS' ) ;
+ * logger.critical( 'hello {0}, it\'s critical.' , 'VEGAS' ) ;
+ * logger.info( 'hello, my name is {0}' , 'VEGAS' ) ;
+ * logger.error( 'hello {0}, an error is invoked.' , 'VEGAS' ) ;
+ * logger.warning( 'hello {0}, don\'t forget me.' , 'VEGAS' ) ;
+ * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 var logging = Object.assign({
-    isLoggable: isLoggable,
+  isLoggable: isLoggable,
 
-    Log: Log,
-    Loggable: Loggable,
-    Logger: Logger,
-    LoggerEntry: LoggerEntry,
-    LoggerFactory: LoggerFactory,
-    LoggerLevel: LoggerLevel,
-    LoggerTarget: LoggerTarget,
+  Log: Log,
+  Loggable: Loggable,
+  Logger: Logger,
+  LoggerEntry: LoggerEntry,
+  LoggerFactory: LoggerFactory,
+  LoggerLevel: LoggerLevel,
+  LoggerTarget: LoggerTarget,
 
-    targets: Object.assign({
-        ConsoleTarget: ConsoleTarget,
-        LineFormattedTarget: LineFormattedTarget,
-        TraceTarget: TraceTarget
-    })
+  /**
+   * This package contains all {@link system.logging.LoggerTarget|LoggerTarget}> implementations are used to display, store, or pass log messages to another destination.
+   * @summary This package contains all <b>LoggerTarget</b> implementations are used to display, store, or pass log messages to another destination.
+   * @namespace system.logging.targets
+   * @memberof system.logging
+   */
+  targets: Object.assign({
+    ConsoleTarget: ConsoleTarget,
+    LineFormattedTarget: LineFormattedTarget,
+    TraceTarget: TraceTarget
+  })
 });
 
 /**
@@ -13661,7 +13884,6 @@ BooleanRule.prototype.eval = function () {
  * @implements {system.rules.Rule}
  * @augments system.rules.Rule
  * @class
- * @constructor
  * @param {system.rules.Rule} [rule=null] - The condition to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the condition is <code>true</code>.
  */
@@ -13762,7 +13984,6 @@ EmptyString.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} [value=null] - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the value is an empty <code>string</code>.
  * @see system.rules.EmptyString
@@ -13887,7 +14108,6 @@ Equals.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} [value1] - The condition to evaluate.
  * @param {Object} [value2] - The condition to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the two values are equals.
@@ -13957,7 +14177,6 @@ False.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the value is <code>false</code>.
  * @see system.rules.False
@@ -14047,7 +14266,6 @@ Null.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the value is <code>null</code>.
  * @param {boolean} [strict=false] - This flag indicates if the condition use <code>==</code> or <code>===</code> to evalute the value.
@@ -14119,7 +14337,6 @@ True.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the value is <code>true</code>.
  * @see system.rules.True
@@ -14181,7 +14398,6 @@ Undefined.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the values is <code>undefined</code>.
  * @see system.rules.Undefined
@@ -14243,7 +14459,6 @@ Zero.prototype.eval = function () {
  * @memberof system.logics
  * @extends system.logics.ElseIf
  * @class
- * @constructor
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} [then=null] - The action to execute if the values equals <code>0</code>.
  * @see system.rules.Zero
@@ -14265,7 +14480,6 @@ ElseIfZero.prototype = Object.create(ElseIf.prototype, {
  * @implements system.process.Action
  * @augments system.process.Action
  * @class
- * @constructor
  * @example <caption><strong>Usage </strong>:</caption>
  * var task = new IfTask( rule:Rule    , thenTask:Action , elseTask:Action , ...elseIfTasks )
  * var task = new IfTask( rule:Boolean , thenTask:Action , elseTask:Action , ...elseIfTasks )
@@ -14788,7 +15002,6 @@ IfTask.prototype = Object.create(Action.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.EmptyString
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -14821,7 +15034,6 @@ IfEmptyString.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.Equals
  * @param {Object} value1 - The first value to evaluate.
  * @param {Object} value2 - The second value to evaluate.
@@ -14855,7 +15067,6 @@ IfEquals.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.False
  * @param {Object} condition - The object to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -14889,7 +15100,6 @@ IfFalse.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.Null
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -14924,7 +15134,6 @@ IfNull.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.True
  * @param {Object} condition - The object to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -14958,7 +15167,6 @@ IfTrue.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.Undefined
  * @param {Object} condition - The object to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -14991,7 +15199,6 @@ IfUndefined.prototype = Object.create(IfTask.prototype, {
  * @memberof system.logics
  * @extends system.logics.IfTask
  * @class
- * @constructor
  * @see system.rules.Zero
  * @param {Object} value - The value to evaluate.
  * @param {system.process.Action} thenTask - The action to execute if the main condition if <code>true</code>.
@@ -15157,13 +15364,15 @@ var logics = Object.assign({
 });
 
 /**
- *  The Model interface defines all models in the application.
+ * The Model interface defines all models in the application.
+ * @name Model
+ * @memberof system.models
+ * @interface
+ * @extends system.process.Lockable
+ * @extends system.data.Validator
  */
 function Model() {}
 
-/**
- * @extends Lockable
- */
 Model.prototype = Object.create(Lockable.prototype, {
   /**
    * The constructor reference of the instance.
@@ -15171,8 +15380,13 @@ Model.prototype = Object.create(Lockable.prototype, {
   constructor: { writable: true, value: Model },
 
   /**
-   * Returns true if the specific value is valid.
-   * @return true if the specific value is valid.
+   * Returns <code>true</code> if the specific value is valid.
+   * @param {*} value - The value to check.
+   * @return <code>true</code> if the specific value is valid.
+   * @name supports
+   * @memberof system.models.Model
+   * @function
+   * @instance
    */
   supports: { writable: true, value: function value(_value) {
       return _value === _value;
@@ -15180,7 +15394,11 @@ Model.prototype = Object.create(Lockable.prototype, {
 
   /**
    * Returns the string representation of this instance.
-   * @return the string representation of this instance.
+   * @return The string representation of this instance.
+   * @name toString
+   * @memberof system.models.Model
+   * @function
+   * @instance
    */
   toString: { writable: true, value: function value() {
       return '[' + this.constructor.name + ']';
@@ -15189,6 +15407,10 @@ Model.prototype = Object.create(Lockable.prototype, {
   /**
    * Evaluates the specified value and throw an Error object if the value is not valid.
    * @throws Error if the value is not valid.
+   * @name validate
+   * @memberof system.models.Model
+   * @function
+   * @instance
    */
   validate: { writable: true, value: function value(_value2) /*void*/
     {
@@ -15201,8 +15423,11 @@ Model.prototype = Object.create(Lockable.prototype, {
 
 /**
  * This model can keep an object in memory and emit messages if this object is changing.
+ * @name ChangeModel
+ * @class
+ * @memberof system.models
+ * @implements system.models.Model
  * @example
- * <pre>
  * var beforeChanged = function( value , model )
  * {
  *     trace( "before:" + value + " current:" + model.current ) ;
@@ -15218,6 +15443,8 @@ Model.prototype = Object.create(Lockable.prototype, {
  *     trace( "clear current:" + model.current ) ;
  * }
  *
+ * var model = new ChangeModel() ;
+ *
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
  * model.cleared.connect( cleared ) ;
@@ -15225,27 +15452,46 @@ Model.prototype = Object.create(Lockable.prototype, {
  * model.current = "hello" ;
  * model.current = "world" ;
  * model.current = null ;
- * </pre>
  */
 function ChangeModel() {
     Object.defineProperties(this, {
         /**
          * Emits a message before the current object in the model is changed.
+         * @name beforeChanged
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         beforeChanged: { value: new Signal() },
 
         /**
          * Emits a message when the current object in the model is changed.
+         * @name changed
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         changed: { value: new Signal() },
 
         /**
          * Emits a message when the current object in the model is cleared.
+         * @name cleared
+         * @memberof system.models.ChangeModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         cleared: { value: new Signal() },
 
         /**
          * This property defined if the current property can accept the same object in argument as the current one.
+         * @name security
+         * @memberof system.models.ChangeModel
+         * @type boolean
+         * @instance
+         * @default true
          */
         security: { value: true, writable: true },
 
@@ -15256,9 +15502,6 @@ function ChangeModel() {
     });
 }
 
-/**
- * @extends Model
- */
 ChangeModel.prototype = Object.create(Model.prototype, {
     /**
      * The constructor reference of the instance.
@@ -15266,7 +15509,10 @@ ChangeModel.prototype = Object.create(Model.prototype, {
     constructor: { writable: true, value: ChangeModel },
 
     /**
-     * Determinates the selected value in this model.
+     * Determinates the current selected value in this model.
+     * @name current
+     * @memberof system.models.ChangeModel
+     * @instance
      */
     current: {
         get: function get() {
@@ -15295,6 +15541,10 @@ ChangeModel.prototype = Object.create(Model.prototype, {
 
     /**
      * Clear the model.
+     * @name clear
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     clear: { writable: true, value: function value() {
             this._current = null;
@@ -15303,6 +15553,10 @@ ChangeModel.prototype = Object.create(Model.prototype, {
 
     /**
      * Notify a signal before the specified value is changed.
+     * @name notifyBeforeChange
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyBeforeChange: { value: function value(_value) {
             if (!this.isLocked()) {
@@ -15312,6 +15566,10 @@ ChangeModel.prototype = Object.create(Model.prototype, {
 
     /**
      * Notify a signal when the model is changed.
+     * @name notifyChange
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyChange: { value: function value(_value2) {
             if (!this.isLocked()) {
@@ -15321,6 +15579,10 @@ ChangeModel.prototype = Object.create(Model.prototype, {
 
     /**
      * Notify a signal when the model is cleared.
+     * @name notifyClear
+     * @memberof system.models.ChangeModel
+     * @instance
+     * @function
      */
     notifyClear: { value: function value() {
             if (!this.isLocked()) {
@@ -15331,10 +15593,11 @@ ChangeModel.prototype = Object.create(Model.prototype, {
 
 /**
  * This model can keep an object in memory and emit messages if this object is changing.
+ * @name MemoryModel
+ * @class
+ * @memberof system.models
+ * @extends system.models.ChangeModel
  * @example
- * <pre>
- * var model = new MemoryModel();
- *
  * var beforeChanged = function( value , model )
  * {
  *     trace( "[-] before:" + value + " current:" + model.current + " size:" + model.size ) ;
@@ -15349,6 +15612,8 @@ ChangeModel.prototype = Object.create(Model.prototype, {
  * {
  *     trace( "[x] clear current:" + model.current + " size:" + model.size ) ;
  * }
+ *
+ * var model = new MemoryModel();
  *
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
@@ -15379,7 +15644,6 @@ ChangeModel.prototype = Object.create(Model.prototype, {
  * trace( "--" ) ;
  *
  * model.clear() ;
- * </pre>
  */
 function MemoryModel() {
     ChangeModel.call(this);
@@ -15387,6 +15651,11 @@ function MemoryModel() {
     Object.defineProperties(this, {
         /**
          * Indicates if the model throws errors.
+         * @name enableErrorChecking
+         * @memberof system.models.MemoryModel
+         * @instance
+         * @type boolean
+         * @default false
          */
         enableErrorChecking: { writable: true, value: false },
 
@@ -15409,9 +15678,6 @@ function MemoryModel() {
     this.header.next = this.header.previous = this.header;
 }
 
-/**
- * @extends ChangeModel
- */
 MemoryModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * The constructor reference of the instance.
@@ -15718,8 +15984,12 @@ function MemoryEntry() {
 
 /**
  * This model use an internal <code>Array</code> to register objects.
+ * @name ArrayModel
+ * @extends system.models.ChangeModel
+ * @implements system.data.Iterator
+ * @memberof system.models.arrays
+ * @class
  * @example
- * <pre>
  * var o1 = { id : "key1" } ;
  * var o2 = { id : "key2" } ;
  * var o3 = { id : "key3" } ;
@@ -15791,7 +16061,6 @@ function MemoryEntry() {
  * trace( "model length:" + model.length ) ;
  *
  * model.clear() ;
- * </pre>
  */
 function ArrayModel() {
     var factory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -15801,16 +16070,31 @@ function ArrayModel() {
     Object.defineProperties(this, {
         /**
          * Emits a message when an entry is added in the model.
+         * @name added
+         * @memberof system.models.arrays.ArrayModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         added: { value: new Signal() },
 
         /**
          * Emits a message when an entry is removed in the model.
+         * @name removed
+         * @memberof system.models.arrays.ArrayModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         removed: { value: new Signal() },
 
         /**
          * Emits a message when an entry is updated in the model.
+         * @name updated
+         * @memberof system.models.arrays.ArrayModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         updated: { value: new Signal() },
 
@@ -15821,9 +16105,6 @@ function ArrayModel() {
     });
 }
 
-/**
- * @extends ChangeModel
- */
 ArrayModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * The constructor reference of the instance.
@@ -15832,6 +16113,11 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Indicates the number of elements register in the model.
+     * @name length
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @type number
+     * @readonly
      */
     length: { get: function get() {
             return this._array.length;
@@ -15839,8 +16125,12 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Inserts an entry in the model.
-     * @param entry The entry to insert in the model.
+     * @param {*} entry - The object to register in the model.
      * @throws ReferenceError if the entry in argument is 'null' or 'undefined'.
+     * @name add
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     add: { value: function value(entry) {
             if (entry === null || entry === undefined) {
@@ -15852,8 +16142,14 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
         } },
 
     /**
-     * Inserts an entry in the model.
+     * Inserts an entry in the model at a specific position index.
      * @throws ReferenceError if the entry in argument is 'null' or 'undefined'.
+     * @name addAt
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
+     * @param {number} index - The index position to register the object.
+     * @param {*} entry - The object to register in the model.
      */
     addAt: { value: function value(index, entry) {
             if (entry === null || entry === undefined) {
@@ -15866,6 +16162,10 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Removes all entries register in the model.
+     * @name clear
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     clear: { value: function value() {
             this._array.length = 0;
@@ -15874,8 +16174,12 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Returns the element from this model at the passed index.
-     * @param index The index of the element to return.
-     * @return the element from this model at the passed index.
+     * @param {number} index - The index of the element to return.
+     * @return The element from this model at the passed index.
+     * @name clear
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     get: { value: function value(index) {
             return this._array[index];
@@ -15883,16 +16187,24 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Returns <code>true</code> if the model contains the specified entry.
-     * @param entry The entry reference to verify.
+     * @param {*} entry - The entry reference to check.
      * @return <code>true</code> if the model contains the specified entry.
+     * @name has
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     has: { value: function value(entry) {
             return this._array.indexOf(entry) > -1;
         } },
 
     /**
-     * Returns <code class="prettyprint">true</code> if this model is empty.
-     * @return <code class="prettyprint">true</code> if this model is empty.
+     * Returns <code>true</code> if this model is empty.
+     * @return <code>true</code> if this model is empty.
+     * @name isEmpty
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     isEmpty: { value: function value() {
             return this._arrays.length === 0;
@@ -15900,6 +16212,10 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is inserted in the model.
+     * @name notifyAdd
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     notifyAdd: { value: function value(index, entry) {
             if (!this.isLocked()) {
@@ -15909,6 +16225,10 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is removed in the model.
+     * @name notifyRemove
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     notifyRemove: { value: function value(index, entry) {
             if (!this.isLocked()) {
@@ -15918,6 +16238,10 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is updated in the model.
+     * @name notifyUpdate
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     notifyUpdate: { value: function value(index, entry) {
             if (!this.isLocked()) {
@@ -15927,6 +16251,11 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Removes an entry in the model.
+     * @name remove
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
+     * @param {*} entry - The object to unregister in the model.
      */
     remove: { value: function value(entry) {
             if (entry === null || entry === undefined) {
@@ -15941,10 +16270,14 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
         } },
 
     /**
-     * Removes from this model all the elements that are contained between the specific <code class="prettyprint">id</code> position and the end of this list (optional operation).
-     * @param id The index of the element or the first element to remove.
-     * @param count The number of elements to remove (default 1).
+     * Removes from this model all the elements that are contained between the specific <code>id</code> position and the end of this list (optional operation).
+     * @param {number} id - The index of the element or the first element to remove.
+     * @param {number} [count=1] The number of elements to remove (default 1).
      * @return The Array representation of all elements removed in the original list.
+     * @name removeAt
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     removeAt: { value: function value(index) {
             var count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -15957,11 +16290,15 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
         } },
 
     /**
-     * Removes from this model all of the elements whose index is between fromIndex, inclusive and toIndex, exclusive.
+     * Removes from this model all of the elements whose index is between <code>fromIndex</code>, inclusive and <code>toIndex</code>, exclusive.
      * <p>Shifts any succeeding elements to the left (reduces their index).</p>
      * <p>This call shortens the model by (toIndex - fromIndex) elements. (If toIndex==fromIndex, this operation has no effect.)</p>
-     * @param fromIndex The from index (inclusive) to remove elements in the list.
-     * @param toIndex The to index (exclusive) to remove elements in the list.
+     * @param {number} fromIndex - The from index (inclusive) to remove elements in the list.
+     * @param {number} toIndex - The to index (exclusive) to remove elements in the list.
+     * @name removeRange
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     removeRange: { value: function value(fromIndex, toIndex) {
             if (fromIndex === toIndex) {
@@ -15972,6 +16309,11 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Enforce to set the internal array of this model (default use a new Array instance). This method change the model without notification.
+     * @name setArray
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
+     * @param {array} ar - The Array reference to fill the model.
      */
     setArray: { value: function value(ar) {
             this._array = ar instanceof Array ? ar : [];
@@ -15979,8 +16321,12 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Update an entry in the model with the specified index.
-     * @param index The index to update an entry.
-     * @param entry the new value to insert in the model at the specified index.
+     * @param {number} index - The index to update an entry.
+     * @param {*} entry - the new value to insert in the model at the specified index.
+     * @name updateAt
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     updateAt: { value: function value(index, entry) {
             this.validate(entry);
@@ -15993,7 +16339,11 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Returns the internal array representation of this model.
-     * @return the internal array representation of this model.
+     * @return The array representation of this model.
+     * @name toArray
+     * @memberof system.models.arrays.ArrayModel
+     * @instance
+     * @function
      */
     toArray: { value: function value() {
             return this._array;
@@ -16001,9 +16351,13 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
 });
 
 /**
- * This model use an internal <code>KeyValuePair</code> map to register objects.
+ * This model use an internal {@link system.data.KeyValuePair|KeyValuePair} map to register objects.
+ * @name MapModel
+ * @extends system.models.ChangeModel
+ * @implements system.data.Iterator
+ * @memberof system.models.maps
+ * @class
  * @example
- * <pre>
  * var o1 = { id : "key1" } ;
  * var o2 = { id : "key2" } ;
  * var o3 = { id : "key3" } ;
@@ -16039,6 +16393,8 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
  *     trace( "[u] update entry:" + dump(entry) + " size:" + model.length ) ;
  * }
  *
+ * var model = new MapModel() ;
+ *
  * model.added.connect( added ) ;
  * model.beforeChanged.connect( beforeChanged ) ;
  * model.changed.connect( changed ) ;
@@ -16057,7 +16413,6 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
  *
  * model.current = o1 ;
  * model.current = o2 ;
- * </pre>
  */
 function MapModel() {
     var factory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -16068,16 +16423,31 @@ function MapModel() {
     Object.defineProperties(this, {
         /**
          * Emits a message when an entry is added in the model.
+         * @name added
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         added: { value: new Signal() },
 
         /**
          * Emits a message when an entry is removed in the model.
+         * @name removed
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         removed: { value: new Signal() },
 
         /**
          * Emits a message when an entry is updated in the model.
+         * @name updated
+         * @memberof system.models.maps.MapModel
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
          */
         updated: { value: new Signal() },
 
@@ -16098,12 +16468,14 @@ function MapModel() {
 
 /**
  * Indicates the default primary key value ("id").
+ * @name DEFAULT_PRIMARY_KEY
+ * @memberof system.models.maps.MapModel
+ * @type {string}
+ * @default <code>"id"</code>
+ * @const
  */
 Object.defineProperty(MapModel, 'DEFAULT_PRIMARY_KEY', { value: "id" });
 
-/**
- * @extends ChangeModel
- */
 MapModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * The constructor reference of the instance.
@@ -16112,6 +16484,11 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Indicates the number of elements register in the model.
+     * @name length
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @type number
+     * @readonly
      */
     length: { get: function get() {
             return this._map.length;
@@ -16122,6 +16499,9 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
      * By default the model use the "id" primary key in the objects.
      * <p><b>Note:</b> If you use this property and if the model contains entries, all entries will be removing.</p>
      * @see MapModel.DEFAULT_PRIMARY_KEY
+     * @name primaryKey
+     * @memberof system.models.maps.MapModel
+     * @instance
      */
     primaryKey: {
         get: function get() {
@@ -16142,6 +16522,11 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
      * Inserts an entry in the model, must be identifiable and contains an id property.
      * @throws ReferenceError if the argument of this method is 'null' or 'undefined'.
      * @throws ReferenceError if the passed-in entry is already register in the model.
+     * @name add
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {system.data.Identifiable} entry - The identifiable object to register in the model.
      */
     add: { value: function value(entry) {
             if (entry === null || entry === undefined) {
@@ -16162,6 +16547,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Removes all entries register in the model.
+     * @name clear
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     clear: { value: function value() {
             this._map.clear();
@@ -16170,7 +16559,12 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Returns the entry defined by the key passed-in argument.
-     * @return the entry defined by the key passed-in argument.
+     * @return The entry defined by the key passed-in argument.
+     * @name add
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {*} key - The key to search a specific entry in the model.
      */
     get: { value: function value(key) {
             return this._map.get(key);
@@ -16179,6 +16573,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * Returns an entry defines in the model with the specified member.
      * @return an entry defines in the model with the specified member.
+     * @name getByProperty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     getByProperty: { value: function value(propName, _value) {
             if (propName === null || !(propName instanceof String || typeof propName === 'string')) {
@@ -16202,8 +16600,12 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Returns <code>true</code> if the model contains the specified entry.
-     * @param entry The entry reference to verify.
+     * @param {system.data.Identifiable} entry - The entry reference to verify.
      * @return <code>true</code> if the model contains the specified entry.
+     * @name has
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     has: { value: function value(entry) {
             return this._map.hasValue(entry);
@@ -16212,6 +16614,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * Returns <code>true</code> if the model contains the specified attribute value.
      * @return <code>true</code> if the model contains the specified key in argument
+     * @name hasByProperty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     hasByProperty: { value: function value(propName, _value2) {
             if (propName === null || !(propName instanceof String || typeof propName === 'string')) {
@@ -16230,16 +16636,24 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
         } },
 
     /**
-     * Returns <code class="prettyprint">true</code> if the model contains the specified id key in argument.
-     * @return <code class="prettyprint">true</code> if the model contains the specified id key in argument
+     * Returns <code>true</code> if the model contains the specified id key in argument.
+     * @return <code>true</code> if the model contains the specified id key in argument
+     * @name hasKey
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     hasKey: { value: function value(key) {
             return this._map.has(key);
         } },
 
     /**
-     * Returns <code class="prettyprint">true</code> if this model is empty.
-     * @return <code class="prettyprint">true</code> if this model is empty.
+     * Returns <code>true</code> if this model is empty.
+     * @return <code>true</code> if this model is empty.
+     * @name isEmpty
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     isEmpty: { value: function value() {
             return this._map.isEmpty();
@@ -16248,6 +16662,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * Returns the iterator of this model.
      * @return the iterator of this model.
+     * @name iterator
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     iterator: { value: function value() {
             return this._map.iterator();
@@ -16256,6 +16674,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
     /**
      * Returns the keys iterator of this model.
      * @return the keys iterator of this model.
+     * @name keyIterator
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     keyIterator: { value: function value() {
             return this._map.keyIterator();
@@ -16263,6 +16685,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is inserted in the model.
+     * @name notifyAdd
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyAdd: { value: function value(entry) {
             if (!this.isLocked()) {
@@ -16272,6 +16698,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is removed in the model.
+     * @name notifyRemove
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyRemove: { value: function value(entry) {
             if (!this.isLocked()) {
@@ -16281,6 +16711,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Notify a signal when a new entry is updated in the model.
+     * @name notifyUpdate
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     notifyUpdate: { value: function value(entry) {
             if (!this.isLocked()) {
@@ -16290,6 +16724,10 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Removes an entry in the model.
+     * @name remove
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     remove: { value: function value(entry) {
             if (entry === null || entry === undefined) {
@@ -16309,6 +16747,11 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Enforce to set the internal KeyValuePair collection of this model (default use a new Array instance). This method change the model without notification.
+     * @name setMap
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
+     * @param {system.data.KeyValuePair} map - The map reference to initialize this model.
      */
     setMap: { value: function value(map) {
             this._map = map instanceof KeyValuePair ? map : new ArrayMap();
@@ -16316,7 +16759,11 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 
     /**
      * Update an entry in the model.
-     * @param entry the new value to insert in the model.
+     * @param {system.data.Identifiable} entry - The new value to insert in the model with a specific id.
+     * @name update
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     update: { value: function value(entry) {
             if (this._primaryKey in entry) {
@@ -16332,8 +16779,12 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
         } },
 
     /**
-     * Returns the internal KeyValuePair (map) representation of this model.
-     * @return the internal KeyValuePair (map) representation of this model.
+     * Returns the internal {@link system.data.KeyValuePair|KeyValuePair} (map) representation of this model.
+     * @return The internal  {@link system.data.KeyValuePair|KeyValuePair} (map) representation of this model.
+     * @name update
+     * @memberof system.models.maps.MapModel
+     * @instance
+     * @function
      */
     toMap: { value: function value() {
             return this._map;
@@ -16347,23 +16798,56 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.models
  * @memberof system
+ * @example
+ * var beforeChanged = function( value , model )
+ * {
+ *     trace( "before:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var changed = function( value , model )
+ * {
+ *     trace( "change:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var cleared = function( model )
+ * {
+ *     trace( "clear current:" + model.current ) ;
+ * }
+ *
+ * var model = new ChangeModel() ;
+ *
+ * model.beforeChanged.connect( beforeChanged ) ;
+ * model.changed.connect( changed ) ;
+ * model.cleared.connect( cleared ) ;
+ *
+ * model.current = "hello" ;
+ * model.current = "world" ;
+ * model.current = null ;
  */
 var models = Object.assign({
-    // classes
+  // classes
 
-    ChangeModel: ChangeModel,
-    MemoryModel: MemoryModel,
-    Model: Model,
+  ChangeModel: ChangeModel,
+  MemoryModel: MemoryModel,
+  Model: Model,
 
-    // packages
+  // packages
 
-    arrays: Object.assign({
-        ArrayModel: ArrayModel
-    }),
+  /**
+   * @namespace system.models.arrays
+   * @memberof system.models
+   */
+  arrays: Object.assign({
+    ArrayModel: ArrayModel
+  }),
 
-    maps: Object.assign({
-        MapModel: MapModel
-    })
+  /**
+   * @namespace system.models.maps
+   * @memberof system.models
+   */
+  maps: Object.assign({
+    MapModel: MapModel
+  })
 });
 
 /**
@@ -16372,10 +16856,10 @@ var models = Object.assign({
  * For a full explanation visit: {@link http://www.firstpr.com.au/dsp/rand31/}</p>
  * <p>The generator uses a modulus constant <code>((m) of 2^31 - 1)</code> which is a <b>Mersenne Prime number</b> and a full-period-multiplier of <code>16807</code>.
  * Output is a 31 bit unsigned integer. The range of values output is <code>1</code> to <code>2147483646</code> (2^31-1) and the seed must be in this range too.</p>
+ * @summary A pseudo random number generator (PRNG) is an algorithm for generating a sequence of numbers that approximates the properties of random numbers.
  * @name PRNG
- * @memberof system.numeric
  * @class
- * @constructor
+ * @memberof system.numeric
  * @param {number} [value=0] - The optional default value of the <code>PRNG</code> object, if the passed-in value is <code>>=1</code> a random value is generated with the <code>Math.random()</code> static method.
  */
 
@@ -16546,11 +17030,11 @@ PRNG.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * Represents an immutable range of values.
+ * Represents a range of numeric values. This range can be immutable.
+ * @summary Represents a range of numeric values. This range can be immutable.
  * @name Range
  * @memberof system.numeric
  * @class
- * @constructor
  * @implements system.Equatable
  * @param {number} [min=NaN] - The minimum range value.
  * @param {number} [max=NaN] - The maximum range value.
@@ -16919,6 +17403,7 @@ var numeric = Object.assign({
  * The ActionEntry objects contains all informations about an Action in a {@link system.process.TaskGroup} object.
  * @name ActionEntry
  * @class
+ * @private
  * @memberof system.process
  * @extends system.process.Action
  * @augments system.process.Action
@@ -16982,7 +17467,6 @@ ActionEntry.prototype = Object.create(Object.prototype, {
  * @memberof system.process
  * @augments system.process.Runnable
  * @implements system.process.Runnable
- * @constructor
  * @param {array} [init=null] - The optional Array of Runnable objects to fill the batch.
  * @example
  * function Command( name )
@@ -17275,7 +17759,6 @@ Batch.prototype = Object.create(Runnable.prototype, {
  * @class
  * @memberof system.process
  * @extends system.process.Task
- * @constructor
  * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
  * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
  * @example
@@ -17731,10 +18214,10 @@ TaskGroup.prototype = Object.create(Task.prototype, {
  * The internal BatchTaskNext Receiver.
  * @summary The internal class used in the <code>BatchTask</code> class.
  * @name BatchTaskNext
- * @class
  * @memberof system.process
+ * @class
+ * @private
  * @implements system.signals.Receiver
- * @constructor
  * @param {system.process.BatchTask} BatchTask - The <code>BatchTask</code> reference of this receiver.
  */
 function BatchTaskNext(batch) {
@@ -18245,7 +18728,7 @@ Cache.prototype.run = function () {
  * @class
  * @memberof system.process
  * @implements system.signals.Receiver
- * @constructor
+ * @private
  * @param {system.process.Chain} chain - The <code>Chain</code> reference of this receiver.
  */
 function ChainNext() {
@@ -18336,7 +18819,6 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
  * @class
  * @memberof system.process
  * @extends system.process.TaskGroup
- * @constructor
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -18658,7 +19140,6 @@ Do.prototype = Object.create(Action.prototype, {
  * @memberof system.process
  * @class
  * @extends system.process.Task
- * @constructor
  * @see {@link https://developer.mozilla.org/fr/docs/Web/API/Window/requestAnimationFrame|requestAnimationFrame} for further information.
  * @example
  * var finish = function( action )
@@ -19038,6 +19519,7 @@ Priority.prototype.constructor = Priority;
  * Indicates if the specific objet is Resetable  and contains a <code>reset()</code> method.
  * @name isResetable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Resetable</code>.
@@ -19077,6 +19559,7 @@ Resetable.prototype.reset = function () {};
  * Indicates if the specific objet is Resumable and contains a <code>resume()</code> method.
  * @name isResumable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Resumable</code>.
@@ -19116,6 +19599,7 @@ Resumable.prototype.resume = function () {};
  * Indicates if the specific objet is Startable and contains a <code>start()</code> method.
  * @name isStartable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Startable</code>.
@@ -19155,6 +19639,7 @@ Startable.prototype.start = function () {};
  * Indicates if the specific objet is Stoppable and contains a <code>stop()</code> method.
  * @name isStoppable
  * @function
+ * @instance
  * @memberof system.process
  * @param {object} target - The object to evaluate.
  * @return <code>true</code> if the object is <code>Stoppable</code>.
@@ -19197,7 +19682,6 @@ Stoppable.prototype.stop = function () {};
  * @class
  * @memberof system.process
  * @extends system.Enum
- * @constructor
  * @param {number} value - The value of the enumeration.
  * @param {string} name - The name key of the enumeration.
  * @example
@@ -19248,7 +19732,6 @@ Object.defineProperties(TimeoutPolicy, {
  * @memberof system.process
  * @extends system.process.Task
  * @class
- * @constructor
  * @example
  * var finish = function( action )
  * {
@@ -20500,15 +20983,6 @@ Odd.prototype.eval = function () {
 };
 
 /**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- */
-Odd.prototype.toString = function () /*String*/
-{
-  return "[Odd]";
-};
-
-/**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
  * @name Or
  * @memberof system.rules
@@ -20769,8 +21243,8 @@ var signals = Object.assign({
  * @name MotionNextFrame
  * @memberof system.transitions
  * @class
+ * @private
  * @implements Receiver
- * @constructor
  * @param {system.transitions.Motion} motion - The Motion reference who emit the messages.
  */
 function MotionNextFrame(motion) {
@@ -20887,7 +21361,6 @@ Transition.prototype = Object.create(Task.prototype, {
  * @memberof system.transitions
  * @implements {system.transitions.Transition}
  * @class
- * @constructor
  * @param {number} [id=null] The identfier of the object.
  */
 function Motion() {
@@ -21241,7 +21714,6 @@ Motion.prototype = Object.create(Transition.prototype, {
  * @name TweenUnit
  * @memberof system.transitions
  * @class
- * @constructor
  * @extends {system.transitions.Motion}
  * @tutorial system.transitions
  * @example
@@ -21391,7 +21863,6 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
  * @name Tween
  * @memberof system.transitions
  * @class
- * @constructor
  * @extends {system.transitions.Motion}
  * @tutorial system.transitions
  * @example
@@ -22906,7 +23377,6 @@ Dimension.prototype = Object.create(Object.prototype, {
  * The Vector2 class represents a simple location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Vector2
  * @memberof graphics.geom
- * @constructor
  * @class
  * @param {number} x - The x value of the object.
  * @param {number} y - The y value of the object.
@@ -23489,7 +23959,6 @@ Object.defineProperties(Point, {
  * @name Rectangle
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom
- * @constructor
  * @class
  * @param {number} x the x value of the object.
  * @param {number} y the y value of the object.
@@ -24310,7 +24779,6 @@ var ZOrder = Object.defineProperties({}, {
  * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to another. You can perform various graphical transformations on a display object by setting the properties of a Matrix object, applying that Matrix object to the <code>matrix</code> property of a Transform object, and then applying that Transform object as the <code>transform</code> property of the display object. These transformation functions include translation (<i>x</i> and <i>y</i> repositioning), rotation, scaling, and skewing.
  * @name Matrix
  * @memberof graphics.geom
- * @constructor
  * @class
  * @param a The value that affects the positioning of pixels along the <i>x</i> axis when scaling or rotating an image.
  * @param b The value that affects the positioning of pixels along the <i>y</i> axis when rotating or skewing an image.

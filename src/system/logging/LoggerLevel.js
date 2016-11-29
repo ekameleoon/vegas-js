@@ -4,6 +4,7 @@ import { Enum } from '../Enum.js' ;
 
 /**
  * The logger levels that is used within the logging framework.
+ * @summary The logger levels that is used within the logging framework.
  * @name LoggerLevel
  * @class
  * @memberof system.logging

@@ -12,9 +12,10 @@ import { Receiver }      from '../signals/Receiver.js' ;
 import { strings }       from './strings.js' ;
 
 /**
- * Represents the log information for a single logging notification.
- * <p>The loging system dispatches a single message each time a process requests information be logged.</p>
+ * <b>LoggerTarget</b> are used to display, store, or pass log messages to another destination. There are two kinds of target; those that receive and handle the messages, and those that buffer or route the messages to another target.
+ * <p>The <b>logging</b> system dispatches a single message each time a process requests information be logged.</p>
  * <p>This entry can be captured by any object for storage or formatting.</p>
+ * @summary Use the <b>LoggerTarget</b> objects to display, store, or pass log messages to another destination.
  * @name LoggerTarget
  * @memberof system.logging
  * @class
@@ -37,11 +38,7 @@ export function LoggerTarget()
 
 LoggerTarget.prototype = Object.create( Receiver.prototype ,
 {
-    ////////////////////////////////////
-
-    constructor : { value : LoggerTarget , enumerable : true , writable : true , configurable : true } ,
-
-    ////////////////////////////////////
+    constructor : { value : LoggerTarget , writable : true } ,
 
     /**
      * Determinates the LoggerFactory reference of the target, by default the target use the <code>system.logging.Log</code> singleton.
@@ -228,7 +225,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
     /**
      * Removes a channel in the fllters collection if this channel exist.
      * @param {string} channel - The channel to unregister.
-     * @return <code>true<code> if the channel is removed.
+     * @return <code>true</code> if the channel is removed.
      * @name removeFilter
      * @memberof system.logging.LoggerTarget
      * @instance

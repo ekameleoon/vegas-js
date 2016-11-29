@@ -5,7 +5,11 @@ import { LineFormattedTarget } from './LineFormattedTarget.js' ;
 
 /**
  * Provides a logger target that uses the global trace() method to output log messages.
- * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @name ConsoleTarget
+ * @memberof system.logging.targets
+ * @class
+ * @extends system.logging.targets.LineFormattedTarget
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  * @example
  * var Log           = system.logging.Log ;
  * var LoggerLevel   = system.logging.LoggerLevel ;
@@ -39,36 +43,28 @@ import { LineFormattedTarget } from './LineFormattedTarget.js' ;
  *
  * logger.info( "test : [{0}, {1}, {2}]", 2, 4, 6 ) ;
  */
-export function ConsoleTarget( init )
+export function ConsoleTarget( init = null )
 {
     LineFormattedTarget.call( this , init ) ;
 }
 
-/**
- * @extends Object
- */
 ConsoleTarget.prototype = Object.create( LineFormattedTarget.prototype ,
 {
-    ///////////
-
     constructor : { value : ConsoleTarget } ,
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     */
-    toString : { value : function() { return '[ConsoleTarget]' ; } },
-
-    ///////////
-
-    /**
      * Descendants of this class should override this method to direct the specified message to the desired output.
-     * @param message String containing preprocessed log message which may include time, date, channel, etc.
-     * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+     * @param {string} message - String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code>includeDate</code>, <code>includeChannel</code>, etc.
+     * @param {system.logging.LoggerLevel} level - The level of the log message.
+     * @name internalLog
+     * @memberof system.logging.targets.ConsoleTarget
+     * @function
+     * @instance
      */
     internalLog :
     {
-        value : function( message , level /*LoggerLevel*/ ) //jshint ignore:line
+        value : function( message , level ) //jshint ignore:line
         {
             if( console )
             {

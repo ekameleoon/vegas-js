@@ -23,6 +23,28 @@ import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging
  * @memberof system
+ * @example
+ * var logger = Log.getLogger('channel') ;
+ *
+ * var target = new ConsoleTarget
+ * ({
+ *     includeChannel      : true  ,
+ *     includeDate         : false ,
+ *     includeLevel        : true  ,
+ *     includeLines        : true  ,
+ *     includeMilliseconds : true  ,
+ *     includeTime         : true
+ * }) ;
+ *
+ * target.filters = ['*'] ;
+ * target.level   = LoggerLevel.ALL ;
+ *
+ * logger.debug( 'hello {0}, love it.' , 'VEGAS' ) ;
+ * logger.critical( 'hello {0}, it\'s critical.' , 'VEGAS' ) ;
+ * logger.info( 'hello, my name is {0}' , 'VEGAS' ) ;
+ * logger.error( 'hello {0}, an error is invoked.' , 'VEGAS' ) ;
+ * logger.warning( 'hello {0}, don\'t forget me.' , 'VEGAS' ) ;
+ * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 export var logging = Object.assign
 ({
@@ -36,6 +58,12 @@ export var logging = Object.assign
     LoggerLevel   : LoggerLevel ,
     LoggerTarget  : LoggerTarget,
 
+    /**
+     * This package contains all {@link system.logging.LoggerTarget|LoggerTarget}> implementations are used to display, store, or pass log messages to another destination.
+     * @summary This package contains all <b>LoggerTarget</b> implementations are used to display, store, or pass log messages to another destination.
+     * @namespace system.logging.targets
+     * @memberof system.logging
+     */
     targets : Object.assign
     ({
         ConsoleTarget,

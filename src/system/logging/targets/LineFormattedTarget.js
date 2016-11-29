@@ -5,9 +5,13 @@ import { LoggerTarget } from '../LoggerTarget.js' ;
 
 /**
  * All logger target implementations that have a formatted line style output should extend this class. It provides default behavior for including date, time, channel, and level within the output.
- * @param init A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @name LineFormattedTarget
+ * @memberof system.logging.targets
+ * @class
+ * @extends system.logging.LoggerTarget
+ * @param {Object} init - A generic object containing properties with which to populate the newly instance. If this argument is <code>null</code>, it is ignored.
  */
-export function LineFormattedTarget( init /*Object*/ )
+export function LineFormattedTarget( init = null )
 {
     LoggerTarget.call( this ) ;
 
@@ -18,38 +22,73 @@ export function LineFormattedTarget( init /*Object*/ )
 
     /**
      * Indicates if the channel for this target should added to the trace.
+     * @name includeChannel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeChannel /*Boolean*/ = false ;
+    this.includeChannel = false ;
 
     /**
      * Indicates if the date should be added to the trace.
+     * @name includeDate
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeDate /*Boolean*/ = false ;
+    this.includeDate = false ;
 
     /**
      * Indicates if the level for the event should added to the trace.
+     * @name includeLevel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeLevel /*Boolean*/ = false ;
+    this.includeLevel = false ;
 
     /**
      * Indicates if the line for the event should added to the trace.
+     * @name includeLines
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeLines /*Boolean*/ = false ;
+    this.includeLines = false ;
 
     /**
      * Indicates if the milliseconds should be added to the trace. Only relevant when includeTime is <code class="prettyprint">true</code>.
+     * @name includeMilliseconds
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeMilliseconds /*Boolean*/ = false ;
+    this.includeMilliseconds = false ;
 
     /**
      * Indicates if the time should be added to the trace.
+     * @name includeTime
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type boolean
+     * @default false
      */
-    this.includeTime /*Boolean*/ = false ;
+    this.includeTime = false ;
 
     /**
      * The separator string.
+     * @name separator
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @instance
+     * @type string
+     * @default
      */
-    this.separator /*String*/ = " " ;
+    this.separator = " " ;
 
     if( init )
     {
@@ -63,68 +102,78 @@ export function LineFormattedTarget( init /*Object*/ )
     }
 }
 
-/**
- * @extends Object
- */
 LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
 {
+    constructor : { value : LineFormattedTarget , writable : true } ,
+
     /**
      * Descendants of this class should override this method to direct the specified message to the desired output.
-     * @param message String containing preprocessed log message which may include time, date, channel, etc.
-     * based on property settings, such as <code class="prettyprint">includeDate</code>, <code class="prettyprint">includeChannel</code>, etc.
+     * @param {string} message - String containing preprocessed log message which may include time, date, channel, etc.
+     * based on property settings, such as <code>includeDate</code>, <code>includeChannel</code>, etc.
+     * @param {system.logging.LoggerLevel} level - The level of the log message.
+     * @name internalLog
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    internalLog :
+    internalLog : { value : function( message , level /*LoggerLevel*/ ) //jshint ignore:line
     {
-        value : function( message , level /*LoggerLevel*/ ) //jshint ignore:line
-        {
             // override this method
-        }
-    },
-
-    constructor : { value : LineFormattedTarget , enumerable : true , writable : true , configurable : true } ,
+    }},
 
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-     toString : { value : function() { return '[LineFormattedTarget]' ; } } ,
+    toString : { writable : true , value : function() { return '[' + this.constructor.name + ']' ; } } ,
 
     /**
      *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
      *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
      *  This method will be called only if the event's level is in range of the target's level.
      *  <b><i>Descendants need to override this method to make it useful.</i></b>
+     * @name logEntry
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    logEntry :
+    logEntry : { value : function( entry )
     {
-        value : function( entry /*LoggerEntry*/ ) /*void*/
-        {
-            var message = this.formatMessage
-            (
-                entry.message,
-                LoggerLevel.getLevelString( entry.level ),
-                entry.channel ,
-                new Date()
-            ) ;
-            this.internalLog( message , entry.level ) ;
-        }
-    },
+        var message = this.formatMessage
+        (
+            entry.message,
+            LoggerLevel.getLevelString( entry.level ),
+            entry.channel ,
+            new Date()
+        ) ;
+        this.internalLog( message , entry.level ) ;
+    }},
 
     /**
-     * Resets the internal line number value (set to 1).
+     * Resets the internal line number value (set to <code>1</code>).
+     * @name resetLineNumber
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
      */
-    resetLineNumber :
+    resetLineNumber : { value : function()
     {
-        value : function() /*void*/
-        {
-            this._lineNumber = 1 ;
-        }
-    },
+        this._lineNumber = 1 ;
+    }},
 
     /////////
 
     /**
      * This method format the passed Date in arguments.
+     * @name formatDate
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatDate :
     {
@@ -140,6 +189,11 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
 
     /**
      * This method format the passed level in arguments.
+     * @name formatLevel
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatLevel :
     {
@@ -151,6 +205,11 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
 
     /**
      * This method format the current line value.
+     * @name formatLines
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatLines :
     {
@@ -162,6 +221,11 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
 
     /**
      * This method format the log message.
+     * @name formatMessage
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatMessage :
     {
@@ -199,6 +263,11 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
 
     /**
      * This method format the current Date passed in argument.
+     * @name formatTime
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     formatTime :
     {
@@ -219,6 +288,11 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
     /**
      * Returns the string representation of a number and use digit conversion.
      * @return the string representation of a number and use digit conversion.
+     * @name getDigit
+     * @memberof system.logging.targets.LineFormattedTarget
+     * @function
+     * @instance
+     * @protected
      */
     getDigit :
     {
