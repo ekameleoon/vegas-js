@@ -5,9 +5,14 @@ import { BatchTaskNext } from './BatchTaskNext.js' ;
 import { TaskGroup }     from './TaskGroup.js' ;
 
 /**
- * Batchs a serie of Action and run it in the same time.
- * @param mode Specifies the mode of the chain. The mode can be "normal" (default), "transient" or "everlasting".
- * @param actions A dynamic object who contains Action references to initialize the chain.
+ * Batchs a serie of actions and run it in the same time.
+ * @summary Batchs a serie of actions and run it in the same time.
+ * @param {string} [mode=normal] - Specifies the <code>mode</code> of the group. This <code>mode</code> can be <code>"normal"</code> (default), <code>"transient"</code> or <code>"everlasting"</code>.
+ * @param {array} [actions=null] An optional array who contains Action references to initialize the chain.
+ * @name BatchTask
+ * @class
+ * @memberof system.process
+ * @extends system.process.TaskGroup
  * @example
  * var do1 = new system.process.Do() ;
  * var do2 = new system.process.Do() ;
@@ -48,7 +53,7 @@ import { TaskGroup }     from './TaskGroup.js' ;
  *
  * batch.run() ;
  */
-export function BatchTask ( mode /*String*/ , actions /*Array*/)
+export function BatchTask ( mode = 'normal' , actions = null )
 {
     TaskGroup.call( this , mode , actions ) ;
 
@@ -71,20 +76,16 @@ export function BatchTask ( mode /*String*/ , actions /*Array*/)
     }) ;
 }
 
-/**
- * @extends TaskGroup
- */
 BatchTask.prototype = Object.create( TaskGroup.prototype ,
 {
     /**
      * Indicates the current Action reference when the batch is in progress.
+     * @memberof system.process.BatchTask
+     * @type {system.process.Action}
+     * @instance
+     * @readonly
      */
-    current : { get   : function() { return this._current ; } } ,
-
-    /**
-     * @private
-     */
-    __className__ : { value : 'BatchTask' , configurable : true }
+    current : { get   : function() { return this._current ; } }
 }) ;
 
 BatchTask.prototype.constructor = BatchTask;
@@ -92,6 +93,10 @@ BatchTask.prototype.constructor = BatchTask;
 /**
  * Returns a shallow copy of this object.
  * @return a shallow copy of this object.
+ * @name clone
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.clone = function()
 {
@@ -100,6 +105,10 @@ BatchTask.prototype.clone = function()
 
 /**
  * Resume the chain.
+ * @name resume
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.resume = function() /*void*/
 {
@@ -142,6 +151,10 @@ BatchTask.prototype.resume = function() /*void*/
 
 /**
  * Launchs the chain process.
+ * @name run
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.run = function() /*void*/
 {
@@ -180,6 +193,10 @@ BatchTask.prototype.run = function() /*void*/
 
 /**
  * Stops the task group.
+ * @name stop
+ * @memberof system.process.BatchTask
+ * @function
+ * @instance
  */
 BatchTask.prototype.stop = function() /*void*/
 {
