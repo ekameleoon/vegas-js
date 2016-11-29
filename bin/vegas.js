@@ -86,7 +86,7 @@ if (Object.assign === undefined) {
  * @name global
  * @namespace global
  * @instance
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 
@@ -172,8 +172,12 @@ var cancelAnimationFrame = exports.global.cancelAnimationFrame;
 var requestAnimationFrame = exports.global.requestAnimationFrame;
 
 /**
- * A basic trace() function based on the console.log method.
- * @static
+ * A basic <code>trace()</code> function based on the console.log method.
+ * @name trace
+ * @global
+ * @function
+ * @example
+ * trace( 'hello world' ) ;
  */
 
 function trace(context) {
@@ -184,7 +188,9 @@ function trace(context) {
 
 /**
  * The string expression of the current VEGAS version.
- * @static
+ * @name version
+ * @type string
+ * @global
  */
 
 var version = '1.0.6';
@@ -196,7 +202,9 @@ var skip = false;
 /**
  * Logs out the version and renderer information for this running instance of VEGAS JS.
  * If you don't want to see this message you can run `vegas.skipHello()` before creating your application.
- * @static
+ * @name sayHello
+ * @global
+ * @function
  */
 function sayHello() {
     if (skip) {
@@ -217,6 +225,9 @@ function sayHello() {
 
 /**
  * Skips the hello message of renderers that are created after this is run.
+ * @name skipHello
+ * @function
+ * @global
  */
 function skipHello() {
     skip = true;
@@ -633,8 +644,8 @@ var isInt = function isInt(value) {
  * trace( isNumber(0) ) ; // true
  * trace( isNumber(0.5) ) ; // true
  * trace( isNumber(true) ) ; // true
- * trace( isBoolean(null) ) ; // false
- * trace( isBoolean(NaN) ) ; // true
+ * trace( isNumber(null) ) ; // false
+ * trace( isNumber(NaN) ) ; // true
  */
 
 function isNumber(object) {
@@ -649,6 +660,12 @@ function isNumber(object) {
  * @instance
  * @param {Object} object - The object to check.
  * @return <code>true</code> if the object is a String.
+ * @example
+ * trace( isString(0) ) ; // false
+ * trace( isString(true) ) ; // false
+ * trace( isString(null) ) ; // false
+ * trace( isString('hello') ) ; // true
+ * trace( isString(new String('hello')) ) ; // true
  */
 
 function isString(object) {
@@ -1150,7 +1167,7 @@ function swap(ar) {
 /**
  * The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
  * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.arrays
  * @memberof core
@@ -1720,7 +1737,7 @@ function isWhiteSpace(c) {
  * The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform the basic characters.
  * <p>You can use this library for example to parse a string (JSON, csv, etc.).</p>
  * @summary The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform a basic character.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.chars
  * @memberof core
@@ -2440,7 +2457,7 @@ var sineOut = function sineOut(t, b, c, d) {
  * |  regular  | regular easing                                              | yes  | yes  |  yes   |
  * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
  * @summary The {@link core.easings} library contains all the easing functions to create the specific tweening effects.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @namespace core.easings
  * @memberof core
  * @tutorial system.transitions
@@ -2542,7 +2559,7 @@ var aop = function aop(func) {
 /**
  * The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
  * @summary The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.functors
  * @memberof core
@@ -3762,7 +3779,7 @@ function vincenty(latitude1, longitude1, latitude2, longitude2) /*Number*/
 /**
  * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
  * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.maths
  * @memberof core
@@ -3832,7 +3849,7 @@ var maths = Object.assign({
 /**
  * The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
  * @summary The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.numbers
  * @memberof core
@@ -4014,7 +4031,7 @@ function merge(target, source) {
 /**
  * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
  * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.objects
  * @memberof core
@@ -4055,7 +4072,7 @@ var pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 /**
  * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
  * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.random
  * @memberof core
@@ -4236,7 +4253,7 @@ function invoke(c) {
 /**
  * The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
  * @summary The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.reflect
  * @memberof core
@@ -5317,7 +5334,7 @@ var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{
  * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
  * @namespace core.strings
  * @memberof core
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var strings = Object.assign({
@@ -5349,11 +5366,11 @@ var strings = Object.assign({
 });
 
 /**
- * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, etc.
  * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
  * <p>Those functions are allowed to reuse the builtin types (Object, Array, etc.), the Javascript API classes and packages, but nothing else.</p>
  * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core
  */
@@ -6707,7 +6724,7 @@ ArrayMap.prototype.values = function () /*Array*/
  * <p>Originaly the {@link system.data} collection framework is loosely inspired on the <b>JAVA Collections Framework</b> and the <b>Jakarta Collections Framework</b> but with the new ES6 standard we change the basic implementation of the new <b>VEGAS</b> framework in the JS version of the library.</p>
  * <p>This framework is inspired on interfaces to defines the different types of collections : * Map * Bag * Collections * Iterator * Set * Queue & Stack... </p>
  * @summary The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.data
  * @memberof system
@@ -6865,7 +6882,7 @@ NoSuchElementError.prototype.constructor = NoSuchElementError;
 /**
  * The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>), rather than part of the Javascript core language. The <strong>Javascript</strong> core language is the part of the language that complies with the <strong>ECMAScript</strong> standard.
  * @summary The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>).
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.errors
  * @memberof system
@@ -7516,7 +7533,7 @@ RomanEvaluator.prototype.toString = function () {
 /**
  * The {@link system.evaluators} library contains classes to evaluates some objects with a collection of specific strategies.
  * @summary The {@link system.evaluators} library contains classes to evaluates some objects.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.evaluators
  * @memberof system
@@ -7768,7 +7785,7 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
 /**
  * The {@link system.formatters} library contains classes to format objects to a specific string expression.
  * @summary The {@link system.formatters} library contains classes to format objects to a specific string expression.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.formatters
  * @memberof system
@@ -13198,7 +13215,7 @@ Parameters.prototype = Object.create(Object.prototype, {
  * <p><b>IoC</b> is also known as <b>dependency injection</b> (DI). It is a process whereby objects define their dependencies, that is, the other objects they work with, only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.</p>
  * <p> The container then injects those dependencies when it creates the <b>object definitions</b>. This process is fundamentally the inverse, hence the name Inversion of Control (IoC), of the <b>object definition</b> itself controlling the instantiation or location of its dependencies by using direct construction of classes, or a more complex mechanism.</p>
  * @summary The {@link system.ioc} library provides a simple et strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.ioc
  * @memberof system
@@ -13729,7 +13746,7 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
 /**
  * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
  * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging
  * @memberof system
@@ -15230,7 +15247,7 @@ IfZero.prototype = Object.create(IfTask.prototype, {
  * <p>This task is heavily based on the Condition framework that can be found in the {@link system.rules} library.</p>
  * <p>In addition to the {@link system.rules.Rule|Rule} condition, you can specify three different child actions based on the {@link system.process.Action|Action} :  <code>elseif</code>, <code>then</code> and <code>else</code>. All three subelements are optional. Both <code>then</code> and <code>else</code> must not be used more than once inside the if task. Both are containers for tasks, just like {@link system.process.BatchTask|BatchTask} and {@link system.process.Chain|Chain} tasks.</p>
  * @summary The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logics
  * @memberof system
@@ -16794,7 +16811,7 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
 /**
  * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
  * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.models
  * @memberof system
@@ -17388,7 +17405,7 @@ Object.defineProperties(Range, {
 /**
  * The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
  * @summary The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.numeric
  * @memberof system
@@ -20052,7 +20069,7 @@ Unlock.prototype = Object.create(Action.prototype, {
  * @summary The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
  * @namespace system.process
  * @memberof system
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
 var process = Object.assign({
@@ -21125,7 +21142,7 @@ Or.prototype.eval = function () {
 /**
  * The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
  * @summary The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.rules
  * @memberof system
@@ -21191,7 +21208,7 @@ var strings$2 = Object.defineProperties({}, {
  * <li>Signals are inspired by {@link https://en.wikipedia.org/wiki/Signals_and_slots|signals/slots in Qt}.</li>
  * <ul>
  * @summary The {@link system.signals} library is light-weight, strongly-typed messaging tools.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.signals
  * @memberof system
@@ -22201,7 +22218,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
  * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @namespace system.transitions
  * @memberof system
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @see For more usage, read the {@tutorial system.transitions} tutorial.
  * @example <caption>Javascript script</caption>
@@ -22320,10 +22337,10 @@ var transitions = Object.assign({
 });
 
 /**
- * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure.
+ * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure : signals, data, IoC, logger, tasks, transitions, logics, rules, models, etc.
  * <p><b>Dependencies :</b> The {@link system} framework reuse the module and building blocks of the {@link core} library.</p>
  * @summary The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system
  */
@@ -25077,8 +25094,8 @@ var geom = Object.assign({
 });
 
 /**
- * The VEGAS.js framework - The graphics library.
- * @license MPL 1.1/GPL 2.0/LGPL 2.1
+ * The {@link graphics} package is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface.
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics
  */
