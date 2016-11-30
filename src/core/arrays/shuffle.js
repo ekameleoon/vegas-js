@@ -14,16 +14,16 @@
  * shuffle( ar ) ;
  * trace( ar ) ;
  */
-export function shuffle( ar /*Array*/ ) /*Array*/
+export function shuffle( ar  ) 
 {
     if( ar instanceof Array )
     {
         let item ;
-        let rdm /*int*/ ;
-        let tmp /*Array*/ = [] ;
-        let len /*int*/   = ar.length;
-        let index /*int*/ = len - 1 ;
-        for ( var i /*int*/ = 0 ; i < len ; i++ )
+        let rdm  ;
+        let tmp  = [] ;
+        let len    = ar.length;
+        let index  = len - 1 ;
+        for ( var i  = 0 ; i < len ; i++ )
         {
             rdm  = Math.round( Math.random() * index ) ;
             item = ar[ rdm ] ;

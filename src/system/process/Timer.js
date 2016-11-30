@@ -96,9 +96,6 @@ export function Timer( delay =  0 , repeatCount = 0, useSeconds = false )
 
 Timer.prototype = Object.create( Task.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Timer , writable : true } ,
 
     /**
@@ -171,7 +168,7 @@ Timer.prototype = Object.create( Task.prototype ,
     useSeconds :
     {
         get : function() { return this._useSeconds ; } ,
-        set : function( flag /*Boolean*/ )
+        set : function( flag  )
         {
             if ( this._running )
             {

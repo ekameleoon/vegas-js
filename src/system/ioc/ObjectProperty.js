@@ -5,27 +5,43 @@ import { ObjectStrategy }  from './ObjectStrategy.js' ;
 
 /**
  * This object defines a property definition in the object definitions.
- * @param name The name of the property.
- * @param value The value of the property.
- * @param policy The policy of the property ( ObjectAttribute.REFERENCE, ObjectAttribute.CONFIG, ObjectAttribute.LOCALE or by default ObjectAttribute.VALUE )
+ * @name ObjectProperty
+ * @extends system.ioc.ObjectStrategy
+ * @class
+ * @memberof system.ioc
+ * @param {string} name - The name of the property.
+ * @param {*} value - The value of the property.
+ * @param {string} policy - The policy of the property ( {@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE}, {@link system.ioc.ObjectAttribute.CONFIG|ObjectAttribute.CONFIG}, {@link system.ioc.ObjectAttribute.LOCALE|ObjectAttribute.LOCALE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE} )
  * @param evaluators The Array representation of all evaluators who evaluate the value of the property.
  */
-export function ObjectProperty( name /*String*/ , value , policy /*String*/ = "value" , evaluators /*Array*/ = null )
+export function ObjectProperty( name , value , policy = "value" , evaluators  = null )
 {
     Object.defineProperties( this ,
     {
         /**
-         * The optional Array representation of all evaluators to transform the value of this object.
+         * The optional <code>Array</code> representation of all evaluators to transform the value of this object.
+         * @name evaluators
+         * @memberof system.ioc.ObjectProperty
+         * @instance
+         * @type Array
          */
         evaluators : { value : evaluators instanceof Array ? evaluators : null, writable : true } ,
 
         /**
          * The name of the property.
+         * @name name
+         * @memberof system.ioc.ObjectProperty
+         * @instance
+         * @type string
          */
         name : { value : name , writable : true } ,
 
         /**
-         * Determinates the order of the receiver registration ('after' or by default 'before').
+         * Determinates the policy of the property ( {@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE}, {@link system.ioc.ObjectAttribute.CONFIG|ObjectAttribute.CONFIG}, {@link system.ioc.ObjectAttribute.LOCALE|ObjectAttribute.LOCALE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE} )
+         * @name policy
+         * @memberof system.ioc.ObjectProperty
+         * @instance
+         * @type string
          */
         policy :
         {
@@ -52,6 +68,9 @@ export function ObjectProperty( name /*String*/ , value , policy /*String*/ = "v
 
         /**
          * The value of the property.
+         * @name value
+         * @memberof system.ioc.ObjectProperty
+         * @instance
          */
         value : { value : value , writable : true } ,
 
@@ -64,19 +83,16 @@ export function ObjectProperty( name /*String*/ , value , policy /*String*/ = "v
     this.policy = policy ;
 }
 
-/**
- * @extends Object
- */
 ObjectProperty.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : ObjectProperty , writable : true },
 
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof system.ioc.ObjectProperty
+     * @function
+     * @instance
      */
     toString : { value : function () { return '[ObjectProperty]' ; } , writable : true  }
 }) ;

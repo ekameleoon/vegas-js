@@ -42,7 +42,7 @@ Formattable.prototype.constructor = Formattable;
  * @function
  * @instance
  */
-Formattable.prototype.format = function( value ) /*String*/
+Formattable.prototype.format = function( value ) 
 {
     //
 }

@@ -54,9 +54,6 @@ export function Range( min = NaN , max = NaN , writable = true )
 
 Range.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { writable : true , value : Range } ,
 
     /**

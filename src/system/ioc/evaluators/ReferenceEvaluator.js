@@ -8,6 +8,10 @@ import { ObjectFactory }     from '../ObjectFactory.js' ;
 
 /**
  * Evaluates a type string expression and return the property value who corresponding in the target object specified in this evaluator.
+ * @memberof system.ioc.evaluators
+ * @name ReferenceEvaluator
+ * @class
+ * @private
  */
 export function ReferenceEvaluator( factory )
 {
@@ -15,21 +19,29 @@ export function ReferenceEvaluator( factory )
     {
         /**
          * The factory reference.
+         * @memberof system.ioc.evaluators.ReferenceEvaluator
+         * @instance
          */
         factory : { value : (factory instanceof ObjectFactory) ? factory : null , writable : true } ,
 
         /**
          * The separator of the expression evaluator.
+         * @memberof system.ioc.evaluators.ReferenceEvaluator
+         * @instance
          */
         separator : { value : "." , writable : true } ,
 
         /**
          * The undefineable value returns in the eval method if the expression can't be evaluate.
+         * @memberof system.ioc.evaluators.ReferenceEvaluator
+         * @instance
          */
         undefineable : { value : null , writable : true } ,
 
         /**
          * Indicates if the class throws errors or return null when an error is throwing.
+         * @memberof system.ioc.evaluators.ReferenceEvaluator
+         * @instance
          */
         throwError :
         {
@@ -44,18 +56,15 @@ export function ReferenceEvaluator( factory )
     }) ;
 }
 
-/**
- * @extends Evaluable
- */
 ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : ReferenceEvaluator } ,
 
     /**
      * Evaluates the specified object.
+     * @memberof system.ioc.evaluators.ReferenceEvaluator
+     * @function
+     * @instance
      */
     eval : { value : function( o )
     {
@@ -139,6 +148,9 @@ ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof system.ioc.evaluators.ReferenceEvaluator
+     * @function
+     * @instance
      */
     toString : { value : function ()
     {

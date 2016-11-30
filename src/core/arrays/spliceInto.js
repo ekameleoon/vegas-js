@@ -44,7 +44,7 @@
  *
  * trace( "spliceInto( inserted, container, 0 , 2 ) : " + container ) ; // 1,2,3,4,7,8
  */
-export function spliceInto( inserted /*Array*/ , container /*Array*/ , position /*Number*/ , count /*Number*/ )
+export function spliceInto( inserted  , container  , position /*Number*/ , count /*Number*/ )
 {
     inserted.unshift( position , count ) ;
     try

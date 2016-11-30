@@ -24,9 +24,6 @@ export function Transition ( id = null )
 
 Transition.prototype = Object.create( Task.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : Transition , writable : true } ,
 
     /**

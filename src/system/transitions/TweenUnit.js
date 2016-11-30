@@ -81,9 +81,6 @@ export function TweenUnit( easing = null , duration = 0 , useSeconds = false , a
 
 TweenUnit.prototype = Object.create( Motion.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : TweenUnit , writable : true } ,
 
     /**

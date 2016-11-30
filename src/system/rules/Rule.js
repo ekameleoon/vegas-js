@@ -27,9 +27,6 @@ export function Rule() {}
 
 Rule.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { writable : true , value : Rule } ,
 
     /**

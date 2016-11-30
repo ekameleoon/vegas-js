@@ -10,8 +10,11 @@ import { ObjectOrder } from '../ObjectOrder.js' ;
 /**
  * Creates the Array of all receivers defines in the passed-in factory object definition.
  * @return the Array of all receivers defines in the passed-in factory object definition.
+ * @memberof system.ioc.builders
+ * @function
+ * @private
  */
-export function createReceivers( factory ) /*Array*/
+export function createReceivers( factory )
 {
     if ( !factory )
     {

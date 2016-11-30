@@ -2,6 +2,10 @@
 
 /**
  * Configures the eden library.
+ * @name Config
+ * @class
+ * @memberof eden
+ * @private
  */
 export function Config( init )
 {
@@ -9,13 +13,16 @@ export function Config( init )
     {
         /**
          * Allows to use aliases in the eden parser.
+         * @memberof eden.Config
+         * @instance
          */
         allowAliases : { writable : true , value : false } ,
 
         /**
          * Allows to execute function call. if set to false it blocks any function call and return undefined.
+         * @memberof eden.Config
+         * @instance
          * @example
-         * <pre class="prettyprint">
          * "titi = \"hello world\"; toto = titi.toUpperCase();"
          *
          * // allowFunctionCall = true
@@ -23,13 +30,14 @@ export function Config( init )
          *
          * // allowFunctionCall = false
          * toto = undefined
-         * </pre>
          */
         allowFunctionCall : { writable : true , value : true } ,
 
         /**
-         * When set to false array index are evaluated without bracket eval( test.0 ) for Flash ActionScript
-         * When set to true array index are evaluated with bracket eval( test[0] ) for JavaScript, JScript, JSDB etc.
+         * When set to <code>false</code> array index are evaluated without bracket eval( test.0 ) (ActionScript)
+         * and set to <code>true</code> array index are evaluated with bracket eval( test[0] ) for JavaScript, JScript, JSDB etc.
+         * @memberof eden.Config
+         * @instance
          */
         arrayIndexAsBracket : { writable : true , value : false } ,
 
@@ -42,6 +50,8 @@ export function Config( init )
          * <p>The difference is with a full path you can only <b>create/use/define/assign</b> value to this exact path and
          * with a starting path you can create/use/define/assign value to this path and its child paths.</p>
          * <p><b>Attention:</b> special values as NaN, true, false, null, undefined are always authorized.</p>
+         * @memberof eden.Config
+         * @instance
          */
         authorized : { writable : true , value : null } ,
 
@@ -50,25 +60,27 @@ export function Config( init )
          * to optimize (more or less) packets of datas when they are transfered.
          * <p><b>Note 1 :</b> use "compress = false" when you want to have a better view or debug packets of datas.</p>
          * <p><b>Note 2 :</b> this property is in sync with eden.prettyPrint</p>
+         * @memberof eden.Config
+         * @instance
          */
         compress : { writable : true , value : false } ,
 
         /**
          * Parameter allowing to copy objects by value if true or by reference if false.
-         * @example
-         * <code class="prettyprint">
+         * @example <caption> In this case with <code>copyObjectByValue=false</code> :
+         * <code>bar</code> will be a reference to the <code>foo</code> object but if <code>copyObjectByValue=true</code>
+         * <code>bar</code> will be an exact copy of <code>foo</code> object</caption>
          * foo = {a:1, b:2, c:3};
          * bar = foo;
-         * </code>
-         * In this case with copyObjectByValue = false
-         * bar will be a reference to the foo object
-         * but if copyObjectByValue = true
-         * bar will be an exact copy of foo object
+         * @memberof eden.Config
+         * @instance
          */
         copyObjectByValue : { writable : true , value : true } ,
 
         /**
          * Allows to throw errors from the eden parser.
+         * @memberof eden.Config
+         * @instance
          */
         enableErrorChecking : { writable : true , value : false },
 
@@ -76,35 +88,47 @@ export function Config( init )
          * The list of reserved keywords.
          * Reserved words may not be used for variables, functions, methods, or object identifiers.
          * The following are existing reserved keywords defined by the ECMAScript specification.
+         * @memberof eden.Config
+         * @instance
          */
         reserved : { writable : true , value : null },
 
         /**
          * The list of future reserved keywords.
          * The following are existing future reserved keywords defined by the ECMAScript specification.
+         * @memberof eden.Config
+         * @instance
          */
         reservedFuture : { writable : true , value : null },
 
         /**
          * Parameter setting on (true) or off (false) the security.
          * If true, all object path, function or constructor will be scanned at interpretation time against the authorized list.
+         * @memberof eden.Config
+         * @instance
          */
         security : { writable : true , value : false },
 
         /**
          * Allows to define the case-sensitivy of the parsers.
          * If true, variable names that differ only in case are considered different.
+         * @memberof eden.Config
+         * @instance
          */
         strictMode : { writable : true , value : true },
 
         /**
          * Value assigned to a variable    when this one is not found or not authorized.
          * Depending on your environment you can override it with a more suitable one for exemple on C# you could set it to null.
+         * @memberof eden.Config
+         * @instance
          */
         undefineable : { writable : true , value : undefined },
 
         /**
          * This parameter allowing to trace messages in the console if the environment permit it.
+         * @memberof eden.Config
+         * @instance
          */
         verbose : { writable : true , value : false },
     }) ;
@@ -119,7 +143,7 @@ Config.prototype = Object.create( Object.prototype ,
 {
     load :
     {
-        value : function( config ) /*Boolean*/
+        value : function( config ) 
         {
             for( var member in config )
             {
@@ -134,6 +158,8 @@ Config.prototype = Object.create( Object.prototype ,
 
 /**
  * The default eden library config.
+ * @memberof eden
+ * @instance
  */
 export var config = new Config
 ({

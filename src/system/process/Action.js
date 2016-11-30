@@ -62,12 +62,12 @@ export function Action()
         __lock__ : { writable : true  , value : false },
 
         /**
-         * @protected
+         * @private
          */
         _phase : { writable : true , value : TaskPhase.INACTIVE },
 
         /**
-         * @protected
+         * @private
          */
         _running : { writable : true , value : false }
     }) ;
@@ -75,9 +75,6 @@ export function Action()
 
 Action.prototype = Object.create( Runnable.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Action },
 
     /**

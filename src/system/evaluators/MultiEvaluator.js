@@ -170,11 +170,12 @@ MultiEvaluator.prototype.constructor = MultiEvaluator ;
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
  * @memberof system.evaluators.MultiEvaluator
  * @function
  * @instance
  */
-MultiEvaluator.prototype.toString = function () /*String*/
+MultiEvaluator.prototype.toString = function () 
 {
     return "[MultiEvaluator]" ;
 }

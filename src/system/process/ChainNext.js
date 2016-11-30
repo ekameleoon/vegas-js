@@ -26,9 +26,6 @@ export function ChainNext( chain = null )
 
 ChainNext.prototype = Object.create( Receiver.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : ChainNext } ,
 
     /**

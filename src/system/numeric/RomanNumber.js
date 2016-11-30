@@ -94,7 +94,7 @@ Object.defineProperties( RomanNumber ,
             var ROMAN   = RomanNumber.ROMAN   ;
 
             var n /*uint*/   = 0 ;
-            var r /*String*/ = "";
+            var r  = "";
 
             if( (typeof(num) === "number" || num instanceof Number) )
             {
@@ -109,13 +109,13 @@ Object.defineProperties( RomanNumber ,
                 n = num ;
             }
 
-            var i /*int*/;
+            var i ;
             var rank /*uint*/;
             var bellow /*uint*/;
-            var roman /*String*/;
-            var romansub /*String*/;
+            var roman ;
+            var romansub ;
 
-            var size /*int*/ = NUMERIC.length ;
+            var size  = NUMERIC.length ;
 
             for( i=0 ; i<size ; i++ )
             {
@@ -182,9 +182,9 @@ Object.defineProperties( RomanNumber ,
 
             var n /*uint*/ = 0;
 
-            var pos /*int*/     = 0  ;
-            var ch /*String*/   = "" ;
-            var next /*String*/ = "" ;
+            var pos      = 0  ;
+            var ch    = "" ;
+            var next  = "" ;
 
             var ich /*uint*/ ;
             var inext /*uint*/ ;
@@ -226,9 +226,6 @@ Object.defineProperties( RomanNumber ,
 
 RomanNumber.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { writable : true , value : RomanNumber } ,
 
     /**

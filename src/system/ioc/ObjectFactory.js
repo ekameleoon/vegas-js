@@ -110,6 +110,9 @@ export function ObjectFactory( config = null , objects = null )
     {
         /**
          * This array contains objects to fill this factory with the run or create method.
+         * @memberof system.ioc.ObjectFactory
+         * @instance
+         * @type Array
          */
         objects : { value : (objects instanceof Array) ? objects : null , writable : true } ,
 
@@ -137,14 +140,8 @@ export function ObjectFactory( config = null , objects = null )
     this.config = config ;
 }
 
-/**
- * @extends Object
- */
 ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value :  ObjectFactory },
 
     /**
@@ -553,6 +550,11 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     /**
      * Creates the arguments Array representation of the specified definition.
      * @return the arguments Array representation of the specified definition.
+     * @name createArguments
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
+     * @private
      */
     createArguments : { value : function( args = null )
     {
@@ -1059,7 +1061,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    registerReceivers : { value : function( o , receivers /*Array*/ = null )
+    registerReceivers : { value : function( o , receivers  = null )
     {
         if ( !(receivers instanceof Array) || (receivers.length === 0) )
         {

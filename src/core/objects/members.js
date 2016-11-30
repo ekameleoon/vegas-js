@@ -17,10 +17,10 @@
 export function members( o , byValue = false )
 {
     byValue = Boolean( byValue === true ) ;
-    var members /*Array*/ = [];
+    var members  = [];
     if( byValue )
     {
-        for( var prop /*String*/ in o )
+        for( var prop  in o )
         {
             if( o.hasOwnProperty(prop) )
             {
@@ -30,7 +30,7 @@ export function members( o , byValue = false )
     }
     else
     {
-        for( var member /*String*/ in o )
+        for( var member  in o )
         {
             if( o.hasOwnProperty(member) )
             {

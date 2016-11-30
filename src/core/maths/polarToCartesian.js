@@ -14,7 +14,7 @@ import { DEG2RAD } from './DEG2RAD.js' ;
  * @param {number} degrees Indicates if the angle of the polar object is in degrees or radians.
  * @return A generic Object with the cartesian representation of the specified Polar object (with the coordinates x and y).
  */
-export var polarToCartesian = ( vector , degrees /*Boolean*/ ) =>
+export var polarToCartesian = ( vector , degrees  ) =>
 {
     var angle  = vector.angle ;
     var radius = vector.radius ;

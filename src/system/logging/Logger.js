@@ -154,27 +154,39 @@ Logger.prototype = Object.create( Signal.prototype ,
 
     /**
      * What a Terrible Failure: Report an exception that should never happen.
+     * @param {*} context - The message or information to log. If the passedin value is a string, you can contain special marker characters of the form {x}, where x is a zero based index that will be replaced with the additional parameters found at that index if specified.
+     * @param {...Object} options - Additional parameters that can be subsituted in the str parameter at each "{x}" location, where x is an integer (zero based) index value into the Array of values specified.
+     * @name wtf
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
-    wtf :
+    wtf : { value : function ( context , ...options )
     {
-        value : function ( context , ...options )
-        {
-            this._log( LoggerLevel.WTF , context , options ) ;
-        }
-    },
+        this._log( LoggerLevel.WTF , context , options ) ;
+    }},
 
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @name toString
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
      */
     toString : { value : function() { return '[Logger]' ; } } ,
 
     /**
-     * What a Terrible Failure: Report an exception that should never happen.
+     * The internal log function.
+     * @name _log
+     * @memberof system.logging.Logger
+     * @instance
+     * @function
+     * @private
      */
     _log :
     {
-        value : function ( level /*LoggerLevel*/ , context , options /*Array*/ ) /*void*/
+        value : function ( level /*LoggerLevel*/ , context , options  ) /*void*/
         {
             if( this.connected() )
             {

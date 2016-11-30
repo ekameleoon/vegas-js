@@ -94,13 +94,13 @@ export function MemoryModel()
 
 MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : MemoryModel } ,
 
     /**
      * Determinates the selected value in this model.
+     * @name current
+     * @memberof system.models.MemoryModel
+     * @instance
      */
     current :
     {
@@ -137,18 +137,30 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Indicates the number of elements in memory model.
+     * @name length
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @readonly
      */
     length : { get : function() { return this.size ; } },
 
     /**
      * Indicates in the beforeChange signal if the model is reduced (use the back or the backTo method).
      * This property is true only before the change of the new position in the model.
+     * @name reduced
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @readonly
      */
     reduced : { get : function() { return this._reduced ; } } ,
 
     /**
      * Go back in the memory and removes the last element in the memory model.
      * @return The last removed element in the memory.
+     * @name back
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     back : { value : function()
     {
@@ -175,8 +187,12 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Go back in the memory and removes the all the element in the memory model to a specific position.
-     * @param pos The position to back in memory.
+     * @param {number} [pos=1] - The position to back in memory.
      * @return The Array representation of all removed element in memory.
+     * @name backTo
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     backTo : { value : function( pos = 1 )
     {
@@ -240,6 +256,10 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Clear the model.
+     * @name clear
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     clear : { value : function()
     {
@@ -264,6 +284,10 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
      * Returns the first element in memory.
      * @return the first element in this list.
      * @throws NoSuchElementError if this list is empty.
+     * @name first
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     first : { value : function()
     {
@@ -285,8 +309,12 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
     }},
 
     /**
-     * Go home, select the first element in the memory and remove all other elements. This method work only if the memory length is greater than 1.
+     * Go home, select the first element in the memory and remove all other elements. This method work only if the memory length is greater than <code>1</code>.
      * @return The last removed element in the memory.
+     * @name home
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     home : { value : function()
     {
@@ -329,8 +357,12 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
     }},
 
     /**
-     * Returns <code class="prettyprint">true</code> if this memory model is empty.
-     * @return <code class="prettyprint">true</code> if this memory model is empty.
+     * Returns <code>true</code> if this memory model is empty.
+     * @return <code>true</code> if this memory model is empty.
+     * @name isEmpty
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     isEmpty : { value : function()
     {
@@ -341,6 +373,10 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
      * Returns the last element in memory.
      * @return the last element in this list.
      * @throws NoSuchElementError if this list is empty.
+     * @name last
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     last : { value : function()
     {
@@ -365,7 +401,11 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Appends the specified element to the end of this list.
-     * @param element The element to be appended to this list.
+     * @param {*} element - The element to be appended to this list.
+     * @name add
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      * @private
      */
     add : { value : function( element )
@@ -376,6 +416,12 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
     /**
      * Inserts the given element in the memory before the given entry.
+     * @name addBefore
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
+     * @param {*} element - The element to insert.
+     * @param {*} entry - The entry to target.
      * @private
      */
     addBefore : { value : function( element , entry )
@@ -390,6 +436,10 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Removes a specific entry in memory.
      * @private
+     * @name removeEntry
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      */
     removeEntry : { value : function( entry )
     {
@@ -420,6 +470,10 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Removes and returns the last element from this list.
      * @return The last removed element from this list.
+     * @name removeLast
+     * @memberof system.models.MemoryModel
+     * @instance
+     * @function
      * @private
      */
     removeLast : { value : function()
@@ -432,21 +486,28 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
 
 /**
  * Internal class in the <code>MemoryModel</code> class to defined all entries in the internal memory and the links betweens alls.
+ * @name MemoryEntry
+ * @class
+ * @memberof system.models
+ * @private
  */
 function MemoryEntry( element = null , next /*MemoryEntry*/ = null , previous /*MemoryEntry*/ = null )
 {
     /**
      * The element of this entry.
+     * @memberof system.models.MemoryModel
      */
     this.element = element ;
 
     /**
      * The next entry.
+     * @memberof system.models.MemoryModel
      */
     this.next = next ;
 
     /**
      * The previous entry.
+     * @memberof system.models.MemoryModel
      */
     this.previous = previous ;
 }

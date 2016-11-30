@@ -133,9 +133,6 @@ Object.defineProperty( MapModel , 'DEFAULT_PRIMARY_KEY' , { value : "id" } ) ;
 
 MapModel.prototype = Object.create( ChangeModel.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : MapModel } ,
 
     /**

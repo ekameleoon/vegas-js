@@ -27,7 +27,7 @@ import { dumpString } from './dumpString.js' ;
  * } ;
  * trace( dump( object ) ) ;
  */
-export function dump( o , prettyprint /*Boolean*/ , indent /*int*/ , indentor /*String*/  ) /*String*/
+export function dump( o , prettyprint  , indent  , indentor   ) 
 {
     indent = isNaN(indent) ? 0 : indent ;
 

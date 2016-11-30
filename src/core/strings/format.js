@@ -27,7 +27,7 @@ import { pad } from './pad.js' ;
  * trace( core.strings.format( "{0},{1},{2}" , ["apples" , "oranges", "grapes"] ) ) ; // apples,oranges,grapes
  * trace( core.strings.format( "{path}{0}{name}{1}" , { name : "format" , path:"core.strings" } , "." , "()" ) ) ; // core.strings.format()
  */
-export function format( pattern , ...args ) /*String*/
+export function format( pattern , ...args ) 
 {
     if( (pattern === null) || !(pattern instanceof String || typeof(pattern) === 'string' ) )
     {
@@ -83,7 +83,7 @@ export function format( pattern , ...args ) /*String*/
        the fromatted string will replace it by the form
        \uFFFC0 , \uFFFC+N , N being an integer from 0 to N
     */
-    var buffer /*Array*/ = [];
+    var buffer  = [];
 
     while( result !== null )
     {

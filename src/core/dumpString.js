@@ -11,14 +11,14 @@ import { toUnicodeNotation } from './numbers/toUnicodeNotation.js' ;
  * @param {string} str a String to transform.
  * @return The dump string representation of any String value.
  */
-export function dumpString( value /*String*/  ) /*String*/
+export function dumpString( value   ) 
 {
-    var code /*int*/ ;
-    var quote /*String*/ = "\"" ;
-    var str /*String*/   = ""  ;
-    var ch /*String*/    = ""  ;
-    var pos /*int*/      = 0   ;
-    var len/*int*/       = value.length ;
+    var code  ;
+    var quote  = "\"" ;
+    var str    = ""  ;
+    var ch     = ""  ;
+    var pos       = 0   ;
+    var len       = value.length ;
     while( pos < len )
     {
         ch  = value.charAt( pos );

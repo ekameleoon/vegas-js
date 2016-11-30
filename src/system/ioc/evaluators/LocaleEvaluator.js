@@ -5,8 +5,11 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
 
 /**
  * Evaluates a type string expression and return the value who corresponding in the config of the factory.
+ * @memberof system.ioc.evaluators
+ * @name LocaleEvaluator
+ * @class
+ * @private
  * @example
- * <pre>
  * var LocaleEvaluator = system.ioc.evaluators.LocaleEvaluator ;
  * var ObjectConfig = system.ioc.ObjectConfig ;
  *
@@ -32,9 +35,8 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  * trace( evaluator.eval( "title"      ) ) ; // my title
  * trace( evaluator.eval( "menu.title" ) ) ; // my menu title
  * trace( evaluator.eval( "menu.label" ) ) ; // my label
- * </pre>
  */
-export function LocaleEvaluator( config /*ObjectConfig*/ )
+export function LocaleEvaluator( config )
 {
     PropertyEvaluator.call(this) ;
     this.config = (config instanceof ObjectConfig) ? config : null ;
@@ -47,9 +49,6 @@ export function LocaleEvaluator( config /*ObjectConfig*/ )
     }) ;
 }
 
-/**
- * @extends Object
- */
 LocaleEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
 {
     constructor : { value : LocaleEvaluator } ,
@@ -57,6 +56,9 @@ LocaleEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.ioc.evaluators.LocaleEvaluator
+     * @function
+     * @instance
      */
     toString : { value : function() { return '[LocaleEvaluator]' ; } }
 });

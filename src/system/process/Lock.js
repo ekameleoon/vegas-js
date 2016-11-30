@@ -4,8 +4,8 @@ import { isLockable } from './Lockable.js' ;
 import { Action } from './Action.js' ;
 
 /**
- * Invoked to lock a specific {@link system.process.Lockable} object.
- * @summary Invoked to lock a specific {@link system.process.Lockable} object.
+ * Invoked to lock a specific {@link system.process.Lockable|Lockable} object.
+ * @summary Invoked to lock a specific {@link system.process.Lockable|Lockable} object.
  * @name Lock
  * @class
  * @memberof system.process
@@ -27,9 +27,6 @@ export function Lock( target )
 
 Lock.prototype = Object.create( Action.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Lock },
 
     /**

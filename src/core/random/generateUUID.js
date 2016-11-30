@@ -24,5 +24,6 @@ export function generateUUID()
 
 /**
  * The uuid pattern.
+ * @private
  */
 const pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx' ;

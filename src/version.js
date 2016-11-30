@@ -16,8 +16,8 @@ var skip    = false ;
  * Logs out the version and renderer information for this running instance of VEGAS JS.
  * If you don't want to see this message you can run `vegas.skipHello()` before creating your application.
  * @name sayHello
- * @global
  * @function
+ * @global
  */
 export function sayHello()
 {
@@ -55,7 +55,7 @@ export function sayHello()
 
 /**
  * Skips the hello message of renderers that are created after this is run.
- * @name skipHello
+ * @name global
  * @function
  * @global
  */

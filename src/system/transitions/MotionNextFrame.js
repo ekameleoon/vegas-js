@@ -20,9 +20,6 @@ export function MotionNextFrame( motion )
 
 MotionNextFrame.prototype = Object.create( Receiver.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : MotionNextFrame } ,
 
     /**

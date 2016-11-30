@@ -13,8 +13,11 @@ import { ObjectAttribute } from '../ObjectAttribute.js' ;
  * Creates a new ObjectDefinition instance and populated it with the specified init object in argument.
  * @param o A generic object to populate the new ObjectDefinition instance.
  * @return An ObjectDefinition instance.
+ * @memberof system.ioc.builders
+ * @function
+ * @private
  */
-export function createObjectDefinition( o ) /*ObjectDefinition*/
+export function createObjectDefinition( o )
 {
     // console.log( 'createObjectDefinition ------' ) ;
     // console.info( o ) ;

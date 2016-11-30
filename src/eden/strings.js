@@ -2,6 +2,7 @@
 
 /**
  * The enumeration of all string expressions in the eden library.
+ * @private
  */
 export var strings = Object.defineProperties( {} ,
 {

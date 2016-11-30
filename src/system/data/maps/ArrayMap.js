@@ -80,9 +80,6 @@ export function ArrayMap( keys = null , values = null )
 
 ArrayMap.prototype = Object.create( KeyValuePair.prototype ,
 {
-    /**
-     * The constructor reference of this instance.
-     */
     constructor : { writable : true , value :  ArrayMap },
 
     /**

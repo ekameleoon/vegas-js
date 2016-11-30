@@ -419,6 +419,7 @@ Point.prototype = Object.create( Vector2.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @instance
+     * @name toString
      * @function
      * @memberof graphics.geom.Point
      */

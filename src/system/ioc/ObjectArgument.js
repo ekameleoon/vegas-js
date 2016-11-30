@@ -19,12 +19,44 @@ export function ObjectArgument( value , policy = "value" , evaluators = null )
          * @private
          */
         _policy : { value : null , writable : true } ,
+
+        /**
+         * Defines the policy of the property.
+         * @name policy
+         * @memberof system.ioc.ObjectArgument
+         * @type {string}
+         * @instance
+         */
+        policy :
+        {
+            get : function policy()
+            {
+                return this._policy ;
+            },
+            set : function( str )
+            {
+                switch (str)
+                {
+                    case ObjectAttribute.REFERENCE :
+                    case ObjectAttribute.CONFIG    :
+                    case ObjectAttribute.LOCALE    :
+                    {
+                        this._policy = str ;
+                        break ;
+                    }
+                    default :
+                    {
+                        this._policy = ObjectAttribute.VALUE ;
+                    }
+                }
+            }
+        }
     });
 
     this.policy = policy ;
 
     /**
-     * Defines the policy of the property.
+     * Defines the value of the argument.
      * @name value
      * @memberof system.ioc.ObjectArgument
      * @instance
@@ -32,7 +64,7 @@ export function ObjectArgument( value , policy = "value" , evaluators = null )
     this.value = value ;
 
     /**
-     * Defines the policy of the property.
+     * The optional <code>Array</code> representation of all evaluators to transform the value of this object.
      * @name evaluators
      * @memberof system.ioc.ObjectArgument
      * @instance
@@ -46,40 +78,11 @@ ObjectArgument.prototype = Object.create( Object.prototype ,
     constructor : { value : ObjectArgument } ,
 
     /**
-     * Defines the policy of the property.
-     * @name policy
-     * @memberof system.ioc.ObjectArgument
-     * @type {string}
-     * @instance
-     */
-    policy :
-    {
-        get : function policy()
-        {
-            return this._policy ;
-        },
-        set : function( str )
-        {
-            switch (str)
-            {
-                case ObjectAttribute.REFERENCE :
-                case ObjectAttribute.CONFIG    :
-                case ObjectAttribute.LOCALE    :
-                {
-                    this._policy = str ;
-                    break ;
-                }
-                default :
-                {
-                    this._policy = ObjectAttribute.VALUE ;
-                }
-            }
-        }
-    },
-
-    /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.ioc.ObjectArgument
+     * @function
+     * @instance
      */
     toString : { value : function() { return '[ObjectArgument]' ; } }
 });

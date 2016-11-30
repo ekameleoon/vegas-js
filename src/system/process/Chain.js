@@ -108,9 +108,6 @@ export function Chain( looping = false , numLoop = 0 , mode = 'normal' , actions
 
 Chain.prototype = Object.create( TaskGroup.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Chain },
 
     /**

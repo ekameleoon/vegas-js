@@ -166,9 +166,6 @@ export function FrameTimer()
 
 FrameTimer.prototype = Object.create( Task.prototype ,
 {
-    /**
-     * Indicates the reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : FrameTimer , writable : true } ,
 
     /**

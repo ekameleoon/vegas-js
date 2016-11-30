@@ -14,7 +14,7 @@
  * trace( contains( ar , 3 ) ) ; // true
  * trace( contains( ar , 5 ) ) ; // false
  */
-export var contains = ( array /*Array*/ , value ) =>
+export var contains = ( array  , value ) =>
 {
     return (array instanceof Array) ? (array.indexOf(value) > -1) : false ;
 }

@@ -14,7 +14,7 @@ import { dump } from './dump.js' ;
  * @param {string} [indentor=    ] initial string used for the indent.
  * @return The dump string representation of any Array reference.
  */
-export function dumpArray( value /*Array*/ , prettyprint = false , indent = 0 , indentor = "    " )
+export function dumpArray( value  , prettyprint = false , indent = 0 , indentor = "    " )
 {
     indent = isNaN(indent) ? 0 : indent ;
     prettyprint = Boolean( prettyprint ) ;
@@ -24,10 +24,10 @@ export function dumpArray( value /*Array*/ , prettyprint = false , indent = 0 , 
         indentor = "    " ;
     }
 
-    var source /*Array*/ = [];
+    var source  = [];
 
-    var i /*int*/ ;
-    var l /*int*/ = value.length ;
+    var i  ;
+    var l  = value.length ;
 
     for( i = 0 ; i < l ; i++ )
     {
@@ -53,12 +53,12 @@ export function dumpArray( value /*Array*/ , prettyprint = false , indent = 0 , 
     }
     if( prettyprint )
     {
-        var spaces /*Array*/ = [] ;
+        var spaces  = [] ;
         for( i=0 ; i < indent ; i++ )
         {
             spaces.push( indentor );
         }
-        var decal /*String*/ = "\n" + spaces.join( "" ) ;
+        var decal  = "\n" + spaces.join( "" ) ;
         return decal + "[" + decal + indentor + source.join( "," + decal + indentor ) + decal + "]" ;
     }
     else

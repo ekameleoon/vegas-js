@@ -127,6 +127,7 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
+     * @name toString
      * @memberof graphics.geom.EdgeMetrics
      * @instance
      * @function

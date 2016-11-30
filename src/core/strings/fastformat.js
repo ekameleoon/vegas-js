@@ -21,7 +21,7 @@
  * trace( fastformat( "hello {0} {1} {2}", [ "the", "big", "world" ] ) ); // "hello the big world"
  * trace( fastformat( "hello {0} {1} {2}", [ "the", "big" ] , "world" ) ); // "hello the big world"
  */
-export function fastformat( pattern , ...args ) /*String*/
+export function fastformat( pattern , ...args ) 
 {
     if( (pattern === null) || !(pattern instanceof String || typeof(pattern) === 'string' ) )
     {

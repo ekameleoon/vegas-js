@@ -170,7 +170,7 @@ Object.defineProperties( LoggerLevel ,
      */
     validate :
     {
-        value : function( level /*LoggerLevel*/ ) /*Boolean*/
+        value : function( level /*LoggerLevel*/ ) 
         {
             let levels =
             [

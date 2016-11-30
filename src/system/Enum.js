@@ -39,7 +39,7 @@ Enum.prototype.constructor = Enum;
  * @instance
  * @function
  */
-Enum.prototype.equals = function ( object ) /*Boolean*/
+Enum.prototype.equals = function ( object ) 
 {
     if ( object === this )
     {
@@ -61,7 +61,7 @@ Enum.prototype.equals = function ( object ) /*Boolean*/
  * @instance
  * @function
  */
-Enum.prototype.toString = function() /*String*/
+Enum.prototype.toString = function() 
 {
     return this._name ;
 }

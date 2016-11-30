@@ -71,6 +71,9 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
 {
     /**
      * The proxy reference of the signal to change the scope of the slot (function invoked when the signal emit a message).
+     * @name proxy
+     * @memberof system.signals.TypeSignal
+     * @instance
      */
     proxy :
     {
@@ -98,13 +101,13 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
     {
         configurable : true,
         get          : function() { return this._types ; },
-        set          : function( ar /*Array*/ ) /*void*/
+        set          : function( ar  ) /*void*/
         {
             this._types = null ;
             if ( ar && ar instanceof Array && ar.length > 0)
             {
-                var l /*int*/ = ar.length ;
-                for( var i /*int*/ = 0 ; i<l ; i++ )
+                var l  = ar.length ;
+                for( var i  = 0 ; i<l ; i++ )
                 {
                     if
                     (
@@ -123,7 +126,7 @@ TypedSignal.prototype = Object.create( Signaler.prototype ,
     {
         configurable : false,
         writable     : false,
-        value : function( o , type ) /*Boolean*/
+        value : function( o , type ) 
         {
             if ( type === String || type === "string" )
             {
@@ -156,14 +159,14 @@ TypedSignal.prototype.constructor = TypedSignal;
  * @function
  * @name checkValues
  */
-TypedSignal.prototype.checkValues = function( values /*Array*/ ) /*void*/
+TypedSignal.prototype.checkValues = function( values  ) /*void*/
 {
     if ( this._types )
     {
         if ( values.length === this._types.length )
         {
             var val ;
-            var tof /*String*/;
+            var tof ;
             var l = values.length ;
             if ( l === 0 )
             {
@@ -195,7 +198,7 @@ TypedSignal.prototype.checkValues = function( values /*Array*/ ) /*void*/
  * @return <code>true</code> If the receiver is connected with the signal emitter.
  * @name connect
  */
-TypedSignal.prototype.connect = function ( receiver , priority /*uint*/ , autoDisconnect /*Boolean*/ ) /*Boolean*/
+TypedSignal.prototype.connect = function ( receiver , priority /*uint*/ , autoDisconnect  ) 
 {
     if ( receiver === null )
     {
@@ -264,7 +267,7 @@ TypedSignal.prototype.connect = function ( receiver , priority /*uint*/ , autoDi
  * @function
  * @name connected
  */
-TypedSignal.prototype.connected = function () /*Boolean*/
+TypedSignal.prototype.connected = function () 
 {
     return this.receivers.length > 0 ;
 }
@@ -277,7 +280,7 @@ TypedSignal.prototype.connected = function () /*Boolean*/
  * @function
  * @name disconnect
  */
-TypedSignal.prototype.disconnect = function ( receiver ) /*Boolean*/
+TypedSignal.prototype.disconnect = function ( receiver ) 
 {
     if ( receiver === null )
     {
@@ -293,7 +296,7 @@ TypedSignal.prototype.disconnect = function ( receiver ) /*Boolean*/
     }
     if ( this.receivers.length > 0 )
     {
-        var l /*int*/ = this.receivers.length ;
+        var l  = this.receivers.length ;
         while( --l > -1 )
         {
             if ( this.receivers[l].receiver === receiver )
@@ -325,10 +328,10 @@ TypedSignal.prototype.emit = function( /*Arguments*/ ) /*void*/
 
     this.checkValues( arguments ) ;
 
-    var i /*int*/ ;
-    var l /*int*/ = this.receivers.length ;
-    var r /*Array*/ = [] ;
-    var a /*Array*/ = this.receivers.slice() ;
+    var i  ;
+    var l  = this.receivers.length ;
+    var r  = [] ;
+    var a  = this.receivers.slice() ;
     var e /*SignalEntry*/ ;
 
     var slot ;
@@ -377,7 +380,7 @@ TypedSignal.prototype.emit = function( /*Arguments*/ ) /*void*/
  * @function
  * @name hasReceiver
  */
-TypedSignal.prototype.hasReceiver = function ( receiver ) /*Boolean*/
+TypedSignal.prototype.hasReceiver = function ( receiver ) 
 {
     if ( receiver === null )
     {
@@ -386,7 +389,7 @@ TypedSignal.prototype.hasReceiver = function ( receiver ) /*Boolean*/
     }
     if ( this.receivers.length > 0 )
     {
-        var l /*int*/ = this.receivers.length ;
+        var l  = this.receivers.length ;
         while( --l > -1 )
         {
             if ( this.receivers[l].receiver === receiver )
@@ -406,13 +409,13 @@ TypedSignal.prototype.hasReceiver = function ( receiver ) /*Boolean*/
  * @function
  * @name toArray
  */
-TypedSignal.prototype.toArray = function() /*Array*/
+TypedSignal.prototype.toArray = function() 
 {
-    var r /*Array*/ = [] ;
+    var r  = [] ;
     if ( this.receivers.length > 0 )
     {
-        var l /*int*/ = this.receivers.length ;
-        for( var i /*int*/ = 0 ; i<l ; i++ )
+        var l  = this.receivers.length ;
+        for( var i  = 0 ; i<l ; i++ )
         {
             r.push( this.receivers[i].receiver ) ;
         }
@@ -428,7 +431,7 @@ TypedSignal.prototype.toArray = function() /*Array*/
  * @function
  * @name toString
  */
-TypedSignal.prototype.toString = function () /*String*/
+TypedSignal.prototype.toString = function () 
 {
     return "[TypedSignal]" ;
 }

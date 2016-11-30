@@ -16,7 +16,7 @@
  * trace( indexOfAny( "hello world" , ["w","a","i","t"]) ) ; // 6
  * trace( indexOfAny( "hello world" , ["n","i"] ) ) ; // -1
  */
-export function indexOfAny( source , anyOf , startIndex = 0 , count = -1 ) /*int*/
+export function indexOfAny( source , anyOf , startIndex = 0 , count = -1 ) 
 {
     if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {

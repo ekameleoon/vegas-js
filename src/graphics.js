@@ -25,6 +25,8 @@ import { geom } from './graphics/geom.js' ;
  * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics
+ * @version 1.0.7
+ * @since 1.0.6
  */
 export var graphics = Object.assign
 ({

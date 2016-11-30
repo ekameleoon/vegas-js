@@ -3,7 +3,6 @@
 /**
  * A basic <code>trace()</code> function based on the console.log method.
  * @name trace
- * @global
  * @function
  * @example
  * trace( 'hello world' ) ;

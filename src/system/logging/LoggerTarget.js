@@ -76,7 +76,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
         {
             return [].concat( this._filters ) ;
         },
-        set : function( value /*Array*/ ) /*void*/
+        set : function( value  ) /*void*/
         {
             var filters  = [] ;
             if ( value && value instanceof Array && value.length > 0 )
@@ -237,7 +237,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
         {
             if ( channel && (typeof(channel) === "string" || (channel instanceof String) ) && ( channel !== "" ) )
             {
-                var index /*int*/ = this._filters.indexOf( channel ) ;
+                var index  = this._filters.indexOf( channel ) ;
                 if ( index > -1 )
                 {
                     this._filters.splice( index , 1 ) ;
@@ -272,7 +272,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      */
     _checkFilter :
     {
-        value : function( filter/*String*/ ) /*void*/
+        value : function( filter ) /*void*/
         {
             if ( filter === null )
             {
@@ -284,7 +284,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
                  throw new InvalidFilterError( fastformat( strings.ERROR_FILTER , filter ) + strings.CHARS_INVALID ) ;
             }
 
-            var index /*int*/ = filter.indexOf("*") ;
+            var index  = filter.indexOf("*") ;
 
             if ( (index >= 0) && (index !== (filter.length -1)) )
             {
@@ -296,6 +296,9 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.logging.LoggerTarget
+     * @instance
+     * @function
      */
     toString : { value : function() { return '[LoggerTarget]' ; } },
 });

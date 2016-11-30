@@ -15,7 +15,7 @@ import { Timer }      from '../process/Timer.js' ;
  * @memberof system.transitions
  * @implements {system.transitions.Transition}
  * @class
- * @param {number} [id=null] The identfier of the object.
+ * @param {number} [id=null] - The identfier of the object.
  */
 export function Motion( id = null )
 {
@@ -83,11 +83,6 @@ export function Motion( id = null )
 
 Motion.prototype = Object.create( Transition.prototype ,
 {
-    // ------------- public properties
-
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : Motion , writable : true } ,
 
     // ------------- get/set
@@ -372,7 +367,10 @@ Motion.prototype = Object.create( Transition.prototype ,
     // ------------- private
 
     /**
-     * @protected
+     * @memberof system.transitions.Motion
+     * @function
+     * @instance
+     * @private
      */
     fixTime : { value : function()
     {
@@ -384,7 +382,10 @@ Motion.prototype = Object.create( Transition.prototype ,
 
     /**
      * Sets the internal timer of the tweened animation.
-     * @protected
+     * @memberof system.transitions.Motion
+     * @function
+     * @instance
+     * @private
      */
     setTimer : { value : function( value )
     {

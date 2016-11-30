@@ -121,7 +121,7 @@ BatchTask.prototype.resume = function() /*void*/
         {
             var a /*Action*/ ;
             var e /*ActionEntry*/ ;
-            var l /*int*/ = this._actions.length ;
+            var l  = this._actions.length ;
             while( --l > -1 )
             {
                 e = this._actions[l] ;

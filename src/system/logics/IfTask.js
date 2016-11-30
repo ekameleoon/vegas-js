@@ -200,9 +200,6 @@ export function IfTask( rule = null , thenTask = null , elseTask = null , ...els
 
 IfTask.prototype = Object.create( Action.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { writable : true , value : IfTask } ,
 
     /**
@@ -429,9 +426,13 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * Removes the 'rule' of the task.
-     * @return The current IfTask reference.
+     * @return The current <code>IfTask</code> reference.
+     * @name deleteRule
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
-    deleteRule : { value : function() /*IfTask*/
+    deleteRule : { value : function()
     {
         this._rule = null ;
         return this ;
@@ -440,6 +441,10 @@ IfTask.prototype = Object.create( Action.prototype ,
     /**
      * Removes the 'then' action.
      * @return The current IfTask reference.
+     * @name deleteThen
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     deleteThen : { value : function() /*IfTask*/
     {
@@ -468,6 +473,8 @@ IfTask.prototype = Object.create( Action.prototype ,
     /**
      * Run the process.
      * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     run : { value : function()
     {
@@ -537,6 +544,9 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * @private
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     _execute : { value : function( action /*Action*/ )
     {
@@ -549,6 +559,9 @@ IfTask.prototype = Object.create( Action.prototype ,
 
     /**
      * @private
+     * @memberof system.logics.IfTask
+     * @function
+     * @instance
      */
     _finishTask :
     {

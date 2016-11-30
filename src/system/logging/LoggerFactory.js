@@ -45,10 +45,10 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
     {
         if( target && (target instanceof LoggerTarget) )
         {
-            var channel /*String*/ ;
+            var channel  ;
             var log /*Logger*/ ;
 
-            var filters /*Array*/ = target.filters ;
+            var filters  = target.filters ;
             var it /*Iterator*/   = this._loggers.iterator() ;
             while ( it.hasNext() )
             {
@@ -101,7 +101,7 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      * @function
      * @instance
      */
-    getLogger : { value : function ( channel /*String*/ ) /*Logger*/
+    getLogger : { value : function ( channel  ) /*Logger*/
     {
         this._checkChannel( channel ) ;
 
@@ -266,12 +266,12 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      */
     _channelMatchInFilterList :
     {
-        value : function( channel /*String*/ , filters /*Array*/ )
+        value : function( channel  , filters  )
         {
-            var filter /*String*/ ;
-            var index /*int*/ = -1;
-            var len /*int*/ = filters.length ;
-            for( var i /*int*/ = 0 ; i<len ; i++ )
+            var filter  ;
+            var index  = -1;
+            var len  = filters.length ;
+            for( var i  = 0 ; i<len ; i++ )
             {
                 filter = filters[i] ;
                 index  = filter.indexOf("*") ;
@@ -297,7 +297,7 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      */
     _checkChannel :
     {
-        value : function( channel /*String*/ ) /*void*/
+        value : function( channel  ) /*void*/
         {
             if( channel === null || channel.length === 0 )
             {
@@ -320,8 +320,8 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
         {
             var t /*LoggerTarget*/ ;
             var min /*LoggerLevel*/ = LoggerLevel.NONE ;
-            var len /*int*/ = this._targets.length ;
-            for ( var i /*int*/ = 0 ; i < len ; i++ )
+            var len  = this._targets.length ;
+            for ( var i  = 0 ; i < len ; i++ )
             {
                 t = this._targets[i] ;
                 if ( ( min === LoggerLevel.NONE ) || ( t.level.valueOf() < min.valueOf() ) )

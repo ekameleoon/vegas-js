@@ -7,7 +7,6 @@
  * @private
  * @memberof system.process
  * @extends system.process.Action
- * @augments system.process.Action
  * @param {system.process.Action} action - The Action reference register in this entry.
  * @param {number} [priority=0] - The priority value of the entry.
  * @param {boolean} [auto=false] - This flag indicates if the receiver must be disconnected when handle the first time a signal.
@@ -41,14 +40,14 @@ export function ActionEntry( action , priority = 0 , auto = false )
 
 ActionEntry.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : ActionEntry },
 
     /**
      * Returns the String representation of the object.
      * @return the String representation of the object.
+     * @memberof system.process.ActionEntry
+     * @function
+     * @instance
      */
     toString : { value : function()
     {

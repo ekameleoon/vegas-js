@@ -12,8 +12,11 @@ import { TypePolicy } from '../TypePolicy.js' ;
 
 /**
  * Evaluates a type string expression and return the type Class who corresponding in the application.
+ * @name TypeEvaluator
+ * @class
+ * @memberof system.ioc.evaluators
+ * @private
  * @example
- * <pre>
  * var TypeEvaluator = system.ioc.evaluators.TypeEvaluator ;
  * var ObjectConfig  = system.ioc.ObjectConfig ;
  * var TypePolicy    = system.ioc.TypePolicy ;
@@ -38,7 +41,6 @@ import { TypePolicy } from '../TypePolicy.js' ;
  * trace( evaluator.eval( "{ArrayMap}"  ) ) ; // [class ArrayMap]
  * trace( evaluator.eval( "test"        ) ) ; // null
  * trace( evaluator.eval( "{map}.Test"  ) ) ; // null
- * </pre>
  */
 export function TypeEvaluator( config = null )
 {
@@ -46,28 +48,29 @@ export function TypeEvaluator( config = null )
     {
         /**
          * The ObjectConfig reference.
+         * @memberof system.ioc.evaluators.TypeEvaluator
+         * @instance
          */
         config : { value : (config instanceof ObjectConfig) ? config : null , writable : true } ,
 
         /**
          * Indicates if the class throws errors or return null when an error is throwing.
+         * @memberof system.ioc.evaluators.TypeEvaluator
+         * @instance
          */
         throwError : { value : false , writable : true }
     }) ;
 }
 
-/**
- * @extends Evaluable
- */
 TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : TypeEvaluator } ,
 
     /**
      * Evaluates the specified object.
+     * @memberof system.ioc.evaluators.TypeEvaluator
+     * @function
+     * @instance
      */
     eval : { value : function( o )
     {
@@ -126,6 +129,9 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof system.ioc.evaluators.TypeEvaluator
+     * @function
+     * @instance
      */
     toString : { value : function ()
     {

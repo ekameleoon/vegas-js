@@ -15,8 +15,8 @@
  */
 export var lineTerminators =
 [
-    "\u000A" /*LF : Line Feed*/ ,
-    "\u000D" /*CR : Carriage Return*/,
-    "\u2028" /*LS : Line Separator*/ ,
-    "\u2929" /*PS : Paragraphe Separator*/
+    "\u000A" , // LF : Line Feed
+    "\u000D" , // CR : Carriage Return
+    "\u2028" , // LS : Line Separator
+    "\u2929" , // PS : Paragraphe Separator
 ];

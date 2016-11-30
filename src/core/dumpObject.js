@@ -25,9 +25,9 @@ export function dumpObject( value , prettyprint = false , indent = 0 , indentor 
         indentor = "    " ;
     }
 
-    var source /*Array*/ = [];
+    var source  = [];
 
-    for( var member /*String*/ in value )
+    for( var member  in value )
     {
         if( value.hasOwnProperty( member ) )
         {

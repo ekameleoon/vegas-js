@@ -10,7 +10,7 @@
  * @param {number} [index=0] - The optional index to evaluate a specific character in the passed-in expression.
  * @return <code>true</code> if the passed-in string value is a unicode character.
  */
-export function isUnicode( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isUnicode( c  , index /*uint*/ = 0 ) 
 {
     if( index > 0 )
     {

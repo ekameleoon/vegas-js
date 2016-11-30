@@ -306,6 +306,7 @@ Matrix.prototype = Object.create( Object.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @memberof graphics.geom.Matrix
+     * @name toString
      * @instance
      * @function
      */

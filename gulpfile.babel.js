@@ -18,6 +18,7 @@ import yargs   from 'yargs' ;
 import jsdoc from 'gulp-jsdoc3' ;
 //import jsdoc from 'leedian-jsdoc' ; // https://www.npmjs.com/package/jaguarjs-jsdoc
 
+import cleanup      from 'rollup-plugin-cleanup';
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
 
@@ -94,13 +95,14 @@ var docs =
             // "layoutFile"        : "./docs/templates/layout.tmpl" ,
             "outputSourceFiles" : true
         },
-        "path"           : "ink-docstrap",
-        "theme"          : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
-        "navType"        : "vertical",
-        "inverseNav"     : true,
-        "linenums"       : true,
-        "dateFormat"     : "YYYY Do MMMM, h:mm:ss a",
-        "syntaxTheme"    : "default" // dark or default
+        "path"            : "ink-docstrap",
+        "theme"           : "simplex", // Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
+        "navType"         : "vertical",
+        "inverseNav"      : true,
+        "linenums"        : true,
+        "collapseSymbols" : false ,
+        "dateFormat"      : "YYYY Do MMMM, h:mm:ss a",
+        "syntaxTheme"     : "default" // dark or default
     }
 }
 
@@ -186,7 +188,8 @@ var compile = ( done ) =>
                             "external-helpers" ,
                             "transform-es2015-destructuring"
                         ]
-                    })
+                    }),
+                    cleanup()
                 ]
             }),
             rename( name + '.js' ),
@@ -219,7 +222,8 @@ var test = () =>
     watching = true;
     gulp.watch
     (
-        ['src/**/*.js' , './tests/**/*.js' ] , gulp.series( unittest )
+        ['src/**/*.js' , './tests/**/*.js' ] ,
+        gulp.series( unittest )
     );
 }
 
@@ -269,7 +273,8 @@ var unittest = ( done ) =>
                         "external-helpers" ,
                         "transform-es2015-destructuring"
                     ]
-                })
+                }),
+                cleanup()
             ]
         }),
         mocha

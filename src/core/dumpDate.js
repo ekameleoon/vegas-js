@@ -10,7 +10,7 @@
  * @param {boolean} [timestamp=false] - The optional timestamp flag.
  * @return The string representation of any Date reference.
  */
-export function dumpDate( date /*Date*/ , timestamp = false  ) /*String*/
+export function dumpDate( date /*Date*/ , timestamp = false  ) 
 {
     timestamp = Boolean( timestamp ) ;
     if ( timestamp )

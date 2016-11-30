@@ -128,9 +128,6 @@ export function ArrayModel( factory = null )
 
 ArrayModel.prototype = Object.create( ChangeModel.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : ArrayModel } ,
 
     /**

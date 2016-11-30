@@ -28,6 +28,7 @@ export var TypePolicy = Object.defineProperties( {} ,
 
     /**
      * Defines the <code>'expression'</code> policy value. Use it if you want use only type "expression" evaluation when a new object is created in the factory.
+     * @memberof system.ioc.TypePolicy
      * @type string
      * @default expression
      * @const
@@ -36,6 +37,7 @@ export var TypePolicy = Object.defineProperties( {} ,
 
     /**
      * Defines the <code>'none'</code> policy value. Use it if you want no evaluation filter when a new object is created in the factory.
+     * @memberof system.ioc.TypePolicy
      * @type string
      * @default none
      * @const

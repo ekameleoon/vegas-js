@@ -27,9 +27,6 @@ export function BatchTaskNext( batch )
 
 BatchTaskNext.prototype = Object.create( Receiver.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : BatchTaskNext } ,
 
     /**

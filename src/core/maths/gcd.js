@@ -24,7 +24,7 @@ export var gcd = ( i1 , i2 ) =>
     }
     else
     {
-        var t /*int*/ ;
+        var t  ;
         while( i2 !== 0 )
         {
             t  = i2 ;

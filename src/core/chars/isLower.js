@@ -16,7 +16,7 @@
  * trace( isLower( "#" ) ) ; // false
  * trace( isLower( "1" ) ) ; // false
  */
-export function isLower( c , index = 0 ) /*Boolean*/
+export function isLower( c , index = 0 ) 
 {
     if( index > 0 )
     {

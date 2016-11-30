@@ -20,7 +20,7 @@
  *     trace( chars[i] + " isOctalDigit " + isOctalDigit( chars[i] ) ) ;
  * }
  */
-export function isOctalDigit( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isOctalDigit( c  , index /*uint*/ = 0 ) 
 {
     if( index > 0 )
     {

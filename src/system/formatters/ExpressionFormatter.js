@@ -49,6 +49,8 @@ export function ExpressionFormatter()
     {
         /**
          * The expressions reference
+         * @memberof system.formatters.ExpressionFormatter
+         * @instance
          */
         expressions : { value : new ArrayMap() },
 

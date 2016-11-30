@@ -29,6 +29,9 @@ export function Identifiable()
     {
         /**
          * Indicates the unique identifier value of this object.
+         * @name id
+         * @memberof system.data.Identifiable
+         * @instance
          */
         id : { value : null , enumerable : true , writable : true }
     }) ;
@@ -36,8 +39,5 @@ export function Identifiable()
 
 Identifiable.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value :  Identifiable , writable : true }
 }) ;

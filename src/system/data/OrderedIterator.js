@@ -37,7 +37,7 @@ export function isOrderedIterator( target )
 /**
  * Defines an iterator that operates over an ordered collection. This iterator allows both forward and reverse iteration through the collection.
  * @name OrderedIterator
- * @extends Iterator
+ * @extends system.data.Iterator
  * @interface
  * @memberof system.data
  */
@@ -50,6 +50,7 @@ OrderedIterator.prototype.constructor = OrderedIterator ;
  * Checks to see if there is a previous element that can be iterated to.
  * @memberof system.data.OrderedIterator
  * @function
+ * @instance
  */
 OrderedIterator.prototype.hasPrevious = function() {}
 
@@ -58,13 +59,16 @@ OrderedIterator.prototype.hasPrevious = function() {}
  * @return the previous element in the collection.
  * @memberof system.data.OrderedIterator
  * @function
+ * @instance
  */
 OrderedIterator.prototype.previous = function() {}
 
 /**
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
+ * @name toString
  * @memberof system.data.OrderedIterator
  * @function
+ * @instance
  */
 OrderedIterator.prototype.toString = function () { return '[OrderedIterator]' ; }

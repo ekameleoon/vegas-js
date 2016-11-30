@@ -51,7 +51,7 @@ SignalEntry.prototype.constructor = SignalEntry;
  * @function
  * @instance
  */
-SignalEntry.prototype.toString = function() /*String*/
+SignalEntry.prototype.toString = function() 
 {
     return '[SignalEntry]' ;
 }

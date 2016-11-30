@@ -117,13 +117,13 @@ PropertyEvaluator.prototype.eval = function ( o )
 {
     if ( o !== null && ( typeof(o) === "string" || o instanceof String ) && (this.target !== null) )
     {
-        var exp /*String*/ = String(o) ;
+        var exp  = String(o) ;
         if ( exp.length > 0 )
         {
             var value = this.target ;
             var members = exp.split( this.separator ) ;
             var len = members.length ;
-            for ( var i /*int*/ = 0 ; i < len ; i++ )
+            for ( var i  = 0 ; i < len ; i++ )
             {
                 if ( members[i] in value )
                 {
@@ -148,10 +148,11 @@ PropertyEvaluator.prototype.eval = function ( o )
  * Returns the string representation of this instance.
  * @return the string representation of this instance.
  * @memberof system.evaluators.PropertyEvaluator
+ * @name toString
  * @function
  * @instance
  */
-PropertyEvaluator.prototype.toString = function () /*String*/
+PropertyEvaluator.prototype.toString = function ()
 {
     return "[PropertyEvaluator]" ;
 }

@@ -13,9 +13,6 @@ export function KeyValuePair() {}
 
 KeyValuePair.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference of this instance.
-     */
     constructor : { writable : true , value :  KeyValuePair },
 
     /**
@@ -178,5 +175,5 @@ KeyValuePair.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    values : { value : function () /*Array*/ {} , writable : true }
+    values : { value : function ()  {} , writable : true }
 }) ;

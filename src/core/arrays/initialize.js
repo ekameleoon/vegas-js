@@ -22,7 +22,7 @@
  * ar = initialize(  4 , "" ) ;
  * trace( ar ) ; // [ "" ,"" ,"" ,"" ]
  */
-export function initialize( elements = 0 , value = null ) /*Array*/
+export function initialize( elements = 0 , value = null ) 
 {
     var ar = [];
 

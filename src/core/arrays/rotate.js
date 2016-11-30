@@ -19,7 +19,7 @@
  * trace( dump( rotate( array , -1 ) ) ) ; // ["o","v","e","l"]
  * trace( dump( rotate( array ,  3 ) ) ) ; // ["v","e","l","o"]
  */
-export function rotate( ar /*Array*/ , amount = 1 ) /*Array*/
+export function rotate( ar  , amount = 1 ) 
 {
     if ( ( ar instanceof Array ) && ar.length > 0 )
     {

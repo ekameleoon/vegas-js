@@ -2,6 +2,8 @@
 
 /**
  * The enumeration of all string expressions in the eden library.
+ * @memberof eden
+ * @private
  */
 export var metas = Object.defineProperties( {} ,
 {

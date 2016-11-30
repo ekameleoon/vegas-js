@@ -67,9 +67,6 @@ export function Signal()
 
 Signal.prototype = Object.create( Signaler.prototype ,
 {
-    /**
-     * The constructor reference of the object.
-     */
     constructor : { value : Signal , writable : true },
 
     /**
@@ -92,7 +89,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @param {boolean} [autoDisconnect=false] Apply a disconnect after the first trigger
      * @return {boolean} <code>true</code> If the receiver is connected with the signal emitter.
      */
-    connect : { value : function ( receiver , priority = 0 , autoDisconnect = false ) /*Boolean*/
+    connect : { value : function ( receiver , priority = 0 , autoDisconnect = false ) 
     {
         if ( receiver === null )
         {
@@ -190,7 +187,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
         }
         if ( this.receivers.length > 0 )
         {
-            var l /*int*/ = this.receivers.length ;
+            var l  = this.receivers.length ;
             while( --l > -1 )
             {
                 if ( this.receivers[l].receiver === receiver )
@@ -219,11 +216,11 @@ Signal.prototype = Object.create( Signaler.prototype ,
             return ;
         }
 
-        var i /*int*/ ;
-        var l /*int*/ = this.receivers.length ;
-        var r /*Array*/ = [] ;
-        var a /*Array*/ = this.receivers.slice() ;
-        var e /*SignalEntry*/ ;
+        var i ;
+        var l = this.receivers.length ;
+        var r = [] ;
+        var a = this.receivers.slice() ;
+        var e ;
 
         var slot ;
 
@@ -270,7 +267,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    hasReceiver : { value : function ( receiver ) /*Boolean*/
+    hasReceiver : { value : function ( receiver ) 
     {
         if ( receiver === null )
         {
@@ -278,7 +275,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
         }
         if ( this.receivers.length > 0 )
         {
-            var l /*int*/ = this.receivers.length ;
+            var l = this.receivers.length ;
             while( --l > -1 )
             {
                 if ( this.receivers[l].receiver === receiver )
@@ -297,7 +294,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    toArray : { value : function() /*Array*/
+    toArray : { value : function() 
     {
         var r = [] ;
         if ( this.receivers.length > 0 )

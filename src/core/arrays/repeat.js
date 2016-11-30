@@ -13,7 +13,7 @@
  * trace( repeat( [2, 3, 4] , 0 ) ) ; // 2,3,4
  * trace( repeat( [2, 3, 4] , 3 ) ) ; // 2,3,4,2,3,4,2,3,4
  */
-export function repeat( ar /*Array*/ , count /*uint*/ ) /*Array*/
+export function repeat( ar  , count /*uint*/ ) 
 {
     var result = null ;
     if( ar instanceof Array )

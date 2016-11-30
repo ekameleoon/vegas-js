@@ -11,7 +11,7 @@ import { TweenUnit } from './TweenUnit.js' ;
  * @name Tween
  * @memberof system.transitions
  * @class
- * @extends {system.transitions.Motion}
+ * @extends {system.transitions.TweenUnit}
  * @tutorial system.transitions
  * @example
  * "use strict" ;
@@ -174,14 +174,8 @@ export function Tween( init )
     }
 }
 
-/**
- * @extends TweenUnit
- */
 Tween.prototype = Object.create( TweenUnit.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { value : TweenUnit , writable : true } ,
 
     /**

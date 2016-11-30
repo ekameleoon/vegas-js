@@ -177,9 +177,9 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     formatDate :
     {
-        value : function( d /*Date*/ ) /*String*/
+        value : function( d /*Date*/ ) 
         {
-            var date /*String*/ = "" ;
+            var date  = "" ;
             date += this.getDigit( d.getDate() ) ;
             date += "/" + this.getDigit( d.getMonth() + 1 ) ;
             date += "/" + d.getFullYear() ;
@@ -197,7 +197,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     formatLevel :
     {
-        value : function( level /*String*/ ) /*String*/
+        value : function( level  ) 
         {
             return '[' + level + ']' ;
         }
@@ -213,7 +213,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     formatLines :
     {
-        value : function() /*String*/
+        value : function() 
         {
             return "[" + this._lineNumber++ + "]" ;
         }
@@ -229,7 +229,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     formatMessage :
     {
-        value : function( message , level /*String*/ , channel /*String*/ , date /*Date*/ ) /*String*/
+        value : function( message , level  , channel  , date /*Date*/ ) 
         {
             var msg = "" ;
             if (this.includeLines)
@@ -271,9 +271,9 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     formatTime :
     {
-        value : function( d /*Date*/ ) /*String*/
+        value : function( d /*Date*/ ) 
         {
-            var time /*String*/ = "" ;
+            var time  = "" ;
             time += this.getDigit(d.getHours()) ;
             time += ":" + this.getDigit(d.getMinutes()) ;
             time += ":" + this.getDigit(d.getSeconds()) ;
@@ -296,7 +296,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      */
     getDigit :
     {
-        value : function( n/*Number*/ ) /*String*/
+        value : function( n/*Number*/ ) 
         {
             if ( isNaN(n) )
             {

@@ -24,9 +24,6 @@ export function PRNG( value = 1 )
 
 PRNG.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { writable : true , value : PRNG } ,
 
     /**
@@ -96,7 +93,7 @@ PRNG.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    randomIntByRange : { value : function( r ) /*int*/
+    randomIntByRange : { value : function( r ) 
     {
         var min = r.min - 0.4999;
         var max = r.max + 0.4999;
@@ -178,7 +175,7 @@ PRNG.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    valueOf : { value : function () /*int*/
+    valueOf : { value : function () 
     {
         return this._value ;
     }}

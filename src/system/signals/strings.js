@@ -2,6 +2,10 @@
 
 /**
  * The enumeration of all string expressions in the signal engine.
+ * @name strings
+ * @instance
+ * @const
+ * @memberof system.signals
  */
 export var strings = Object.defineProperties( {} ,
 {

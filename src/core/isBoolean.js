@@ -17,5 +17,5 @@
  */
 export function isBoolean( object )
 {
-    return (typeof(object) === 'boolean') || (object instanceof Boolean )
+    return (typeof(object) === 'boolean') || (object instanceof Boolean ) ;
 }

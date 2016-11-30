@@ -2,22 +2,22 @@
 
 /**
  * Defines factory strategies in the factory.
+ * @name ObjectStrategy
+ * @class
+ * @memberof system.ioc
  */
 export function ObjectStrategy() {}
 
-/**
- * @extends Object
- */
 ObjectStrategy.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value :  ObjectStrategy , writable : true },
 
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @memberof system.ioc.ObjectStrategy
+     * @function
+     * @instance
      */
     toString : { value : function () { return "[ObjectStrategy]" ; } , writable : true }
 }) ;

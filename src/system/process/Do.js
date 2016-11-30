@@ -41,9 +41,6 @@ export function Do ()
 
 Do.prototype = Object.create( Action.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Do },
 
     /**
@@ -61,6 +58,10 @@ Do.prototype = Object.create( Action.prototype ,
 
     /**
      * Do something in this method (override it).
+     * @name something
+     * @memberof system.process.Do
+     * @function
+     * @instance
      */
     something : { enumerable : true , writable : true , value : function()
     {

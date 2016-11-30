@@ -22,7 +22,7 @@
  *
  * trace( pierce( ar, 1 , true ) ) ; // 0,4,5
  */
-export function pierce( ar /*Array*/ , index /*uint*/ , flag /*Boolean*/ )
+export function pierce( ar  , index /*uint*/ , flag  )
 {
     index = index > 0 ? Math.abs(index) : 0 ;
     flag  = Boolean( flag ) ;

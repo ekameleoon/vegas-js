@@ -21,7 +21,7 @@
  * trace( lastIndexOfAny( "hello world" , ["l"] , 9 ) ) ; // 3
  * trace( lastIndexOfAny( "hello world" , ["w"] , 9 , 5 ) ) ; // 6
  */
-export function lastIndexOfAny( source , anyOf , startIndex = Infinity , count = Infinity  ) /*int*/
+export function lastIndexOfAny( source , anyOf , startIndex = Infinity , count = Infinity  ) 
 {
     if( !(source instanceof String || typeof(source) === 'string' ) || source === "" )
     {

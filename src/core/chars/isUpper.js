@@ -18,7 +18,7 @@
  * trace( isUpper( "#" ) ) ; // false
  * trace( isUpper( "1" ) ) ; // false
  */
-export function isUpper( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isUpper( c  , index /*uint*/ = 0 ) 
 {
     if( index > 0 )
     {

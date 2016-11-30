@@ -117,9 +117,6 @@ Object.defineProperties(  ObjectListener ,
 
 ObjectListener.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value :  ObjectListener } ,
 
     /**

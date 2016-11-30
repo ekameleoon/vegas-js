@@ -14,9 +14,6 @@ export function Model() {}
 
 Model.prototype = Object.create( Lockable.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Model } ,
 
     /**

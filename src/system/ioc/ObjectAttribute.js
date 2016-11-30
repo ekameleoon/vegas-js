@@ -271,7 +271,7 @@ export var ObjectAttribute = Object.defineProperties( {} ,
 
     /**
      * Defines the label of the 'objects' top-level attribute.
-     * @memberof system.ioc.objects
+     * @memberof system.ioc.ObjectAttribute
      * @type {string}
      * @default args
      * @const

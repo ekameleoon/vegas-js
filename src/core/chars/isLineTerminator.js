@@ -20,7 +20,7 @@ import { lineTerminators } from './lineTerminators.js' ;
  * trace( isLineTerminator( "h" ) ) ; // false
  * trace( isLineTerminator( "\n" ) ) ; // true
  */
-export function isLineTerminator( c /*String*/ , index /*uint*/ = 0 ) /*Boolean*/
+export function isLineTerminator( c  , index /*uint*/ = 0 ) 
 {
     if( index > 0 )
     {

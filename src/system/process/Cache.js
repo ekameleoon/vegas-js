@@ -96,9 +96,6 @@ export function Cache ( target = null , init = null )
 
 Cache.prototype = Object.create( Action.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Cache },
 
     /**

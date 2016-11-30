@@ -6,7 +6,8 @@ import { ActionEntry } from './ActionEntry.js' ;
 import { Task }        from './Task.js' ;
 
 /**
- * A simple representation of the Action interface, to group some {@link system.process.Action|Action} objects in one.
+ * @description The abstract class to creates collections who group some {@link system.process.Action|Action} objects in one.
+ * <p><b>Subclasses:</b> {@link system.process.BatchTask|BatchTask}, {@link system.process.Chain|Chain}</p>
  * @summary The abstract class to creates collections who group some {@link system.process.Action|Action} objects in one.
  * @name TaskGroup
  * @class
@@ -141,9 +142,6 @@ Object.defineProperties( TaskGroup ,
 
 TaskGroup.prototype = Object.create( Task.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : TaskGroup },
 
     /**
@@ -168,7 +166,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             this.dispose() ;
             var old /*uint*/  = this._actions.length ;
             this._actions.length = value ;
-            var l /*int*/ = this._actions.length ;
+            var l  = this._actions.length ;
             if ( l > 0 )
             {
                 var e /*ActionEntry*/ ;
@@ -322,7 +320,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             if ( this._actions.length > 0 )
             {
                 var e /*ActionEntry*/ ;
-                var l /*int*/ = this._actions.length ;
+                var l  = this._actions.length ;
                 while( --l > -1 )
                 {
                     e = this._actions[l] ;
@@ -426,7 +424,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             if ( action && action instanceof Action )
             {
                 var e /*ActionEntry*/ ;
-                var l /*int*/ = this._actions.length ;
+                var l  = this._actions.length ;
 
                 this._actions.forEach( ( element ) =>
                 {
@@ -464,7 +462,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
     {
         if ( this._actions.length > 0 )
         {
-            var output /*Array*/ = [] ;
+            var output  = [] ;
             if( this._actions.length > 0 )
             {
                 this._actions.forEach( ( element ) =>
@@ -493,16 +491,16 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      */
     toString : { writable : true , value : function()
     {
-        var s /*String*/ = "[" + this.constructor.name ;
+        var s  = "[" + this.constructor.name ;
         if ( Boolean(this.verbose) )
         {
             if ( this._actions.length > 0 )
             {
                 s += "[" ;
-                var i /*int*/ ;
+                var i  ;
                 var e /*ActionEntry*/ ;
-                var l /*int*/ = this._actions.length ;
-                var r /*Array*/ = [] ;
+                var l  = this._actions.length ;
+                var r  = [] ;
                 for( i = 0 ; i < l ; i++ )
                 {
                     e = this._actions[i] ;

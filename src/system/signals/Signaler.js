@@ -48,7 +48,7 @@ Signaler.prototype.connect = function( receiver , priority = 0 , autoDisconnect 
  * @memberof system.signals.Signaler
  * @return {boolean} <code>true</code> if one or more receivers are connected.
  */
-Signaler.prototype.connected = function() /*Boolean*/
+Signaler.prototype.connected = function() 
 {
     //
 }
@@ -58,7 +58,7 @@ Signaler.prototype.connected = function() /*Boolean*/
  * @return {boolean} <code>true</code> if the specified receiver exist and can be disconnected.
  * @memberof system.signals.Signaler
  */
-Signaler.prototype.disconnect = function( receiver ) /*Boolean*/
+Signaler.prototype.disconnect = function( receiver ) 
 {
     //
 }
@@ -78,7 +78,7 @@ Signaler.prototype.emit = function( ) /*void*/
  * @return <code class="prettyprint">true</code> if the specified receiver is connected.
  * @memberof system.signals.Signaler
  */
-Signaler.prototype.hasReceiver = function ( receiver ) /*Boolean*/
+Signaler.prototype.hasReceiver = function ( receiver ) 
 {
     //
 }

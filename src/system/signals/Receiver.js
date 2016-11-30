@@ -27,7 +27,7 @@ Receiver.prototype.receive = function() {}
  * @memberof system.signals.Receiver
  * @function
  */
-Receiver.prototype.toString = function () /*String*/
+Receiver.prototype.toString = function () 
 {
     return "[Receiver]" ;
 }

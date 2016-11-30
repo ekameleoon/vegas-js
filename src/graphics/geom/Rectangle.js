@@ -477,6 +477,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @memberof graphics.geom.Rectangle
+     * @name toString
      * @function
      * @instance
      */

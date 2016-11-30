@@ -33,9 +33,6 @@ export function Runnable() {}
 
 Runnable.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Runnable },
 
     /**

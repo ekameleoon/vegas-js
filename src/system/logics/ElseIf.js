@@ -38,9 +38,6 @@ export function ElseIf( rule = null , then = null )
 
 ElseIf.prototype = Object.create( Rule.prototype ,
 {
-    /**
-     * The constructor reference.
-     */
     constructor : { value : ElseIf , writable : true } ,
 
     /**

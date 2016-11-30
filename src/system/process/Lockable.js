@@ -39,7 +39,7 @@ export function Lockable()
     Object.defineProperties( this ,
     {
         /**
-         * @protected
+         * @private
          */
         __lock__ : { value : false , writable : true }
     }) ;

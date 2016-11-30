@@ -11,8 +11,11 @@ import { createArguments } from './createArguments.js' ;
 /**
  * Creates the Array of all properties defines in the passed-in factory object definition.
  * @return the Array of all properties defines in the passed-in factory object definition.
+ * @memberof system.ioc.builders
+ * @function
+ * @private
  */
-export function createProperties( factory ) /*Array*/
+export function createProperties( factory )
 {
     if ( !factory )
     {

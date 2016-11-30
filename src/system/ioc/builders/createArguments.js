@@ -6,8 +6,11 @@ import { ObjectAttribute } from '../ObjectAttribute.js' ;
 /**
  * Creates the Array of all arguments.
  * @return the Array of all arguments.
+ * @memberof system.ioc.builders
+ * @function
+ * @private
  */
-export function createArguments( a /*Array*/ ) /*Array*/
+export function createArguments( a )
 {
     if ( !(a instanceof Array) || a.length === 0 )
     {

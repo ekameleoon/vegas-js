@@ -88,9 +88,6 @@ export function ChangeModel()
 
 ChangeModel.prototype = Object.create( Model.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : ChangeModel } ,
 
     /**

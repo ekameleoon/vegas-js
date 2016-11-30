@@ -4,18 +4,30 @@ import { MultiEvaluator } from '../evaluators/MultiEvaluator.js' ;
 
 /**
  * This collector register a <code>parameters</code> object reference, this object can be use to configurate the application with externals values.
+ * @name Parameters
+ * @class
+ * @memberof system.ioc
+ * @param {Object} parameters - The object to evaluates.
  */
-export function Parameters( parameters /*Object*/ )
+export function Parameters( parameters )
 {
     Object.defineProperties( this ,
     {
         /**
          * Defines the parameters object reference of the application.
+         * @name parameters
+         * @memberof system.ioc.Parameters
+         * @instance
+         * @type Object
          */
         parameters : { value : parameters , writable : true } ,
 
         /**
          * Indicates if the class throws errors or return null when an error is throwing.
+         * @name evaluators
+         * @memberof system.ioc.Parameters
+         * @instance
+         * @private
          */
         _evaluators : { value : new MultiEvaluator() , writable : true }
     }) ;
@@ -23,30 +35,33 @@ export function Parameters( parameters /*Object*/ )
     this._evaluators.autoClear = true ;
 }
 
-/**
- * @extends Object
- */
 Parameters.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * Returns a reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Parameters },
 
     /**
      * Indicates if the parameters object contains the specified variable.
+     * @param {string} name - The name of the parameter to find.
+     * @return <code>true</code> if the passed-in <code>name</code> is register.
+     * @name contains
+     * @memberof system.ioc.Parameters
+     * @instance
+     * @function
      */
-    contains : { value : function( name ) /*Boolean*/
+    contains : { value : function( name )
     {
         return this.parameters && name && (name in this.parameters) && (this.parameters[name] !== null) ;
     }},
 
     /**
      * Returns the value of the specified variable in the parameters reference.
-     * @param name The name of the variable to resolve in the parameters reference.
-     * @param ...rest (optional) All <code class="prettyprint">IEvaluator</code> objects used to evaluate and initialize the value of the specified FlashVars.
+     * @name get
+     * @memberof system.ioc.Parameters
+     * @instance
+     * @function
+     * @param {string} name - The name of the variable to resolve in the parameters reference.
+     * @param {...system.Evaluable} rest - All {@link system.Evaluable|Evaluable} objects used to evaluates and initializes the value of the specified application arguments.
      * @example
-     * <pre>
      * var PropertyEvaluator = system.evaluators.PropertyEvaluator ;
      * var RomanEvaluator    = system.evaluators.RomanEvaluator ;
      * var Parameters        = system.ioc.Parameters ;
@@ -56,10 +71,9 @@ Parameters.prototype = Object.create( Object.prototype ,
      * var params = new Parameters( { value : "metas.count" } ) ;
      * var value  = params.get( "value" , new PropertyEvaluator(obj), new RomanEvaluator()) ;
      * trace( "result : " + value ) ;
-     * </pre>
      * @return the value of the specified variable in the Parameters object.
      */
-    get : { value : function( name /*String*/ , ...rest )
+    get : { value : function( name , ...rest )
     {
         if ( this.parameters && this.contains(name) )
         {
@@ -82,6 +96,10 @@ Parameters.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.ioc.Parameters
+     * @instance
+     * @function
      */
     toString : { value : function ()
     {

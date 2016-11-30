@@ -69,9 +69,6 @@ export function Batch( init = null )
 
 Batch.prototype = Object.create( Runnable.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Batch },
 
     /**
@@ -189,7 +186,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @function
      * @instance
      */
-    indexOf : { writable : true , value : function( command , fromIndex /*uint*/ ) /*int*/
+    indexOf : { writable : true , value : function( command , fromIndex /*uint*/ ) 
     {
         if ( isNaN( fromIndex ) )
         {
@@ -219,7 +216,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @function
      * @instance
      */
-    isEmpty : { writable : true , value : function () /*Boolean*/
+    isEmpty : { writable : true , value : function () 
     {
         return this._entries.length === 0 ;
     }},
@@ -309,7 +306,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @instance
      * @return the source code string representation of the object.
      */
-    toString : { writable : true , value : function () /*Array*/
+    toString : { writable : true , value : function () 
     {
         var r = "[Batch";
         var l = this._entries.length ;

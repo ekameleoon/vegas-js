@@ -61,6 +61,7 @@ CardinalDirection.prototype = Object.create( Object.prototype ,
      * Returns the value of the object.
      * @return the value of the object.
      * @instance
+     * @memberof graphics.CardinalDirection
      */
     valueOf : { value : function()
     {

@@ -1,27 +1,50 @@
 "use strict" ;
 
 /**
- * Enumeration of all sort of "orders" can be use in the object definitions.
+ * Enumeration of all sorting orders used in the <b>object definitions</b>.
+ * @name ObjectOrder
+ * @namespace system.ioc.ObjectOrder
+ * @memberof system.ioc
  */
 export var ObjectOrder = Object.defineProperties( {} ,
 {
     /**
-     * The "after" order value.
+     * The <code>"after"</code> order value.
+     * @name AFTER
+     * @memberof system.ioc.ObjectOrder
+     * @type {string}
+     * @default after
+     * @const
      */
     AFTER : { value : "after" , enumerable : true },
 
     /**
-     * The "before" order value.
+     * The <code>"before"</code> order value.
+     * @name BEFORE
+     * @memberof system.ioc.ObjectOrder
+     * @type {string}
+     * @default before
+     * @const
      */
     BEFORE : { value : "before" , enumerable : true },
 
     /**
-     * The "none" order value.
+     * The <code>"none"</code> order value.
+     * @name NONE
+     * @memberof system.ioc.ObjectOrder
+     * @type {string}
+     * @default none
+     * @const
      */
     NONE : { value : "none" , enumerable : true },
 
     /**
-     * The "now" order value.
+     * The <code>"now"</code> order value.
+     * @name NOW
+     * @memberof system.ioc.ObjectOrder
+     * @type {string}
+     * @default now
+     * @const
      */
     NOW : { value : "now" , enumerable : true }
 });

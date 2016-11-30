@@ -11,8 +11,11 @@ import { ObjectValue }                 from '../strategies/ObjectValue.js' ;
 
 /**
  * This helper create an ObjectStrategy object with a generic object in the IoC context.
+ * @memberof system.ioc.builders
+ * @function
+ * @private
  */
-export function createStrategy( o ) /*ObjectStrategy*/
+export function createStrategy( o )
 {
     switch( true )
     {

@@ -4,8 +4,8 @@ import { isLockable } from './Lockable.js' ;
 import { Action } from './Action.js' ;
 
 /**
- * Invoked this action to unlock a specific {@link system.process.Lockable} object.
- * @summary Invoked to unlock a specific {@link system.process.Lockable} object.
+ * Invoked this action to unlock a specific {@link system.process.Lockable|Lockable} object.
+ * @summary Invoked to unlock a specific {@link system.process.Lockable|Lockable} object.
  * @name Unlock
  * @class
  * @memberof system.process
@@ -29,9 +29,6 @@ export function Unlock( target )
 
 Unlock.prototype = Object.create( Action.prototype ,
 {
-    /**
-     * The constructor reference of the instance.
-     */
     constructor : { writable : true , value : Unlock },
 
     /**

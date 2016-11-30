@@ -31,7 +31,7 @@
  * trace( compare( s1, s0, true ) ); //-1
  * trace( compare( s0, s1, true ) ); //1
  */
-export function compare( str1 /*String*/ , str2 /*String*/ , strict = false ) /*int*/
+export function compare( str1  , str2  , strict = false ) 
 {
     if( !( (typeof(str1) === 'string') || (str1 instanceof String ) ) )
     {
@@ -58,7 +58,7 @@ export function compare( str1 /*String*/ , str2 /*String*/ , strict = false ) /*
 
     if( str1.length === str2.length )
     {
-        var local /*int*/ = str1.localeCompare( str2 );
+        var local  = str1.localeCompare( str2 );
         if( local === 0 )
         {
             return 0;

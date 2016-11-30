@@ -23,6 +23,8 @@ export function Task()
 
     Object.defineProperties( this ,
     {
+        constructor : { value : Task , writable : true },
+
         /**
          * The signal emit when the task is changed.
          * @memberof system.process.Task
@@ -40,11 +42,6 @@ export function Task()
          * @const
          */
         clearIt : { value : new Signal() },
-
-        /**
-         * The constructor reference of the instance.
-         */
-        constructor : { value : Task , writable : true },
 
         /**
          * The signal emit when the task emit a message.
