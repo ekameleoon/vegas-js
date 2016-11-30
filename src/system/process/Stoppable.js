@@ -17,7 +17,9 @@ export function isStoppable( target )
         {
             return true ;
         }
-        return ( 'stop' in target ) && ( target.stop instanceof Function )  ;
+        /*jshint -W069 */
+        return Boolean( target['stop'] ) && ( target.stop instanceof Function ) ;
+        /*jshint +W069 */
     }
     return false ;
 }
@@ -30,14 +32,28 @@ export function isStoppable( target )
  */
 export function Stoppable() {}
 
-Stoppable.prototype = Object.create( Object.prototype );
-Stoppable.prototype.constructor = Stoppable;
+Stoppable.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Stoppable } ,
 
-/**
- * Stop the process.
- * @name stop
- * @memberof system.process.Stoppable
- * @function
- * @instance
- */
-Stoppable.prototype.stop = function() {}
+    /**
+     * Stops the command process.
+     * @name stop
+     * @memberof system.process.Stoppable
+     * @function
+     * @instance
+     */
+    stop : { writable : true , value : function(){} },
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

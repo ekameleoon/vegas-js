@@ -4164,33 +4164,31 @@ function isLockable(target) {
         if (target instanceof Lockable) {
             return true;
         } else {
-            var isLocked = 'isLocked' in target && target.isLocked instanceof Function;
-            var lock = 'lock' in target && target.lock instanceof Function;
-            var unlock = 'unlock' in target && target.unlock instanceof Function;
-            return isLocked && lock && unlock;
+            return Boolean(target['isLocked']) && target.isLocked instanceof Function && Boolean(target['lock']) && target.lock instanceof Function && Boolean(target['unlock']) && target.unlock instanceof Function;
         }
     }
     return false;
 }
 function Lockable() {
     Object.defineProperties(this, {
-        __lock__: { value: false, writable: true }
+        __lock__: { writable: true, value: false }
     });
 }
-Lockable.prototype = Object.create(Object.prototype);
-Lockable.prototype.constructor = Lockable;
-Lockable.prototype.isLocked = function ()
-{
-    return this.__lock__;
-};
-Lockable.prototype.lock = function ()
-{
-    this.__lock__ = true;
-};
-Lockable.prototype.unlock = function ()
-{
-    this.__lock__ = false;
-};
+Lockable.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Lockable },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function createArguments(a) {
     if (!(a instanceof Array) || a.length === 0) {
@@ -4908,7 +4906,7 @@ function isRunnable(target) {
         if (target instanceof Runnable) {
             return true;
         }
-        return 'run' in target && target.run instanceof Function;
+        return Boolean(target['run']) && target.run instanceof Function;
     }
     return false;
 }
@@ -4935,12 +4933,6 @@ var TaskPhase = Object.defineProperties({}, {
 function Action() {
   Object.defineProperties(this, {
     finishIt: { value: new Signal() },
-    phase: { get: function get() {
-        return this._phase;
-      } },
-    running: { get: function get() {
-        return this._running;
-      } },
     startIt: { value: new Signal() },
     __lock__: { writable: true, value: false },
     _phase: { writable: true, value: TaskPhase.INACTIVE },
@@ -4949,6 +4941,12 @@ function Action() {
 }
 Action.prototype = Object.create(Runnable.prototype, {
   constructor: { writable: true, value: Action },
+  phase: { get: function get() {
+      return this._phase;
+    } },
+  running: { get: function get() {
+      return this._running;
+    } },
   clone: { writable: true, value: function value() {
       return new Action();
     } },
@@ -4977,7 +4975,6 @@ Action.prototype = Object.create(Runnable.prototype, {
 function Task() {
   Action.call(this);
   Object.defineProperties(this, {
-    constructor: { value: Task, writable: true },
     changeIt: { value: new Signal() },
     clearIt: { value: new Signal() },
     infoIt: { value: new Signal() },
@@ -4990,78 +4987,80 @@ function Task() {
     timeoutIt: { value: new Signal() }
   });
 }
-Task.prototype = Object.create(Action.prototype);
-Task.prototype.clone = function () {
-  return new Task();
-};
-Task.prototype.notifyChanged = function () {
-  if (!this.__lock__) {
-    this.changeIt.emit(this);
-  }
-};
-Task.prototype.notifyCleared = function () {
-  if (!this.__lock__) {
-    this.clearIt.emit(this);
-  }
-};
-Task.prototype.notifyInfo = function (info) {
-  if (!this.__lock__) {
-    this.infoIt.emit(this, info);
-  }
-};
-Task.prototype.notifyLooped = function () {
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.loopIt.emit(this);
-  }
-};
-Task.prototype.notifyPaused = function () {
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.pauseIt.emit(this);
-  }
-};
-Task.prototype.notifyProgress = function () {
-  if (!this.__lock__) {
-    this.progressIt.emit(this);
-  }
-};
-Task.prototype.notifyResumed = function () {
-  this._phase = TaskPhase.RUNNING;
-  if (!this.__lock__) {
-    this.resumeIt.emit(this);
-  }
-};
-Task.prototype.notifyStopped = function () {
-  this._running = false;
-  this._phase = TaskPhase.STOPPED;
-  if (!this.__lock__) {
-    this.stopIt.emit(this);
-  }
-};
-Task.prototype.notifyTimeout = function () {
-  this._running = false;
-  this._phase = TaskPhase.TIMEOUT;
-  if (!this.__lock__) {
-    this.timeoutIt.emit(this);
-  }
-};
-Task.prototype.resume = function () {};
-Task.prototype.reset = function () {};
-Task.prototype.start = function () {
-  this.run();
-};
-Task.prototype.stop = function () {};
+Task.prototype = Object.create(Action.prototype, {
+  constructor: { writable: true, value: Task },
+  clone: { writable: true, value: function value() {
+      return new Task();
+    } },
+  notifyChanged: { writable: true, value: function value() {
+      if (!this.__lock__) {
+        this.changeIt.emit(this);
+      }
+    } },
+  notifyCleared: { writable: true, value: function value() {
+      if (!this.__lock__) {
+        this.clearIt.emit(this);
+      }
+    } },
+  notifyInfo: { writable: true, value: function value(info) {
+      if (!this.__lock__) {
+        this.infoIt.emit(this, info);
+      }
+    } },
+  notifyLooped: { writable: true, value: function value() {
+      this._phase = TaskPhase.RUNNING;
+      if (!this.__lock__) {
+        this.loopIt.emit(this);
+      }
+    } },
+  notifyPaused: { writable: true, value: function value() {
+      this._running = false;
+      this._phase = TaskPhase.STOPPED;
+      if (!this.__lock__) {
+        this.pauseIt.emit(this);
+      }
+    } },
+  notifyProgress: { writable: true, value: function value() {
+      if (!this.__lock__) {
+        this.progressIt.emit(this);
+      }
+    } },
+  notifyResumed: { writable: true, value: function value() {
+      this._phase = TaskPhase.RUNNING;
+      if (!this.__lock__) {
+        this.resumeIt.emit(this);
+      }
+    } },
+  notifyStopped: { writable: true, value: function value() {
+      this._running = false;
+      this._phase = TaskPhase.STOPPED;
+      if (!this.__lock__) {
+        this.stopIt.emit(this);
+      }
+    } },
+  notifyTimeout: { writable: true, value: function value() {
+      this._running = false;
+      this._phase = TaskPhase.TIMEOUT;
+      if (!this.__lock__) {
+        this.timeoutIt.emit(this);
+      }
+    } },
+  resume: { writable: true, value: function value() {} },
+  reset: { writable: true, value: function value() {} },
+  start: { writable: true, value: function value() {
+      this.run();
+    } },
+  stop: { writable: true, value: function value() {} }
+});
 
 function ObjectDefinitionContainer() {
     Task.call(this);
     Object.defineProperties(this, {
-        _map: { value: new ArrayMap(), writable: true }
+        _map: { writable: true, value: new ArrayMap() }
     });
 }
 ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
-    constructor: { value: ObjectDefinitionContainer, writable: true },
+    constructor: { configurable: true, writable: true, value: ObjectDefinitionContainer },
     numObjectDefinition: { get: function get() {
             return this._map.length;
         } },
@@ -5107,10 +5106,7 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
                 throw new ReferenceError(this + " removeObjectDefinition failed, the specified object definition don't exist : " + id);
             }
         }
-    },
-    toString: { value: function value() {
-            return '[ObjectDefinitionContainer]';
-        }, writable: true }
+    }
 });
 
 function ObjectFactory() {
@@ -5268,9 +5264,6 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 this.bufferSingletons = null;
             }
             this.notifyFinished();
-        } },
-    toString: { writable: true, value: function value() {
-            return '[ObjectFactory]';
         } },
     warn: { value: function value() {
             if (this.config.useLogger && logger) {
@@ -8474,67 +8467,87 @@ function Priority() {
                 this._priority = value > 0 || value < 0 ? value : 0;
             }
         },
-        _priority: { value: 0, writable: true }
+        _priority: { writable: true, value: 0 }
     });
 }
-Priority.prototype = Object.create(Object.prototype);
-Priority.prototype.constructor = Priority;
+Priority.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Priority },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function isResetable(target) {
-  if (target) {
-    if (target instanceof Resetable) {
-      return true;
+    if (target) {
+        if (target instanceof Resetable) {
+            return true;
+        }
+        return Boolean(target['reset']) && target.reset instanceof Function;
     }
-    return 'reset' in target && target.reset instanceof Function;
-  }
-  return false;
+    return false;
 }
 function Resetable() {}
-Resetable.prototype = Object.create(Object.prototype);
-Resetable.prototype.constructor = Resetable;
-Resetable.prototype.reset = function () {};
+Resetable.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Resetable },
+    reset: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function isResumable(target) {
-  if (target) {
-    if (target instanceof Resumable) {
-      return true;
+    if (target) {
+        if (target instanceof Resumable) {
+            return true;
+        }
+        return Boolean(target['resume']) && target.resume instanceof Function;
     }
-    return 'resume' in target && target.resume instanceof Function;
-  }
-  return false;
+    return false;
 }
 function Resumable() {}
-Resumable.prototype = Object.create(Object.prototype);
-Resumable.prototype.constructor = Resumable;
-Resumable.prototype.resume = function () {};
+Resumable.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Resumable },
+    resume: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function isStartable(target) {
-  if (target) {
-    if (target instanceof Startable) {
-      return true;
+    if (target) {
+        if (target instanceof Startable) {
+            return true;
+        }
+        return Boolean(target['start']) && target.start instanceof Function;
     }
-    return 'start' in target && target.start instanceof Function;
-  }
-  return false;
+    return false;
 }
 function Startable() {}
-Startable.prototype = Object.create(Object.prototype);
-Startable.prototype.constructor = Startable;
-Startable.prototype.start = function () {};
+Startable.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Startable },
+    start: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function isStoppable(target) {
-  if (target) {
-    if (target instanceof Stoppable) {
-      return true;
+    if (target) {
+        if (target instanceof Stoppable) {
+            return true;
+        }
+        return Boolean(target['stop']) && target.stop instanceof Function;
     }
-    return 'stop' in target && target.stop instanceof Function;
-  }
-  return false;
+    return false;
 }
 function Stoppable() {}
-Stoppable.prototype = Object.create(Object.prototype);
-Stoppable.prototype.constructor = Stoppable;
-Stoppable.prototype.stop = function () {};
+Stoppable.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Stoppable },
+    stop: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function TimeoutPolicy(value, name) {
   Enum.call(this, value, name);

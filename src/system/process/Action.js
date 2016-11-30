@@ -29,25 +29,6 @@ export function Action()
         finishIt : { value : new Signal() },
 
         /**
-         * Indicates the current phase.
-         * @memberof system.process.Action
-         * @type {string}
-         * @see {@link system.process.TaskPhase}
-         * @instance
-         * @readonly
-         */
-        phase : { get : function() { return this._phase ; } },
-
-        /**
-         * Indicates action is running.
-         * @memberof system.process.Action
-         * @type {boolean}
-         * @instance
-         * @readonly
-         */
-        running : { get : function() { return this._running ; } },
-
-        /**
          * This signal emit when the action is started.
          * @memberof system.process.Action
          * @type {system.signals.Signal}
@@ -76,6 +57,25 @@ export function Action()
 Action.prototype = Object.create( Runnable.prototype ,
 {
     constructor : { writable : true , value : Action } ,
+
+    /**
+     * Indicates the current phase.
+     * @memberof system.process.Action
+     * @type {string}
+     * @see {@link system.process.TaskPhase}
+     * @instance
+     * @readonly
+     */
+    phase : { get : function() { return this._phase ; } },
+
+    /**
+     * Indicates action is running.
+     * @memberof system.process.Action
+     * @type {boolean}
+     * @instance
+     * @readonly
+     */
+    running : { get : function() { return this._running ; } },
 
     /**
      * Creates a copy of the object.

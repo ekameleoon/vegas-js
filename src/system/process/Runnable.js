@@ -17,13 +17,16 @@ export function isRunnable( target )
         {
             return true ;
         }
-        return ( 'run' in target ) && ( target.run instanceof Function )  ;
+        /*jshint -W069 */
+        return Boolean(target['run']) && ( target.run instanceof Function )  ;
+        /*jshint +W069 */
     }
     return false ;
 }
 
 /**
- * Represents a single command. The base interface for all commands. If only this interface is implemented by a command, it is treated as a synchronous command. For additional features like asynchronous execution, cancellation or suspension, several subinterfaces are available.
+ * The base interface for all <b>commands</b> in your applications. If only this interface is implemented by a command, it is treated as a synchronous command. For additional features like asynchronous execution, cancellation or suspension, several subinterfaces are available.
+ * <p>In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time.</p>
  * This interface is used by all internal command executors and builders.
  * @name Runnable
  * @memberof system.process
@@ -36,7 +39,7 @@ Runnable.prototype = Object.create( Object.prototype ,
     constructor : { writable : true , value : Runnable },
 
     /**
-     * Run the process.
+     * Run the command.
      * @name run
      * @memberof system.process.Runnable
      * @function
@@ -48,8 +51,8 @@ Runnable.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
      * @memberof system.transitions.Transition
      * @instance
      * @function

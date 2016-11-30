@@ -19,10 +19,11 @@ export function isLockable( target )
         }
         else
         {
-            let isLocked = ( 'isLocked' in target ) && ( target.isLocked instanceof Function )  ;
-            let lock     = ( 'lock'     in target ) && ( target.lock     instanceof Function )  ;
-            let unlock   = ( 'unlock'   in target ) && ( target.unlock   instanceof Function )  ;
-            return isLocked && lock && unlock ;
+            /*jshint -W069 */
+            return Boolean( target['isLocked'] ) && ( target.isLocked instanceof Function ) &&
+                   Boolean( target['lock'] )     && ( target.lock     instanceof Function ) &&
+                   Boolean( target['unlock'] )   && ( target.unlock   instanceof Function ) ;
+            /*jshint +W069 */
         }
     }
     return false ;
@@ -38,49 +39,60 @@ export function Lockable()
 {
     Object.defineProperties( this ,
     {
-        /**
-         * @private
-         */
-        __lock__ : { value : false , writable : true }
+        __lock__ : { writable : true  , value : false }
     }) ;
 }
 
-Lockable.prototype = Object.create( Object.prototype );
-Lockable.prototype.constructor = Lockable;
-
-/**
- * Returns <code>true</code> if the object is locked.
- * @return <code>true</code> if the object is locked.
- * @name isLocked
- * @memberof system.process.Lockable
- * @function
- * @instance
- */
-Lockable.prototype.isLocked = function() /*void*/
+Lockable.prototype = Object.create( Object.prototype ,
 {
-    return this.__lock__ ;
-}
+    constructor : { writable : true , value : Lockable } ,
 
-/**
- * Locks the object.
- * @name lock
- * @memberof system.process.Lockable
- * @function
- * @instance
- */
-Lockable.prototype.lock = function() /*void*/
-{
-    this.__lock__ = true ;
-}
+    /**
+     * Returns <code>true</code> if the object is locked.
+     * @return <code>true</code> if the object is locked.
+     * @name isLocked
+     * @memberof system.process.Lockable
+     * @function
+     * @instance
+     */
+    isLocked : { writable : true , value : function()
+    {
+        return this.__lock__ ;
+    }},
 
-/**
- * Unlocks the object.
- * @name unlock
- * @memberof system.process.Lockable
- * @function
- * @instance
- */
-Lockable.prototype.unlock = function() /*void*/
-{
-    this.__lock__ = false ;
-}
+    /**
+     * Locks the object.
+     * @name lock
+     * @memberof system.process.Lockable
+     * @function
+     * @instance
+     */
+    lock : { writable : true , value : function()
+    {
+        this.__lock__ = true ;
+    }},
+
+    /**
+     * Unlocks the object.
+     * @name unlock
+     * @memberof system.process.Lockable
+     * @function
+     * @instance
+     */
+    unlock : { writable : true , value : function()
+    {
+        this.__lock__ = false ;
+    }},
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

@@ -17,7 +17,9 @@ export function isResetable( target )
         {
             return true ;
         }
-        return ( 'reset' in target ) && ( target.reset instanceof Function )  ;
+        /*jshint -W069 */
+        return Boolean( target['reset'] ) && ( target.reset instanceof Function )  ;
+        /*jshint +W069 */
     }
     return false ;
 }
@@ -30,14 +32,28 @@ export function isResetable( target )
  */
 export function Resetable(){}
 
-Resetable.prototype = Object.create( Object.prototype );
-Resetable.prototype.constructor = Resetable;
+Resetable.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Resetable } ,
 
-/**
- * Resets the process.
- * @name reset
- * @memberof system.process.Resetable
- * @function
- * @instance
- */
-Resetable.prototype.reset = function() {}
+    /**
+     * Resets the command process.
+     * @name reset
+     * @memberof system.process.Resetable
+     * @function
+     * @instance
+     */
+    reset : { writable : true , value : function(){} },
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

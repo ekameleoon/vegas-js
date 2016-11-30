@@ -13,7 +13,9 @@ export function isPrioritizable( target )
 {
     if( target )
     {
-        return (target instanceof Priority) || ('priority' in target) ;
+        /*jshint -W069 */
+        return (target instanceof Priority) || ( Boolean(target['priority']) && !(target.priority instanceof Function) ) ;
+        /*jshint +W069 */
     }
     return false ;
 }
@@ -34,6 +36,7 @@ export function Priority()
          * @memberof system.process.Priority
          * @type {number}
          * @instance
+         * @default 0
          */
         priority :
         {
@@ -46,12 +49,27 @@ export function Priority()
                 this._priority = (value > 0 || value < 0) ? value : 0 ;
             }
         },
+
         /**
          * @private
          */
-        _priority : { value : 0 , writable : true }
+        _priority : { writable : true , value : 0 }
     }) ;
 }
 
-Priority.prototype = Object.create( Object.prototype ) ;
-Priority.prototype.constructor = Priority ;
+Priority.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Priority } ,
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

@@ -17,7 +17,9 @@ export function isResumable( target )
         {
             return true ;
         }
-        return ( 'resume' in target ) && ( target.resume instanceof Function )  ;
+        /*jshint -W069 */
+        return Boolean( target['resume'] ) && ( target.resume instanceof Function ) ;
+        /*jshint +W069 */
     }
     return false ;
 }
@@ -30,14 +32,28 @@ export function isResumable( target )
  */
 export function Resumable() {}
 
-Resumable.prototype = Object.create( Object.prototype );
-Resumable.prototype.constructor = Resumable;
+Resumable.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Resumable } ,
 
-/**
- * Resumes the process.
- * @name resume
- * @memberof system.process.Resumable
- * @function
- * @instance
- */
-Resumable.prototype.resume = function() {}
+    /**
+     * Resumes the command process.
+     * @name resume
+     * @memberof system.process.Resumable
+     * @function
+     * @instance
+     */
+    resume : { writable : true , value : function(){} },
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});

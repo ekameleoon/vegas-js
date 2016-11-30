@@ -17,7 +17,9 @@ export function isStartable( target )
         {
             return true ;
         }
-        return ( 'start' in target ) && ( target.start instanceof Function )  ;
+        /*jshint -W069 */
+        return Boolean( target['start'] ) && ( target.start instanceof Function ) ;
+        /*jshint +W069 */
     }
     return false ;
 }
@@ -30,14 +32,28 @@ export function isStartable( target )
  */
 export function Startable() {}
 
-Startable.prototype = Object.create( Object.prototype );
-Startable.prototype.constructor = Startable;
+Startable.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Startable } ,
 
-/**
- * Starts the process.
- * @name start
- * @memberof system.process.Startable
- * @function
- * @instance
- */
-Startable.prototype.start = function() {}
+    /**
+     * Starts the command process.
+     * @name start
+     * @memberof system.process.Startable
+     * @function
+     * @instance
+     */
+    start : { writable : true , value : function(){} },
+
+    /**
+     * The <code>toString()</code> method returns a string representing the object
+     * @return A string representing the object.
+     * @memberof system.transitions.Transition
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }}
+});
