@@ -12,6 +12,7 @@ import { Timer }      from '../process/Timer.js' ;
 /**
  * The abstract motion class.
  * @name Motion
+ * @constructs
  * @memberof system.transitions
  * @implements {system.transitions.Transition}
  * @class

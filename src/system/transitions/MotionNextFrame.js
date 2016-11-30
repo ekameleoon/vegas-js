@@ -8,6 +8,7 @@ import { Motion }    from './Motion.js' ;
  * The internal MotionNextFrame Receiver.
  * @name MotionNextFrame
  * @memberof system.transitions
+ * @constructs
  * @class
  * @private
  * @implements Receiver

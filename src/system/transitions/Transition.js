@@ -8,6 +8,7 @@ import { Task } from '../process/Task.js' ;
  * @memberof system.transitions
  * @extends {system.process.Task}
  * @interface
+ * @constructs
  */
 export function Transition ( id = null )
 {

@@ -11,6 +11,7 @@ import { TweenUnit } from './TweenUnit.js' ;
  * @name Tween
  * @memberof system.transitions
  * @class
+ * @constructs
  * @extends {system.transitions.TweenUnit}
  * @tutorial system.transitions
  * @example
