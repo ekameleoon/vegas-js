@@ -57,7 +57,6 @@ var docs =
         "recurse"     : true,
         "destination" : "./docs/bin" ,
         "tutorials"   : "./docs/tutorials"
-        //"template"    : "./node_modules/jaguarjs-jsdoc" // ./node_modules/loke-jsdoc-theme
     },
     "plugins":
     [
