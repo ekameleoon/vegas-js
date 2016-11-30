@@ -5,13 +5,14 @@
 
 import config from './package.json' ;
 
-import babel   from 'rollup-plugin-babel' ;
+//import babel from 'gulp-babel' ;
+import babel from 'rollup-plugin-babel' ;
+
 import gulp    from 'gulp' ;
 import mocha   from 'gulp-mocha' ;
 import pump    from 'pump' ;
 import rename  from 'gulp-rename' ;
 import rollup  from 'gulp-rollup' ;
-import uglify  from 'gulp-uglify' ;
 import util    from 'gulp-util' ;
 import yargs   from 'yargs' ;
 
@@ -21,6 +22,7 @@ import jsdoc from 'gulp-jsdoc3' ;
 import cleanup      from 'rollup-plugin-cleanup';
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
+import uglify       from 'rollup-plugin-uglify' ;
 
 // --------- Initialize
 
@@ -179,11 +181,13 @@ var compile = ( done ) =>
                     }),
                     babel
                     ({
-                        babelrc : false,
-                        presets : ['es2015-rollup'],
-                        runtimeHelpers : true,
-                        exclude : 'node_modules/**' ,
-                        plugins :
+                        babelrc    : false,
+                        presets    : ['es2015-rollup'],
+                        exclude    : 'node_modules/**' ,
+                        compact    : false ,
+                        runtimeHelpers : true ,
+                        sourceMaps : false ,
+                        plugins    :
                         [
                             "external-helpers" ,
                             "transform-es2015-destructuring"
@@ -199,6 +203,69 @@ var compile = ( done ) =>
     );
 }
 
+var compress = ( done ) =>
+{
+    pump
+    (
+        [
+            gulp.src( sources ) ,
+            rollup
+            ({
+                moduleName : name ,
+                entry      : entry ,
+                banner     : '/* VEGAS version ' + version + ' */' ,
+                footer     : '/* follow me on Twitter! @ekameleon */' ,
+                format     : 'umd' ,
+                sourceMap  : false ,
+                useStrict  : true ,
+                globals    :
+                {
+                    core      : 'core',
+                    system    : 'system',
+                    global    : 'global' ,
+                    sayHello  : 'sayHello' ,
+                    skipHello : 'skipHello' ,
+                    trace     : 'trace',
+                    version   : 'version'
+                },
+                plugins :
+                [
+                    replace
+                    ({
+                        delimiters : [ '<@' , '@>' ] ,
+                        values     : { VERSION : version }
+                    }),
+                    babel
+                    ({
+                        babelrc    : false,
+                        presets    : ['es2015-rollup'],
+                        exclude    : 'node_modules/**' ,
+                        compact    : false ,
+                        runtimeHelpers : true ,
+                        sourceMaps : false ,
+                        plugins    :
+                        [
+                            "external-helpers" ,
+                            "transform-es2015-destructuring"
+                        ]
+                    }),
+                    cleanup(),
+                    uglify()
+                ]
+            }),
+            rename( name + '.min.js' ),
+            gulp.dest( output )
+        ],
+        done
+    );
+    // pump([
+    //     gulp.src( [ output + '/' + name + '.js' ] ) ,
+    //     uglify(),
+    //     rename( name + '.min.js'),
+    //     gulp.dest( output )
+    // ] , done );
+}
+
 var doc = ( done ) =>
 {
     pump([
@@ -206,16 +273,6 @@ var doc = ( done ) =>
         jsdoc( docs , done )
     ] , done );
 };
-
-var compress = ( done ) =>
-{
-    pump([
-        gulp.src( [ output + '/' + name + '.js' ] ) ,
-        uglify(),
-        rename( name + '.min.js'),
-        gulp.dest( output )
-    ] , done );
-}
 
 var test = () =>
 {
@@ -266,7 +323,6 @@ var unittest = ( done ) =>
                 ({
                     babelrc : false,
                     presets : ['es2015-rollup'],
-                    runtimeHelpers : true,
                     exclude : 'node_modules/**' ,
                     plugins :
                     [
