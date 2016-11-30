@@ -5,24 +5,23 @@
 
 import config from './package.json' ;
 
-//import babel from 'gulp-babel' ;
-import babel from 'rollup-plugin-babel' ;
+import babel   from 'rollup-plugin-babel' ;
+import babelrc from 'babelrc-rollup';
 
-import gulp    from 'gulp' ;
-import mocha   from 'gulp-mocha' ;
-import pump    from 'pump' ;
-import rename  from 'gulp-rename' ;
-import rollup  from 'gulp-rollup' ;
-import util    from 'gulp-util' ;
-import yargs   from 'yargs' ;
+import gulp   from 'gulp' ;
+import mocha  from 'gulp-mocha' ;
+import pump   from 'pump' ;
+import rename from 'gulp-rename' ;
+import rollup from 'gulp-rollup' ;
+import uglify from 'gulp-uglify' ;
+import util   from 'gulp-util' ;
+import yargs  from 'yargs' ;
 
 import jsdoc from 'gulp-jsdoc3' ;
-//import jsdoc from 'leedian-jsdoc' ; // https://www.npmjs.com/package/jaguarjs-jsdoc
 
 import cleanup      from 'rollup-plugin-cleanup';
 import includePaths from 'rollup-plugin-includepaths';
 import replace      from 'rollup-plugin-replace';
-import uglify       from 'rollup-plugin-uglify' ;
 
 // --------- Initialize
 
@@ -66,27 +65,6 @@ var docs =
     ],
     "templates":
     {
-        // "applicationName" : "VEGAS JS",
-        // "cleverLinks"     : true,
-        // "googleAnalytics" : "UA-87950715-1",
-        // "monospaceLinks"  : true,
-        // "default"         : { "outputSourceFiles" : true },
-        // "linenums"        : true,
-        // "openGraph"       :
-        // {
-        //     "title"     : "VEGAS JS - The Javascript Opensource Framework",
-        //     "type"      : "website",
-        //     // "image" : "",
-        //     "site_name" : "VEGAS JS - The Javascript Opensource Framework",
-        //     "url"       : "http://vegasjs.ooopener.com/"
-        // },
-        // "meta":
-        // {
-        //     "title"       : "VEGAS JS - The Javascript Opensource Framework",
-        //     "description" : "Vegas JS is an Opensource Framewor based on ECMAScript for develop crossplatfom Rich Internet Applications and Games.",
-        //     "keyword"     : "javascript,js,library,framework,npm,node,ioc,tasks,conditions,process,logics,logging,errors,game"
-        // }
-
         "footer"         : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
         "systemName"     : "VEGAS JS",
         "cleverLinks"    : true,
@@ -94,7 +72,6 @@ var docs =
         "analytics"      : { "ua" : "UA-87950715-1" , "domain":"auto" } ,
         "default"        :
         {
-            // "layoutFile"        : "./docs/templates/layout.tmpl" ,
             "outputSourceFiles" : true
         },
         "path"            : "ink-docstrap",
@@ -180,19 +157,12 @@ var compile = ( done ) =>
                         values     : { VERSION : version }
                     }),
                     babel
-                    ({
-                        babelrc    : false,
-                        presets    : ['es2015-rollup'],
-                        exclude    : 'node_modules/**' ,
-                        compact    : false ,
-                        runtimeHelpers : true ,
-                        sourceMaps : false ,
-                        plugins    :
-                        [
-                            "external-helpers" ,
-                            "transform-es2015-destructuring"
-                        ]
-                    }),
+                    (
+                        babelrc
+                        ({
+                            addExternalHelpersPlugin : true
+                        })
+                    ),
                     cleanup()
                 ]
             }),
@@ -205,65 +175,12 @@ var compile = ( done ) =>
 
 var compress = ( done ) =>
 {
-    pump
-    (
-        [
-            gulp.src( sources ) ,
-            rollup
-            ({
-                moduleName : name ,
-                entry      : entry ,
-                banner     : '/* VEGAS version ' + version + ' */' ,
-                footer     : '/* follow me on Twitter! @ekameleon */' ,
-                format     : 'umd' ,
-                sourceMap  : false ,
-                useStrict  : true ,
-                globals    :
-                {
-                    core      : 'core',
-                    system    : 'system',
-                    global    : 'global' ,
-                    sayHello  : 'sayHello' ,
-                    skipHello : 'skipHello' ,
-                    trace     : 'trace',
-                    version   : 'version'
-                },
-                plugins :
-                [
-                    replace
-                    ({
-                        delimiters : [ '<@' , '@>' ] ,
-                        values     : { VERSION : version }
-                    }),
-                    babel
-                    ({
-                        babelrc    : false,
-                        presets    : ['es2015-rollup'],
-                        exclude    : 'node_modules/**' ,
-                        compact    : false ,
-                        runtimeHelpers : true ,
-                        sourceMaps : false ,
-                        plugins    :
-                        [
-                            "external-helpers" ,
-                            "transform-es2015-destructuring"
-                        ]
-                    }),
-                    cleanup(),
-                    uglify()
-                ]
-            }),
-            rename( name + '.min.js' ),
-            gulp.dest( output )
-        ],
-        done
-    );
-    // pump([
-    //     gulp.src( [ output + '/' + name + '.js' ] ) ,
-    //     uglify(),
-    //     rename( name + '.min.js'),
-    //     gulp.dest( output )
-    // ] , done );
+    pump([
+        gulp.src( [ output + '/' + name + '.js' ] ) ,
+        uglify(),
+        rename( name + '.min.js'),
+        gulp.dest( output )
+    ] , done );
 }
 
 var doc = ( done ) =>
@@ -320,16 +237,12 @@ var unittest = ( done ) =>
                     extensions : [ '.js' ]
                 }) ,
                 babel
-                ({
-                    babelrc : false,
-                    presets : ['es2015-rollup'],
-                    exclude : 'node_modules/**' ,
-                    plugins :
-                    [
-                        "external-helpers" ,
-                        "transform-es2015-destructuring"
-                    ]
-                }),
+                (
+                    babelrc
+                    ({
+                        addExternalHelpersPlugin : true
+                    })
+                ),
                 cleanup()
             ]
         }),
