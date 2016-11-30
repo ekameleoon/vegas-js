@@ -57,21 +57,18 @@ Send us your email to join the **VEGAS** community on Slack !
 You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js) or [Yarn](https://yarnpkg.com/).
 
 ```
-#!shell
 yarn add vegas-js --dev
 ```
 
 or
 
 ```
-#!shell
 npm install vegas-js --save-dev
 ```
 
 #### ⌜ Bower
 
 ```
-#!shell
 bower install vegas-js
 ```
 
@@ -86,7 +83,6 @@ bower install vegas-js
 
 2. Initialize the project
 ```
-#!shell
 yarn install
 ```
 
@@ -94,7 +90,6 @@ yarn install
 
 3. Build the binaries (vegas.js and vegas.min.js), the unit tests and the documentation.
 ```
-#!shell
 gulp
 ```
 
@@ -103,14 +98,12 @@ gulp
 We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
 
 ```
-#!shell
 gulp ut
 ```
 
 or watch your modifications with :
 
 ```
-#!shell
 gulp test
 ```
 
@@ -119,13 +112,11 @@ gulp test
 The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples :
 
 ```
-#!shell
 gulp ut --match graphics
 ```
 Run all the graphics package unit tests.
 
 ```
-#!shell
 gulp ut --match graphics.CardinalDimension
 ```
 Run only the graphics.CardinalDimension unit tests.
@@ -134,7 +125,6 @@ Run only the graphics.CardinalDimension unit tests.
 The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list', 'mochawesome'. By default the 'spec' value is used.
 
 ```
-#!shell
 gulp ut --reporter nyan
 ```
 ![nyan.png](https://bitbucket.org/repo/E9RjA6/images/3930502565-nyan.png)
@@ -142,7 +132,6 @@ gulp ut --reporter nyan
 If you use the 'mochawesome' reporter, gulp generate in the './bin/tests' folder an HTML page who contains all the unit tests. For more informations, read the official documentation of [Mochawesome](https://github.com/adamgruber/mochawesome).
 
 ```
-#!shell
 gulp ut --reporter mochawesome
 ```
 
@@ -152,7 +141,6 @@ The documentation of the framework is based on [JSDoc](http://usejsdoc.org/).
 
 Run the documentation build with gulp :
 ```
-#!shell
 gulp doc
 ```
 
