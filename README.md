@@ -79,16 +79,16 @@ bower install vegas-js
 
 #### ⌜ Simple Build
 
-1. The first time, clone the **VEGAS JS** repository
+1 - The first time, clone the **VEGAS JS** repository
 
-2. Initialize the project
+2 - Initialize the project
 ```
 yarn install
 ```
 
 **Note:** See the <code>gulpfile.babel.js</code> file at the top of the project folder.
 
-3. Build the binaries (vegas.js and vegas.min.js), the unit tests and the documentation.
+3 - Build the binaries (vegas.js and vegas.min.js), the unit tests and the documentation.
 ```
 gulp
 ```
