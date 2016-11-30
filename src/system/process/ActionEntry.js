@@ -19,7 +19,7 @@ export function ActionEntry( action , priority = 0 , auto = false )
      * @type {system.process.Action}
      * @instance
      */
-    this.action   = action ;
+    this.action = action ;
 
     /**
      * This flag indicates if the receiver must be disconnected when handle the first time a signal.

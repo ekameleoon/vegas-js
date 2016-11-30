@@ -17,13 +17,13 @@ export function ObjectDefinitionContainer()
     Task.call(this) ;
     Object.defineProperties( this ,
     {
-        _map : { value : new ArrayMap() , writable : true }
+        _map : { writable : true , value : new ArrayMap() }
     });
 }
 
 ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
 {
-    constructor : { value : ObjectDefinitionContainer , writable : true } ,
+    constructor : { configurable : true , writable : true , value : ObjectDefinitionContainer } ,
 
     /**
      * Indicates the numbers of object definitions registered in the container.
@@ -153,15 +153,5 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
                 throw new ReferenceError( this + " removeObjectDefinition failed, the specified object definition don't exist : " + id ) ;
             }
         }
-    },
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     * @name toString
-     * @memberof system.ioc.ObjectDefinitionContainer
-     * @function
-     * @instance
-     */
-    toString : { value : function() { return '[ObjectDefinitionContainer]' ; } , writable : true }
+    }
 });

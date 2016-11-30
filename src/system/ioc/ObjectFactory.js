@@ -32,7 +32,7 @@ import { ObjectMethod } from './ObjectMethod.js' ;
 import { ObjectStrategy } from './ObjectStrategy.js' ;
 
 /**
- * The basic <b>Inversion of Control</b> container and factory.
+ * The basic <b>Inversion of Control</b> container or factory.
  * @name ObjectFactory
  * @class
  * @memberof system.ioc
@@ -389,6 +389,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
     /**
      * Run the initialization of the factory with new object definitions and create the not lazy-init singleton objects.
+     * @name run
+     * @memberof system.ioc.ObjectFactory
+     * @instance
+     * @function
      * @example
      * var Point = function( x , y )
      * {
@@ -451,10 +455,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * factory.run( objects );
      *
      * trace( factory.getObject('position') ) ;
-     * @name run
-     * @memberof system.ioc.ObjectFactory
-     * @instance
-     * @function
      */
     run : { value : function( ...args )
     {
@@ -507,7 +507,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         }
 
         // flush the buffer of singletons to initialize (no lazyInit)
-
         if ( (this.bufferSingletons instanceof Array) && this.bufferSingletons.length > 0 && !this._config.lazyInit && !this.isLocked() )
         {
             var size = this.bufferSingletons.length ;
@@ -520,16 +519,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         this.notifyFinished() ;
     }},
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @name toString
-     * @memberof system.ioc.ObjectFactory
-     * @instance
-     * @function
-     */
-    toString : { writable : true , value : function () { return '[ObjectFactory]' ; } } ,
 
     /**
      * The custom warn method of this factory to log a warning message in the application.

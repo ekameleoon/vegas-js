@@ -1,6 +1,7 @@
 'use strict' ;
 
 import './system/data.js' ;
+import './system/ioc.js' ;
 import './system/numeric.js' ;
 import './system/rules.js' ;
 import './system/signals.js' ;

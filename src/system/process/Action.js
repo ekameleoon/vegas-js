@@ -75,7 +75,7 @@ export function Action()
 
 Action.prototype = Object.create( Runnable.prototype ,
 {
-    constructor : { writable : true , value : Action },
+    constructor : { writable : true , value : Action } ,
 
     /**
      * Creates a copy of the object.

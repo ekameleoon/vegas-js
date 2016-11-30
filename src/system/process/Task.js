@@ -23,8 +23,6 @@ export function Task()
 
     Object.defineProperties( this ,
     {
-        constructor : { value : Task , writable : true },
-
         /**
          * The signal emit when the task is changed.
          * @memberof system.process.Task
@@ -117,199 +115,202 @@ export function Task()
     }) ;
 }
 
-Task.prototype = Object.create( Action.prototype );
-
-/**
- * Creates a copy of the object.
- * @name clone
- * @memberof system.process.Task
- * @function
- * @instance
- * @override
- */
-Task.prototype.clone = function()
+Task.prototype = Object.create( Action.prototype ,
 {
-    return new Task() ;
-}
+    constructor : { writable : true , value : Task },
 
-/**
- * Notify when the process is changed.
- * @name notifyChanged
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyChanged = function()
-{
-    if ( !this.__lock__ )
+    /**
+     * Creates a copy of the object.
+     * @name clone
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     * @override
+     */
+    clone : { writable : true , value : function()
     {
-        this.changeIt.emit( this ) ;
-    }
-}
+        return new Task() ;
+    }},
 
-/**
- * Notify when the process is cleared.
- * @name notifyCleared
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyCleared = function()
-{
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is changed.
+     * @name notifyChanged
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyChanged : { writable : true , value : function()
     {
-        this.clearIt.emit( this ) ;
-    }
-}
+        if ( !this.__lock__ )
+        {
+            this.changeIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify a specific information when the process is changed.
- * @name notifyInfo
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyInfo = function( info )
-{
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is cleared.
+     * @name notifyCleared
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyCleared : { writable : true , value : function()
     {
-        this.infoIt.emit( this , info ) ;
-    }
-}
+        if ( !this.__lock__ )
+        {
+            this.clearIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify when the process is looped.
- * @name notifyLooped
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyLooped = function()
-{
-    this._phase = TaskPhase.RUNNING ;
-    if ( !this.__lock__ )
+    /**
+     * Notify a specific information when the process is changed.
+     * @name notifyInfo
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyInfo : { writable : true , value : function( info )
     {
-        this.loopIt.emit( this ) ;
-    }
-}
+        if ( !this.__lock__ )
+        {
+            this.infoIt.emit( this , info ) ;
+        }
+    }},
 
-/**
- * Notify when the process is paused.
- * @name notifyPaused
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyPaused = function()
-{
-    this._running = false ;
-    this._phase = TaskPhase.STOPPED ;
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is looped.
+     * @name notifyLooped
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyLooped : { writable : true , value : function()
     {
-        this.pauseIt.emit( this ) ;
-    }
-}
+        this._phase = TaskPhase.RUNNING ;
+        if ( !this.__lock__ )
+        {
+            this.loopIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify when the process is progress.
- * @name notifyProgress
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyProgress = function()
-{
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is paused.
+     * @name notifyPaused
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyPaused : { writable : true , value : function()
     {
-        this.progressIt.emit( this ) ;
-    }
-}
+        this._running = false ;
+        this._phase = TaskPhase.STOPPED ;
+        if ( !this.__lock__ )
+        {
+            this.pauseIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify when the process is resumed.
- * @name notifyResumed
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyResumed = function()
-{
-    this._phase = TaskPhase.RUNNING ;
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is progress.
+     * @name notifyProgress
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyProgress : { writable : true , value : function()
     {
-        this.resumeIt.emit( this ) ;
-    }
-}
+        if ( !this.__lock__ )
+        {
+            this.progressIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify when the process is stopped.
- * @name notifyStopped
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyStopped = function()
-{
-    this._running = false ;
-    this._phase = TaskPhase.STOPPED ;
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is resumed.
+     * @name notifyResumed
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyResumed : { writable : true , value : function()
     {
-        this.stopIt.emit( this ) ;
-    }
-}
+        this._phase = TaskPhase.RUNNING ;
+        if ( !this.__lock__ )
+        {
+            this.resumeIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Notify when the process is out of time.
- * @name notifyTimeout
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.notifyTimeout = function()
-{
-    this._running = false ;
-    this._phase = TaskPhase.TIMEOUT ;
-    if ( !this.__lock__ )
+    /**
+     * Notify when the process is stopped.
+     * @name notifyStopped
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyStopped : { writable : true , value : function()
     {
-        this.timeoutIt.emit( this ) ;
-    }
-}
+        this._running = false ;
+        this._phase = TaskPhase.STOPPED ;
+        if ( !this.__lock__ )
+        {
+            this.stopIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Resumes the task.
- * @name resume
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.resume = function() {}
+    /**
+     * Notify when the process is out of time.
+     * @name notifyTimeout
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyTimeout : { writable : true , value : function()
+    {
+        this._running = false ;
+        this._phase = TaskPhase.TIMEOUT ;
+        if ( !this.__lock__ )
+        {
+            this.timeoutIt.emit( this ) ;
+        }
+    }},
 
-/**
- * Resets the task.
- * @name reset
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.reset = function() {}
+    /**
+     * Resumes the task.
+     * @name resume
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    resume : { writable : true , value : function() {} },
 
-/**
- * Starts the task.
- * @name start
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.start = function()
-{
-    this.run() ;
-}
+    /**
+     * Resets the task.
+     * @name reset
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    reset : { writable : true , value : function() {} },
 
-/**
- * Starts the process.
- * @name stop
- * @memberof system.process.Task
- * @function
- * @instance
- */
-Task.prototype.stop = function() {}
+    /**
+     * Starts the task.
+     * @name start
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    start : { writable : true , value : function()
+    {
+        this.run() ;
+    }},
+
+    /**
+     * Starts the process.
+     * @name stop
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    stop : { writable : true , value : function() {} }
+});
