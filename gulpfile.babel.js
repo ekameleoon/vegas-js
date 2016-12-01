@@ -5,37 +5,39 @@
 
 import config from './package.json' ;
 
-import babel   from 'rollup-plugin-babel' ;
-import babelrc from 'babelrc-rollup';
-
-import gulp   from 'gulp' ;
-import mocha  from 'gulp-mocha' ;
-import pump   from 'pump' ;
-import rename from 'gulp-rename' ;
-import rollup from 'gulp-rollup' ;
-import uglify from 'gulp-uglify' ;
-import util   from 'gulp-util' ;
-import yargs  from 'yargs' ;
-
-import jsdoc from 'gulp-jsdoc3' ;
-
+import babel        from 'rollup-plugin-babel' ;
+import babelrc      from 'babelrc-rollup';
+import browserify   from 'browserify' ;
 import cleanup      from 'rollup-plugin-cleanup';
+import gulp         from 'gulp' ;
+import header       from 'gulp-header' ;
 import includePaths from 'rollup-plugin-includepaths';
+import jsdoc        from 'gulp-jsdoc3' ;
+import mocha        from 'gulp-mocha' ;
+import pump         from 'pump' ;
+import rename       from 'gulp-rename' ;
 import replace      from 'rollup-plugin-replace';
+import rollup       from 'gulp-rollup' ;
+import source       from 'vinyl-source-stream';
+import uglify       from 'gulp-uglify' ;
+import util         from 'gulp-util' ;
+import yargs        from 'yargs' ;
 
 // --------- Initialize
 
 var argv   = yargs.argv ;
 var colors = util.colors ;
+var debug  = false ;
 var log    = util.log ;
 
 var name     = 'vegas' ;
 var version  = config.version ;
 
-var sources  = './src/**/*.js' ;
-var entry    = './src/index.js' ;
+var entries  = [ './src/index.js' ] ; // , './libs/index.js'
 var output   = './bin' ;
 var watching = false ;
+
+// --------- Documentation
 
 /**
  * Node Module : https://www.npmjs.com/package/jaguarjs-jsdoc / https://www.npmjs.com/package/gulp-jsdoc3
@@ -128,44 +130,43 @@ var compile = ( done ) =>
     pump
     (
         [
-            gulp.src( sources ) ,
-            rollup
+            browserify
             ({
-                moduleName : name ,
-                entry      : entry ,
-                banner     : '/* VEGAS version ' + version + ' */' ,
-                footer     : '/* follow me on Twitter! @ekameleon */' ,
-                format     : 'umd' ,
-                sourceMap  : false ,
-                useStrict  : true ,
-                globals    :
+                debug         : debug,
+                detectGlobals : true,
+                entries       : entries ,
+                fullPaths     : true ,
+                insertGlobals : true ,
+                standalone    : name
+            })
+            .transform( "rollupify" ,
+            {
+                config :
                 {
-                    core      : 'core',
-                    system    : 'system',
-                    global    : 'global' ,
-                    sayHello  : 'sayHello' ,
-                    skipHello : 'skipHello' ,
-                    trace     : 'trace',
-                    version   : 'version'
-                },
-                plugins :
-                [
-                    replace
-                    ({
-                        delimiters : [ '<@' , '@>' ] ,
-                        values     : { VERSION : version }
-                    }),
-                    babel
-                    (
-                        babelrc
+                    moduleName : name ,
+                    format     : 'umd' ,
+                    sourceMap  : false ,
+                    useStrict  : true ,
+                    plugins :
+                    [
+                        replace
                         ({
-                            addExternalHelpersPlugin : true
-                        })
-                    ),
-                    cleanup()
-                ]
-            }),
-            rename( name + '.js' ),
+                            delimiters : [ '<@' , '@>' ] ,
+                            values     : { VERSION : version }
+                        }),
+                        babel
+                        ({
+                            babelrc : false,
+                            presets : ['es2015-rollup'],
+                            exclude : 'node_modules/**' ,
+                            plugins : [ "external-helpers"]
+                        }),
+                        cleanup()
+                    ]
+                }
+            }).bundle() ,
+            source( name + '.js' ) ,
+            header( '/* VEGAS JS - version ${version} - follow me on Twitter! @ekameleon */\n', { version : version } ) ,
             gulp.dest( output )
         ],
         done
@@ -178,6 +179,7 @@ var compress = ( done ) =>
         gulp.src( [ output + '/' + name + '.js' ] ) ,
         uglify(),
         rename( name + '.min.js'),
+        header( '/* VEGAS JS - version ${version} - follow me on Twitter! @ekameleon */\n', { version : version } ) ,
         gulp.dest( output )
     ] , done );
 }
@@ -185,26 +187,16 @@ var compress = ( done ) =>
 var doc = ( done ) =>
 {
     pump([
-        gulp.src(['README.md', './src/**/*.js'] , {read: false} ) ,
+        gulp.src(['README.md' , './src/**/*.js' ] , {read: false} ) , // , './libs/**/*.js'
         jsdoc( docs , done )
     ] , done );
 };
-
-var test = () =>
-{
-    watching = true;
-    gulp.watch
-    (
-        ['src/**/*.js' , './tests/**/*.js' ] ,
-        gulp.series( unittest )
-    );
-}
 
 var unittest = ( done ) =>
 {
     pump
     ([
-        gulp.src( [ sources , './tests/**/*.js' ] ) ,
+        gulp.src( [ './src/**/*.js' , './tests/**/*.js' ] ) ,
         rollup
         ({
             moduleName : name ,
@@ -239,7 +231,7 @@ var unittest = ( done ) =>
                 (
                     babelrc
                     ({
-                        addExternalHelpersPlugin : true
+                        addExternalHelpersPlugin : false
                     })
                 ),
                 cleanup()
@@ -267,6 +259,16 @@ var unittest = ( done ) =>
     ], done ) ;
 }
 
+var test = () =>
+{
+    watching = true;
+    gulp.watch
+    (
+        ['src/**/*.js' , './tests/**/*.js' ] ,
+        gulp.series( unittest )
+    );
+}
+
 var watch = () =>
 {
     watching = true;
@@ -279,8 +281,8 @@ var watch = () =>
 
 // --------- Tasks
 
+gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
 gulp.task( 'build'   , gulp.series( compile , compress ) ) ;
-gulp.task( 'default' , gulp.series( unittest , compile , compress , doc ) ) ;
 gulp.task( 'doc'     , gulp.series( doc ) ) ;
 gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
 gulp.task( 'ut'      , gulp.series( unittest ) ) ;

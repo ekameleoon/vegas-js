@@ -27,6 +27,7 @@
     "tests",
     "bower.json",
     "gulpfile.js",
+    "gulpfile.babel.js",
     "package.json"
   ],
   "dependencies": {},

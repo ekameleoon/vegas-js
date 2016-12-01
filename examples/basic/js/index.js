@@ -16,5 +16,8 @@ window.onload = function()
     var core     = vegas.core   ; // jshint ignore:line
     var system   = vegas.system ; // jshint ignore:line
 
+    trace( "-----" ) ;
+    trace( vegas ) ;
+    trace( "-----" ) ;
     trace( "> version : " + vegas.version ) ;
 }
