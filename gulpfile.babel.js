@@ -155,12 +155,12 @@ var compile = ( done ) =>
                             values     : { VERSION : version }
                         }),
                         babel
-                        ({
-                            babelrc : false,
-                            presets : ['es2015-rollup'],
-                            exclude : 'node_modules/**' ,
-                            plugins : [ "external-helpers"]
-                        }),
+                        (
+                            babelrc
+                            ({
+                                addExternalHelpersPlugin : true
+                            })
+                        ),
                         cleanup()
                     ]
                 }
@@ -173,7 +173,7 @@ var compile = ( done ) =>
     );
 }
 
-var compress = ( done ) =>
+var minify = ( done ) =>
 {
     pump([
         gulp.src( [ output + '/' + name + '.js' ] ) ,
@@ -231,7 +231,7 @@ var unittest = ( done ) =>
                 (
                     babelrc
                     ({
-                        addExternalHelpersPlugin : false
+                        addExternalHelpersPlugin : true
                     })
                 ),
                 cleanup()
@@ -275,14 +275,14 @@ var watch = () =>
     gulp.watch
     (
         ['src/**/*.js' , './tests/**/*.js' ] ,
-        gulp.series( unittest , compile , compress )
+        gulp.series( unittest , compile , minify )
     );
 }
 
 // --------- Tasks
 
-gulp.task( 'default' , gulp.series( unittest , compile , compress ) ) ;
-gulp.task( 'build'   , gulp.series( compile , compress ) ) ;
+gulp.task( 'default' , gulp.series( unittest , compile , minify ) ) ;
+gulp.task( 'build'   , gulp.series( compile , minify ) ) ;
 gulp.task( 'doc'     , gulp.series( doc ) ) ;
 gulp.task( 'test'    , gulp.series( unittest , test ) ) ;
 gulp.task( 'ut'      , gulp.series( unittest ) ) ;
