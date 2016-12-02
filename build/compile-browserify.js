@@ -16,7 +16,7 @@ import source       from 'vinyl-source-stream';
 import config from '../config.json' ;
 import { version } from './version.js' ;
 
-export var compile = ( done ) =>
+export var brow = ( done ) =>
 {
     pump
     (

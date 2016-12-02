@@ -1,17 +1,24 @@
 "use strict" ;
 
-import { compile }   from './build/compile.js' ;
-import { doc }       from './build/doc.js' ;
-import { minify }    from './build/minify.js' ;
+import { brow } from './build/compile-browserify.js' ;
+import { pack } from './build/compile-webpack.js' ;
+import { roll } from './build/compile-rollup.js' ;
+
+import { doc }    from './build/doc.js' ;
+import { minify } from './build/minify.js' ;
 import { unittests } from './build/unittests.js' ;
 import { watching }  from './build/watch.js' ;
 
 import gulp from 'gulp' ;
 
-gulp.task( 'default'  , gulp.series( unittests , compile , minify ) ) ;
-gulp.task( 'build'    , gulp.series( compile , minify ) ) ;
-gulp.task( 'doc'      , gulp.series( doc ) ) ;
-gulp.task( 'ut'       , gulp.series( unittests ) ) ;
+gulp.task( 'build:browserify' , gulp.series( brow , minify ) ) ;
+gulp.task( 'build:webpack'    , gulp.series( pack , minify ) ) ;
+gulp.task( 'build:rollup'     , gulp.series( roll , minify ) ) ;
+gulp.task( 'build'            , gulp.series( roll , minify ) ) ;
+
+gulp.task( 'default' , gulp.series( unittests , roll , minify ) ) ;
+gulp.task( 'doc'     , gulp.series( doc ) ) ;
+gulp.task( 'ut'      , gulp.series( unittests ) ) ;
 
 var sources = ['src/**/*.js' , './tests/**/*.js' ] ;
 
@@ -19,7 +26,7 @@ gulp.task( 'watch' , () =>
 {
     gulp.watch
     (
-        sources , gulp.series( compile , minify )
+        sources , gulp.series( roll , minify )
     );
 } ) ;
 
