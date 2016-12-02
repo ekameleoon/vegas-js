@@ -104,7 +104,7 @@ gulp ut
 or watch your modifications with :
 
 ```
-gulp test
+gulp watch:ut
 ```
 
 **Note** : You can use the two options **--match** and **--reporter** in the unit tests gulp task.
