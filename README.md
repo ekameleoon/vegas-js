@@ -83,7 +83,7 @@ bower install vegas-js
 
 2 - Initialize the project
 ```
-yarn install
+yarn
 ```
 
 **Note:** See the <code>gulpfile.babel.js</code> file at the top of the project folder.
