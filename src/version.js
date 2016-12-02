@@ -8,9 +8,10 @@
  */
 export const version = '<@VERSION@>' ;
 
-var library = 'VEGAS JS' ;
-var link    = 'https://bitbucket.org/ekameleon/vegas-js' ;
-var skip    = false ;
+var lib  = 'VEGAS JS' ;
+var link = 'https://bitbucket.org/ekameleon/vegas-js' ;
+
+var skip  = false ;
 
 /**
  * Logs out the version and renderer information for this running instance of VEGAS JS.
@@ -19,7 +20,7 @@ var skip    = false ;
  * @function
  * @global
  */
-export function sayHello()
+export function sayHello( name = 'VEGAS JS' , link = 'https://bitbucket.org/ekameleon/vegas-js' , version = "1.0.0" )
 {
     if( skip )
     {
@@ -30,7 +31,7 @@ export function sayHello()
         if ( navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
         {
             const args = [
-                `\n %c %c %c ${library} ${version} %c %c ${link} %c %c\n\n`,
+                `\n %c %c %c ${name} ${version} %c %c ${link} %c %c\n\n`,
                 'background: #ff0000; padding:5px 0;',
                 'background: #AA0000; padding:5px 0;',
                 'color: #F7FF3C; background: #000000; padding:5px 0;',
@@ -44,7 +45,7 @@ export function sayHello()
         }
         else if (window.console)
         {
-            window.console.log(`${library} ${version} - ${link}`);
+            window.console.log(`${name} ${version} - ${link}`);
         }
     }
     catch( error )
@@ -71,7 +72,7 @@ try
         window.addEventListener( 'load' , function load()
         {
             window.removeEventListener( "load", load, false ) ;
-            sayHello() ;
+            sayHello(lib,link,version) ;
         }, false );
     }
 }

@@ -2334,19 +2334,22 @@ function trace(context) {
 }
 
 var version = '1.0.6';
-var library = 'VEGAS JS';
+var lib = 'VEGAS JS';
 var link = 'https://bitbucket.org/ekameleon/vegas-js';
 var skip = false;
 function sayHello() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'VEGAS JS';
+    var link = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'https://bitbucket.org/ekameleon/vegas-js';
+    var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "1.0.0";
     if (skip) {
         return;
     }
     try {
         if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-            var args = ['\n %c %c %c ' + library + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
+            var args = ['\n %c %c %c ' + name + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
             window.console.log.apply(console, args);
         } else if (window.console) {
-            window.console.log(library + ' ' + version + ' - ' + link);
+            window.console.log(name + ' ' + version + ' - ' + link);
         }
     } catch (error) {
     }
@@ -2358,7 +2361,7 @@ try {
     if (window) {
         window.addEventListener('load', function load() {
             window.removeEventListener("load", load, false);
-            sayHello();
+            sayHello(lib, link, version);
         }, false);
     }
 } catch (error) {
