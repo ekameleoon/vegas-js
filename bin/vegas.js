@@ -3347,6 +3347,7 @@ Event.prototype = Object.create(Object.prototype, {
   target: { get: function get() {
       return this._target;
     } },
+  timestamp: { value: new Date().valueOf() },
   type: { get: function get() {
       return this._type;
     } },
@@ -3432,6 +3433,15 @@ Object.defineProperties(Event, {
   UNLOAD: { value: "unload" }
 });
 
+function EventListener() {}
+EventListener.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: EventListener },
+  handleEvent: { writable: true, value: function value() {} },
+  toString: { writable: true, value: function value() {
+      return '[' + this.constructor.name + ']';
+    } }
+});
+
 var EventPhase = Object.defineProperties({}, {
   AT_TARGET: { value: 2, enumerable: true },
   BUBBLING_PHASE: { value: 3, enumerable: true },
@@ -3469,8 +3479,8 @@ EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
             if (!(type instanceof String || typeof type === 'string')) {
                 throw new TypeError(this + " addEventListener failed, the type argument must be a valid String expression.");
             }
-            if (!(listener instanceof Function)) {
-                throw new TypeError(this + " addEventListener failed, the type argument must be a valid Function expression.");
+            if (!(listener instanceof Function || listener instanceof EventListener)) {
+                throw new TypeError(this + " addEventListener failed, the listener must be a valid Function or EventListener reference.");
             }
             var collection = useCapture ? this._captureListeners : this._listeners;
             var entry = {
@@ -3513,6 +3523,12 @@ EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
         } },
     removeEventListener: { writable: true, value: function value(type, listener) {
             var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            if (!(type instanceof String || typeof type === 'string')) {
+                throw new TypeError(this + " removeEventListener failed, the type must be a valid String expression.");
+            }
+            if (!(listener instanceof Function || listener instanceof EventListener)) {
+                throw new TypeError(this + " removeEventListener failed, the listener must be a valid Function or EventListener reference.");
+            }
             var collection = useCapture ? this._captureListeners : this._listeners;
             var listeners = collection[type];
             if (listeners && listeners.length > 0) {
@@ -3537,6 +3553,17 @@ EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
             return exp + ']';
         } },
     willTrigger: { writable: true, value: function value(type) {
+            var parents = this.createAncestorChain();
+            if (parents instanceof Array && parents.length > 0) {
+                var parent = void 0;
+                var len = parents.length;
+                while (--len > -1) {
+                    parent = parents[len];
+                    if (parent instanceof IEventDispatcher && parent.hasEventListener(type)) {
+                        return true;
+                    }
+                }
+            }
             return this.hasEventListener(type);
         } },
     createAncestorChain: { writable: true, value: function value() {
@@ -3570,8 +3597,16 @@ Object.defineProperties(EventDispatcher, {
     processListeners: { value: function value(event, listeners) {
             if (listeners instanceof Array && listeners.length > 0) {
                 var len = listeners.length;
+                var listener = void 0;
                 for (var i = 0; i < len; ++i) {
-                    if (listeners[i].listener(event) === false) {
+                    listener = listeners[i].listener;
+                    var flag = void 0;
+                    if (listener instanceof EventListener) {
+                        flag = listener.handleEvent(event);
+                    } else {
+                        flag = listener(event);
+                    }
+                    if (flag === false) {
                         event.stopPropagation();
                         event.preventDefault();
                     }
@@ -3618,7 +3653,7 @@ Object.defineProperties(EventDispatcher, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.events
  * @memberof system
- * @example
+ * @example <caption>Basic usage with a <code>callback</code> function</caption>
  * var click = function( event )
  * {
  *     trace( "click: " + event ) ;
@@ -3629,10 +3664,38 @@ Object.defineProperties(EventDispatcher, {
  * dispatcher.addEventListener( Event.CLICK , click ) ;
  *
  * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ * @example <caption>Use the W3C DOM {@link system.events.EventListener|EventListener} interface</caption>
+ * var Click = function( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Click.prototype = Object.create( EventListener.prototype ,
+ * {
+ *     constructor : { value : Click } ,
+ *     handleEvent : { value : function( event )
+ *     {
+ *         trace( this + ' ' + this.name + ' event:' + event ) ;
+ *     }}
+ * });
+ *
+ * var click1 = new Click( '#1') ;
+ * var click2 = new Click( '#2') ;
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click1 ) ;
+ * dispatcher.addEventListener( Event.CLICK , click2 ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ *
+ * dispatcher.removeEventListener( Event.CLICK , click2 ) ;
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 var events = Object.assign({
   Event: Event,
   EventDispatcher: EventDispatcher,
+  EventListener: EventListener,
   EventPhase: EventPhase,
   IEventDispatcher: IEventDispatcher
 });

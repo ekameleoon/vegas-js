@@ -2,6 +2,7 @@
 "use strict" ;
 
 import { Event } from './Event.js' ;
+import { EventListener } from './EventListener.js' ;
 import { EventPhase } from './EventPhase.js' ;
 import { IEventDispatcher } from './IEventDispatcher.js' ;
 
@@ -13,14 +14,48 @@ import { IEventDispatcher } from './IEventDispatcher.js' ;
  * @implements system.events.IEventDispatcher
  * @param {system.events.IEventDispatcher} target - The target object for events dispatched to the EventDispatcher object. This parameter is used when the EventDispatcher instance is aggregated by a class that implements IEventDispatcher; it is necessary so that the containing object can be the target for events. Do not use this parameter in simple cases in which a class extends EventDispatcher.
  * @example
- * var click = function( event )
+ * var Click = function( name )
  * {
- *     trace( "click: " + event ) ;
+ *     this.name = name ;
+ * }
+ *
+ * Click.prototype = Object.create( EventListener.prototype ,
+ * {
+ *     constructor : { value : Click } ,
+ *     handleEvent : { value : function( event )
+ *     {
+ *         trace( this + ' ' + this.name + ' event:' + event ) ;
+ *     }}
+ * });
+ *
+ * var click1 = new Click( '#1') ;
+ * var click2 = new Click( '#2') ;
+ *
+ * // ------
+ *
+ * var select = function( event )
+ * {
+ *     trace( "select event:" + event ) ;
  * };
+ *
+ * // ------
  *
  * var dispatcher = new EventDispatcher() ;
  *
- * dispatcher.addEventListener( Event.CLICK , click ) ;
+ * dispatcher.addEventListener( Event.CLICK , click1 ) ;
+ * dispatcher.addEventListener( Event.CLICK , click2 ) ;
+ * dispatcher.addEventListener( Event.CLICK , select , false , 100 ) ;
+ *
+ * // ------
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ *
+ * // ------
+ *
+ * dispatcher.removeEventListener( Event.CLICK , click2 ) ;
+ * dispatcher.removeEventListener( Event.CLICK , select ) ;
+ *
+ * // ------
  *
  * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
@@ -36,6 +71,9 @@ export function EventDispatcher( target )
 
 EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
 {
+    /**
+     * @private
+     */
     constructor : { writable : true , value : EventDispatcher },
 
     /**
@@ -48,7 +86,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
      * <p>If the event listener is being registered on a node while an event is also being processed on this node, the event listener is not triggered during the current phase but may be triggered during a later phase in the event flow, such as the bubbling phase.</p>
      * <p>If an event listener is removed from a node while an event is being processed on the node, it is still triggered by the current actions. After it is removed, the event listener is never invoked again (unless it is registered again for future processing).</p>
      * @param {string} type - The type of event.
-     * @param {function} listener - The listener function that processes the event. This function must accept an event object as its only parameter and must return nothing, as this example shows:
+     * @param {function|system.events.EventListener} listener - The listener function that processes the event. This function must accept an event object as its only parameter and must return nothing, as this example shows:
      * <p><code>function(evt)</code></p>The function can have any name.
      * @param {boolean} [useCapture=false] - Determines whether the listener works in the capture phase or the target and bubbling phases. If <code>useCapture</code> is set to <code>true</code>, the listener processes the event only during the capture phase and not in the target or bubbling phase. If <code>useCapture</code> is <code>false</code>, the listener processes the event only during the target or bubbling phase. To listen for the event in all three phases, call <code>addEventListener()</code> twice, once with <code>useCapture</code> set to <code>true</code>, then again with <code>useCapture</code> set to <code>false</code>.
      * @param {number} [priority=0] - The priority level of the event listener. Priorities are designated by a 32-bit integer. The higher the number, the higher the priority. All listeners with priority <i>n</i> are processed before listeners of priority <i>n-1</i>. If two or more listeners share the same priority, they are processed in the order in which they were added. The default priority is 0.
@@ -64,17 +102,17 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
             throw new TypeError( this + " addEventListener failed, the type argument must be a valid String expression." ) ;
         }
 
-        if( !( listener instanceof Function ) )
+        if( !( listener instanceof Function || listener instanceof EventListener ) )
         {
-            throw new TypeError( this + " addEventListener failed, the type argument must be a valid Function expression." ) ;
+            throw new TypeError( this + " addEventListener failed, the listener must be a valid Function or EventListener reference." ) ;
         }
 
-        var collection = useCapture ? this._captureListeners : this._listeners ;
+        let collection = useCapture ? this._captureListeners : this._listeners ;
 
-        var entry =
+        let entry =
         {
             type       : type,
-            listener   : listener,
+            listener   : listener ,
             useCapture : useCapture,
             priority   : priority
         };
@@ -109,7 +147,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
 
         event = event.withTarget( this.target || this );
 
-        var ancestors = this.createAncestorChain();
+        let ancestors = this.createAncestorChain();
 
         event._eventPhase = EventPhase.CAPTURING_PHASE ;
 
@@ -122,7 +160,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
             let listeners = this._listeners[ event.type ];
             if (this._listeners[ event.type ])
             {
-                EventDispatcher.processListeners(event, listeners);
+                EventDispatcher.processListeners( event, listeners );
             }
         }
 
@@ -160,8 +198,18 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
      * @function
      * @instance
      */
-    removeEventListener : { writable : true , value : function( type, listener, useCapture = false )
+    removeEventListener : { writable : true , value : function( type , listener, useCapture = false )
     {
+        if( !( type instanceof String || typeof(type) === 'string') )
+        {
+            throw new TypeError( this + " removeEventListener failed, the type must be a valid String expression." ) ;
+        }
+
+        if( !( listener instanceof Function || listener instanceof EventListener ) )
+        {
+            throw new TypeError( this + " removeEventListener failed, the listener must be a valid Function or EventListener reference." ) ;
+        }
+
         let collection = useCapture ? this._captureListeners : this._listeners ;
         let listeners  = collection[type];
         if ( listeners && listeners.length > 0 )
@@ -215,6 +263,20 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
      */
     willTrigger : { writable : true , value : function( type )
     {
+        let parents = this.createAncestorChain();
+        if( (parents instanceof Array) && parents.length > 0 )
+        {
+            let parent ;
+            let len = parents.length ;
+            while( --len > -1 )
+            {
+                parent = parents[len] ;
+                if( (parent instanceof IEventDispatcher) && parent.hasEventListener( type ) )
+                {
+                    return true;
+                }
+            }
+        }
         return this.hasEventListener(type);
     }} ,
 
@@ -268,7 +330,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
     {
         event.withCurrentTarget( this.target || this ) ;
         let listeners = this._captureListeners[ event.type ];
-        if (listeners)
+        if ( listeners )
         {
             EventDispatcher.processListeners( event , listeners );
         }
@@ -299,13 +361,28 @@ Object.defineProperties( EventDispatcher ,
         if( listeners instanceof Array && listeners.length > 0 )
         {
             let len = listeners.length ;
-            for ( var i = 0 ; i < len ; ++i )
+            let listener ;
+            for ( let i = 0 ; i < len ; ++i )
             {
-                if ( listeners[i].listener( event ) === false )
+                listener = listeners[i].listener ;
+
+                let flag ;
+
+                if( listener instanceof EventListener )
+                {
+                    flag = listener.handleEvent(event) ;
+                }
+                else
+                {
+                    flag = listener(event) ;
+                }
+
+                if( flag === false )
                 {
                     event.stopPropagation();
                     event.preventDefault();
                 }
+
                 if ( event.isImmediatePropagationStopped() )
                 {
                     break;
@@ -324,7 +401,7 @@ Object.defineProperties( EventDispatcher ,
         let len = ancestors.length - 1
         for ( let i = len ; i >= 0 ; i-- )
         {
-            dispatcher = ancestors[i];
+            dispatcher = ancestors[i] ;
             dispatcher.processCapture( event );
             if ( event.isPropagationStopped() )
             {

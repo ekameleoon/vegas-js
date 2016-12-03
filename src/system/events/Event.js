@@ -100,6 +100,20 @@ Event.prototype = Object.create( Object.prototype ,
     target : { get : function() { return this._target } } ,
 
     /**
+     * The timestamp at which this event was created.
+     * <p>A numeric value corresponding to the time for the specified date according to universal time.</p>
+     * @name target
+     * @memberof system.events.Event
+     * @instance
+     * @type number
+     * @const
+     * @example
+     * var event = new Event( Event.CLICK ) ;
+     * trace( event.timestamp ) ;
+     */
+    timestamp : { value : (new Date()).valueOf() } ,
+
+    /**
      * The type of event. The type is case-sensitive.
      * @name type
      * @memberof system.events.Event
