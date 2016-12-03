@@ -13,6 +13,7 @@ import { isFormattable } from './system/Formattable.js' ;
 import { data }        from './system/data.js' ;
 import { errors }      from './system/errors.js' ;
 import { evaluators }  from './system/evaluators.js' ;
+import { events }      from './system/events.js' ;
 import { formatters }  from './system/formatters.js' ;
 import { ioc }         from './system/ioc.js' ;
 import { logging }     from './system/logging.js' ;
@@ -53,6 +54,7 @@ export var system = Object.assign
     data        : data ,
     errors      : errors ,
     evaluators  : evaluators ,
+    events      : events ,
     formatters  : formatters ,
     ioc         : ioc ,
     logging     : logging ,

@@ -3314,6 +3314,135 @@ var evaluators = Object.assign({
   RomanEvaluator: RomanEvaluator
 });
 
+function Event(type) {
+    var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        _bubbles: { writable: true, value: Boolean(bubbles) },
+        _cancelable: { writable: true, value: Boolean(cancelable) },
+        _constructorName: { writable: true, value: null },
+        _currentTarget: { writable: true, value: null },
+        _defaultPrevented: { writable: true, value: false },
+        _eventPhase: { writable: true, value: 0 },
+        _propagationStopped: { writable: true, value: false },
+        _immediatePropagationStopped: { writable: true, value: false },
+        _target: { writable: true, value: null },
+        _type: { writable: true, value: type instanceof String || typeof type === 'string' ? type : null }
+    });
+}
+Event.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Event },
+    bubbles: { get: function get() {
+            return this._bubbles;
+        } },
+    cancelable: { get: function get() {
+            return this._cancelable;
+        } },
+    currentTarget: { get: function get() {
+            return this._currentTarget;
+        } },
+    eventPhase: { get: function get() {
+            return this._eventPhase;
+        } },
+    target: { get: function get() {
+            return this._target;
+        } },
+    type: { get: function get() {
+            return this._type;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Event(this._type, this._bubbles, this._cancelable);
+        } },
+    formatToString: { value: function value(className) {
+            if (!className) {
+                if (!this._constructorName) {
+                    this._constructorName = this.constructor.name;
+                }
+                className = this._constructorName;
+            }
+            var ar = [];
+            for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                rest[_key - 1] = arguments[_key];
+            }
+            var len = rest.length;
+            for (var i = 0; i < len; ++i) {
+                if (rest[i] in this) {
+                    ar.push(rest[i] + ":" + this[rest[i]]);
+                }
+            }
+            return "[" + className + " " + ar.join(' ') + "]";
+        } },
+    isDefaultPrevented: { value: function value() {
+            return this._defaultPrevented;
+        } },
+    isImmediatePropagationStopped: { value: function value() {
+            return this._immediatePropagationStopped;
+        } },
+    isPropagationStopped: { value: function value() {
+            return this._propagationStopped;
+        } },
+    preventDefault: { value: function value() {
+            if (this._cancelable) {
+                this._defaultPrevented = true;
+            }
+        } },
+    stopImmediatePropagation: { value: function value() {
+            this._immediatePropagationStopped = true;
+        } },
+    stopPropagation: { value: function value() {
+            this._propagationStopped = true;
+        } },
+    toString: { writable: true, value: function value() {
+            return this.formatToString(null, "type", "bubbles", "cancelable");
+        } },
+    withTarget: { value: function value(target) {
+            var event = this.target ? this.clone() : this;
+            event._target = target;
+            return event;
+        } },
+    withCurrentTarget: { value: function value(currentTarget) {
+            this._currentTarget = currentTarget;
+            return this;
+        } }
+});
+
+var EventPhase = Object.defineProperties({}, {
+  AT_TARGET: { value: 2, enumerable: true },
+  BUBBLING_PHASE: { value: 3, enumerable: true },
+  CAPTURING_PHASE: { value: 1, enumerable: true },
+  NONE: { value: 0, enumerable: true }
+});
+
+function IEventDispatcher() {}
+IEventDispatcher.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: IEventDispatcher },
+  addEventListener: { writable: true, value: function value(type, listener) {
+      var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var priority = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      var useWeakReference = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    } },
+  dispatchEvent: { writable: true, value: function value(event) {} },
+  hasEventListener: { writable: true, value: function value(type) {} },
+  removeEventListener: { writable: true, value: function value(type, listener) {
+      var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    } },
+  willTrigger: { writable: true, value: function value(type) {} }
+});
+
+/**
+ * The {@link system.events} package provides a W3C Event Model implementation.
+ * @summary The {@link system.events} package provides an W3C Event Model library.
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.events
+ * @memberof system
+ */
+var events = Object.assign({
+  Event: Event,
+  EventPhase: EventPhase,
+  IEventDispatcher: IEventDispatcher
+});
+
 function ExpressionFormatter() {
     Object.defineProperties(this, {
         expressions: { value: new ArrayMap() },
@@ -9589,6 +9718,7 @@ var system = Object.assign({
     data: data,
     errors: errors,
     evaluators: evaluators,
+    events: events,
     formatters: formatters,
     ioc: ioc,
     logging: logging,

@@ -17,7 +17,6 @@ gulp.task( 'build:webpack'    , gulp.series( pack , minify ) ) ;
 gulp.task( 'build:rollup'     , gulp.series( roll , minify ) ) ;
 gulp.task( 'build'            , gulp.series( roll , minify ) ) ;
 
-gulp.task( 'default' , gulp.series( unittests , roll , minify ) ) ;
 gulp.task( 'doc'     , gulp.series( doc ) ) ;
 gulp.task( 'ut'      , gulp.series( unittests ) ) ;
 gulp.task( 'zip'     , gulp.series( zip ) ) ;
@@ -40,3 +39,5 @@ gulp.task( 'watch:ut' , () =>
         sources , gulp.series( unittests )
     );
 } ) ;
+
+gulp.task( 'default' , gulp.series( unittests , roll , minify , doc ) ) ;

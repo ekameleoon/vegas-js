@@ -1,6 +1,7 @@
 'use strict' ;
 
 import './system/data.js' ;
+import './system/events.js' ;
 import './system/ioc.js' ;
 import './system/numeric.js' ;
 import './system/process.js' ;
@@ -25,6 +26,7 @@ import './system/transitions.js' ;
 //
 //     it('system.data is not null', () => { assert.isNotNull( system.data ); });
 //     it('system.errors is not null', () => { assert.isNotNull( system.errors ); });
+//     it('system.events is not null', () => { assert.isNotNull( system.events ); });
 //     it('system.evaluators is not null', () => { assert.isNotNull( system.evaluators ); });
 //     it('system.formatters is not null', () => { assert.isNotNull( system.formatters ); });
 //     it('system.ioc is not null', () => { assert.isNotNull( system.ioc ); });
