@@ -28,6 +28,8 @@ import { ucWords }           from './strings/ucWords.js' ;
 import { validateUUID }      from './strings/validateUUID.js' ;
 import { versionUUID }       from './strings/versionUUID.js' ;
 
+// import { latinize }          from './strings/latinize.js' ;
+
 /**
  * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
  * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
@@ -52,6 +54,7 @@ export var strings = Object.assign
     indexOfAny : indexOfAny ,
     insert : insert ,
     lastIndexOfAny : lastIndexOfAny ,
+    //latinize : latinize ,
     pad : pad ,
     repeat : arepeat ,
     startsWith : startsWith ,
