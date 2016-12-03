@@ -3,6 +3,7 @@
 import '../polyfill.js' ;
 
 import { Event } from './events/Event.js' ;
+import { EventDispatcher } from './events/EventDispatcher.js' ;
 import { EventPhase } from './events/EventPhase.js' ;
 import { IEventDispatcher } from './events/IEventDispatcher.js' ;
 
@@ -17,6 +18,7 @@ import { IEventDispatcher } from './events/IEventDispatcher.js' ;
 export var events = Object.assign
 ({
     Event,
+    EventDispatcher,
     EventPhase,
     IEventDispatcher
 }) ;

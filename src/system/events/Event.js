@@ -124,7 +124,7 @@ Event.prototype = Object.create( Object.prototype ,
      * }
      * @return A new Event object that is identical to the original.
      * @name clone
-     * @memberof system.data.Attribute
+     * @memberof system.events.Event
      * @function
      * @instance
      */
@@ -270,7 +270,7 @@ Event.prototype = Object.create( Object.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @name toString
-     * @memberof system.data.Attribute
+     * @memberof system.events.Event
      * @function
      * @instance
      */

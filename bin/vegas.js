@@ -3419,7 +3419,6 @@ IEventDispatcher.prototype = Object.create(Object.prototype, {
   addEventListener: { writable: true, value: function value(type, listener) {
       var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var priority = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-      var useWeakReference = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     } },
   dispatchEvent: { writable: true, value: function value(event) {} },
   hasEventListener: { writable: true, value: function value(type) {} },
@@ -3427,6 +3426,163 @@ IEventDispatcher.prototype = Object.create(Object.prototype, {
       var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     } },
   willTrigger: { writable: true, value: function value(type) {} }
+});
+
+function EventDispatcher(target) {
+    Object.defineProperties(this, {
+        target: { writable: true, value: target instanceof IEventDispatcher ? target : null },
+        _captureListeners: { value: {} },
+        _listeners: { value: {} }
+    });
+}
+EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
+    constructor: { writable: true, value: EventDispatcher },
+    addEventListener: { writable: true, value: function value(type, listener) {
+            var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var priority = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            if (!(type instanceof String || typeof type === 'string')) {
+                throw new TypeError(this + " addEventListener failed, the type argument must be a valid String expression.");
+            }
+            if (!(listener instanceof Function)) {
+                throw new TypeError(this + " addEventListener failed, the type argument must be a valid Function expression.");
+            }
+            var collection = useCapture ? this._captureListeners : this._listeners;
+            var entry = {
+                type: type,
+                listener: listener,
+                useCapture: useCapture,
+                priority: priority
+            };
+            if (!(type in collection)) {
+                collection[type] = [entry];
+            } else {
+                collection[type].push(entry);
+            }
+            collection[type].sort(this.compare);
+        } },
+    dispatchEvent: { writable: true, value: function value(event) {
+            if (!(event instanceof Event)) {
+                throw new TypeError(this + " dispatchEvent failed, the event argument must be a valid Event object.");
+            }
+            event = event.withTarget(this.target || this);
+            var ancestors = this.createAncestorChain();
+            event._eventPhase = EventPhase.CAPTURING_PHASE;
+            EventDispatcher.internalHandleCapture(event, ancestors);
+            if (!event.isPropagationStopped()) {
+                event._eventPhase = EventPhase.AT_TARGET;
+                event.withCurrentTarget(event._target);
+                var listeners = this._listeners[event.type];
+                if (this._listeners[event.type]) {
+                    EventDispatcher.processListeners(event, listeners);
+                }
+            }
+            if (event.bubbles && !event.isPropagationStopped()) {
+                event._eventPhase = EventPhase.BUBBLING_PHASE;
+                EventDispatcher.internalHandleBubble(event, ancestors);
+            }
+            return !event.isDefaultPrevented();
+        } },
+    hasEventListener: { writable: true, value: function value(type) {
+            return Boolean(this._listeners[type] || this._captureListeners[type]);
+        } },
+    removeEventListener: { writable: true, value: function value(type, listener) {
+            var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var collection = useCapture ? this._captureListeners : this._listeners;
+            var listeners = collection[type];
+            if (listeners && listeners.length > 0) {
+                var len = listeners.length;
+                for (var i = 0; i < len; ++i) {
+                    if (listeners[i].listener === listener) {
+                        if (len === 1) {
+                            delete collection[type];
+                        } else {
+                            listeners.splice(i, 1);
+                        }
+                        break;
+                    }
+                }
+            }
+        } },
+    toString: { writable: true, value: function value() {
+            var exp = '[' + this.constructor.name;
+            if (this.target) {
+                exp += ' target:' + this.target;
+            }
+            return exp + ']';
+        } },
+    willTrigger: { writable: true, value: function value(type) {
+            return this.hasEventListener(type);
+        } },
+    createAncestorChain: { writable: true, value: function value() {
+            return null;
+        } },
+    compare: { value: function value(entry1, entry2) {
+            if (entry1.priority > entry2.priority) {
+                return -1;
+            } else if (entry1.priority < entry2.priority) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } },
+    processCapture: { value: function value(event) {
+            event.withCurrentTarget(this.target || this);
+            var listeners = this._captureListeners[event.type];
+            if (listeners) {
+                EventDispatcher.processListeners(event, listeners);
+            }
+        } },
+    processBubble: { value: function value(event) {
+            event.withCurrentTarget(this.target || this);
+            var listeners = this._listeners[event.type];
+            if (listeners) {
+                EventDispatcher.processListeners(event, listeners);
+            }
+        } }
+});
+Object.defineProperties(EventDispatcher, {
+    processListeners: { value: function value(event, listeners) {
+            if (listeners instanceof Array && listeners.length > 0) {
+                var len = listeners.length;
+                for (var i = 0; i < len; ++i) {
+                    if (listeners[i].listener(event) === false) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                    }
+                    if (event.isImmediatePropagationStopped()) {
+                        break;
+                    }
+                }
+            }
+        } },
+    internalHandleCapture: { value: function value(event, ancestors) {
+            if (!(ancestors instanceof Array) || ancestors.length <= 0) {
+                return;
+            }
+            var dispatcher = void 0;
+            var len = ancestors.length - 1;
+            for (var i = len; i >= 0; i--) {
+                dispatcher = ancestors[i];
+                dispatcher.processCapture(event);
+                if (event.isPropagationStopped()) {
+                    break;
+                }
+            }
+        } },
+    internalHandleBubble: { value: function value(event, ancestors) {
+            if (!ancestors || ancestors.length <= 0) {
+                return;
+            }
+            var dispatcher = void 0;
+            var len = ancestors.length;
+            for (var i = 0; i < len; i++) {
+                dispatcher = ancestors[i];
+                dispatcher.processBubble(event);
+                if (event.isPropagationStopped()) {
+                    break;
+                }
+            }
+        } }
 });
 
 /**
@@ -3439,6 +3595,7 @@ IEventDispatcher.prototype = Object.create(Object.prototype, {
  */
 var events = Object.assign({
   Event: Event,
+  EventDispatcher: EventDispatcher,
   EventPhase: EventPhase,
   IEventDispatcher: IEventDispatcher
 });

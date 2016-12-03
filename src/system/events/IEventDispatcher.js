@@ -28,14 +28,12 @@ IEventDispatcher.prototype = Object.create( Object.prototype ,
      * <p><code>function(evt)</code></p>The function can have any name.
      * @param {boolean} [useCapture=false] - Determines whether the listener works in the capture phase or the target and bubbling phases. If <code>useCapture</code> is set to <code>true</code>, the listener processes the event only during the capture phase and not in the target or bubbling phase. If <code>useCapture</code> is <code>false</code>, the listener processes the event only during the target or bubbling phase. To listen for the event in all three phases, call <code>addEventListener()</code> twice, once with <code>useCapture</code> set to <code>true</code>, then again with <code>useCapture</code> set to <code>false</code>.
      * @param {number} [priority=0] - The priority level of the event listener. Priorities are designated by a 32-bit integer. The higher the number, the higher the priority. All listeners with priority <i>n</i> are processed before listeners of priority <i>n-1</i>. If two or more listeners share the same priority, they are processed in the order in which they were added. The default priority is 0.
-     * @param {boolean} [useWeakReference=false] - Determines whether the reference to the listener is strong or weak. A strong reference (the default) prevents your listener from being garbage-collected. A weak reference does not.
-     * <p>Class-level member functions are not subject to garbage collection, so you can set <code>useWeakReference</code> to <code>true</code> for class-level member functions without subjecting them to garbage collection. If you set <code>useWeakReference</code> to <code>true</code> for a listener that is a nested inner function, the function will be garbge-collected and no longer persistent. If you create references to the inner function (save it in another variable) then it is not garbage-collected and stays persistent.</p>
      * @name addEventListener
      * @memberof system.events.IEventDispatcher
      * @function
      * @instance
      */
-    addEventListener : { writable : true , value : function( type, listener, useCapture = false, priority = 0, useWeakReference = false ) {} },
+    addEventListener : { writable : true , value : function( type, listener, useCapture = false, priority = 0 ) {} },
 
     /**
      * Dispatches an event into the event flow. The event target is the EventDispatcher object upon which <code>dispatchEvent()</code> is called.
