@@ -3315,95 +3315,121 @@ var evaluators = Object.assign({
 });
 
 function Event(type) {
-    var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    Object.defineProperties(this, {
-        _bubbles: { writable: true, value: Boolean(bubbles) },
-        _cancelable: { writable: true, value: Boolean(cancelable) },
-        _constructorName: { writable: true, value: null },
-        _currentTarget: { writable: true, value: null },
-        _defaultPrevented: { writable: true, value: false },
-        _eventPhase: { writable: true, value: 0 },
-        _propagationStopped: { writable: true, value: false },
-        _immediatePropagationStopped: { writable: true, value: false },
-        _target: { writable: true, value: null },
-        _type: { writable: true, value: type instanceof String || typeof type === 'string' ? type : null }
-    });
+  var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Object.defineProperties(this, {
+    _bubbles: { writable: true, value: Boolean(bubbles) },
+    _cancelable: { writable: true, value: Boolean(cancelable) },
+    _constructorName: { writable: true, value: null },
+    _currentTarget: { writable: true, value: null },
+    _defaultPrevented: { writable: true, value: false },
+    _eventPhase: { writable: true, value: 0 },
+    _propagationStopped: { writable: true, value: false },
+    _immediatePropagationStopped: { writable: true, value: false },
+    _target: { writable: true, value: null },
+    _type: { writable: true, value: type instanceof String || typeof type === 'string' ? type : null }
+  });
 }
 Event.prototype = Object.create(Object.prototype, {
-    constructor: { writable: true, value: Event },
-    bubbles: { get: function get() {
-            return this._bubbles;
-        } },
-    cancelable: { get: function get() {
-            return this._cancelable;
-        } },
-    currentTarget: { get: function get() {
-            return this._currentTarget;
-        } },
-    eventPhase: { get: function get() {
-            return this._eventPhase;
-        } },
-    target: { get: function get() {
-            return this._target;
-        } },
-    type: { get: function get() {
-            return this._type;
-        } },
-    clone: { writable: true, value: function value() {
-            return new Event(this._type, this._bubbles, this._cancelable);
-        } },
-    formatToString: { value: function value(className) {
-            if (!className) {
-                if (!this._constructorName) {
-                    this._constructorName = this.constructor.name;
-                }
-                className = this._constructorName;
-            }
-            var ar = [];
-            for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                rest[_key - 1] = arguments[_key];
-            }
-            var len = rest.length;
-            for (var i = 0; i < len; ++i) {
-                if (rest[i] in this) {
-                    ar.push(rest[i] + ":" + this[rest[i]]);
-                }
-            }
-            return "[" + className + " " + ar.join(' ') + "]";
-        } },
-    isDefaultPrevented: { value: function value() {
-            return this._defaultPrevented;
-        } },
-    isImmediatePropagationStopped: { value: function value() {
-            return this._immediatePropagationStopped;
-        } },
-    isPropagationStopped: { value: function value() {
-            return this._propagationStopped;
-        } },
-    preventDefault: { value: function value() {
-            if (this._cancelable) {
-                this._defaultPrevented = true;
-            }
-        } },
-    stopImmediatePropagation: { value: function value() {
-            this._immediatePropagationStopped = true;
-        } },
-    stopPropagation: { value: function value() {
-            this._propagationStopped = true;
-        } },
-    toString: { writable: true, value: function value() {
-            return this.formatToString(null, "type", "bubbles", "cancelable");
-        } },
-    withTarget: { value: function value(target) {
-            var event = this.target ? this.clone() : this;
-            event._target = target;
-            return event;
-        } },
-    withCurrentTarget: { value: function value(currentTarget) {
-            this._currentTarget = currentTarget;
-            return this;
-        } }
+  constructor: { writable: true, value: Event },
+  bubbles: { get: function get() {
+      return this._bubbles;
+    } },
+  cancelable: { get: function get() {
+      return this._cancelable;
+    } },
+  currentTarget: { get: function get() {
+      return this._currentTarget;
+    } },
+  eventPhase: { get: function get() {
+      return this._eventPhase;
+    } },
+  target: { get: function get() {
+      return this._target;
+    } },
+  type: { get: function get() {
+      return this._type;
+    } },
+  clone: { writable: true, value: function value() {
+      return new Event(this._type, this._bubbles, this._cancelable);
+    } },
+  formatToString: { value: function value(className) {
+      if (!className) {
+        if (!this._constructorName) {
+          this._constructorName = this.constructor.name;
+        }
+        className = this._constructorName;
+      }
+      var ar = [];
+      for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        rest[_key - 1] = arguments[_key];
+      }
+      var len = rest.length;
+      for (var i = 0; i < len; ++i) {
+        if (rest[i] in this) {
+          ar.push(rest[i] + ":" + this[rest[i]]);
+        }
+      }
+      return "[" + className + " " + ar.join(' ') + "]";
+    } },
+  isDefaultPrevented: { value: function value() {
+      return this._defaultPrevented;
+    } },
+  isImmediatePropagationStopped: { value: function value() {
+      return this._immediatePropagationStopped;
+    } },
+  isPropagationStopped: { value: function value() {
+      return this._propagationStopped;
+    } },
+  preventDefault: { value: function value() {
+      if (this._cancelable) {
+        this._defaultPrevented = true;
+      }
+    } },
+  stopImmediatePropagation: { value: function value() {
+      this._immediatePropagationStopped = true;
+    } },
+  stopPropagation: { value: function value() {
+      this._propagationStopped = true;
+    } },
+  toString: { writable: true, value: function value() {
+      return this.formatToString(null, "type", "bubbles", "cancelable");
+    } },
+  withTarget: { value: function value(target) {
+      var event = this.target ? this.clone() : this;
+      event._target = target;
+      return event;
+    } },
+  withCurrentTarget: { value: function value(currentTarget) {
+      this._currentTarget = currentTarget;
+      return this;
+    } }
+});
+Object.defineProperties(Event, {
+  ACTIVATE: { value: "activate" },
+  ADDED: { value: "added" },
+  ADDED_TO_STAGE: { value: "addedToStage" },
+  CANCEL: { value: "cancel" },
+  CHANGE: { value: "change" },
+  CLEAR: { value: "clear" },
+  CLICK: { value: "click" },
+  CLOSE: { value: "close" },
+  COMPLETE: { value: "complete" },
+  CONNECT: { value: "connect" },
+  COPY: { value: "copy" },
+  CUT: { value: "cut" },
+  DEACTIVATE: { value: "deactivate" },
+  FULLSCREEN: { value: "fullScreen" },
+  INIT: { value: "init" },
+  OPEN: { value: "open" },
+  PASTE: { value: "paste" },
+  REMOVED: { value: "removed" },
+  REMOVED_FROM_STAGE: { value: "removedFromStage" },
+  RENDER: { value: "render" },
+  RESIZE: { value: "resize" },
+  SCROLL: { value: "scroll" },
+  SELECT: { value: "select" },
+  UNLOAD: { value: "unload" }
 });
 
 var EventPhase = Object.defineProperties({}, {

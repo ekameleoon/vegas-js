@@ -23,7 +23,7 @@ window.onload = function()
 
     var dispatcher = new EventDispatcher() ;
 
-    dispatcher.addEventListener( 'click' , click ) ;
+    dispatcher.addEventListener( Event.CLICK , click ) ;
 
-    dispatcher.dispatchEvent( new Event('click') ) ;
+    dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
 }

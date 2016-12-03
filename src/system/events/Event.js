@@ -300,3 +300,213 @@ Event.prototype = Object.create( Object.prototype ,
         return this;
     }}
 });
+
+Object.defineProperties( Event ,
+{
+    /**
+     * The <code>ACTIVATE</code> constant defines the value of the <code>type</code> property of an <code>activate</code> event object.
+     * @name ACTIVATE
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.DEACTIVATE
+     */
+    ACTIVATE : { value : "activate" } ,
+
+    /**
+     * The <code>Event.ADDED</code> constant defines the value of the <code>type</code> property of an <code>added</code> event object.
+     * @name ADDED
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.ADDED_TO_STAGE
+     * @see system.events.Event.REMOVED
+     * @see system.events.Event.REMOVED_FROM_STAGE
+     */
+    ADDED : { value : "added" } ,
+
+    /**
+     * The <code>Event.ADDED_TO_STAGE</code> constant defines the value of the <code>type</code> property of an <code>addedToStage</code> event object.
+     * @name ADDED_TO_STAGE
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.ADDED
+     * @see system.events.Event.REMOVED
+     * @see system.events.Event.REMOVED_FROM_STAGE
+     */
+    ADDED_TO_STAGE : { value : "addedToStage" } ,
+
+    /**
+     * The <code>Event.CANCEL</code> constant defines the value of the <code>type</code> property of a <code>cancel</code> event object.
+     * @name CANCEL
+     * @memberof system.events.Event
+     * @const
+     */
+    CANCEL : { value : "cancel" } ,
+
+    /**
+     * The <code>Event.CHANGE</code> constant defines the value of the <code>type</code> property of a <code>change</code> event object.
+     * @name CHANGE
+     * @memberof system.events.Event
+     * @const
+     */
+    CHANGE : { value : "change" } ,
+
+    /**
+     * The <code>Event.CLEAR</code> constant defines the value of the <code>type</code> property of a <code>clear</code> event object.
+     * @name CLEAR
+     * @memberof system.events.Event
+     * @const
+     */
+    CLEAR : { value : "clear" } ,
+
+    /**
+     * The <code>Event.CLICK</code> constant defines the value of the <code>type</code> property of a <code>click</code> event object.
+     * @name CLICK
+     * @memberof system.events.Event
+     * @const
+     */
+    CLICK : { value : "click" } ,
+
+    /**
+     * The <code>Event.CLOSE</code> constant defines the value of the <code>type</code> property of a <code>close</code> event object.
+     * @name CLOSE
+     * @memberof system.events.Event
+     * @const
+     */
+    CLOSE : { value : "close" } ,
+
+    /**
+     * The <code>Event.COMPLETE</code> constant defines the value of the <code>type</code> property of a <code>complete</code> event object.
+     * @name COMPLETE
+     * @memberof system.events.Event
+     * @const
+     */
+    COMPLETE : { value : "complete" } ,
+
+    /**
+     * The <code>Event.CONNECT</code> constant defines the value of the <code>type</code> property of a <code>connect</code> event object.
+     * @name CONNECT
+     * @memberof system.events.Event
+     * @const
+     */
+    CONNECT : { value : "connect" } ,
+
+    /**
+     * The <code>Event.COPY</code> constant defines the value of the <code>type</code> property of a <code>copy</code> event object.
+     * @name COPY
+     * @memberof system.events.Event
+     * @const
+     */
+    COPY : { value : "copy" } ,
+
+    /**
+     * The <code>Event.CUT</code> constant defines the value of the <code>type</code> property of a <code>cut</code> event object.
+     * @name CUT
+     * @memberof system.events.Event
+     * @const
+     */
+    CUT : { value : "cut" } ,
+
+    /**
+     * The <code>Event.DEACTIVATE</code> constant defines the value of the <code>type</code> property of a <code>deactivate</code> event object.
+     * @name DEACTIVATE
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.ACTIVATE
+     */
+    DEACTIVATE : { value : "deactivate" } ,
+
+    /**
+     * The <code>Event.FULLSCREEN</code> constant defines the value of the <code>type</code> property of a <code>fullScreen</code> event object.
+     * @name FULLSCREEN
+     * @memberof system.events.Event
+     * @const
+     */
+    FULLSCREEN : { value : "fullScreen" } ,
+
+    /**
+     * The <code>Event.INIT</code> constant defines the value of the <code>type</code> property of an <code>init</code> event object.
+     * @name INIT
+     * @memberof system.events.Event
+     * @const
+     */
+    INIT : { value : "init" } ,
+
+    /**
+     * The <code>Event.OPEN</code> constant defines the value of the <code>type</code> property of an <code>open</code> event object.
+     * @name OPEN
+     * @memberof system.events.Event
+     * @const
+     */
+    OPEN : { value : "open" } ,
+
+    /**
+     * The <code>Event.PASTE</code> constant defines the value of the <code>type</code> property of a <code>paste</code> event object.
+     * @name PASTE
+     * @memberof system.events.Event
+     * @const
+     */
+    PASTE : { value : "paste" } ,
+
+    /**
+     * The <code>Event.REMOVED</code> constant defines the value of the <code>type</code> property of a <code>removed</code> event object.
+     * @name REMOVED
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.ADDED
+     * @see system.events.Event.ADDED_TO_STAGE
+     * @see system.events.Event.REMOVED_FROM_STAGE
+     */
+    REMOVED : { value : "removed" } ,
+
+    /**
+     * The <code>Event.REMOVED_FROM_STAGE</code> constant defines the value of the <code>type</code> property of a <code>removedFromStage</code> event object.
+     * @name REMOVED_FROM_STAGE
+     * @memberof system.events.Event
+     * @const
+     * @see system.events.Event.ADDED
+     * @see system.events.Event.REMOVED
+     * @see system.events.Event.ADDED_TO_STAGE
+     */
+    REMOVED_FROM_STAGE : { value : "removedFromStage" } ,
+
+    /**
+     * The <code>Event.RENDER</code> constant defines the value of the <code>type</code> property of a <code>render</code> event object.
+     * @name RENDER
+     * @memberof system.events.Event
+     * @const
+     */
+    RENDER : { value : "render" } ,
+
+    /**
+     * The <code>Event.RESIZE</code> constant defines the value of the <code>type</code> property of a <code>resize</code> event object.
+     * @name RESIZE
+     * @memberof system.events.Event
+     * @const
+     */
+    RESIZE : { value : "resize" } ,
+
+    /**
+     * The <code>Event.SCROLL</code> constant defines the value of the <code>type</code> property of a <code>scroll</code> event object.
+     * @name SCROLL
+     * @memberof system.events.Event
+     * @const
+     */
+    SCROLL : { value : "scroll" } ,
+
+    /**
+     * The <code>Event.SELECT</code> constant defines the value of the <code>type</code> property of a <code>select</code> event object.
+     * @name SELECT
+     * @memberof system.events.Event
+     * @const
+     */
+    SELECT : { value : "select" } ,
+
+
+    /**
+     * The <code>Event.UNLOAD</code> constant defines the value of the <code>type</code> property of a <code>unload</code> event object.
+     * @name UNLOAD
+     * @memberof system.events.Event
+     * @const
+     */
+   UNLOAD : { value : "unload" }
+ });

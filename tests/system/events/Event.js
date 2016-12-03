@@ -102,4 +102,31 @@ describe( 'system.events.Event' , () =>
             assert.equal( event.toString() , "[Event type:click bubbles:true cancelable:true]" );
         });
     });
+    describe( 'Event enumerations' , () =>
+    {
+        it('Event.ACTIVATE' , () => { assert.equal( Event.ACTIVATE , "activate" ); });
+        it('Event.ADDED' , () => { assert.equal( Event.ADDED , "added" ); });
+        it('Event.ADDED_TO_STAGE' , () => { assert.equal( Event.ADDED_TO_STAGE , "addedToStage" ); });
+        it('Event.CANCEL' , () => { assert.equal( Event.CANCEL , "cancel" ); });
+        it('Event.CHANGE' , () => { assert.equal( Event.CHANGE , "change" ); });
+        it('Event.CLEAR' , () => { assert.equal( Event.CLEAR , "clear" ); });
+        it('Event.CLICK' , () => { assert.equal( Event.CLICK , "click" ); });
+        it('Event.CLOSE' , () => { assert.equal( Event.CLOSE , "close" ); });
+        it('Event.COMPLETE' , () => { assert.equal( Event.COMPLETE , "complete" ); });
+        it('Event.CONNECT' , () => { assert.equal( Event.CONNECT , "connect" ); });
+        it('Event.COPY' , () => { assert.equal( Event.COPY , "copy" ); });
+        it('Event.CUT' , () => { assert.equal( Event.CUT , "cut" ); });
+        it('Event.DEACTIVATE' , () => { assert.equal( Event.DEACTIVATE , "deactivate" ); });
+        it('Event.FULLSCREEN' , () => { assert.equal( Event.FULLSCREEN , "fullScreen" ); });
+        it('Event.INIT' , () => { assert.equal( Event.INIT , "init" ); });
+        it('Event.OPEN' , () => { assert.equal( Event.OPEN , "open" ); });
+        it('Event.PASTE' , () => { assert.equal( Event.PASTE , "paste" ); });
+        it('Event.REMOVED' , () => { assert.equal( Event.REMOVED , "removed" ); });
+        it('Event.REMOVED_FROM_STAGE' , () => { assert.equal( Event.REMOVED_FROM_STAGE , "removedFromStage" ); });
+        it('Event.RENDER' , () => { assert.equal( Event.RENDER , "render" ); });
+        it('Event.RESIZE' , () => { assert.equal( Event.RESIZE , "resize" ); });
+        it('Event.SCROLL' , () => { assert.equal( Event.SCROLL , "scroll" ); });
+        it('Event.SELECT' , () => { assert.equal( Event.SELECT , "select" ); });
+        it('Event.UNLOAD' , () => { assert.equal( Event.UNLOAD , "unload" ); });
+    });
 });
