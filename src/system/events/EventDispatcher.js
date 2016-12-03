@@ -12,6 +12,17 @@ import { IEventDispatcher } from './IEventDispatcher.js' ;
  * @memberof system.events
  * @implements system.events.IEventDispatcher
  * @param {system.events.IEventDispatcher} target - The target object for events dispatched to the EventDispatcher object. This parameter is used when the EventDispatcher instance is aggregated by a class that implements IEventDispatcher; it is necessary so that the containing object can be the target for events. Do not use this parameter in simple cases in which a class extends EventDispatcher.
+ * @example
+ * var click = function( event )
+ * {
+ *     trace( "click: " + event ) ;
+ * };
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 export function EventDispatcher( target )
 {

@@ -14,6 +14,17 @@ import { IEventDispatcher } from './events/IEventDispatcher.js' ;
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.events
  * @memberof system
+ * @example
+ * var click = function( event )
+ * {
+ *     trace( "click: " + event ) ;
+ * };
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 export var events = Object.assign
 ({

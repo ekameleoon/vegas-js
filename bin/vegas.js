@@ -3618,6 +3618,17 @@ Object.defineProperties(EventDispatcher, {
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.events
  * @memberof system
+ * @example
+ * var click = function( event )
+ * {
+ *     trace( "click: " + event ) ;
+ * };
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 var events = Object.assign({
   Event: Event,
