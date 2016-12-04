@@ -10834,7 +10834,7 @@ function Matrix() {
     });
 }
 Object.defineProperties(Matrix, {
-    MAGIC_GRADIENT_FACTOR: { value: 16384 / 10 }
+    MAGIC_GRADIENT_FACTOR: { value: 1638.4 }
 });
 Matrix.prototype = Object.create(Object.prototype, {
     clone: { writable: true, value: function value() {
@@ -10853,6 +10853,14 @@ Matrix.prototype = Object.create(Object.prototype, {
             this.d = matrix.b * c + matrix.d * d;
             this.tx = matrix.a * tx + matrix.c * ty + matrix.tx;
             this.ty = matrix.b * tx + matrix.d * ty + matrix.ty;
+        } },
+    copyFrom: { value: function value(matrix) {
+            this.a = matrix.a;
+            this.b = matrix.b;
+            this.c = matrix.c;
+            this.d = matrix.d;
+            this.tx = matrix.tx;
+            this.ty = matrix.ty;
         } },
     createBox: { value: function value(scaleX, scaleY) {
             var rotation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -10898,6 +10906,21 @@ Matrix.prototype = Object.create(Object.prototype, {
             this.a = this.d = 1;
             this.b = this.c = this.tx = this.ty = 0;
         } },
+    invert: { value: function value() {
+            var a = this.a;
+            var b = this.b;
+            var c = this.c;
+            var d = this.d;
+            var tx = this.tx;
+            var ty = this.ty;
+            var det = a * d - c * b;
+            this.a = d / det;
+            this.b = -b / det;
+            this.c = -c / det;
+            this.d = a / det;
+            this.tx = -(this.a * tx + this.c * ty);
+            this.ty = -(this.b * tx + this.d * ty);
+        } },
     rotate: { value: function value(angle) {
             if (isNaN(angle)) {
                 angle = 0;
@@ -10919,11 +10942,44 @@ Matrix.prototype = Object.create(Object.prototype, {
                 this.ty = tx * sin + ty * cos;
             }
         } },
+    scale: { value: function value(sx, sy) {
+            if (sx !== 1) {
+                this.a *= sx;
+                this.c *= sx;
+                this.tx *= sx;
+            }
+            if (sy !== 1) {
+                this.b *= sy;
+                this.d *= sy;
+                this.ty *= sy;
+            }
+        } },
+    setTo: { value: function value() {
+            var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+            var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var d = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+            var tx = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+            var ty = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.tx = tx;
+            this.ty = ty;
+        } },
     toObject: { writable: true, value: function value() {
             return { a: this.a, b: this.b, c: this.c, d: this.d, tx: this.tx, ty: this.ty };
         } },
     toString: { writable: true, value: function value() {
             return "[Matrix a:" + this.a + " b:" + this.b + " c:" + this.c + " d:" + this.d + " tx:" + this.tx + " ty:" + this.ty + "]";
+        } },
+    transformPoint: { value: function value(point) {
+            return new Point(this.a * point.x + this.c * point.y + this.tx, this.b * point.x + this.d * point.y + this.ty);
+        } },
+    translate: { value: function value(dx, dy) {
+            this.tx += dx;
+            this.ty += dy;
         } }
 });
 
