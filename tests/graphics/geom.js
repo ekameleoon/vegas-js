@@ -1,5 +1,6 @@
 'use strict' ;
 
+import './geom/ColorTransform.js' ;
 import './geom/Dimension.js' ;
 import './geom/EdgeMetrics.js' ;
 import './geom/Matrix.js' ;

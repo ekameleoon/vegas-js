@@ -387,7 +387,7 @@ Matrix.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Sets the members of Matrix to the specified values.
+     * Sets the members of the <code>Matrix</code> to the specified values.
      * @name setTo
      * @memberof graphics.geom.Matrix
      * @instance

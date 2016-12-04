@@ -2,10 +2,11 @@
 
 import '../polyfill/Object.js' ;
 
-import { Dimension } from './geom/Dimension.js' ;
-import { Matrix }    from './geom/Matrix.js' ;
-import { Point }     from './geom/Point.js' ;
-import { Rectangle } from './geom/Rectangle.js' ;
+import { ColorTransform } from './geom/ColorTransform.js' ;
+import { Dimension }      from './geom/Dimension.js' ;
+import { Matrix }         from './geom/Matrix.js' ;
+import { Point }          from './geom/Point.js' ;
+import { Rectangle }      from './geom/Rectangle.js' ;
 
 /**
  * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
@@ -17,6 +18,7 @@ import { Rectangle } from './geom/Rectangle.js' ;
  */
 export var geom = Object.assign
 ({
+    ColorTransform : ColorTransform ,
     Dimension : Dimension ,
     Matrix    : Matrix ,
     Point     : Point ,

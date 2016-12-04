@@ -10817,6 +10817,86 @@ var ZOrder = Object.defineProperties({}, {
   FRONT: { enumerable: true, value: 1 }
 });
 
+function ColorTransform() {
+  var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+  var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+  var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+  var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+  var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+  var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
+  Object.defineProperties(this, {
+    alphaMultiplier: { value: isNaN(alphaMultiplier) ? 0 : alphaMultiplier, writable: true },
+    alphaOffset: { value: isNaN(alphaOffset) ? 0 : alphaOffset, writable: true },
+    blueMultiplier: { value: isNaN(blueMultiplier) ? 0 : blueMultiplier, writable: true },
+    blueOffset: { value: isNaN(blueOffset) ? 0 : blueOffset, writable: true },
+    greenMultiplier: { value: isNaN(greenMultiplier) ? 0 : greenMultiplier, writable: true },
+    greenOffset: { value: isNaN(greenOffset) ? 0 : greenOffset, writable: true },
+    redMultiplier: { value: isNaN(redMultiplier) ? 0 : redMultiplier, writable: true },
+    redOffset: { value: isNaN(redOffset) ? 0 : redOffset, writable: true }
+  });
+}
+ColorTransform.prototype = Object.create(Object.prototype, {
+  clone: { writable: true, value: function value() {
+      return new ColorTransform(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
+    } },
+  concat: { value: function value(color) {
+      this.redMultiplier *= color.redMultiplier;
+      this.greenMultiplier *= color.greenMultiplier;
+      this.blueMultiplier *= color.blueMultiplier;
+      this.alphaMultiplier *= color.alphaMultiplier;
+      this.redOffset += color.redOffset;
+      this.greenOffset += color.greenOffset;
+      this.blueOffset += color.blueOffset;
+      this.alphaOffset += color.alphaOffset;
+    } },
+  copyFrom: { value: function value(color) {
+      this.redMultiplier = color.redMultiplier;
+      this.greenMultiplier = color.greenMultiplier;
+      this.blueMultiplier = color.blueMultiplier;
+      this.alphaMultiplier = color.alphaMultiplier;
+      this.redOffset = color.redOffset;
+      this.greenOffset = color.greenOffset;
+      this.blueOffset = color.blueOffset;
+      this.alphaOffset = color.alphaOffset;
+    } },
+  setTo: { value: function value() {
+      var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+      var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+      var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+      var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+      var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+      var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+      var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
+      this.redMultiplier = redMultiplier;
+      this.greenMultiplier = greenMultiplier;
+      this.blueMultiplier = blueMultiplier;
+      this.alphaMultiplier = alphaMultiplier;
+      this.redOffset = redOffset;
+      this.greenOffset = greenOffset;
+      this.blueOffset = blueOffset;
+      this.alphaOffset = alphaOffset;
+    } },
+  toObject: { writable: true, value: function value() {
+      var object = {
+        redMultiplier: this.redMultiplier,
+        greenMultiplier: this.greenMultiplier,
+        blueMultiplier: this.blueMultiplier,
+        alphaMultiplier: this.alphaMultiplier,
+        redOffset: this.redOffset,
+        greenOffset: this.greenOffset,
+        blueOffset: this.blueOffset,
+        alphaOffset: this.alphaOffset
+      };
+      return object;
+    } },
+  toString: { writable: true, value: function value() {
+      return "[ColorTransform redMultiplier:" + this.redMultiplier + " greenMultiplier:" + this.greenMultiplier + " blueMultiplier:" + this.blueMultiplier + " alphaMultiplier:" + this.alphaMultiplier + " redOffset:" + this.redOffset + " greenOffset:" + this.greenOffset + " blueOffset:" + this.blueOffset + " alphaOffset:" + this.alphaOffset + "]";
+    } }
+});
+
 function Matrix() {
     var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -10992,6 +11072,7 @@ Matrix.prototype = Object.create(Object.prototype, {
  * @memberof graphics
  */
 var geom = Object.assign({
+  ColorTransform: ColorTransform,
   Dimension: Dimension,
   Matrix: Matrix,
   Point: Point,
