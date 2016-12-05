@@ -17,9 +17,9 @@ gulp.task( 'build:webpack'    , gulp.series( pack , minify ) ) ;
 gulp.task( 'build:rollup'     , gulp.series( roll , minify ) ) ;
 gulp.task( 'build'            , gulp.series( roll , minify ) ) ;
 
-gulp.task( 'doc'     , gulp.series( doc ) ) ;
-gulp.task( 'ut'      , gulp.series( unittests ) ) ;
-gulp.task( 'zip'     , gulp.series( zip ) ) ;
+gulp.task( 'doc' , gulp.series( doc ) ) ;
+gulp.task( 'ut'  , gulp.series( unittests ) ) ;
+gulp.task( 'zip' , gulp.series( zip ) ) ;
 
 var sources = ['src/**/*.js' , './tests/**/*.js' ] ;
 
