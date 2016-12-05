@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { ChangeModel } from './models/ChangeModel.js' ;
 import { MemoryModel } from './models/MemoryModel.js' ;

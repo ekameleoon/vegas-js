@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { acosD }                  from './maths/acosD.js' ;
 import { acosHm }                 from './maths/acosHm.js' ;

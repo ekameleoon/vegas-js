@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { ElseIf } from './logics/ElseIf.js' ;
 import { ElseIfEmptyString } from './logics/ElseIfEmptyString.js' ;

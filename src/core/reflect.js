@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { getDefinitionByName } from './reflect/getDefinitionByName.js' ;
 import { invoke } from './reflect/invoke.js' ;

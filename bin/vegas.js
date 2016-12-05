@@ -1,4 +1,4 @@
-/* VEGAS JS - version 1.0.6 - follow me on Twitter! @ekameleon */
+/* VEGAS JS - version 1.0.6 - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
                   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
                   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -11134,6 +11134,16 @@ function Vector3D() {
     });
 }
 Vector3D.prototype = Object.create(Vector2D.prototype, {
+    length: { get: function get() {
+            var r = this.x * this.x + this.y * this.y + this.z * this.z;
+            if (r <= 0) {
+                return 0;
+            }
+            return Math.sqrt(r);
+        } },
+    lengthSquared: { get: function get() {
+            return this.x * this.x + this.y * this.y + this.z * this.z;
+        } },
     add: { writable: true, value: function value(vector) {
             this.x += vector.x;
             this.y += vector.y;
@@ -11151,6 +11161,12 @@ Vector3D.prototype = Object.create(Vector2D.prototype, {
             this.y = source.y;
             this.z = source.z;
             return this;
+        } },
+    crossProduct: { value: function value(vector) {
+            return new Vector3D(vector.y * this.z - vector.z * this.y, vector.z * this.x - vector.x * this.z, vector.x * this.y - vector.y * this.x);
+        } },
+    dotProduct: { writable: true, value: function value(vector) {
+            return this.x * vector.x + this.y * vector.y + this.z * vector.z;
         } },
     equals: { writable: true, value: function value(o) {
             if (o instanceof Vector3D) {
@@ -11195,7 +11211,21 @@ Vector3D.prototype = Object.create(Vector2D.prototype, {
 Object.defineProperties(Vector3D, {
     X_AXIS: { value: new Vector3D(1, 0, 0) },
     Y_AXIS: { value: new Vector3D(0, 1, 0) },
-    Z_AXIS: { value: new Vector3D(0, 0, 1) }
+    Z_AXIS: { value: new Vector3D(0, 0, 1) },
+    angleBetween: { value: function value(v1, v2) {
+            var dot = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+            return Math.acos(dot / (v1.length * v2.length));
+        } },
+    distance: { value: function value(v1, v2) {
+            var x = v1.x - v2.x;
+            var y = v1.y - v2.y;
+            var z = v1.z - v2.z;
+            var r = x * x + y * y + z * z;
+            if (r <= 0) {
+                r = 0;
+            }
+            return Math.sqrt(r);
+        } }
 });
 
 /**

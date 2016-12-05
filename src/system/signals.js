@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { strings     } from './signals/strings.js' ;
 import { Receiver    } from './signals/Receiver.js' ;

@@ -25,7 +25,7 @@ export var brow = ( done ) =>
             ({
                 debug         : config.debug,
                 detectGlobals : true,
-                entries       : config.entries ,
+                entries       : config.entry ,
                 fullPaths     : true ,
                 insertGlobals : true ,
                 standalone    : config.name

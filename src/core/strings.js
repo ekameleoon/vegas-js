@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { between }           from './strings/between.js' ;
 import { camelCase }         from './strings/camelCase.js' ;

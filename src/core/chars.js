@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { compare }           from './chars/compare.js' ;
 import { isAlpha }           from './chars/isAlpha.js' ;

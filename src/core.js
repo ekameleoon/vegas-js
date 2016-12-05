@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill.js' ;
+import './polyfill/Object.js' ;
 
 import { dump    } from './core/dump.js' ;
 import { global  } from './core/global.js' ;

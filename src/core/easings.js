@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { backIn }        from './easings/backIn.js' ;
 import { backInOut }     from './easings/backInOut.js' ;

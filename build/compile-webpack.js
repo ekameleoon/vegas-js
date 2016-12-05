@@ -14,7 +14,7 @@ export var pack = ( done ) =>
     pump
     (
         [
-            gulp.src( './src/index.js' ) ,
+            gulp.src( config.entry ) ,
             webpack
             ({
                 module :

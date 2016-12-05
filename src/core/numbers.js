@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { toUnicodeNotation } from './numbers/toUnicodeNotation.js' ;
 

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { Event } from './events/Event.js' ;
 import { EventDispatcher } from './events/EventDispatcher.js' ;

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { forEach } from './objects/forEach.js' ;
 import { fuse }    from './objects/fuse.js' ;

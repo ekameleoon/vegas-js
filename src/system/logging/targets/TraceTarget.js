@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { trace } from '../../../trace.js' ;
+import { trace } from '../../../core/trace.js' ;
 import { LineFormattedTarget } from './LineFormattedTarget.js' ;
 
 /**

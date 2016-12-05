@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { Action }        from './process/Action.js' ;
 import { ActionEntry }   from './process/ActionEntry.js' ;

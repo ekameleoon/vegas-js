@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { PRNG  } from './numeric/PRNG.js' ;
 import { Range } from './numeric/Range.js' ;

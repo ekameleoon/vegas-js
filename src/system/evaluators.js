@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { MultiEvaluator    } from './evaluators/MultiEvaluator.js' ;
 import { PropertyEvaluator } from './evaluators/PropertyEvaluator.js' ;

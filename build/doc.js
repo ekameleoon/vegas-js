@@ -6,7 +6,8 @@ import pump  from 'pump' ;
 
 import config from '../config.json' ;
 
-var sources = ['README.md' , './src/**/*.js' ] ; // './libs/**/*.js'
+let sources = ['README.md' , './src/**/*.js' ] ; // './libs/**/*.js'
+
 export var doc = ( done ) =>
 {
     pump([

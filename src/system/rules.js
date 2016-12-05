@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { And }                 from './rules/And.js' ;
 import { BooleanRule }         from './rules/BooleanRule.js' ;

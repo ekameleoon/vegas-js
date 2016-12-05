@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill.js' ;
+import './polyfill/Object.js' ;
 
 import { Enum }        from './system/Enum.js' ;
 import { Equatable }   from './system/Equatable.js' ;

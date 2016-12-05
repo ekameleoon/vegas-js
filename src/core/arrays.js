@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { contains }   from './arrays/contains.js' ;
 import { initialize } from './arrays/initialize.js' ;

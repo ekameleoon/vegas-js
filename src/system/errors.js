@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { ConcurrencyError }    from './errors/ConcurrencyError.js' ;
 import { InvalidChannelError } from './errors/InvalidChannelError.js' ;

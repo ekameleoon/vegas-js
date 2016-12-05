@@ -15,9 +15,12 @@ window.onload = function()
     var trace    = vegas.trace  ; // jshint ignore:line
     var core     = vegas.core   ; // jshint ignore:line
     var system   = vegas.system ; // jshint ignore:line
+    var molecule = vegas.molecule ; // jshint ignore:line
 
     trace( "-----" ) ;
     trace( vegas ) ;
     trace( "-----" ) ;
     trace( "> version : " + vegas.version ) ;
+    trace( "-----" ) ;
+    trace( "molecule : " + molecule ) ;
 }

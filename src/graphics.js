@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill.js' ;
+import './polyfill/Object.js' ;
 
 import { isDirectionable } from './graphics/Directionable.js' ;
 

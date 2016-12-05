@@ -1,6 +1,6 @@
 "use strict" ;
 
-import '../polyfill.js' ;
+import '../polyfill/Object.js' ;
 
 import { isIdentifiable }    from './data/Identifiable.js' ;
 import { isIterator }        from './data/Iterator.js' ;
