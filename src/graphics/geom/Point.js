@@ -5,27 +5,27 @@ import { atan2D } from '../../core/maths/atan2D.js' ;
 import { cosD } from '../../core/maths/cosD.js' ;
 import { sinD } from '../../core/maths/sinD.js' ;
 
-import { Vector2 } from './Vector2.js' ;
+import { Vector2D } from './Vector2D.js' ;
 
 /**
  * The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @summary The Point class represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
  * @name Point
  * @memberof graphics.geom
- * @extends graphics.geom.Vector2
+ * @extends graphics.geom.Vector2D
  * @class
- * @param {number} [x=0] - The x value of the point.
- * @param {number} [y=0] - The y value of the point.
+ * @param {number} [x=0] - The horizontal coordinate of the point.
+ * @param {number} [y=0] - The vertical coordinate of the point.
  */
 export function Point( x = 0 , y = 0 )
 {
-    Vector2.call( this , x , y ) ;
+    Vector2D.call( this , x , y ) ;
 }
 
-Point.prototype = Object.create( Vector2.prototype ,
+Point.prototype = Object.create( Vector2D.prototype ,
 {
     /**
-     * Returns the angle value of this Point object.
+     * The angle value of this Point object.
      * @memberof graphics.geom.Point
      * @instance
      * @example
@@ -250,7 +250,7 @@ Point.prototype = Object.create( Vector2.prototype ,
     }},
 
     /**
-     * Sets this Point with negate coordinates.
+     * Sets the current Point with negate coordinates.
      * @memberof graphics.geom.Point
      * @instance
      * @function
@@ -366,27 +366,13 @@ Point.prototype = Object.create( Vector2.prototype ,
     }},
 
     /**
-     * Sets the horizontal and vertical coordinates of this Point. If the {@code x} and the {@code y} parameters are NaN or null the x value is 0 and y value is 0.
-     * @param {number} [x=0] - The x coordinates of the point.
-     * @param {number} [y=0] - The y coordinates of the point.
-     * @instance
-     * @function
-     * @memberof graphics.geom.Point
-     */
-    set : { value : function( x = 0 , y = 0 )
-    {
-        this.x = isNaN(x) ? 0 : x ;
-        this.y = isNaN(y) ? 0 : y ;
-    }},
-
-    /**
      * Subtracts the coordinates of another point from the coordinates of this point.
      * @param {graphics.geom.Point} point - The point to be subtracted.
      * @instance
      * @function
      * @memberof graphics.geom.Point
      */
-    subtract : { value : function( point )
+    subtract : { writable : true , value : function( point )
     {
         this.x -= point.x ;
         this.y -= point.y ;

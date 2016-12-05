@@ -260,12 +260,12 @@ describe( 'graphics.geom.Rectangle' , () =>
         });
     });
 
-    describe( '#set()' , () =>
+    describe( '#setTo()' , () =>
     {
-        it('new Rectangle(10,20,30,40).set()', () =>
+        it('new Rectangle(10,20,30,40).setTo()', () =>
         {
             let rec = new Rectangle(10,20,30,40) ;
-            let now = rec.set() ;
+            let now = rec.setTo() ;
             assert.strictEqual( rec , now );
             assert.equal( rec.x, 0 );
             assert.equal( rec.y, 0 );
@@ -273,10 +273,10 @@ describe( 'graphics.geom.Rectangle' , () =>
             assert.equal( rec.height, 0 );
         });
 
-        it('new Rectangle(10,10).set(0,0,0,0)', () =>
+        it('new Rectangle(10,10).setTo(0,0,0,0)', () =>
         {
             let rec = new Rectangle(10,20,30,40) ;
-            let now = rec.set(0,0,0,0) ;
+            let now = rec.setTo(0,0,0,0) ;
             assert.strictEqual( rec , now );
             assert.equal( rec.x, 0 );
             assert.equal( rec.y, 0 );
@@ -284,10 +284,10 @@ describe( 'graphics.geom.Rectangle' , () =>
             assert.equal( rec.height, 0 );
         });
 
-        it('new Rectangle(10,20,30,40).set(100,200,300,400)', () =>
+        it('new Rectangle(10,20,30,40).setTo(100,200,300,400)', () =>
         {
             let rec = new Rectangle(10,20,30,40) ;
-            let now = rec.set(100,200,300,400) ;
+            let now = rec.setTo(100,200,300,400) ;
             assert.strictEqual( rec , now );
             assert.equal( rec.x, 100 );
             assert.equal( rec.y, 200 );

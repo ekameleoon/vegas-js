@@ -382,7 +382,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
         if ( this.isEmpty() || toIntersect.isEmpty() )
         {
-            rec.set();
+            rec.setTo();
             return rec ;
         }
 
@@ -393,7 +393,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
         if ( rec.width <= 0 || rec.height <= 0 )
         {
-            rec.set();
+            rec.setTo();
         }
 
         return rec ;
@@ -452,7 +452,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      * @function
      * @instance
      */
-    set : { value : function( x = 0 , y = 0 , width = 0 , height = 0 )
+    setTo : { writable : true , value : function( x = 0 , y = 0 , width = 0 , height = 0 )
     {
         this.x = x ;
         this.y = y ;

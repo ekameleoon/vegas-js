@@ -90,6 +90,28 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
     }},
 
     /**
+     * Copies all of vector data from the source EdgeMetrics object into the calling EdgeMetrics object.
+     * @param {graphics.geom.EdgeMetrics} source - The EdgeMetrics object from which to copy the data.
+     * @return The current {@link graphics.geom.EdgeMetrics} reference.
+     * @name copyFrom
+     * @memberof graphics.geom.EdgeMetrics
+     * @instance
+     * @function
+     */
+    copyFrom : { writable : true , value : function( source )
+    {
+        if( !(source instanceof EdgeMetrics) )
+        {
+            throw TypeError( this + ' copyFrom failed, the passed-in source argument must be an EdgeMetrics object.' ) ;
+        }
+        this.bottom = source.bottom ;
+        this.left   = source.left ;
+        this.right  = source.right ;
+        this.top    = source.top ;
+        return this ;
+    }},
+
+    /**
      * Compares the passed-in object with this object for equality.
      * @return <code>true</code> if the the specified object is equal with this object.
      * @memberof graphics.geom.EdgeMetrics
@@ -110,6 +132,26 @@ EdgeMetrics.prototype = Object.create( Object.prototype ,
         {
             return false ;
         }
+    }},
+
+    /**
+     * Sets the members of EdgeMetrics to the specified values.
+     * @param {number} [left=0] The width, in pixels, of the left edge region.
+     * @param {number} [top=0] The height, in pixels, of the top edge region.
+     * @param {number} [right=0] The width, in pixels, of the right edge region.
+     * @param {number} [bottom=0] The height, in pixels, of the bottom edge region.
+     * @return {Rectangle} The current object reference.
+     * @memberof graphics.geom.EdgeMetrics
+     * @function
+     * @instance
+     */
+    setTo : { writable : true , value : function( left = 0 , top = 0 , right = 0 , bottom = 0 )
+    {
+        this.left    = isNaN(left)   ? 0 : left ;
+        this.top     = isNaN(top)    ? 0 : top ;
+        this.bottom  = isNaN(bottom) ? 0 : bottom ;
+        this.right   = isNaN(right)  ? 0 : right ;
+        return this ;
     }},
 
     /**

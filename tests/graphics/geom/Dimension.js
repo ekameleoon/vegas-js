@@ -155,30 +155,30 @@ describe( 'graphics.geom.Dimension' , () =>
         }) ;
     });
 
-    describe( '#set()' , () =>
+    describe( '#setTo()' , () =>
     {
-        it('new Dimension(10,10).set() === new Dimension(0,0)', () =>
+        it('new Dimension(10,10).setTo() === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.set() ;
+            let now = dim.setTo() ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 0 );
             assert.equal( dim.height, 0 );
         });
 
-        it('new Dimension(10,10).set(0,0) === new Dimension(0,0)', () =>
+        it('new Dimension(10,10).setTo(0,0) === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.set(0,0) ;
+            let now = dim.setTo(0,0) ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 0 );
             assert.equal( dim.height, 0 );
         });
 
-        it('new Dimension(10,10).set(0,0) === new Dimension(0,0)', () =>
+        it('new Dimension(10,10).setTo(0,0) === new Dimension(0,0)', () =>
         {
             let dim = new Dimension(10,10) ;
-            let now = dim.set(110,240) ;
+            let now = dim.setTo(110,240) ;
             assert.strictEqual( dim , now );
             assert.equal( dim.width, 110 );
             assert.equal( dim.height, 240 );

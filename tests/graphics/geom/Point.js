@@ -1,7 +1,7 @@
 "use strict" ;
 
 import { Point }   from '../../../src/graphics/geom/Point.js' ;
-import { Vector2 } from '../../../src/graphics/geom/Vector2.js' ;
+import { Vector2D } from '../../../src/graphics/geom/Vector2D.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
@@ -13,9 +13,9 @@ describe( 'graphics.geom.Point' , () =>
         describe( 'new Point()' , () =>
         {
             let point = new Point() ;
-            it( point + ', instanceof Vector2', () =>
+            it( point + ', instanceof Vector2D', () =>
             {
-                assert.instanceOf( point  , Vector2 );
+                assert.instanceOf( point  , Vector2D );
             });
 
             it( point + ', x === 0', () =>
@@ -380,24 +380,24 @@ describe( 'graphics.geom.Point' , () =>
         });
     });
 
-    describe( '#set()' , () =>
+    describe( '#setTo()' , () =>
     {
         let p = new Point(50,60) ;
-        it( p + '.set()' , () =>
+        it( p + '.setTo()' , () =>
         {
-            p.set() ;
+            p.setTo() ;
             assert.equal( p.x , 0 ) ;
             assert.equal( p.y , 0 ) ;
         });
-        it( p + '.set(10,20)' , () =>
+        it( p + '.setTo(10,20)' , () =>
         {
-            p.set(10,20) ;
+            p.setTo(10,20) ;
             assert.equal( p.x , 10 ) ;
             assert.equal( p.y , 20 ) ;
         });
-        it( p + '.set(NaN,NaN)' , () =>
+        it( p + '.setTo(NaN,NaN)' , () =>
         {
-            p.set(NaN,NaN) ;
+            p.setTo(NaN,NaN) ;
             assert.equal( p.x , 0 ) ;
             assert.equal( p.y , 0 ) ;
         });

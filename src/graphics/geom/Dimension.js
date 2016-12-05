@@ -55,10 +55,10 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    copyFrom : { value : function( dim )
+    copyFrom : { value : function( source )
     {
-        this.width = dim.width ;
-        this.height = dim.height ;
+        this.width  = source.width ;
+        this.height = source.height ;
         return this ;
     }},
 
@@ -119,7 +119,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    isEmpty : { value : function()
+    isEmpty : { writable : true , value : function()
     {
         return this.width <= 0 || this.height <= 0;
     }},
@@ -133,7 +133,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    set : { value : function( width = 0 , height = 0 )
+    setTo : { writable : true , value : function( width = 0 , height = 0 )
     {
         this.width  = width ;
         this.height = height ;

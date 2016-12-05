@@ -10252,9 +10252,9 @@ Dimension.prototype = Object.create(Object.prototype, {
     clone: { writable: true, value: function value() {
             return new Dimension(this.width, this.height);
         } },
-    copyFrom: { value: function value(dim) {
-            this.width = dim.width;
-            this.height = dim.height;
+    copyFrom: { value: function value(source) {
+            this.width = source.width;
+            this.height = source.height;
             return this;
         } },
     decrease: { value: function value() {
@@ -10278,10 +10278,10 @@ Dimension.prototype = Object.create(Object.prototype, {
             this.height += isNaN(dHeight) ? 0 : dHeight;
             return this;
         } },
-    isEmpty: { value: function value() {
+    isEmpty: { writable: true, value: function value() {
             return this.width <= 0 || this.height <= 0;
         } },
-    set: { value: function value() {
+    setTo: { writable: true, value: function value() {
             var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
             var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             this.width = width;
@@ -10296,7 +10296,7 @@ Dimension.prototype = Object.create(Object.prototype, {
         } }
 });
 
-function Vector2() {
+function Vector2D() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     Object.defineProperties(this, {
@@ -10304,31 +10304,45 @@ function Vector2() {
         y: { value: isNaN(y) ? 0 : y, writable: true }
     });
 }
-Vector2.prototype = Object.create(Object.prototype, {
+Vector2D.prototype = Object.create(Object.prototype, {
     clone: { writable: true, value: function value() {
-            return new Vector2(this.x, this.y);
+            return new Vector2D(this.x, this.y);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof Vector2D)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an Vector2D object.');
+            }
+            this.x = source.x;
+            this.y = source.y;
+            return this;
         } },
     equals: { writable: true, value: function value(o) {
-            if (o instanceof Vector2) {
+            if (o instanceof Vector2D) {
                 return o.x === this.x && o.y === this.y;
             } else {
                 return false;
             }
         } },
+    setTo: { writable: true, value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            this.x = isNaN(x) ? 0 : x;
+            this.y = isNaN(y) ? 0 : y;
+        } },
     toObject: { writable: true, value: function value() {
             return { x: this.x, y: this.y };
         } },
     toString: { writable: true, value: function value() {
-            return "[Vector2 x:" + this.x + " y:" + this.y + "]";
+            return "[Vector2D x:" + this.x + " y:" + this.y + "]";
         } }
 });
 
 function Point() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    Vector2.call(this, x, y);
+    Vector2D.call(this, x, y);
 }
-Point.prototype = Object.create(Vector2.prototype, {
+Point.prototype = Object.create(Vector2D.prototype, {
     angle: {
         get: function get() {
             return atan2D(this.y, this.x);
@@ -10426,13 +10440,7 @@ Point.prototype = Object.create(Vector2.prototype, {
             this.x *= isNaN(_value) ? 0 : _value;
             this.y *= isNaN(_value) ? 0 : _value;
         } },
-    set: { value: function value() {
-            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            this.x = isNaN(x) ? 0 : x;
-            this.y = isNaN(y) ? 0 : y;
-        } },
-    subtract: { value: function value(point) {
+    subtract: { writable: true, value: function value(point) {
             this.x -= point.x;
             this.y -= point.y;
         } },
@@ -10629,7 +10637,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     intersection: { value: function value(toIntersect) {
             var rec = new Rectangle();
             if (this.isEmpty() || toIntersect.isEmpty()) {
-                rec.set();
+                rec.setTo();
                 return rec;
             }
             rec.x = Math.max(this.x, toIntersect.x);
@@ -10637,7 +10645,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             rec.width = Math.min(this.x + this.width, toIntersect.x + toIntersect.width) - rec.x;
             rec.height = Math.min(this.y + this.height, toIntersect.y + toIntersect.height) - rec.y;
             if (rec.width <= 0 || rec.height <= 0) {
-                rec.set();
+                rec.setTo();
             }
             return rec;
         } },
@@ -10656,7 +10664,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             this.y += point.y;
             return this;
         } },
-    set: { value: function value() {
+    setTo: { writable: true, value: function value() {
             var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
             var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -10818,83 +10826,134 @@ var ZOrder = Object.defineProperties({}, {
 });
 
 function ColorTransform() {
-  var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-  var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-  var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-  var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-  var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-  var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-  var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
-  var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
-  Object.defineProperties(this, {
-    alphaMultiplier: { value: isNaN(alphaMultiplier) ? 0 : alphaMultiplier, writable: true },
-    alphaOffset: { value: isNaN(alphaOffset) ? 0 : alphaOffset, writable: true },
-    blueMultiplier: { value: isNaN(blueMultiplier) ? 0 : blueMultiplier, writable: true },
-    blueOffset: { value: isNaN(blueOffset) ? 0 : blueOffset, writable: true },
-    greenMultiplier: { value: isNaN(greenMultiplier) ? 0 : greenMultiplier, writable: true },
-    greenOffset: { value: isNaN(greenOffset) ? 0 : greenOffset, writable: true },
-    redMultiplier: { value: isNaN(redMultiplier) ? 0 : redMultiplier, writable: true },
-    redOffset: { value: isNaN(redOffset) ? 0 : redOffset, writable: true }
-  });
+    var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+    var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+    var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+    var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+    var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
+    Object.defineProperties(this, {
+        alphaOffset: { value: isNaN(alphaOffset) ? 0 : alphaOffset, writable: true },
+        blueOffset: { value: isNaN(blueOffset) ? 0 : blueOffset, writable: true },
+        greenOffset: { value: isNaN(greenOffset) ? 0 : greenOffset, writable: true },
+        redOffset: { value: isNaN(redOffset) ? 0 : redOffset, writable: true },
+        _alphaMultiplier: { value: isNaN(alphaMultiplier) ? 0 : alphaMultiplier, writable: true },
+        _blueMultiplier: { value: isNaN(blueMultiplier) ? 0 : blueMultiplier, writable: true },
+        _greenMultiplier: { value: isNaN(greenMultiplier) ? 0 : greenMultiplier, writable: true },
+        _redMultiplier: { value: isNaN(redMultiplier) ? 0 : redMultiplier, writable: true },
+        _tint: { value: 0xFFFFFFFF, writable: true }
+    });
 }
 ColorTransform.prototype = Object.create(Object.prototype, {
-  clone: { writable: true, value: function value() {
-      return new ColorTransform(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
-    } },
-  concat: { value: function value(color) {
-      this.redMultiplier *= color.redMultiplier;
-      this.greenMultiplier *= color.greenMultiplier;
-      this.blueMultiplier *= color.blueMultiplier;
-      this.alphaMultiplier *= color.alphaMultiplier;
-      this.redOffset += color.redOffset;
-      this.greenOffset += color.greenOffset;
-      this.blueOffset += color.blueOffset;
-      this.alphaOffset += color.alphaOffset;
-    } },
-  copyFrom: { value: function value(color) {
-      this.redMultiplier = color.redMultiplier;
-      this.greenMultiplier = color.greenMultiplier;
-      this.blueMultiplier = color.blueMultiplier;
-      this.alphaMultiplier = color.alphaMultiplier;
-      this.redOffset = color.redOffset;
-      this.greenOffset = color.greenOffset;
-      this.blueOffset = color.blueOffset;
-      this.alphaOffset = color.alphaOffset;
-    } },
-  setTo: { value: function value() {
-      var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-      var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-      var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-      var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-      var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-      var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
-      var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
-      this.redMultiplier = redMultiplier;
-      this.greenMultiplier = greenMultiplier;
-      this.blueMultiplier = blueMultiplier;
-      this.alphaMultiplier = alphaMultiplier;
-      this.redOffset = redOffset;
-      this.greenOffset = greenOffset;
-      this.blueOffset = blueOffset;
-      this.alphaOffset = alphaOffset;
-    } },
-  toObject: { writable: true, value: function value() {
-      var object = {
-        redMultiplier: this.redMultiplier,
-        greenMultiplier: this.greenMultiplier,
-        blueMultiplier: this.blueMultiplier,
-        alphaMultiplier: this.alphaMultiplier,
-        redOffset: this.redOffset,
-        greenOffset: this.greenOffset,
-        blueOffset: this.blueOffset,
-        alphaOffset: this.alphaOffset
-      };
-      return object;
-    } },
-  toString: { writable: true, value: function value() {
-      return "[ColorTransform redMultiplier:" + this.redMultiplier + " greenMultiplier:" + this.greenMultiplier + " blueMultiplier:" + this.blueMultiplier + " alphaMultiplier:" + this.alphaMultiplier + " redOffset:" + this.redOffset + " greenOffset:" + this.greenOffset + " blueOffset:" + this.blueOffset + " alphaOffset:" + this.alphaOffset + "]";
-    } }
+    alphaMultiplier: {
+        get: function get() {
+            return this._alphaMultiplier;
+        },
+        set: function set(value) {
+            this._alphaMultiplier = value;
+            this._tint = this._redMultiplier * 0xff << 0 | this._greenMultiplier * 0xff << 8 | this._blueMultiplier * 0xff << 16 | this._alphaMultiplier * 0xff << 24;
+        }
+    },
+    blueMultiplier: {
+        get: function get() {
+            return this._blueMultiplier;
+        },
+        set: function set(value) {
+            this._blueMultiplier = value;
+            this._tint = this._redMultiplier * 0xff << 0 | this._greenMultiplier * 0xff << 8 | this._blueMultiplier * 0xff << 16 | this._alphaMultiplier * 0xff << 24;
+        }
+    },
+    greenMultiplier: {
+        get: function get() {
+            return this._greenMultiplier;
+        },
+        set: function set(value) {
+            this._greenMultiplier = value;
+            this._tint = this._redMultiplier * 0xff << 0 | this._greenMultiplier * 0xff << 8 | this._blueMultiplier * 0xff << 16 | this._alphaMultiplier * 0xff << 24;
+        }
+    },
+    redMultiplier: {
+        get: function get() {
+            return this._redMultiplier;
+        },
+        set: function set(value) {
+            this.redMultiplier = value;
+            this._tint = this._redMultiplier * 0xff << 0 | this._greenMultiplier * 0xff << 8 | this._blueMultiplier * 0xff << 16 | this._alphaMultiplier * 0xff << 24;
+        }
+    },
+    color: {
+        get: function get() {
+            return this.redOffset << 16 | this.greenOffset << 8 | this.blueOffset;
+        },
+        set: function set(value) {
+            this.redMultiplier = this.greenMultiplier = this.blueMultiplier = 0;
+            this.redOffset = value >> 16 & 255;
+            this.greenOffset = value >> 8 & 255;
+            this.blueOffset = value & 255;
+        }
+    },
+    tint: { get: function get() {
+            return this._tint;
+        } },
+    clone: { writable: true, value: function value() {
+            return new ColorTransform(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
+        } },
+    concat: { value: function value(color) {
+            this.redMultiplier *= color.redMultiplier;
+            this.greenMultiplier *= color.greenMultiplier;
+            this.blueMultiplier *= color.blueMultiplier;
+            this.alphaMultiplier *= color.alphaMultiplier;
+            this.redOffset += color.redOffset;
+            this.greenOffset += color.greenOffset;
+            this.blueOffset += color.blueOffset;
+            this.alphaOffset += color.alphaOffset;
+        } },
+    copyFrom: { value: function value(color) {
+            this.redMultiplier = color.redMultiplier;
+            this.greenMultiplier = color.greenMultiplier;
+            this.blueMultiplier = color.blueMultiplier;
+            this.alphaMultiplier = color.alphaMultiplier;
+            this.redOffset = color.redOffset;
+            this.greenOffset = color.greenOffset;
+            this.blueOffset = color.blueOffset;
+            this.alphaOffset = color.alphaOffset;
+        } },
+    setTo: { value: function value() {
+            var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+            var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            var blueMultiplier = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+            var alphaMultiplier = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+            var redOffset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+            var greenOffset = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+            var blueOffset = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+            var alphaOffset = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0;
+            this.redMultiplier = redMultiplier;
+            this.greenMultiplier = greenMultiplier;
+            this.blueMultiplier = blueMultiplier;
+            this.alphaMultiplier = alphaMultiplier;
+            this.redOffset = redOffset;
+            this.greenOffset = greenOffset;
+            this.blueOffset = blueOffset;
+            this.alphaOffset = alphaOffset;
+        } },
+    toObject: { writable: true, value: function value() {
+            var object = {
+                redMultiplier: this.redMultiplier,
+                greenMultiplier: this.greenMultiplier,
+                blueMultiplier: this.blueMultiplier,
+                alphaMultiplier: this.alphaMultiplier,
+                redOffset: this.redOffset,
+                greenOffset: this.greenOffset,
+                blueOffset: this.blueOffset,
+                alphaOffset: this.alphaOffset
+            };
+            return object;
+        } },
+    toString: { writable: true, value: function value() {
+            return "[ColorTransform redMultiplier:" + this.redMultiplier + " greenMultiplier:" + this.greenMultiplier + " blueMultiplier:" + this.blueMultiplier + " alphaMultiplier:" + this.alphaMultiplier + " redOffset:" + this.redOffset + " greenOffset:" + this.greenOffset + " blueOffset:" + this.blueOffset + " alphaOffset:" + this.alphaOffset + "]";
+        } }
 });
 
 function Matrix() {
@@ -11063,6 +11122,82 @@ Matrix.prototype = Object.create(Object.prototype, {
         } }
 });
 
+function Vector3D() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var z = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    Vector2D.call(this, x, y);
+    Object.defineProperties(this, {
+        z: { value: isNaN(z) ? 0 : z, writable: true },
+        w: { value: isNaN(w) ? 0 : w, writable: true }
+    });
+}
+Vector3D.prototype = Object.create(Vector2D.prototype, {
+    add: { writable: true, value: function value(vector) {
+            this.x += vector.x;
+            this.y += vector.y;
+            this.z += vector.z;
+            return this;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Vector3D(this.x, this.y, this.z, this.w);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof Vector3D)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an Vector3D object.');
+            }
+            this.x = source.x;
+            this.y = source.y;
+            this.z = source.z;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Vector3D) {
+                return o.x === this.x && o.y === this.y && o.z === this.z && o.w === this.w;
+            } else {
+                return false;
+            }
+        } },
+    negate: { writable: true, value: function value() {
+            this.x = -this.x;
+            this.y = -this.y;
+            this.z = -this.z;
+            return this;
+        } },
+    project: { writable: true, value: function value() {
+            var t = 1 / this.w;
+            this.x *= t;
+            this.y *= t;
+            this.z *= t;
+            return this;
+        } },
+    setTo: { writable: true, value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var z = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            this.x = isNaN(x) ? 0 : x;
+            this.y = isNaN(y) ? 0 : y;
+            this.z = isNaN(z) ? 0 : z;
+        } },
+    subtract: { writable: true, value: function value(vector) {
+            this.x -= vector.x;
+            this.y -= vector.y;
+            this.z -= vector.z;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { x: this.x, y: this.y, z: this.z, w: this.w };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[Vector3D x:" + this.x + " y:" + this.y + " z:" + this.z + "]";
+        } }
+});
+Object.defineProperties(Vector3D, {
+    X_AXIS: { value: new Vector3D(1, 0, 0) },
+    Y_AXIS: { value: new Vector3D(0, 1, 0) },
+    Z_AXIS: { value: new Vector3D(0, 0, 1) }
+});
+
 /**
  * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
  * @summary The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
@@ -11076,7 +11211,9 @@ var geom = Object.assign({
   Dimension: Dimension,
   Matrix: Matrix,
   Point: Point,
-  Rectangle: Rectangle
+  Rectangle: Rectangle,
+  Vector2D: Vector2D,
+  Vector3D: Vector3D
 });
 
 /**

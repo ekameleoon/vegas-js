@@ -1,3 +1,4 @@
+/*jslint bitwise: true */
 "use strict" ;
 
 /**
@@ -16,6 +17,7 @@
  * <li>As the <code>colorTransform</code> property of a Transform object (which can be used as the <code>transform</code> property of a display object)</li></ul>
  * <p>You must use the <code>new ColorTransform()</code> constructor to create a ColorTransform object before you can call the methods of the ColorTransform object.</p>
  * <p>Color transformations do not apply to the background color of a movie clip (such as a loaded SWF object). They apply only to graphics and symbols that are attached to the movie clip.</p>
+ * @summary The <code>ColorTransform</code> class lets you adjust the color values in a display object.
  * @param {number} [redMultiplier=1] - The value for the red multiplier, in the range from 0 to 1.
  * @param {number} [greenMultiplier=1] - The value for the green multiplier, in the range from 0 to 1.
  * @param {number} [blueMultiplier=1] - The value for the blue multiplier, in the range from 0 to 1.
@@ -33,16 +35,6 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
     Object.defineProperties( this ,
     {
         /**
-         * A decimal value that is multiplied with the alpha transparency channel value.
-         * <p>If you set the alpha transparency value of a display object directly by using the <code>alpha</code> property of the DisplayObject instance, it affects the value of the <code>alphaMultiplier</code> property of that display object's <code>transform.colorTransform</code> property.</p>
-         * @memberof graphics.geom.ColorTransform
-         * @default 1
-         * @type {Number}
-         * @instance
-         */
-        alphaMultiplier : { value : isNaN(alphaMultiplier) ? 0 : alphaMultiplier , writable : true } ,
-
-        /**
          * A number from <code>-255</code> to <code>255</code> that is added to the alpha transparency channel value after it has been multiplied by the <code>alphaMultiplier</code> value.
          * @memberof graphics.geom.ColorTransform
          * @default 0
@@ -50,15 +42,6 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
          * @instance
          */
         alphaOffset : { value : isNaN(alphaOffset) ? 0 : alphaOffset , writable : true } ,
-
-        /**
-         * A decimal value that is multiplied with the blue channel value.
-         * @memberof graphics.geom.ColorTransform
-         * @default 1
-         * @type {Number}
-         * @instance
-         */
-        blueMultiplier : { value : isNaN(blueMultiplier) ? 0 : blueMultiplier , writable : true } ,
 
         /**
          * A number from <code>-255</code> to <code>255</code> that is added to the blue channel value after it has been multiplied by the <code>blueMultiplier</code> value.
@@ -70,15 +53,6 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
         blueOffset : { value : isNaN(blueOffset) ? 0 : blueOffset , writable : true } ,
 
         /**
-         * A decimal value that is multiplied with the green channel value.
-         * @memberof graphics.geom.ColorTransform
-         * @default 1
-         * @type {Number}
-         * @instance
-         */
-        greenMultiplier : { value : isNaN(greenMultiplier) ? 0 : greenMultiplier , writable : true } ,
-
-        /**
          * A number from <code>-255</code> to <code>255</code> that is added to the green channel value after it has been multiplied by the <code>greenMultiplier</code> value.
          * @memberof graphics.geom.ColorTransform
          * @default 0
@@ -88,15 +62,6 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
         greenOffset : { value : isNaN(greenOffset) ? 0 : greenOffset , writable : true } ,
 
         /**
-         * A decimal value that is multiplied with the red channel value.
-         * @memberof graphics.geom.ColorTransform
-         * @default 1
-         * @type {Number}
-         * @instance
-         */
-        redMultiplier : { value : isNaN(redMultiplier) ? 0 : redMultiplier , writable : true } ,
-
-        /**
          * A number from <code>-255</code> to <code>255</code> that is added to the red channel value after it has been multiplied by the <code>redMultiplier</code> value.
          * @memberof graphics.geom.ColorTransform
          * @default 0
@@ -104,11 +69,137 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
          * @instance
          */
         redOffset : { value : isNaN(redOffset) ? 0 : redOffset , writable : true } ,
+
+        /**
+         * @private
+         */
+        _alphaMultiplier : { value : isNaN(alphaMultiplier) ? 0 : alphaMultiplier , writable : true } ,
+
+        /**
+         * @private
+         */
+        _blueMultiplier : { value : isNaN(blueMultiplier) ? 0 : blueMultiplier , writable : true } ,
+
+        /**
+         * @private
+         */
+        _greenMultiplier : { value : isNaN(greenMultiplier) ? 0 : greenMultiplier , writable : true } ,
+
+        /**
+         * @private
+         */
+         _redMultiplier : { value : isNaN(redMultiplier) ? 0 : redMultiplier , writable : true } ,
+
+        /**
+         * @private
+         */
+        _tint : { value : 0xFFFFFFFF , writable : true }
     });
 }
 
 ColorTransform.prototype = Object.create( Object.prototype ,
 {
+    /**
+     * A decimal value that is multiplied with the alpha transparency channel value.
+     * <p>If you set the alpha transparency value of a display object directly by using the <code>alpha</code> property of the DisplayObject instance, it affects the value of the <code>alphaMultiplier</code> property of that display object's <code>transform.colorTransform</code> property.</p>
+     * @memberof graphics.geom.ColorTransform
+     * @default 1
+     * @type {Number}
+     * @instance
+     */
+    alphaMultiplier :
+    {
+        get : function() { return this._alphaMultiplier ; } ,
+        set : function (value )
+        {
+            this._alphaMultiplier = value;
+            this._tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16)|((this._alphaMultiplier*0xff) << 24) ;
+        }
+    },
+
+    /**
+     * A decimal value that is multiplied with the blue channel value.
+     * @memberof graphics.geom.ColorTransform
+     * @default 1
+     * @type {Number}
+     * @instance
+     */
+    blueMultiplier :
+    {
+        get : function() { return this._blueMultiplier ; } ,
+        set : function (value )
+        {
+            this._blueMultiplier = value;
+            this._tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16)|((this._alphaMultiplier*0xff) << 24) ;
+        }
+    },
+
+    /**
+     * A decimal value that is multiplied with the green channel value.
+     * @memberof graphics.geom.ColorTransform
+     * @default 1
+     * @type {Number}
+     * @instance
+     */
+    greenMultiplier :
+    {
+        get : function() { return this._greenMultiplier ; } ,
+        set : function (value )
+        {
+            this._greenMultiplier = value;
+            this._tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16)|((this._alphaMultiplier*0xff) << 24) ;
+        }
+    },
+
+    /**
+     * A decimal value that is multiplied with the red channel value.
+     * @memberof graphics.geom.ColorTransform
+     * @default 1
+     * @type {Number}
+     * @instance
+     */
+    redMultiplier :
+    {
+        get : function() { return this._redMultiplier ; } ,
+        set : function (value )
+        {
+            this.redMultiplier = value;
+            this._tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16)|((this._alphaMultiplier*0xff) << 24) ;
+        }
+    },
+
+    /**
+     * The <b>RGB</b> color value for a <code>ColorTransform</code> object.
+     * @name color
+     * @memberof graphics.geom.ColorTransform
+     * @instance
+     * @type number
+     */
+    color :
+    {
+        get : function()
+        {
+            return this.redOffset << 16 | this.greenOffset << 8 | this.blueOffset;
+        },
+
+        set( value )
+        {
+            this.redMultiplier = this.greenMultiplier = this.blueMultiplier = 0;
+            this.redOffset   = value >> 16 & 255 ;
+            this.greenOffset = value >> 8 & 255 ;
+            this.blueOffset  = value & 255 ;
+        }
+    },
+
+    /**
+     * The <b>RGBA</b> tint value for a <code>ColorTransform</code> object.
+     * @name tint
+     * @memberof graphics.geom.ColorTransform
+     * @instance
+     * @type number
+     */
+    tint : { get : function() { return this._tint ; } },
+
     /**
      * Create a shallow copy of the object.
      * @return a shallow copy of the object.
@@ -209,7 +300,7 @@ ColorTransform.prototype = Object.create( Object.prototype ,
             redOffset       : this.redOffset ,
             greenOffset     : this.greenOffset ,
             blueOffset      : this.blueOffset ,
-            alphaOffset     : this.alphaOffset ,
+            alphaOffset     : this.alphaOffset
         } ;
         return object ;
     }},
@@ -219,19 +310,14 @@ ColorTransform.prototype = Object.create( Object.prototype ,
      * @return The text value listing the properties of the ColorTransform object.
      * @name toString
      * @memberof graphics.geom.ColorTransform
-     * @name toString
      * @instance
      * @function
      */
     toString : { writable : true , value : function()
     {
-        return "[ColorTransform redMultiplier:" + this.redMultiplier +
-                            " greenMultiplier:" + this.greenMultiplier +
-                             " blueMultiplier:" + this.blueMultiplier +
-                            " alphaMultiplier:" + this.alphaMultiplier +
-                                  " redOffset:" + this.redOffset +
-                                " greenOffset:" + this.greenOffset +
-                                 " blueOffset:" + this.blueOffset +
-                                " alphaOffset:" + this.alphaOffset + "]" ;
+        return "[ColorTransform redMultiplier:" + this.redMultiplier  + " greenMultiplier:" + this.greenMultiplier +
+                             " blueMultiplier:" + this.blueMultiplier + " alphaMultiplier:" + this.alphaMultiplier +
+                                  " redOffset:" + this.redOffset      + " greenOffset:"     + this.greenOffset +
+                                 " blueOffset:" + this.blueOffset     + " alphaOffset:" + this.alphaOffset + "]" ;
     }}
 });

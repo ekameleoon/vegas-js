@@ -118,12 +118,14 @@ Matrix.prototype = Object.create( Object.prototype ,
         var tx = this.tx ;
         var ty = this.ty ;
 
-        this.a  = matrix.a*a  + matrix.c*b;
-        this.b  = matrix.b*a  + matrix.d*b;
-        this.c  = matrix.a*c  + matrix.c*d;
-        this.d  = matrix.b*c  + matrix.d*d;
-        this.tx = matrix.a*tx + matrix.c*ty + matrix.tx;
-        this.ty = matrix.b*tx + matrix.d*ty + matrix.ty;
+        this.a  = matrix.a * a  + matrix.c * b;
+        this.b  = matrix.b * a  + matrix.d * b;
+
+        this.c  = matrix.a * c  + matrix.c * d;
+        this.d  = matrix.b * c  + matrix.d * d;
+
+        this.tx = matrix.a * tx + matrix.c * ty + matrix.tx;
+        this.ty = matrix.b * tx + matrix.d * ty + matrix.ty;
     }},
 
     /**

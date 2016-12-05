@@ -7,6 +7,8 @@ import { Dimension }      from './geom/Dimension.js' ;
 import { Matrix }         from './geom/Matrix.js' ;
 import { Point }          from './geom/Point.js' ;
 import { Rectangle }      from './geom/Rectangle.js' ;
+import { Vector2D }       from './geom/Vector2D.js' ;
+import { Vector3D }       from './geom/Vector3D.js' ;
 
 /**
  * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
@@ -22,5 +24,7 @@ export var geom = Object.assign
     Dimension : Dimension ,
     Matrix    : Matrix ,
     Point     : Point ,
-    Rectangle : Rectangle
+    Rectangle : Rectangle ,
+    Vector2D  : Vector2D ,
+    Vector3D  : Vector3D
 }) ;
