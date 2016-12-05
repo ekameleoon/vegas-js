@@ -5,6 +5,13 @@
                   (factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
 
+function ucFirst(str) {
+    if (!(str instanceof String || typeof str === 'string') || str === "") {
+        return '';
+    }
+    return str.charAt(0).toUpperCase() + str.substring(1);
+}
+
 if (!(Date.now && Date.prototype.getTime)) {
     Date.now = function now() {
         return new Date().getTime();
@@ -139,40 +146,6 @@ function trace(context) {
     if (console) {
         console.log(context);
     }
-}
-
-var version = '1.0.6';
-var lib = 'VEGAS JS';
-var link = 'https://bitbucket.org/ekameleon/vegas-js';
-var skip = false;
-function sayHello() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'VEGAS JS';
-    var link = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'https://bitbucket.org/ekameleon/vegas-js';
-    var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "1.0.0";
-    if (skip) {
-        return;
-    }
-    try {
-        if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-            var args = ['\n %c %c %c ' + name + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
-            window.console.log.apply(console, args);
-        } else if (window.console) {
-            window.console.log(name + ' ' + version + ' - ' + link);
-        }
-    } catch (error) {
-    }
-}
-function skipHello() {
-    skip = true;
-}
-try {
-    if (window) {
-        window.addEventListener('load', function load() {
-            window.removeEventListener("load", load, false);
-            sayHello(lib, link, version);
-        }, false);
-    }
-} catch (error) {
 }
 
 function dumpArray(value) {
@@ -2358,13 +2331,6 @@ function truncate(source) {
         template = trimEnd(template.slice(0, template.length - 1));
     }
     return (template + prune).length > source.length ? source : source.slice(0, template.length) + prune;
-}
-
-function ucFirst(str) {
-    if (!(str instanceof String || typeof str === 'string') || str === "") {
-        return '';
-    }
-    return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
 function ucWords(str) {
@@ -11272,13 +11238,53 @@ var graphics = Object.assign({
     geom: geom
 });
 
-exports.trace = trace;
+var version = '1.0.6';
+var metas = Object.defineProperties({}, {
+    name: { enumerable: true, value: ucFirst('vegas-js') },
+    description: { enumerable: true, value: "VEGAS JS - Opensource Framework" },
+    version: { enumerable: true, value: version },
+    license: { enumerable: true, value: "MPL-1.1 OR GPL-2.0+ OR GPL-3.0+" },
+    url: { enumerable: true, value: 'https://bitbucket.org/ekameleon/vegas-js' }
+});
+var skip = false;
+function sayHello() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var link = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    if (skip) {
+        return;
+    }
+    try {
+        if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+            var args = ['\n %c %c %c ' + name + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
+            window.console.log.apply(console, args);
+        } else if (window.console) {
+            window.console.log(name + ' ' + version + ' - ' + link);
+        }
+    } catch (error) {
+    }
+}
+function skipHello() {
+    skip = true;
+}
+try {
+    if (window) {
+        window.addEventListener('load', function load() {
+            window.removeEventListener("load", load, false);
+            sayHello(metas.name, metas.version, metas.url);
+        }, false);
+    }
+} catch (error) {
+}
+
 exports.version = version;
+exports.metas = metas;
+exports.sayHello = sayHello;
+exports.skipHello = skipHello;
+exports.trace = trace;
 exports.core = core;
 exports.system = system;
 exports.graphics = graphics;
-exports.sayHello = sayHello;
-exports.skipHello = skipHello;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

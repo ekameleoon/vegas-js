@@ -103,10 +103,7 @@ export var unittests = ( done ) =>
                 }) ,
                 babel
                 (
-                    babelrc
-                    ({
-                        addExternalHelpersPlugin : true
-                    })
+                    babelrc({ addExternalHelpersPlugin : true })
                 ),
                 cleanup()
             ]

@@ -2,6 +2,7 @@
     "name"      : "vegas" ,
     "entry"     : "./src/vegas.js" ,
     "output"    : "./bin" ,
+    "cache"     : false ,
     "debug"     : false ,
     "header"    : "/* VEGAS JS - version ${version} - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */\n" ,
     "reporter"  : "spec" ,

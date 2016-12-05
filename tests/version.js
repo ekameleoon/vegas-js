@@ -1,14 +1,14 @@
 "use strict" ;
 
-import { version } from '../src/version.js' ;
+import { version } from '../src/vegas.js' ;
 
 import chai from 'chai' ;
 
 const assert = chai.assert ;
 
-describe( 'version' , () =>
+describe( 'vegas.version' , () =>
 {
-    it('version', () =>
+    it('vegas.version === "<@VERSION@>"', () =>
     {
         assert.equal( version , '<@VERSION@>' );
     })

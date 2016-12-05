@@ -17,10 +17,7 @@ window.onload = function()
     var system   = vegas.system ; // jshint ignore:line
     var molecule = vegas.molecule ; // jshint ignore:line
 
-    trace( "-----" ) ;
     trace( vegas ) ;
-    trace( "-----" ) ;
-    trace( "> version : " + vegas.version ) ;
-    trace( "-----" ) ;
-    trace( "molecule : " + molecule ) ;
+    trace( vegas.metas ) ;
+    trace( 'version: ' + vegas.version ) ;
 }
