@@ -9,6 +9,7 @@ import './core/isString.js' ;
 import './core/global.js' ;
 import './core/arrays.js' ;
 import './core/chars.js' ;
+import './core/date.js' ;
 import './core/easings.js' ;
 import './core/functors.js' ;
 import './core/maths.js' ;
