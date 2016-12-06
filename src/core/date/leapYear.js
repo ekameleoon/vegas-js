@@ -11,6 +11,12 @@ const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] ;
  * @function
  * @instance
  * @throws TypeError The date argument must be a valid Date object.
+ * @example
+ * trace( leapYear(2016) ) ; // true
+ * trace( leapYear(new Date(2016,0,1)) ) ; // true
+ *
+ * trace( leapYear(2017) ) ; // false
+ * trace( leapYear(new Date(2017,0,1)) ) ; // false
  */
 export var leapYear = ( date ) =>
 {

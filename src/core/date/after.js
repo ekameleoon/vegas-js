@@ -11,6 +11,8 @@
  * @function
  * @instance
  * @throws TypeError The two date arguments must be a valid Date object.
+ * @example
+ * trace( after(new Date(2017,0,1),new Date(2016,0,1)) ) ; // true
  */
 export var after = ( date1 , date2 ) =>
 {

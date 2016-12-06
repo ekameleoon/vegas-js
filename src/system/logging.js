@@ -19,7 +19,7 @@ import { TraceTarget }         from './logging/targets/TraceTarget.js' ;
 /**
  * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
  * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
- * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logging
  * @memberof system

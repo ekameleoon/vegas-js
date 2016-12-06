@@ -10,6 +10,10 @@ const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] ;
  * @function
  * @instance
  * @param {Date} [date] - The date (or now) to search the number of days in a month.
+ * @example
+ * trace( daysInMonth(new Date(2016,0,1)) ) ; // 31
+ * trace( daysInMonth(new Date(2016,1,1)) ) ; // 29
+ * trace( daysInMonth(new Date(2017,0,1)) ) ; // 31
  */
 export var daysInMonth = ( date = null ) =>
 {

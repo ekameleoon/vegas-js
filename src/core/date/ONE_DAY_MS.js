@@ -7,5 +7,6 @@
  * @instance
  * @const
  * @type number
+ * @default 86400000
  */
 export const ONE_DAY_MS = 86400000 ; // 1000*60*60*24

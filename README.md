@@ -20,9 +20,9 @@ This project contains a set of libraries writing in **Javascript** and based on 
 
 Under tree opensource licenses :
 
- * [License MPL 1.1](http://www.mozilla.org/MPL/MPL-1.1.html)
- * [License GPL 2](http://www.gnu.org/licenses/gpl-2.0.html)
- * [License LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
+ * [License MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/)
+ * [License GPL 2.0+](http://www.gnu.org/licenses/gpl-2.0.html)
+ * [License LGPL 2.1+](http://www.gnu.org/licenses/lgpl-2.1.html)
 
 ## Resources
 

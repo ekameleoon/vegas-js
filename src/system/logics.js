@@ -25,7 +25,7 @@ import { IfZero } from './logics/IfZero.js' ;
  * <p>This task is heavily based on the Condition framework that can be found in the {@link system.rules} library.</p>
  * <p>In addition to the {@link system.rules.Rule|Rule} condition, you can specify three different child actions based on the {@link system.process.Action|Action} :  <code>elseif</code>, <code>then</code> and <code>else</code>. All three subelements are optional. Both <code>then</code> and <code>else</code> must not be used more than once inside the if task. Both are containers for tasks, just like {@link system.process.BatchTask|BatchTask} and {@link system.process.Chain|Chain} tasks.</p>
  * @summary The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
- * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace system.logics
  * @memberof system

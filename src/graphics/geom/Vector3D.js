@@ -125,6 +125,10 @@ Vector3D.prototype = Object.create( Vector2D.prototype ,
      * <p>You can use the normalized cross product of two vertices of a polygon surface with the normalized vector of the camera or eye viewpoint to get a dot product. The value of the dot product can identify whether a surface of a three-dimensional object is hidden from the viewpoint.</p>
      * @param {graphics.geom.Vector3D} vector  - The second <code>Vector3D</code> object.
      * @return The <code>Vector3D</code> resulting of the cross product.
+     * @name crossProduct
+     * @memberof graphics.geom.Vector3D
+     * @instance
+     * @function
      */
     crossProduct : { value : function( vector )
     {
@@ -145,6 +149,10 @@ Vector3D.prototype = Object.create( Vector2D.prototype ,
      * trace( v1.dot( v2 ) ) ;
      * @param {graphics.geom.Vector3D} vector - The Vector3D object to calculates the dot value.
      * @return The dot value.
+     * @name dotProduct
+     * @memberof graphics.geom.Vector3D
+     * @instance
+     * @function
      */
     dotProduct : { writable : true , value : function( vector )
     {
