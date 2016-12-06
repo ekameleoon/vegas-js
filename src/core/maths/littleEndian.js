@@ -8,8 +8,7 @@ import '../../polyfill/Uint32Array.js' ;
  * @memberof core.maths
  * @instance
  * @function
- * @const
- * @type boolean
+ * @private
  */
 export var isLittleEndian = () =>
 {
