@@ -6,3 +6,4 @@ import './date/after.js' ;
 import './date/before.js' ;
 import './date/daysInMonth.js' ;
 import './date/leapYear.js' ;
+import './date/yesterday.js' ;

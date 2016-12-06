@@ -8,6 +8,7 @@ import { after } from './date/after.js' ;
 import { before } from './date/before.js' ;
 import { daysInMonth } from './date/daysInMonth.js' ;
 import { leapYear } from './date/leapYear.js' ;
+import { yesterday } from './date/yesterday.js' ;
 
 /**
  * The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
@@ -24,5 +25,6 @@ export var date = Object.assign
     after : after ,
     before : before ,
     daysInMonth : daysInMonth ,
-    leapYear : leapYear
+    leapYear : leapYear,
+    yesterday : yesterday
 }) ;

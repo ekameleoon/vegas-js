@@ -885,6 +885,12 @@ var leapYear = function leapYear(date) {
     return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
 };
 
+var yesterday = function yesterday() {
+  var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  date = date instanceof Date ? date : new Date();
+  return new Date(date.valueOf() - ONE_DAY_MS);
+};
+
 /**
  * The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
  * @summary The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
@@ -898,7 +904,8 @@ var date = Object.assign({
   after: after,
   before: before,
   daysInMonth: daysInMonth,
-  leapYear: leapYear
+  leapYear: leapYear,
+  yesterday: yesterday
 });
 
 var backIn = function backIn(t, b, c, d) {

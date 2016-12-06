@@ -208,7 +208,7 @@ describe( 'graphics.geom.Vector3D' , () =>
             assert.equal( new Vector3D().toString() , "[Vector3D x:0 y:0 z:0]" );
         });
 
-        it('new Vector3D(100,200,300).toString() === "[Vector3D x:100 y:200 z:300 ]"', () =>
+        it('new Vector3D(100,200,300).toString() === "[Vector3D x:100 y:200 z:300]"', () =>
         {
             assert.equal( new Vector3D(100,200,300).toString() , "[Vector3D x:100 y:200 z:300]" );
         });
