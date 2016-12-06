@@ -133,6 +133,235 @@ if (!exports.global.cancelAnimationFrame) {
 var cancelAnimationFrame = exports.global.cancelAnimationFrame;
 var requestAnimationFrame = exports.global.requestAnimationFrame;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var get$1 = function get$1(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get$1(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var set$1 = function set$1(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent !== null) {
+      set$1(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;
+
+    if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }
+
+  return value;
+};
+
+if (exports.global && typeof exports.global.Uint32Array !== "function" && _typeof(exports.global.Uint32Array) !== "object") {
+    var CheapArray = function CheapArray(type) {
+        var proto = [];
+        exports.global[type] = function (arg) {
+            var i;
+            if (typeof arg === "number") {
+                Array.call(this, arg);
+                this.length = arg;
+                for (i = 0; i < this.length; i++) {
+                    this[i] = 0;
+                }
+            } else {
+                Array.call(this, arg.length);
+                this.length = arg.length;
+                for (i = 0; i < this.length; i++) {
+                    this[i] = arg[i];
+                }
+            }
+        };
+        exports.global[type].prototype = proto;
+        exports.global[type].constructor = exports.global[type];
+    };
+    CheapArray('Float32Array');
+    CheapArray('Uint32Array');
+    CheapArray('Uint16Array');
+    CheapArray('Int16Array');
+    CheapArray('ArrayBuffer');
+}
+
 function trace(context) {
     if (console) {
         console.log(context);
@@ -861,6 +1090,35 @@ var fade = function fade() {
     return r << 16 | g << 8 | b;
 };
 
+var isLittleEndian = function isLittleEndian() {
+    var a = new ArrayBuffer(4);
+    var b = new Uint8Array(a);
+    var c = new Uint32Array(a);
+    b[0] = 0xa1;
+    b[1] = 0xb2;
+    b[2] = 0xc3;
+    b[3] = 0xd4;
+    if (c[0] === 0xd4c3b2a1) {
+        return true;
+    }
+    if (c[0] === 0xa1b2c3d4) {
+        return false;
+    } else {
+        return null;
+    }
+};
+var littleEndian = isLittleEndian();
+
+var max = 0xFF;
+var fromRGBA = function fromRGBA(r, g, b, a) {
+  r = Math.min(r, max);
+  g = Math.min(g, max);
+  b = Math.min(b, max);
+  a = isNaN(a) ? 0 : a;
+  a = 0xFF * Math.max(Math.min(a, 1), 0);
+  return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+};
+
 var toHex = function toHex(value) {
     var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#';
     var upper = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -892,6 +1150,7 @@ function hex(value) {
  */
 var colors = Object.assign({
   fade: fade,
+  fromRGBA: fromRGBA,
   toHex: toHex
 });
 
@@ -1738,6 +1997,7 @@ var maths = Object.assign({
     isOdd: isOdd,
     LAMBDA: LAMBDA,
     lerp: lerp,
+    littleEndian: littleEndian,
     log10: log10,
     logN: logN,
     map: map,

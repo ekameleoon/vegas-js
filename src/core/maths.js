@@ -40,6 +40,7 @@ import { isEven }                 from './maths/isEven.js' ;
 import { isOdd }                  from './maths/isOdd.js' ;
 import { LAMBDA }                 from './maths/LAMBDA.js' ;
 import { lerp }                   from './maths/lerp.js' ;
+import { littleEndian }           from './maths/littleEndian.js' ;
 import { log10 }                  from './maths/log10.js' ;
 import { logN }                   from './maths/logN.js' ;
 import { map }                    from './maths/map.js' ;
@@ -110,6 +111,7 @@ export var maths = Object.assign
     isOdd : isOdd,
     LAMBDA : LAMBDA,
     lerp : lerp,
+    littleEndian : littleEndian,
     log10 : log10,
     logN : logN,
     map : map,

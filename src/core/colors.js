@@ -2,8 +2,9 @@
 
 import '../polyfill/Object.js' ;
 
-import { fade }  from './colors/fade.js' ;
-import { toHex } from './colors/toHex.js' ;
+import { fade }     from './colors/fade.js' ;
+import { fromRGBA } from './colors/fromRGBA.js' ;
+import { toHex }    from './colors/toHex.js' ;
 
 /**
  * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
@@ -16,5 +17,6 @@ import { toHex } from './colors/toHex.js' ;
 export var colors = Object.assign
 ({
     fade : fade ,
+    fromRGBA : fromRGBA ,
     toHex : toHex
 }) ;

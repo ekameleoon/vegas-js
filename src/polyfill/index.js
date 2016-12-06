@@ -6,3 +6,4 @@ import './Math.js' ;
 import './Object.js' ;
 import './performance.js' ;
 import './requestAnimationFrame.js' ;
+import './Uint32Array.js' ;
