@@ -5,6 +5,7 @@ import '../polyfill/Object.js' ;
 import { ONE_DAY_MS } from './date/ONE_DAY_MS.js' ;
 
 import { after } from './date/after.js' ;
+import { before } from './date/before.js' ;
 import { daysInMonth } from './date/daysInMonth.js' ;
 import { leapYear } from './date/leapYear.js' ;
 
@@ -21,6 +22,7 @@ export var date = Object.assign
     ONE_DAY_MS : ONE_DAY_MS ,
 
     after : after ,
+    before : before ,
     daysInMonth : daysInMonth ,
     leapYear : leapYear
 }) ;

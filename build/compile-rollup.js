@@ -1,4 +1,3 @@
-/* jshint node: true */
 "use strict" ;
 
 import babel        from 'rollup-plugin-babel' ;
@@ -17,8 +16,8 @@ import setting from '../package.json' ;
 
 var cache ;
 
-var colors  = util.colors ;
-var log     = util.log ;
+var colors = util.colors ;
+var log    = util.log ;
 
 export var roll = ( done ) =>
 {
@@ -49,7 +48,7 @@ export var roll = ( done ) =>
             ({
                 include    : {},
                 paths      : [ './src/' , './libs/molecule/src/' ] ,
-                external   : [ 'molecule' ],
+                external   : [],
                 extensions : [ '.js' ]
             }) ,
             babel
@@ -58,11 +57,13 @@ export var roll = ( done ) =>
             ),
             cleanup()
         ]
-    }).on('error', ( error ) =>
+    })
+    .on('error', ( error ) =>
     {
         log( colors.magenta( `${error.stack}` ) );
         done() ;
-    }).on('bundle', function( bundle )
+    })
+    .on('bundle', function( bundle )
     {
         cache = config.cache ? bundle : null ;
     })

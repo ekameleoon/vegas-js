@@ -852,6 +852,64 @@ var chars = Object.assign({
     whiteSpaces: whiteSpaces
 });
 
+var ONE_DAY_MS = 86400000;
+
+var after = function after(date1, date2) {
+    if (!(date1 instanceof Date && date2 instanceof Date)) {
+        throw new TypeError('after() failed, the passed-in date arguments must be valid Date objects.');
+    }
+    return date1.valueOf() > date2.valueOf();
+};
+
+var before = function before(date1, date2) {
+    if (!(date1 instanceof Date && date2 instanceof Date)) {
+        throw new TypeError('after() failed, the passed-in date arguments must be valid Date objects.');
+    }
+    return date1.valueOf() < date2.valueOf();
+};
+
+var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+var daysInMonth = function daysInMonth() {
+    var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    if (!(date instanceof Date)) {
+        date = new Date();
+    }
+    var y = date.getFullYear();
+    var m = date.getMonth();
+    if ((y % 4 === 0 && y % 100 !== 0 || y % 400 === 0) && m === 1) {
+        return 29;
+    }
+    return monthDays[m];
+};
+
+var leapYear = function leapYear(date) {
+    var year = void 0;
+    if (date instanceof Date) {
+        year = date.getFullYear();
+    } else if (date instanceof Number || typeof date === 'number') {
+        year = date;
+    } else {
+        throw new TypeError('leapYear failed, the passed-in date argument must be a valid Date object or an integer representing the year to evaluates.');
+    }
+    return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
+};
+
+/**
+ * The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
+ * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.date
+ * @memberof core
+ */
+var date = Object.assign({
+  ONE_DAY_MS: ONE_DAY_MS,
+  after: after,
+  before: before,
+  daysInMonth: daysInMonth,
+  leapYear: leapYear
+});
+
 var backIn = function backIn(t, b, c, d) {
     var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
     if (isNaN(s)) {
@@ -2420,7 +2478,7 @@ var strings = Object.assign({
 });
 
 /**
- * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, etc.
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, etc.
  * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
  * <p>Those functions are allowed to reuse the builtin types (Object, Array, etc.), the Javascript API classes and packages, but nothing else.</p>
  * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
@@ -2442,6 +2500,7 @@ var core = Object.assign({
     isString: isString,
     arrays: arrays,
     chars: chars,
+    date: date,
     easings: easings,
     functors: functors,
     maths: maths,
