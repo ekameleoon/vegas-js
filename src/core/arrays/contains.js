@@ -4,7 +4,7 @@
  * Determines whether the specified object exists as an element in an Array object.
  * @name contains
  * @memberof core.arrays
- * @function contains
+ * @function
  * @instance
  * @param {Array} ar - The search Array.
  * @param {*} value - The object to find in the array.

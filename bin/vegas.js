@@ -843,6 +843,58 @@ var chars = Object.assign({
     whiteSpaces: whiteSpaces
 });
 
+var fade = function fade() {
+    var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
+    var ratio = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    if (ratio <= 0) {
+        return from;
+    } else if (ratio >= 1) {
+        return to;
+    }
+    var r = from >> 16;
+    var g = from >> 8 & 0xFF;
+    var b = from & 0xFF;
+    r += ((to >> 16) - r) * ratio;
+    g += ((to >> 8 & 0xFF) - g) * ratio;
+    b += ((to & 0xFF) - b) * ratio;
+    return r << 16 | g << 8 | b;
+};
+
+var toHex = function toHex(value) {
+    var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#';
+    var upper = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    if (!(Number(value) === value && value % 1 === 0 && value >= 0)) {
+        throw new TypeError('toHex failed, the value parameter must be an upper integer.');
+    }
+    prefix = typeof prefix === 'string' || prefix instanceof String ? prefix : '#';
+    upper = upper === true;
+    var gb = void 0;
+    var r = value >> 16;gb = value ^ r << 16;
+    var g = gb >> 8;
+    var b = gb ^ g << 8;
+    return prefix + hex(r, upper) + hex(g, upper) + hex(b, upper);
+};
+function hex(value) {
+    var upper = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    var hex = value.toString(16);
+    hex = hex.length % 2 === 0 ? hex : "0" + hex;
+    return upper ? hex.toUpperCase() : hex;
+}
+
+/**
+ * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
+ * @summary The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.colors
+ * @memberof core
+ */
+var colors = Object.assign({
+  fade: fade,
+  toHex: toHex
+});
+
 var ONE_DAY_MS = 86400000;
 
 var after = function after(date1, date2) {
@@ -2476,7 +2528,7 @@ var strings = Object.assign({
 });
 
 /**
- * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, etc.
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, colors, etc.
  * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
  * <p>Those functions are allowed to reuse the builtin types (Object, Array, Date, etc.), the Javascript API classes and packages, but nothing else.</p>
  * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
@@ -2498,6 +2550,7 @@ var core = Object.assign({
     isString: isString,
     arrays: arrays,
     chars: chars,
+    colors: colors,
     date: date,
     easings: easings,
     functors: functors,

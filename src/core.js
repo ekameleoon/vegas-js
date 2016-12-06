@@ -16,6 +16,7 @@ import { isString  } from './core/isString.js' ;
 
 import { arrays   } from './core/arrays.js' ;
 import { chars    } from './core/chars.js' ;
+import { colors   } from './core/colors.js' ;
 import { date     } from './core/date.js' ;
 import { easings  } from './core/easings.js' ;
 import { functors } from './core/functors.js' ;
@@ -27,7 +28,7 @@ import { reflect  } from './core/reflect.js' ;
 import { strings  } from './core/strings.js' ;
 
 /**
- * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, etc.
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, colors, etc.
  * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
  * <p>Those functions are allowed to reuse the builtin types (Object, Array, Date, etc.), the Javascript API classes and packages, but nothing else.</p>
  * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
@@ -52,6 +53,7 @@ export var core = Object.assign
 
     arrays   : arrays ,
     chars    : chars ,
+    colors   : colors ,
     date     : date ,
     easings  : easings,
     functors : functors,
