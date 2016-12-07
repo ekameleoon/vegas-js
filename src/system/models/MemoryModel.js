@@ -188,7 +188,7 @@ MemoryModel.prototype = Object.create( ChangeModel.prototype ,
     /**
      * Go back in the memory and removes the all the element in the memory model to a specific position.
      * @param {number} [pos=1] - The position to back in memory.
-     * @return The Array representation of all removed element in memory.
+     * @return The last removed element in the memory.
      * @name backTo
      * @memberof system.models.MemoryModel
      * @instance
