@@ -10,14 +10,11 @@
  */
 export var fibonacci = ( value ) =>
 {
-    var t ;
-    var j ;
-    var i = 1 ;
-    for ( var k = 1 ; k <= value ; k++ )
+    let i = 1 ;
+    let j = 0 ;
+    for( let k = 1 ; k <= value ; k++ )
     {
-        t = i + j ;
-        i = j ;
-        j = t ;
+        [i,j] = [j,i+j] ;
     }
     return j ;
 }
