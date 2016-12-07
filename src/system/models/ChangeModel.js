@@ -37,6 +37,8 @@ import { Signal } from "../signals/Signal.js" ;
  */
 export function ChangeModel()
 {
+    Model.call( this );
+    
     Object.defineProperties( this ,
     {
         /**
