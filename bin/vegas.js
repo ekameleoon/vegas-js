@@ -1072,27 +1072,14 @@ var chars = Object.assign({
     whiteSpaces: whiteSpaces
 });
 
-var isLittleEndian = function isLittleEndian() {
-    var a = new ArrayBuffer(4);
-    var b = new Uint8Array(a);
-    var c = new Uint32Array(a);
-    b[0] = 0xa1;
-    b[1] = 0xb2;
-    b[2] = 0xc3;
-    b[3] = 0xd4;
-    if (c[0] === 0xd4c3b2a1) {
-        return true;
-    }
-    if (c[0] === 0xa1b2c3d4) {
-        return false;
-    } else {
-        return null;
-    }
-};
-var littleEndian = isLittleEndian();
-
 var distance = function distance(color1, color2) {
   return Math.pow((color1 >> 16 & 0xFF) - (color2 >> 16 & 0xFF), 2) + Math.pow((color1 >> 8 & 0xFF) - (color2 >> 8 & 0xFF), 2) + Math.pow((color1 & 0xFF) - (color2 & 0xFF), 2);
+};
+
+var equals = function equals(color1, color2) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
+  var dist = Math.pow((color1 >> 16 & 0xFF) - (color2 >> 16 & 0xFF), 2) + Math.pow((color1 >> 8 & 0xFF) - (color2 >> 8 & 0xFF), 2) + Math.pow((color1 & 0xFF) - (color2 & 0xFF), 2);
+  return dist <= tolerance * (255 * 255 * 3) << 0;
 };
 
 var fade = function fade() {
@@ -1113,14 +1100,68 @@ var fade = function fade() {
     return r << 16 | g << 8 | b;
 };
 
-var max$1 = 0xFF;
-var fromRGBA = function fromRGBA(r, g, b, a) {
-  r = Math.min(r, max$1);
-  g = Math.min(g, max$1);
-  b = Math.min(b, max$1);
+var isLittleEndian = function isLittleEndian() {
+    var a = new ArrayBuffer(4);
+    var b = new Uint8Array(a);
+    var c = new Uint32Array(a);
+    b[0] = 0xa1;
+    b[1] = 0xb2;
+    b[2] = 0xc3;
+    b[3] = 0xd4;
+    if (c[0] === 0xd4c3b2a1) {
+        return true;
+    }
+    if (c[0] === 0xa1b2c3d4) {
+        return false;
+    } else {
+        return null;
+    }
+};
+var littleEndian = isLittleEndian();
+
+var max = 0xFF;
+var fromARGB = function fromARGB(a, r, g, b) {
+  r = Math.min(Math.max(r, 0), max);
+  g = Math.min(Math.max(g, 0), max);
+  b = Math.min(Math.max(b, 0), max);
   a = isNaN(a) ? 0 : a;
   a = 0xFF * Math.max(Math.min(a, 1), 0);
   return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+};
+
+var getAlpha = function getAlpha(color) {
+  return color >> 24 & 0xFF;
+};
+
+var getBlue = function getBlue(color) {
+  return color & 0xFF;
+};
+
+var getGreen = function getGreen(color) {
+  return color >> 8 & 0xFF;
+};
+
+var getRed = function getRed(color) {
+  return color >> 16 & 0xFF;
+};
+
+var isUnique = function isUnique(color, colors) {
+    var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
+    if (!(colors instanceof Array) || colors.length === 0) {
+        return true;
+    }
+    tolerance = tolerance * (255 * 255 * 3) << 0;
+    var cur = void 0;
+    var distance = void 0;
+    var len = colors.length;
+    for (var i = 0; i < len; i++) {
+        cur = colors[i];
+        distance = Math.pow((color >> 16 & 0xFF) - (cur >> 16 & 0xFF), 2) + Math.pow((color >> 8 & 0xFF) - (cur >> 8 & 0xFF), 2) + Math.pow((color & 0xFF) - (cur & 0xFF), 2);
+        if (distance <= tolerance) {
+            return false;
+        }
+    }
+    return true;
 };
 
 var toHex = function toHex(value) {
@@ -1144,6 +1185,18 @@ function hex(value) {
     return upper ? hex.toUpperCase() : hex;
 }
 
+var uniques = function uniques(colors) {
+    var maximum = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
+    var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
+    var result = [];
+    for (var i = 0; i < colors.length && result.length < maximum; i++) {
+        if (isUnique(colors[i], result, tolerance)) {
+            result.push(colors[i]);
+        }
+    }
+    return result;
+};
+
 /**
  * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
  * @summary The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
@@ -1153,10 +1206,17 @@ function hex(value) {
  * @memberof core
  */
 var colors = Object.assign({
-  distance: distance,
-  fade: fade,
-  fromRGBA: fromRGBA,
-  toHex: toHex
+    distance: distance,
+    equals: equals,
+    fade: fade,
+    fromARGB: fromARGB,
+    getAlpha: getAlpha,
+    getBlue: getBlue,
+    getGreen: getGreen,
+    getRed: getRed,
+    isUnique: isUnique,
+    toHex: toHex,
+    uniques: uniques
 });
 
 var ONE_DAY_MS = 86400000;
