@@ -39,6 +39,7 @@ describe( 'core.date.yesterday' , () =>
 
     it( 'yesterday().getDay() === now.getDay()-1', () =>
     {
+        prev = yesterday() ;
         let day = now.getDay() - 1 ;
         if( day < 0 )
         {

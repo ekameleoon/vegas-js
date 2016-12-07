@@ -11,7 +11,9 @@
  * @param {string} [prefix=#] - The string prefix of the final expression (default #).
  * @param {boolean} [upper=true] - Indicates if the string result is uppercase.
  * @example
- * trace( toHex( 0xFF0000 ) ) ; // 0xFF0000
+ * trace( toHex( 0xFF0000 ) ) ; // #FF0000
+ * trace( toHex( 0xFF0000 , '#' , false ) ) ; // #ff0000
+ * trace( toHex( 0xFF0000 , '0x' ) ; // 0xFF0000
  * trace( toHex( 0xFF0000 , '' ) ) ; // FF0000
  * trace( toHex( 0xFF0000 , '' , false ) ) ; // ff0000
  */

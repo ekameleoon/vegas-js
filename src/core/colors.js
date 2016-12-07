@@ -2,9 +2,17 @@
 
 import '../polyfill/Object.js' ;
 
+import { distance } from './colors/distance.js' ;
+import { equals }   from './colors/equals.js' ;
 import { fade }     from './colors/fade.js' ;
-import { fromRGBA } from './colors/fromRGBA.js' ;
+import { fromARGB } from './colors/fromARGB.js' ;
+import { getAlpha } from './colors/getAlpha.js' ;
+import { getBlue }  from './colors/getBlue.js' ;
+import { getGreen } from './colors/getGreen.js' ;
+import { getRed }   from './colors/getRed.js' ;
+import { isUnique } from './colors/isUnique.js' ;
 import { toHex }    from './colors/toHex.js' ;
+import { uniques }  from './colors/uniques.js' ;
 
 /**
  * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
@@ -16,7 +24,15 @@ import { toHex }    from './colors/toHex.js' ;
  */
 export var colors = Object.assign
 ({
-    fade : fade ,
-    fromRGBA : fromRGBA ,
-    toHex : toHex
+    distance : distance ,
+    equals   : equals ,
+    fade     : fade ,
+    fromARGB : fromARGB ,
+    getAlpha : getAlpha ,
+    getBlue  : getBlue ,
+    getGreen : getGreen ,
+    getRed   : getRed ,
+    isUnique : isUnique ,
+    toHex    : toHex ,
+    uniques  : uniques
 }) ;
