@@ -1072,24 +1072,6 @@ var chars = Object.assign({
     whiteSpaces: whiteSpaces
 });
 
-var fade = function fade() {
-    var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
-    var ratio = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    if (ratio <= 0) {
-        return from;
-    } else if (ratio >= 1) {
-        return to;
-    }
-    var r = from >> 16;
-    var g = from >> 8 & 0xFF;
-    var b = from & 0xFF;
-    r += ((to >> 16) - r) * ratio;
-    g += ((to >> 8 & 0xFF) - g) * ratio;
-    b += ((to & 0xFF) - b) * ratio;
-    return r << 16 | g << 8 | b;
-};
-
 var isLittleEndian = function isLittleEndian() {
     var a = new ArrayBuffer(4);
     var b = new Uint8Array(a);
@@ -1109,11 +1091,33 @@ var isLittleEndian = function isLittleEndian() {
 };
 var littleEndian = isLittleEndian();
 
-var max = 0xFF;
+var distance = function distance(color1, color2) {
+  return Math.pow((color1 >> 16 & 0xFF) - (color2 >> 16 & 0xFF), 2) + Math.pow((color1 >> 8 & 0xFF) - (color2 >> 8 & 0xFF), 2) + Math.pow((color1 & 0xFF) - (color2 & 0xFF), 2);
+};
+
+var fade = function fade() {
+    var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
+    var ratio = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    if (ratio <= 0) {
+        return from;
+    } else if (ratio >= 1) {
+        return to;
+    }
+    var r = from >> 16;
+    var g = from >> 8 & 0xFF;
+    var b = from & 0xFF;
+    r += ((to >> 16) - r) * ratio;
+    g += ((to >> 8 & 0xFF) - g) * ratio;
+    b += ((to & 0xFF) - b) * ratio;
+    return r << 16 | g << 8 | b;
+};
+
+var max$1 = 0xFF;
 var fromRGBA = function fromRGBA(r, g, b, a) {
-  r = Math.min(r, max);
-  g = Math.min(g, max);
-  b = Math.min(b, max);
+  r = Math.min(r, max$1);
+  g = Math.min(g, max$1);
+  b = Math.min(b, max$1);
   a = isNaN(a) ? 0 : a;
   a = 0xFF * Math.max(Math.min(a, 1), 0);
   return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
@@ -1149,6 +1153,7 @@ function hex(value) {
  * @memberof core
  */
 var colors = Object.assign({
+  distance: distance,
   fade: fade,
   fromRGBA: fromRGBA,
   toHex: toHex
@@ -1664,7 +1669,7 @@ var degreesToRadians = function degreesToRadians(angle) {
   return angle * DEG2RAD;
 };
 
-var distance = function distance(x1, y1, x2, y2) {
+var distance$1 = function distance$1(x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   return Math.sqrt(dx * dx + dy * dy);
@@ -1980,7 +1985,7 @@ var maths = Object.assign({
     cosH: cosH,
     DEG2RAD: DEG2RAD,
     degreesToRadians: degreesToRadians,
-    distance: distance,
+    distance: distance$1,
     distanceByObject: distanceByObject,
     EARTH_RADIUS_IN_METERS: EARTH_RADIUS_IN_METERS,
     EPSILON: EPSILON,

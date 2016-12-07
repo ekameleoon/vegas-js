@@ -15,8 +15,6 @@ var max = 0xFF ;
  * @param {number} g - The green integer component between <code>0</code> and <code>255</code> (<code>0xFF</code>).
  * @param {number} b - The blue integer component between <code>0</code> and <code>255</code> (<code>0xFF</code>).
  * @param {number} a - The alpha (transparency) integer component between <code>0</code> and <code>1</code>.
-
- * @param ratio The value between 0 and 1 to calculate the fading level.
  * @example
  * trace( fromRGBA(170,170,170,0.6) === 0x99AAAAAA ) ; // true
  */

@@ -2,8 +2,13 @@
 
 import '../polyfill/Object.js' ;
 
+import { distance } from './colors/distance.js' ;
 import { fade }     from './colors/fade.js' ;
 import { fromRGBA } from './colors/fromRGBA.js' ;
+import { getAlpha } from './colors/getAlpha.js' ;
+import { getBlue }  from './colors/getBlue.js' ;
+import { getGreen } from './colors/getGreen.js' ;
+import { getRed }   from './colors/getRed.js' ;
 import { toHex }    from './colors/toHex.js' ;
 
 /**
@@ -16,7 +21,12 @@ import { toHex }    from './colors/toHex.js' ;
  */
 export var colors = Object.assign
 ({
-    fade : fade ,
+    distance : distance ,
+    fade     : fade ,
     fromRGBA : fromRGBA ,
-    toHex : toHex
+    getAlpha : getAlpha ,
+    getBlue  : getBlue ,
+    getGreen : getGreen ,
+    getRed   : getRed ,
+    toHex    : toHex
 }) ;
