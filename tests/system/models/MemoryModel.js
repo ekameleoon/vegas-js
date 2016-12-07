@@ -132,7 +132,7 @@ describe( 'system.models.MemoryModel' , () =>
         memoryModel.current = "page3";
         memoryModel.current = "page4";
         memoryModel.current = "page5";
-        assert.deepEqual( memoryModel.backTo( 3 ) , [ "page3" , "page4" , "page5" ] );
+        assert.deepEqual( memoryModel.backTo( 3 ) , "page5" );
         assert.equal( memoryModel.current , "page2" );
         assert.equal( memoryModel.length , 3 );
     });
