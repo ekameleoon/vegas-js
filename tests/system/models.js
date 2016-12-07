@@ -1,6 +1,7 @@
 'use strict' ;
 
-import './models/ArrayModel.js';
+import './models/arrays/ArrayModel.js';
+import './models/maps/MapModel.js';
 import './models/ChangeModel.js';
 import './models/MemoryModel.js';
 import './models/Model.js';

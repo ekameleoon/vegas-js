@@ -1,10 +1,10 @@
 'use strict' ;
 
-import { ArrayModel } from '../../../src/system/models/arrays/ArrayModel.js' ;
-import { ChangeModel } from '../../../src/system/models/ChangeModel.js' ;
-import { Signal }    from '../../../src/system/signals/Signal.js' ;
+import { ArrayModel } from '../../../../src/system/models/arrays/ArrayModel.js' ;
+import { ChangeModel } from '../../../../src/system/models/ChangeModel.js' ;
+import { Signal }    from '../../../../src/system/signals/Signal.js' ;
 
-import { isLockable }  from '../../../src/system/process/Lockable.js' ;
+import { isLockable }  from '../../../../src/system/process/Lockable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
