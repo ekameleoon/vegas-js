@@ -1,15 +1,15 @@
 'use strict' ;
 
 import { ChangeModel } from '../../../../src/system/models/ChangeModel.js' ;
-import { MapModel } from '../../../../src/system/models/maps/MapModel.js' ;
-import { Signal }    from '../../../../src/system/signals/Signal.js' ;
+import { MapModel }    from '../../../../src/system/models/maps/MapModel.js' ;
+import { Signal }      from '../../../../src/system/signals/Signal.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
 
 describe( 'system.models.maps.MapModel' , () =>
 {
-    let mapModel = new MapModel() ;
+    let model = new MapModel() ;
 
     it('MapModel is a constructor function', () =>
     {
@@ -18,27 +18,27 @@ describe( 'system.models.maps.MapModel' , () =>
 
     it('new MapModel().constructor === MapModel', () =>
     {
-        assert.equal( mapModel.constructor , MapModel );
+        assert.equal( model.constructor , MapModel );
     });
 
     it('new MapModel() instanceOf ChangeModel', () =>
     {
-        assert.instanceOf( mapModel , ChangeModel );
+        assert.instanceOf( model , ChangeModel );
     });
 
     it('new MapModel().added instanceOf Signal', () =>
     {
-        assert.instanceOf( mapModel.added , Signal );
+        assert.instanceOf( model.added , Signal );
     });
 
     it('new MapModel().removed instanceOf Signal', () =>
     {
-        assert.instanceOf( mapModel.removed , Signal );
+        assert.instanceOf( model.removed , Signal );
     });
 
     it('new MapModel().updated instanceOf Signal', () =>
     {
-        assert.instanceOf( mapModel.updated , Signal );
+        assert.instanceOf( model.updated , Signal );
     });
 
     let obj1 = { id:1 , name:"test1" };
@@ -50,198 +50,198 @@ describe( 'system.models.maps.MapModel' , () =>
 
     it('new MapModel().add() with null entries', () =>
     {
-        mapModel.clear();
-        assert.throws( function(){ mapModel.add() } , ReferenceError );
-        assert.throws( function(){ mapModel.add( null ) } , ReferenceError );
-        assert.throws( function(){ mapModel.add( undefined ) } , ReferenceError );
+        model.clear();
+        assert.throws( function(){ model.add() } , ReferenceError );
+        assert.throws( function(){ model.add( null ) } , ReferenceError );
+        assert.throws( function(){ model.add( undefined ) } , ReferenceError );
     });
 
     it('new MapModel().add()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
+        model.clear();
+        model.add( obj1 );
     });
 
     it('new MapModel().add() with no id', () =>
     {
-        mapModel.clear();
-        assert.throws( function(){ mapModel.add( { name:"test" } ) } , ReferenceError );
+        model.clear();
+        assert.throws( function(){ model.add( { name:"test" } ) } , ReferenceError );
     });
 
     it('new MapModel().clear()', () =>
     {
-        mapModel.clear();
-        assert.equal( mapModel.length , 0 );
-        assert.isNull( mapModel.current );
+        model.clear();
+        assert.equal( model.length , 0 );
+        assert.isNull( model.current );
     });
 
     it('new MapModel().length', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        assert.equal( mapModel.length , 3 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        assert.equal( model.length , 3 );
     });
 
     it('new MapModel().isEmpty()', () =>
     {
-        mapModel.clear();
-        assert.isTrue( mapModel.isEmpty() );
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        assert.isFalse( mapModel.isEmpty() );
+        model.clear();
+        assert.isTrue( model.isEmpty() );
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        assert.isFalse( model.isEmpty() );
     });
 
     it('new MapModel().get()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
-        assert.deepEqual( mapModel.get( 2 ) , obj2 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
+        assert.deepEqual( model.get( 2 ) , obj2 );
     });
 
     it('new MapModel().getByProperty()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
-        assert.deepEqual( mapModel.getByProperty( "name" , "test5" ) , obj5 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
+        assert.deepEqual( model.getByProperty( "name" , "test5" ) , obj5 );
     });
 
     it('new MapModel().getByProperty() with errors', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
-        assert.isNull( mapModel.getByProperty( null , "test5" ) );
-        assert.isNull( mapModel.getByProperty( "" , "test5" ) );
-        assert.isNull( mapModel.getByProperty( "test" , "test5" ) );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
+        assert.isNull( model.getByProperty( null , "test5" ) );
+        assert.isNull( model.getByProperty( "" , "test5" ) );
+        assert.isNull( model.getByProperty( "test" , "test5" ) );
     });
 
     it('new MapModel().has()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        assert.isTrue( mapModel.has( obj2 ) );
-        assert.isFalse( mapModel.has( obj6 ) );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        assert.isTrue( model.has( obj2 ) );
+        assert.isFalse( model.has( obj6 ) );
     });
 
     it('new MapModel().hasByProperty()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
-        assert.isTrue( mapModel.hasByProperty( "name" , "test5" ) );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
+        assert.isTrue( model.hasByProperty( "name" , "test5" ) );
     });
 
     it('new MapModel().hasByProperty() with errors', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
-        assert.isFalse( mapModel.hasByProperty( null , "test5" ) );
-        assert.isFalse( mapModel.hasByProperty( "" , "test5" ) );
-        assert.isFalse( mapModel.hasByProperty( "test" , "test5" ) );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
+        assert.isFalse( model.hasByProperty( null , "test5" ) );
+        assert.isFalse( model.hasByProperty( "" , "test5" ) );
+        assert.isFalse( model.hasByProperty( "test" , "test5" ) );
     });
 
     it('new MapModel().hasKey()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        assert.isTrue( mapModel.hasKey( 2 ) );
-        assert.isFalse( mapModel.hasKey( 6 ) );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        assert.isTrue( model.hasKey( 2 ) );
+        assert.isFalse( model.hasKey( 6 ) );
     });
 
     it('new MapModel().remove() with null entries', () =>
     {
-        mapModel.clear();
-        assert.throws( function(){ mapModel.remove() } , ReferenceError );
-        assert.throws( function(){ mapModel.remove( null ) } , ReferenceError );
-        assert.throws( function(){ mapModel.remove( undefined ) } , ReferenceError );
+        model.clear();
+        assert.throws( function(){ model.remove() } , ReferenceError );
+        assert.throws( function(){ model.remove( null ) } , ReferenceError );
+        assert.throws( function(){ model.remove( undefined ) } , ReferenceError );
     });
 
     it('new MapModel().remove()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
 
-        mapModel.remove( obj2 );
-        assert.isFalse( mapModel.has( obj2 ) );
-        assert.throws( function(){ mapModel.remove( obj2 ) } , ReferenceError );
+        model.remove( obj2 );
+        assert.isFalse( model.has( obj2 ) );
+        assert.throws( function(){ model.remove( obj2 ) } , ReferenceError );
     });
 
     it('new MapModel().remove() with no id', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
 
-        assert.throws( function(){ mapModel.remove( { name:"testing" } ) } , ReferenceError );
+        assert.throws( function(){ model.remove( { name:"testing" } ) } , ReferenceError );
     });
 
     it('new MapModel().update()', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
-        mapModel.add( obj6 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
+        model.add( obj6 );
 
-        mapModel.update( { id:4 , name:"testing" } );
-        assert.deepEqual( mapModel.get( 4 ) , { id:4 , name:"testing" } );
+        model.update( { id:4 , name:"testing" } );
+        assert.deepEqual( model.get( 4 ) , { id:4 , name:"testing" } );
     });
 
     it('new MapModel().update() with errors', () =>
     {
-        mapModel.clear();
-        mapModel.add( obj1 );
-        mapModel.add( obj2 );
-        mapModel.add( obj3 );
-        mapModel.add( obj4 );
-        mapModel.add( obj5 );
+        model.clear();
+        model.add( obj1 );
+        model.add( obj2 );
+        model.add( obj3 );
+        model.add( obj4 );
+        model.add( obj5 );
 
-        assert.throws( function(){ mapModel.update( { name:"testing" } ) } , ReferenceError );
-        assert.throws( function(){ mapModel.update( obj6 ) } , ReferenceError );
+        assert.throws( function(){ model.update( { name:"testing" } ) } , ReferenceError );
+        assert.throws( function(){ model.update( obj6 ) } , ReferenceError );
     });
 });
