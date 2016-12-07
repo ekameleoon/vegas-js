@@ -232,7 +232,7 @@ ArrayModel.prototype = Object.create( ChangeModel.prototype ,
      */
     isEmpty : { value : function()
     {
-        return this._arrays.length === 0 ;
+        return this._array.length === 0 ;
     }},
 
     /**
