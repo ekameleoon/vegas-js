@@ -54,81 +54,83 @@ export function ArrayIterator( array )
     }) ;
 }
 
-ArrayIterator.prototype = Object.create( Iterator.prototype ) ;
-ArrayIterator.prototype.constructor = ArrayIterator ;
-
-/**
- * Returns <code>true</code> if the iteration has more elements.
- * @return <code>true</code> if the iteration has more elements.
- * @name hasNext
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.hasNext = function()
+ArrayIterator.prototype = Object.create( Iterator.prototype ,
 {
-    return (this._k < this._a.length -1) ;
-}
+    constructor : { value : ArrayIterator } ,
 
-/**
- * Returns the current key of the internal pointer of the iterator (optional operation).
- * @return the current key of the internal pointer of the iterator (optional operation).
- * @name key
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.key = function()
-{
-    return this._k ;
-}
+    /**
+     * Deletes from the underlying collection the last element returned by the iterator (optional operation).
+     * @name delete
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    delete : { value : function()
+    {
+        return this._a.splice(this._k--, 1)[0] ;
+    }},
 
-/**
- * Returns the next element in the iteration.
- * @return the next element in the iteration.
- * @name next
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.next = function()
-{
-    return this._a[++this._k] ;
-}
+    /**
+     * Returns <code>true</code> if the iteration has more elements.
+     * @return <code>true</code> if the iteration has more elements.
+     * @name hasNext
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    hasNext : { value : function()
+    {
+        return (this._k < this._a.length -1) ;
+    }},
 
-/**
- * Removes from the underlying collection the last element returned by the iterator (optional operation).
- * @name remove
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.remove = function()
-{
-    return this._a.splice(this._k--, 1)[0] ;
-}
+    /**
+     * Returns the current key of the internal pointer of the iterator (optional operation).
+     * @return the current key of the internal pointer of the iterator (optional operation).
+     * @name key
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    key : { value : function()
+    {
+        return this._k ;
+    }},
 
-/**
- * Reset the internal pointer of the iterator (optional operation).
- * @name reset
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.reset = function()
-{
-    this._k = -1 ;
-}
+    /**
+     * Returns the next element in the iteration.
+     * @return the next element in the iteration.
+     * @name next
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    next : { value : function()
+    {
+        return this._a[++this._k] ;
+    }},
 
-/**
- * Changes the position of the internal pointer of the iterator (optional operation).
- * @name seek
- * @memberof system.data.iterators.ArrayIterator
- * @instance
- * @function
- */
-ArrayIterator.prototype.seek = function ( position )
-{
-    position = Math.max( Math.min( position - 1 , this._a.length ) , -1 ) ;
-    this._k = isNaN(position) ? -1 : position ;
-}
+    /**
+     * Reset the internal pointer of the iterator (optional operation).
+     * @name reset
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    reset : { value : function()
+    {
+        this._k = -1 ;
+    }},
+
+    /**
+     * Changes the position of the internal pointer of the iterator (optional operation).
+     * @name seek
+     * @memberof system.data.iterators.ArrayIterator
+     * @instance
+     * @function
+     */
+    seek : { value : function ( position )
+    {
+        position = Math.max( Math.min( position - 1 , this._a.length ) , -1 ) ;
+        this._k = isNaN(position) ? -1 : position ;
+    }}
+}) ;

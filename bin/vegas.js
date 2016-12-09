@@ -1746,13 +1746,12 @@ var EARTH_RADIUS_IN_METERS = 6371000;
 var EPSILON = 0.000000001;
 
 var fibonacci = function fibonacci(value) {
-    var t;
-    var j;
     var i = 1;
+    var j = 0;
     for (var k = 1; k <= value; k++) {
-        t = i + j;
-        i = j;
-        j = t;
+        var _ref = [j, i + j];
+        i = _ref[0];
+        j = _ref[1];
     }
     return j;
 };
@@ -2972,24 +2971,31 @@ Identifiable.prototype = Object.create(Object.prototype, {
 });
 
 function isIterator(target) {
-  var bool = false;
   if (target) {
-    bool = target instanceof Iterator || 'hasNext' in target && target.hasNext instanceof Function && 'key' in target && target.key instanceof Function && 'next' in target && target.next instanceof Function && 'remove' in target && target.remove instanceof Function && 'reset' in target && target.reset instanceof Function && 'seek' in target && target.seek instanceof Function;
+    return target instanceof Iterator ||
+    Boolean(target['delete']) && target.delete instanceof Function && Boolean(target['hasNext']) && target.hasNext instanceof Function && Boolean(target['key']) && target.key instanceof Function && Boolean(target['next']) && target.next instanceof Function && Boolean(target['reset']) && target.reset instanceof Function && Boolean(target['seek']) && target.seek instanceof Function
+    ;
   }
-  return bool;
+  return false;
 }
 function Iterator() {}
-Iterator.prototype = Object.create(Object.prototype);
-Iterator.prototype.constructor = Iterator;
-Iterator.prototype.hasNext = function () {};
-Iterator.prototype.key = function () {};
-Iterator.prototype.next = function () {};
-Iterator.prototype.remove = function () {};
-Iterator.prototype.reset = function () {};
-Iterator.prototype.seek = function (position) {};
-Iterator.prototype.toString = function () {
-  return '[' + this.constructor.name + ']';
-};
+Iterator.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: Iterator },
+  delete: { writable: true, value: function value() {} },
+  hasNext: { writable: true, value: function value() {} },
+  key: { writable: true, value: function value() {} },
+  next: { writable: true, value: function value() {} },
+  reset: { writable: true, value: function value() {} },
+  seek: { writable: true, value: function value(position) {} },
+  toString: {
+    writable: true, value: function value() {
+      if (!('__clazzname__' in this.constructor)) {
+        Object.defineProperty(this.constructor, '__clazzname__', { value: this.constructor.name });
+      }
+      return '[' + this.constructor.__clazzname__ + ']';
+    }
+  }
+});
 
 function isOrderedIterator(target) {
   var bool = false;
@@ -3102,27 +3108,28 @@ function ArrayIterator(array) {
         _k: { value: -1, writable: true }
     });
 }
-ArrayIterator.prototype = Object.create(Iterator.prototype);
-ArrayIterator.prototype.constructor = ArrayIterator;
-ArrayIterator.prototype.hasNext = function () {
-    return this._k < this._a.length - 1;
-};
-ArrayIterator.prototype.key = function () {
-    return this._k;
-};
-ArrayIterator.prototype.next = function () {
-    return this._a[++this._k];
-};
-ArrayIterator.prototype.remove = function () {
-    return this._a.splice(this._k--, 1)[0];
-};
-ArrayIterator.prototype.reset = function () {
-    this._k = -1;
-};
-ArrayIterator.prototype.seek = function (position) {
-    position = Math.max(Math.min(position - 1, this._a.length), -1);
-    this._k = isNaN(position) ? -1 : position;
-};
+ArrayIterator.prototype = Object.create(Iterator.prototype, {
+    constructor: { value: ArrayIterator },
+    delete: { value: function value() {
+            return this._a.splice(this._k--, 1)[0];
+        } },
+    hasNext: { value: function value() {
+            return this._k < this._a.length - 1;
+        } },
+    key: { value: function value() {
+            return this._k;
+        } },
+    next: { value: function value() {
+            return this._a[++this._k];
+        } },
+    reset: { value: function value() {
+            this._k = -1;
+        } },
+    seek: { value: function value(position) {
+            position = Math.max(Math.min(position - 1, this._a.length), -1);
+            this._k = isNaN(position) ? -1 : position;
+        } }
+});
 
 function MapIterator(map) {
     if (map && map instanceof KeyValuePair) {
@@ -3135,28 +3142,29 @@ function MapIterator(map) {
         throw new ReferenceError(this + " constructor failed, the passed-in KeyValuePair argument not must be 'null'.");
     }
 }
-MapIterator.prototype = Object.create(Iterator.prototype);
-MapIterator.prototype.constructor = MapIterator;
-MapIterator.prototype.hasNext = function () {
-    return this._i.hasNext();
-};
-MapIterator.prototype.key = function () {
-    return this._k;
-};
-MapIterator.prototype.next = function () {
-    this._k = this._i.next();
-    return this._m.get(this._k);
-};
-MapIterator.prototype.remove = function () {
-    this._i.remove();
-    return this._m.delete(this._k);
-};
-MapIterator.prototype.reset = function () {
-    this._i.reset();
-};
-MapIterator.prototype.seek = function (position) {
-    throw new Error("This Iterator does not support the seek() method.");
-};
+MapIterator.prototype = Object.create(Iterator.prototype, {
+    constructor: { writable: true, value: MapIterator },
+    delete: { value: function value() {
+            this._i.delete();
+            return this._m.delete(this._k);
+        } },
+    hasNext: { value: function value() {
+            return this._i.hasNext();
+        } },
+    key: { value: function value() {
+            return this._k;
+        } },
+    next: { value: function value() {
+            this._k = this._i.next();
+            return this._m.get(this._k);
+        } },
+    reset: { value: function value() {
+            this._i.reset();
+        } },
+    seek: { value: function value(position) {
+            throw new Error("This Iterator does not support the seek() method.");
+        } }
+});
 
 function MapEntry(key, value) {
   this.key = key;
@@ -7672,7 +7680,9 @@ var logics = Object.assign({
   IfZero: IfZero
 });
 
-function Model() {}
+function Model() {
+    Lockable.call(this);
+}
 Model.prototype = Object.create(Lockable.prototype, {
     constructor: { writable: true, value: Model },
     supports: { writable: true, value: function value(_value) {
@@ -7690,6 +7700,7 @@ Model.prototype = Object.create(Lockable.prototype, {
 });
 
 function ChangeModel() {
+    Model.call(this);
     Object.defineProperties(this, {
         beforeChanged: { value: new Signal() },
         changed: { value: new Signal() },
@@ -7975,7 +7986,7 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
             return this._array.indexOf(entry) > -1;
         } },
     isEmpty: { value: function value() {
-            return this._arrays.length === 0;
+            return this._array.length === 0;
         } },
     notifyAdd: { value: function value(index, entry) {
             if (!this.isLocked()) {

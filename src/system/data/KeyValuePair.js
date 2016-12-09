@@ -45,7 +45,7 @@ KeyValuePair.prototype = Object.create( Object.prototype ,
     clone : { value : function () { return new KeyValuePair() } , writable : true } ,
 
     /**
-     * Removes the mapping for this key from this map if it is present (optional operation).
+     * The <code>delete()</code> method removes the specified element from a KeyValuePair object.
      * @param {*} key - The key of the entry to remove.
      * @name delete
      * @memberof system.data.KeyValuePair

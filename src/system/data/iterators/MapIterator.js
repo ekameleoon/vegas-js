@@ -20,11 +20,23 @@ import { KeyValuePair }  from '../KeyValuePair.js' ;
  * map.set("key2", "value2") ;
  * map.set("key3", "value3") ;
  *
+ * map.set("key1", "value1") ;
+ * map.set("key2", "value2") ;
+ * map.set("key3", "value3") ;
+ *
+ * trace( '> ' + map ) ;
+ *
  * var it = map.iterator() ;
  * while( it.hasNext() )
  * {
  *     trace (it.next() + " : " + it.key()) ;
+ *     if( it.key() === "key2" )
+ *     {
+ *         it.delete() ;
+ *     }
  * }
+ *
+ * trace( '> ' + map ) ;
  */
 export function MapIterator( map )
 {
@@ -43,82 +55,84 @@ export function MapIterator( map )
     }
 }
 
-MapIterator.prototype = Object.create( Iterator.prototype ) ;
-MapIterator.prototype.constructor = MapIterator ;
-
-/**
- * Returns <code>true</code> if the iteration has more elements.
- * @return <code>true</code> if the iteration has more elements.
- * @name hasNext
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.hasNext = function()
+MapIterator.prototype = Object.create( Iterator.prototype ,
 {
-    return this._i.hasNext() ;
-}
+    constructor : { writable : true , value : MapIterator } ,
 
-/**
- * Returns the current key of the internal pointer of the iterator (optional operation).
- * @return the current key of the internal pointer of the iterator (optional operation).
- * @name key
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.key = function()
-{
-    return this._k ;
-}
+    /**
+     * Deletes from the underlying collection the last element returned by the iterator (optional operation).
+     * @name delete
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    delete : { value : function()
+    {
+        this._i.delete() ;
+        return this._m.delete( this._k ) ;
+    }},
 
-/**
- * Returns the next element in the iteration.
- * @return the next element in the iteration.
- * @name next
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.next = function()
-{
-    this._k = this._i.next() ;
-    return this._m.get( this._k ) ;
-}
+    /**
+     * Returns <code>true</code> if the iteration has more elements.
+     * @return <code>true</code> if the iteration has more elements.
+     * @name hasNext
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    hasNext : { value : function()
+    {
+        return this._i.hasNext() ;
+    }},
 
-/**
- * Removes from the underlying collection the last element returned by the iterator (optional operation).
- * @name remove
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.remove = function()
-{
-    this._i.remove() ;
-    return this._m.delete( this._k ) ;
-}
+    /**
+     * Returns the current key of the internal pointer of the iterator (optional operation).
+     * @return the current key of the internal pointer of the iterator (optional operation).
+     * @name key
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    key : { value : function()
+    {
+        return this._k ;
+    }},
 
-/**
- * Reset the internal pointer of the iterator (optional operation).
- * @name reset
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.reset = function()
-{
-    this._i.reset() ;
-}
+    /**
+     * Returns the next element in the iteration.
+     * @return the next element in the iteration.
+     * @name next
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    next : { value : function()
+    {
+        this._k = this._i.next() ;
+        return this._m.get( this._k ) ;
+    }},
 
-/**
- * Changes the position of the internal pointer of the iterator (optional operation).
- * @name seek
- * @memberof system.data.iterators.MapIterator
- * @instance
- * @function
- */
-MapIterator.prototype.seek = function ( position )
-{
-    throw new Error( "This Iterator does not support the seek() method.") ;
-}
+    /**
+     * Reset the internal pointer of the iterator (optional operation).
+     * @name reset
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    reset : { value : function()
+    {
+        this._i.reset() ;
+    }},
+
+    /**
+     * Changes the position of the internal pointer of the iterator (optional operation).
+     * @name seek
+     * @memberof system.data.iterators.MapIterator
+     * @instance
+     * @function
+     */
+    seek : { value : function ( position )
+    {
+        throw new Error( "This Iterator does not support the seek() method.") ;
+    }}
+}) ;
