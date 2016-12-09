@@ -26,8 +26,8 @@ describe( 'mocks.MockSlot' , () =>
         assert.instanceOf( slot , Receiver );
     });
 
-    it('new MockSlot().isPassed()', () =>
+    it('new MockSlot().isReceived()', () =>
     {
-        assert.isFalse( slot.isPassed() );
+        assert.isFalse( slot.isReceived() );
     });
 });
