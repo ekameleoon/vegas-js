@@ -4,12 +4,22 @@ import { ChangeModel } from '../../../../src/system/models/ChangeModel.js' ;
 import { MapModel }    from '../../../../src/system/models/maps/MapModel.js' ;
 import { Signal }      from '../../../../src/system/signals/Signal.js' ;
 
+import { MockSlot }    from '../../../mocks/MockSlot.js' ;
+
 import chai  from 'chai' ;
 const assert = chai.assert ;
 
 describe( 'system.models.maps.MapModel' , () =>
 {
     let model = new MapModel() ;
+    let slot = new MockSlot();
+
+    let obj1 = { id:1 , name:"test1" };
+    let obj2 = { id:2 , name:"test2" };
+    let obj3 = { id:3 , name:"test3" };
+    let obj4 = { id:4 , name:"test4" };
+    let obj5 = { id:5 , name:"test5" };
+    let obj6 = { id:6 , name:"test6" };
 
     it('MapModel is a constructor function', () =>
     {
@@ -31,9 +41,61 @@ describe( 'system.models.maps.MapModel' , () =>
         assert.instanceOf( model.added , Signal );
     });
 
+    it('new MapModel().added.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.added.connect( slot ) );
+        assert.isTrue( model.added.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().added.disconnect()', () =>
+    {
+        assert.isTrue( model.added.hasReceiver( slot ) );
+        assert.isTrue( model.added.disconnect( slot ) );
+        assert.isFalse( model.added.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().notifyAdd()', () =>
+    {
+        slot = new MockSlot();
+        model = new MapModel();
+        model.added.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyAdd( obj1 );
+        assert.isTrue( slot.isReceived() );
+        assert.equal( slot.getValues()[0] , obj1 );
+    });
+
     it('new MapModel().removed instanceOf Signal', () =>
     {
         assert.instanceOf( model.removed , Signal );
+    });
+
+    it('new MapModel().removed.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.removed.connect( slot ) );
+        assert.isTrue( model.removed.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().removed.disconnect()', () =>
+    {
+        assert.isTrue( model.removed.hasReceiver( slot ) );
+        assert.isTrue( model.removed.disconnect( slot ) );
+        assert.isFalse( model.removed.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().notifyRemove()', () =>
+    {
+        slot = new MockSlot();
+        model = new MapModel();
+        model.removed.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyRemove( obj1 );
+        assert.isTrue( slot.isReceived() );
+        assert.equal( slot.getValues()[0] , obj1 );
     });
 
     it('new MapModel().updated instanceOf Signal', () =>
@@ -41,12 +103,31 @@ describe( 'system.models.maps.MapModel' , () =>
         assert.instanceOf( model.updated , Signal );
     });
 
-    let obj1 = { id:1 , name:"test1" };
-    let obj2 = { id:2 , name:"test2" };
-    let obj3 = { id:3 , name:"test3" };
-    let obj4 = { id:4 , name:"test4" };
-    let obj5 = { id:5 , name:"test5" };
-    let obj6 = { id:6 , name:"test6" };
+    it('new MapModel().updated.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.updated.connect( slot ) );
+        assert.isTrue( model.updated.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().updated.disconnect()', () =>
+    {
+        assert.isTrue( model.updated.hasReceiver( slot ) );
+        assert.isTrue( model.updated.disconnect( slot ) );
+        assert.isFalse( model.updated.hasReceiver( slot ) );
+    });
+
+    it('new MapModel().notifyUpdate()', () =>
+    {
+        slot = new MockSlot();
+        model = new MapModel();
+        model.updated.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyUpdate( obj1 );
+        assert.isTrue( slot.isReceived() );
+        assert.equal( slot.getValues()[0] , obj1 );
+    });
 
     it('new MapModel().add() with null entries', () =>
     {
