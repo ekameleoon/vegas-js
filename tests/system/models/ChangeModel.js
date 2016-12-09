@@ -77,7 +77,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isFalse( model.beforeChanged.hasReceiver( slot ) );
     });
 
-    it('new ChangeModel().notifyBeforeChange', () =>
+    it('new ChangeModel().notifyBeforeChange()', () =>
     {
         slot = new MockSlot();
         model = new ChangeModel();
@@ -86,7 +86,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isNull( slot.getValues() );
         model.notifyBeforeChange( obj );
         assert.isTrue( slot.isReceived() );
-        assert.equal( slot.getValues() , obj );
+        assert.equal( slot.getValues()[0] , obj );
     });
 
     it('new ChangeModel().changed instanceOf Signal', () =>
@@ -108,7 +108,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isFalse( model.changed.hasReceiver( slot ) );
     });
 
-    it('new ChangeModel().notifyChange', () =>
+    it('new ChangeModel().notifyChange()', () =>
     {
         slot = new MockSlot();
         model = new ChangeModel();
@@ -117,7 +117,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isNull( slot.getValues() );
         model.notifyChange( obj );
         assert.isTrue( slot.isReceived() );
-        assert.equal( slot.getValues() , obj );
+        assert.equal( slot.getValues()[0] , obj );
     });
 
     it('new ChangeModel().cleared instanceOf Signal', () =>
@@ -139,7 +139,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isFalse( model.cleared.hasReceiver( slot ) );
     });
 
-    it('new ChangeModel().notifyClear', () =>
+    it('new ChangeModel().notifyClear()', () =>
     {
         slot = new MockSlot();
         model = new ChangeModel();
@@ -148,7 +148,7 @@ describe( 'system.models.ChangeModel' , () =>
         assert.isNull( slot.getValues() );
         model.notifyClear( obj );
         assert.isTrue( slot.isReceived() );
-        assert.deepEqual( slot.getValues() , {} );
+        assert.deepEqual( slot.getValues()[0] , {} );
     });
 
     it('new ChangeModel().current = new Object()', () =>
