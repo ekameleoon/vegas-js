@@ -1,17 +1,21 @@
 "use strict" ;
 
 import { ChangeModel } from '../../../src/system/models/ChangeModel.js' ;
-import { Model } from '../../../src/system/models/Model.js' ;
-import { Signal }    from '../../../src/system/signals/Signal.js' ;
+import { Model }       from '../../../src/system/models/Model.js' ;
+import { Signal }      from '../../../src/system/signals/Signal.js' ;
 
-import { isLockable }  from '../../../src/system/process/Lockable.js' ;
+import { isLockable } from '../../../src/system/process/Lockable.js' ;
+import { MockSlot }   from '../../mocks/MockSlot.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
 
 describe( 'system.models.ChangeModel' , () =>
 {
-    let changeModel = new ChangeModel() ;
+    let model = new ChangeModel() ;
+    let slot = new MockSlot();
+
+    let obj = { id:1 , name:'test' };
 
     it('ChangeModel is a constructor function', () =>
     {
@@ -20,72 +24,149 @@ describe( 'system.models.ChangeModel' , () =>
 
     it('new ChangeModel().constructor === ChangeModel', () =>
     {
-        assert.equal( changeModel.constructor , ChangeModel );
+        assert.equal( model.constructor , ChangeModel );
     });
 
     it('new ChangeModel() instanceOf Model', () =>
     {
-        assert.instanceOf( changeModel , Model );
+        assert.instanceOf( model , Model );
     });
 
     it('new ChangeModel() isLockable', () =>
     {
-        assert.isTrue( isLockable(changeModel) );
+        assert.isTrue( isLockable(model) );
     });
 
     it('new ChangeModel().isLocked() === false', () =>
     {
-        changeModel = new ChangeModel() ;
-        assert.isFalse( changeModel.isLocked() );
+        model = new ChangeModel() ;
+        assert.isFalse( model.isLocked() );
     });
 
     it('new ChangeModel().lock()', () =>
     {
-        changeModel = new ChangeModel();
-        changeModel.lock() ;
-        assert.isTrue( changeModel.isLocked() );
+        model = new ChangeModel();
+        model.lock() ;
+        assert.isTrue( model.isLocked() );
     });
 
     it('new ChangeModel().unlock()', () =>
     {
-        changeModel = new ChangeModel();
-        changeModel.lock() ;
-        changeModel.unlock() ;
-        assert.isFalse( changeModel.isLocked() );
+        model = new ChangeModel();
+        model.lock() ;
+        model.unlock() ;
+        assert.isFalse( model.isLocked() );
     });
 
     it('new ChangeModel().beforeChanged instanceOf Signal', () =>
     {
-        assert.instanceOf( changeModel.beforeChanged , Signal );
+        assert.instanceOf( model.beforeChanged , Signal );
+    });
+
+    it('new ChangeModel().beforeChanged.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.beforeChanged.connect( slot ) );
+        assert.isTrue( model.beforeChanged.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().beforeChanged.disconnect()', () =>
+    {
+        assert.isTrue( model.beforeChanged.hasReceiver( slot ) );
+        assert.isTrue( model.beforeChanged.disconnect( slot ) );
+        assert.isFalse( model.beforeChanged.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().notifyBeforeChange', () =>
+    {
+        slot = new MockSlot();
+        model = new ChangeModel();
+        model.beforeChanged.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyBeforeChange( obj );
+        assert.isTrue( slot.isReceived() );
+        assert.equal( slot.getValues() , obj );
     });
 
     it('new ChangeModel().changed instanceOf Signal', () =>
     {
-        assert.instanceOf( changeModel.changed , Signal );
+        assert.instanceOf( model.changed , Signal );
+    });
+
+    it('new ChangeModel().changed.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.changed.connect( slot ) );
+        assert.isTrue( model.changed.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().changed.disconnect()', () =>
+    {
+        assert.isTrue( model.changed.hasReceiver( slot ) );
+        assert.isTrue( model.changed.disconnect( slot ) );
+        assert.isFalse( model.changed.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().notifyChange', () =>
+    {
+        slot = new MockSlot();
+        model = new ChangeModel();
+        model.changed.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyChange( obj );
+        assert.isTrue( slot.isReceived() );
+        assert.equal( slot.getValues() , obj );
     });
 
     it('new ChangeModel().cleared instanceOf Signal', () =>
     {
-        assert.instanceOf( changeModel.cleared , Signal );
+        assert.instanceOf( model.cleared , Signal );
     });
 
-    let obj = { id:1 , name:'test' };
+    it('new ChangeModel().cleared.connect()', () =>
+    {
+        slot = new MockSlot();
+        assert.isTrue( model.cleared.connect( slot ) );
+        assert.isTrue( model.cleared.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().cleared.disconnect()', () =>
+    {
+        assert.isTrue( model.cleared.hasReceiver( slot ) );
+        assert.isTrue( model.cleared.disconnect( slot ) );
+        assert.isFalse( model.cleared.hasReceiver( slot ) );
+    });
+
+    it('new ChangeModel().notifyClear', () =>
+    {
+        slot = new MockSlot();
+        model = new ChangeModel();
+        model.cleared.connect( slot );
+        assert.isFalse( slot.isReceived() );
+        assert.isNull( slot.getValues() );
+        model.notifyClear( obj );
+        assert.isTrue( slot.isReceived() );
+        assert.deepEqual( slot.getValues() , {} );
+    });
+
     it('new ChangeModel().current = new Object()', () =>
     {
-        changeModel.current = obj;
-        assert.deepEqual( changeModel.current , obj );
+        model = new ChangeModel();
+        model.current = obj;
+        assert.deepEqual( model.current , obj );
     });
 
     it('new ChangeModel().clear()', () =>
     {
-        changeModel.clear();
-        assert.equal( changeModel.current , null );
+        model.clear();
+        assert.equal( model.current , null );
     });
-
 
     it('new ChangeModel().toString() === "[ChangeModel]"', () =>
     {
-        let changeModel = new ChangeModel() ;
-        assert.equal( changeModel.toString() , "[ChangeModel]" );
+        let model = new ChangeModel() ;
+        assert.equal( model.toString() , "[ChangeModel]" );
     });
 });
