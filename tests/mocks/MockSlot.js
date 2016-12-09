@@ -36,8 +36,10 @@ MockSlot.prototype = Object.create( Receiver.prototype ,
         return this._received;
     }},
 
-    receive : { value : function ( values )
+    receive : { value : function ( /*Arguments*/ )
     {
+        var values = Object.setPrototypeOf( arguments , Array.prototype ) ;
+
         this._received = true ;
         this._values   = values ;
     }},
