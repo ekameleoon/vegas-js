@@ -1,9 +1,9 @@
 "use strict" ;
 
-import { ChangeModel } from '../../../src/system/models/ChangeModel.js' ;
-import { MemoryModel } from '../../../src/system/models/MemoryModel.js' ;
-import { NoSuchElementError }  from "../../../src/system/errors/NoSuchElementError.js" ;
-import { Signal }    from '../../../src/system/signals/Signal.js' ;
+import { ChangeModel }        from '../../../src/system/models/ChangeModel.js' ;
+import { MemoryModel }        from '../../../src/system/models/MemoryModel.js' ;
+import { NoSuchElementError } from "../../../src/system/errors/NoSuchElementError.js" ;
+import { Signal }             from '../../../src/system/signals/Signal.js' ;
 
 import { isLockable }  from '../../../src/system/process/Lockable.js' ;
 
@@ -12,7 +12,7 @@ const assert = chai.assert ;
 
 describe( 'system.models.MemoryModel' , () =>
 {
-    let memoryModel = new MemoryModel() ;
+    let model = new MemoryModel() ;
 
     it('MemoryModel is a constructor function', () =>
     {
@@ -21,230 +21,230 @@ describe( 'system.models.MemoryModel' , () =>
 
     it('new MemoryModel().constructor === MemoryModel', () =>
     {
-        assert.equal( memoryModel.constructor , MemoryModel );
+        assert.equal( model.constructor , MemoryModel );
     });
 
     it('new MemoryModel() instanceOf ChangeModel', () =>
     {
-        assert.instanceOf( memoryModel , ChangeModel );
+        assert.instanceOf( model , ChangeModel );
     });
 
     it('new MemoryModel() isLockable', () =>
     {
-        assert.isTrue( isLockable(memoryModel) );
+        assert.isTrue( isLockable(model) );
     });
 
     it('new MemoryModel().isLocked() === false', () =>
     {
-        memoryModel = new MemoryModel() ;
-        assert.isFalse( memoryModel.isLocked() );
+        model = new MemoryModel() ;
+        assert.isFalse( model.isLocked() );
     });
 
     it('new MemoryModel().lock()', () =>
     {
-        memoryModel = new MemoryModel();
-        memoryModel.lock() ;
-        assert.isTrue( memoryModel.isLocked() );
+        model = new MemoryModel();
+        model.lock() ;
+        assert.isTrue( model.isLocked() );
     });
 
     it('new MemoryModel().unlock()', () =>
     {
-        memoryModel = new MemoryModel();
-        memoryModel.lock() ;
-        memoryModel.unlock() ;
-        assert.isFalse( memoryModel.isLocked() );
+        model = new MemoryModel();
+        model.lock() ;
+        model.unlock() ;
+        assert.isFalse( model.isLocked() );
     });
 
     it('new MemoryModel().beforeChanged instanceOf Signal', () =>
     {
-        assert.instanceOf( memoryModel.beforeChanged , Signal );
+        assert.instanceOf( model.beforeChanged , Signal );
     });
 
     it('new MemoryModel().changed instanceOf Signal', () =>
     {
-        assert.instanceOf( memoryModel.changed , Signal );
+        assert.instanceOf( model.changed , Signal );
     });
 
     it('new MemoryModel().cleared instanceOf Signal', () =>
     {
-        assert.instanceOf( memoryModel.cleared , Signal );
+        assert.instanceOf( model.cleared , Signal );
     });
 
     let obj = { id:1 , name:'test' };
     it('new MemoryModel().current = new Object()', () =>
     {
-        memoryModel.current = obj;
-        assert.deepEqual( memoryModel.current , obj );
+        model.current = obj;
+        assert.deepEqual( model.current , obj );
     });
 
     it('new MemoryModel().enableErrorChecking', () =>
     {
-        assert.isFalse( memoryModel.enableErrorChecking );
-        memoryModel.enableErrorChecking = true;
-        assert.isTrue( memoryModel.enableErrorChecking );
-        memoryModel.enableErrorChecking = false;
+        assert.isFalse( model.enableErrorChecking );
+        model.enableErrorChecking = true;
+        assert.isTrue( model.enableErrorChecking );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().clear()', () =>
     {
-        memoryModel.clear();
-        assert.equal( memoryModel.length , 0 );
-        assert.isNull( memoryModel.current );
+        model.clear();
+        assert.equal( model.length , 0 );
+        assert.isNull( model.current );
     });
 
     it('new MemoryModel().length', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        assert.equal( memoryModel.length , 3 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        assert.equal( model.length , 3 );
     });
 
     it('new MemoryModel().back()', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        assert.equal( memoryModel.back() , "page2" );
-        assert.equal( memoryModel.current , "page1" );
-        assert.equal( memoryModel.length , 2 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        assert.equal( model.back() , "page2" );
+        assert.equal( model.current , "page1" );
+        assert.equal( model.length , 2 );
     });
 
     it('new MemoryModel().backTo() with empty model', () =>
     {
-        memoryModel.clear();
+        model.clear();
 
-        memoryModel.enableErrorChecking = false;
-        assert.isNull( memoryModel.backTo( 5 ) );
-        memoryModel.enableErrorChecking = true;
-        assert.throws( function(){ memoryModel.backTo( 5 ) } , NoSuchElementError );
-        memoryModel.enableErrorChecking = false;
+        model.enableErrorChecking = false;
+        assert.isNull( model.backTo( 5 ) );
+        model.enableErrorChecking = true;
+        assert.throws( function(){ model.backTo( 5 ) } , NoSuchElementError );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().backTo()', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        assert.deepEqual( memoryModel.backTo( 3 ) , "page5" );
-        assert.equal( memoryModel.current , "page2" );
-        assert.equal( memoryModel.length , 3 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        assert.deepEqual( model.backTo( 3 ) , "page5" );
+        assert.equal( model.current , "page2" );
+        assert.equal( model.length , 3 );
     });
 
     it('new MemoryModel().backTo() with position error', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        memoryModel.backTo( 3 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        model.backTo( 3 );
 
-        memoryModel.enableErrorChecking = false;
-        assert.isNull( memoryModel.backTo( 5 ) );
-        memoryModel.enableErrorChecking = true;
-        assert.throws( function(){ memoryModel.backTo( 5 ) } , RangeError );
-        memoryModel.enableErrorChecking = false;
+        model.enableErrorChecking = false;
+        assert.isNull( model.backTo( 5 ) );
+        model.enableErrorChecking = true;
+        assert.throws( function(){ model.backTo( 5 ) } , RangeError );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().first() with empty model', () =>
     {
-        memoryModel.clear();
+        model.clear();
 
-        memoryModel.enableErrorChecking = false;
-        assert.isNull( memoryModel.first() );
-        memoryModel.enableErrorChecking = true;
-        assert.throws( function(){ memoryModel.first() } , NoSuchElementError );
-        memoryModel.enableErrorChecking = false;
+        model.enableErrorChecking = false;
+        assert.isNull( model.first() );
+        model.enableErrorChecking = true;
+        assert.throws( function(){ model.first() } , NoSuchElementError );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().first()', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        assert.equal( memoryModel.first() , "home" );
-        assert.equal( memoryModel.length , 6 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        assert.equal( model.first() , "home" );
+        assert.equal( model.length , 6 );
     });
 
     it('new MemoryModel().home() with empty model', () =>
     {
-        memoryModel.clear();
+        model.clear();
 
-        memoryModel.enableErrorChecking = false;
-        assert.isNull( memoryModel.home() );
-        memoryModel.enableErrorChecking = true;
-        assert.throws( function(){ memoryModel.home() } , NoSuchElementError );
-        memoryModel.enableErrorChecking = false;
+        model.enableErrorChecking = false;
+        assert.isNull( model.home() );
+        model.enableErrorChecking = true;
+        assert.throws( function(){ model.home() } , NoSuchElementError );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().home()', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        assert.equal( memoryModel.home() , "page5" );
-        assert.equal( memoryModel.current , "home" );
-        assert.equal( memoryModel.length , 1 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        assert.equal( model.home() , "page5" );
+        assert.equal( model.current , "home" );
+        assert.equal( model.length , 1 );
     });
 
     it('new MemoryModel().isEmpty()', () =>
     {
-        memoryModel.clear();
-        assert.isTrue( memoryModel.isEmpty() );
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        assert.isFalse( memoryModel.isEmpty() );
+        model.clear();
+        assert.isTrue( model.isEmpty() );
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        assert.isFalse( model.isEmpty() );
     });
 
     it('new MemoryModel().last() with empty model', () =>
     {
-        memoryModel.clear();
+        model.clear();
 
-        memoryModel.enableErrorChecking = false;
-        assert.isNull( memoryModel.last() );
-        memoryModel.enableErrorChecking = true;
-        assert.throws( function(){ memoryModel.last() } , NoSuchElementError );
-        memoryModel.enableErrorChecking = false;
+        model.enableErrorChecking = false;
+        assert.isNull( model.last() );
+        model.enableErrorChecking = true;
+        assert.throws( function(){ model.last() } , NoSuchElementError );
+        model.enableErrorChecking = false;
     });
 
     it('new MemoryModel().last()', () =>
     {
-        memoryModel.clear();
-        memoryModel.current = "home";
-        memoryModel.current = "page1";
-        memoryModel.current = "page2";
-        memoryModel.current = "page3";
-        memoryModel.current = "page4";
-        memoryModel.current = "page5";
-        assert.equal( memoryModel.last() , "page5" );
-        assert.equal( memoryModel.length , 6 );
+        model.clear();
+        model.current = "home";
+        model.current = "page1";
+        model.current = "page2";
+        model.current = "page3";
+        model.current = "page4";
+        model.current = "page5";
+        assert.equal( model.last() , "page5" );
+        assert.equal( model.length , 6 );
     });
 
 
     it('new MemoryModel().toString() === "[MemoryModel]"', () =>
     {
-        let memoryModel = new MemoryModel() ;
-        assert.equal( memoryModel.toString() , "[MemoryModel]" );
+        let model = new MemoryModel() ;
+        assert.equal( model.toString() , "[MemoryModel]" );
     });
 });
