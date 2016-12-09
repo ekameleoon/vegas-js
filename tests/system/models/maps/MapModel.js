@@ -131,7 +131,7 @@ describe( 'system.models.maps.MapModel' , () =>
 
     it('new MapModel().add() with null entries', () =>
     {
-        model.clear();
+        model = new MapModel();
         assert.throws( function(){ model.add() } , ReferenceError );
         assert.throws( function(){ model.add( null ) } , ReferenceError );
         assert.throws( function(){ model.add( undefined ) } , ReferenceError );
