@@ -5,6 +5,7 @@ import './core/isFloat.js' ;
 import './core/isInt.js' ;
 import './core/isNumber.js' ;
 import './core/isString.js' ;
+import './core/isUint.js' ;
 
 import './core/global.js' ;
 import './core/arrays.js' ;

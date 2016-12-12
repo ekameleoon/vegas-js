@@ -12,6 +12,7 @@ import { isBoolean } from './core/isBoolean.js' ;
 import { isFloat   } from './core/isFloat.js' ;
 import { isInt     } from './core/isInt.js' ;
 import { isNumber  } from './core/isNumber.js' ;
+import { isUint    } from './core/isUint.js' ;
 import { isString  } from './core/isString.js' ;
 
 import { arrays   } from './core/arrays.js' ;
@@ -50,6 +51,7 @@ export var core = Object.assign
     isInt     : isInt ,
     isNumber  : isNumber ,
     isString  : isString ,
+    isUint    : isUint ,
 
     arrays   : arrays ,
     chars    : chars ,
