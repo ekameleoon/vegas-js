@@ -2,7 +2,7 @@
 
 /**
  * Indicates if an value is an upper integer.
- * @name isInt
+ * @name isUint
  * @memberof core
  * @function
  * @instance
