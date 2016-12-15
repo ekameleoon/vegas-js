@@ -13,6 +13,7 @@ export { trace  }   from './core/trace.js' ;
 export { core   }   from './core.js' ;
 export { system }   from './system.js' ;
 export { graphics } from './graphics.js' ;
+export { screens }  from './screens.js' ;
 
 //export { molecule } from './molecule.js' ;
 
