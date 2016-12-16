@@ -45,7 +45,23 @@ Object.defineProperties( RGB ,
      * @type number
      * @default 0xFF
      */
-    maximum : { value : 0xFF }
+    maximum : { value : 0xFF } ,
+
+    /**
+     * Returns the RGB representation of the color number passed in argument.
+     * @name fromNumber
+     * @memberof graphics.colors.RGB
+     * @function
+     * @example
+     * var rgb = RGB.fromNumber( 0xEA6F51 ) ;
+     * trace(rgb) ; // [RGB r:234 g:111 b:81 hex:0xEA6F51]
+     * @param {number} value - The numeric value to create a new RGB instance.
+     * @return the RGB representation of the color number passed in argument.
+     */
+    fromNumber : { value : function( value )
+    {
+        return (new RGB()).fromNumber( value ) ;
+    }}
 }) ;
 
 RGB.prototype = Object.create( Object.prototype ,

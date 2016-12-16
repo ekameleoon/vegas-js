@@ -111,6 +111,15 @@ describe( 'graphics.colors.RGB' , () =>
             assert.equal( rgb.b , 0xB5 );
             assert.equal( rgb.valueOf() , 0xA2E3B5 );
         });
+        it('RGB.fromNumber(0xA2E3B5).valueOf() === 0xA2E3B5', () =>
+        {
+            let rgb = RGB.fromNumber(0xA2E3B5)
+            assert.instanceOf( rgb , RGB );
+            assert.equal( rgb.r , 0xA2 );
+            assert.equal( rgb.g , 0xE3 );
+            assert.equal( rgb.b , 0xB5 );
+            assert.equal( rgb.valueOf() , 0xA2E3B5 );
+        });
     });
 
     describe( '#setTo' , () =>
