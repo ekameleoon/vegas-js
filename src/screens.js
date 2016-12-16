@@ -4,8 +4,6 @@ import './polyfill/Object.js' ;
 
 import { Browser } from './screens/Browser.js' ;
 import { Os }      from './screens/Os.js' ;
-import { Stage }  from './screens/display/Stage.js' ;
-import { StageDisplayState }  from './screens/display/StageDisplayState.js' ;
 
 /**
  * The {@link screens} package is .
@@ -17,15 +15,6 @@ import { StageDisplayState }  from './screens/display/StageDisplayState.js' ;
  */
 export var screens = Object.assign
 ({
-    // ----- Singletons
-
-    // ----- Classes and enumerations
-
     Browser : Browser ,
-    Os      : Os ,
-    Stage   : Stage,
-    StageDisplayState : StageDisplayState
-
-    // ----- packages
-
+    Os      : Os
 }) ;

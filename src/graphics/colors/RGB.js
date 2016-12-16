@@ -9,8 +9,6 @@ import { normalize } from '../../core/maths/normalize.js' ;
  * @name RGB
  * @class
  * @memberof graphics.colors
- * @example
- *
  */
 export function RGB( r = 0 , g = 0 , b = 0 )
 {

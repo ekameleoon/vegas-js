@@ -18,7 +18,8 @@ import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
 
-import { geom } from './graphics/geom.js' ;
+import { display } from './graphics/display.js' ;
+import { geom }    from './graphics/geom.js' ;
 
 /**
  * The {@link graphics} package is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface.
@@ -26,7 +27,7 @@ import { geom } from './graphics/geom.js' ;
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics
  * @version 1.0.7
- * @since 1.0.6
+ * @since 1.0.7
  */
 export var graphics = Object.assign
 ({
@@ -52,5 +53,6 @@ export var graphics = Object.assign
 
     // ----- packages
 
-    geom : geom
+    display : display ,
+    geom    : geom
 }) ;

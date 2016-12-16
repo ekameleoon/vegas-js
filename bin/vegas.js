@@ -143,7 +143,118 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
 
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
 
 
 
@@ -11131,6 +11242,142 @@ var ZOrder = Object.defineProperties({}, {
   FRONT: { enumerable: true, value: 1 }
 });
 
+var StageDisplayState = Object.defineProperties({}, {
+  FULL_SCREEN: { enumerable: true, value: 'fullScreen' },
+  FULL_SCREEN_INTERACTIVE: { enumerable: true, value: 'fullScreenInteractive' },
+  NORMAL: { enumerable: true, value: 'normal' }
+});
+
+function Stage() {
+  Object.defineProperties(this, {
+    fullScreen: { value: new Signal() },
+    resize: { value: new Signal() },
+    _allowFullScreen: { writable: true, value: false },
+    _displayState: { writable: true, value: StageDisplayState.NORMAL },
+    _fullScreenExit: { writable: true, value: null },
+    _fullScreenHeight: { writable: true, value: null },
+    _fullScreenInteractive: { writable: true, value: false },
+    _fullScreenRequest: { writable: true, value: null },
+    _fullScreenWidth: { writable: true, value: null },
+    _height: { writable: true, value: null },
+    _orientation: { writable: true, value: null },
+    _pixelRatio: { writable: true, value: 1 },
+    __resizeTimeout__: { writable: true, value: null },
+    _width: { writable: true, value: null }
+  });
+  this.__initialize__();
+}
+Stage.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: Stage },
+  allowFullScreen: { get: function get() {
+      return this._allowFullScreen;
+    } },
+  allowFullScreenInteractive: { get: function get() {
+      return this._fullScreenInteractive;
+    } },
+  displayState: {
+    get: function get() {
+      return this._displayState;
+    },
+    set: function set(state) {
+      if (this._displayState !== state) {
+        this._displayState = state;
+        switch (this._displayState) {
+          case StageDisplayState.FULL_SCREEN:
+            {
+              document.documentElement[this._fullScreenRequest]();
+              break;
+            }
+          case StageDisplayState.FULL_SCREEN_INTERACTIVE:
+            {
+              document.documentElement[this._fullScreenRequest](Element.ALLOW_KEYBOARD_INPUT);
+              break;
+            }
+          case StageDisplayState.NORMAL:
+          default:
+            {
+              document[this._fullScreenExit]();
+              break;
+            }
+        }
+        this.notifyFullScreen(this._displayState);
+      }
+    }
+  },
+  fullScreenHeight: { get: function get() {
+      return this._fullScreenHeight;
+    } },
+  fullScreenWidth: { get: function get() {
+      return this._fullScreenWidth;
+    } },
+  height: { get: function get() {
+      return this._height;
+    } },
+  orientation: { get: function get() {
+      return this._orientation;
+    } },
+  pixelRatio: { get: function get() {
+      return this._pixelRatio;
+    } },
+  width: { get: function get() {
+      return this._width;
+    } },
+  getViewportSize: { writable: true, value: function value() {
+      this._width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      this._height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      return { width: this._width, height: this._height };
+    } },
+  notifyResized: { writable: true, value: function value() {
+      this.getViewportSize();
+      this.resize.emit(this);
+    } },
+  notifyFullScreen: { writable: true, value: function value() {
+      this.fullScreen.emit(this._displayState, this);
+    } },
+  __initialize__: { writable: true, value: function value() {
+      this._pixelRatio = document.devicePixelRatio || 1;
+      this.getViewportSize();
+      this._fullScreenWidth = window.screen.width;
+      this._fullScreenHeight = window.screen.height;
+      var fullscreen = ['requestFullscreen', 'requestFullScreen', 'webkitRequestFullscreen', 'webkitRequestFullScreen', 'msRequestFullscreen', 'msRequestFullScreen', 'mozRequestFullScreen', 'mozRequestFullscreen'];
+      var cancel = ['cancelFullScreen', 'exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'msCancelFullScreen', 'msExitFullscreen', 'mozCancelFullScreen', 'mozExitFullscreen'];
+      var len = fullscreen.length;
+      for (var i = 0; i < len; i++) {
+        if (document.documentElement[fullscreen[i]] && document[cancel[i]]) {
+          this._allowFullScreen = true;
+          this._fullScreenRequest = fullscreen[i];
+          this._fullScreenExit = cancel[i];
+          break;
+        }
+      }
+      if (window.Element && Element.ALLOW_KEYBOARD_INPUT) {
+        this._fullScreenInteractive = true;
+      }
+      window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
+      window.addEventListener("resize", this.notifyResized.bind(this), false);
+    } }
+});
+
+var StageAspectRatio = Object.defineProperties({}, {
+  ANY: { enumerable: true, value: 'any' },
+  LANDSCAPE: { enumerable: true, value: 'landscape' },
+  PORTRAIT: { enumerable: true, value: 'portrait' }
+});
+
+/**
+ * The {@link graphics.display} library is a set of classes and utilities for display Operations.
+ * @summary The {@link graphics.display} library is a set of classes and utilities for Geometry Operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics.display
+ * @memberof graphics
+ */
+var display = Object.assign({
+  Stage: Stage,
+  StageAspectRatio: StageAspectRatio,
+  StageDisplayState: StageDisplayState
+});
+
 function ColorTransform() {
     var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -11558,7 +11805,7 @@ var geom = Object.assign({
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace graphics
  * @version 1.0.7
- * @since 1.0.6
+ * @since 1.0.7
  */
 var graphics = Object.assign({
     isDirectionable: isDirectionable,
@@ -11575,7 +11822,159 @@ var graphics = Object.assign({
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
+    display: display,
     geom: geom
+});
+
+function Os() {
+    Object.defineProperties(this, {
+        __name__: { writable: true, value: null },
+        __type__: { writable: true, value: null },
+        __version__: { writable: true, value: null }
+    });
+    this.getOsInfos();
+}
+Os.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Os },
+    name: { get: function get() {
+            return this.__name__;
+        } },
+    type: { get: function get() {
+            return this.__type__;
+        } },
+    version: { get: function get() {
+            return this.__version__;
+        } },
+    getOsInfos: { writable: true, value: function value() {
+            var ua = navigator.userAgent;
+            var name = "";
+            var type = "";
+            var version = "";
+            if (/Android/.test(ua)) {
+                name = Os.ANDROID;
+                type = Os.TYPE_MOBILE;
+            } else if (/iPad/.test(ua)) {
+                name = Os.IPAD;
+                type = Os.TYPE_MOBILE;
+            } else if (/iPod/.test(ua)) {
+                name = Os.IPAD;
+                type = Os.TYPE_MOBILE;
+            } else if (/iPhone/.test(ua)) {
+                name = Os.IPAD;
+                type = Os.TYPE_MOBILE;
+            } else if (/Linux/.test(ua)) {
+                name = Os.LINUX;
+                type = Os.TYPE_DESKTOP;
+            } else if (/Mac OS/.test(ua)) {
+                name = Os.MAC;
+                type = Os.TYPE_DESKTOP;
+            } else if (/Windows/.test(ua)) {
+                name = Os.WINDOWS;
+                type = Os.TYPE_DESKTOP;
+            }
+            this.__name__ = name;
+            this.__type__ = type;
+            this.__version__ = version;
+        } }
+});
+Object.defineProperties(Os, {
+    ANDROID: { value: 'Android', enumerable: true },
+    IPAD: { value: 'iPad', enumerable: true },
+    IPOD: { value: 'iPod', enumerable: true },
+    IPHONE: { value: 'iPhone', enumerable: true },
+    LINUX: { value: 'Linux', enumerable: true },
+    MAC: { value: 'Mac', enumerable: true },
+    WINDOWS: { value: 'Windows', enumerable: true },
+    WINDOWS_PHONE: { value: 'Windows Phone', enumerable: true },
+    TYPE_DESKTOP: { value: 'desktop', enumerable: true },
+    TYPE_MOBILE: { value: 'mobile', enumerable: true }
+});
+
+function Browser() {
+    Object.defineProperties(this, {
+        __name__: { writable: true, value: null },
+        __version__: { writable: true, value: null }
+    });
+    this.getBrowserInfos();
+}
+Browser.prototype = Object.create(Object.prototype, {
+    constructor: { value: Browser },
+    name: { get: function get() {
+            return this.__name__;
+        } },
+    version: { get: function get() {
+            return this.__version__;
+        } },
+    getBrowserInfos: { writable: true, value: function value() {
+            var ua = navigator.userAgent;
+            var name = "";
+            var version = "";
+            if (/Arora/.test(ua)) {
+                name = Browser.ARORA;
+            } else if (/Edge\/(\d+)/.test(ua)) {
+                name = Browser.EDGE;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/Opera\/(\d+)/.test(ua)) {
+                name = Browser.OPERA;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/OPR\/(\d+)/.test(ua)) {
+                name = Browser.OPERA;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/Chrome\/(\d+)/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
+                name = Browser.CHROME;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/Epiphany/.test(ua)) {
+                name = Browser.EPIPHANY;
+            } else if (/Firefox\D+(\d+)/.test(ua)) {
+                name = Browser.FIREFOX;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/FxiOS\/(\d+)/.test(ua)) {
+                name = Browser.FIREFOX;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/AppleWebKit/.test(ua) && (Os.name === Os.IPAD || Os.name === Os.IPOD || Os.name === Os.IPHONE)) {
+                name = Browser.SAFARI;
+            } else if (/MSIE (\d+\.\d+);/.test(ua)) {
+                name = Browser.IE;
+                version = parseInt(RegExp.$1, 10);
+            } else if (/Midori/.test(ua)) {
+                name = Browser.MIDORI;
+            } else if (/Safari/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
+                name = Browser.SAFARI;
+            } else if (/Trident\/(\d+\.\d+)(.*)rv:(\d+\.\d+)/.test(ua)) {
+                name = Browser.TRIDENT;
+                version = parseInt(RegExp.$3, 10);
+            } else if (/Silk/.test(ua)) {
+                name = Browser.SILK;
+            }
+            this.__name__ = name;
+            this.__version__ = version;
+        } }
+});
+Object.defineProperties(Browser, {
+    ARORA: { value: 'Arora', enumerable: true },
+    CHROME: { value: 'Chrome', enumerable: true },
+    EPIPHANY: { value: 'Epiphany', enumerable: true },
+    FIREFOX: { value: 'Firefox', enumerable: true },
+    IE: { value: 'ie', enumerable: true },
+    MIDORI: { value: 'Midori', enumerable: true },
+    OPERA: { value: 'Opera', enumerable: true },
+    SAFARI: { value: 'Safari', enumerable: true },
+    TRIDENT: { value: 'Trident', enumerable: true },
+    EDGE: { value: 'Edge', enumerable: true },
+    SILK: { value: 'Silk', enumerable: true }
+});
+
+/**
+ * The {@link screens} package is .
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace screens
+ * @version 1.0.7
+ * @since 1.0.7
+ */
+var screens = Object.assign({
+  Browser: Browser,
+  Os: Os
 });
 
 var version = '1.0.6';
@@ -11625,6 +12024,7 @@ exports.trace = trace;
 exports.core = core;
 exports.system = system;
 exports.graphics = graphics;
+exports.screens = screens;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

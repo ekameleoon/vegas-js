@@ -8,63 +8,43 @@ if( !vegas )
 
 // use the skipHello method to skip the vegas library prompt message.
 // vegas.skipHello() ;
-var global;
-var trace;
-var core;
-var screens;
-var system;
-var molecule;
+
+var global   = vegas.global  ; // jshint ignore:line
+var trace    = vegas.trace   ; // jshint ignore:line
+var core     = vegas.core    ; // jshint ignore:line
+var screens  = vegas.screens ; // jshint ignore:line
+var system   = vegas.system  ; // jshint ignore:line
+var graphics = vegas.graphics  ; // jshint ignore:line
+
+var Stage             = graphics.display.Stage;
+var StageDisplayState = graphics.display.StageDisplayState;
 
 var os;
 var browser;
-var StageDisplayState;
 var stage;
 
 window.onload = function()
 {
-    global   = vegas.global  ; // jshint ignore:line
-    trace    = vegas.trace   ; // jshint ignore:line
-    core     = vegas.core    ; // jshint ignore:line
-    screens  = vegas.screens ; // jshint ignore:line
-    system   = vegas.system  ; // jshint ignore:line
-    molecule = vegas.molecule ; // jshint ignore:line
-
-    var Os = screens.Os;
-    var Browser = screens.Browser;
-    StageDisplayState = screens.StageDisplayState;
-    var Stage = screens.Stage;
-
     // ------
 
-    function Slot( name )
+    var fullscreen = function( state )
     {
-        this.name = name ;
+        trace( 'fullscreen ' + state ) ;
     }
 
-    Slot.prototype = Object.create( system.signals.Receiver.prototype );
-    Slot.prototype.constructor = Slot;
-
-    Slot.prototype.receive = function ( message )
+    var resize = function( stage )
     {
-        trace( this + " : " + message ) ;
-    }
-
-    Slot.prototype.toString = function ()
-    {
-        return "[Slot name:" + this.name + "]" ;
+        trace( 'resize viewPort:' + core.dump( stage.getViewportSize() ) ) ;
     }
 
     // ------
 
-    os = new Os();
-    browser = new Browser();
-    stage = new Stage();
+    os      = new screens.Os();
+    browser = new screens.Browser();
+    stage   = new Stage();
 
-    var fullScreenReceiver = new Slot("fullscreen");
-    var resizeReceiver = new Slot("resize");
-
-    stage.fullScreen.connect( fullScreenReceiver );
-    stage.resize.connect( resizeReceiver );
+    stage.fullScreen.connect( fullscreen );
+    stage.resize.connect( resize );
 
     trace( vegas ) ;
     trace( vegas.metas ) ;
@@ -105,3 +85,4 @@ var goNormalScreen = function()
     document.getElementById("full").style.display = "initial";
     document.getElementById("normal").style.display = "none";
 }
+

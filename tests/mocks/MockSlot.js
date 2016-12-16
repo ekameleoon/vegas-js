@@ -1,7 +1,6 @@
 'use strict'
 
-import { Receiver }     from "../../src/system/signals/Receiver.js" ;
-
+import { Receiver } from "../../src/system/signals/Receiver.js" ;
 
 export function MockSlot()
 {
@@ -18,7 +17,6 @@ export function MockSlot()
          * @private
          */
         _values : { value : null , writable : true }
-
     });
 }
 
