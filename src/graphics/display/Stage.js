@@ -16,7 +16,8 @@ export function Stage()
     Object.defineProperties( this ,
     {
         /**
-         * This signal emit when fullscreen.
+         * This signal emit when fullscreen state is changed.
+         * @name fullScreen
          * @memberof graphics.display.Stage
          * @type {system.signals.Signal}
          * @instance
@@ -25,7 +26,18 @@ export function Stage()
         fullScreen : { value : new Signal() },
 
         /**
-         * This signal emit when resize.
+         * This signal emit when the orientation is changed.
+         * @name orientationChange
+         * @memberof graphics.display.Stage
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        orientationChange : { value : new Signal() },
+
+        /**
+         * This signal emit when the stage is resized.
+         * @name resize
          * @memberof graphics.display.Stage
          * @type {system.signals.Signal}
          * @instance
@@ -103,6 +115,7 @@ Stage.prototype = Object.create( Object.prototype ,
 
     /**
      * Get if the stage allow fullScreen
+     * @name allowFullScreen
      * @memberof graphics.display.Stage
      * @type {boolean}
      * @instance
@@ -112,6 +125,7 @@ Stage.prototype = Object.create( Object.prototype ,
 
     /**
      * Get if the stage allow fullScreen with text input
+     * @name allowFullScreenInteractive
      * @memberof graphics.display.Stage
      * @type {boolean}
      * @instance
@@ -203,7 +217,10 @@ Stage.prototype = Object.create( Object.prototype ,
      * @memberof graphics.display.Stage
      * @instance
      */
-    orientation : { get : function() { return this._orientation ; } } ,
+    orientation : { get : function()
+    {
+        return window.screen.orientation.type; // FIXME test if the navigator is Safari ?
+    }} ,
 
     /**
      * Indicates the pixelRatio of the stage.
@@ -242,10 +259,21 @@ Stage.prototype = Object.create( Object.prototype ,
      * @function
      * @instance
      */
-    notifyResized : { writable : true , value : function()
+    notifyFullScreen : { writable : true , value : function()
     {
-        this.getViewportSize();
-        this.resize.emit( this ) ;
+        this.fullScreen.emit( this._displayState , this ) ;
+    }},
+
+    /**
+     * Notify when the orientation is changed.
+     * @name notifyResized
+     * @memberof graphics.display.Stage
+     * @function
+     * @instance
+     */
+    notifyOrientationChange : { writable : true , value : function()
+    {
+        this.orientationChange.emit( this ) ;
     }},
 
     /**
@@ -255,9 +283,10 @@ Stage.prototype = Object.create( Object.prototype ,
      * @function
      * @instance
      */
-    notifyFullScreen : { writable : true , value : function()
+    notifyResized : { writable : true , value : function()
     {
-        this.fullScreen.emit( this._displayState , this ) ;
+        this.getViewportSize();
+        this.resize.emit( this ) ;
     }},
 
     /**
@@ -329,7 +358,8 @@ Stage.prototype = Object.create( Object.prototype ,
 
         // -------- Behaviors
 
-        window.addEventListener( "fullscreenchange" , this.notifyFullScreen.bind( this ) , false );
-        window.addEventListener( "resize"           , this.notifyResized.bind( this )    , false );
+        window.addEventListener( "fullscreenchange"  , this.notifyFullScreen.bind( this )      , false );
+        window.addEventListener( "orientationchange" , this.notifyOrientationChange.bind(this) , false ) ;
+        window.addEventListener( "resize"            , this.notifyResized.bind( this )         , false );
     }}
 });

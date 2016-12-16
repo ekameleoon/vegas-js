@@ -11251,6 +11251,7 @@ var StageDisplayState = Object.defineProperties({}, {
 function Stage() {
   Object.defineProperties(this, {
     fullScreen: { value: new Signal() },
+    orientationChange: { value: new Signal() },
     resize: { value: new Signal() },
     _allowFullScreen: { writable: true, value: false },
     _displayState: { writable: true, value: StageDisplayState.NORMAL },
@@ -11314,7 +11315,7 @@ Stage.prototype = Object.create(Object.prototype, {
       return this._height;
     } },
   orientation: { get: function get() {
-      return this._orientation;
+      return window.screen.orientation.type;
     } },
   pixelRatio: { get: function get() {
       return this._pixelRatio;
@@ -11327,12 +11328,15 @@ Stage.prototype = Object.create(Object.prototype, {
       this._height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
       return { width: this._width, height: this._height };
     } },
+  notifyFullScreen: { writable: true, value: function value() {
+      this.fullScreen.emit(this._displayState, this);
+    } },
+  notifyOrientationChange: { writable: true, value: function value() {
+      this.orientationChange.emit(this);
+    } },
   notifyResized: { writable: true, value: function value() {
       this.getViewportSize();
       this.resize.emit(this);
-    } },
-  notifyFullScreen: { writable: true, value: function value() {
-      this.fullScreen.emit(this._displayState, this);
     } },
   __initialize__: { writable: true, value: function value() {
       this._pixelRatio = document.devicePixelRatio || 1;
@@ -11354,6 +11358,7 @@ Stage.prototype = Object.create(Object.prototype, {
         this._fullScreenInteractive = true;
       }
       window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
+      window.addEventListener("orientationchange", this.notifyOrientationChange.bind(this), false);
       window.addEventListener("resize", this.notifyResized.bind(this), false);
     } }
 });

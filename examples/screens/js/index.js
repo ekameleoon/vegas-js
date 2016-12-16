@@ -30,6 +30,11 @@ window.onload = function()
         trace( 'fullscreen ' + state ) ;
     }
 
+    var orientation = function( stage )
+    {
+        trace( 'orientation type:' + stage.orientation ) ;
+    }
+
     var resize = function( stage )
     {
         trace( 'resize viewPort:' + core.dump( stage.getViewportSize() ) ) ;
@@ -42,6 +47,7 @@ window.onload = function()
     stage   = new Stage();
 
     stage.fullScreen.connect( fullscreen );
+    stage.orientationChange.connect( orientation );
     stage.resize.connect( resize );
 
     trace( '------' ) ;
@@ -66,6 +72,7 @@ window.onload = function()
     trace( 'stage allowFullscreenInteractive: ' + stage.allowFullScreenInteractive ) ;
 
     trace( 'stage displayState: ' + stage.displayState ) ;
+    trace( 'stage orientation: ' + stage.orientation ) ;
 
     trace( 'width  : ' + stage.width ) ;
     trace( 'height : ' + stage.height ) ;
