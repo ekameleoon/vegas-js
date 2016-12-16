@@ -1,13 +1,11 @@
 /* globals vegas */
+/* jshint unused:false */
 "use strict" ;
 
 if( !vegas )
 {
     throw new Error("The VEGAS library is not found.") ;
 }
-
-// use the skipHello method to skip the vegas library prompt message.
-// vegas.skipHello() ;
 
 var global   = vegas.global  ; // jshint ignore:line
 var trace    = vegas.trace   ; // jshint ignore:line
@@ -19,8 +17,8 @@ var graphics = vegas.graphics  ; // jshint ignore:line
 var Stage             = graphics.display.Stage;
 var StageDisplayState = graphics.display.StageDisplayState;
 
-var os;
 var browser;
+var os;
 var stage;
 
 window.onload = function()
@@ -46,9 +44,13 @@ window.onload = function()
     stage.fullScreen.connect( fullscreen );
     stage.resize.connect( resize );
 
+    trace( '------' ) ;
+
     trace( vegas ) ;
     trace( vegas.metas ) ;
-    trace( 'version: ' + vegas.version ) ;
+
+    trace( '------' ) ;
+
     trace( 'ua: ' + navigator.userAgent ) ;
     trace( 'app version: ' + navigator.appVersion ) ;
     trace( 'os: ' + os.name ) ;
@@ -57,19 +59,19 @@ window.onload = function()
     trace( 'browser: ' + browser.name ) ;
     trace( 'browser version: ' + browser.version ) ;
 
+    trace( '------' ) ;
+
     trace( 'stage pixelRatio: ' + stage.pixelRatio ) ;
     trace( 'stage allowFullscreen: ' + stage.allowFullScreen ) ;
     trace( 'stage allowFullscreenInteractive: ' + stage.allowFullScreenInteractive ) ;
 
     trace( 'stage displayState: ' + stage.displayState ) ;
 
-    trace( 'width: ' + stage.width ) ;
-    trace( 'height: ' + stage.height ) ;
+    trace( 'width  : ' + stage.width ) ;
+    trace( 'height : ' + stage.height ) ;
 
-    trace( 'width fullScreen: ' + stage.fullScreenWidth ) ;
-    trace( 'height fullScreen: ' + stage.fullScreenHeight ) ;
-
-
+    trace( 'fullScreen width  : ' + stage.fullScreenWidth ) ;
+    trace( 'fullScreen height : ' + stage.fullScreenHeight ) ;
 }
 
 var goFullScreen = function()
@@ -85,4 +87,3 @@ var goNormalScreen = function()
     document.getElementById("full").style.display = "initial";
     document.getElementById("normal").style.display = "none";
 }
-
