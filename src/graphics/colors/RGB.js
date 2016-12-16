@@ -1,6 +1,8 @@
 /*jshint bitwise:false*/
 "use strict" ;
 
+import { hex } from '../../core/colors/toHex.js' ;
+import { clamp } from '../../core/maths/clamp.js' ;
 import { normalize } from '../../core/maths/normalize.js' ;
 
 /**
@@ -9,6 +11,9 @@ import { normalize } from '../../core/maths/normalize.js' ;
  * @name RGB
  * @class
  * @memberof graphics.colors
+ * @param {number} [r=0] - The red component, between <code>0</code> and <code>255</code>.
+ * @param {number} [g=0] - The green component, between <code>0</code> and <code>255</code>.
+ * @param {number} [b=0] - The blue component, between <code>0</code> and <code>255</code>.
  */
 export function RGB( r = 0 , g = 0 , b = 0 )
 {
@@ -140,6 +145,7 @@ RGB.prototype = Object.create( Object.prototype ,
         this._green = RGB.maximum - this._green ;
         this._blue  = RGB.maximum - this._blue  ;
     }},
+
     /**
      * Calculates the distance between two rgb color values.
      * @name distance
@@ -201,6 +207,7 @@ RGB.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      * @param {number} value - The hexadecimal value of the color.
+     * @param The current RGB reference.
      */
     fromNumber : { value : function( value )
     {
@@ -209,6 +216,83 @@ RGB.prototype = Object.create( Object.prototype ,
         gb = value ^ this._red << 16 ;
         this._green  = gb >> 8 ;
         this._blue  = gb^this._green << 8 ;
+        return this ;
+    }},
+
+    /**
+     * Interpolate the color and returns a new RGB object.
+     * @name interpolate
+     * @memberof graphics.colors.RGB
+     * @instance
+     * @function
+     * @param {graphics.colors.RGB} to - The RGB reference used to interpolate the current RGB object.
+     * @param {number} [level=1] - The level of the interpolation as a decimal, where <code>0</code> is the start and <code>1</code> is the end.
+     * @return The interpolate RGB reference of the current color.
+     */
+    interpolate : { value : function( to , level = 1 )
+    {
+        let p = clamp( isNaN(level) ? 1 : level , 0 , 1 ) ;
+        let q = 1 - p ;
+        return new RGB
+        (
+            this._red   * q + to._red   * p ,
+            this._green * q + to._green * p ,
+            this._blue  * q + to._blue  * p
+        ) ;
+    }},
+
+    /**
+     * Interpolates the color and returns a number rgb value.
+     * @name interpolate
+     * @memberof graphics.colors.RGB
+     * @instance
+     * @function
+     * @param {graphics.colors.RGB} to - The RGB reference used to interpolate the current RGB object.
+     * @param {number} [level=1] - The level of the interpolation as a decimal, where <code>0</code> is the start and <code>1</code> is the end.
+     * @return The interpolate RGB number value of the current color.
+     */
+    interpolateToNumber : { value : function( to , level = 1 )
+    {
+        let p = clamp( isNaN(level) ? 1 : level , 0 , 1 ) ;
+        let q = 1 - p ;
+        let r = this._red   * q + to._red   * p ;
+        let g = this._green * q + to._green * p ;
+        let b = this._blue  * q + to._blue  * p ;
+        return (r << 16) | (g << 8) | b ;
+    }},
+
+    /**
+     * Sets all tree components of a rgb color.
+     * @name setTo
+     * @memberof graphics.colors.RGB
+     * @instance
+     * @function
+     * @param {number} [r=0] - The red component, between <code>0</code> and <code>255</code>.
+     * @param {number} [g=0] - The green component, between <code>0</code> and <code>255</code>.
+     * @param {number} [b=0] - The blue component, between <code>0</code> and <code>255</code>.
+     * @return The current RGB reference.
+     */
+    setTo : { value : function( r = 0 , g = 0 , b = 0 )
+    {
+        this._red   = r ;
+        this._green = g ;
+        this._blue  = b ;
+        return this ;
+    }},
+
+    /**
+     * Returns the full String representation of the color.
+     * @name toHexString
+     * @memberof graphics.colors.RGB
+     * @instance
+     * @function
+     * @param {string} [prefix=#] - The string prefix of the final expression (default #).
+     * @param {boolean} [upper=true] - Indicates if the string result is uppercase.
+     * @return the full String representation of the color.
+     */
+    toHexString : { value : function( prefix = "#" , upper = true  )
+    {
+        return prefix + hex( this._red , upper ) + hex( this._green , upper ) + hex( this._blue , upper);
     }},
 
     /**

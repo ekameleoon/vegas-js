@@ -36,7 +36,7 @@ export var toHex = ( value , prefix = '#' , upper = true ) =>
     return prefix + hex( r , upper ) + hex( g , upper ) + hex( b , upper ) ;
 }
 
-function hex( value , upper = true )
+export function hex( value , upper = true )
 {
     let hex = value.toString( 16 ) ;
     hex = hex.length % 2 === 0 ? hex : "0" + hex ;

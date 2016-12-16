@@ -143,118 +143,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -11837,7 +11726,7 @@ function Os() {
         _type: { writable: true, value: null },
         _version: { writable: true, value: null }
     });
-    this.getOsInfos();
+    this.__initialize__();
 }
 Os.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: Os },
@@ -11850,7 +11739,7 @@ Os.prototype = Object.create(Object.prototype, {
     version: { get: function get() {
             return this._version;
         } },
-    getOsInfos: { writable: true, value: function value() {
+    __initialize__: { writable: true, value: function value() {
             var ua = navigator.userAgent;
             var name = "";
             var type = "";
@@ -11900,7 +11789,7 @@ function Browser() {
         _name: { writable: true, value: null },
         _version: { writable: true, value: null }
     });
-    this.getBrowserInfos();
+    this.__initialize__();
 }
 Browser.prototype = Object.create(Object.prototype, {
     constructor: { value: Browser },
@@ -11910,7 +11799,7 @@ Browser.prototype = Object.create(Object.prototype, {
     version: { get: function get() {
             return this._version;
         } },
-    getBrowserInfos: { writable: true, value: function value() {
+    __initialize__: { writable: true, value: function value() {
             var ua = navigator.userAgent;
             var name = "";
             var version = "";
