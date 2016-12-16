@@ -14,17 +14,17 @@ export function Os()
         /**
          * @private
          */
-        __name__ : { writable : true  , value : null } ,
+        _name : { writable : true  , value : null } ,
 
         /**
          * @private
          */
-        __type__ : { writable : true  , value : null } ,
+        _type : { writable : true  , value : null } ,
 
         /**
          * @private
          */
-        __version__ : { writable : true  , value : null }
+        _version : { writable : true  , value : null }
     });
 
     this.getOsInfos();
@@ -40,7 +40,7 @@ Os.prototype = Object.create( Object.prototype ,
      * @name name
      * @memberof screens
      */
-    name : { get : function() { return this.__name__ ; } } ,
+    name : { get : function() { return this._name ; } } ,
 
     /**
      * Get the type of the os
@@ -48,7 +48,7 @@ Os.prototype = Object.create( Object.prototype ,
      * @name version
      * @memberof screens
      */
-    type : { get : function() { return this.__type__ ; } } ,
+    type : { get : function() { return this._type ; } } ,
 
     /**
      * Get the version of the os
@@ -56,7 +56,7 @@ Os.prototype = Object.create( Object.prototype ,
      * @name version
      * @memberof screens
      */
-    version : { get : function() { return this.__version__ ; } } ,
+    version : { get : function() { return this._version ; } } ,
 
     // ------- protected
 
@@ -108,9 +108,9 @@ Os.prototype = Object.create( Object.prototype ,
             type = Os.TYPE_DESKTOP;
         }
 
-        this.__name__    = name;
-        this.__type__    = type;
-        this.__version__ = version;
+        this._name    = name;
+        this._type    = type;
+        this._version = version;
     }}
 });
 

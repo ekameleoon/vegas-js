@@ -16,12 +16,12 @@ export function Browser()
         /**
          * @private
          */
-        __name__ : { writable : true  , value : null } ,
+        _name : { writable : true  , value : null } ,
 
         /**
          * @private
          */
-        __version__ : { writable : true  , value : null }
+        _version : { writable : true  , value : null }
 
     });
 
@@ -38,7 +38,7 @@ Browser.prototype = Object.create( Object.prototype ,
      * @name name
      * @memberof screens
      */
-    name : { get : function() { return this.__name__ ; } } ,
+    name : { get : function() { return this._name ; } } ,
 
     /**
      * Get the version of the browser
@@ -46,7 +46,7 @@ Browser.prototype = Object.create( Object.prototype ,
      * @name version
      * @memberof screens
      */
-    version : { get : function() { return this.__version__ ; } } ,
+    version : { get : function() { return this._version ; } } ,
 
     // ------- protected
 
@@ -126,8 +126,8 @@ Browser.prototype = Object.create( Object.prototype ,
             name = Browser.SILK;
         }
 
-        this.__name__    = name;
-        this.__version__ = version;
+        this._name    = name;
+        this._version = version;
     }}
 });
 

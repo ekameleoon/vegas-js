@@ -209,6 +209,7 @@ Stage.prototype = Object.create( Object.prototype ,
      * Indicates the pixelRatio of the stage.
      * @name pixelRatio
      * @memberof graphics.display.Stage
+     * @instance
      */
     pixelRatio : { get : function() { return this._pixelRatio ; } } ,
 
@@ -216,13 +217,16 @@ Stage.prototype = Object.create( Object.prototype ,
      * Indicates the width value of the stage.
      * @name width
      * @memberof graphics.display.Stage
+     * @instance
      */
     width : { get : function() { return this._width ; } } ,
 
     /**
      * Get viewport size of the current browser window. This command only works on desktop browser or in a mobile environment with a webview enabled.
      * @name getViewportSize
-     * @memberof screens
+     * @memberof graphics.display.Stage
+     * @function
+     * @instance
      */
     getViewportSize : { writable : true , value : function()
     {

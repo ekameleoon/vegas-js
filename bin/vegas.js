@@ -11828,22 +11828,22 @@ var graphics = Object.assign({
 
 function Os() {
     Object.defineProperties(this, {
-        __name__: { writable: true, value: null },
-        __type__: { writable: true, value: null },
-        __version__: { writable: true, value: null }
+        _name: { writable: true, value: null },
+        _type: { writable: true, value: null },
+        _version: { writable: true, value: null }
     });
     this.getOsInfos();
 }
 Os.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: Os },
     name: { get: function get() {
-            return this.__name__;
+            return this._name;
         } },
     type: { get: function get() {
-            return this.__type__;
+            return this._type;
         } },
     version: { get: function get() {
-            return this.__version__;
+            return this._version;
         } },
     getOsInfos: { writable: true, value: function value() {
             var ua = navigator.userAgent;
@@ -11872,9 +11872,9 @@ Os.prototype = Object.create(Object.prototype, {
                 name = Os.WINDOWS;
                 type = Os.TYPE_DESKTOP;
             }
-            this.__name__ = name;
-            this.__type__ = type;
-            this.__version__ = version;
+            this._name = name;
+            this._type = type;
+            this._version = version;
         } }
 });
 Object.defineProperties(Os, {
@@ -11892,18 +11892,18 @@ Object.defineProperties(Os, {
 
 function Browser() {
     Object.defineProperties(this, {
-        __name__: { writable: true, value: null },
-        __version__: { writable: true, value: null }
+        _name: { writable: true, value: null },
+        _version: { writable: true, value: null }
     });
     this.getBrowserInfos();
 }
 Browser.prototype = Object.create(Object.prototype, {
     constructor: { value: Browser },
     name: { get: function get() {
-            return this.__name__;
+            return this._name;
         } },
     version: { get: function get() {
-            return this.__version__;
+            return this._version;
         } },
     getBrowserInfos: { writable: true, value: function value() {
             var ua = navigator.userAgent;
@@ -11946,8 +11946,8 @@ Browser.prototype = Object.create(Object.prototype, {
             } else if (/Silk/.test(ua)) {
                 name = Browser.SILK;
             }
-            this.__name__ = name;
-            this.__version__ = version;
+            this._name = name;
+            this._version = version;
         } }
 });
 Object.defineProperties(Browser, {
