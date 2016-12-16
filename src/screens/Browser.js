@@ -25,7 +25,7 @@ export function Browser()
 
     });
 
-    this.getBrowserInfos();
+    this.__initialize__();
 }
 
 Browser.prototype = Object.create( Object.prototype ,
@@ -48,14 +48,11 @@ Browser.prototype = Object.create( Object.prototype ,
      */
     version : { get : function() { return this._version ; } } ,
 
-    // ------- protected
-
     /**
-     * Get the browser infos
-     * @name getBrowserInfos
-     * @memberof screens
+     * Initialize the browser infos
+     * @private
      */
-    getBrowserInfos : { writable : true , value : function()
+    __initialize__ : { writable : true , value : function()
     {
         let ua = navigator.userAgent;
         let name = "";

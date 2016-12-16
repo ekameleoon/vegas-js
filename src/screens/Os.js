@@ -27,7 +27,7 @@ export function Os()
         _version : { writable : true  , value : null }
     });
 
-    this.getOsInfos();
+    this.__initialize__();
 }
 
 Os.prototype = Object.create( Object.prototype ,
@@ -58,14 +58,11 @@ Os.prototype = Object.create( Object.prototype ,
      */
     version : { get : function() { return this._version ; } } ,
 
-    // ------- protected
-
     /**
-     * Get the browser infos
-     * @name getBrowserInfos
-     * @memberof screens
+     * Initialize the browser informations.
+     * @private
      */
-    getOsInfos : { writable : true , value : function()
+    __initialize__ : { writable : true , value : function()
     {
         let ua = navigator.userAgent;
         let name = "";
