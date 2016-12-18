@@ -31,6 +31,10 @@ describe( 'graphics.geom.Circle' , () =>
             {
                 assert.equal( circle.radius , 0 );
             });
+            it( circle + ', diameter === 0', () =>
+            {
+                assert.equal( circle.diameter , 0 );
+            });
         });
 
         describe( 'new Circle(0,0,-10)' , () =>
@@ -39,6 +43,10 @@ describe( 'graphics.geom.Circle' , () =>
             it( 'new Circle(0,0,-10), radius === 0', () =>
             {
                 assert.equal( circle.radius  , 0 );
+            });
+            it( 'new Circle(0,0,-10), diameter === 0', () =>
+            {
+                assert.equal( circle.diameter , 0 );
             });
         });
 
@@ -57,6 +65,10 @@ describe( 'graphics.geom.Circle' , () =>
             {
                 assert.equal( circle.radius , 0 );
             });
+            it( 'new Circle(NaN,NaN,NaN), diameter === 0', () =>
+            {
+                assert.equal( circle.diameter , 0 );
+            });
         });
 
         describe( 'new Circle("foo","foo","foo")' , () =>
@@ -73,6 +85,10 @@ describe( 'graphics.geom.Circle' , () =>
             it( 'new Circle("foo","foo","foo"), radius === 0', () =>
             {
                 assert.equal( circle.radius , 0 );
+            });
+            it( 'new Circle("foo","foo","foo"), diameter === 0', () =>
+            {
+                assert.equal( circle.diameter , 0 );
             });
         });
 
@@ -91,6 +107,27 @@ describe( 'graphics.geom.Circle' , () =>
             {
                 assert.equal( circle.radius , 300 );
             });
+            it( circle + ', diameter === 600', () =>
+            {
+                assert.equal( circle.diameter , 600 );
+            });
+        });
+    });
+
+    describe( '#diameter' , () =>
+    {
+        it('new Circle(10,20,30), diameter === 60', () =>
+        {
+            let circle = new Circle(10,20,30) ;
+            assert.equal( circle.diameter , 60 );
+        });
+
+        it('new Circle().diameter = 50, radius === 25', () =>
+        {
+            let circle = new Circle() ;
+            circle.diameter = 50 ;
+            assert.equal( circle.diameter , 50 );
+            assert.equal( circle.radius , 25 );
         });
     });
 

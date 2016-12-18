@@ -19,19 +19,57 @@ export function Circle( x = 0 , y = 0 , radius = 0 )
     Object.defineProperties( this ,
     {
         /**
-         * The horizontal coordinate of the point.
-         * @name radius
-         * @memberof graphics.geom.Circle
-         * @default 0
-         * @type {Number}
-         * @instance
+         * @private
          */
-        radius : { value : radius > 0 ? radius : 0 , writable : true } ,
+        _diameter : { value : 0 , writable : true } ,
+
+        /**
+         * @private
+         */
+        _radius : { value : radius > 0 ? radius : 0 , writable : true }
     });
+
+    this._diameter = 2 * this._radius ;
 }
 
 Circle.prototype = Object.create( Vector2D.prototype ,
 {
+    /**
+     * The diameter value of the circle.
+     * @name diameter
+     * @memberof graphics.geom.Circle
+     * @default 0
+     * @type {Number}
+     * @instance
+     */
+    diameter :
+    {
+        get : function() { return this._diameter } ,
+        set : function( value )
+        {
+            this._diameter = value > 0 ? value : 0 ;
+            this._radius = this._diameter * 0.5 ;
+        }
+    },
+
+    /**
+     * The radius value of the circle.
+     * @name radius
+     * @memberof graphics.geom.Circle
+     * @default 0
+     * @type {Number}
+     * @instance
+     */
+    radius :
+    {
+        get : function() { return this._radius } ,
+        set : function( value )
+        {
+            this._radius   = value > 0 ? value : 0 ;
+            this._diameter = 2 * this._radius ;
+        }
+    },
+
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.
