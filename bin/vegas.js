@@ -11272,6 +11272,118 @@ var display = Object.assign({
   StageDisplayState: StageDisplayState
 });
 
+function Circle() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    Vector2D.call(this, x, y);
+    Object.defineProperties(this, {
+        _diameter: { value: 0, writable: true },
+        _radius: { value: radius > 0 ? radius : 0, writable: true }
+    });
+    this._diameter = 2 * this._radius;
+}
+Circle.prototype = Object.create(Vector2D.prototype, {
+    area: { get: function get() {
+            return this._radius > 0 ? Math.PI * this._radius * this._radius : 0;
+        } },
+    bottom: { get: function get() {
+            return this.y + this._radius;
+        } },
+    circumference: { get: function get() {
+            return 2 * Math.PI * this._radius;
+        } },
+    diameter: {
+        get: function get() {
+            return this._diameter;
+        },
+        set: function set(value) {
+            this._diameter = value > 0 ? value : 0;
+            this._radius = this._diameter * 0.5;
+        }
+    },
+    left: { get: function get() {
+            return this.x - this._radius;
+        } },
+    radius: {
+        get: function get() {
+            return this._radius;
+        },
+        set: function set(value) {
+            this._radius = value > 0 ? value : 0;
+            this._diameter = 2 * this._radius;
+        }
+    },
+    right: { get: function get() {
+            return this.x + this._radius;
+        } },
+    top: { get: function get() {
+            return this.y - this._radius;
+        } },
+    circumferencePoint: { value: function value(angle) {
+            var point = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            if (!point) {
+                point = new Point();
+            }
+            point.x = this.x + this._radius * Math.cos(angle);
+            point.y = this.y + this._radius * Math.sin(angle);
+            return point;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Circle(this.x, this.y, this.radius);
+        } },
+    contains: { writable: true, value: function value(x, y) {
+            if (this._radius <= 0 || x < this.x - this._radius ||
+            x > this.x + this._radius ||
+            y < this.y - this._radius ||
+            y > this.y + this._radius
+            ) {
+                    return false;
+                } else {
+                var dx = (this.x - x) * (this.x - x);
+                var dy = (this.y - y) * (this.y - y);
+                return dx + dy <= this._diameter;
+            }
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof Circle)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an Circle object.');
+            }
+            this.x = source.x;
+            this.y = source.y;
+            this.radius = source.radius;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof Circle) {
+                return o.x === this.x && o.y === this.y && o.radius === this.radius;
+            } else {
+                return false;
+            }
+        } },
+    getBounds: { writable: true, value: function value() {
+            return new Rectangle(this.x - this._radius, this.y - this._radius, this._diameter, this._diameter);
+        } },
+    setTo: { writable: true, value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            this.x = isNaN(x) ? 0 : x;
+            this.y = isNaN(y) ? 0 : y;
+            this.radius = radius > 0 ? radius : 0;
+        } },
+    translate: { writable: true, value: function value(x, y) {
+            this.x += x;
+            this.y += y;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { x: this.x, y: this.y, radius: this.radius };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[Circle x:" + this.x + " y:" + this.y + " radius:" + this.radius + "]";
+        } }
+});
+
 function ColorTransform() {
     var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -11684,13 +11796,14 @@ Object.defineProperties(Vector3D, {
  * @memberof graphics
  */
 var geom = Object.assign({
-  ColorTransform: ColorTransform,
-  Dimension: Dimension,
-  Matrix: Matrix,
-  Point: Point,
-  Rectangle: Rectangle,
-  Vector2D: Vector2D,
-  Vector3D: Vector3D
+    Circle: Circle,
+    ColorTransform: ColorTransform,
+    Dimension: Dimension,
+    Matrix: Matrix,
+    Point: Point,
+    Rectangle: Rectangle,
+    Vector2D: Vector2D,
+    Vector3D: Vector3D
 });
 
 /**

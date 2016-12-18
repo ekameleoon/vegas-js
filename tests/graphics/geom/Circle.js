@@ -131,6 +131,39 @@ describe( 'graphics.geom.Circle' , () =>
         });
     });
 
+    describe( '#bottom' , () =>
+    {
+        it('new Circle(10,20,30).bottom === 50', () =>
+        {
+            let circle = new Circle(10,20,30) ;
+            assert.equal( circle.bottom , 50 );
+        });
+    });
+    describe( '#left' , () =>
+    {
+        it('new Circle(10,20,30).left === -20', () =>
+        {
+            let circle = new Circle(10,20,30) ;
+            assert.equal( circle.left , -20 );
+        });
+    });
+    describe( '#top' , () =>
+    {
+        it('new Circle(10,20,30).top === -10', () =>
+        {
+            let circle = new Circle(10,20,30) ;
+            assert.equal( circle.top , -10 );
+        });
+    });
+    describe( '#right' , () =>
+    {
+        it('new Circle(10,20,30).right === 40', () =>
+        {
+            let circle = new Circle(10,20,30) ;
+            assert.equal( circle.right , 40 );
+        });
+    });
+
     describe( '#clone()' , () =>
     {
         let circle = new Circle(10,20,30) ;
