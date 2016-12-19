@@ -131,6 +131,19 @@ describe( 'graphics.geom.Circle' , () =>
         });
     });
 
+    describe( '#radiusSquared' , () =>
+    {
+        it('new Circle(10,20,10), radiusSquared', () =>
+        {
+            let circle = new Circle(10,20,10) ;
+            assert.equal( circle.radiusSquared , 100 ) ;
+            circle.radius = 25 ;
+            assert.equal( circle.radiusSquared , 625 ) ;
+            circle.diameter = 20 ;
+            assert.equal( circle.radiusSquared , 100 ) ;
+        });
+    });
+
     describe( '#bottom' , () =>
     {
         it('new Circle(10,20,30).bottom === 50', () =>

@@ -28,10 +28,15 @@ export function Circle( x = 0 , y = 0 , radius = 0 )
         /**
          * @private
          */
-        _radius : { value : radius > 0 ? radius : 0 , writable : true }
-    });
+        _radius : { value : radius > 0 ? radius : 0 , writable : true } ,
 
+        /**
+         * @private
+         */
+        _radiusSquared : { value : 0 , writable : true }
+    });
     this._diameter = 2 * this._radius ;
+    this._radiusSquared = this._radius * this._radius ;
 }
 
 Circle.prototype = Object.create( Vector2D.prototype ,
@@ -67,10 +72,7 @@ Circle.prototype = Object.create( Vector2D.prototype ,
      * @type {Number}
      * @instance
      */
-    circumference : { get : function()
-    {
-        return 2 * Math.PI * this._radius ;
-    }} ,
+    circumference : { get : function() { return 2 * Math.PI * this._radius ; }} ,
 
     /**
      * The diameter value of the circle.
@@ -87,6 +89,7 @@ Circle.prototype = Object.create( Vector2D.prototype ,
         {
             this._diameter = value > 0 ? value : 0 ;
             this._radius = this._diameter * 0.5 ;
+            this._radiusSquared = this._radius * this._radius ;
         }
     },
 
@@ -113,10 +116,21 @@ Circle.prototype = Object.create( Vector2D.prototype ,
         get : function() { return this._radius } ,
         set : function( value )
         {
-            this._radius   = value > 0 ? value : 0 ;
+            this._radius = value > 0 ? value : 0 ;
             this._diameter = 2 * this._radius ;
+            this._radiusSquared = this._radius * this._radius ;
         }
     },
+
+    /**
+     * The radius squared value of the circle.
+     * @name radiusSquared
+     * @memberof graphics.geom.Circle
+     * @default 0
+     * @type {Number}
+     * @instance
+     */
+    radiusSquared : { get : function() { return this._radiusSquared ; }} ,
 
     /**
      * The right value of the circle.
@@ -261,6 +275,96 @@ Circle.prototype = Object.create( Vector2D.prototype ,
             this._diameter ,
             this._diameter
         ) ;
+    }},
+
+    /**
+     * Calculates the result of the typical equation for a circle metaball.
+     * <p>Metaballs are, in computer graphics, organic-looking n-dimensional objects. The technique for rendering metaballs was invented by Jim Blinn in the early 1980s.</p>
+     * <p>Each metaball is defined as a function in n-dimensions (ie. for three dimensions, f(x,y,z); three-dimensional metaballs tend to be most common, with two-dimensional implementations as well). A thresholding value is also chosen, to define a solid volume.</p>
+     * @name metaball
+     * @instance
+     * @function
+     * @memberof graphics.geom.Circle
+     * @example
+     * var bgColor = '#333333' ;
+     * var color   = '#FF0000' ;
+     *
+     * var area   = new Rectangle( 0 , 0 , 340 , 260 ) ;
+     * var spot   = new Circle( area.x + (area.width/2) , area.y + (area.height / 2) , 60 ) ;
+     *
+     * var metaballs =
+     * [
+     *     new Circle(  20 ,  20 , 10 ) ,
+     *     new Circle(  70 ,  80 , 30 ) ,
+     *     new Circle( 250 , 100 , 35 ) ,
+     *     new Circle( 220 , 130 , 30 ) ,
+     *     new Circle( 60  , 180 , 20 ) ,
+     *     new Circle( 90  , 200 , 25 ) ,
+     *     spot
+     * ];
+     *
+     * var canvas = document.getElementById('canvas') ;
+     * var context = canvas.getContext('2d');
+     *
+     * canvas.width  = area.width;
+     * canvas.height = area.height ;
+     *
+     * // ----- render
+     *
+     * var maxThreshold = 4 ;
+     * var minThreshold = 3 ;
+     *
+     * var cpt = 0 ;
+     * var i   = 0 ;
+     * var tx  = 0 ;
+     * var ty  = 0 ;
+     *
+     * var len = metaballs.length ;
+     *
+     * var render = function()
+     * {
+     *     context.clearRect(0, 0, area.width, area.height );
+     *
+     *     context.fillStyle = bgColor ;
+     *     context.fillRect(0, 0, area.width, area.height );
+     *
+     *     cpt = 0 ;
+     *
+     *     for( tx = 0 ; tx < area.width ; tx++ )
+     *     {
+     *         for( ty = 0 ; ty < area.height ; ty++ )
+     *         {
+     *             cpt = 0 ;
+     *             for( i = 0 ; i < len ; i++ )
+     *             {
+     *                 cpt += metaballs[i].metaball( tx , ty ) ;
+     *             }
+     *             if( cpt >= minThreshold && cpt <= maxThreshold)
+     *             {
+     *                 context.fillStyle = color ;
+     *                 context.fillRect( tx , ty , 1 , 1 ) ;
+     *             }
+     *         }
+     *     }
+     *
+     *     window.requestAnimationFrame( render ) ;
+     * }
+     *
+     * var move = function( event )
+     * {
+     *     spot.x = event.clientX ;
+     *     spot.y = event.clientY ;
+     * }
+     *
+     * canvas.addEventListener( "mousemove", move ) ;
+     *
+     * render() ;
+     * @param {number} tx - The x value of the coordinate to check.
+     * @param {number} ty - The y value of the coordinate to check.
+     */
+    metaball : { value : function( tx , ty )
+    {
+        return this._radiusSquared / ( ( this.x - tx ) * ( this.x - tx) + ( this.y - ty ) * ( this.y - ty ) ) ;
     }},
 
     /**

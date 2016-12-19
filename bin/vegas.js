@@ -1905,6 +1905,8 @@ var percentage = function percentage(value, maximum) {
 
 var PHI = 1.61803398874989;
 
+var PI2 = Math.PI * 2;
+
 var polarToCartesian = function polarToCartesian(vector, degrees) {
     var angle = vector.angle;
     var radius = vector.radius;
@@ -2076,6 +2078,7 @@ var maths = Object.assign({
     normalize: normalize,
     percentage: percentage,
     PHI: PHI,
+    PI2: PI2,
     polarToCartesian: polarToCartesian,
     RAD2DEG: RAD2DEG,
     replaceNaN: replaceNaN,
@@ -11242,6 +11245,139 @@ var ZOrder = Object.defineProperties({}, {
   FRONT: { enumerable: true, value: 1 }
 });
 
+function RGB() {
+    var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    Object.defineProperties(this, {
+        _blue: { writable: true, enumerable: true, value: b },
+        _green: { writable: true, enumerable: true, value: g },
+        _red: { writable: true, enumerable: true, value: r }
+    });
+}
+Object.defineProperties(RGB, {
+    maximum: { value: 0xFF },
+    fromNumber: { value: function value(_value) {
+            return new RGB().fromNumber(_value);
+        } }
+});
+RGB.prototype = Object.create(Object.prototype, {
+    b: {
+        get: function get() {
+            return this._blue;
+        },
+        set: function set(value) {
+            this._blue = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
+        }
+    },
+    g: {
+        get: function get() {
+            return this._green;
+        },
+        set: function set(value) {
+            this._green = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
+        }
+    },
+    luminance: {
+        get: function get() {
+            return 0.299 * this._red + 0.587 * this._green + 0.114 * this._blue;
+        },
+        set: function set(value) {
+            value = normalize(value, 0, 0xFF);
+            var l = 0.299 * this._red + 0.587 * this._green + 0.114 * this._blue;
+            this._red = l + (this._red - l) * (1 - value);
+            this._green = l + (this._green - l) * (1 - value);
+            this._blue = l + (this._blue - l) * (1 - value);
+        }
+    },
+    r: {
+        get: function get() {
+            return this._red;
+        },
+        set: function set(value) {
+            this._red = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
+        }
+    },
+    clone: { value: function value() {
+            return new RGB(this._red, this._green, this._blue);
+        } },
+    difference: { value: function value() {
+            this._red = RGB.maximum - this._red;
+            this._green = RGB.maximum - this._green;
+            this._blue = RGB.maximum - this._blue;
+        } },
+    distance: { value: function value(rgb) {
+            if (!(rgb instanceof RGB)) {
+                return 0;
+            }
+            return Math.pow(this._red - rgb._red, 2) + Math.pow(this._green - rgb._green, 2) + Math.pow(this._blue - rgb._blue, 2);
+        } },
+    equals: { value: function value(o) {
+            if (o === this) {
+                return true;
+            } else if (o instanceof RGB) {
+                return this._red === o._red && o._green === this._green && o._blue === this._blue;
+            } else {
+                return false;
+            }
+        } },
+    fromNumber: { value: function value(_value2) {
+            var gb = void 0;
+            this._red = _value2 >> 16;
+            gb = _value2 ^ this._red << 16;
+            this._green = gb >> 8;
+            this._blue = gb ^ this._green << 8;
+            return this;
+        } },
+    interpolate: { value: function value(to) {
+            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
+            var q = 1 - p;
+            return new RGB(this._red * q + to._red * p, this._green * q + to._green * p, this._blue * q + to._blue * p);
+        } },
+    interpolateToNumber: { value: function value(to) {
+            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
+            var q = 1 - p;
+            var r = this._red * q + to._red * p;
+            var g = this._green * q + to._green * p;
+            var b = this._blue * q + to._blue * p;
+            return r << 16 | g << 8 | b;
+        } },
+    setTo: { value: function value() {
+            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            this._red = r;
+            this._green = g;
+            this._blue = b;
+            return this;
+        } },
+    toHexString: { value: function value() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "#";
+            var upper = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            return prefix + hex(this._red, upper) + hex(this._green, upper) + hex(this._blue, upper);
+        } },
+    toString: { value: function value() {
+            return "[RGB r:" + this._red + " g:" + this._green + " b:" + this._blue + " hex:" + this.toHexString() + "]";
+        } },
+    valueOf: { writable: true, value: function value() {
+            return this._red << 16 | this._green << 8 | this._blue;
+        } }
+});
+
+/**
+ * The {@link graphics.colors} library is a set of classes and utilities for color operations.
+ * @summary The {@link graphics.colors} library is a set of classes and utilities for colors operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics.colors
+ * @memberof graphics
+ */
+var colors$1 = Object.assign({
+  RGB: RGB
+});
+
 var StageDisplayState = Object.defineProperties({}, {
   FULL_SCREEN: { enumerable: true, value: 'fullScreen' },
   FULL_SCREEN_INTERACTIVE: { enumerable: true, value: 'fullScreenInteractive' },
@@ -11474,9 +11610,11 @@ function Circle() {
     Vector2D.call(this, x, y);
     Object.defineProperties(this, {
         _diameter: { value: 0, writable: true },
-        _radius: { value: radius > 0 ? radius : 0, writable: true }
+        _radius: { value: radius > 0 ? radius : 0, writable: true },
+        _radiusSquared: { value: 0, writable: true }
     });
     this._diameter = 2 * this._radius;
+    this._radiusSquared = this._radius * this._radius;
 }
 Circle.prototype = Object.create(Vector2D.prototype, {
     area: { get: function get() {
@@ -11495,6 +11633,7 @@ Circle.prototype = Object.create(Vector2D.prototype, {
         set: function set(value) {
             this._diameter = value > 0 ? value : 0;
             this._radius = this._diameter * 0.5;
+            this._radiusSquared = this._radius * this._radius;
         }
     },
     left: { get: function get() {
@@ -11507,8 +11646,12 @@ Circle.prototype = Object.create(Vector2D.prototype, {
         set: function set(value) {
             this._radius = value > 0 ? value : 0;
             this._diameter = 2 * this._radius;
+            this._radiusSquared = this._radius * this._radius;
         }
     },
+    radiusSquared: { get: function get() {
+            return this._radiusSquared;
+        } },
     right: { get: function get() {
             return this.x + this._radius;
         } },
@@ -11558,6 +11701,9 @@ Circle.prototype = Object.create(Vector2D.prototype, {
         } },
     getBounds: { writable: true, value: function value() {
             return new Rectangle(this.x - this._radius, this.y - this._radius, this._diameter, this._diameter);
+        } },
+    metaball: { value: function value(tx, ty) {
+            return this._radiusSquared / ((this.x - tx) * (this.x - tx) + (this.y - ty) * (this.y - ty));
         } },
     setTo: { writable: true, value: function value() {
             var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -12025,6 +12171,7 @@ var graphics = Object.assign({
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
+    colors: colors$1,
     display: display,
     geom: geom
 });

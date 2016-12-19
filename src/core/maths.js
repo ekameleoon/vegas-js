@@ -51,6 +51,7 @@ import { nearlyEquals }           from './maths/nearlyEquals.js' ;
 import { normalize }              from './maths/normalize.js' ;
 import { percentage }             from './maths/percentage.js' ;
 import { PHI }                    from './maths/PHI.js' ;
+import { PI2 }                    from './maths/PI2.js' ;
 import { polarToCartesian }       from './maths/polarToCartesian.js' ;
 import { RAD2DEG }                from './maths/RAD2DEG.js' ;
 import { replaceNaN }             from './maths/replaceNaN.js' ;
@@ -122,6 +123,7 @@ export var maths = Object.assign
     normalize : normalize,
     percentage : percentage,
     PHI : PHI,
+    PI2 : PI2,
     polarToCartesian : polarToCartesian,
     RAD2DEG : RAD2DEG,
     replaceNaN : replaceNaN,

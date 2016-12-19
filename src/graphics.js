@@ -18,6 +18,7 @@ import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
 
+import { colors }  from './graphics/colors.js' ;
 import { display } from './graphics/display.js' ;
 import { geom }    from './graphics/geom.js' ;
 
@@ -53,6 +54,7 @@ export var graphics = Object.assign
 
     // ----- packages
 
+    colors  : colors ,
     display : display ,
     geom    : geom
 }) ;

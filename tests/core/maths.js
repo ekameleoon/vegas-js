@@ -26,6 +26,7 @@ import './maths/nearlyEquals.js' ;
 import './maths/normalize.js' ;
 import './maths/percentage.js' ;
 import './maths/PHI.js' ;
+import './maths/PI2.js' ;
 import './maths/RAD2DEG.js' ;
 import './maths/replaceNaN.js' ;
 import './maths/sinerp.js'
