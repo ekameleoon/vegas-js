@@ -1,5 +1,7 @@
 'use strict';
 
+import { Device } from './Device.js' ;
+
 /**
  * Get the os informations
  * @summary Get the os informations
@@ -73,42 +75,42 @@ Os.prototype = Object.create( Object.prototype ,
         if( /iPad/.test( ua ) )
         {
             name = Os.IPAD;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
         }
         else if( /iPod/.test( ua ) )
         {
             name = Os.IPOD;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
         }
         else if( /iPhone/.test( ua ) )
         {
             name = Os.IPHONE;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
         }
         else if( /Mac OS/.test( ua ) )
         {
             name = Os.MAC;
-            type = Os.TYPE_DESKTOP;
+            type = Device.DESKTOP;
         }
         else if( /Windows Phone/.test( ua ) )
         {
             name = Os.WINDOWS;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
         }
         else if( /Windows/.test( ua ) )
         {
             name = Os.WINDOWS;
-            type = Os.TYPE_DESKTOP;
+            type = Device.DESKTOP;
         }
         else if( /Android/.test( ua ) )
         {
             name = Os.ANDROID;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
         }
         else if( /Linux/.test( ua ) )
         {
             name = Os.LINUX;
-            type = Os.TYPE_DESKTOP;
+            type = Device.DESKTOP;
         }
 
         this._name    = name;
@@ -181,21 +183,5 @@ Object.defineProperties( Os ,
     * @const
     * @type {string}
     */
-    WINDOWS_PHONE : { value : 'Windows Phone' , enumerable : true } ,
-
-    /**
-    * The <code>'desktop'</code> os.
-    * @memberof screens.Os
-    * @const
-    * @type {string}
-    */
-    TYPE_DESKTOP : { value : 'desktop' , enumerable : true } ,
-
-    /**
-    * The <code>'mobile'</code> os.
-    * @memberof screens.Os
-    * @const
-    * @type {string}
-    */
-    TYPE_MOBILE : { value : 'mobile' , enumerable : true }
+    WINDOWS_PHONE : { value : 'Windows Phone' , enumerable : true }
 } );
