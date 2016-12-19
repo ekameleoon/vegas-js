@@ -1,8 +1,10 @@
 /* jshint -W086 */
 "use strict" ;
 
-import { Signal } from '../../system/signals/Signal.js' ;
+import { Signal }            from '../../system/signals/Signal.js' ;
+import { StageAspectRatio }  from './StageAspectRatio.js' ;
 import { StageDisplayState } from './StageDisplayState.js' ;
+import { StageOrientation }  from './StageOrientation.js' ;
 
 /**
  * Get the stage informations
@@ -53,8 +55,13 @@ export function Stage()
         /**
          * @private
          */
-        _displayState : { writable : true  , value : StageDisplayState.NORMAL } ,
+        _aspectRatio : { writable : true  , value : StageAspectRatio.ANY } ,
 
+        /**
+         * @private
+         */
+        _displayState : { writable : true  , value : StageDisplayState.NORMAL } ,
+        
         /**
          * @private
          */
@@ -88,7 +95,12 @@ export function Stage()
         /**
          * @private
          */
-        _orientation : { writable : true  , value : null } ,
+        _launchedFromHomeScreen : { writable : true  , value : false } ,
+
+        /**
+         * @private
+         */
+        _orientation : { writable : true  , value : StageOrientation.UNKNOWN } ,
 
         /**
          * @private
@@ -98,7 +110,12 @@ export function Stage()
         /**
          * @private
          */
-        __resizeTimeout__ : { writable : true  , value : null } , // TODO : ??
+        _supportedOrientations : { writable : true  , value : null } ,
+
+        /**
+         * @private
+         */
+        _supportsOrientationChange : { writable : true  , value : false } ,
 
         /**
          * @private
@@ -134,6 +151,15 @@ Stage.prototype = Object.create( Object.prototype ,
     allowFullScreenInteractive : { get : function() { return this._fullScreenInteractive ; } } ,
 
     /**
+     * Get the stage aspect ratio
+     * @name aspectRatio
+     * @memberof graphics.display.Stage
+     * @instance
+     * @readonly
+     */
+    aspectRatio : { get : function() { return this._aspectRatio ; } } ,
+
+    /**
      * A value from the {@link graphics.display.StageDisplayState|StageDisplayState} enumeration that specifies which display state to use.
      * <p>The following are valid values:
      * <ul>
@@ -145,7 +171,6 @@ Stage.prototype = Object.create( Object.prototype ,
      * @name displayState
      * @memberof graphics.display.Stage
      * @instance
-     * @readonly
      */
     displayState :
     {
@@ -212,20 +237,29 @@ Stage.prototype = Object.create( Object.prototype ,
     height : { get : function() { return this._height ; } } ,
 
     /**
+     * Indicates if app is launched from the Home Screen.
+     * @name launchedFromHomeScreen
+     * @type {boolean}
+     * @memberof graphics.display.Stage
+     * @readonly
+     * @instance
+     */
+    launchedFromHomeScreen : { get : function() { return this._launchedFromHomeScreen ; } } ,
+
+    /**
      * Indicates the orientation of the stage.
      * @name orientation
      * @memberof graphics.display.Stage
+     * @readonly
      * @instance
      */
-    orientation : { get : function()
-    {
-        return window.screen.orientation.type; // FIXME test if the navigator is Safari ?
-    }} ,
+    orientation : { get : function() { return this._orientation ; } } ,
 
     /**
      * Indicates the pixelRatio of the stage.
      * @name pixelRatio
      * @memberof graphics.display.Stage
+     * @readonly
      * @instance
      */
     pixelRatio : { get : function() { return this._pixelRatio ; } } ,
@@ -237,6 +271,68 @@ Stage.prototype = Object.create( Object.prototype ,
      * @instance
      */
     width : { get : function() { return this._width ; } } ,
+
+    /**
+     * Get orientation of the current screen window.
+     * @name getDeviceOrientation
+     * @memberof graphics.display.Stage
+     * @function
+     * @instance
+     */
+    getDeviceOrientation : { writable : true , value : function()
+    {
+        // Detect orientation
+        if( window.screen.orientation && window.screen.orientation.type )
+        {
+            switch ( window.screen.orientation.type ) {
+                case 'portrait-primary':
+                    this._orientation = StageOrientation.DEFAULT;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+                case 'portrait-secondary':
+                    this._orientation = StageOrientation.UPSIDE_DOWN;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+                case 'landscape-primary':
+                    this._orientation = StageOrientation.ROTATED_LEFT;
+                    this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                    break;
+                case 'landscape-secondary':
+                    this._orientation = StageOrientation.ROTATED_RIGHT;
+                    this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                    break;
+                default:
+                    this._orientation = StageOrientation.DEFAULT;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+            }
+        }
+        else if( window.orientation !== undefined )
+        {
+            switch ( window.orientation ) {
+                case 0:
+                    this._orientation = StageOrientation.DEFAULT;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+                case 180:
+                    this._orientation = StageOrientation.UPSIDE_DOWN;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+                case 90:
+                    this._orientation = StageOrientation.ROTATED_LEFT;
+                    this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                    break;
+                case -90:
+                    this._orientation = StageOrientation.ROTATED_RIGHT;
+                    this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                    break;
+                default:
+                    this._orientation = StageOrientation.DEFAULT;
+                    this._aspectRatio = StageAspectRatio.PORTRAIT;
+                    break;
+            }
+        }
+    }},
 
     /**
      * Get viewport size of the current browser window. This command only works on desktop browser or in a mobile environment with a webview enabled.
@@ -273,6 +369,7 @@ Stage.prototype = Object.create( Object.prototype ,
      */
     notifyOrientationChange : { writable : true , value : function()
     {
+        this.getDeviceOrientation();
         this.orientationChange.emit( this ) ;
     }},
 
@@ -298,6 +395,13 @@ Stage.prototype = Object.create( Object.prototype ,
         // FIXME : throw a spcific Error if the window/document/dom elements don't exist !
 
         // --------
+        // Detect if app is launched from the Home Screen
+        if( navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches )
+        {
+            this._launchedFromHomeScreen = true;
+        }
+
+        // --------
 
         this._pixelRatio = document.devicePixelRatio || 1;
 
@@ -310,6 +414,10 @@ Stage.prototype = Object.create( Object.prototype ,
 
         //this._fullScreenWidth = window.screen.availWidth;
         //this._fullScreenHeight = window.screen.availHeight;
+
+        // --------
+
+        this.getDeviceOrientation();
 
         // --------
 
