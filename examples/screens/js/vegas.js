@@ -143,118 +143,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -1125,12 +1014,12 @@ var littleEndian = isLittleEndian();
 
 var max = 0xFF;
 var fromARGB = function fromARGB(a, r, g, b) {
-  r = Math.min(Math.max(r, 0), max);
-  g = Math.min(Math.max(g, 0), max);
-  b = Math.min(Math.max(b, 0), max);
-  a = isNaN(a) ? 0 : a;
-  a = 0xFF * Math.max(Math.min(a, 1), 0);
-  return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+    r = Math.min(Math.max(r, 0), max);
+    g = Math.min(Math.max(g, 0), max);
+    b = Math.min(Math.max(b, 0), max);
+    a = isNaN(a) ? 0 : a;
+    a = 0xFF * Math.max(Math.min(a, 1), 0);
+    return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
 };
 
 var getAlpha = function getAlpha(color) {
@@ -1280,12 +1169,12 @@ var yesterday = function yesterday() {
  * @memberof core
  */
 var date = Object.assign({
-  ONE_DAY_MS: ONE_DAY_MS,
-  after: after,
-  before: before,
-  daysInMonth: daysInMonth,
-  leapYear: leapYear,
-  yesterday: yesterday
+    ONE_DAY_MS: ONE_DAY_MS,
+    after: after,
+    before: before,
+    daysInMonth: daysInMonth,
+    leapYear: leapYear,
+    yesterday: yesterday
 });
 
 var backIn = function backIn(t, b, c, d) {
@@ -1649,12 +1538,12 @@ var atanH = function atanH(x) {
 var DEG2RAD = Math.PI / 180;
 
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
 };
 
 var clamp = function clamp(value, min, max) {
@@ -1761,12 +1650,12 @@ var fibonacci = function fibonacci(value) {
 };
 
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
 };
 
 function fixAngle(angle) {
@@ -1904,8 +1793,6 @@ var percentage = function percentage(value, maximum) {
 };
 
 var PHI = 1.61803398874989;
-
-var PI2 = Math.PI * 2;
 
 var polarToCartesian = function polarToCartesian(vector, degrees) {
     var angle = vector.angle;
@@ -2078,7 +1965,6 @@ var maths = Object.assign({
     normalize: normalize,
     percentage: percentage,
     PHI: PHI,
-    PI2: PI2,
     polarToCartesian: polarToCartesian,
     RAD2DEG: RAD2DEG,
     replaceNaN: replaceNaN,
@@ -2929,10 +2815,10 @@ Enum.prototype.valueOf = function () {
 };
 
 function isEquatable(target) {
-  if (target) {
-    return target.equals && target.equals instanceof Function || target instanceof Equatable;
-  }
-  return false;
+    if (target) {
+        return target.equals && target.equals instanceof Function || target instanceof Equatable;
+    }
+    return false;
 }
 function Equatable() {}
 Equatable.prototype = Object.create(Object.prototype);
@@ -2952,10 +2838,10 @@ Evaluable.prototype.constructor = Evaluable;
 Evaluable.prototype.eval = function (value) {};
 
 function isFormattable(target) {
-  if (target) {
-    return target instanceof Formattable || 'format' in target && target.format instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Formattable || 'format' in target && target.format instanceof Function;
+    }
+    return false;
 }
 function Formattable() {}
 Formattable.prototype = Object.create(Object.prototype);
@@ -3385,25 +3271,25 @@ ArrayMap.prototype.values = function () {
  * @memberof system
  */
 var data = Object.assign({
-  isIdentifiable: isIdentifiable,
-  isIterator: isIterator,
-  isOrderedIterator: isOrderedIterator,
-  isValidator: isValidator,
-  Identifiable: Identifiable,
-  Iterator: Iterator,
-  KeyValuePair: KeyValuePair,
-  OrderedIterator: OrderedIterator,
-  Property: Property,
-  Validator: Validator,
-  Attribute: Attribute,
-  Method: Method,
-  iterators: {
-    ArrayIterator: ArrayIterator,
-    MapIterator: MapIterator
-  },
-  maps: {
-    ArrayMap: ArrayMap
-  }
+    isIdentifiable: isIdentifiable,
+    isIterator: isIterator,
+    isOrderedIterator: isOrderedIterator,
+    isValidator: isValidator,
+    Identifiable: Identifiable,
+    Iterator: Iterator,
+    KeyValuePair: KeyValuePair,
+    OrderedIterator: OrderedIterator,
+    Property: Property,
+    Validator: Validator,
+    Attribute: Attribute,
+    Method: Method,
+    iterators: {
+        ArrayIterator: ArrayIterator,
+        MapIterator: MapIterator
+    },
+    maps: {
+        ArrayMap: ArrayMap
+    }
 });
 
 function ConcurrencyError(message, fileName, lineNumber) {
@@ -4533,15 +4419,15 @@ Logger.prototype = Object.create(Signal.prototype, {
 });
 
 var strings$1 = Object.defineProperties({}, {
-  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
-  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
-  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
-  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
-  DEFAULT_CHANNEL: { value: "", enumerable: true },
-  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
-  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+    CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+    CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+    EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+    ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+    DEFAULT_CHANNEL: { value: "", enumerable: true },
+    ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+    INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
 });
 
 function LoggerTarget() {
@@ -5039,51 +4925,51 @@ var ObjectOrder = Object.defineProperties({}, {
 });
 
 function ObjectListener(dispatcher, type) {
-  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
-  Object.defineProperties(this, {
-    dispatcher: { value: dispatcher, writable: true },
-    method: { value: method, writable: true },
-    order: {
-      get: function get() {
-        return this._order;
-      },
-      set: function set(value) {
-        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
-      }
-    },
-    type: { value: type, writable: true },
-    useCapture: { value: Boolean(useCapture), writable: true },
-    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
-  });
+    var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
+    Object.defineProperties(this, {
+        dispatcher: { value: dispatcher, writable: true },
+        method: { value: method, writable: true },
+        order: {
+            get: function get() {
+                return this._order;
+            },
+            set: function set(value) {
+                this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+            }
+        },
+        type: { value: type, writable: true },
+        useCapture: { value: Boolean(useCapture), writable: true },
+        _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+    });
 }
 Object.defineProperties(ObjectListener, {
-  DISPATCHER: { value: "dispatcher", enumerable: true },
-  METHOD: { value: "method", enumerable: true },
-  ORDER: { value: "order", enumerable: true },
-  USE_CAPTURE: { value: "useCapture", enumerable: true },
-  TYPE: { value: "type", enumerable: true }
+    DISPATCHER: { value: "dispatcher", enumerable: true },
+    METHOD: { value: "method", enumerable: true },
+    ORDER: { value: "order", enumerable: true },
+    USE_CAPTURE: { value: "useCapture", enumerable: true },
+    TYPE: { value: "type", enumerable: true }
 });
 ObjectListener.prototype = Object.create(Object.prototype, {
-  constructor: { value: ObjectListener },
-  toString: { value: function value() {
-      var s = '[ObjectListener';
-      if (this.signal) {
-        s += ' dispatcher:"' + this.dispatcher + '"';
-      }
-      if (this.slot) {
-        s += ' type:"' + this.type + '"';
-      }
-      if (this.method) {
-        s += ' method:"' + this.method + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
+    constructor: { value: ObjectListener },
+    toString: { value: function value() {
+            var s = '[ObjectListener';
+            if (this.signal) {
+                s += ' dispatcher:"' + this.dispatcher + '"';
+            }
+            if (this.slot) {
+                s += ' type:"' + this.type + '"';
+            }
+            if (this.method) {
+                s += ' method:"' + this.method + '"';
+            }
+            if (this._order) {
+                s += ' order:"' + this._order + '"';
+            }
+            s += ']';
+            return s;
+        } }
 });
 
 function createListeners(factory) {
@@ -5737,126 +5623,126 @@ var TaskPhase = Object.defineProperties({}, {
 });
 
 function Action() {
-  Object.defineProperties(this, {
-    finishIt: { value: new Signal() },
-    startIt: { value: new Signal() },
-    __lock__: { writable: true, value: false },
-    _phase: { writable: true, value: TaskPhase.INACTIVE },
-    _running: { writable: true, value: false }
-  });
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        __lock__: { writable: true, value: false },
+        _phase: { writable: true, value: TaskPhase.INACTIVE },
+        _running: { writable: true, value: false }
+    });
 }
 Action.prototype = Object.create(Runnable.prototype, {
-  constructor: { writable: true, value: Action },
-  phase: { get: function get() {
-      return this._phase;
-    } },
-  running: { get: function get() {
-      return this._running;
-    } },
-  clone: { writable: true, value: function value() {
-      return new Action();
-    } },
-  isLocked: { writable: true, value: function value() {
-      return this.__lock__;
-    } },
-  lock: { writable: true, value: function value() {
-      this.__lock__ = true;
-    } },
-  notifyFinished: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.FINISHED;
-      this.finishIt.emit(this);
-      this._phase = TaskPhase.INACTIVE;
-    } },
-  notifyStarted: { writable: true, value: function value() {
-      this._running = true;
-      this._phase = TaskPhase.RUNNING;
-      this.startIt.emit(this);
-    } },
-  unlock: { writable: true, value: function value() {
-      this.__lock__ = false;
-    } }
+    constructor: { writable: true, value: Action },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Action();
+        } },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.FINISHED;
+            this.finishIt.emit(this);
+            this._phase = TaskPhase.INACTIVE;
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this._phase = TaskPhase.RUNNING;
+            this.startIt.emit(this);
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } }
 });
 
 function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    changeIt: { value: new Signal() },
-    clearIt: { value: new Signal() },
-    infoIt: { value: new Signal() },
-    looping: { value: false, writable: true },
-    loopIt: { value: new Signal() },
-    pauseIt: { value: new Signal() },
-    progressIt: { value: new Signal() },
-    resumeIt: { value: new Signal() },
-    stopIt: { value: new Signal() },
-    timeoutIt: { value: new Signal() }
-  });
+    Action.call(this);
+    Object.defineProperties(this, {
+        changeIt: { value: new Signal() },
+        clearIt: { value: new Signal() },
+        infoIt: { value: new Signal() },
+        looping: { value: false, writable: true },
+        loopIt: { value: new Signal() },
+        pauseIt: { value: new Signal() },
+        progressIt: { value: new Signal() },
+        resumeIt: { value: new Signal() },
+        stopIt: { value: new Signal() },
+        timeoutIt: { value: new Signal() }
+    });
 }
 Task.prototype = Object.create(Action.prototype, {
-  constructor: { writable: true, value: Task },
-  clone: { writable: true, value: function value() {
-      return new Task();
-    } },
-  notifyChanged: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.changeIt.emit(this);
-      }
-    } },
-  notifyCleared: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.clearIt.emit(this);
-      }
-    } },
-  notifyInfo: { writable: true, value: function value(info) {
-      if (!this.__lock__) {
-        this.infoIt.emit(this, info);
-      }
-    } },
-  notifyLooped: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.loopIt.emit(this);
-      }
-    } },
-  notifyPaused: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.pauseIt.emit(this);
-      }
-    } },
-  notifyProgress: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.progressIt.emit(this);
-      }
-    } },
-  notifyResumed: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.resumeIt.emit(this);
-      }
-    } },
-  notifyStopped: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.stopIt.emit(this);
-      }
-    } },
-  notifyTimeout: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.TIMEOUT;
-      if (!this.__lock__) {
-        this.timeoutIt.emit(this);
-      }
-    } },
-  resume: { writable: true, value: function value() {} },
-  reset: { writable: true, value: function value() {} },
-  start: { writable: true, value: function value() {
-      this.run();
-    } },
-  stop: { writable: true, value: function value() {} }
+    constructor: { writable: true, value: Task },
+    clone: { writable: true, value: function value() {
+            return new Task();
+        } },
+    notifyChanged: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.changeIt.emit(this);
+            }
+        } },
+    notifyCleared: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.clearIt.emit(this);
+            }
+        } },
+    notifyInfo: { writable: true, value: function value(info) {
+            if (!this.__lock__) {
+                this.infoIt.emit(this, info);
+            }
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.loopIt.emit(this);
+            }
+        } },
+    notifyPaused: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.pauseIt.emit(this);
+            }
+        } },
+    notifyProgress: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.progressIt.emit(this);
+            }
+        } },
+    notifyResumed: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.resumeIt.emit(this);
+            }
+        } },
+    notifyStopped: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.stopIt.emit(this);
+            }
+        } },
+    notifyTimeout: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.TIMEOUT;
+            if (!this.__lock__) {
+                this.timeoutIt.emit(this);
+            }
+        } },
+    resume: { writable: true, value: function value() {} },
+    reset: { writable: true, value: function value() {} },
+    start: { writable: true, value: function value() {
+            this.run();
+        } },
+    stop: { writable: true, value: function value() {} }
 });
 
 function ObjectDefinitionContainer() {
@@ -6808,22 +6694,22 @@ Parameters.prototype = Object.create(Object.prototype, {
  * trace( factory.getObject('position') ) ;
  */
 var ioc = Object.assign({
-  logger: logger,
-  MagicReference: MagicReference,
-  ObjectArgument: ObjectArgument,
-  ObjectAttribute: ObjectAttribute,
-  ObjectConfig: ObjectConfig,
-  ObjectDefinition: ObjectDefinition,
-  ObjectDefinitionContainer: ObjectDefinitionContainer,
-  ObjectFactory: ObjectFactory,
-  ObjectListener: ObjectListener,
-  ObjectMethod: ObjectMethod,
-  ObjectOrder: ObjectOrder,
-  ObjectProperty: ObjectProperty,
-  ObjectReceiver: ObjectReceiver,
-  ObjectScope: ObjectScope,
-  Parameters: Parameters,
-  TypePolicy: TypePolicy
+    logger: logger,
+    MagicReference: MagicReference,
+    ObjectArgument: ObjectArgument,
+    ObjectAttribute: ObjectAttribute,
+    ObjectConfig: ObjectConfig,
+    ObjectDefinition: ObjectDefinition,
+    ObjectDefinitionContainer: ObjectDefinitionContainer,
+    ObjectFactory: ObjectFactory,
+    ObjectListener: ObjectListener,
+    ObjectMethod: ObjectMethod,
+    ObjectOrder: ObjectOrder,
+    ObjectProperty: ObjectProperty,
+    ObjectReceiver: ObjectReceiver,
+    ObjectScope: ObjectScope,
+    Parameters: Parameters,
+    TypePolicy: TypePolicy
 });
 
 function isLoggable(target) {
@@ -7048,19 +6934,19 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 var logging = Object.assign({
-  isLoggable: isLoggable,
-  Log: Log,
-  Loggable: Loggable,
-  Logger: Logger,
-  LoggerEntry: LoggerEntry,
-  LoggerFactory: LoggerFactory,
-  LoggerLevel: LoggerLevel,
-  LoggerTarget: LoggerTarget,
-  targets: Object.assign({
-    ConsoleTarget: ConsoleTarget,
-    LineFormattedTarget: LineFormattedTarget,
-    TraceTarget: TraceTarget
-  })
+    isLoggable: isLoggable,
+    Log: Log,
+    Loggable: Loggable,
+    Logger: Logger,
+    LoggerEntry: LoggerEntry,
+    LoggerFactory: LoggerFactory,
+    LoggerLevel: LoggerLevel,
+    LoggerTarget: LoggerTarget,
+    targets: Object.assign({
+        ConsoleTarget: ConsoleTarget,
+        LineFormattedTarget: LineFormattedTarget,
+        TraceTarget: TraceTarget
+    })
 });
 
 function isRule(target) {
@@ -7173,19 +7059,19 @@ ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
 });
 
 function Null() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
 Null.prototype.eval = function () {
-  if (this.strict) {
-    return this.value === null;
-  } else {
-    return this.value == null;
-  }
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
 };
 
 function ElseIfNull(value) {
@@ -7670,22 +7556,22 @@ IfZero.prototype = Object.create(IfTask.prototype, {
  * task.run() ;
  */
 var logics = Object.assign({
-  ElseIf: ElseIf,
-  ElseIfEmptyString: ElseIfEmptyString,
-  ElseIfEquals: ElseIfEquals,
-  ElseIfFalse: ElseIfFalse,
-  ElseIfNull: ElseIfNull,
-  ElseIfTrue: ElseIfTrue,
-  ElseIfUndefined: ElseIfUndefined,
-  ElseIfZero: ElseIfZero,
-  IfEmptyString: IfEmptyString,
-  IfEquals: IfEquals,
-  IfFalse: IfFalse,
-  IfNull: IfNull,
-  IfTask: IfTask,
-  IfTrue: IfTrue,
-  IfUndefined: IfUndefined,
-  IfZero: IfZero
+    ElseIf: ElseIf,
+    ElseIfEmptyString: ElseIfEmptyString,
+    ElseIfEquals: ElseIfEquals,
+    ElseIfFalse: ElseIfFalse,
+    ElseIfNull: ElseIfNull,
+    ElseIfTrue: ElseIfTrue,
+    ElseIfUndefined: ElseIfUndefined,
+    ElseIfZero: ElseIfZero,
+    IfEmptyString: IfEmptyString,
+    IfEquals: IfEquals,
+    IfFalse: IfFalse,
+    IfNull: IfNull,
+    IfTask: IfTask,
+    IfTrue: IfTrue,
+    IfUndefined: IfUndefined,
+    IfZero: IfZero
 });
 
 function Model() {
@@ -8242,15 +8128,15 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
  * model.current = null ;
  */
 var models = Object.assign({
-  ChangeModel: ChangeModel,
-  MemoryModel: MemoryModel,
-  Model: Model,
-  arrays: Object.assign({
-    ArrayModel: ArrayModel
-  }),
-  maps: Object.assign({
-    MapModel: MapModel
-  })
+    ChangeModel: ChangeModel,
+    MemoryModel: MemoryModel,
+    Model: Model,
+    arrays: Object.assign({
+        ArrayModel: ArrayModel
+    }),
+    maps: Object.assign({
+        MapModel: MapModel
+    })
 });
 
 function PRNG() {
@@ -8430,17 +8316,17 @@ var numeric = Object.assign({
 });
 
 function ActionEntry(action) {
-  var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  this.action = action;
-  this.auto = Boolean(auto);
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+    var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    this.action = action;
+    this.auto = Boolean(auto);
+    this.priority = priority > 0 ? Math.ceil(priority) : 0;
 }
 ActionEntry.prototype = Object.create(Object.prototype, {
-  constructor: { value: ActionEntry },
-  toString: { value: function value() {
-      return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
-    } }
+    constructor: { value: ActionEntry },
+    toString: { value: function value() {
+            return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
+        } }
 });
 
 function Batch() {
@@ -9626,19 +9512,19 @@ IsBoolean.prototype.eval = function () {
 };
 
 function IsNaN() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 IsNaN.prototype = Object.create(Rule.prototype);
 IsNaN.prototype.constructor = IsNaN;
 IsNaN.prototype.eval = function () {
-  if (this.strict) {
-    return isNaN(this.value);
-  } else {
-    return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
-  }
+    if (this.strict) {
+        return isNaN(this.value);
+    } else {
+        return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
+    }
 };
 
 function IsNumber() {
@@ -11245,139 +11131,6 @@ var ZOrder = Object.defineProperties({}, {
   FRONT: { enumerable: true, value: 1 }
 });
 
-function RGB() {
-    var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    Object.defineProperties(this, {
-        _blue: { writable: true, enumerable: true, value: b },
-        _green: { writable: true, enumerable: true, value: g },
-        _red: { writable: true, enumerable: true, value: r }
-    });
-}
-Object.defineProperties(RGB, {
-    maximum: { value: 0xFF },
-    fromNumber: { value: function value(_value) {
-            return new RGB().fromNumber(_value);
-        } }
-});
-RGB.prototype = Object.create(Object.prototype, {
-    b: {
-        get: function get() {
-            return this._blue;
-        },
-        set: function set(value) {
-            this._blue = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
-        }
-    },
-    g: {
-        get: function get() {
-            return this._green;
-        },
-        set: function set(value) {
-            this._green = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
-        }
-    },
-    luminance: {
-        get: function get() {
-            return 0.299 * this._red + 0.587 * this._green + 0.114 * this._blue;
-        },
-        set: function set(value) {
-            value = normalize(value, 0, 0xFF);
-            var l = 0.299 * this._red + 0.587 * this._green + 0.114 * this._blue;
-            this._red = l + (this._red - l) * (1 - value);
-            this._green = l + (this._green - l) * (1 - value);
-            this._blue = l + (this._blue - l) * (1 - value);
-        }
-    },
-    r: {
-        get: function get() {
-            return this._red;
-        },
-        set: function set(value) {
-            this._red = Math.max(Math.min(isNaN(value) ? 0 : value, 0xFF), 0);
-        }
-    },
-    clone: { value: function value() {
-            return new RGB(this._red, this._green, this._blue);
-        } },
-    difference: { value: function value() {
-            this._red = RGB.maximum - this._red;
-            this._green = RGB.maximum - this._green;
-            this._blue = RGB.maximum - this._blue;
-        } },
-    distance: { value: function value(rgb) {
-            if (!(rgb instanceof RGB)) {
-                return 0;
-            }
-            return Math.pow(this._red - rgb._red, 2) + Math.pow(this._green - rgb._green, 2) + Math.pow(this._blue - rgb._blue, 2);
-        } },
-    equals: { value: function value(o) {
-            if (o === this) {
-                return true;
-            } else if (o instanceof RGB) {
-                return this._red === o._red && o._green === this._green && o._blue === this._blue;
-            } else {
-                return false;
-            }
-        } },
-    fromNumber: { value: function value(_value2) {
-            var gb = void 0;
-            this._red = _value2 >> 16;
-            gb = _value2 ^ this._red << 16;
-            this._green = gb >> 8;
-            this._blue = gb ^ this._green << 8;
-            return this;
-        } },
-    interpolate: { value: function value(to) {
-            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
-            var q = 1 - p;
-            return new RGB(this._red * q + to._red * p, this._green * q + to._green * p, this._blue * q + to._blue * p);
-        } },
-    interpolateToNumber: { value: function value(to) {
-            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
-            var q = 1 - p;
-            var r = this._red * q + to._red * p;
-            var g = this._green * q + to._green * p;
-            var b = this._blue * q + to._blue * p;
-            return r << 16 | g << 8 | b;
-        } },
-    setTo: { value: function value() {
-            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-            this._red = r;
-            this._green = g;
-            this._blue = b;
-            return this;
-        } },
-    toHexString: { value: function value() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "#";
-            var upper = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-            return prefix + hex(this._red, upper) + hex(this._green, upper) + hex(this._blue, upper);
-        } },
-    toString: { value: function value() {
-            return "[RGB r:" + this._red + " g:" + this._green + " b:" + this._blue + " hex:" + this.toHexString() + "]";
-        } },
-    valueOf: { writable: true, value: function value() {
-            return this._red << 16 | this._green << 8 | this._blue;
-        } }
-});
-
-/**
- * The {@link graphics.colors} library is a set of classes and utilities for color operations.
- * @summary The {@link graphics.colors} library is a set of classes and utilities for colors operations.
- * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
- * @author Marc Alcaraz <ekameleon@gmail.com>
- * @namespace graphics.colors
- * @memberof graphics
- */
-var colors$1 = Object.assign({
-  RGB: RGB
-});
-
 var StageAspectRatio = Object.defineProperties({}, {
   ANY: { enumerable: true, value: 'any' },
   LANDSCAPE: { enumerable: true, value: 'landscape' },
@@ -11551,16 +11304,11 @@ Stage.prototype = Object.create(Object.prototype, {
             if (navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
                 this._launchedFromHomeScreen = true;
             }
-            this._pixelRatio = window.devicePixelRatio || 1;
+            this._pixelRatio = document.devicePixelRatio || 1;
             this.getViewportSize();
             this._fullScreenWidth = window.screen.width;
             this._fullScreenHeight = window.screen.height;
-            if (window.orientation || window.screen.orientation) {
-                this._supportsOrientationChange = true;
-                this.getDeviceOrientation();
-            } else {
-                this._supportsOrientationChange = false;
-            }
+            this.getDeviceOrientation();
             var fullscreen = ['requestFullscreen', 'requestFullScreen', 'webkitRequestFullscreen', 'webkitRequestFullScreen', 'msRequestFullscreen', 'msRequestFullScreen', 'mozRequestFullScreen', 'mozRequestFullscreen'];
             var cancel = ['cancelFullScreen', 'exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'msCancelFullScreen', 'msExitFullscreen', 'mozCancelFullScreen', 'mozExitFullscreen'];
             var len = fullscreen.length;
@@ -11575,12 +11323,8 @@ Stage.prototype = Object.create(Object.prototype, {
             if (window.Element && Element.ALLOW_KEYBOARD_INPUT) {
                 this._fullScreenInteractive = true;
             }
-            if (this._allowFullScreen === true) {
-                window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
-            }
-            if (this._supportsOrientationChange === true) {
-                window.addEventListener("orientationchange", this.notifyOrientationChange.bind(this), false);
-            }
+            window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
+            window.addEventListener("orientationchange", this.notifyOrientationChange.bind(this), false);
             window.addEventListener("resize", this.notifyResized.bind(this), false);
         } }
 });
@@ -11597,212 +11341,6 @@ var display = Object.assign({
   Stage: Stage,
   StageAspectRatio: StageAspectRatio,
   StageDisplayState: StageDisplayState
-});
-
-function AspectRatio() {
-    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var lock = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    Object.defineProperties(this, {
-        _aspW: { value: 0, writable: true },
-        _aspH: { value: 0, writable: true },
-        _gcd: { value: 0, writable: true },
-        _h: { value: isInt(height) ? height : 0, writable: true },
-        __lock__: { value: lock === true, writable: true },
-        verbose: { value: verbose === true, writable: true },
-        _w: { value: isInt(width) ? width : 0, writable: true }
-    });
-    this._GCD();
-}
-AspectRatio.prototype = Object.create(Dimension.prototype, {
-    gcd: { get: function get() {
-            return this._gcd;
-        } },
-    height: {
-        get: function get() {
-            return this._h;
-        },
-        set: function set(value) {
-            this._h = isInt(value) ? value : 0;
-            if (this.__lock__) {
-                this._w = floor(this._h * this._aspW / this._aspH, 0);
-            } else {
-                this._GCD();
-            }
-        }
-    },
-    width: {
-        get: function get() {
-            return this._w;
-        },
-        set: function set(value) {
-            this._w = isInt(value) ? value : 0;
-            if (this.__lock__) {
-                this._h = floor(this._w * this._aspH / this._aspW, 0);
-            } else {
-                this._GCD();
-            }
-        }
-    },
-    clone: { writable: true, value: function value() {
-            return new AspectRatio(this.width, this.height, this.__lock__);
-        } },
-    copyFrom: { value: function value(source) {
-            this.width = source.width;
-            this.height = source.height;
-            return this;
-        } },
-    isLocked: { writable: true, value: function value() {
-            return this.__lock__;
-        } },
-    lock: { writable: true, value: function value() {
-            this.__lock__ = true;
-        } },
-    toString: { writable: true, value: function value() {
-            if (this.verbose === true) {
-                return "[AspectRatio width:" + this._w + " height:" + this._h + " ratio:[" + this._aspW + ":" + this._aspH + "]]";
-            } else {
-                this.verbose = false;
-                return this._aspW + ":" + this._aspH;
-            }
-        } },
-    unlock: { writable: true, value: function value() {
-            this.__lock__ = false;
-        } },
-    _GCD: { value: function value() {
-            this._gcd = gcd(this._w, this._h);
-            this._aspW = floor(this._w / this._gcd, 0);
-            this._aspH = floor(this._h / this._gcd, 0);
-            if (isNaN(this._aspW)) {
-                this._aspW = 0;
-            }
-            if (isNaN(this._aspH)) {
-                this._aspH = 0;
-            }
-        } }
-});
-
-function Circle() {
-    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    Vector2D.call(this, x, y);
-    Object.defineProperties(this, {
-        _diameter: { value: 0, writable: true },
-        _radius: { value: radius > 0 ? radius : 0, writable: true },
-        _radiusSquared: { value: 0, writable: true }
-    });
-    this._diameter = 2 * this._radius;
-    this._radiusSquared = this._radius * this._radius;
-}
-Circle.prototype = Object.create(Vector2D.prototype, {
-    area: { get: function get() {
-            return this._radius > 0 ? Math.PI * this._radius * this._radius : 0;
-        } },
-    bottom: { get: function get() {
-            return this.y + this._radius;
-        } },
-    circumference: { get: function get() {
-            return 2 * Math.PI * this._radius;
-        } },
-    diameter: {
-        get: function get() {
-            return this._diameter;
-        },
-        set: function set(value) {
-            this._diameter = value > 0 ? value : 0;
-            this._radius = this._diameter * 0.5;
-            this._radiusSquared = this._radius * this._radius;
-        }
-    },
-    left: { get: function get() {
-            return this.x - this._radius;
-        } },
-    radius: {
-        get: function get() {
-            return this._radius;
-        },
-        set: function set(value) {
-            this._radius = value > 0 ? value : 0;
-            this._diameter = 2 * this._radius;
-            this._radiusSquared = this._radius * this._radius;
-        }
-    },
-    radiusSquared: { get: function get() {
-            return this._radiusSquared;
-        } },
-    right: { get: function get() {
-            return this.x + this._radius;
-        } },
-    top: { get: function get() {
-            return this.y - this._radius;
-        } },
-    circumferencePoint: { value: function value(angle) {
-            var point = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-            if (!point) {
-                point = new Point();
-            }
-            point.x = this.x + this._radius * Math.cos(angle);
-            point.y = this.y + this._radius * Math.sin(angle);
-            return point;
-        } },
-    clone: { writable: true, value: function value() {
-            return new Circle(this.x, this.y, this.radius);
-        } },
-    contains: { writable: true, value: function value(x, y) {
-            if (this._radius <= 0 || x < this.x - this._radius ||
-            x > this.x + this._radius ||
-            y < this.y - this._radius ||
-            y > this.y + this._radius
-            ) {
-                    return false;
-                } else {
-                var dx = (this.x - x) * (this.x - x);
-                var dy = (this.y - y) * (this.y - y);
-                return dx + dy <= this._diameter;
-            }
-        } },
-    copyFrom: { writable: true, value: function value(source) {
-            if (!(source instanceof Circle)) {
-                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an Circle object.');
-            }
-            this.x = source.x;
-            this.y = source.y;
-            this.radius = source.radius;
-            return this;
-        } },
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof Circle) {
-                return o.x === this.x && o.y === this.y && o.radius === this.radius;
-            } else {
-                return false;
-            }
-        } },
-    getBounds: { writable: true, value: function value() {
-            return new Rectangle(this.x - this._radius, this.y - this._radius, this._diameter, this._diameter);
-        } },
-    metaball: { value: function value(tx, ty) {
-            return this._radiusSquared / ((this.x - tx) * (this.x - tx) + (this.y - ty) * (this.y - ty));
-        } },
-    setTo: { writable: true, value: function value() {
-            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-            this.x = isNaN(x) ? 0 : x;
-            this.y = isNaN(y) ? 0 : y;
-            this.radius = radius > 0 ? radius : 0;
-        } },
-    translate: { writable: true, value: function value(x, y) {
-            this.x += x;
-            this.y += y;
-        } },
-    toObject: { writable: true, value: function value() {
-            return { x: this.x, y: this.y, radius: this.radius };
-        } },
-    toString: { writable: true, value: function value() {
-            return "[Circle x:" + this.x + " y:" + this.y + " radius:" + this.radius + "]";
-        } }
 });
 
 function ColorTransform() {
@@ -12217,15 +11755,13 @@ Object.defineProperties(Vector3D, {
  * @memberof graphics
  */
 var geom = Object.assign({
-    AspectRatio: AspectRatio,
-    Circle: Circle,
-    ColorTransform: ColorTransform,
-    Dimension: Dimension,
-    Matrix: Matrix,
-    Point: Point,
-    Rectangle: Rectangle,
-    Vector2D: Vector2D,
-    Vector3D: Vector3D
+  ColorTransform: ColorTransform,
+  Dimension: Dimension,
+  Matrix: Matrix,
+  Point: Point,
+  Rectangle: Rectangle,
+  Vector2D: Vector2D,
+  Vector3D: Vector3D
 });
 
 /**
@@ -12251,7 +11787,6 @@ var graphics = Object.assign({
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
-    colors: colors$1,
     display: display,
     geom: geom
 });
