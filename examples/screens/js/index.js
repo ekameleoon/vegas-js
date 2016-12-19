@@ -27,17 +27,17 @@ window.onload = function()
 
     var fullscreen = function( state )
     {
-        trace( 'fullscreen ' + state ) ;
+        addTa( 'fullscreen ' + state ) ;
     }
 
     var orientation = function( stage )
     {
-        trace( 'orientation type:' + stage.orientation ) ;
+        addTa( 'orientation changed to:' + stage.orientation ) ;
     }
 
     var resize = function( stage )
     {
-        trace( 'resize viewPort:' + core.dump( stage.getViewportSize() ) ) ;
+        addTa( 'resize viewPort:' + core.dump( stage.getViewportSize() ) ) ;
     }
 
     // ------
@@ -57,28 +57,44 @@ window.onload = function()
 
     trace( '------' ) ;
 
-    trace( 'ua: ' + navigator.userAgent ) ;
-    trace( 'app version: ' + navigator.appVersion ) ;
-    trace( 'os: ' + os.name ) ;
-    trace( 'os type: ' + os.type ) ;
-    trace( 'os version: ' + os.version ) ;
-    trace( 'browser: ' + browser.name ) ;
-    trace( 'browser version: ' + browser.version ) ;
+    document.getElementById("ta").value = "";
 
-    trace( '------' ) ;
+    addTa( 'ua: ' + navigator.userAgent ) ;
+    addTa( 'app version: ' + navigator.appVersion ) ;
+    addTa( 'os: ' + os.name ) ;
+    addTa( 'os type: ' + os.type ) ;
+    addTa( 'os version: ' + os.version ) ;
+    addTa( 'browser: ' + browser.name ) ;
+    addTa( 'browser version: ' + browser.version ) ;
 
-    trace( 'stage pixelRatio: ' + stage.pixelRatio ) ;
-    trace( 'stage allowFullscreen: ' + stage.allowFullScreen ) ;
-    trace( 'stage allowFullscreenInteractive: ' + stage.allowFullScreenInteractive ) ;
+    addTa( '------' ) ;
 
-    trace( 'stage displayState: ' + stage.displayState ) ;
-    trace( 'stage orientation: ' + stage.orientation ) ;
+    addTa( 'stage pixelRatio: ' + stage.pixelRatio ) ;
+    addTa( 'stage allowFullscreen: ' + stage.allowFullScreen ) ;
+    if( stage.allowFullScreen === true )
+    {
+        document.getElementById("full").style.display = "initial";
+        document.getElementById("normal").style.display = "none";
+    }
+    addTa( 'stage allowFullscreenInteractive: ' + stage.allowFullScreenInteractive ) ;
 
-    trace( 'width  : ' + stage.width ) ;
-    trace( 'height : ' + stage.height ) ;
+    addTa( 'stage displayState: ' + stage.displayState ) ;
+    addTa( 'stage orientation: ' + stage.orientation ) ;
+    addTa( 'stage aspectRatio: ' + stage.aspectRatio ) ;
 
-    trace( 'fullScreen width  : ' + stage.fullScreenWidth ) ;
-    trace( 'fullScreen height : ' + stage.fullScreenHeight ) ;
+    addTa( 'launch from Home Screen: ' + stage.launchedFromHomeScreen ) ;
+
+    addTa( 'width  : ' + stage.width ) ;
+    addTa( 'height : ' + stage.height ) ;
+
+    addTa( 'fullScreen width  : ' + stage.fullScreenWidth ) ;
+    addTa( 'fullScreen height : ' + stage.fullScreenHeight ) ;
+}
+
+var addTa = function( txt )
+{
+    trace( txt );
+    document.getElementById("ta").value += txt + '\n';
 }
 
 var goFullScreen = function()
