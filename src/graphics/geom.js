@@ -2,6 +2,7 @@
 
 import '../polyfill/Object.js' ;
 
+import { AspectRatio }    from './geom/AspectRatio.js' ;
 import { Circle }         from './geom/Circle.js' ;
 import { ColorTransform } from './geom/ColorTransform.js' ;
 import { Dimension }      from './geom/Dimension.js' ;
@@ -21,12 +22,13 @@ import { Vector3D }       from './geom/Vector3D.js' ;
  */
 export var geom = Object.assign
 ({
-    Circle : Circle ,
+    AspectRatio    : AspectRatio ,
+    Circle         : Circle ,
     ColorTransform : ColorTransform ,
-    Dimension : Dimension ,
-    Matrix    : Matrix ,
-    Point     : Point ,
-    Rectangle : Rectangle ,
-    Vector2D  : Vector2D ,
-    Vector3D  : Vector3D
+    Dimension      : Dimension ,
+    Matrix         : Matrix ,
+    Point          : Point ,
+    Rectangle      : Rectangle ,
+    Vector2D       : Vector2D ,
+    Vector3D       : Vector3D
 }) ;

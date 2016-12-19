@@ -143,7 +143,118 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
 
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
 
 
 
@@ -11272,6 +11383,90 @@ var display = Object.assign({
   StageDisplayState: StageDisplayState
 });
 
+function AspectRatio() {
+    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var lock = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Object.defineProperties(this, {
+        _aspW: { value: 0, writable: true },
+        _aspH: { value: 0, writable: true },
+        _gcd: { value: 0, writable: true },
+        _h: { value: isInt(height) ? height : 0, writable: true },
+        __lock__: { value: lock === true, writable: true },
+        verbose: { value: verbose === true, writable: true },
+        _w: { value: isInt(width) ? width : 0, writable: true }
+    });
+    this._GCD();
+}
+AspectRatio.prototype = Object.create(Dimension.prototype, {
+    gcd: { get: function get() {
+            return this._gcd;
+        } },
+    height: {
+        get: function get() {
+            return this._h;
+        },
+        set: function set(value) {
+            this._h = isInt(value) ? value : 0;
+            if (this.__lock__) {
+                this._w = floor(this._h * this._aspW / this._aspH, 0);
+            } else {
+                this._GCD();
+            }
+        }
+    },
+    width: {
+        get: function get() {
+            return this._w;
+        },
+        set: function set(value) {
+            this._w = isInt(value) ? value : 0;
+            if (this.__lock__) {
+                this._h = floor(this._w * this._aspH / this._aspW, 0);
+            } else {
+                this._GCD();
+            }
+        }
+    },
+    clone: { writable: true, value: function value() {
+            return new AspectRatio(this.width, this.height, this.__lock__);
+        } },
+    copyFrom: { value: function value(source) {
+            this.width = source.width;
+            this.height = source.height;
+            return this;
+        } },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    toString: { writable: true, value: function value() {
+            if (this.verbose === true) {
+                return "[AspectRatio width:" + this._w + " height:" + this._h + " ratio:[" + this._aspW + ":" + this._aspH + "]]";
+            } else {
+                this.verbose = false;
+                return this._aspW + ":" + this._aspH;
+            }
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } },
+    _GCD: { value: function value() {
+            this._gcd = gcd(this._w, this._h);
+            this._aspW = floor(this._w / this._gcd, 0);
+            this._aspH = floor(this._h / this._gcd, 0);
+            if (isNaN(this._aspW)) {
+                this._aspW = 0;
+            }
+            if (isNaN(this._aspH)) {
+                this._aspH = 0;
+            }
+        } }
+});
+
 function Circle() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11796,6 +11991,7 @@ Object.defineProperties(Vector3D, {
  * @memberof graphics
  */
 var geom = Object.assign({
+    AspectRatio: AspectRatio,
     Circle: Circle,
     ColorTransform: ColorTransform,
     Dimension: Dimension,

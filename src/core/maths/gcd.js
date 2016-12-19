@@ -1,8 +1,8 @@
 "use strict" ;
 
 /**
- * Returns the greatest common divisor with the Euclidean algorithm.
- * @name floor
+ * Indicates the greatest common divisor of two values with the Euclidean algorithm.
+ * @name gcd
  * @memberof core.maths
  * @function
  * @instance

@@ -1,5 +1,6 @@
 'use strict' ;
 
+import './geom/AspectRatio.js' ;
 import './geom/Circle.js' ;
 import './geom/ColorTransform.js' ;
 import './geom/Dimension.js' ;
