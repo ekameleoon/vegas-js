@@ -82,6 +82,11 @@ Browser.prototype = Object.create( Object.prototype ,
             name = Browser.CHROME;
             version = parseInt( RegExp.$1 , 10 );
         }
+        else if( /CriOS\/(\d+)/.test( ua ) )
+        {
+            name = Browser.CHROME;
+            version = parseInt( RegExp.$1 , 10 );
+        }
         else if( /Epiphany/.test( ua ) )
         {
             name = Browser.EPIPHANY;
