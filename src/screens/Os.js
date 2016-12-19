@@ -69,39 +69,45 @@ Os.prototype = Object.create( Object.prototype ,
         let type = "";
         let version = "";
 
-        if( /Android/.test( ua ) )
-        {
-            name = Os.ANDROID;
-            type = Os.TYPE_MOBILE;
-        }
-        else if( /iPad/.test( ua ) )
+
+        if( /iPad/.test( ua ) )
         {
             name = Os.IPAD;
             type = Os.TYPE_MOBILE;
         }
         else if( /iPod/.test( ua ) )
         {
-            name = Os.IPAD;
+            name = Os.IPOD;
             type = Os.TYPE_MOBILE;
         }
         else if( /iPhone/.test( ua ) )
         {
-            name = Os.IPAD;
+            name = Os.IPHONE;
             type = Os.TYPE_MOBILE;
-        }
-        else if( /Linux/.test( ua ) )
-        {
-            name = Os.LINUX;
-            type = Os.TYPE_DESKTOP;
         }
         else if( /Mac OS/.test( ua ) )
         {
             name = Os.MAC;
             type = Os.TYPE_DESKTOP;
         }
+        else if( /Windows Phone/.test( ua ) )
+        {
+            name = Os.WINDOWS;
+            type = Os.TYPE_MOBILE;
+        }
         else if( /Windows/.test( ua ) )
         {
             name = Os.WINDOWS;
+            type = Os.TYPE_DESKTOP;
+        }
+        else if( /Android/.test( ua ) )
+        {
+            name = Os.ANDROID;
+            type = Os.TYPE_MOBILE;
+        }
+        else if( /Linux/.test( ua ) )
+        {
+            name = Os.LINUX;
             type = Os.TYPE_DESKTOP;
         }
 
