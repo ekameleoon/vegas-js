@@ -11304,11 +11304,16 @@ Stage.prototype = Object.create(Object.prototype, {
             if (navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
                 this._launchedFromHomeScreen = true;
             }
-            this._pixelRatio = document.devicePixelRatio || 1;
+            this._pixelRatio = window.devicePixelRatio || 1;
             this.getViewportSize();
             this._fullScreenWidth = window.screen.width;
             this._fullScreenHeight = window.screen.height;
-            this.getDeviceOrientation();
+            if (window.orientation || window.screen.orientation) {
+                this._supportsOrientationChange = true;
+                this.getDeviceOrientation();
+            } else {
+                this._supportsOrientationChange = false;
+            }
             var fullscreen = ['requestFullscreen', 'requestFullScreen', 'webkitRequestFullscreen', 'webkitRequestFullScreen', 'msRequestFullscreen', 'msRequestFullScreen', 'mozRequestFullScreen', 'mozRequestFullscreen'];
             var cancel = ['cancelFullScreen', 'exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'msCancelFullScreen', 'msExitFullscreen', 'mozCancelFullScreen', 'mozExitFullscreen'];
             var len = fullscreen.length;
@@ -11323,8 +11328,12 @@ Stage.prototype = Object.create(Object.prototype, {
             if (window.Element && Element.ALLOW_KEYBOARD_INPUT) {
                 this._fullScreenInteractive = true;
             }
-            window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
-            window.addEventListener("orientationchange", this.notifyOrientationChange.bind(this), false);
+            if (this._allowFullScreen === true) {
+                window.addEventListener("fullscreenchange", this.notifyFullScreen.bind(this), false);
+            }
+            if (this._supportsOrientationChange === true) {
+                window.addEventListener("orientationchange", this.notifyOrientationChange.bind(this), false);
+            }
             window.addEventListener("resize", this.notifyResized.bind(this), false);
         } }
 });

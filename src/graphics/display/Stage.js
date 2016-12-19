@@ -61,7 +61,7 @@ export function Stage()
          * @private
          */
         _displayState : { writable : true  , value : StageDisplayState.NORMAL } ,
-        
+
         /**
          * @private
          */
@@ -403,7 +403,7 @@ Stage.prototype = Object.create( Object.prototype ,
 
         // --------
 
-        this._pixelRatio = document.devicePixelRatio || 1;
+        this._pixelRatio = window.devicePixelRatio || 1;
 
         // --------
 
@@ -417,7 +417,15 @@ Stage.prototype = Object.create( Object.prototype ,
 
         // --------
 
-        this.getDeviceOrientation();
+        if( window.orientation || window.screen.orientation )
+        {
+            this._supportsOrientationChange = true;
+            this.getDeviceOrientation();
+        }
+        else
+        {
+            this._supportsOrientationChange = false;
+        }
 
         // --------
 
@@ -466,8 +474,16 @@ Stage.prototype = Object.create( Object.prototype ,
 
         // -------- Behaviors
 
-        window.addEventListener( "fullscreenchange"  , this.notifyFullScreen.bind( this )      , false );
-        window.addEventListener( "orientationchange" , this.notifyOrientationChange.bind(this) , false ) ;
+        if( this._allowFullScreen === true )
+        {
+            window.addEventListener( "fullscreenchange"  , this.notifyFullScreen.bind( this )      , false );
+        }
+
+        if( this._supportsOrientationChange === true )
+        {
+            window.addEventListener( "orientationchange" , this.notifyOrientationChange.bind(this) , false ) ;
+        }
+
         window.addEventListener( "resize"            , this.notifyResized.bind( this )         , false );
     }}
 });
