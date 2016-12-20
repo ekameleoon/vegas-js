@@ -19,7 +19,7 @@
  * trace( wrap( Math.PI , 0 , Math.PI ) ) ; // 0
  * trace( wrap( Math.PI / 2 , 0 , Math.PI ) ) ; // Math.PI / 2
  * trace( wrap( Math.PI - 1 , 0 , Math.PI ) === ( Math.PI - 1 ) ) ; // true
- * trace( wrap( Math.PI + 1 , 0 , 1 ) ) ; // 1
+ * trace( wrap( Math.PI + 1 , 0 , Math.PI ) ) ; // 1
  */
 export function wrap( angle , min = 0 , max = 360 )
 {
