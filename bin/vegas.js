@@ -143,118 +143,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -11277,9 +11166,9 @@ function RGB() {
     var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
     Object.defineProperties(this, {
-        _blue: { writable: true, enumerable: true, value: b },
-        _green: { writable: true, enumerable: true, value: g },
-        _red: { writable: true, enumerable: true, value: r }
+        _blue: { writable: true, enumerable: true, value: Math.max(Math.min(b, 0XFF), 0) },
+        _green: { writable: true, enumerable: true, value: Math.max(Math.min(g, 0XFF), 0) },
+        _red: { writable: true, enumerable: true, value: Math.max(Math.min(r, 0XFF), 0) }
     });
 }
 Object.defineProperties(RGB, {
@@ -11358,13 +11247,13 @@ RGB.prototype = Object.create(Object.prototype, {
         } },
     interpolate: { value: function value(to) {
             var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
+            var p = Math.max(Math.min(isNaN(level) ? 0 : level, 1), 0);
             var q = 1 - p;
             return new RGB(this._red * q + to._red * p, this._green * q + to._green * p, this._blue * q + to._blue * p);
         } },
     interpolateToNumber: { value: function value(to) {
             var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-            var p = clamp(isNaN(level) ? 1 : level, 0, 1);
+            var p = Math.max(Math.min(isNaN(level) ? 0 : level, 1), 0);
             var q = 1 - p;
             var r = this._red * q + to._red * p;
             var g = this._green * q + to._green * p;
@@ -11393,6 +11282,95 @@ RGB.prototype = Object.create(Object.prototype, {
         } }
 });
 
+function RGBA() {
+    var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var a = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    RGB.call(this, r, g, b);
+    Object.defineProperties(this, {
+        _alpha: { writable: true, enumerable: true, value: Math.max(Math.min(a, 1), 0) }
+    });
+}
+Object.defineProperties(RGBA, {
+    fromNumber: { value: function value(_value) {
+            return new RGBA().fromNumber(_value);
+        } }
+});
+RGBA.prototype = Object.create(RGB.prototype, {
+    a: {
+        get: function get() {
+            return this._alpha;
+        },
+        set: function set(value) {
+            this._alpha = Math.max(Math.min(isNaN(value) ? 0 : value, 1), 0);
+        }
+    },
+    clone: { value: function value() {
+            return new RGBA(this._red, this._green, this._blue, this._alpha);
+        } },
+    difference: { value: function value() {
+            this._red = 0xFF - this._red;
+            this._green = 0xFF - this._green;
+            this._blue = 0xFF - this._blue;
+            this._alpha = 1 - this._alpha;
+        } },
+    equals: { value: function value(o) {
+            if (o === this) {
+                return true;
+            } else if (o instanceof RGBA) {
+                return this._red === o._red && o._green === this._green && o._blue === this._blue && this._alpha === o._alpha;
+            } else {
+                return false;
+            }
+        } },
+    fromNumber: { value: function value(_value2) {
+            this._red = (_value2 & 0xff000000) >>> 24;
+            this._green = (_value2 & 0x00ff0000) >>> 16;
+            this._blue = (_value2 & 0x0000ff00) >>> 8;
+            this._alpha = (_value2 & 0x000000ff) / 0xFF;
+            return this;
+        } },
+    interpolate: { value: function value(to) {
+            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            var p = Math.max(Math.min(isNaN(level) ? 0 : level, 1), 0);
+            var q = 1 - p;
+            return new RGBA(this._red * q + to._red * p, this._green * q + to._green * p, this._blue * q + to._blue * p, this._alpha * q + to._alpha * p);
+        } },
+    interpolateToNumber: { value: function value(to) {
+            var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            var p = Math.max(Math.min(isNaN(level) ? 0 : level, 1), 0);
+            var q = 1 - p;
+            var r = this._red * q + to._red * p;
+            var g = this._green * q + to._green * p;
+            var b = this._blue * q + to._blue * p;
+            var a = this._alpha * q + to._alpha * p;
+            return r << 24 | g << 16 | b << 8 | a;
+        } },
+    setTo: { value: function value() {
+            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var a = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            this._red = Math.max(Math.min(r, 0XFF), 0);
+            this._green = Math.max(Math.min(g, 0XFF), 0);
+            this._blue = Math.max(Math.min(b, 0XFF), 0);
+            this._alpha = Math.max(Math.min(a, 1), 0);
+            return this;
+        } },
+    toHexString: { value: function value() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "#";
+            var upper = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            return prefix + hex(this._red, upper) + hex(this._green, upper) + hex(this._blue, upper) + hex(this._alpha * 0xFF, upper);
+        } },
+    toString: { value: function value() {
+            return "[RGBA r:" + this._red + " g:" + this._green + " b:" + this._blue + " a:" + this._alpha + "]";
+        } },
+    valueOf: { writable: true, value: function value() {
+            return parseInt('0x' + hex(this._red) + hex(this._green) + hex(this._blue) + hex(this._alpha * 0xFF));
+        } }
+});
+
 /**
  * The {@link graphics.colors} library is a set of classes and utilities for color operations.
  * @summary The {@link graphics.colors} library is a set of classes and utilities for colors operations.
@@ -11402,7 +11380,8 @@ RGB.prototype = Object.create(Object.prototype, {
  * @memberof graphics
  */
 var colors$1 = Object.assign({
-  RGB: RGB
+  RGB: RGB,
+  RGBA: RGBA
 });
 
 var StageAspectRatio = Object.defineProperties({}, {
