@@ -12179,24 +12179,39 @@ Os.prototype = Object.create(Object.prototype, {
             if (/iPad/.test(ua)) {
                 name = Os.IPAD;
                 type = Device.MOBILE;
+                if (/CPU OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
             } else if (/iPod/.test(ua)) {
                 name = Os.IPOD;
                 type = Device.MOBILE;
+                if (/CPU iPhone OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
             } else if (/iPhone/.test(ua)) {
                 name = Os.IPHONE;
                 type = Device.MOBILE;
-            } else if (/Mac OS/.test(ua)) {
+                if (/CPU iPhone OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
+            } else if (/Macintosh/.test(ua)) {
                 name = Os.MAC;
                 type = Device.DESKTOP;
-            } else if (/Windows Phone/.test(ua)) {
+                if (/Mac OS X ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
+            } else if (/Windows Phone ([\w\.-]+)/.test(ua)) {
                 name = Os.WINDOWS;
                 type = Device.MOBILE;
-            } else if (/Windows/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/Windows ([\w\. ]+)/.test(ua)) {
                 name = Os.WINDOWS;
                 type = Device.DESKTOP;
-            } else if (/Android/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/Android ([\w\.-]+)/.test(ua)) {
                 name = Os.ANDROID;
                 type = Device.MOBILE;
+                version = RegExp.$1;
             } else if (/Linux/.test(ua)) {
                 name = Os.LINUX;
                 type = Device.DESKTOP;
@@ -12233,6 +12248,7 @@ Browser.prototype = Object.create(Object.prototype, {
             return this._version;
         } },
     __initialize__: { writable: true, value: function value() {
+            var os = new Os();
             var ua = navigator.userAgent;
             var name = "";
             var version = "";
@@ -12251,7 +12267,7 @@ Browser.prototype = Object.create(Object.prototype, {
             } else if (/Silk\/([\w\.-]+)/.test(ua)) {
                 name = Browser.SILK;
                 version = RegExp.$1;
-            } else if (/Chrome\/([\w\.-]+)/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
+            } else if (/Chrome\/([\w\.-]+)/.test(ua) && os.name !== Os.WINDOWS_PHONE) {
                 name = Browser.CHROME;
                 version = RegExp.$1;
             } else if (/CriOS\/([\w\.-]+)/.test(ua)) {
@@ -12266,13 +12282,16 @@ Browser.prototype = Object.create(Object.prototype, {
             } else if (/FxiOS\/([\w\.-]+)/.test(ua)) {
                 name = Browser.FIREFOX;
                 version = RegExp.$1;
+            } else if (/AppleWebKit/.test(ua) && (os.name === Os.IPAD || os.name === Os.IPOD || os.name === Os.IPHONE)) {
+                name = Browser.SAFARI;
+                version = "embeded";
             } else if (/MSIE ([\w\.-]+)/.test(ua)) {
                 name = Browser.IE;
                 version = RegExp.$1;
             } else if (/Midori\/([\w\.-]+)/.test(ua)) {
                 name = Browser.MIDORI;
                 version = RegExp.$1;
-            } else if (/Safari/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
+            } else if (/Safari/.test(ua) && os.name !== Os.WINDOWS_PHONE) {
                 name = Browser.SAFARI;
                 if (/Version\/([\w\.-]+)/.test(ua)) {
                     version = RegExp.$1;

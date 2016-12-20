@@ -54,6 +54,7 @@ Browser.prototype = Object.create( Object.prototype ,
      */
     __initialize__ : { writable : true , value : function()
     {
+        let os = new Os();
         let ua = navigator.userAgent;
         let name = "";
         let version = "";
@@ -83,7 +84,7 @@ Browser.prototype = Object.create( Object.prototype ,
             name = Browser.SILK;
             version = RegExp.$1;
         }
-        else if( /Chrome\/([\w\.-]+)/.test( ua ) && ( Os.name !== Os.WINDOWS_PHONE ) )
+        else if( /Chrome\/([\w\.-]+)/.test( ua ) && ( os.name !== Os.WINDOWS_PHONE ) )
         {
             name = Browser.CHROME;
             version = RegExp.$1;
@@ -108,6 +109,11 @@ Browser.prototype = Object.create( Object.prototype ,
             name = Browser.FIREFOX;
             version = RegExp.$1;
         }
+        else if( /AppleWebKit/.test( ua ) && ( ( os.name === Os.IPAD ) || ( os.name === Os.IPOD ) || ( os.name === Os.IPHONE ) ) )
+        {
+            name = Browser.SAFARI;
+            version = "embeded";
+        }
         else if( /MSIE ([\w\.-]+)/.test( ua ) )
         {
             name = Browser.IE;
@@ -118,7 +124,7 @@ Browser.prototype = Object.create( Object.prototype ,
             name = Browser.MIDORI;
             version = RegExp.$1;
         }
-        else if( /Safari/.test( ua ) && ( Os.name !== Os.WINDOWS_PHONE ) )
+        else if( /Safari/.test( ua ) && ( os.name !== Os.WINDOWS_PHONE ) )
         {
             name = Browser.SAFARI;
             if( /Version\/([\w\.-]+)/.test( ua ) )
