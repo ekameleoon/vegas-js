@@ -27,6 +27,7 @@ import { distance }               from './maths/distance.js' ;
 import { distanceByObject }       from './maths/distanceByObject.js' ;
 import { EARTH_RADIUS_IN_METERS } from './maths/EARTH_RADIUS_IN_METERS.js' ;
 import { EPSILON }                from './maths/EPSILON.js' ;
+import { factorial }              from './maths/factorial.js' ;
 import { fibonacci }              from './maths/fibonacci.js' ;
 import { finalBearing }           from './maths/finalBearing.js' ;
 import { fixAngle }               from './maths/fixAngle.js' ;
@@ -100,6 +101,7 @@ export var maths = Object.assign
     distanceByObject : distanceByObject,
     EARTH_RADIUS_IN_METERS : EARTH_RADIUS_IN_METERS,
     EPSILON : EPSILON,
+    factorial : factorial,
     fibonacci : fibonacci,
     finalBearing : finalBearing,
     fixAngle : fixAngle,

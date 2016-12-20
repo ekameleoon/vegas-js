@@ -4,6 +4,7 @@ import './maths/berp.js' ;
 import './maths/bounce.js' ;
 import './maths/clerp.js' ;
 import './maths/coserp.js' ;
+import './maths/factorial.js' ;
 import './maths/fibonacci.js' ;
 import './maths/fixAngle.js' ;
 import './maths/floor.js' ;
