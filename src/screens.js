@@ -3,6 +3,7 @@
 import './polyfill/Object.js' ;
 
 import { Browser } from './screens/Browser.js' ;
+import { Device }  from './screens/Device.js' ;
 import { Os }      from './screens/Os.js' ;
 
 /**
@@ -16,5 +17,6 @@ import { Os }      from './screens/Os.js' ;
 export var screens = Object.assign
 ({
     Browser : Browser ,
+    Device  : Device ,
     Os      : Os
 }) ;
