@@ -58,74 +58,78 @@ Browser.prototype = Object.create( Object.prototype ,
         let name = "";
         let version = "";
 
-        if( /Arora/.test( ua ) )
+        if( /Arora\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.ARORA;
+            version = RegExp.$1;
         }
-        else if( /Edge\/(\d+)/.test( ua ) )
+        else if( /Edge\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.EDGE;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /Opera\/(\d+)/.test( ua ) )
+        else if( /Opera\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.OPERA;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /OPR\/(\d+)/.test( ua ) )
+        else if( /OPR\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.OPERA;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /Chrome\/(\d+)/.test( ua ) && ( Os.name !== Os.WINDOWS_PHONE ) )
+        else if( /Silk\/([\w\.-]+)/.test( ua ) )
+        {
+            name = Browser.SILK;
+            version = RegExp.$1;
+        }
+        else if( /Chrome\/([\w\.-]+)/.test( ua ) && ( Os.name !== Os.WINDOWS_PHONE ) )
         {
             name = Browser.CHROME;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /CriOS\/(\d+)/.test( ua ) )
+        else if( /CriOS\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.CHROME;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /Epiphany/.test( ua ) )
+        else if( /Epiphany\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.EPIPHANY;
+            version = RegExp.$1;
         }
-        else if( /Firefox\D+(\d+)/.test( ua ) )
+        else if( /Firefox\D+([\w\.-]+)/.test( ua ) )
         {
             name = Browser.FIREFOX;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /FxiOS\/(\d+)/.test( ua ) )
+        else if( /FxiOS\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.FIREFOX;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /AppleWebKit/.test( ua ) && ( ( Os.name === Os.IPAD ) || ( Os.name === Os.IPOD ) || ( Os.name === Os.IPHONE ) ) )
-        {
-            name = Browser.SAFARI;
-        }
-        else if( /MSIE (\d+\.\d+);/.test( ua ) )
+        else if( /MSIE ([\w\.-]+)/.test( ua ) )
         {
             name = Browser.IE;
-            version = parseInt( RegExp.$1 , 10 );
+            version = RegExp.$1;
         }
-        else if( /Midori/.test( ua ) )
+        else if( /Midori\/([\w\.-]+)/.test( ua ) )
         {
             name = Browser.MIDORI;
+            version = RegExp.$1;
         }
         else if( /Safari/.test( ua ) && ( Os.name !== Os.WINDOWS_PHONE ) )
         {
             name = Browser.SAFARI;
+            if( /Version\/([\w\.-]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
-        else if( /Trident\/(\d+\.\d+)(.*)rv:(\d+\.\d+)/.test( ua ) )
+        else if( /Trident\/(\d+\.\d+)(.*)rv:([\w\.-]+)/.test( ua ) )
         {
             name = Browser.TRIDENT;
-            version = parseInt( RegExp.$3 , 10 );
-        }
-        else if( /Silk/.test( ua ) )
-        {
-            name = Browser.SILK;
+            version = RegExp.$3;
         }
 
         this._name    = name;
