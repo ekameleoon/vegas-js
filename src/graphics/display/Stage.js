@@ -7,8 +7,8 @@ import { StageDisplayState } from './StageDisplayState.js' ;
 import { StageOrientation }  from './StageOrientation.js' ;
 
 /**
- * Get the stage informations
- * @summary Get the stage informations
+ * Get the stage informations.
+ * @summary Get the stage informations.
  * @name Stage
  * @class
  * @memberof graphics.display
@@ -281,55 +281,65 @@ Stage.prototype = Object.create( Object.prototype ,
      */
     getDeviceOrientation : { writable : true , value : function()
     {
-        // Detect orientation
         if( window.screen.orientation && window.screen.orientation.type )
         {
-            switch ( window.screen.orientation.type ) {
-                case 'portrait-primary':
-                    this._orientation = StageOrientation.DEFAULT;
-                    this._aspectRatio = StageAspectRatio.PORTRAIT;
-                    break;
-                case 'portrait-secondary':
+            switch ( window.screen.orientation.type )
+            {
+                case 'portrait-secondary' :
+                {
                     this._orientation = StageOrientation.UPSIDE_DOWN;
                     this._aspectRatio = StageAspectRatio.PORTRAIT;
                     break;
-                case 'landscape-primary':
+                }
+                case 'landscape-primary' :
+                {
                     this._orientation = StageOrientation.ROTATED_LEFT;
                     this._aspectRatio = StageAspectRatio.LANDSCAPE;
                     break;
-                case 'landscape-secondary':
+                }
+                case 'landscape-secondary' :
+                {
                     this._orientation = StageOrientation.ROTATED_RIGHT;
                     this._aspectRatio = StageAspectRatio.LANDSCAPE;
                     break;
-                default:
+                }
+                case 'portrait-primary' :
+                default :
+                {
                     this._orientation = StageOrientation.DEFAULT;
                     this._aspectRatio = StageAspectRatio.PORTRAIT;
                     break;
+                }
             }
         }
         else if( window.orientation !== undefined )
         {
-            switch ( window.orientation ) {
-                case 0:
-                    this._orientation = StageOrientation.DEFAULT;
-                    this._aspectRatio = StageAspectRatio.PORTRAIT;
-                    break;
-                case 180:
+            switch ( window.orientation )
+            {
+                case 180 :
+                {
                     this._orientation = StageOrientation.UPSIDE_DOWN;
                     this._aspectRatio = StageAspectRatio.PORTRAIT;
-                    break;
+                    break ;
+                }
                 case 90:
+                {
                     this._orientation = StageOrientation.ROTATED_LEFT;
                     this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                    break;
+                    break ;
+                }
                 case -90:
+                {
                     this._orientation = StageOrientation.ROTATED_RIGHT;
                     this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                    break;
-                default:
+                    break ;
+                }
+                case 0  :
+                default :
+                {
                     this._orientation = StageOrientation.DEFAULT;
                     this._aspectRatio = StageAspectRatio.PORTRAIT;
-                    break;
+                }
             }
         }
     }},
@@ -392,10 +402,10 @@ Stage.prototype = Object.create( Object.prototype ,
      */
     __initialize__ : { writable : true , value : function()
     {
-        // FIXME : throw a spcific Error if the window/document/dom elements don't exist !
+        // FIXME : throw a specific Error if the window/document/dom elements don't exist !
 
-        // --------
-        // Detect if app is launched from the Home Screen
+        // -------- Check if application is launched from the Home Screen
+
         if( navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches )
         {
             this._launchedFromHomeScreen = true;
@@ -484,6 +494,6 @@ Stage.prototype = Object.create( Object.prototype ,
             window.addEventListener( "orientationchange" , this.notifyOrientationChange.bind(this) , false ) ;
         }
 
-        window.addEventListener( "resize"            , this.notifyResized.bind( this )         , false );
+        window.addEventListener( "resize" , this.notifyResized.bind( this ) , false );
     }}
 });
