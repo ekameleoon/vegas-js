@@ -76,36 +76,55 @@ Os.prototype = Object.create( Object.prototype ,
         {
             name = Os.IPAD;
             type = Device.MOBILE;
+            if( /CPU OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
         else if( /iPod/.test( ua ) )
         {
             name = Os.IPOD;
             type = Device.MOBILE;
+            if( /CPU iPhone OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
         else if( /iPhone/.test( ua ) )
         {
             name = Os.IPHONE;
             type = Device.MOBILE;
+            if( /CPU iPhone OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
-        else if( /Mac OS/.test( ua ) )
+        else if( /Macintosh/.test( ua ) )
         {
             name = Os.MAC;
             type = Device.DESKTOP;
+            if( /Mac OS X ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
-        else if( /Windows Phone/.test( ua ) )
+        else if( /Windows Phone ([\w\.-]+)/.test( ua ) )
         {
             name = Os.WINDOWS;
             type = Device.MOBILE;
+            version = RegExp.$1;
         }
-        else if( /Windows/.test( ua ) )
+        else if( /Windows ([\w\. ]+)/.test( ua ) )
         {
             name = Os.WINDOWS;
             type = Device.DESKTOP;
+            version = RegExp.$1;
         }
-        else if( /Android/.test( ua ) )
+        else if( /Android ([\w\.-]+)/.test( ua ) )
         {
             name = Os.ANDROID;
             type = Device.MOBILE;
+            version = RegExp.$1;
         }
         else if( /Linux/.test( ua ) )
         {
