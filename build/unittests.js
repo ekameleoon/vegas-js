@@ -30,6 +30,18 @@ var log    = util.log ;
 // --------- Arguments
 
 /**
+ * If not null, the default mocha entry is the /tests/main.js file.
+ * You can use the dot notation to target a specific test entry, ex: --entry core.maths to use the /test/core/maths.js file.
+ */
+var entry = 'main' ;
+
+if( argv && argv.entry )
+{
+    entry = argv.entry ;
+    entry = entry.replace(/[.]/g, '/' ) ;
+}
+
+/**
  * If not null, trigger mocha to only run tests matching the given pattern which
  * is internally compiled to a RegExp.
  */
@@ -74,7 +86,7 @@ export var unittests = ( done ) =>
         rollup
         ({
             moduleName : name ,
-            entry      : './tests/main.js' ,
+            entry      : './tests/' + entry + '.js' ,
             format     : 'umd' ,
             sourceMap  : 'inline' ,
             useStrict  : true ,

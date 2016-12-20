@@ -63,6 +63,7 @@ import { sinH }                   from './maths/sinH.js' ;
 import { tanD }                   from './maths/tanD.js' ;
 import { tanH }                   from './maths/tanH.js' ;
 import { vincenty }               from './maths/vincenty.js' ;
+import { wrap }                   from './maths/wrap.js' ;
 
 /**
  * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
@@ -134,5 +135,6 @@ export var maths = Object.assign
     sinH : sinH,
     tanD : tanD,
     tanH : tanH,
-    vincenty : vincenty
+    vincenty : vincenty,
+    wrap : wrap
 }) ;

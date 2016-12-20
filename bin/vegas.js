@@ -1,4 +1,4 @@
-/* VEGAS JS - version 1.0.6 - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */
+/* VEGAS JS - version 1.0.7 - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
                   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
                   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -2020,6 +2020,20 @@ function vincenty(latitude1, longitude1, latitude2, longitude2)
     return s;
 }
 
+function wrap(angle) {
+    var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var max = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 360;
+    var range = max - min;
+    if (range <= 0) {
+        return 0;
+    }
+    var result = (angle - min) % range;
+    if (result < 0) {
+        result += range;
+    }
+    return result + min;
+}
+
 /**
  * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
  * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
@@ -2089,7 +2103,8 @@ var maths = Object.assign({
     sinH: sinH,
     tanD: tanD,
     tanH: tanH,
-    vincenty: vincenty
+    vincenty: vincenty,
+    wrap: wrap
 });
 
 /**
@@ -12407,7 +12422,7 @@ var screens = Object.assign({
   Os: Os
 });
 
-var version = '1.0.6';
+var version = '1.0.7';
 var metas = Object.defineProperties({}, {
     name: { enumerable: true, value: ucFirst('vegas-js') },
     description: { enumerable: true, value: "VEGAS JS - Opensource Framework" },

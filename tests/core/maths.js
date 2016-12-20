@@ -32,3 +32,4 @@ import './maths/replaceNaN.js' ;
 import './maths/sinerp.js'
 import './maths/smooth.js' ;
 import './maths/vincenty.js' ;
+import './maths/wrap.js' ;
