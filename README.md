@@ -107,7 +107,18 @@ or watch your modifications with :
 gulp watch:ut
 ```
 
-**Note** : You can use the two options **--match** and **--reporter** in the unit tests gulp task.
+**Note** : You can use the two options **--entry**, **--match** and **--reporter** in the unit tests gulp task.
+
+The **--entry** option trigger the a specific unit test entry. By default the unit tests engine target the **./tests/main.js** file, you can for example target a specific with the command :
+
+```
+gulp ut --entry core.maths
+```
+or 
+```
+gulp ut --entry core.maths.wrap
+```
+
 
 The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples :
 
