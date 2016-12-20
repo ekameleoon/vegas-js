@@ -1749,6 +1749,17 @@ var EARTH_RADIUS_IN_METERS = 6371000;
 
 var EPSILON = 0.000000001;
 
+var factorial = function factorial(value) {
+    if (value === 0) {
+        return 1;
+    }
+    var result = value;
+    while (--value) {
+        result *= value;
+    }
+    return result;
+};
+
 var fibonacci = function fibonacci(value) {
     var i = 1;
     var j = 0;
@@ -2068,6 +2079,7 @@ var maths = Object.assign({
     distanceByObject: distanceByObject,
     EARTH_RADIUS_IN_METERS: EARTH_RADIUS_IN_METERS,
     EPSILON: EPSILON,
+    factorial: factorial,
     fibonacci: fibonacci,
     finalBearing: finalBearing,
     fixAngle: fixAngle,
@@ -11500,49 +11512,58 @@ Stage.prototype = Object.create(Object.prototype, {
     getDeviceOrientation: { writable: true, value: function value() {
             if (window.screen.orientation && window.screen.orientation.type) {
                 switch (window.screen.orientation.type) {
-                    case 'portrait-primary':
-                        this._orientation = StageOrientation.DEFAULT;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
                     case 'portrait-secondary':
-                        this._orientation = StageOrientation.UPSIDE_DOWN;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
                     case 'landscape-primary':
-                        this._orientation = StageOrientation.ROTATED_LEFT;
-                        this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                        break;
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
                     case 'landscape-secondary':
-                        this._orientation = StageOrientation.ROTATED_RIGHT;
-                        this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                        break;
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 'portrait-primary':
                     default:
-                        this._orientation = StageOrientation.DEFAULT;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
                 }
             } else if (window.orientation !== undefined) {
                 switch (window.orientation) {
-                    case 0:
-                        this._orientation = StageOrientation.DEFAULT;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
                     case 180:
-                        this._orientation = StageOrientation.UPSIDE_DOWN;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
                     case 90:
-                        this._orientation = StageOrientation.ROTATED_LEFT;
-                        this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                        break;
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
                     case -90:
-                        this._orientation = StageOrientation.ROTATED_RIGHT;
-                        this._aspectRatio = StageAspectRatio.LANDSCAPE;
-                        break;
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 0:
                     default:
-                        this._orientation = StageOrientation.DEFAULT;
-                        this._aspectRatio = StageAspectRatio.PORTRAIT;
-                        break;
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                        }
                 }
             }
         } },
@@ -11611,7 +11632,8 @@ Stage.prototype = Object.create(Object.prototype, {
 var display = Object.assign({
   Stage: Stage,
   StageAspectRatio: StageAspectRatio,
-  StageDisplayState: StageDisplayState
+  StageDisplayState: StageDisplayState,
+  StageOrientation: StageOrientation
 });
 
 function AspectRatio() {
@@ -12271,6 +12293,12 @@ var graphics = Object.assign({
     geom: geom
 });
 
+var Device = Object.defineProperties({}, {
+  DESKTOP: { enumerable: true, value: "desktop" },
+  MOBILE: { enumerable: true, value: "mobile" },
+  TV: { enumerable: true, value: "tv" }
+});
+
 function Os() {
     Object.defineProperties(this, {
         _name: { writable: true, value: null },
@@ -12295,27 +12323,45 @@ Os.prototype = Object.create(Object.prototype, {
             var name = "";
             var type = "";
             var version = "";
-            if (/Android/.test(ua)) {
-                name = Os.ANDROID;
-                type = Os.TYPE_MOBILE;
-            } else if (/iPad/.test(ua)) {
+            if (/iPad/.test(ua)) {
                 name = Os.IPAD;
-                type = Os.TYPE_MOBILE;
+                type = Device.MOBILE;
+                if (/CPU OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
             } else if (/iPod/.test(ua)) {
-                name = Os.IPAD;
-                type = Os.TYPE_MOBILE;
+                name = Os.IPOD;
+                type = Device.MOBILE;
+                if (/CPU iPhone OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
             } else if (/iPhone/.test(ua)) {
-                name = Os.IPAD;
-                type = Os.TYPE_MOBILE;
+                name = Os.IPHONE;
+                type = Device.MOBILE;
+                if (/CPU iPhone OS ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
+            } else if (/Macintosh/.test(ua)) {
+                name = Os.MAC;
+                type = Device.DESKTOP;
+                if (/Mac OS X ([\w\.-_]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
+            } else if (/Windows Phone ([\w\.-]+)/.test(ua)) {
+                name = Os.WINDOWS;
+                type = Device.MOBILE;
+                version = RegExp.$1;
+            } else if (/Windows ([\w\. ]+)/.test(ua)) {
+                name = Os.WINDOWS;
+                type = Device.DESKTOP;
+                version = RegExp.$1;
+            } else if (/Android ([\w\.-]+)/.test(ua)) {
+                name = Os.ANDROID;
+                type = Device.MOBILE;
+                version = RegExp.$1;
             } else if (/Linux/.test(ua)) {
                 name = Os.LINUX;
-                type = Os.TYPE_DESKTOP;
-            } else if (/Mac OS/.test(ua)) {
-                name = Os.MAC;
-                type = Os.TYPE_DESKTOP;
-            } else if (/Windows/.test(ua)) {
-                name = Os.WINDOWS;
-                type = Os.TYPE_DESKTOP;
+                type = Device.DESKTOP;
             }
             this._name = name;
             this._type = type;
@@ -12330,9 +12376,7 @@ Object.defineProperties(Os, {
     LINUX: { value: 'Linux', enumerable: true },
     MAC: { value: 'Mac', enumerable: true },
     WINDOWS: { value: 'Windows', enumerable: true },
-    WINDOWS_PHONE: { value: 'Windows Phone', enumerable: true },
-    TYPE_DESKTOP: { value: 'desktop', enumerable: true },
-    TYPE_MOBILE: { value: 'mobile', enumerable: true }
+    WINDOWS_PHONE: { value: 'Windows Phone', enumerable: true }
 });
 
 function Browser() {
@@ -12351,45 +12395,57 @@ Browser.prototype = Object.create(Object.prototype, {
             return this._version;
         } },
     __initialize__: { writable: true, value: function value() {
+            var os = new Os();
             var ua = navigator.userAgent;
             var name = "";
             var version = "";
-            if (/Arora/.test(ua)) {
+            if (/Arora\/([\w\.-]+)/.test(ua)) {
                 name = Browser.ARORA;
-            } else if (/Edge\/(\d+)/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/Edge\/([\w\.-]+)/.test(ua)) {
                 name = Browser.EDGE;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/Opera\/(\d+)/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/Opera\/([\w\.-]+)/.test(ua)) {
                 name = Browser.OPERA;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/OPR\/(\d+)/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/OPR\/([\w\.-]+)/.test(ua)) {
                 name = Browser.OPERA;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/Chrome\/(\d+)/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
-                name = Browser.CHROME;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/Epiphany/.test(ua)) {
-                name = Browser.EPIPHANY;
-            } else if (/Firefox\D+(\d+)/.test(ua)) {
-                name = Browser.FIREFOX;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/FxiOS\/(\d+)/.test(ua)) {
-                name = Browser.FIREFOX;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/AppleWebKit/.test(ua) && (Os.name === Os.IPAD || Os.name === Os.IPOD || Os.name === Os.IPHONE)) {
-                name = Browser.SAFARI;
-            } else if (/MSIE (\d+\.\d+);/.test(ua)) {
-                name = Browser.IE;
-                version = parseInt(RegExp.$1, 10);
-            } else if (/Midori/.test(ua)) {
-                name = Browser.MIDORI;
-            } else if (/Safari/.test(ua) && Os.name !== Os.WINDOWS_PHONE) {
-                name = Browser.SAFARI;
-            } else if (/Trident\/(\d+\.\d+)(.*)rv:(\d+\.\d+)/.test(ua)) {
-                name = Browser.TRIDENT;
-                version = parseInt(RegExp.$3, 10);
-            } else if (/Silk/.test(ua)) {
+                version = RegExp.$1;
+            } else if (/Silk\/([\w\.-]+)/.test(ua)) {
                 name = Browser.SILK;
+                version = RegExp.$1;
+            } else if (/Chrome\/([\w\.-]+)/.test(ua) && os.name !== Os.WINDOWS_PHONE) {
+                name = Browser.CHROME;
+                version = RegExp.$1;
+            } else if (/CriOS\/([\w\.-]+)/.test(ua)) {
+                name = Browser.CHROME;
+                version = RegExp.$1;
+            } else if (/Epiphany\/([\w\.-]+)/.test(ua)) {
+                name = Browser.EPIPHANY;
+                version = RegExp.$1;
+            } else if (/Firefox\D+([\w\.-]+)/.test(ua)) {
+                name = Browser.FIREFOX;
+                version = RegExp.$1;
+            } else if (/FxiOS\/([\w\.-]+)/.test(ua)) {
+                name = Browser.FIREFOX;
+                version = RegExp.$1;
+            } else if (/AppleWebKit/.test(ua) && (os.name === Os.IPAD || os.name === Os.IPOD || os.name === Os.IPHONE)) {
+                name = Browser.SAFARI;
+                version = "embeded";
+            } else if (/MSIE ([\w\.-]+)/.test(ua)) {
+                name = Browser.IE;
+                version = RegExp.$1;
+            } else if (/Midori\/([\w\.-]+)/.test(ua)) {
+                name = Browser.MIDORI;
+                version = RegExp.$1;
+            } else if (/Safari/.test(ua) && os.name !== Os.WINDOWS_PHONE) {
+                name = Browser.SAFARI;
+                if (/Version\/([\w\.-]+)/.test(ua)) {
+                    version = RegExp.$1;
+                }
+            } else if (/Trident\/(\d+\.\d+)(.*)rv:([\w\.-]+)/.test(ua)) {
+                name = Browser.TRIDENT;
+                version = RegExp.$3;
             }
             this._name = name;
             this._version = version;
@@ -12419,6 +12475,7 @@ Object.defineProperties(Browser, {
  */
 var screens = Object.assign({
   Browser: Browser,
+  Device: Device,
   Os: Os
 });
 

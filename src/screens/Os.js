@@ -1,5 +1,7 @@
 'use strict';
 
+import { Device } from './Device.js' ;
+
 /**
  * Get the os informations
  * @summary Get the os informations
@@ -69,40 +71,65 @@ Os.prototype = Object.create( Object.prototype ,
         let type = "";
         let version = "";
 
-        if( /Android/.test( ua ) )
-        {
-            name = Os.ANDROID;
-            type = Os.TYPE_MOBILE;
-        }
-        else if( /iPad/.test( ua ) )
+
+        if( /iPad/.test( ua ) )
         {
             name = Os.IPAD;
-            type = Os.TYPE_MOBILE;
+            type = Device.MOBILE;
+            if( /CPU OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
         else if( /iPod/.test( ua ) )
         {
-            name = Os.IPAD;
-            type = Os.TYPE_MOBILE;
+            name = Os.IPOD;
+            type = Device.MOBILE;
+            if( /CPU iPhone OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
         }
         else if( /iPhone/.test( ua ) )
         {
-            name = Os.IPAD;
-            type = Os.TYPE_MOBILE;
+            name = Os.IPHONE;
+            type = Device.MOBILE;
+            if( /CPU iPhone OS ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
+        }
+        else if( /Macintosh/.test( ua ) )
+        {
+            name = Os.MAC;
+            type = Device.DESKTOP;
+            if( /Mac OS X ([\w\.-_]+)/.test( ua ) )
+            {
+                version = RegExp.$1;
+            }
+        }
+        else if( /Windows Phone ([\w\.-]+)/.test( ua ) )
+        {
+            name = Os.WINDOWS;
+            type = Device.MOBILE;
+            version = RegExp.$1;
+        }
+        else if( /Windows ([\w\. ]+)/.test( ua ) )
+        {
+            name = Os.WINDOWS;
+            type = Device.DESKTOP;
+            version = RegExp.$1;
+        }
+        else if( /Android ([\w\.-]+)/.test( ua ) )
+        {
+            name = Os.ANDROID;
+            type = Device.MOBILE;
+            version = RegExp.$1;
         }
         else if( /Linux/.test( ua ) )
         {
             name = Os.LINUX;
-            type = Os.TYPE_DESKTOP;
-        }
-        else if( /Mac OS/.test( ua ) )
-        {
-            name = Os.MAC;
-            type = Os.TYPE_DESKTOP;
-        }
-        else if( /Windows/.test( ua ) )
-        {
-            name = Os.WINDOWS;
-            type = Os.TYPE_DESKTOP;
+            type = Device.DESKTOP;
         }
 
         this._name    = name;
@@ -175,21 +202,5 @@ Object.defineProperties( Os ,
     * @const
     * @type {string}
     */
-    WINDOWS_PHONE : { value : 'Windows Phone' , enumerable : true } ,
-
-    /**
-    * The <code>'desktop'</code> os.
-    * @memberof screens.Os
-    * @const
-    * @type {string}
-    */
-    TYPE_DESKTOP : { value : 'desktop' , enumerable : true } ,
-
-    /**
-    * The <code>'mobile'</code> os.
-    * @memberof screens.Os
-    * @const
-    * @type {string}
-    */
-    TYPE_MOBILE : { value : 'mobile' , enumerable : true }
+    WINDOWS_PHONE : { value : 'Windows Phone' , enumerable : true }
 } );

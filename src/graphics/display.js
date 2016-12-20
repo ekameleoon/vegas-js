@@ -5,6 +5,7 @@ import '../polyfill/Object.js' ;
 import { Stage }             from './display/Stage.js' ;
 import { StageAspectRatio }  from './display/StageAspectRatio.js' ;
 import { StageDisplayState } from './display/StageDisplayState.js' ;
+import { StageOrientation }  from './display/StageOrientation.js' ;
 
 /**
  * The {@link graphics.display} library is a set of classes and utilities for display Operations.
@@ -18,5 +19,6 @@ export var display = Object.assign
 ({
     Stage             : Stage,
     StageAspectRatio  : StageAspectRatio,
-    StageDisplayState : StageDisplayState
+    StageDisplayState : StageDisplayState,
+    StageOrientation  : StageOrientation
 }) ;
