@@ -2119,6 +2119,15 @@ var maths = Object.assign({
     wrap: wrap
 });
 
+function toInt(num) {
+  return num - num % 1;
+}
+
+function toUint(num) {
+  num -= num % 1;
+  return num < 0 ? -num : num;
+}
+
 /**
  * The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
  * @summary The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
@@ -2128,6 +2137,8 @@ var maths = Object.assign({
  * @memberof core
  */
 var numbers = Object.assign({
+  toInt: toInt,
+  toUint: toUint,
   toUnicodeNotation: toUnicodeNotation
 });
 
@@ -4252,12 +4263,13 @@ var formatters = Object.assign({
 });
 
 function Receiver() {}
-Receiver.prototype = Object.create(Object.prototype);
-Receiver.prototype.constructor = Receiver;
-Receiver.prototype.receive = function () {};
-Receiver.prototype.toString = function () {
-  return "[Receiver]";
-};
+Receiver.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: Receiver },
+  receive: { writable: true, value: function value() {} },
+  toString: { writable: true, value: function value() {
+      return "[Receiver]";
+    } }
+});
 
 function Signaler() {}
 Signaler.prototype = Object.create(Object.prototype, {
@@ -4283,9 +4295,9 @@ Signaler.prototype.connect = function (receiver)
 function SignalEntry(receiver) {
   var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  this.auto = Boolean(auto);
-  this.receiver = receiver || null;
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+  this.auto = auto;
+  this.receiver = receiver;
+  this.priority = priority;
 }
 SignalEntry.prototype = Object.create(Object.prototype);
 SignalEntry.prototype.constructor = SignalEntry;
@@ -4296,7 +4308,7 @@ SignalEntry.prototype.toString = function () {
 function Signal() {
     Object.defineProperties(this, {
         proxy: { value: null, configurable: true, writable: true },
-        receivers: { value: [], writable: true }
+        receivers: { value: [] }
     });
 }
 Signal.prototype = Object.create(Signaler.prototype, {
@@ -4305,40 +4317,48 @@ Signal.prototype = Object.create(Signaler.prototype, {
             return this.receivers.length;
         } },
     connect: { value: function value(receiver) {
+            var _this = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (receiver === null) {
                 return false;
             }
-            autoDisconnect = Boolean(autoDisconnect);
-            priority = priority > 0 ? Math.ceil(priority) : 0;
+            autoDisconnect = autoDisconnect === true;
+            priority = priority > 0 ? priority - priority % 1 : 0;
             if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-                if (this.hasReceiver(receiver)) {
-                    return false;
-                }
-                this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
-                var i;
-                var j;
-                var a = this.receivers;
-                var swap = function swap(j, k) {
-                    var temp = a[j];
-                    a[j] = a[k];
-                    a[k] = temp;
-                    return true;
-                };
-                var swapped = false;
-                var l = a.length;
-                for (i = 1; i < l; i++) {
-                    for (j = 0; j < l - i; j++) {
-                        if (a[j + 1].priority > a[j].priority) {
-                            swapped = swap(j, j + 1);
+                var _ret = function () {
+                    if (_this.hasReceiver(receiver)) {
+                        return {
+                            v: false
+                        };
+                    }
+                    _this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+                    var i = void 0;
+                    var j = void 0;
+                    var a = _this.receivers;
+                    var swap = function swap(j, k) {
+                        var temp = a[j];
+                        a[j] = a[k];
+                        a[k] = temp;
+                        return true;
+                    };
+                    var swapped = false;
+                    var l = a.length;
+                    for (i = 1; i < l; i++) {
+                        for (j = 0; j < l - i; j++) {
+                            if (a[j + 1].priority > a[j].priority) {
+                                swapped = swap(j, j + 1);
+                            }
+                        }
+                        if (!swapped) {
+                            break;
                         }
                     }
-                    if (!swapped) {
-                        break;
-                    }
-                }
-                return true;
+                    return {
+                        v: true
+                    };
+                }();
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
             }
             return false;
         } },
@@ -4365,17 +4385,15 @@ Signal.prototype = Object.create(Signaler.prototype, {
             }
             return false;
         } },
-    emit: { value: function value()
-        {
-            var values = Object.setPrototypeOf(arguments, Array.prototype);
-            if (this.receivers.length === 0) {
+    emit: { value: function value() {
+            var l = this.receivers.length;
+            if (l === 0) {
                 return;
             }
-            var i;
-            var l = this.receivers.length;
+            var i = void 0;
             var r = [];
             var a = this.receivers.slice();
-            var e;
+            var e = void 0;
             var slot;
             for (i = 0; i < l; i++) {
                 e = a[i];
@@ -4393,11 +4411,14 @@ Signal.prototype = Object.create(Signaler.prototype, {
                 }
             }
             l = a.length;
+            for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+                values[_key] = arguments[_key];
+            }
             for (i = 0; i < l; i++) {
                 slot = a[i].receiver;
                 if (slot instanceof Function || typeof receiver === "function") {
                     slot.apply(this.proxy || this, values);
-                } else if (slot instanceof Receiver || "receive" in slot) {
+                } else if (slot instanceof Receiver || "receive" in slot && slot.receive instanceof Function) {
                     slot.receive.apply(this.proxy || slot, values);
                 }
             }
@@ -4418,8 +4439,8 @@ Signal.prototype = Object.create(Signaler.prototype, {
         } },
     toArray: { value: function value() {
             var r = [];
-            if (this.receivers.length > 0) {
-                var l = this.receivers.length;
+            var l = this.receivers.length;
+            if (l > 0) {
                 for (var i = 0; i < l; i++) {
                     r.push(this.receivers[i].receiver);
                 }
@@ -9837,21 +9858,6 @@ var rules = Object.assign({
     Zero: Zero
 });
 
-var strings$2 = Object.defineProperties({}, {
-    INVALID_PARAMETER_TYPE: {
-        value: "The parameter with the index {0} in the emit method is not valid.",
-        enumerable: true
-    },
-    INVALID_PARAMETERS_LENGTH: {
-        value: "The number of arguments in the emit method is not valid, must be invoked with {0} argument(s) and you call it with {1} argument(s).",
-        enumerable: true
-    },
-    INVALID_TYPES: {
-        value: "Invalid types representation, the Array of types failed at index {0} should be a constructor function but was:\"{1}\".",
-        enumerable: true
-    }
-});
-
 /**
  * The {@link system.signals} library is light-weight, strongly-typed messaging tools. Wire your application with better APIs and less boilerplate than W3C DOMEvents..
  * <p><b>Concept: </b>
@@ -9903,7 +9909,6 @@ var strings$2 = Object.defineProperties({}, {
  * signal.emit( "hello world" ) ;
  */
 var signals = Object.assign({
-  strings: strings$2,
   Receiver: Receiver,
   SignalEntry: SignalEntry,
   Signaler: Signaler,

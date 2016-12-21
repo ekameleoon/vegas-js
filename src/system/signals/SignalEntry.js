@@ -19,7 +19,7 @@ export function SignalEntry( receiver , priority = 0 , auto = false )
      * @type {boolean}
      * @instance
      */
-    this.auto = Boolean( auto ) ;
+    this.auto = auto ;
 
     /**
      * The receiver reference of this entry.
@@ -28,7 +28,7 @@ export function SignalEntry( receiver , priority = 0 , auto = false )
      * @type {system.signals.Receiver|Function}
      * @instance
      */
-    this.receiver = receiver || null ;
+    this.receiver = receiver ;
 
     /**
      * Determinates the priority value of the object.
@@ -37,7 +37,7 @@ export function SignalEntry( receiver , priority = 0 , auto = false )
      * @type {number}
      * @instance
      */
-    this.priority = priority > 0 ? Math.ceil( priority ) : 0 ;
+    this.priority = priority ;
 }
 
 SignalEntry.prototype = Object.create( Object.prototype );
@@ -51,7 +51,7 @@ SignalEntry.prototype.constructor = SignalEntry;
  * @function
  * @instance
  */
-SignalEntry.prototype.toString = function() 
+SignalEntry.prototype.toString = function()
 {
     return '[SignalEntry]' ;
 }

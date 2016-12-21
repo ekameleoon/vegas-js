@@ -61,7 +61,7 @@ export function Signal()
         /**
          * @private
          */
-        receivers : { value : [] , writable : true }
+        receivers : { value : [] }
     }) ;
 }
 
@@ -110,12 +110,12 @@ Signal.prototype = Object.create( Signaler.prototype ,
 
             /////// bubble sorting
 
-            var i ;
-            var j ;
+            let i ;
+            let j ;
 
-            var a = this.receivers ;
+            let a = this.receivers ;
 
-            var swap = function( j , k )
+            let swap = function( j , k )
             {
                 var temp = a[j] ;
                 a[j]     = a[k] ;
@@ -123,9 +123,9 @@ Signal.prototype = Object.create( Signaler.prototype ,
                 return true ;
             }
 
-            var swapped = false;
+            let swapped = false;
 
-            var l = a.length ;
+            let l = a.length ;
 
             for( i = 1 ; i < l ; i++ )
             {
@@ -202,25 +202,24 @@ Signal.prototype = Object.create( Signaler.prototype ,
 
     /**
      * Emit the specified values to the receivers.
-     * @param ...values All values to emit to the receivers.
+     * @param {*} values - All values to emit to the receivers.
      * @memberof system.signals.Signal
      * @instance
      * @function
      */
-    emit : { value : function( /*Arguments*/ ) // FIXME use ...values
+    emit : { value : function( ...values )
     {
-        var values = Object.setPrototypeOf( arguments , Array.prototype ) ;
-
-        if ( this.receivers.length === 0 )
+        let l = this.receivers.length ;
+        if ( l === 0 )
         {
             return ;
         }
 
-        var i ;
-        var l = this.receivers.length ;
-        var r = [] ;
-        var a = this.receivers.slice() ;
-        var e ;
+        let i ;
+
+        let r = [] ;
+        let a = this.receivers.slice() ;
+        let e ;
 
         var slot ;
 
@@ -232,6 +231,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
                 r.push( e )  ;
             }
         }
+
         if ( r.length > 0 )
         {
             l = r.length ;
@@ -244,7 +244,9 @@ Signal.prototype = Object.create( Signaler.prototype ,
                 }
             }
         }
+
         l = a.length ;
+
         for ( i = 0 ; i<l ; i++ )
         {
             slot = a[i].receiver ;
@@ -253,7 +255,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
             {
                 slot.apply( this.proxy || this , values ) ;
             }
-            else if ( slot instanceof Receiver || "receive" in slot )
+            else if ( slot instanceof Receiver || ( "receive" in slot && (slot.receive instanceof Function) ) )
             {
                 slot.receive.apply( this.proxy || slot , values ) ;
             }
@@ -275,7 +277,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
         }
         if ( this.receivers.length > 0 )
         {
-            var l = this.receivers.length ;
+            let l = this.receivers.length ;
             while( --l > -1 )
             {
                 if ( this.receivers[l].receiver === receiver )
@@ -296,11 +298,11 @@ Signal.prototype = Object.create( Signaler.prototype ,
      */
     toArray : { value : function()
     {
-        var r = [] ;
-        if ( this.receivers.length > 0 )
+        let r = [] ;
+        let l = this.receivers.length ;
+        if ( l > 0 )
         {
-            var l = this.receivers.length ;
-            for( var i = 0 ; i<l ; i++ )
+            for( let i=0 ; i<l ; i++ )
             {
                 r.push( this.receivers[i].receiver ) ;
             }
@@ -315,8 +317,5 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    toString : { value : function ()
-    {
-        return '[Signal]' ;
-    }}
+    toString : { value : function () { return '[Signal]' ; }}
 });

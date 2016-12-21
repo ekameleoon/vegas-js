@@ -2,7 +2,6 @@
 
 import '../polyfill/Object.js' ;
 
-import { strings     } from './signals/strings.js' ;
 import { Receiver    } from './signals/Receiver.js' ;
 import { SignalEntry } from './signals/SignalEntry.js' ;
 import { Signaler    } from './signals/Signaler.js' ;
@@ -60,7 +59,6 @@ import { Signal      } from './signals/Signal.js' ;
  */
 export var signals = Object.assign
 ({
-    strings     : strings ,
     Receiver    : Receiver ,
     SignalEntry : SignalEntry ,
     Signaler    : Signaler,

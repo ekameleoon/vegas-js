@@ -11,23 +11,27 @@ export function Receiver()
 
 }
 
-Receiver.prototype = Object.create( Object.prototype );
-Receiver.prototype.constructor = Receiver;
-
-/**
- * This method is called when the receiver is connected with a Signal object.
- * @memberof system.signals.Receiver
- * @function
- */
-Receiver.prototype.receive = function() {}
-
-/**
- * Returns the string representation of this instance.
- * @return the string representation of this instance.
- * @memberof system.signals.Receiver
- * @function
- */
-Receiver.prototype.toString = function () 
+Receiver.prototype = Object.create( Object.prototype ,
 {
-    return "[Receiver]" ;
-}
+    constructor : { writable : true , value : Receiver } ,
+
+    /**
+     * This method is called when the receiver is connected with a Signal object.
+     * @memberof system.signals.Receiver
+     * @function
+     */
+    receive : { writable : true , value : function() {} } ,
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @memberof system.signals.Receiver
+     * @function
+     */
+    toString : { writable : true , value : function ()
+    {
+        return "[Receiver]" ;
+    }}
+});
+
+
