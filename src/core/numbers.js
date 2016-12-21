@@ -2,6 +2,8 @@
 
 import '../polyfill/Object.js' ;
 
+import { toInt } from './numbers/toInt.js' ;
+import { toUint } from './numbers/toUint.js' ;
 import { toUnicodeNotation } from './numbers/toUnicodeNotation.js' ;
 
 /**
@@ -14,5 +16,7 @@ import { toUnicodeNotation } from './numbers/toUnicodeNotation.js' ;
  */
 export var numbers = Object.assign
 ({
+    toInt : toInt ,
+    toUint : toUint ,
     toUnicodeNotation : toUnicodeNotation
 }) ;

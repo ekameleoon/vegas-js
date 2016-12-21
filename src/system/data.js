@@ -2,17 +2,17 @@
 
 import '../polyfill/Object.js' ;
 
-import { isIdentifiable }    from './data/Identifiable.js' ;
-import { isIterator }        from './data/Iterator.js' ;
+import { isIdentifiable } from './data/Identifiable.js' ;
+import { isIterator } from './data/Iterator.js' ;
 import { isOrderedIterator } from './data/OrderedIterator.js' ;
-import { isValidator }       from './data/Validator.js' ;
+import { isValidator } from './data/Validator.js' ;
 
-import { Identifiable }    from './data/Identifiable.js' ;
-import { Iterator }        from './data/Iterator.js' ;
-import { KeyValuePair }    from './data/KeyValuePair.js' ;
+import { Identifiable } from './data/Identifiable.js' ;
+import { Iterator }  from './data/Iterator.js' ;
+import { KeyValuePair } from './data/KeyValuePair.js' ;
 import { OrderedIterator } from './data/OrderedIterator.js' ;
-import { Property  }       from './data/Property.js' ;
-import { Validator }       from './data/Validator.js' ;
+import { Property  } from './data/Property.js' ;
+import { Validator } from './data/Validator.js' ;
 
 import { Attribute } from './data/Attribute.js' ;
 import { Method    } from './data/Method.js' ;

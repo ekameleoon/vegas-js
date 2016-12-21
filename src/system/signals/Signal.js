@@ -56,7 +56,7 @@ export function Signal()
          * @type {Object}
          * @instance
          */
-        proxy : { value : null, configurable : true, writable : true },
+        proxy : { value : null, configurable : true , writable : true } ,
 
         /**
          * @private
@@ -89,15 +89,15 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @param {boolean} [autoDisconnect=false] Apply a disconnect after the first trigger
      * @return {boolean} <code>true</code> If the receiver is connected with the signal emitter.
      */
-    connect : { value : function ( receiver , priority = 0 , autoDisconnect = false ) 
+    connect : { value : function ( receiver , priority = 0 , autoDisconnect = false )
     {
         if ( receiver === null )
         {
             return false ;
         }
 
-        autoDisconnect = Boolean( autoDisconnect ) ;
-        priority       = priority > 0 ? Math.ceil(priority) : 0 ;
+        autoDisconnect = autoDisconnect === true ;
+        priority = priority > 0 ? (priority - (priority % 1)) : 0 ;
 
         if ( ( typeof(receiver) === "function" ) || ( receiver instanceof Function ) || ( receiver instanceof Receiver ) || ( "receive" in receiver ) )
         {
@@ -267,7 +267,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    hasReceiver : { value : function ( receiver ) 
+    hasReceiver : { value : function ( receiver )
     {
         if ( receiver === null )
         {
@@ -294,7 +294,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    toArray : { value : function() 
+    toArray : { value : function()
     {
         var r = [] ;
         if ( this.receivers.length > 0 )
