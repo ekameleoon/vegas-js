@@ -5,6 +5,28 @@
                   (factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
 
+var skip = false;
+function sayHello() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var link = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    if (skip) {
+        return;
+    }
+    try {
+        if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+            var args = ['\n %c %c %c ' + name + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
+            window.console.log.apply(console, args);
+        } else if (window.console) {
+            window.console.log(name + ' ' + version + ' - ' + link);
+        }
+    } catch (error) {
+    }
+}
+function skipHello() {
+    skip = true;
+}
+
 function ucFirst(str) {
     if (!(str instanceof String || typeof str === 'string') || str === "") {
         return '';
@@ -12582,27 +12604,6 @@ var metas = Object.defineProperties({}, {
     license: { enumerable: true, value: "MPL-2.0 OR GPL-2.0+ OR LGPL-2.1+" },
     url: { enumerable: true, value: 'https://bitbucket.org/ekameleon/vegas-js' }
 });
-var skip = false;
-function sayHello() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-    var link = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-    if (skip) {
-        return;
-    }
-    try {
-        if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-            var args = ['\n %c %c %c ' + name + ' ' + version + ' %c %c ' + link + ' %c %c\n\n', 'background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #000000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'color: #F7FF3C; background: #ff0000; padding:5px 0;', 'background: #AA0000; padding:5px 0;', 'background: #ff0000; padding:5px 0;'];
-            window.console.log.apply(console, args);
-        } else if (window.console) {
-            window.console.log(name + ' ' + version + ' - ' + link);
-        }
-    } catch (error) {
-    }
-}
-function skipHello() {
-    skip = true;
-}
 try {
     if (window) {
         window.addEventListener('load', function load() {
