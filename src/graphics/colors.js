@@ -3,6 +3,7 @@
 import '../polyfill/Object.js' ;
 
 import { RGB } from './colors/RGB.js' ;
+import { RGBA } from './colors/RGBA.js' ;
 
 /**
  * The {@link graphics.colors} library is a set of classes and utilities for color operations.
@@ -14,5 +15,6 @@ import { RGB } from './colors/RGB.js' ;
  */
 export var colors = Object.assign
 ({
-    RGB : RGB
+    RGB : RGB,
+    RGBA : RGBA
 }) ;

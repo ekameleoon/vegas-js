@@ -2,7 +2,6 @@
 "use strict" ;
 
 import { hex } from '../../core/colors/toHex.js' ;
-import { clamp } from '../../core/maths/clamp.js' ;
 import { normalize } from '../../core/maths/normalize.js' ;
 
 /**
@@ -19,20 +18,9 @@ export function RGB( r = 0 , g = 0 , b = 0 )
 {
     Object.defineProperties( this ,
     {
-        /**
-         * @private
-         */
-        _blue : { writable : true , enumerable : true , value : b } ,
-
-        /**
-         * @private
-         */
-        _green : { writable : true , enumerable : true , value : g } ,
-
-        /**
-         * @private
-         */
-        _red : { writable : true , enumerable : true , value : r } ,
+        _blue  : { writable : true , enumerable : true , value : Math.max( Math.min( b , 0XFF ) , 0 ) } ,
+        _green : { writable : true , enumerable : true , value : Math.max( Math.min( g , 0XFF ) , 0 ) } ,
+        _red   : { writable : true , enumerable : true , value : Math.max( Math.min( r , 0XFF ) , 0 ) }
     }) ;
 }
 
@@ -247,7 +235,7 @@ RGB.prototype = Object.create( Object.prototype ,
      */
     interpolate : { value : function( to , level = 1 )
     {
-        let p = clamp( isNaN(level) ? 1 : level , 0 , 1 ) ;
+        let p = Math.max( Math.min( isNaN(level) ? 0 : level , 1 ) , 0 ) ;
         let q = 1 - p ;
         return new RGB
         (
@@ -269,7 +257,7 @@ RGB.prototype = Object.create( Object.prototype ,
      */
     interpolateToNumber : { value : function( to , level = 1 )
     {
-        let p = clamp( isNaN(level) ? 1 : level , 0 , 1 ) ;
+        let p = Math.max( Math.min( isNaN(level) ? 0 : level , 1 ) , 0 ) ;
         let q = 1 - p ;
         let r = this._red   * q + to._red   * p ;
         let g = this._green * q + to._green * p ;
