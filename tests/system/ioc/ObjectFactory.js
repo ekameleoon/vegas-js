@@ -15,7 +15,7 @@ describe( 'system.ioc.ObjectFactory' , () =>
     {
         let factory = new ObjectFactory() ;
 
-        it('factory instanceof ObjectDefinitionContainer', () =>
+        it('factory extends ObjectDefinitionContainer', () =>
         {
             assert.isTrue( factory instanceof ObjectDefinitionContainer );
         });

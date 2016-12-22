@@ -16,6 +16,11 @@ describe( 'system.signals.Signal' , () =>
             assert.instanceOf( signal , Signaler );
         });
 
+        it('constructor === Signal', () =>
+        {
+            assert.equal( signal.constructor , Signal );
+        });
+
         it('default length === 0', () =>
         {
             assert.equal( signal.length , 0);
