@@ -1,5 +1,7 @@
 "use strict" ;
 
+import { distance } from '../../core/maths/distance.js'
+
 import { Rectangle } from './Rectangle.js' ;
 import { Point }     from './Point.js' ;
 import { Vector2D }  from './Vector2D.js' ;
@@ -20,19 +22,8 @@ export function Circle( x = 0 , y = 0 , radius = 0 )
     Vector2D.call(this,x,y);
     Object.defineProperties( this ,
     {
-        /**
-         * @private
-         */
-        _diameter : { value : 0 , writable : true } ,
-
-        /**
-         * @private
-         */
-        _radius : { value : radius > 0 ? radius : 0 , writable : true } ,
-
-        /**
-         * @private
-         */
+        _diameter      : { value : 0 , writable : true } ,
+        _radius        : { value : radius > 0 ? radius : 0 , writable : true } ,
         _radiusSquared : { value : 0 , writable : true }
     });
     this._diameter = 2 * this._radius ;
@@ -275,6 +266,49 @@ Circle.prototype = Object.create( Vector2D.prototype ,
             this._diameter ,
             this._diameter
         ) ;
+    }},
+
+    /**
+     * Determines whether the object specified in the toIntersect parameter intersects with this Circle object.
+     * @param {*} toIntersect - The object to compare against this Circle object.
+     * @return {boolean} A value of true if the specified object intersects with this Circle object; otherwise false.
+     * @memberof graphics.geom.Circle
+     * @function
+     * @instance
+     */
+    intersects : { value : function( toIntersect )
+    {
+        if( toIntersect instanceof Circle )
+        {
+            return distance(this.x, this.y, toIntersect.x, toIntersect.y) <= (this.radius + this.radius) ;
+        }
+        else if( toIntersect instanceof Rectangle )
+        {
+            let hw = Math.round(toIntersect.width*0.5);
+            let cx = Math.abs( this.x - toIntersect.x - hw );
+            if ( cx > (hw + this.radius) )
+            {
+                return false;
+            }
+
+            let hh = Math.round(toIntersect.height*0.5);
+            let cy = Math.abs( this.y - toIntersect.y - hh );
+            if ( cy > (hh + this.radius) )
+            {
+                return false;
+            }
+
+            if (cx <= hw || cy <= hh )
+            {
+                return true;
+            }
+
+            let dx = cx - hw ;
+            let dy = cy - hh ;
+            return (dx * dx) + (dy * dy) <= this._radiusSquared ;
+        }
+
+        return false ;
     }},
 
     /**

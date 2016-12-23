@@ -59,6 +59,23 @@ describe( 'graphics.geom.Rectangle' , () =>
         });
     });
 
+    describe( '#area' , () =>
+    {
+        it('new Rectangle(0,0,40,12).area === 480', () =>
+        {
+            assert.equal( new Rectangle(0,0,40,12).area , 480 ) ;
+        }) ;
+    });
+
+    describe( '#perimeter' , () =>
+    {
+        it('new Rectangle(0,0,40,12).perimeter === 104', () =>
+        {
+            let rec = new Rectangle(0,0,40,12) ;
+            assert.equal( rec.perimeter , 104 ) ;
+        }) ;
+    });
+
     describe( '#clone()' , () =>
     {
         let rec   = new Rectangle(10,20,100,200) ;

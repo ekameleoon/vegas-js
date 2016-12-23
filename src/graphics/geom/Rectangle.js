@@ -47,6 +47,19 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     // ------- getters/setters
 
     /**
+     * The area of the rectangle.
+     * @name area
+     * @memberof graphics.geom.Rectangle
+     * @default 0
+     * @type {Number}
+     * @instance
+     * @example
+     * var rectangle = new Rectangle( 40 , 12 ) ;
+     * trace( rectangle.area ) ; // 480
+     */
+    area : { get : function() { return this.width * this.height ; }} ,
+
+    /**
      * The sum of the y and height properties.
      * @memberof graphics.geom.Rectangle
      * @instance
@@ -123,6 +136,34 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     /**
+     * Indicates the x coordinate of the Rectangle center.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     */
+    centerX :
+    {
+        get : function() { return this.x + (this.width*0.5) ; },
+        set : function( x )
+        {
+            this.x = x - (this.width*0.5) ;
+        }
+    },
+
+    /**
+     * Indicates the y coordinate of the Rectangle center.
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     */
+    centerY :
+    {
+        get : function() { return this.y + (this.height*0.5) ; },
+        set : function( y )
+        {
+            this.y = y - (this.height*0.5) ;
+        }
+    },
+
+    /**
      * The x coordinate of the top-left corner of the rectangle.
      * @memberof graphics.geom.Rectangle
      * @instance
@@ -156,6 +197,22 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
             this.width = value - this.x ;
         }
     },
+
+    /**
+     * The perimeter of the rectangle.
+     * @name perimeter
+     * @memberof graphics.geom.Rectangle
+     * @default 0
+     * @type {Number}
+     * @instance
+     * @example
+     * var rectangle = new Rectangle( 40 , 12 ) ;
+     * trace( rectangle.perimeter ) ; // 104
+     */
+    perimeter : { get : function()
+    {
+        return (this.width*2) + (this.height*2);
+    }} ,
 
     /**
      * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
@@ -234,6 +291,23 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     },
 
     // ------- methods
+
+    /**
+     * Centers this <code>Rectangle</code> so that the center coordinates match the given x and y values.
+     * @name centerOn
+     * @memberof graphics.geom.Rectangle
+     * @instance
+     * @function
+     * @param {number} x - The x coordinate to place the center of the Rectangle at.
+     * @param {number} y - The y coordinate to place the center of the Rectangle at.
+     * @return The current reference of the object.
+     */
+    centerOn : { writable : true , value : function( x , y )
+    {
+        this.x = x - ( this.width  * 0.5 ) ;
+        this.y = y - ( this.height * 0.5 ) ;
+        return this;
+    }},
 
     /**
      * Returns a new Rectangle object with the same values for the x, y, width, and height properties as the original Rectangle object.
@@ -442,6 +516,22 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     }},
 
     /**
+     * Sets the width and heigth members of Rectangle to the specified values.
+     * @param {number} [width=0] - The width of the rectangle, in pixels (default 0).
+     * @param {number} [height=0] - The height of the rectangle, in pixels (default 0).
+     * @return {Rectangle} The object reference.
+     * @memberof graphics.geom.Rectangle
+     * @function
+     * @instance
+     */
+    resize : { writable : true , value : function( width = 0 , height = 0 )
+    {
+        this.width = width ;
+        this.height = height ;
+        return this ;
+    }},
+
+    /**
      * Sets the members of Rectangle to the specified values.
      * @param {number} [x=0] - The x coordinate of the top-left corner of the rectangle (default 0).
      * @param {number} [y=0] - The y coordinate of the top-left corner of the rectangle (default 0).
@@ -521,5 +611,60 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
 
             return rec ;
         }
+    }}
+});
+
+Object.defineProperties( Rectangle ,
+{
+    /**
+     * Calculates the Axis Aligned Bounding Box (or aabb) from an array of points.
+     * @memberof graphics.geom.Rectangle
+     * @function
+     * @param {graphics.geom.Vector2D[]} points - The array of one or more points.
+     * @param {graphics.geom.Rectangle} [out=null] - Optional rectangle to store the value in, if not supplied a new Rectangle object will be created.
+     * @return {graphics.geom.Rectangle} The new Rectangle object.
+     */
+    aabb : { value : function( points , rec = null )
+    {
+        if (!(rec instanceof Rectangle))
+        {
+            rec = new Rectangle();
+        }
+
+        if( points instanceof Array && points.length > 0 )
+        {
+            let xMax = Number.NEGATIVE_INFINITY,
+                xMin = Number.POSITIVE_INFINITY,
+                yMax = Number.NEGATIVE_INFINITY,
+                yMin = Number.POSITIVE_INFINITY;
+
+            let point ;
+
+            for( let i = 0 , len = points.length ; i<len ; i++ )
+            {
+                point = points[i] ;
+                if (point.x > xMax)
+                {
+                    xMax = point.x;
+                }
+                if (point.x < xMin)
+                {
+                    xMin = point.x;
+                }
+                if (point.y > yMax)
+                {
+                    yMax = point.y;
+                }
+                if (point.y < yMin)
+                {
+                    yMin = point.y;
+                }
+            }
+
+            rec.setTo(xMin, yMin, xMax - xMin, yMax - yMin);
+        }
+
+        return rec;
+
     }}
 });

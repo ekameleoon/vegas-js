@@ -8,6 +8,7 @@ import { ColorTransform } from './geom/ColorTransform.js' ;
 import { Dimension }      from './geom/Dimension.js' ;
 import { Matrix }         from './geom/Matrix.js' ;
 import { Point }          from './geom/Point.js' ;
+import { Polygon }        from './geom/Polygon.js' ;
 import { Rectangle }      from './geom/Rectangle.js' ;
 import { Vector2D }       from './geom/Vector2D.js' ;
 import { Vector3D }       from './geom/Vector3D.js' ;
@@ -28,6 +29,7 @@ export var geom = Object.assign
     Dimension      : Dimension ,
     Matrix         : Matrix ,
     Point          : Point ,
+    Polygon        : Polygon ,
     Rectangle      : Rectangle ,
     Vector2D       : Vector2D ,
     Vector3D       : Vector3D

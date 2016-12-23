@@ -11,7 +11,7 @@
  * @param {number} [width=0] the width value.
  * @param {number} [height=0] The height value.
  */
-export function Dimension( width = 0 , height = 0)
+export function Dimension( width = 0 , height = 0 )
 {
     Object.defineProperties( this ,
     {
@@ -135,7 +135,7 @@ Dimension.prototype = Object.create( Object.prototype ,
      */
     setTo : { writable : true , value : function( width = 0 , height = 0 )
     {
-        this.width  = width ;
+        this.width = width ;
         this.height = height ;
         return this ;
     }},

@@ -10970,6 +10970,9 @@ function Rectangle() {
     Dimension.call(this, width, height);
 }
 Rectangle.prototype = Object.create(Dimension.prototype, {
+    area: { get: function get() {
+            return this.width * this.height;
+        } },
     bottom: {
         get: function get() {
             return this.y + this.height;
@@ -11006,6 +11009,22 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             this.y = point.y - this.height * 0.5;
         }
     },
+    centerX: {
+        get: function get() {
+            return this.x + this.width * 0.5;
+        },
+        set: function set(x) {
+            this.x = x - this.width * 0.5;
+        }
+    },
+    centerY: {
+        get: function get() {
+            return this.y + this.height * 0.5;
+        },
+        set: function set(y) {
+            this.y = y - this.height * 0.5;
+        }
+    },
     left: {
         get: function get() {
             return this.x;
@@ -11023,6 +11042,9 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             this.width = value - this.x;
         }
     },
+    perimeter: { get: function get() {
+            return this.width * 2 + this.height * 2;
+        } },
     size: {
         get: function get() {
             return new Point(this.width, this.height);
@@ -11062,6 +11084,11 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             this.y = point.y;
         }
     },
+    centerOn: { writable: true, value: function value(x, y) {
+            this.x = x - this.width * 0.5;
+            this.y = y - this.height * 0.5;
+            return this;
+        } },
     clone: { writable: true, value: function value() {
             return new Rectangle(this.x, this.y, this.width, this.height);
         } },
@@ -11138,6 +11165,13 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
             this.y += point.y;
             return this;
         } },
+    resize: { writable: true, value: function value() {
+            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            this.width = width;
+            this.height = height;
+            return this;
+        } },
     setTo: { writable: true, value: function value() {
             var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
             var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11171,6 +11205,38 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
                 rec.height = Math.max(this.y + this.height, toUnion.y + toUnion.height) - rec.y;
                 return rec;
             }
+        } }
+});
+Object.defineProperties(Rectangle, {
+    aabb: { value: function value(points) {
+            var rec = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            if (!(rec instanceof Rectangle)) {
+                rec = new Rectangle();
+            }
+            if (points instanceof Array && points.length > 0) {
+                var xMax = Number.NEGATIVE_INFINITY,
+                    xMin = Number.POSITIVE_INFINITY,
+                    yMax = Number.NEGATIVE_INFINITY,
+                    yMin = Number.POSITIVE_INFINITY;
+                var point = void 0;
+                for (var i = 0, len = points.length; i < len; i++) {
+                    point = points[i];
+                    if (point.x > xMax) {
+                        xMax = point.x;
+                    }
+                    if (point.x < xMin) {
+                        xMin = point.x;
+                    }
+                    if (point.y > yMax) {
+                        yMax = point.y;
+                    }
+                    if (point.y < yMin) {
+                        yMin = point.y;
+                    }
+                }
+                rec.setTo(xMin, yMin, xMax - xMin, yMax - yMin);
+            }
+            return rec;
         } }
 });
 
@@ -11936,6 +12002,29 @@ Circle.prototype = Object.create(Vector2D.prototype, {
     getBounds: { writable: true, value: function value() {
             return new Rectangle(this.x - this._radius, this.y - this._radius, this._diameter, this._diameter);
         } },
+    intersects: { value: function value(toIntersect) {
+            if (toIntersect instanceof Circle) {
+                return distance$1(this.x, this.y, toIntersect.x, toIntersect.y) <= this.radius + this.radius;
+            } else if (toIntersect instanceof Rectangle) {
+                var hw = Math.round(toIntersect.width * 0.5);
+                var cx = Math.abs(this.x - toIntersect.x - hw);
+                if (cx > hw + this.radius) {
+                    return false;
+                }
+                var hh = Math.round(toIntersect.height * 0.5);
+                var cy = Math.abs(this.y - toIntersect.y - hh);
+                if (cy > hh + this.radius) {
+                    return false;
+                }
+                if (cx <= hw || cy <= hh) {
+                    return true;
+                }
+                var dx = cx - hw;
+                var dy = cy - hh;
+                return dx * dx + dy * dy <= this._radiusSquared;
+            }
+            return false;
+        } },
     metaball: { value: function value(tx, ty) {
             return this._radiusSquared / ((this.x - tx) * (this.x - tx) + (this.y - ty) * (this.y - ty));
         } },
@@ -12256,6 +12345,198 @@ Matrix.prototype = Object.create(Object.prototype, {
         } }
 });
 
+function Polygon() {
+    Object.defineProperties(this, {
+        _area: { writable: true, value: 0 },
+        _closed: { writable: true, value: true },
+        _flattened: { writable: true, value: false },
+        _points: { value: [] }
+    });
+    if (arguments.length > 0) {
+        this.setTo.apply(this, arguments);
+    }
+}
+Polygon.prototype = Object.create(Object.prototype, {
+    area: { get: function get() {
+            return this._area;
+        } },
+    closed: {
+        get: function get() {
+            return this._closed;
+        },
+        set: function set(value) {
+            this._closed = value === true;
+        }
+    },
+    flattened: { get: function get() {
+            return this._flattened;
+        } },
+    length: { get: function get() {
+            return this._points.length;
+        } },
+    points: {
+        get: function get() {
+            return this._points;
+        },
+        set: function set(points) {
+            this.setTo(points);
+        }
+    },
+    clone: { writable: true, value: function value() {
+            return new Polygon(this._points.slice());
+        } },
+    contains: { value: function value(x, y) {
+            var flag = false;
+            if (this._flattened) {
+                for (var i = -2, j = this._points.length - 2; (i += 2) < this._points.length; j = i) {
+                    var ix = this._points[i];
+                    var iy = this._points[i + 1];
+                    var jx = this._points[j];
+                    var jy = this._points[j + 1];
+                    if ((iy <= y && y < jy || jy <= y && y < iy) && x < (jx - ix) * (y - iy) / (jy - iy) + ix) {
+                        flag = !flag;
+                    }
+                }
+            } else {
+                for (var _i = -1, _j = this._points.length - 1; ++_i < this._points.length; _j = _i) {
+                    var _ix = this._points[_i].x;
+                    var _iy = this._points[_i].y;
+                    var _jx = this._points[_j].x;
+                    var _jy = this._points[_j].y;
+                    if ((_iy <= y && y < _jy || _jy <= y && y < _iy) && x < (_jx - _ix) * (y - _iy) / (_jy - _iy) + _ix) {
+                        flag = !flag;
+                    }
+                }
+            }
+            return flag;
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof Polygon)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an Polygon object.');
+            }
+            this.points = source.points;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o === this) {
+                return true;
+            }
+            if (o instanceof Polygon) {
+                var ar1 = this.toArray();
+                var ar2 = o.toArray();
+                if (ar1.length !== ar2.length) {
+                    return false;
+                }
+                for (var i = 0, len = ar1.length; i < len; i++) {
+                    if ((typeof ar1[i] === 'number' || ar1[i] instanceof Number) && ar1[i] !== ar2[i]) {
+                        return false;
+                    } else {
+                        try {
+                            if (ar1[i].x !== ar2[i].x || ar1[i].y !== ar2[i].y) {
+                                return false;
+                            }
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } },
+    flatten: { value: function value() {
+            if (this._points.length > 0) {
+                var ar = this.toArray();
+                this._points.length = 0;
+                for (var i = 0, len = ar.length; i < len; i++) {
+                    this._points.push(ar[i]);
+                }
+                this._flattened = true;
+            }
+            return this;
+        } },
+    setTo: { writable: true, value: function value(points) {
+            this._area = 0;
+            this._points.length = 0;
+            this._flattened = false;
+            if (arguments.length > 0) {
+                if (!(points instanceof Array)) {
+                    points = Array.prototype.slice.call(arguments);
+                }
+                var pos = void 0;
+                var min = Number.MAX_VALUE;
+                var len = points.length;
+                for (var i = 0; i < len; i++) {
+                    pos = points[i];
+                    if (typeof pos === 'number' || pos instanceof Number) {
+                        pos = new Point(pos, points[i + 1]);
+                        i++;
+                    } else if (pos instanceof Array) {
+                        pos = new Point(points[i][0], points[i][1]);
+                    } else if ('x' in pos && 'y' in pos) {
+                        pos = new Point(pos.x, pos.y);
+                    } else {
+                        pos = null;
+                    }
+                    if (pos !== null) {
+                        this._points.push(pos);
+                        if (pos.y < min) {
+                            min = pos.y;
+                        }
+                    }
+                }
+                this.calculateArea(min);
+            }
+            return this;
+        } },
+    toArray: { value: function value() {
+            var output = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            if (!(output instanceof Array)) {
+                output = [];
+            }
+            var pos = void 0;
+            var len = this._points.length;
+            for (var i = 0; i < len; i++) {
+                pos = this._points[i];
+                if (typeof pos === 'number' || pos instanceof Number) {
+                    output.push(pos);
+                } else {
+                    output.push(pos.x);
+                    output.push(pos.y);
+                }
+            }
+            return output;
+        } },
+    toObject: { writable: true, value: function value() {
+            return [].concat(this._points);
+        } },
+    toString: { writable: true, value: function value() {
+            return "[Polygon]";
+        } },
+    calculateArea: { value: function value(min) {
+            this._area = 0;
+            if (this._points.length) {
+                var p1 = void 0,
+                    p2 = void 0;
+                var height = void 0,
+                    width = void 0;
+                for (var i = 0, len = this._points.length; i < len; i++) {
+                    p1 = this._points[i];
+                    if (i === len - 1) {
+                        p2 = this._points[0];
+                    } else {
+                        p2 = this._points[i + 1];
+                    }
+                    height = (p1.y - min + (p2.y - min)) / 2;
+                    width = p1.x - p2.x;
+                    this._area += height * width;
+                }
+            }
+            return this._area;
+        } }
+});
+
 function Vector3D() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12377,6 +12658,7 @@ var geom = Object.assign({
     Dimension: Dimension,
     Matrix: Matrix,
     Point: Point,
+    Polygon: Polygon,
     Rectangle: Rectangle,
     Vector2D: Vector2D,
     Vector3D: Vector3D
