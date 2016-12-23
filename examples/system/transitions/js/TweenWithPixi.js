@@ -54,7 +54,8 @@ window.onload = function()
 
     PIXI.loader
         .add( 'sprite'      , './images/bunny.png' )
-        .add( 'spritesheet' , './images/mc.json')
+        .add( 'kid'         , './images/kid.json'  )
+        .add( 'spritesheet' , './images/mc.json'   )
         .once('complete'    , complete )
         .load();
 
@@ -72,6 +73,18 @@ window.onload = function()
         trace( '¬ start' ) ;
     }
 
+    function createKid()
+    {
+        var textures = [] ;
+
+        for ( var i = 0; i < 7 ; i++ )
+        {
+            textures.push( PIXI.Texture.fromImage( 'kid_walking_0' + (i+1) + '.png') );
+        }
+
+        return new PIXI.extras.AnimatedSprite(textures);
+    }
+
     function createExplosion()
     {
         var textures = [] ;
@@ -81,7 +94,7 @@ window.onload = function()
             textures.push( PIXI.Texture.fromImage( 'frame' + (i+1) + '.png') );
         }
 
-        return new PIXI.extras.MovieClip(textures);
+        return new PIXI.extras.AnimatedSprite(textures);
     }
 
     function complete( event )
@@ -89,7 +102,11 @@ window.onload = function()
         resources = event.resources ;
         if( resources )
         {
-            sprite = createExplosion() ;
+            sprite = createKid() ;
+            //sprite = createExplosion() ;
+
+            sprite.animationSpeed = 0.25 ;
+
             sprite.play() ;
 
             //sprite = new PIXI.Sprite(resources.sprite.texture);
@@ -106,12 +123,12 @@ window.onload = function()
             tween = new system.transitions.Tween
             ({
                 target   : sprite.position ,
-                duration : 24 ,
-                easing   : core.easings.backOut ,
+                duration : 48 ,
+                easing   : core.easings.expoOut ,
                 to       : { x : 480 , y : 480 }
             }) ;
 
-            tween.easings = { x : core.easings.elasticOut , y : core.easings.backOut } ;
+            tween.easings = { x : core.easings.sineOut , y : core.easings.sineOut } ;
             tween.fps = 60 ;
 
             tween.startIt.connect( start ) ;
@@ -126,6 +143,12 @@ window.onload = function()
     function render()
     {
         renderer.render(stage);
-        requestAnimationFrame(render);
+        //requestAnimationFrame(render);
     }
+
+    var action = new system.process.FrameTimer() ;
+
+    action.progressIt.connect( render ) ;
+
+    action.run() ;
 }
