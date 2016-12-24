@@ -12,10 +12,10 @@ import { Point } from './Point.js' ;
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom
  * @class
- * @param {number} x the x value of the object.
- * @param {number} y the y value of the object.
- * @param {number} width the width value of the object.
- * @param {number} height the height value of the object.
+ * @param {number} [x=0] - The x value of the object.
+ * @param {number} [y=0] - The y value of the object.
+ * @param {number} [width=0] - The width value of the object.
+ * @param {number} [height=0] - The height value of the object.
  */
 export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 {
@@ -44,8 +44,6 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 
 Rectangle.prototype = Object.create( Dimension.prototype ,
 {
-    // ------- getters/setters
-
     /**
      * The area of the rectangle.
      * @name area
@@ -54,7 +52,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      * @type {Number}
      * @instance
      * @example
-     * var rectangle = new Rectangle( 40 , 12 ) ;
+     * var rectangle = new Rectangle( 0 , 0 , 40 , 12 ) ;
      * trace( rectangle.area ) ; // 480
      */
     area : { get : function() { return this.width * this.height ; }} ,
@@ -66,14 +64,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     bottom :
     {
-        get : function()
-        {
-            return this.y + this.height ;
-        },
-        set : function( value )
-        {
-            this.height = value - this.y ;
-        }
+        get : function() { return this.y + this.height ; },
+        set : function( value ) { this.height = value - this.y ; }
     },
 
     /**
@@ -83,10 +75,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     bottomLeft :
     {
-        get : function()
-        {
-            return new Point(this.x, this.y + this.height) ;
-        } ,
+        get : function() { return new Point(this.x, this.y + this.height) ; } ,
         set : function( point )
         {
             this.width = this.width + (this.x - point.x) ;
@@ -102,10 +91,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     bottomRight :
     {
-        get : function()
-        {
-            return new Point(this.x + this.width, this.y + this.height) ;
-        } ,
+        get : function() { return new Point(this.x + this.width, this.y + this.height) ; } ,
         set : function( point )
         {
             this.width  = point.x - this.x ;
@@ -143,10 +129,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     centerX :
     {
         get : function() { return this.x + (this.width*0.5) ; },
-        set : function( x )
-        {
-            this.x = x - (this.width*0.5) ;
-        }
+        set : function( x ) { this.x = x - (this.width*0.5) ; }
     },
 
     /**
@@ -157,10 +140,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
     centerY :
     {
         get : function() { return this.y + (this.height*0.5) ; },
-        set : function( y )
-        {
-            this.y = y - (this.height*0.5) ;
-        }
+        set : function( y ) { this.y = y - (this.height*0.5) ; }
     },
 
     /**
@@ -170,10 +150,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     left :
     {
-        get : function()
-        {
-            return this.x ;
-        } ,
+        get : function() { return this.x ; } ,
         set : function( value )
         {
             this.width = this.width + (this.x - value) ;
@@ -188,14 +165,8 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     right :
     {
-        get : function()
-        {
-            return this.x + this.width ;
-        } ,
-        set : function( value )
-        {
-            this.width = value - this.x ;
-        }
+        get : function() { return this.x + this.width ; } ,
+        set : function( value ) { this.width = value - this.x ; }
     },
 
     /**
@@ -206,13 +177,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      * @type {Number}
      * @instance
      * @example
-     * var rectangle = new Rectangle( 40 , 12 ) ;
+     * var rectangle = new Rectangle( 0 , 0 , 40 , 12 ) ;
      * trace( rectangle.perimeter ) ; // 104
      */
-    perimeter : { get : function()
-    {
-        return (this.width*2) + (this.height*2);
-    }} ,
+    perimeter : { get : function() { return (this.width*2) + (this.height*2); }} ,
 
     /**
      * The size of the Rectangle object, expressed as a Point object with the values of the width and height properties.
@@ -221,10 +189,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     size :
     {
-        get : function()
-        {
-            return new Point(this.width, this.height) ;
-        } ,
+        get : function() { return new Point(this.width, this.height) ; } ,
         set : function( point )
         {
             this.width  = point.x ;
@@ -239,10 +204,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     top :
     {
-        get : function()
-        {
-            return this.x + this.width ;
-        } ,
+        get : function() { return this.x + this.width ; } ,
         set : function( value )
         {
             this.height = this.height + (this.y - value);
@@ -289,8 +251,6 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
             this.y      = point.y ;
         }
     },
-
-    // ------- methods
 
     /**
      * Centers this <code>Rectangle</code> so that the center coordinates match the given x and y values.
@@ -452,24 +412,20 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     intersection : { value : function( toIntersect )
     {
-        var rec = new Rectangle() ;
-
+        let rec = new Rectangle() ;
         if ( this.isEmpty() || toIntersect.isEmpty() )
         {
             rec.setTo();
             return rec ;
         }
-
         rec.x = Math.max(this.x, toIntersect.x);
         rec.y = Math.max(this.y, toIntersect.y);
         rec.width  = Math.min( this.x + this.width  , toIntersect.x + toIntersect.width  ) - rec.x ;
         rec.height = Math.min( this.y + this.height , toIntersect.y + toIntersect.height ) - rec.y ;
-
         if ( rec.width <= 0 || rec.height <= 0 )
         {
             rec.setTo();
         }
-
         return rec ;
     }},
 
@@ -591,7 +547,6 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         {
             return null ; // ignore
         }
-
         if ( this.width <= 0 || this.height <= 0 )
         {
             return toUnion.clone() ;
@@ -603,12 +558,10 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
         else
         {
             var rec = new Rectangle();
-
             rec.x = Math.min(this.x, toUnion.x);
             rec.y = Math.min(this.y, toUnion.y);
             rec.width  = Math.max(this.x + this.width  , toUnion.x + toUnion.width  ) - rec.x ;
             rec.height = Math.max(this.y + this.height , toUnion.y + toUnion.height ) - rec.y ;
-
             return rec ;
         }
     }}
@@ -630,7 +583,6 @@ Object.defineProperties( Rectangle ,
         {
             rec = new Rectangle();
         }
-
         if( points instanceof Array && points.length > 0 )
         {
             let xMax = Number.NEGATIVE_INFINITY,
@@ -660,11 +612,8 @@ Object.defineProperties( Rectangle ,
                     yMin = point.y;
                 }
             }
-
             rec.setTo(xMin, yMin, xMax - xMin, yMax - yMin);
         }
-
         return rec;
-
     }}
 });

@@ -165,118 +165,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -12179,6 +12068,136 @@ ColorTransform.prototype = Object.create(Object.prototype, {
         } }
 });
 
+function Ellipse() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    Object.defineProperties(this, {
+        x: { value: isNaN(x) ? 0 : x, writable: true },
+        y: { value: isNaN(y) ? 0 : y, writable: true }
+    });
+    Dimension.call(this, width, height);
+}
+Ellipse.prototype = Object.create(Dimension.prototype, {
+    area: { get: function get() {
+            return Math.PI * (this.width * this.height) * 0.5;
+        } },
+    bottom: {
+        get: function get() {
+            return this.y + this.height;
+        },
+        set: function set(value) {
+            if (value < this.y) {
+                this.height = 0;
+            } else {
+                this.height = value - this.y;
+            }
+        }
+    },
+    center: {
+        get: function get() {
+            return new Point(this.x + this.width * 0.5, this.y + this.height * 0.5);
+        },
+        set: function set(point) {
+            this.x = point.x - this.width * 0.5;
+            this.y = point.y - this.height * 0.5;
+        }
+    },
+    centerX: {
+        get: function get() {
+            return this.x + this.width * 0.5;
+        },
+        set: function set(x) {
+            this.x = x - this.width * 0.5;
+        }
+    },
+    centerY: {
+        get: function get() {
+            return this.y + this.height * 0.5;
+        },
+        set: function set(y) {
+            this.y = y - this.height * 0.5;
+        }
+    },
+    left: {
+        get: function get() {
+            return this.x;
+        },
+        set: function set(value) {
+            this.x = value;
+        }
+    },
+    right: {
+        get: function get() {
+            return this.x + this.width;
+        },
+        set: function set(value) {
+            this.width = value - this.x;
+        }
+    },
+    top: {
+        get: function get() {
+            return this.y;
+        },
+        set: function set(value) {
+            this.y = value;
+        }
+    },
+    centerOn: { writable: true, value: function value(x, y) {
+            this.x = x - this.width * 0.5;
+            this.y = y - this.height * 0.5;
+            return this;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Ellipse(this.x, this.y, this.width, this.height);
+        } },
+    contains: { value: function value(x, y) {
+            if (this.width <= 0 || this.height <= 0) {
+                return false;
+            }
+            var normx = (x - this.x) / this.width - 0.5;
+            var normy = (y - this.y) / this.height - 0.5;
+            return normx * normx + normy * normy < 0.25;
+        } },
+    copyFrom: { value: function value(obj) {
+            this.x = obj.x;
+            this.y = obj.y;
+            this.width = obj.width;
+            this.height = obj.height;
+            return this;
+        } },
+    equals: { writable: true, value: function value(toCompare) {
+            var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            var flag = strict ? toCompare instanceof Ellipse : 'x' in toCompare && 'y' in toCompare && 'width' in toCompare && 'height' in toCompare;
+            if (flag) {
+                return toCompare.x === this.x && toCompare.y === this.y && toCompare.width === this.width && toCompare.height === this.height;
+            } else {
+                return false;
+            }
+        } },
+    getBounds: { writable: true, value: function value() {
+            return new Rectangle(this.x - this.width, this.y - this.height, this.width, this.height);
+        } },
+    setTo: { writable: true, value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            return this;
+        } },
+    toObject: { value: function value() {
+            return { x: this.x, y: this.y, width: this.width, height: this.height };
+        } },
+    toString: { value: function value() {
+            return "[Ellipse x:" + this.x + " y:" + this.y + " width:" + this.width + " height:" + this.height + "]";
+        } }
+});
+
 function Matrix() {
     var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12656,6 +12675,7 @@ var geom = Object.assign({
     Circle: Circle,
     ColorTransform: ColorTransform,
     Dimension: Dimension,
+    Ellipse: Ellipse,
     Matrix: Matrix,
     Point: Point,
     Polygon: Polygon,

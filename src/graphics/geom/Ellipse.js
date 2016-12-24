@@ -2,20 +2,21 @@
 
 import { Dimension } from './Dimension.js' ;
 import { Point } from './Point.js' ;
+import { Rectangle } from './Rectangle.js' ;
 
 /**
- * The Rectangle class is used to create and modify Rectangle objects.
- * <p>A Rectangle object is an area defined by its position, as indicated by its top-left corner point <code>(x, y)</code>, and by its width and its height.</p>
+ * The Ellipse object can be used to specify a hit area for displays.
+ * <p>A Ellipse object is an area defined by its position, as indicated by its top-left corner point <code>(x, y)</code>, and by its width and its height.</p>
  * <p>The <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> properties of the Rectangle class are independent of each other; changing the value of one property has no effect on the others.</p>
- * @summary The Rectangle class is used to create and modify Rectangle objects.
- * @name Rectangle
+ * @summary The Ellipse object can be used to specify a hit area for displays.
+ * @name Ellipse
  * @extends graphics.geom.Dimension
  * @memberof graphics.geom
  * @class
- * @param {number} x the x value of the object.
- * @param {number} y the y value of the object.
- * @param {number} width the width value of the object.
- * @param {number} height the height value of the object.
+ * @param {number} [x=0] - The x value of the object.
+ * @param {number} [y=0] - The y value of the object.
+ * @param {number} [width=0] - The width value of the object.
+ * @param {number} [height=0] - The height value of the object.
  */
 export function Ellipse( x = 0 , y = 0 , width = 0 , height = 0 )
 {
@@ -64,10 +65,7 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
      */
     bottom :
     {
-        get : function()
-        {
-            return this.y + this.height ;
-        },
+        get : function() { return this.y + this.height ; },
         set : function( value )
         {
             if( value < this.y )
@@ -138,15 +136,8 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
      */
     left :
     {
-        get : function()
-        {
-            return this.x ;
-        } ,
-        set : function( value )
-        {
-            this.width = this.width + (this.x - value) ;
-            this.x = value ;
-        }
+        get : function() { return this.x ; } ,
+        set : function( value ) { this.x = value ; }
     },
 
     /**
@@ -156,31 +147,9 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
      */
     right :
     {
-        get : function()
-        {
-            return this.x + this.width ;
-        } ,
-        set : function( value )
-        {
-            this.width = value - this.x ;
-        }
+        get : function() { return this.x + this.width ; } ,
+        set : function( value ) { this.width = value - this.x ; }
     },
-
-    /**
-     * The perimeter of the rectangle.
-     * @name perimeter
-     * @memberof graphics.geom.Ellipse
-     * @default 0
-     * @type {Number}
-     * @instance
-     * @example
-     * var rectangle = new Rectangle( 40 , 12 ) ;
-     * trace( rectangle.perimeter ) ; // 104
-     */
-    perimeter : { get : function()
-    {
-        return (this.width*2) + (this.height*2);
-    }},
 
     /**
      * The y coordinate of the top-left corner of the rectangle.
@@ -189,17 +158,9 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
      */
     top :
     {
-        get : function()
-        {
-            return this.y ;
-        } ,
-        set : function( value )
-        {
-            this.y = value ;
-        }
+        get : function() { return this.y ; } ,
+        set : function( value ) { this.y = value ; }
     },
-
-    // ------- methods
 
     /**
      * Centers this <code>Rectangle</code> so that the center coordinates match the given x and y values.
@@ -245,10 +206,8 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
         {
             return false;
         }
-
-        let normx = ((x - this.x) / this.width) - 0.5 ;
+        let normx = ((x - this.x) /  this.width) - 0.5 ;
         let normy = ((y - this.y) / this.height) - 0.5 ;
-
         return ((normx*normx) + (normy*normy)) < 0.25 ;
     }},
 
@@ -274,7 +233,7 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
      * @instance
      * @function
      * @param {object} toCompareThe - object to evaluates.
-     * @param {boolean} [strict=true] - If true the method accept only a toCompare Rectangle, else any object with the x, y, width and height properties (default true).
+     * @param {boolean} [strict=true] - If true the method accept only a toCompare Ellipse, else any object with the x, y, width and height properties.
      * @return {boolean} <code>true</code> if the the specified object is equal with this object.
      */
     equals : { writable : true , value : function( toCompare , strict = true )
@@ -292,6 +251,18 @@ Ellipse.prototype = Object.create( Dimension.prototype ,
         {
             return false ;
         }
+    }},
+
+    /**
+     * Returns the {@link graphics.geom.Rectangle|Rectangle} representation of the ellipse.
+     * @memberof graphics.geom.Ellipse
+     * @instance
+     * @function
+     * @return The {@link graphics.geom.Rectangle|Rectangle} representation of the ellipse.
+     */
+    getBounds : { writable : true , value : function()
+    {
+        return new Rectangle(this.x - this.width, this.y - this.height, this.width, this.height);
     }},
 
     /**
