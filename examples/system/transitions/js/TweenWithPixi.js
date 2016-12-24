@@ -44,6 +44,18 @@ window.onload = function()
 
     stage.click = function( event )
     {
+        trace( '¬ click' ) ;
+        if( event && event.data )
+        {
+            var global = event.data.global ;
+            tween.to = { x : global.x , y : global.y } ;
+            tween.run() ;
+        }
+    };
+
+    stage.tap = function( event )
+    {
+        trace( '¬ tap' ) ;
         if( event && event.data )
         {
             var global = event.data.global ;
