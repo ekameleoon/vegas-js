@@ -17,6 +17,7 @@ import { TileMapRenderOrder } from './TileMapRenderOrder.js' ;
  * @class
  * @constructs
  * @param {Object} [init] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @see {@link http://doc.mapeditor.org/reference/tmx-map-format/|TMX Map Format}
  */
 export function TileMap( init = null )
 {

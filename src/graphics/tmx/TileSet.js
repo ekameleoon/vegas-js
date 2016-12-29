@@ -9,7 +9,7 @@ import { Base } from './Base.js' ;
  * <p>Can contain: properties, tileset, layer, objectgroup, imagelayer</p>
  * </p>
  * @summary A flexible standard implementation to describe a tile based map.
- * @name Map
+ * @name TileSet
  * @memberof graphics.tmx
  * @extends graphics.tmx.Base
  * @class
