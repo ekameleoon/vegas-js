@@ -49,7 +49,7 @@ describe( 'graphics.tmx.Frame' , () =>
     {
         let frame = new Frame({duration:100,tileid:20}) ;
         let clone = frame.clone() ;
-        it( "new Base().clone()" , () =>
+        it( "new Frame().clone()" , () =>
         {
             assert.notEqual( clone , frame ) ;
             assert.instanceOf( clone , Frame ) ;

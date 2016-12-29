@@ -109,9 +109,13 @@ Image.prototype = Object.create( Base.prototype ,
     {
         let object =
         {
-            id          : this.id ,
-            probability : this.probability ,
-            properties  : this.properties
+            id     : this.id ,
+            data   : this.data ,
+            format : this.format ,
+            height : this.height ,
+            source : this.source ,
+            trans  : this.trans ,
+            width  : this.width
         } ;
         return object ;
     }}
