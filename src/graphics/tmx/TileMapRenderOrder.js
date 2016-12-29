@@ -1,8 +1,8 @@
 "use strict" ;
 
 /**
- * The {@link graphics.tmx.TileMapRenderOrder|TileMapRenderOrder} enumeration provides valid values for the <code>tmx.Map.renderorder</code> property.
- * @summary The {@link graphics.tmx.TileMapRenderOrder|TileMapRenderOrder} enumeration provides valid values for the <code>tmx.Map.renderorder</code> property.
+ * The {@link graphics.tmx.TileMapRenderOrder|TileMapRenderOrder} enumeration provides valid values for the <code>tmx.TileMap.renderorder</code> property.
+ * @summary The {@link graphics.tmx.TileMapRenderOrder|TileMapRenderOrder} enumeration provides valid values for the <code>tmx.TileMap.renderorder</code> property.
  * @name TileMapRenderOrder
  * @namespace graphics.tmx.TileMapRenderOrder
  * @memberof graphics.tmx

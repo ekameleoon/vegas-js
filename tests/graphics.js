@@ -16,6 +16,7 @@ import './graphics/ZOrder.js' ;
 
 import './graphics/colors.js' ;
 import './graphics/geom.js' ;
+import './graphics/tmx.js' ;
 
 // import chai from 'chai' ;
 //

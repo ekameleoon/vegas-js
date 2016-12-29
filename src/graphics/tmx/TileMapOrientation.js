@@ -1,8 +1,8 @@
 "use strict" ;
 
 /**
- * The {@link graphics.tmx.TileMapOrientation|TileMapOrientation} enumeration provides valid values for the <code>tmx.Map.orientation</code> property.
- * @summary The {@link graphics.tmx.TileMapOrientation|TileMapOrientation} enumeration provides valid values for the <code>tmx.Map.orientation</code> property.
+ * The {@link graphics.tmx.TileMapOrientation|TileMapOrientation} enumeration provides valid values for the <code>tmx.TileMap.orientation</code> property.
+ * @summary The {@link graphics.tmx.TileMapOrientation|TileMapOrientation} enumeration provides valid values for the <code>tmx.TileMap.orientation</code> property.
  * @name TileMapOrientation
  * @namespace graphics.tmx.TileMapOrientation
  * @memberof graphics.tmx

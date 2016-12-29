@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { Base } from './Base.js' ;
+import { PropertyType } from './PropertyType.js' ;
 
 /**
  * A tile animation frame entity.
@@ -35,7 +36,7 @@ export function Property( init = null )
          * @instance
          * @type string
          */
-        type : { value : 'string' , writable : true } ,
+        type : { value : PropertyType.STRING , writable : true } ,
 
         /**
          * The value of the property.
