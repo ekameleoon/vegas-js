@@ -4,8 +4,8 @@ import { Base } from './Base.js' ;
 import { PropertyType } from './PropertyType.js' ;
 
 /**
- * A tile animation frame entity.
- * @summary A basic terrain definition.
+ * A custom property definition.
+ * @summary A custom property definition.
  * @name Property
  * @memberof graphics.tmx
  * @extends graphics.tmx.Base
