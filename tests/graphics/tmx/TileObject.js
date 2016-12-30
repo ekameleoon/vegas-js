@@ -9,12 +9,28 @@ const assert = chai.assert ;
 
 describe( 'graphics.tmx.TileObject' , () =>
 {
+    let init =
+    {
+        ellipse  : true ,
+        gid      : "test" ,
+        height   : 240 ,
+        id       : "id" ,
+        name     : "object" ,
+        polygon  : "polygon" ,
+        polyline : "polyline" ,
+        rotation : 90 ,
+        type     : "custom" ,
+        visible  : false ,
+        width    : 320 ,
+        x        : 10 ,
+        y        : 20
+    };
+
     describe( '#constructor' , () =>
     {
         describe( 'new TileObject()' , () =>
         {
             let object = new TileObject() ;
-
             it( 'new TileObject() extends Base' , () => { assert.instanceOf( object , Base ); });
             it( 'new TileObject().constructor === TileObject' , () => { assert.equal( object.constructor , TileObject ); });
 
@@ -35,26 +51,8 @@ describe( 'graphics.tmx.TileObject' , () =>
 
         describe( 'new TileObject(init)' , () =>
         {
-            let init =
-            {
-                ellipse  : true ,
-                gid      : "test" ,
-                height   : 240 ,
-                id       : "id" ,
-                name     : "object" ,
-                polygon  : "polygon" ,
-                polyline : "polyline" ,
-                rotation : 90 ,
-                type     : "custom" ,
-                visible  : false ,
-                width    : 320 ,
-                x        : 10 ,
-                y        : 20
-            };
-
             let object = new TileObject(init) ;
-
-            for( var prop in init )
+            for( let prop in init )
             {
                 if( prop in init )
                 {
@@ -66,65 +64,24 @@ describe( 'graphics.tmx.TileObject' , () =>
 
     describe( '#clone' , () =>
     {
-        let init =
-        {
-            ellipse  : true ,
-            gid      : "test" ,
-            height   : 240 ,
-            id       : "id" ,
-            name     : "object" ,
-            polygon  : "polygon" ,
-            polyline : "polyline" ,
-            rotation : 90 ,
-            type     : "custom" ,
-            visible  : false ,
-            width    : 320 ,
-            x        : 10 ,
-            y        : 20
-        };
         let object = new TileObject(init) ;
         let clone = object.clone() ;
-
-        it( "#clone() not equal object" , () =>
-        {
-            assert.notEqual( clone , object ) ;
-        });
-
-        it( "#clone() instanceof TileObject" , () =>
-        {
-            assert.instanceOf( clone , TileObject ) ;
-        });
-
-        for( var prop in init )
+        it( "#clone() not equal object" , () => { assert.notEqual( clone , object ) ; });
+        it( "#clone() instanceof TileObject" , () => { assert.instanceOf( clone , TileObject ) ; });
+        for( let prop in init )
         {
             if( prop in init )
             {
-                it( '#clone().' + prop + ' === "' + init[prop] + '' , () => { assert.equal( clone[prop] , object[prop] ); });
+                it( '#clone().' + prop + ' === "' + object[prop] + '' , () => { assert.equal( clone[prop] , object[prop] ); });
             }
         }
     });
 
     describe( '#setTo' , () =>
     {
-        let init =
-        {
-            ellipse  : true ,
-            gid      : "test" ,
-            height   : 240 ,
-            id       : "id" ,
-            name     : "object" ,
-            polygon  : "polygon" ,
-            polyline : "polyline" ,
-            rotation : 90 ,
-            type     : "custom" ,
-            visible  : false ,
-            width    : 320 ,
-            x        : 10 ,
-            y        : 20
-        };
         let object = new TileObject() ;
         object.setTo(init)  ;
-        for( var prop in init )
+        for( let prop in init )
         {
             if( prop in init )
             {
@@ -135,27 +92,11 @@ describe( 'graphics.tmx.TileObject' , () =>
 
     describe( '#toObject' , () =>
     {
-        let init =
-        {
-            ellipse  : true ,
-            gid      : "test" ,
-            height   : 240 ,
-            id       : "id" ,
-            name     : "object" ,
-            polygon  : "polygon" ,
-            polyline : "polyline" ,
-            rotation : 90 ,
-            type     : "custom" ,
-            visible  : false ,
-            width    : 320 ,
-            x        : 10 ,
-            y        : 20
-        };
         let tileobject = new TileObject(init) ;
         let object     = tileobject.toObject() ;
         it( '#toObject() not equal the current TileObject reference' , () => { assert.notEqual( object , tileobject ) ;}) ;
         it( '#toObject() is a generic object' , () => { assert.instanceOf( object.constructor , Object ) } ) ;
-        for( var prop in init )
+        for( let prop in init )
         {
             if( prop in init )
             {
