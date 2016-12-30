@@ -1,5 +1,6 @@
 "use strict" ;
 
+import { Vector2D } from './Vector2D.js' ;
 import { Point } from './Point.js' ;
 
 /**
@@ -383,7 +384,7 @@ Polygon.prototype = Object.create( Object.prototype ,
      */
     toObject : { writable : true , value : function()
     {
-        return [].concat(this._points) ;
+        return this._points.map( ( element ) => element instanceof Vector2D ? element.toObject() : element );
     }},
 
     /**

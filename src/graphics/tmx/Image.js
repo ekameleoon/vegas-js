@@ -87,18 +87,6 @@ Image.prototype = Object.create( Base.prototype ,
     constructor : { writable : true , value : Image } ,
 
     /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     * @memberof graphics.tmx.Image
-     * @instance
-     * @function
-     */
-    clone : { writable : true , value : function()
-    {
-        return new Image( this.toObject() ) ;
-    }},
-
-    /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
      * @memberof graphics.tmx.Image

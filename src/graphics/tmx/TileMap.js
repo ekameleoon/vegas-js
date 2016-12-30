@@ -149,16 +149,15 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        width : { value : 0 , writable : true } ,
+        width : { value : 0 , writable : true }
+    });
 
-        /**
-         * @private
-         */
+    /**
+     * @private
+     */
+    Object.defineProperties( this ,
+    {
         _orientation : { value : TileMapOrientation.ORTHOGONAL , writable : true } ,
-
-        /**
-         * @private
-         */
         _renderorder : { value : TileMapRenderOrder.RIGHT_DOWN , writable : true }
     });
 
@@ -211,18 +210,6 @@ TileMap.prototype = Object.create( Base.prototype ,
                                 TileMapOrientation.RIGHT_DOWN ;
         }
     },
-
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     * @memberof graphics.tmx.TileMap
-     * @instance
-     * @function
-     */
-    clone : { writable : true , value : function()
-    {
-        return new TileMap( this.toObject() ) ;
-    }},
 
     /**
      * Returns the Object representation of this object.

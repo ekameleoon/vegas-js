@@ -25,7 +25,7 @@ export function Tile( init = null )
          * @instance
          * @type Array
          */
-        animation : { value : null , writable : true } ,
+        animations : { value : null , writable : true } ,
 
         /**
          * The local tile-id of the tile that represents the terrain visually.
@@ -42,6 +42,16 @@ export function Tile( init = null )
          * @instance
          */
         image : { value : null , writable : true } ,
+
+        /**
+         * Contains a list of object group.
+         * @name objectgroups
+         * @memberof graphics.tmx.Tile
+         * @default null
+         * @instance
+         * @type Array
+         */
+        objectgroups : { value : null , writable : true } ,
 
         /**
          * A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9)
@@ -80,18 +90,6 @@ Tile.prototype = Object.create( Base.prototype ,
     constructor : { writable : true , value : Tile } ,
 
     /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     * @memberof graphics.tmx.Tile
-     * @instance
-     * @function
-     */
-    clone : { writable : true , value : function()
-    {
-        return new Tile( this.toObject() ) ;
-    }},
-
-    /**
      * Returns the Object representation of this object.
      * @return the Object representation of this object.
      * @memberof graphics.tmx.Tile
@@ -102,16 +100,29 @@ Tile.prototype = Object.create( Base.prototype ,
     {
         let object =
         {
-            id          : this.id ,
-            image       : this.image ,
-            probability : this.probability ,
-            properties  : this.properties
+            animations   : this.animations ,
+            id           : this.id ,
+            image        : this.image ,
+            objectgroups : this.objectgroups ,
+            probability  : this.probability ,
+            properties   : this.properties ,
+            terrain      : this.terrain
         } ;
+
+        // if( object.animations instanceof Array )
+        // {
+        //
+        // }
 
         if( object.image instanceof Image )
         {
             object.image = object.image.toObject();
         }
+
+        // if( object.objectgroups instanceof Array )
+        // {
+        //
+        // }
 
         return object ;
     }}

@@ -36,7 +36,7 @@ Base.prototype = Object.create( Object.prototype ,
      */
     clone : { writable : true , value : function()
     {
-        return new Base( this.toObject() ) ;
+        return new this.constructor( this.toObject() ) ;
     }},
 
     /**

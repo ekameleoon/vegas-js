@@ -42,7 +42,7 @@ export function Terrain( init = null )
          * @memberof graphics.tmx.Terrain
          * @instance
          */
-        tile : { value : null , writable : true }
+        tile : { value : 0 , writable : true }
     });
 
     Base.call( this , init ) ;
@@ -51,18 +51,6 @@ export function Terrain( init = null )
 Terrain.prototype = Object.create( Base.prototype ,
 {
     constructor : { writable : true , value : Terrain } ,
-
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     * @memberof graphics.tmx.Terrain
-     * @instance
-     * @function
-     */
-    clone : { writable : true , value : function()
-    {
-        return new Terrain( this.toObject() ) ;
-    }},
 
     /**
      * Returns the Object representation of this object.

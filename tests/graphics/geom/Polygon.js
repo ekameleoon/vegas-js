@@ -418,6 +418,7 @@ describe( 'graphics.geom.Polygon' , () =>
             assert.lengthOf( array , points.length ) ;
             for( let i = 0 , len = points.length ; i<len ; i++ )
             {
+                assert.equal( points[i].constructor , Object ) ;
                 assert.equal( array[i].x , points[i].x ) ;
                 assert.equal( array[i].y , points[i].y ) ;
             }

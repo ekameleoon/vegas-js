@@ -12,6 +12,7 @@ import { Tile } from './tmx/Tile.js' ;
 import { TileMap } from './tmx/TileMap.js' ;
 import { TileMapOrientation } from './tmx/TileMapOrientation.js' ;
 import { TileMapRenderOrder } from './tmx/TileMapRenderOrder.js' ;
+import { TileObject } from './tmx/TileObject.js' ;
 import { TileSet } from './tmx/TileSet.js' ;
 
 /**
@@ -34,5 +35,6 @@ export var tmx = Object.assign
     TileMap : TileMap ,
     TileMapOrientation : TileMapOrientation ,
     TileMapRenderOrder : TileMapRenderOrder ,
+    TileObject : TileObject ,
     TileSet : TileSet
 }) ;

@@ -160,17 +160,7 @@ export function TileSet( init = null )
 
 TileSet.prototype = Object.create( Base.prototype ,
 {
-    /**
-     * Returns a shallow copy of the object.
-     * @return a shallow copy of the object.
-     * @memberof graphics.tmx.TileSet
-     * @instance
-     * @function
-     */
-    clone : { writable : true , value : function()
-    {
-        return new TileSet( this.toObject() ) ;
-    }},
+    constructor : { writable : true , value : TileSet } ,
 
     /**
      * Returns the Object representation of this object.
