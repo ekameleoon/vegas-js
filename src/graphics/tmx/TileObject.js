@@ -147,7 +147,10 @@ export function TileObject( init = null )
         y : { value : 0 , writable : true }
     });
 
-    Base.call( this , init ) ;
+    if( init )
+    {
+        this.setTo( init ) ;
+    }
 }
 
 TileObject.prototype = Object.create( Base.prototype ,

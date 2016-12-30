@@ -7,3 +7,4 @@ import './tmx/Property.js' ;
 import './tmx/PropertyType.js' ;
 import './tmx/TileMapOrientation.js' ;
 import './tmx/TileMapRenderOrder.js' ;
+import './tmx/TileObject.js' ;

@@ -13,13 +13,7 @@ export function Base( init = null )
 {
     if( init )
     {
-        for( var prop in init )
-        {
-            if( prop in this )
-            {
-                this[prop] = init[prop];
-            }
-        }
+        this.setTo( init ) ;
     }
 }
 
