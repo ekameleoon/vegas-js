@@ -108,10 +108,7 @@ export function Layer( init = null )
         y : { value : 0 , writable : true }
     });
 
-    if( init )
-    {
-        this.setTo( init ) ;
-    }
+    Base.call( this , init ) ;
 }
 
 Layer.prototype = Object.create( Base.prototype ,

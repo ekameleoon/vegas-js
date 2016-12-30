@@ -54,9 +54,10 @@ describe( 'graphics.tmx.Base' , () =>
     {
         let base = new Base() ;
         let object = base.toObject() ;
-        it( "new Base().toObject() === {}" , () =>
+        it( "new Base().toObject() === { id : null }" , () =>
         {
             assert.instanceOf( object.constructor , Object ) ;
+            assert.isNull( object.id ) ;
         });
     });
 

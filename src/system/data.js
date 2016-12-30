@@ -14,8 +14,9 @@ import { OrderedIterator } from './data/OrderedIterator.js' ;
 import { Property  } from './data/Property.js' ;
 import { Validator } from './data/Validator.js' ;
 
-import { Attribute } from './data/Attribute.js' ;
-import { Method    } from './data/Method.js' ;
+import { Attribute }   from './data/Attribute.js' ;
+import { Method}       from './data/Method.js' ;
+import { ValueObject } from './data/ValueObject.js' ;
 
 import { ArrayIterator } from './data/iterators/ArrayIterator.js' ;
 import { MapIterator }   from './data/iterators/MapIterator.js' ;
@@ -53,7 +54,8 @@ export var data = Object.assign
 
     // classes
     Attribute : Attribute ,
-    Method    : Method ,
+    Method : Method ,
+    ValueObject : ValueObject ,
 
     /**
      * This package contains all {@link system.data.Iterator|Iterator} implementations : {@link system.data.iterators.ArrayIterator|ArrayIterator}, {@link system.data.iterators.MapIterator|MapIterator}, etc.

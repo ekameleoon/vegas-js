@@ -165,7 +165,118 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
 
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
 
 
 
@@ -2924,7 +3035,7 @@ function Identifiable() {
     });
 }
 Identifiable.prototype = Object.create(Object.prototype, {
-    constructor: { value: Identifiable, writable: true }
+    constructor: { writable: true, value: Identifiable }
 });
 
 function isIterator(target) {
@@ -3055,6 +3166,30 @@ Method.prototype.constructor = Method;
 Method.prototype.toString = function () {
   return "[Method]";
 };
+
+function ValueObject() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Identifiable.call(this);
+    if (init) {
+        this.setTo(init);
+    }
+}
+ValueObject.prototype = Object.create(Identifiable.prototype, {
+    constructor: { writable: true, value: ValueObject },
+    setTo: { writable: true, value: function value(init) {
+            if (init) {
+                for (var prop in init) {
+                    if (prop in this) {
+                        this[prop] = init[prop];
+                    }
+                }
+            }
+            return this;
+        } },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
+});
 
 function ArrayIterator(array) {
     if (!(array instanceof Array)) {
@@ -3346,6 +3481,7 @@ var data = Object.assign({
   Validator: Validator,
   Attribute: Attribute,
   Method: Method,
+  ValueObject: ValueObject,
   iterators: {
     ArrayIterator: ArrayIterator,
     MapIterator: MapIterator
@@ -12528,7 +12664,9 @@ Polygon.prototype = Object.create(Object.prototype, {
             return output;
         } },
     toObject: { writable: true, value: function value() {
-            return [].concat(this._points);
+            return this._points.map(function (element) {
+                return element instanceof Vector2D ? element.toObject() : element;
+            });
         } },
     toString: { writable: true, value: function value() {
             return "[Polygon]";

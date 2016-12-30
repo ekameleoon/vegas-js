@@ -39,5 +39,5 @@ export function Identifiable()
 
 Identifiable.prototype = Object.create( Object.prototype ,
 {
-    constructor : { value :  Identifiable , writable : true }
+    constructor : { writable : true , value :  Identifiable }
 }) ;

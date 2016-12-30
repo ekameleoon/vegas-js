@@ -54,7 +54,7 @@ export function TileObject( init = null )
          * @memberof graphics.tmx.TileObject
          * @instance
          */
-        id : { value : null , writable : true } ,
+        // id : { value : null , writable : true } ,
 
         /**
          * The name of the object. An arbitrary string.
@@ -147,10 +147,7 @@ export function TileObject( init = null )
         y : { value : 0 , writable : true }
     });
 
-    if( init )
-    {
-        this.setTo( init ) ;
-    }
+    Base.call( this , init ) ;
 }
 
 TileObject.prototype = Object.create( Base.prototype ,

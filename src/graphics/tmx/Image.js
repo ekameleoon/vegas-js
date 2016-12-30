@@ -43,15 +43,6 @@ export function Image( init = null )
         height : { value : 0 , writable : true } ,
 
         /**
-         * Used by some versions of Tiled Java. Deprecated and unsupported by Tiled Qt.
-         * @name id
-         * @memberof graphics.tmx.Image
-         * @instance
-         * @deprecated
-         */
-        id : { value : null , writable : true } ,
-
-        /**
          * The reference to the tileset image file (Tiled supports most common image formats).
          * @name source
          * @memberof graphics.tmx.Image

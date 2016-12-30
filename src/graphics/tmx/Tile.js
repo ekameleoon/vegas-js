@@ -33,7 +33,7 @@ export function Tile( init = null )
          * @memberof graphics.tmx.Tile
          * @instance
          */
-        id : { value : null , writable : true } ,
+        // id : { value : null , writable : true } ,
 
         /**
          * An tmx image information object.
