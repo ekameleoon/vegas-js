@@ -5,10 +5,12 @@ import '../polyfill/Object.js' ;
 import { Base } from './tmx/Base.js' ;
 import { Frame } from './tmx/Frame.js' ;
 import { Image } from './tmx/Image.js' ;
+import { Layer } from './tmx/Layer.js' ;
 import { Property } from './tmx/Property.js' ;
 import { PropertyType } from './tmx/PropertyType.js' ;
 import { Terrain } from './tmx/Terrain.js' ;
 import { Tile } from './tmx/Tile.js' ;
+import { TileLayer } from './tmx/TileLayer.js' ;
 import { TileMap } from './tmx/TileMap.js' ;
 import { TileMapOrientation } from './tmx/TileMapOrientation.js' ;
 import { TileMapRenderOrder } from './tmx/TileMapRenderOrder.js' ;
@@ -28,10 +30,12 @@ export var tmx = Object.assign
     Base : Base ,
     Frame : Frame ,
     Image : Image ,
+    Layer : Layer ,
     Property : Property ,
     PropertyType : PropertyType ,
     Terrain : Terrain ,
     Tile : Tile ,
+    TileLayer : TileLayer ,
     TileMap : TileMap ,
     TileMapOrientation : TileMapOrientation ,
     TileMapRenderOrder : TileMapRenderOrder ,

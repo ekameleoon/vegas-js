@@ -226,6 +226,7 @@ TileMap.prototype = Object.create( Base.prototype ,
             height          : this.height ,
             hexsidelength   : this.hexsidelength ,
             nextobjectid    : this.nextobjectid ,
+            properties      : this.properties ,
             staggeraxis     : this.staggeraxis ,
             staggerindex    : this.staggerindex ,
             tileheight      : this.tileheight ,
@@ -235,6 +236,9 @@ TileMap.prototype = Object.create( Base.prototype ,
             version         : this.version ,
             width           : this.width
         } ;
+
+        // map properties
+
         return object ;
     }}
 });
