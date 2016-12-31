@@ -2,6 +2,7 @@
 
 import { Base } from './Base.js' ;
 import { Point } from '../geom/Point.js' ;
+import { Property } from './Property.js' ;
 
 /**
  * A main layer definition.
@@ -172,7 +173,13 @@ Layer.prototype = Object.create( Base.prototype ,
             y          : this.y
         } ;
 
-        // map properties
+        if( (object.properties instanceof Array) && (object.properties.length > 0) )
+        {
+            object.properties = object.properties.map( ( element ) =>
+            {
+                return element instanceof Property ? element.toObject() : element ;
+            });
+        }
 
         return object ;
     }}
