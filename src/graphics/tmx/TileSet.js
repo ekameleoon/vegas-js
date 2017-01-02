@@ -1,7 +1,6 @@
 "use strict" ;
 
 import { Base } from './Base.js' ;
-import { Property } from './Property.js' ;
 
 /**
  * A flexible standard implementation to describe a tile based map.
@@ -180,6 +179,7 @@ TileSet.prototype = Object.create( Base.prototype ,
             image        : this.image ,
             margin       : this.margin ,
             name         : this.name ,
+            properties   : this.properties ,
             source       : this.source ,
             spacing      : this.spacing ,
             terraintypes : this.terraintypes ,
@@ -193,7 +193,7 @@ TileSet.prototype = Object.create( Base.prototype ,
         {
             object.properties = object.properties.map( ( element ) =>
             {
-                return element instanceof Property ? element.toObject() : element ;
+                return element instanceof Base ? element.toObject() : element ;
             });
         }
 

@@ -33,7 +33,7 @@ export function Tile( init = null )
          * @memberof graphics.tmx.Tile
          * @instance
          */
-        // id : { value : null , writable : true } ,
+        id : { enumerable : true , value : null , writable : true } ,
 
         /**
          * An tmx image information object.
@@ -109,20 +109,26 @@ Tile.prototype = Object.create( Base.prototype ,
             terrain      : this.terrain
         } ;
 
-        // if( object.animations instanceof Array )
-        // {
-        //
-        // }
+        if( (object.animations instanceof Array) && (object.animations.length > 0) )
+        {
+            object.animations = object.animations.map( ( element ) =>
+            {
+                return element instanceof Base ? element.toObject() : element ;
+            });
+        }
 
         if( object.image instanceof Image )
         {
             object.image = object.image.toObject();
         }
 
-        // if( object.objectgroups instanceof Array )
-        // {
-        //
-        // }
+        if( (object.objectgroups instanceof Array) && (object.objectgroups.length > 0) )
+        {
+            object.objectgroups = object.objectgroups.map( ( element ) =>
+            {
+                return element instanceof Base ? element.toObject() : element ;
+            });
+        }
 
         return object ;
     }}

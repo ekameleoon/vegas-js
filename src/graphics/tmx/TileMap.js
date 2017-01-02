@@ -31,7 +31,7 @@ export function TileMap( init = null )
          * @instance
          * @type string
          */
-        backgroundcolor : { value : null , writable : true } ,
+        backgroundcolor : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The TMX height in tiles.
@@ -41,7 +41,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        height : { value : 0 , writable : true } ,
+        height : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * Only for hexagonal maps. Determines the width or height (depending on the staggered axis) of the tile's edge, in pixels.
@@ -51,7 +51,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        hexsidelength : { value : 0 , writable : true } ,
+        hexsidelength : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * An array of objects with layers data. Structure of each object can vary, basing on layer type.
@@ -60,8 +60,9 @@ export function TileMap( init = null )
          * @default null
          * @instance
          * @type Array
+         * @see graphics.tmx.Layer
          */
-        layers : { value : null , writable : true } ,
+        layers : { enumerable : true , value : null , writable : true } ,
 
         /**
          * Stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed. (since 0.11)
@@ -69,7 +70,7 @@ export function TileMap( init = null )
          * @memberof graphics.tmx.TileMap
          * @instance
          */
-        nextobjectid : { value : null , writable : true } ,
+        nextobjectid : { enumerable : true , value : null , writable : true } ,
 
         /**
          * An array of all user-defined properties of map.
@@ -79,7 +80,7 @@ export function TileMap( init = null )
          * @instance
          * @type Array
          */
-        properties : { value : null , writable : true } ,
+        properties : { enumerable : true , value : null , writable : true } ,
 
         /**
          * For staggered and hexagonal maps, determines which axis (<code>"x"</code> or <code>"y"</code>) is staggered. (since 0.11)
@@ -89,7 +90,7 @@ export function TileMap( init = null )
          * @instance
          * @type string
          */
-        staggeraxis : { value : null , writable : true } ,
+        staggeraxis : { enumerable : true , value : null , writable : true } ,
 
         /**
          * For staggered and hexagonal maps, determines whether the <code>"even"</code> or <code>"odd"</code> indexes along the staggered axis are shifted. (since 0.11)
@@ -99,7 +100,7 @@ export function TileMap( init = null )
          * @instance
          * @type string
          */
-        staggerindex : { value : null , writable : true } ,
+        staggerindex : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The TMX height of a tile.
@@ -109,7 +110,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        tileheight : { value : 0 , writable : true } ,
+        tileheight : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * An array of objects with description of used tiles in the map.
@@ -119,7 +120,7 @@ export function TileMap( init = null )
          * @instance
          * @type Array
          */
-        tilesets : { value : null , writable : true } ,
+        tilesets : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The TMX width of a tile.
@@ -129,7 +130,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        tilewidth : { value : 0 , writable : true } ,
+        tilewidth : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * The TMX format version, generally 1.0.
@@ -139,7 +140,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        version : { value : 1  , writable : true } ,
+        version : { enumerable : true , value : 1  , writable : true } ,
 
         /**
          * The TMX width in tiles.
@@ -149,7 +150,7 @@ export function TileMap( init = null )
          * @instance
          * @type number
          */
-        width : { value : 0 , writable : true }
+        width : { enumerable : true , value : 0 , writable : true }
     });
 
     /**
@@ -176,6 +177,7 @@ TileMap.prototype = Object.create( Base.prototype ,
      */
     orientation :
     {
+        enumerable : true ,
         get : function() { return this._orientation ; } ,
         set : function( value )
         {
@@ -199,6 +201,7 @@ TileMap.prototype = Object.create( Base.prototype ,
      */
     renderorder :
     {
+        enumerable : true ,
         get : function() { return this._renderorder ; } ,
         set : function( value )
         {
@@ -225,11 +228,13 @@ TileMap.prototype = Object.create( Base.prototype ,
             backgroundcolor : this.backgroundcolor ,
             height          : this.height ,
             hexsidelength   : this.hexsidelength ,
+            layers          : this.layers ,
             nextobjectid    : this.nextobjectid ,
             properties      : this.properties ,
             staggeraxis     : this.staggeraxis ,
             staggerindex    : this.staggerindex ,
             tileheight      : this.tileheight ,
+            tilesets        : this.tilesets ,
             tilewidth       : this.tilewidth ,
             orientation     : this._orientation ,
             renderorder     : this._renderorder ,
@@ -237,7 +242,29 @@ TileMap.prototype = Object.create( Base.prototype ,
             width           : this.width
         } ;
 
-        // map properties
+        if( (object.layers instanceof Array) && (object.layers.length > 0) )
+        {
+            object.layers = object.layers.map( ( element ) =>
+            {
+                return element instanceof Base ? element.toObject() : element ;
+            });
+        }
+
+        if( (object.properties instanceof Array) && (object.properties.length > 0) )
+        {
+            object.properties = object.properties.map( ( element ) =>
+            {
+                return element instanceof Base ? element.toObject() : element ;
+            });
+        }
+
+        if( (object.tilesets instanceof Array) && (object.tilesets.length > 0) )
+        {
+            object.tilesets = object.tilesets.map( ( element ) =>
+            {
+                return element instanceof Base ? element.toObject() : element ;
+            });
+        }
 
         return object ;
     }}

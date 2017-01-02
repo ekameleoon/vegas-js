@@ -69,6 +69,7 @@ ObjectGroup.prototype = Object.create( Layer.prototype ,
 
         object.color     = this.color ;
         object.draworder = this.draworder ;
+        object.objects   = this.objects ;
 
         if( (object.objects instanceof Array) && (object.objects.length > 0) )
         {
