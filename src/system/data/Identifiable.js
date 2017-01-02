@@ -33,7 +33,7 @@ export function Identifiable()
          * @memberof system.data.Identifiable
          * @instance
          */
-        id : { value : null , enumerable : true , writable : true }
+        id : { value : null , writable : true }
     }) ;
 }
 

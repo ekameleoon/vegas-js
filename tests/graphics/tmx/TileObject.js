@@ -9,6 +9,23 @@ const assert = chai.assert ;
 
 describe( 'graphics.tmx.TileObject' , () =>
 {
+    let defaultValues =
+    {
+        ellipse    : false ,
+        gid        : null ,
+        height     : 0 ,
+        id         : null ,
+        name       : null ,
+        polygon    : null ,
+        polyline   : null ,
+        rotation   : 0 ,
+        type       : null,
+        visible    : true ,
+        width      : 0 ,
+        x          : 0 ,
+        y          : 0
+    };
+
     let init =
     {
         ellipse  : true ,
@@ -33,20 +50,16 @@ describe( 'graphics.tmx.TileObject' , () =>
             let object = new TileObject() ;
             it( 'new TileObject() extends Base' , () => { assert.instanceOf( object , Base ); });
             it( 'new TileObject().constructor === TileObject' , () => { assert.equal( object.constructor , TileObject ); });
-
-            it( '#ellipse === false' , () => { assert.isFalse( object.ellipse ); });
-            it( '#gid === null'      , () => { assert.isNull( object.gid ); });
-            it( '#height === 0'      , () => { assert.equal( object.height , 0 ); });
-            it( '#id === null'       , () => { assert.isNull( object.id ); });
-            it( '#name === null'     , () => { assert.isNull( object.name ); });
-            it( '#polygon === null'  , () => { assert.isNull( object.polygon ); });
-            it( '#polyline === null' , () => { assert.isNull( object.polyline ); });
-            it( '#rotation === 0'    , () => { assert.equal( object.rotation , 0 ); });
-            it( '#type === null'     , () => { assert.isNull( object.type ); });
-            it( '#visible === false' , () => { assert.isTrue( object.visible ); });
-            it( '#width === 0'       , () => { assert.equal( object.width , 0 ); });
-            it( '#x === 0'           , () => { assert.equal( object.x , 0 ); });
-            it( '#y === 0'           , () => { assert.equal( object.y , 0 ); });
+            for( let prop in defaultValues )
+            {
+                if( prop in defaultValues )
+                {
+                    it( 'new Layer(init).' + prop + ' === ' + defaultValues[prop] , () =>
+                    {
+                        assert.equal( object[prop] , defaultValues[prop] );
+                    });
+                }
+            }
         });
 
         describe( 'new TileObject(init)' , () =>
@@ -56,7 +69,10 @@ describe( 'graphics.tmx.TileObject' , () =>
             {
                 if( prop in init )
                 {
-                    it( '#' + prop + ' === "' + init[prop] + '' , () => { assert.equal( object[prop] , init[prop] ); });
+                    it( '#' + prop + ' === "' + init[prop] + '' , () =>
+                    {
+                        assert.equal( object[prop] , init[prop] );
+                    });
                 }
             }
         });
@@ -72,7 +88,10 @@ describe( 'graphics.tmx.TileObject' , () =>
         {
             if( prop in init )
             {
-                it( '#clone().' + prop + ' === "' + object[prop] + '' , () => { assert.equal( clone[prop] , object[prop] ); });
+                it( '#clone().' + prop + ' === "' + object[prop] + '' , () =>
+                {
+                    assert.equal( clone[prop] , object[prop] );
+                });
             }
         }
     });
@@ -85,7 +104,10 @@ describe( 'graphics.tmx.TileObject' , () =>
         {
             if( prop in init )
             {
-                it( '#' + prop + ' === "' + init[prop] + '' , () => { assert.equal( object[prop] , init[prop] ); });
+                it( '#' + prop + ' === "' + init[prop] + '' , () =>
+                {
+                    assert.equal( object[prop] , init[prop] );
+                });
             }
         }
     });
@@ -100,13 +122,19 @@ describe( 'graphics.tmx.TileObject' , () =>
         {
             if( prop in init )
             {
-                it( '#toObject().' + prop + ' === "' + init[prop] + '' , () => { assert.equal( object[prop] , init[prop] ); });
+                it( '#toObject().' + prop + ' === "' + init[prop] + '' , () =>
+                {
+                    assert.equal( object[prop] , init[prop] );
+                });
             }
         }
     });
 
     describe( '#toString()' , () =>
     {
-        it('#toString() === "[TileObject]"', () => { assert.equal( new TileObject().toString() , "[TileObject]" ); });
+        it('#toString() === "[TileObject]"', () =>
+        {
+            assert.equal( new TileObject().toString() , "[TileObject]" );
+        });
     });
 });

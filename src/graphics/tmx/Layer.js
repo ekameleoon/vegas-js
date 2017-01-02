@@ -26,7 +26,7 @@ export function Layer( init = null )
          * @type number
          * @instance
          */
-        height : { value : 0 , writable : true } ,
+        height : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * The name of the object. An arbitrary string.
@@ -36,7 +36,7 @@ export function Layer( init = null )
          * @type string
          * @default null
          */
-        name : { value : null , writable : true } ,
+        name : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The rendering offset for this layer in pixels. Defaults to new Point(0,0).
@@ -56,7 +56,7 @@ export function Layer( init = null )
          * @type number
          * @default 0
          */
-        opacity : { value : 1 , writable : true } ,
+        opacity : { enumerable : true , value : 1 , writable : true } ,
 
         /**
          * An array of all user-defined properties of map.
@@ -66,7 +66,7 @@ export function Layer( init = null )
          * @instance
          * @type Array
          */
-        properties : { value : null , writable : true } ,
+        properties : { enumerable : true , value : null , writable : true } ,
 
         /**
          * Whether the layer is shown (<code>true</code>) or hidden (<code>false</code>). Defaults to <code>true</code>. (since 0.9)
@@ -76,7 +76,7 @@ export function Layer( init = null )
          * @type boolean
          * @instance
          */
-        visible : { value : true , writable : true } ,
+        visible : { enumerable : true , value : true , writable : true } ,
 
         /**
          * The width of the layer, in tiles.
@@ -86,7 +86,7 @@ export function Layer( init = null )
          * @type number
          * @instance
          */
-        width : { value : 0 , writable : true } ,
+        width : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * The x coordinate of the layer in tiles. Defaults to 0 and can no longer be changed in Tiled Qt.
@@ -96,7 +96,7 @@ export function Layer( init = null )
          * @type number
          * @default 0
          */
-        x : { value : 0 , writable : true } ,
+        x : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * The y coordinate of the layer in tiles. Defaults to 0 and can no longer be changed in Tiled Qt.
@@ -106,7 +106,7 @@ export function Layer( init = null )
          * @type number
          * @default 0
          */
-        y : { value : 0 , writable : true }
+        y : { enumerable : true , value : 0 , writable : true }
     });
 
     Base.call( this , init ) ;
@@ -126,6 +126,7 @@ Layer.prototype = Object.create( Base.prototype ,
      */
     offsetx :
     {
+        enumerable : true ,
         get : function() { return this.offset.x ; } ,
         set : function( value )
         {
@@ -143,6 +144,7 @@ Layer.prototype = Object.create( Base.prototype ,
      */
     offsety :
     {
+        enumerable : true ,
         get : function() { return this.offset.y ; } ,
         set : function( value )
         {

@@ -3031,7 +3031,7 @@ function isIdentifiable(target) {
 }
 function Identifiable() {
     Object.defineProperties(this, {
-        id: { value: null, enumerable: true, writable: true }
+        id: { value: null, writable: true }
     });
 }
 Identifiable.prototype = Object.create(Object.prototype, {

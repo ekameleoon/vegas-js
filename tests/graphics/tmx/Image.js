@@ -8,6 +8,16 @@ const assert = chai.assert ;
 
 describe( 'graphics.tmx.Image' , () =>
 {
+    let init =
+    {
+        id     : 'image',
+        format : 'jpeg',
+        height : 240,
+        width  : 320,
+        trans  : '#FF0000' ,
+        source : 'source'
+    };
+
     describe( '#constructor' , () =>
     {
         describe( 'new Image()' , () =>
@@ -25,15 +35,6 @@ describe( 'graphics.tmx.Image' , () =>
 
         describe( 'new Image(init)' , () =>
         {
-            let init =
-            {
-                id     : 'image',
-                format : 'jpeg',
-                height : 240,
-                width  : 320,
-                trans  : '#FF0000' ,
-                source : 'source'
-            };
             let image = new Image( init ) ;
             it( 'new Image(init) extends Base' , () =>
             {
@@ -54,15 +55,6 @@ describe( 'graphics.tmx.Image' , () =>
 
     describe( '#clone' , () =>
     {
-        let init =
-        {
-            id     : 'image',
-            format : 'jpeg',
-            height : 240,
-            width  : 320,
-            trans  : '#FF0000' ,
-            source : 'source'
-        };
         let image = new Image(init) ;
         let clone = image.clone() ;
         it( "new Image().clone() not equal image" , () =>
@@ -88,15 +80,6 @@ describe( 'graphics.tmx.Image' , () =>
     {
         describe( 'new Image().setTo(init)' , () =>
         {
-            let init =
-            {
-                id     : 'image',
-                format : 'jpeg',
-                height : 240,
-                width  : 320,
-                trans  : '#FF0000' ,
-                source : 'source'
-            };
             let image = new Image() ;
             image.setTo(init)  ;
             it( image + ', id     === "image"', () => { assert.equal( image.id , 'image' ); });
@@ -110,15 +93,6 @@ describe( 'graphics.tmx.Image' , () =>
 
     describe( '#toObject' , () =>
     {
-        let init =
-        {
-            id     : 'image',
-            format : 'jpeg',
-            height : 240,
-            width  : 320,
-            trans  : '#FF0000' ,
-            source : 'source'
-        };
         let image = new Image(init) ;
         let object = image.toObject() ;
         it( "new Base(init).toObject() === init" , () =>

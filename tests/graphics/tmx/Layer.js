@@ -44,8 +44,7 @@ describe( 'graphics.tmx.Layer' , () =>
             let layer = new Layer() ;
             it( 'new Layer() extends Base' , () => { assert.instanceOf( layer , Base ); });
             it( 'new Layer().constructor === Layer' , () => { assert.equal( layer.constructor , Layer ); });
-
-            for( var prop in defaultValues )
+            for( let prop in defaultValues )
             {
                 if( prop in defaultValues )
                 {
@@ -60,7 +59,7 @@ describe( 'graphics.tmx.Layer' , () =>
         describe( 'new Layer(init)' , () =>
         {
             let layer = new Layer(init) ;
-            for( var prop in init )
+            for( let prop in init )
             {
                 if( prop in init )
                 {
@@ -79,7 +78,7 @@ describe( 'graphics.tmx.Layer' , () =>
         let clone = layer.clone() ;
         it( "#clone() not equal" , () => { assert.notEqual( clone , layer ) ; });
         it( "#clone() instanceOf Layer" , () => { assert.instanceOf( clone , Layer ) ; });
-        for( var prop in init )
+        for( let prop in init )
         {
             if( prop in init )
             {
@@ -95,7 +94,7 @@ describe( 'graphics.tmx.Layer' , () =>
     {
         let layer = new Layer() ;
         layer.setTo(init)  ;
-        for( var prop in init )
+        for( let prop in init )
         {
             if( prop in init )
             {
@@ -113,7 +112,7 @@ describe( 'graphics.tmx.Layer' , () =>
         let object = layer.toObject() ;
         it( 'new Layer(init).toObject() not equals' , () => { assert.notEqual( object , layer ) ; });
         it( 'new Layer(init).toObject() is a generic object' , () => { assert.instanceOf( object.constructor , Object ) ; });
-        for( var prop in init )
+        for( let prop in init )
         {
             if( prop in init )
             {
@@ -127,7 +126,7 @@ describe( 'graphics.tmx.Layer' , () =>
 
     describe( '#toString()' , () =>
     {
-        it('new Layer().toString() === "[Property]"', () =>
+        it('new Layer().toString() === "[Layer]"', () =>
         {
             assert.equal( new Layer().toString() , "[Layer]" );
         });

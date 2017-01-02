@@ -23,7 +23,7 @@ export function ValueObject( init = null )
 
 ValueObject.prototype = Object.create( Identifiable.prototype ,
 {
-    constructor : { writable : true , value :  ValueObject } ,
+    constructor : { writable : true , value : ValueObject } ,
 
     /**
      * Sets the members of the object to the specified values.

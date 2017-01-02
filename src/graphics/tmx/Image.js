@@ -22,7 +22,7 @@ export function Image( init = null )
          * @memberof graphics.tmx.Image
          * @instance
          */
-        data : { value : null , writable : true }  ,
+        data : { enumerable : true , value : null , writable : true }  ,
 
         /**
          * Used for embedded images, in combination with a data child element. Valid values are file extensions like png, gif, jpg, bmp, etc. (since 0.9)
@@ -31,7 +31,7 @@ export function Image( init = null )
          * @instance
          * @type string
          */
-        format : { value : null , writable : true } ,
+        format : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The image height in pixels (optional).
@@ -40,7 +40,7 @@ export function Image( init = null )
          * @instance
          * @type number
          */
-        height : { value : 0 , writable : true } ,
+        height : { enumerable : true , value : 0 , writable : true } ,
 
         /**
          * The reference to the tileset image file (Tiled supports most common image formats).
@@ -49,7 +49,7 @@ export function Image( init = null )
          * @instance
          * @type string
          */
-        source : { value : null , writable : true } ,
+        source : { enumerable : true , value : null , writable : true } ,
 
         /**
          * Defines a specific color that is treated as transparent (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this value is written out without a # but this is planned to change.
@@ -58,7 +58,7 @@ export function Image( init = null )
          * @instance
          * @type string
          */
-        trans : { value : null , writable : true } ,
+        trans : { enumerable : true , value : null , writable : true } ,
 
         /**
          * The image width in pixels (optional, used for tile index correction when the image changes)
@@ -67,7 +67,7 @@ export function Image( init = null )
          * @instance
          * @type  number
          */
-        width : { value : 0 , writable : true }
+        width : { enumerable : true , value : 0 , writable : true }
     });
 
     Base.call( this , init ) ;

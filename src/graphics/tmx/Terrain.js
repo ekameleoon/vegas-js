@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { Base } from './Base.js' ;
+import { Property } from './Property.js' ;
 
 /**
  * A basic terrain definition.
@@ -67,6 +68,15 @@ Terrain.prototype = Object.create( Base.prototype ,
             properties : this.properties ,
             tile : this.tile
         } ;
+
+        if( (object.properties instanceof Array) && (object.properties.length > 0) )
+        {
+            object.properties = object.properties.map( ( element ) =>
+            {
+                return element instanceof Property ? element.toObject() : element ;
+            });
+        }
+
         return object ;
     }}
 });

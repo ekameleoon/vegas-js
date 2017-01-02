@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { Base } from './Base.js' ;
+import { Property } from './Property.js' ;
 
 /**
  * A flexible standard implementation to describe a tile based map.
@@ -101,6 +102,7 @@ export function TileSet( init = null )
          * @default null
          * @instance
          * @type Array
+         * @see graphics.tmx.Terrain
          */
         terraintypes : { value : null , writable : true } ,
 
@@ -186,6 +188,15 @@ TileSet.prototype = Object.create( Base.prototype ,
             tileoffset   : this.tileoffset ,
             tilewidth    : this.tilewidth ,
         } ;
+
+        if( (object.properties instanceof Array) && (object.properties.length > 0) )
+        {
+            object.properties = object.properties.map( ( element ) =>
+            {
+                return element instanceof Property ? element.toObject() : element ;
+            });
+        }
+
         return object ;
     }}
 });
