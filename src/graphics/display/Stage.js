@@ -359,8 +359,8 @@ Stage.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * Notify when the stage is resized.
-     * @name notifyResized
+     * Notify when the stage change state to fullscreen or normal.
+     * @name notifyFullScreen
      * @memberof graphics.display.Stage
      * @function
      * @instance
@@ -372,7 +372,7 @@ Stage.prototype = Object.create( Object.prototype ,
 
     /**
      * Notify when the orientation is changed.
-     * @name notifyResized
+     * @name notifyOrientationChange
      * @memberof graphics.display.Stage
      * @function
      * @instance
