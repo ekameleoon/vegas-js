@@ -66,7 +66,7 @@ Accelerometer.prototype = Object.create( Object.prototype ,
      */
     __initialize__ : { writable : true , value : function()
     {
-        if( !!window.DeviceMotionEvent )
+        if( window.DeviceMotionEvent !== undefined )
         {
             this._isSupported = true ;
         }
