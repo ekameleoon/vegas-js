@@ -11081,7 +11081,7 @@ Rectangle.prototype = Object.create(Dimension.prototype, {
     },
     top: {
         get: function get() {
-            return this.x + this.width;
+            return this.y;
         },
         set: function set(value) {
             this.height = this.height + (this.y - value);

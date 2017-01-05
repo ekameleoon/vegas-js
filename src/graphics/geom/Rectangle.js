@@ -204,7 +204,7 @@ Rectangle.prototype = Object.create( Dimension.prototype ,
      */
     top :
     {
-        get : function() { return this.x + this.width ; } ,
+        get : function() { return this.y ; } ,
         set : function( value )
         {
             this.height = this.height + (this.y - value);
