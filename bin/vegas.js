@@ -12913,8 +12913,11 @@ Object.defineProperties(Browser, {
 
 function Accelerometer() {
     Object.defineProperties(this, {
+        timer: { value: new Timer() },
         update: { value: new Signal() },
-        _isSupported: { writable: true, value: false }
+        _event: { writable: true, value: null },
+        _isSupported: { writable: true, value: false },
+        _interval: { writable: true, value: 20 }
     });
     this.__initialize__();
 }
@@ -12923,9 +12926,15 @@ Accelerometer.prototype = Object.create(Object.prototype, {
     isSupported: { get: function get() {
             return this._isSupported;
         } },
-    notifyUpdate: { writable: true, value: function value(event) {
-            if (this._isSupported && this.update.connected()) {
-                this.update.emit(event, this);
+    notifyUpdate: { writable: true, value: function value() {
+            if (this._isSupported && this.update.connected() && this._event !== null) {
+                this.update.emit(this._event, this);
+            }
+        } },
+    setRequestedUpdateInterval: { set: function set(value) {
+            this._interval = value;
+            if (this._isSupported === true) {
+                this.__launchTimer__();
             }
         } },
     __initialize__: { writable: true, value: function value() {
@@ -12933,8 +12942,18 @@ Accelerometer.prototype = Object.create(Object.prototype, {
                 this._isSupported = true;
             }
             if (this._isSupported === true) {
-                window.addEventListener("devicemotion", this.notifyUpdate.bind(this), false);
+                window.addEventListener("devicemotion", this.__update__.bind(this), false);
+                this.__launchTimer__();
             }
+        } },
+    __launchTimer__: { writable: true, value: function value() {
+            this.timer.stop();
+            this.timer.delay = this._interval;
+            this.timer.progressIt.connect(this.notifyUpdate.bind(this));
+            this.timer.run();
+        } },
+    __update__: { writable: true, value: function value(event) {
+            this._event = event;
         } }
 });
 
