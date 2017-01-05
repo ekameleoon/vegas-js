@@ -165,118 +165,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -1147,12 +1036,12 @@ var littleEndian = isLittleEndian();
 
 var max = 0xFF;
 var fromARGB = function fromARGB(a, r, g, b) {
-  r = Math.min(Math.max(r, 0), max);
-  g = Math.min(Math.max(g, 0), max);
-  b = Math.min(Math.max(b, 0), max);
-  a = isNaN(a) ? 0 : a;
-  a = 0xFF * Math.max(Math.min(a, 1), 0);
-  return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+    r = Math.min(Math.max(r, 0), max);
+    g = Math.min(Math.max(g, 0), max);
+    b = Math.min(Math.max(b, 0), max);
+    a = isNaN(a) ? 0 : a;
+    a = 0xFF * Math.max(Math.min(a, 1), 0);
+    return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
 };
 
 var getAlpha = function getAlpha(color) {
@@ -1302,12 +1191,12 @@ var yesterday = function yesterday() {
  * @memberof core
  */
 var date = Object.assign({
-  ONE_DAY_MS: ONE_DAY_MS,
-  after: after,
-  before: before,
-  daysInMonth: daysInMonth,
-  leapYear: leapYear,
-  yesterday: yesterday
+    ONE_DAY_MS: ONE_DAY_MS,
+    after: after,
+    before: before,
+    daysInMonth: daysInMonth,
+    leapYear: leapYear,
+    yesterday: yesterday
 });
 
 var backIn = function backIn(t, b, c, d) {
@@ -1671,12 +1560,12 @@ var atanH = function atanH(x) {
 var DEG2RAD = Math.PI / 180;
 
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
 };
 
 var clamp = function clamp(value, min, max) {
@@ -1794,12 +1683,12 @@ var fibonacci = function fibonacci(value) {
 };
 
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
 };
 
 function fixAngle(angle) {
@@ -2989,10 +2878,10 @@ Enum.prototype.valueOf = function () {
 };
 
 function isEquatable(target) {
-  if (target) {
-    return target.equals && target.equals instanceof Function || target instanceof Equatable;
-  }
-  return false;
+    if (target) {
+        return target.equals && target.equals instanceof Function || target instanceof Equatable;
+    }
+    return false;
 }
 function Equatable() {}
 Equatable.prototype = Object.create(Object.prototype);
@@ -3012,10 +2901,10 @@ Evaluable.prototype.constructor = Evaluable;
 Evaluable.prototype.eval = function (value) {};
 
 function isFormattable(target) {
-  if (target) {
-    return target instanceof Formattable || 'format' in target && target.format instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Formattable || 'format' in target && target.format instanceof Function;
+    }
+    return false;
 }
 function Formattable() {}
 Formattable.prototype = Object.create(Object.prototype);
@@ -3469,26 +3358,26 @@ ArrayMap.prototype.values = function () {
  * @memberof system
  */
 var data = Object.assign({
-  isIdentifiable: isIdentifiable,
-  isIterator: isIterator,
-  isOrderedIterator: isOrderedIterator,
-  isValidator: isValidator,
-  Identifiable: Identifiable,
-  Iterator: Iterator,
-  KeyValuePair: KeyValuePair,
-  OrderedIterator: OrderedIterator,
-  Property: Property,
-  Validator: Validator,
-  Attribute: Attribute,
-  Method: Method,
-  ValueObject: ValueObject,
-  iterators: {
-    ArrayIterator: ArrayIterator,
-    MapIterator: MapIterator
-  },
-  maps: {
-    ArrayMap: ArrayMap
-  }
+    isIdentifiable: isIdentifiable,
+    isIterator: isIterator,
+    isOrderedIterator: isOrderedIterator,
+    isValidator: isValidator,
+    Identifiable: Identifiable,
+    Iterator: Iterator,
+    KeyValuePair: KeyValuePair,
+    OrderedIterator: OrderedIterator,
+    Property: Property,
+    Validator: Validator,
+    Attribute: Attribute,
+    Method: Method,
+    ValueObject: ValueObject,
+    iterators: {
+        ArrayIterator: ArrayIterator,
+        MapIterator: MapIterator
+    },
+    maps: {
+        ArrayMap: ArrayMap
+    }
 });
 
 function ConcurrencyError(message, fileName, lineNumber) {
@@ -4311,11 +4200,11 @@ var formatters = Object.assign({
 
 function Receiver() {}
 Receiver.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Receiver },
-  receive: { writable: true, value: function value() {} },
-  toString: { writable: true, value: function value() {
-      return "[Receiver]";
-    } }
+    constructor: { writable: true, value: Receiver },
+    receive: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return "[Receiver]";
+        } }
 });
 
 function Signaler() {}
@@ -4628,15 +4517,15 @@ Logger.prototype = Object.create(Signal.prototype, {
 });
 
 var strings$1 = Object.defineProperties({}, {
-  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
-  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
-  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
-  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
-  DEFAULT_CHANNEL: { value: "", enumerable: true },
-  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
-  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+    CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+    CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+    EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+    ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+    DEFAULT_CHANNEL: { value: "", enumerable: true },
+    ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+    INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
 });
 
 function LoggerTarget() {
@@ -5134,51 +5023,51 @@ var ObjectOrder = Object.defineProperties({}, {
 });
 
 function ObjectListener(dispatcher, type) {
-  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
-  Object.defineProperties(this, {
-    dispatcher: { value: dispatcher, writable: true },
-    method: { value: method, writable: true },
-    order: {
-      get: function get() {
-        return this._order;
-      },
-      set: function set(value) {
-        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
-      }
-    },
-    type: { value: type, writable: true },
-    useCapture: { value: Boolean(useCapture), writable: true },
-    _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
-  });
+    var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
+    Object.defineProperties(this, {
+        dispatcher: { value: dispatcher, writable: true },
+        method: { value: method, writable: true },
+        order: {
+            get: function get() {
+                return this._order;
+            },
+            set: function set(value) {
+                this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+            }
+        },
+        type: { value: type, writable: true },
+        useCapture: { value: Boolean(useCapture), writable: true },
+        _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
+    });
 }
 Object.defineProperties(ObjectListener, {
-  DISPATCHER: { value: "dispatcher", enumerable: true },
-  METHOD: { value: "method", enumerable: true },
-  ORDER: { value: "order", enumerable: true },
-  USE_CAPTURE: { value: "useCapture", enumerable: true },
-  TYPE: { value: "type", enumerable: true }
+    DISPATCHER: { value: "dispatcher", enumerable: true },
+    METHOD: { value: "method", enumerable: true },
+    ORDER: { value: "order", enumerable: true },
+    USE_CAPTURE: { value: "useCapture", enumerable: true },
+    TYPE: { value: "type", enumerable: true }
 });
 ObjectListener.prototype = Object.create(Object.prototype, {
-  constructor: { value: ObjectListener },
-  toString: { value: function value() {
-      var s = '[ObjectListener';
-      if (this.signal) {
-        s += ' dispatcher:"' + this.dispatcher + '"';
-      }
-      if (this.slot) {
-        s += ' type:"' + this.type + '"';
-      }
-      if (this.method) {
-        s += ' method:"' + this.method + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
+    constructor: { value: ObjectListener },
+    toString: { value: function value() {
+            var s = '[ObjectListener';
+            if (this.signal) {
+                s += ' dispatcher:"' + this.dispatcher + '"';
+            }
+            if (this.slot) {
+                s += ' type:"' + this.type + '"';
+            }
+            if (this.method) {
+                s += ' method:"' + this.method + '"';
+            }
+            if (this._order) {
+                s += ' order:"' + this._order + '"';
+            }
+            s += ']';
+            return s;
+        } }
 });
 
 function createListeners(factory) {
@@ -5832,126 +5721,126 @@ var TaskPhase = Object.defineProperties({}, {
 });
 
 function Action() {
-  Object.defineProperties(this, {
-    finishIt: { value: new Signal() },
-    startIt: { value: new Signal() },
-    __lock__: { writable: true, value: false },
-    _phase: { writable: true, value: TaskPhase.INACTIVE },
-    _running: { writable: true, value: false }
-  });
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        __lock__: { writable: true, value: false },
+        _phase: { writable: true, value: TaskPhase.INACTIVE },
+        _running: { writable: true, value: false }
+    });
 }
 Action.prototype = Object.create(Runnable.prototype, {
-  constructor: { writable: true, value: Action },
-  phase: { get: function get() {
-      return this._phase;
-    } },
-  running: { get: function get() {
-      return this._running;
-    } },
-  clone: { writable: true, value: function value() {
-      return new Action();
-    } },
-  isLocked: { writable: true, value: function value() {
-      return this.__lock__;
-    } },
-  lock: { writable: true, value: function value() {
-      this.__lock__ = true;
-    } },
-  notifyFinished: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.FINISHED;
-      this.finishIt.emit(this);
-      this._phase = TaskPhase.INACTIVE;
-    } },
-  notifyStarted: { writable: true, value: function value() {
-      this._running = true;
-      this._phase = TaskPhase.RUNNING;
-      this.startIt.emit(this);
-    } },
-  unlock: { writable: true, value: function value() {
-      this.__lock__ = false;
-    } }
+    constructor: { writable: true, value: Action },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Action();
+        } },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.FINISHED;
+            this.finishIt.emit(this);
+            this._phase = TaskPhase.INACTIVE;
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this._phase = TaskPhase.RUNNING;
+            this.startIt.emit(this);
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } }
 });
 
 function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    changeIt: { value: new Signal() },
-    clearIt: { value: new Signal() },
-    infoIt: { value: new Signal() },
-    looping: { value: false, writable: true },
-    loopIt: { value: new Signal() },
-    pauseIt: { value: new Signal() },
-    progressIt: { value: new Signal() },
-    resumeIt: { value: new Signal() },
-    stopIt: { value: new Signal() },
-    timeoutIt: { value: new Signal() }
-  });
+    Action.call(this);
+    Object.defineProperties(this, {
+        changeIt: { value: new Signal() },
+        clearIt: { value: new Signal() },
+        infoIt: { value: new Signal() },
+        looping: { value: false, writable: true },
+        loopIt: { value: new Signal() },
+        pauseIt: { value: new Signal() },
+        progressIt: { value: new Signal() },
+        resumeIt: { value: new Signal() },
+        stopIt: { value: new Signal() },
+        timeoutIt: { value: new Signal() }
+    });
 }
 Task.prototype = Object.create(Action.prototype, {
-  constructor: { writable: true, value: Task },
-  clone: { writable: true, value: function value() {
-      return new Task();
-    } },
-  notifyChanged: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.changeIt.emit(this);
-      }
-    } },
-  notifyCleared: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.clearIt.emit(this);
-      }
-    } },
-  notifyInfo: { writable: true, value: function value(info) {
-      if (!this.__lock__) {
-        this.infoIt.emit(this, info);
-      }
-    } },
-  notifyLooped: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.loopIt.emit(this);
-      }
-    } },
-  notifyPaused: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.pauseIt.emit(this);
-      }
-    } },
-  notifyProgress: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.progressIt.emit(this);
-      }
-    } },
-  notifyResumed: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.resumeIt.emit(this);
-      }
-    } },
-  notifyStopped: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.stopIt.emit(this);
-      }
-    } },
-  notifyTimeout: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.TIMEOUT;
-      if (!this.__lock__) {
-        this.timeoutIt.emit(this);
-      }
-    } },
-  resume: { writable: true, value: function value() {} },
-  reset: { writable: true, value: function value() {} },
-  start: { writable: true, value: function value() {
-      this.run();
-    } },
-  stop: { writable: true, value: function value() {} }
+    constructor: { writable: true, value: Task },
+    clone: { writable: true, value: function value() {
+            return new Task();
+        } },
+    notifyChanged: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.changeIt.emit(this);
+            }
+        } },
+    notifyCleared: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.clearIt.emit(this);
+            }
+        } },
+    notifyInfo: { writable: true, value: function value(info) {
+            if (!this.__lock__) {
+                this.infoIt.emit(this, info);
+            }
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.loopIt.emit(this);
+            }
+        } },
+    notifyPaused: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.pauseIt.emit(this);
+            }
+        } },
+    notifyProgress: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.progressIt.emit(this);
+            }
+        } },
+    notifyResumed: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.resumeIt.emit(this);
+            }
+        } },
+    notifyStopped: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.stopIt.emit(this);
+            }
+        } },
+    notifyTimeout: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.TIMEOUT;
+            if (!this.__lock__) {
+                this.timeoutIt.emit(this);
+            }
+        } },
+    resume: { writable: true, value: function value() {} },
+    reset: { writable: true, value: function value() {} },
+    start: { writable: true, value: function value() {
+            this.run();
+        } },
+    stop: { writable: true, value: function value() {} }
 });
 
 function ObjectDefinitionContainer() {
@@ -6903,22 +6792,22 @@ Parameters.prototype = Object.create(Object.prototype, {
  * trace( factory.getObject('position') ) ;
  */
 var ioc = Object.assign({
-  logger: logger,
-  MagicReference: MagicReference,
-  ObjectArgument: ObjectArgument,
-  ObjectAttribute: ObjectAttribute,
-  ObjectConfig: ObjectConfig,
-  ObjectDefinition: ObjectDefinition,
-  ObjectDefinitionContainer: ObjectDefinitionContainer,
-  ObjectFactory: ObjectFactory,
-  ObjectListener: ObjectListener,
-  ObjectMethod: ObjectMethod,
-  ObjectOrder: ObjectOrder,
-  ObjectProperty: ObjectProperty,
-  ObjectReceiver: ObjectReceiver,
-  ObjectScope: ObjectScope,
-  Parameters: Parameters,
-  TypePolicy: TypePolicy
+    logger: logger,
+    MagicReference: MagicReference,
+    ObjectArgument: ObjectArgument,
+    ObjectAttribute: ObjectAttribute,
+    ObjectConfig: ObjectConfig,
+    ObjectDefinition: ObjectDefinition,
+    ObjectDefinitionContainer: ObjectDefinitionContainer,
+    ObjectFactory: ObjectFactory,
+    ObjectListener: ObjectListener,
+    ObjectMethod: ObjectMethod,
+    ObjectOrder: ObjectOrder,
+    ObjectProperty: ObjectProperty,
+    ObjectReceiver: ObjectReceiver,
+    ObjectScope: ObjectScope,
+    Parameters: Parameters,
+    TypePolicy: TypePolicy
 });
 
 function isLoggable(target) {
@@ -7143,19 +7032,19 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 var logging = Object.assign({
-  isLoggable: isLoggable,
-  Log: Log,
-  Loggable: Loggable,
-  Logger: Logger,
-  LoggerEntry: LoggerEntry,
-  LoggerFactory: LoggerFactory,
-  LoggerLevel: LoggerLevel,
-  LoggerTarget: LoggerTarget,
-  targets: Object.assign({
-    ConsoleTarget: ConsoleTarget,
-    LineFormattedTarget: LineFormattedTarget,
-    TraceTarget: TraceTarget
-  })
+    isLoggable: isLoggable,
+    Log: Log,
+    Loggable: Loggable,
+    Logger: Logger,
+    LoggerEntry: LoggerEntry,
+    LoggerFactory: LoggerFactory,
+    LoggerLevel: LoggerLevel,
+    LoggerTarget: LoggerTarget,
+    targets: Object.assign({
+        ConsoleTarget: ConsoleTarget,
+        LineFormattedTarget: LineFormattedTarget,
+        TraceTarget: TraceTarget
+    })
 });
 
 function isRule(target) {
@@ -7268,19 +7157,19 @@ ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
 });
 
 function Null() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
 Null.prototype.eval = function () {
-  if (this.strict) {
-    return this.value === null;
-  } else {
-    return this.value == null;
-  }
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
 };
 
 function ElseIfNull(value) {
@@ -7765,22 +7654,22 @@ IfZero.prototype = Object.create(IfTask.prototype, {
  * task.run() ;
  */
 var logics = Object.assign({
-  ElseIf: ElseIf,
-  ElseIfEmptyString: ElseIfEmptyString,
-  ElseIfEquals: ElseIfEquals,
-  ElseIfFalse: ElseIfFalse,
-  ElseIfNull: ElseIfNull,
-  ElseIfTrue: ElseIfTrue,
-  ElseIfUndefined: ElseIfUndefined,
-  ElseIfZero: ElseIfZero,
-  IfEmptyString: IfEmptyString,
-  IfEquals: IfEquals,
-  IfFalse: IfFalse,
-  IfNull: IfNull,
-  IfTask: IfTask,
-  IfTrue: IfTrue,
-  IfUndefined: IfUndefined,
-  IfZero: IfZero
+    ElseIf: ElseIf,
+    ElseIfEmptyString: ElseIfEmptyString,
+    ElseIfEquals: ElseIfEquals,
+    ElseIfFalse: ElseIfFalse,
+    ElseIfNull: ElseIfNull,
+    ElseIfTrue: ElseIfTrue,
+    ElseIfUndefined: ElseIfUndefined,
+    ElseIfZero: ElseIfZero,
+    IfEmptyString: IfEmptyString,
+    IfEquals: IfEquals,
+    IfFalse: IfFalse,
+    IfNull: IfNull,
+    IfTask: IfTask,
+    IfTrue: IfTrue,
+    IfUndefined: IfUndefined,
+    IfZero: IfZero
 });
 
 function Model() {
@@ -8337,15 +8226,15 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
  * model.current = null ;
  */
 var models = Object.assign({
-  ChangeModel: ChangeModel,
-  MemoryModel: MemoryModel,
-  Model: Model,
-  arrays: Object.assign({
-    ArrayModel: ArrayModel
-  }),
-  maps: Object.assign({
-    MapModel: MapModel
-  })
+    ChangeModel: ChangeModel,
+    MemoryModel: MemoryModel,
+    Model: Model,
+    arrays: Object.assign({
+        ArrayModel: ArrayModel
+    }),
+    maps: Object.assign({
+        MapModel: MapModel
+    })
 });
 
 function PRNG() {
@@ -8525,17 +8414,17 @@ var numeric = Object.assign({
 });
 
 function ActionEntry(action) {
-  var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  this.action = action;
-  this.auto = Boolean(auto);
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+    var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    this.action = action;
+    this.auto = Boolean(auto);
+    this.priority = priority > 0 ? Math.ceil(priority) : 0;
 }
 ActionEntry.prototype = Object.create(Object.prototype, {
-  constructor: { value: ActionEntry },
-  toString: { value: function value() {
-      return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
-    } }
+    constructor: { value: ActionEntry },
+    toString: { value: function value() {
+            return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
+        } }
 });
 
 function Batch() {
@@ -9721,19 +9610,19 @@ IsBoolean.prototype.eval = function () {
 };
 
 function IsNaN() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 IsNaN.prototype = Object.create(Rule.prototype);
 IsNaN.prototype.constructor = IsNaN;
 IsNaN.prototype.eval = function () {
-  if (this.strict) {
-    return isNaN(this.value);
-  } else {
-    return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
-  }
+    if (this.strict) {
+        return isNaN(this.value);
+    } else {
+        return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
+    }
 };
 
 function IsNumber() {
@@ -13022,6 +12911,45 @@ Object.defineProperties(Browser, {
     SILK: { value: 'Silk', enumerable: true }
 });
 
+function Accelerometer() {
+    Object.defineProperties(this, {
+        update: { value: new Signal() },
+        _isSupported: { writable: true, value: false }
+    });
+    this.__initialize__();
+}
+Accelerometer.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Accelerometer },
+    isSupported: { get: function get() {
+            return this._isSupported;
+        } },
+    notifyUpdate: { writable: true, value: function value(event) {
+            if (this._isSupported && this.update.connected()) {
+                this.update.emit(event, this);
+            }
+        } },
+    __initialize__: { writable: true, value: function value() {
+            if (!!window.DeviceMotionEvent) {
+                this._isSupported = true;
+            }
+            if (this._isSupported === true) {
+                window.addEventListener("devicemotion", this.notifyUpdate.bind(this), false);
+            }
+        } }
+});
+
+/**
+ * The {@link screens.sensors} package is .
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace screens.sensors
+ * @version 1.0.7
+ * @since 1.0.7
+ */
+var sensors = Object.assign({
+  Accelerometer: Accelerometer
+});
+
 /**
  * The {@link screens} package is .
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -13031,9 +12959,10 @@ Object.defineProperties(Browser, {
  * @since 1.0.7
  */
 var screens = Object.assign({
-  Browser: Browser,
-  Device: Device,
-  Os: Os
+    Browser: Browser,
+    Device: Device,
+    Os: Os,
+    sensors: sensors
 });
 
 var version = '1.0.7';
