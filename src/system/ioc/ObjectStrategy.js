@@ -19,5 +19,5 @@ ObjectStrategy.prototype = Object.create( Object.prototype ,
      * @function
      * @instance
      */
-    toString : { value : function () { return "[ObjectStrategy]" ; } , writable : true }
+    toString : { value : function () { return '[' + this.constructor.name + ']' ; } , writable : true }
 }) ;

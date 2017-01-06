@@ -37,14 +37,5 @@ export function ObjectMethod( name , args )
 
 ObjectMethod.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectMethod , writable : true },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @memberof system.ioc.ObjectMethod
-     * @function
-     * @instance
-     */
-    toString : { value : function () { return '[ObjectMethod]' ; } , writable : true  }
+    constructor : { value : ObjectMethod , writable : true }
 }) ;

@@ -85,14 +85,5 @@ export function ObjectProperty( name , value , policy = "value" , evaluators  = 
 
 ObjectProperty.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectProperty , writable : true },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @memberof system.ioc.ObjectProperty
-     * @function
-     * @instance
-     */
-    toString : { value : function () { return '[ObjectProperty]' ; } , writable : true  }
+    constructor : { value : ObjectProperty , writable : true }
 }) ;

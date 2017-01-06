@@ -17,7 +17,7 @@ import { createArguments } from '../builders/createArguments.js' ;
  */
 export function ObjectFactoryMethod( factory , name , args )
 {
-    ObjectMethod.call( name , args ) ;
+    ObjectMethod.call( this , name , args ) ;
     Object.defineProperties( this ,
     {
         /**
@@ -28,6 +28,11 @@ export function ObjectFactoryMethod( factory , name , args )
         factory : { value : factory , writable : true }
     }) ;
 }
+
+ObjectFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
+{
+    constructor : { value : ObjectFactoryMethod , writable : true }
+});
 
 Object.defineProperties( ObjectFactoryMethod ,
 {
@@ -61,10 +66,3 @@ Object.defineProperties( ObjectFactoryMethod ,
         }
     }
 });
-
-ObjectFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
-{
-    constructor : { value : ObjectFactoryMethod , writable : true },
-
-    toString : { value : function () { return '[ObjectFactoryMethod]' ; } , writable : true  }
-}) ;

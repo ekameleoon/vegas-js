@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <title>Test Accelerometer</title>
+
+        <style>
+        #sphere {
+        	position: absolute;
+        	width: 50px;
+        	height: 50px;
+        	border-radius: 50px;
+        	-webkit-radius: 50px;
+        	background-color: blue;
+        }
+        </style>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <div id="sphere"></div>
+        <div class="panel panel-default">
+            <div class="row">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-3">
+                    X
+                </div>
+                <div class="col-sm-3">
+                    Y
+                </div>
+                <div class="col-sm-3">
+                    Z
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    Acceleration
+                </div>
+                <div id="ax" class="col-sm-3">
+                    0
+                </div>
+                <div id="ay" class="col-sm-3">
+                    0
+                </div>
+                <div id="az" class="col-sm-3">
+                    0
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    Acceleration including gravity
+                </div>
+                <div id="agx" class="col-sm-3">
+                    0
+                </div>
+                <div id="agy" class="col-sm-3">
+                    0
+                </div>
+                <div id="agz" class="col-sm-3">
+                    0
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    Rotate rate
+                </div>
+                <div id="beta" class="col-sm-3">
+                    0
+                </div>
+                <div id="gamma" class="col-sm-3">
+                    0
+                </div>
+                <div id="alpha" class="col-sm-3">
+                    0
+                </div>
+            </div>
+            <div>
+                Interval <span id="interval">0</span>
+            </div>
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="./../../../bin/vegas.js"></script>
+        <script src="./js/index.js"></script>
+    </body>
+</html>

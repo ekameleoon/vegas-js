@@ -491,16 +491,16 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      */
     toString : { writable : true , value : function()
     {
-        var s  = "[" + this.constructor.name ;
+        let s  = "[" + this.constructor.name ;
         if ( Boolean(this.verbose) )
         {
             if ( this._actions.length > 0 )
             {
                 s += "[" ;
-                var i  ;
-                var e /*ActionEntry*/ ;
-                var l  = this._actions.length ;
-                var r  = [] ;
+                let i  ;
+                let e /*ActionEntry*/ ;
+                let l  = this._actions.length ;
+                let r  = [] ;
                 for( i = 0 ; i < l ; i++ )
                 {
                     e = this._actions[i] ;
