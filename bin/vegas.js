@@ -6440,7 +6440,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         if ((receiver.slot instanceof String || typeof receiver.slot === 'string') && receiver.slot in o && o[receiver.slot] instanceof Function) {
                             slot = o[receiver.slot];
                         } else if (o instanceof Receiver) {
-                            slot = o.receive;
+                            slot = o;
                         }
                         if (slot instanceof Receiver || slot instanceof Function) {
                             signaler.connect(slot, receiver.priority, receiver.autoDisconnect);

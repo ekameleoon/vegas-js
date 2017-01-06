@@ -1077,7 +1077,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     }
                     else if ( o instanceof Receiver )
                     {
-                        slot = o.receive ;
+                        slot = o ;
                     }
 
                     if ( (slot instanceof Receiver) || (slot instanceof Function) )
