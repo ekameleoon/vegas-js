@@ -4,7 +4,8 @@ import { Signal }  from '../../system/signals/Signal.js' ;
 import { Timer }  from '../../system/process/Timer.js' ;
 
 /**
- * The Accelerometer class dispatches events based on activity detected by the device's motion sensor. This data represents the device's location or movement along a 3-dimensional axis.
+ * The Accelerometer class dispatches events based on activity detected by the device's motion sensor.
+ * <p>This data represents the device's location or movement along a 3-dimensional axis.</p>
  * @summary The Accelerometer class get the device's location or movement.
  * @name Accelerometer
  * @class
@@ -103,12 +104,13 @@ Accelerometer.prototype = Object.create( Object.prototype ,
      */
     __initialize__ : { writable : true , value : function()
     {
-        if( window.DeviceMotionEvent !== undefined )
+        if( window !== undefined && window.DeviceMotionEvent !== undefined )
         {
             this._isSupported = true ;
         }
 
         // -------- Behaviors
+
         if( this._isSupported === true )
         {
             window.addEventListener( "devicemotion" , this.__update__.bind( this ) , false );

@@ -91,18 +91,18 @@ window.onload = function()
 
     // ------
 
-    trace( '------' ) ;
-
-    trace( vegas ) ;
-    trace( vegas.metas ) ;
-
-    trace( '------' ) ;
+    // trace( '------' ) ;
+    //
+    // trace( vegas ) ;
+    // trace( vegas.metas ) ;
+    //
+    // trace( '------' ) ;
 
     stage = new Stage();
     stage.orientationChange.connect( orientationDevice );
 
-    sphere.style.left = stage.width / 2 + "px";
-    sphere.style.top = stage.height / 2 + "px";
+    sphere.style.left = (stage.width * 0.5) + "px";
+    sphere.style.top  = (stage.height * 0.5) + "px";
 
     var accelerometer = new Accelerometer();
 
