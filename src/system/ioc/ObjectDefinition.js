@@ -168,7 +168,7 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
          */
         lazyInit :
         {
-            get : function() 
+            get : function()
             {
                 return this._lazyInit;
             },
@@ -236,96 +236,6 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
         properties : { value : null , enumerable : true , writable : true } ,
 
         /**
-         * Sets the Array of all receiver definition of this object definition.
-         * @param ar the Array of all receiver definitions of the object.
-         * @name receivers
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        receivers :
-        {
-            set : function( ar )
-            {
-                this._afterReceivers  = [] ;
-                this._beforeReceivers = [] ;
-
-                if ( ar === null || !(ar instanceof Array) )
-                {
-                    return ;
-                }
-
-                var r /*ObjectReceiver*/ ;
-                var l = ar.length ;
-                if ( l > 0 )
-                {
-                    for( var i = 0 ; i < l ; i++ )
-                    {
-                        r = ar[i] ;
-                        if ( r instanceof ObjectReceiver )
-                        {
-                            if( r.order === ObjectOrder.AFTER )
-                            {
-                                this._afterReceivers.push( r ) ;
-                            }
-                            else
-                            {
-                                this._beforeReceivers.push( r ) ;
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        /**
-         * Indicates if the object in a singleton else the object is a prototype (read only, use the scope property to change it).
-         * @name singleton
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @type boolean
-         * @type readonly
-         */
-        singleton :
-        {
-            get : function()
-            {
-                return this._singleton;
-            }
-        },
-
-        /**
-         * Determinates the scope of the object.
-         * @name scope
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        scope :
-        {
-            get : function() { return this._scope ; } ,
-            set : function( scope )
-            {
-                this._scope = ObjectScope.validate( scope ) ? scope : ObjectScope.PROTOTYPE ;
-                this._singleton = Boolean(this._scope === ObjectScope.SINGLETON) ;
-            }
-        },
-
-        /**
-         * Determinates the factory stategy of this definition to create the object.
-         * @name strategy
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        strategy :
-        {
-            enumerable : true ,
-            get : function() { return this._strategy ; } ,
-            set : function( strategy )
-            {
-                this._strategy = (strategy instanceof ObjectStrategy) ? strategy : null ;
-            }
-        },
-
-        /**
          * Indicates the type of the object (the function reference of the class name).
          * @name type
          * @memberof system.ioc.ObjectDefinition
@@ -349,6 +259,96 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
     constructor : { value :  Identifiable , enumerable : true , writable : true },
 
     /**
+     * Sets the Array of all receiver definition of this object definition.
+     * @param ar the Array of all receiver definitions of the object.
+     * @name receivers
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    receivers :
+    {
+        set : function( ar )
+        {
+            this._afterReceivers  = [] ;
+            this._beforeReceivers = [] ;
+
+            if ( ar === null || !(ar instanceof Array) )
+            {
+                return ;
+            }
+
+            var r /*ObjectReceiver*/ ;
+            var l = ar.length ;
+            if ( l > 0 )
+            {
+                for( var i = 0 ; i < l ; i++ )
+                {
+                    r = ar[i] ;
+                    if ( r instanceof ObjectReceiver )
+                    {
+                        if( r.order === ObjectOrder.AFTER )
+                        {
+                            this._afterReceivers.push( r ) ;
+                        }
+                        else
+                        {
+                            this._beforeReceivers.push( r ) ;
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+     * Indicates if the object in a singleton else the object is a prototype (read only, use the scope property to change it).
+     * @name singleton
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @type boolean
+     * @type readonly
+     */
+    singleton :
+    {
+        get : function()
+        {
+            return this._singleton;
+        }
+    },
+
+    /**
+     * Determinates the scope of the object.
+     * @name scope
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    scope :
+    {
+        get : function() { return this._scope ; } ,
+        set : function( scope )
+        {
+            this._scope = ObjectScope.validate( scope ) ? scope : ObjectScope.PROTOTYPE ;
+            this._singleton = Boolean(this._scope === ObjectScope.SINGLETON) ;
+        }
+    },
+
+    /**
+     * Determinates the factory stategy of this definition to create the object.
+     * @name strategy
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    strategy :
+    {
+        enumerable : true ,
+        get : function() { return this._strategy ; } ,
+        set : function( strategy )
+        {
+            this._strategy = (strategy instanceof ObjectStrategy) ? strategy : null ;
+        }
+    },
+
+    /**
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @memberof system.ioc.ObjectDefinition
@@ -367,7 +367,7 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      */
     _filterStrings :
     {
-        value : function( item ) 
+        value : function( item )
         {
             return (typeof(item) === 'string' || item instanceof String) && item.length > 0 ;
         }

@@ -20,14 +20,13 @@ export function ObjectStaticFactoryMethod( type , name , args )
     Object.defineProperties( this ,
     {
         /**
-         * The factory string representation of the reference of this factory method object.
+         * The static target reference.
          * @memberof system.ioc.strategies.ObjectStaticFactoryMethod
          * @instance
          */
         type : { value : type , writable : true }
     }) ;
 }
-
 
 ObjectStaticFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
 {
@@ -44,20 +43,21 @@ Object.defineProperties( ObjectStaticFactoryMethod ,
      */
     build :
     {
-        value : function( o ) /*ObjectStaticFactoryMethod*/
+        value : function( o )
         {
             if ( o === null )
             {
                 return null ;
             }
-            if ( (ObjectAttribute.TYPE in o) && (ObjectAttribute.NAME in o) )
+            if ( ( ObjectAttribute.TYPE in o ) && ( ObjectAttribute.NAME in o ) )
             {
-                return new ObjectStaticFactoryMethod
+                let strategy = new ObjectStaticFactoryMethod
                 (
                     o[ ObjectAttribute.TYPE ] || null ,
                     o[ ObjectAttribute.NAME ] || null ,
                     createArguments( o[ ObjectAttribute.ARGUMENTS ] || null )
                 ) ;
+                return strategy ;
             }
             else
             {

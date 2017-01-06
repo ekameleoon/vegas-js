@@ -606,17 +606,18 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     createObjectWithStrategy : { value : function( strategy )
     {
-        if ( strategy instanceof ObjectStrategy )
+        if ( !(strategy instanceof ObjectStrategy) )
         {
             return null ;
         }
-        var args ;
-        var instance = null ;
-        var type ;
-        var factory ;
-        var ref ;
-        var name ;
-        var factoryMethod ;
+
+        let args ;
+        let instance = null ;
+        let type ;
+        let factory ;
+        let ref ;
+        let name ;
+        let factoryMethod ;
 
         if ( strategy instanceof ObjectMethod )
         {
@@ -627,7 +628,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
             if ( factoryMethod instanceof ObjectStaticFactoryMethod )
             {
-                type = this.config.typeEvaluator.eval( factoryMethod.type );
+                type = factoryMethod.type ;
                 if ( type !== null && name && (name in type) && (type[name] instanceof Function) )
                 {
                     instance = type[name].apply( null , args ) ;

@@ -19,12 +19,7 @@ import { ObjectAttribute } from '../ObjectAttribute.js' ;
  */
 export function createObjectDefinition( o )
 {
-    // console.log( 'createObjectDefinition ------' ) ;
-    // console.info( o ) ;
-    // console.info( ObjectAttribute.ARGUMENTS ) ;
-    // console.info( ObjectAttribute.ARGUMENTS in o ) ;
-    // console.log( '----------------------' ) ;
-    var definition = new ObjectDefinition
+    let definition = new ObjectDefinition
     (
         o[ ObjectAttribute.OBJECT_ID ]        || null ,
         o[ ObjectAttribute.TYPE ]             || null ,
@@ -93,7 +88,7 @@ export function createObjectDefinition( o )
     let strategy = createStrategy( o ) ;
     if( strategy )
     {
-        definition.factoryStrategy = strategy ;
+        definition.strategy = strategy ;
     }
 
     return definition ;

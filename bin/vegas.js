@@ -5496,13 +5496,13 @@ ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
 });
 Object.defineProperties(ObjectStaticFactoryMethod, {
     build: {
-        value: function value(o)
-        {
+        value: function value(o) {
             if (o === null) {
                 return null;
             }
             if (ObjectAttribute.TYPE in o && ObjectAttribute.NAME in o) {
-                return new ObjectStaticFactoryMethod(o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.NAME] || null, createArguments(o[ObjectAttribute.ARGUMENTS] || null));
+                var strategy = new ObjectStaticFactoryMethod(o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.NAME] || null, createArguments(o[ObjectAttribute.ARGUMENTS] || null));
+                return strategy;
             } else {
                 return null;
             }
@@ -5664,52 +5664,6 @@ function ObjectDefinition(id, type) {
         },
         lock: { value: false, enumerable: true, writable: true },
         properties: { value: null, enumerable: true, writable: true },
-        receivers: {
-            set: function set(ar) {
-                this._afterReceivers = [];
-                this._beforeReceivers = [];
-                if (ar === null || !(ar instanceof Array)) {
-                    return;
-                }
-                var r;
-                var l = ar.length;
-                if (l > 0) {
-                    for (var i = 0; i < l; i++) {
-                        r = ar[i];
-                        if (r instanceof ObjectReceiver) {
-                            if (r.order === ObjectOrder.AFTER) {
-                                this._afterReceivers.push(r);
-                            } else {
-                                this._beforeReceivers.push(r);
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        singleton: {
-            get: function get() {
-                return this._singleton;
-            }
-        },
-        scope: {
-            get: function get() {
-                return this._scope;
-            },
-            set: function set(scope) {
-                this._scope = ObjectScope.validate(scope) ? scope : ObjectScope.PROTOTYPE;
-                this._singleton = Boolean(this._scope === ObjectScope.SINGLETON);
-            }
-        },
-        strategy: {
-            enumerable: true,
-            get: function get() {
-                return this._strategy;
-            },
-            set: function set(strategy) {
-                this._strategy = strategy instanceof ObjectStrategy ? strategy : null;
-            }
-        },
         type: { value: type, enumerable: true, writable: true },
         _afterListeners: { value: null, writable: true },
         _beforeListeners: { value: null, writable: true },
@@ -5723,6 +5677,52 @@ function ObjectDefinition(id, type) {
 }
 ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
     constructor: { value: Identifiable, enumerable: true, writable: true },
+    receivers: {
+        set: function set(ar) {
+            this._afterReceivers = [];
+            this._beforeReceivers = [];
+            if (ar === null || !(ar instanceof Array)) {
+                return;
+            }
+            var r;
+            var l = ar.length;
+            if (l > 0) {
+                for (var i = 0; i < l; i++) {
+                    r = ar[i];
+                    if (r instanceof ObjectReceiver) {
+                        if (r.order === ObjectOrder.AFTER) {
+                            this._afterReceivers.push(r);
+                        } else {
+                            this._beforeReceivers.push(r);
+                        }
+                    }
+                }
+            }
+        }
+    },
+    singleton: {
+        get: function get() {
+            return this._singleton;
+        }
+    },
+    scope: {
+        get: function get() {
+            return this._scope;
+        },
+        set: function set(scope) {
+            this._scope = ObjectScope.validate(scope) ? scope : ObjectScope.PROTOTYPE;
+            this._singleton = Boolean(this._scope === ObjectScope.SINGLETON);
+        }
+    },
+    strategy: {
+        enumerable: true,
+        get: function get() {
+            return this._strategy;
+        },
+        set: function set(strategy) {
+            this._strategy = strategy instanceof ObjectStrategy ? strategy : null;
+        }
+    },
     toString: { value: function value() {
             return "[ObjectDefinition]";
         } },
@@ -5773,7 +5773,7 @@ function createObjectDefinition(o) {
     }
     var strategy = createStrategy(o);
     if (strategy) {
-        definition.factoryStrategy = strategy;
+        definition.strategy = strategy;
     }
     return definition;
 }
@@ -6184,22 +6184,22 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             return stack;
         } },
     createObjectWithStrategy: { value: function value(strategy) {
-            if (strategy instanceof ObjectStrategy) {
+            if (!(strategy instanceof ObjectStrategy)) {
                 return null;
             }
-            var args;
+            var args = void 0;
             var instance = null;
-            var type;
-            var factory;
-            var ref;
-            var name;
-            var factoryMethod;
+            var type = void 0;
+            var factory = void 0;
+            var ref = void 0;
+            var name = void 0;
+            var factoryMethod = void 0;
             if (strategy instanceof ObjectMethod) {
                 factoryMethod = strategy;
                 name = factoryMethod.name;
                 args = this.createArguments(factoryMethod.args);
                 if (factoryMethod instanceof ObjectStaticFactoryMethod) {
-                    type = this.config.typeEvaluator.eval(factoryMethod.type);
+                    type = factoryMethod.type;
                     if (type !== null && name && name in type && type[name] instanceof Function) {
                         instance = type[name].apply(null, args);
                     }

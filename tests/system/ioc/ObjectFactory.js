@@ -11,7 +11,7 @@ const assert = chai.assert ;
 
 describe( 'system.ioc.ObjectFactory' , () =>
 {
-    describe( 'new ObjectFactory()' , () =>
+    describe( '#constructor' , () =>
     {
         let factory = new ObjectFactory() ;
 
@@ -46,5 +46,48 @@ describe( 'system.ioc.ObjectFactory' , () =>
         {
             assert.equal( factory.toString() , "[ObjectFactory]" );
         });
+    });
+
+    describe( '#staticFactoryMethod' , () =>
+    {
+        var User = function( name )
+        {
+            this.name = name ;
+        }
+
+        User.prototype.toString = function()
+        {
+            return '[User ' + this.name + ']' ;
+        }
+
+        var UserFactory =
+        {
+            create : function( name )
+            {
+                return new User(name) ;
+            }
+        }
+
+        let factory = new ObjectFactory() ;
+
+        factory.run
+        ([
+            {
+                id : "user" ,
+                type : User ,
+                staticFactoryMethod :
+                {
+                    type : UserFactory ,
+                    name : "create"           ,
+                    args : [ { value : "ekameleon" } ]
+                }
+            }
+        ]);
+
+        let user = factory.getObject("user") ;
+
+        it('factory.getObject("user") is not null', () => { assert.isNotNull( user );});
+        it('factory.getObject("user") instanceof User', () => { assert.instanceOf( user , User ); });
+        it('factory.getObject("user").name === "ekameleon"', () => { assert.equal( user.name , 'ekameleon' ); });
     });
 });
