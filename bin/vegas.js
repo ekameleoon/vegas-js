@@ -5225,7 +5225,7 @@ function ObjectStrategy() {}
 ObjectStrategy.prototype = Object.create(Object.prototype, {
   constructor: { value: ObjectStrategy, writable: true },
   toString: { value: function value() {
-      return "[ObjectStrategy]";
+      return '[' + this.constructor.name + ']';
     }, writable: true }
 });
 
@@ -5262,10 +5262,7 @@ function ObjectProperty(name, value) {
     this.policy = policy;
 }
 ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { value: ObjectProperty, writable: true },
-    toString: { value: function value() {
-            return '[ObjectProperty]';
-        }, writable: true }
+    constructor: { value: ObjectProperty, writable: true }
 });
 
 function createProperties(factory) {
@@ -5425,18 +5422,18 @@ function ObjectMethod(name, args) {
   });
 }
 ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
-  constructor: { value: ObjectMethod, writable: true },
-  toString: { value: function value() {
-      return '[ObjectMethod]';
-    }, writable: true }
+  constructor: { value: ObjectMethod, writable: true }
 });
 
 function ObjectFactoryMethod(factory, name, args) {
-    ObjectMethod.call(name, args);
+    ObjectMethod.call(this, name, args);
     Object.defineProperties(this, {
         factory: { value: factory, writable: true }
     });
 }
+ObjectFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
+    constructor: { value: ObjectFactoryMethod, writable: true }
+});
 Object.defineProperties(ObjectFactoryMethod, {
     build: {
         value: function value(o)
@@ -5452,20 +5449,17 @@ Object.defineProperties(ObjectFactoryMethod, {
         }
     }
 });
-ObjectFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
-    constructor: { value: ObjectFactoryMethod, writable: true },
-    toString: { value: function value() {
-            return '[ObjectFactoryMethod]';
-        }, writable: true }
-});
 
 function ObjectFactoryProperty(factory, name) {
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    ObjectProperty.call(name, null, null, evaluators);
+    ObjectProperty.call(this, name, null, null, evaluators);
     Object.defineProperties(this, {
         factory: { value: factory, writable: true }
     });
 }
+ObjectFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
+    constructor: { writable: true, value: ObjectFactoryProperty }
+});
 Object.defineProperties(ObjectFactoryProperty, {
     build: {
         value: function value(o)
@@ -5481,12 +5475,6 @@ Object.defineProperties(ObjectFactoryProperty, {
         }
     }
 });
-ObjectFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
-    constructor: { value: ObjectFactoryProperty, writable: true },
-    toString: { value: function value() {
-            return '[ObjectFactoryProperty]';
-        }, writable: true }
-});
 
 function ObjectReference(ref) {
     Object.defineProperties(this, {
@@ -5494,18 +5482,18 @@ function ObjectReference(ref) {
     });
 }
 ObjectReference.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { value: ObjectReference },
-    toString: { value: function value() {
-            return '[ObjectReference]';
-        } }
+    constructor: { value: ObjectReference }
 });
 
 function ObjectStaticFactoryMethod(type, name, args) {
-    ObjectMethod.call(name, args);
+    ObjectMethod.call(this, name, args);
     Object.defineProperties(this, {
         type: { value: type, writable: true }
     });
 }
+ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
+    constructor: { value: ObjectStaticFactoryMethod, writable: true }
+});
 Object.defineProperties(ObjectStaticFactoryMethod, {
     build: {
         value: function value(o)
@@ -5521,20 +5509,17 @@ Object.defineProperties(ObjectStaticFactoryMethod, {
         }
     }
 });
-ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
-    constructor: { value: ObjectStaticFactoryMethod, writable: true },
-    toString: { value: function value() {
-            return '[ObjectStaticFactoryMethod]';
-        }, writable: true }
-});
 
 function ObjectStaticFactoryProperty(name, type) {
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    ObjectProperty.call(name, null, null, evaluators);
+    ObjectProperty.call(this, name, null, null, evaluators);
     Object.defineProperties(this, {
         type: { value: type, writable: true }
     });
 }
+ObjectStaticFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
+    constructor: { value: ObjectStaticFactoryProperty, writable: true }
+});
 Object.defineProperties(ObjectStaticFactoryProperty, {
     build: {
         value: function value(o) {
@@ -5549,12 +5534,6 @@ Object.defineProperties(ObjectStaticFactoryProperty, {
         }
     }
 });
-ObjectStaticFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
-    constructor: { value: ObjectStaticFactoryProperty, writable: true },
-    toString: { value: function value() {
-            return '[ObjectStaticFactoryProperty]';
-        }, writable: true }
-});
 
 function ObjectValue(value) {
     Object.defineProperties(this, {
@@ -5562,10 +5541,7 @@ function ObjectValue(value) {
     });
 }
 ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { value: ObjectValue },
-    toString: { value: function value() {
-            return '[ObjectValue]';
-        } }
+    constructor: { value: ObjectValue, writable: true }
 });
 
 function createStrategy(o) {
@@ -8859,8 +8835,8 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             if (Boolean(this.verbose)) {
                 if (this._actions.length > 0) {
                     s += "[";
-                    var i;
-                    var e;
+                    var i = void 0;
+                    var e = void 0;
                     var l = this._actions.length;
                     var r = [];
                     for (i = 0; i < l; i++) {
@@ -13069,9 +13045,10 @@ Accelerometer.prototype = Object.create(Object.prototype, {
 });
 
 /**
- * The {@link screens.sensors} package is .
+ * The {@link screens.sensors} package contains classes for working mobile devices that support GPS and respond to motion.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @author Benoit Pouzet <bpouzet@gmail.com>
  * @namespace screens.sensors
  * @version 1.0.7
  * @since 1.0.7

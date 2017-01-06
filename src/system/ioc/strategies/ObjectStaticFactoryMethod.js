@@ -16,7 +16,7 @@ import { createArguments } from '../builders/createArguments.js' ;
  */
 export function ObjectStaticFactoryMethod( type , name , args )
 {
-    ObjectMethod.call( name , args ) ;
+    ObjectMethod.call( this , name , args ) ;
     Object.defineProperties( this ,
     {
         /**
@@ -27,6 +27,12 @@ export function ObjectStaticFactoryMethod( type , name , args )
         type : { value : type , writable : true }
     }) ;
 }
+
+
+ObjectStaticFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
+{
+    constructor : { value : ObjectStaticFactoryMethod , writable : true }
+}) ;
 
 Object.defineProperties( ObjectStaticFactoryMethod ,
 {
@@ -60,10 +66,3 @@ Object.defineProperties( ObjectStaticFactoryMethod ,
         }
     }
 });
-
-ObjectStaticFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
-{
-    constructor : { value : ObjectStaticFactoryMethod , writable : true },
-
-    toString : { value : function () { return '[ObjectStaticFactoryMethod]' ; } , writable : true  }
-}) ;

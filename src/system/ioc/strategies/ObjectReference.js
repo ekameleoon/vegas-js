@@ -19,7 +19,5 @@ export function ObjectReference( ref )
 
 ObjectReference.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectReference },
-
-    toString : { value : function () { return '[ObjectReference]' ; }}
+    constructor : { value : ObjectReference }
 }) ;

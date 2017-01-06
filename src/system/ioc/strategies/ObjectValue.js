@@ -20,7 +20,5 @@ export function ObjectValue( value )
 
 ObjectValue.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectValue },
-
-    toString : { value : function () { return '[ObjectValue]' ; }}
+    constructor : { value : ObjectValue , writable : true }
 }) ;

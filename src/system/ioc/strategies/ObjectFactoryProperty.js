@@ -15,12 +15,17 @@ import { ObjectProperty }  from '../ObjectProperty.js' ;
  */
 export function ObjectFactoryProperty( factory  , name  , evaluators  = null )
 {
-    ObjectProperty.call( name , null, null, evaluators ) ;
+    ObjectProperty.call( this , name , null, null, evaluators ) ;
     Object.defineProperties( this ,
     {
         factory : { value : factory , writable : true }
     }) ;
 }
+
+ObjectFactoryProperty.prototype = Object.create( ObjectProperty.prototype ,
+{
+    constructor : { writable : true , value : ObjectFactoryProperty }
+}) ;
 
 Object.defineProperties( ObjectFactoryProperty ,
 {
@@ -54,10 +59,3 @@ Object.defineProperties( ObjectFactoryProperty ,
         }
     }
 });
-
-ObjectFactoryProperty.prototype = Object.create( ObjectProperty.prototype ,
-{
-    constructor : { value : ObjectFactoryProperty , writable : true },
-
-    toString : { value : function () { return '[ObjectFactoryProperty]' ; } , writable : true  }
-}) ;
