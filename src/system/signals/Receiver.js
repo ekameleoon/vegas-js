@@ -30,7 +30,7 @@ Receiver.prototype = Object.create( Object.prototype ,
      */
     toString : { writable : true , value : function ()
     {
-        return "[Receiver]" ;
+        return '[' + this.constructor.name + ']' ;
     }}
 });
 

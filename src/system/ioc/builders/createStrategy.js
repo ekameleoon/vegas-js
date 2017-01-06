@@ -37,11 +37,11 @@ export function createStrategy( o )
         }
         case ( ObjectAttribute.OBJECT_FACTORY_REFERENCE in o )  :
         {
-            return ObjectReference.build( o[ ObjectAttribute.OBJECT_FACTORY_REFERENCE ] ) ;
+            return new ObjectReference( o[ ObjectAttribute.OBJECT_FACTORY_REFERENCE ] ) ;
         }
         case ( ObjectAttribute.OBJECT_FACTORY_VALUE in o )  :
         {
-            return ObjectValue.build( o[ ObjectAttribute.OBJECT_FACTORY_VALUE ] ) ;
+            return new ObjectValue( o[ ObjectAttribute.OBJECT_FACTORY_VALUE ] ) ;
         }
         default :
         {

@@ -4314,7 +4314,7 @@ Receiver.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: Receiver },
   receive: { writable: true, value: function value() {} },
   toString: { writable: true, value: function value() {
-      return "[Receiver]";
+      return '[' + this.constructor.name + ']';
     } }
 });
 
@@ -5224,9 +5224,9 @@ function createListeners(factory) {
 function ObjectStrategy() {}
 ObjectStrategy.prototype = Object.create(Object.prototype, {
   constructor: { value: ObjectStrategy, writable: true },
-  toString: { value: function value() {
+  toString: { writable: true, value: function value() {
       return '[' + this.constructor.name + ']';
-    }, writable: true }
+    } }
 });
 
 function ObjectProperty(name, value) {
@@ -5564,11 +5564,11 @@ function createStrategy(o) {
             }
         case ObjectAttribute.OBJECT_FACTORY_REFERENCE in o:
             {
-                return ObjectReference.build(o[ObjectAttribute.OBJECT_FACTORY_REFERENCE]);
+                return new ObjectReference(o[ObjectAttribute.OBJECT_FACTORY_REFERENCE]);
             }
         case ObjectAttribute.OBJECT_FACTORY_VALUE in o:
             {
-                return ObjectValue.build(o[ObjectAttribute.OBJECT_FACTORY_VALUE]);
+                return new ObjectValue(o[ObjectAttribute.OBJECT_FACTORY_VALUE]);
             }
         default:
             {
