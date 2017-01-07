@@ -238,17 +238,14 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 try
                 {
+                    let type = this.config.typeEvaluator.eval( definition.type )  ;
                     if ( definition.strategy )
                     {
                         instance = this.createObjectWithStrategy( definition.strategy ) ;
                     }
-                    else
+                    else if ( type instanceof Function )
                     {
-                        let type = this.config.typeEvaluator.eval( definition.type )  ;
-                        if ( type instanceof Function )
-                        {
-                            instance = invoke( type , this.createArguments( definition.constructorArguments ) ) ;
-                        }
+                        instance = invoke( type , this.createArguments( definition.constructorArguments ) ) ;
                     }
                 }
                 catch( e )

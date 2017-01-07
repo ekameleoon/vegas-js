@@ -147,6 +147,10 @@ describe( 'system.ioc.ObjectFactory' , () =>
             it('factory.getObject("user2")', () => { assert.isNull( user2 );});
         });
 
+        // TODO factoryProperty
+        // TODO factoryReference
+        // TODO test the type of the object ?
+
         describe( '#factoryValue' , () =>
         {
             let factory = new ObjectFactory() ;
