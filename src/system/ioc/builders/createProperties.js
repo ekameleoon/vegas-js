@@ -2,7 +2,6 @@
 
 import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
-import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectProperty } from '../ObjectProperty.js' ;
 
@@ -22,7 +21,7 @@ export function createProperties( factory )
         return null ;
     }
 
-    var a = null ;
+    let a = null ;
 
     if ( factory instanceof Array )
     {
@@ -96,37 +95,34 @@ export function createProperties( factory )
 
             if ( args && (args instanceof Array) )
             {
-                properties.push( new ObjectProperty( name , createArguments( args ) , ObjectAttribute.ARGUMENTS ) ) ; // arguments property
+                properties.push( new ObjectProperty( name , createArguments( args ) , ObjectAttribute.ARGUMENTS ) ) ;
             }
             else if ( (ref instanceof String || typeof(ref) === 'string') && (ref !== '') )
             {
-                properties.push( new ObjectProperty( name , ref , ObjectAttribute.REFERENCE , evaluators ) ) ; // ref property
+                properties.push( new ObjectProperty( name , ref , ObjectAttribute.REFERENCE , evaluators ) ) ;
             }
             else if ( (conf instanceof String || typeof(conf) === 'string') && (conf !== '') )
             {
-                properties.push( new ObjectProperty( name, conf , ObjectAttribute.CONFIG , evaluators ) ) ; // config property
+                properties.push( new ObjectProperty( name, conf , ObjectAttribute.CONFIG , evaluators ) ) ;
             }
             else if ( (i18n instanceof String || typeof(i18n) === 'string') && (i18n !== '') )
             {
-                properties.push( new ObjectProperty( name, i18n , ObjectAttribute.LOCALE , evaluators ) ) ; // locale property
+                properties.push( new ObjectProperty( name, i18n , ObjectAttribute.LOCALE , evaluators ) ) ;
             }
             else
             {
-                properties.push( new ObjectProperty( name , value , ObjectAttribute.VALUE , evaluators ) ) ; // value property
+                properties.push( new ObjectProperty( name , value , ObjectAttribute.VALUE , evaluators ) ) ;
             }
         }
-        else
+        else if( logger )
         {
-            if( logger && (logger instanceof Logger) )
-            {
-                logger.warning
-                (
-                    "ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                    id ,
-                    i ,
-                    dump( prop )
-                ) ;
-            }
+            logger.warning
+            (
+                "createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                id ,
+                i ,
+                dump( prop )
+            ) ;
         }
     }
 

@@ -218,15 +218,15 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
            return null ;
         }
 
-        var instance ;
+        let instance = null ;
 
         try
         {
-            var definition = this.getObjectDefinition( id ) ;
+            let definition = this.getObjectDefinition( id ) ;
 
             if ( !(definition instanceof ObjectDefinition) )
             {
-                throw new Error( this +  " getObject( " + id + " ) method failed, the object isn't register in the container.") ;
+                throw new Error( this +  " getObject( " + id + " ) method failed, the object isn't register in the factory.") ;
             }
 
             if ( definition.singleton )
@@ -238,15 +238,17 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 try
                 {
-                    var type = this.config.typeEvaluator.eval( definition.type )  ;
-
                     if ( definition.strategy )
                     {
                         instance = this.createObjectWithStrategy( definition.strategy ) ;
                     }
-                    else if ( type instanceof Function )
+                    else
                     {
-                        instance = invoke( type , this.createArguments( definition.constructorArguments ) );
+                        let type = this.config.typeEvaluator.eval( definition.type )  ;
+                        if ( type instanceof Function )
+                        {
+                            instance = invoke( type , this.createArguments( definition.constructorArguments ) ) ;
+                        }
                     }
                 }
                 catch( e )
@@ -258,14 +260,14 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 {
                     if ( definition.singleton )
                     {
-                        this._singletons.set( id, instance ) ;
+                        this._singletons.set( id , instance ) ;
                     }
 
                     this.dependsOn( definition ) ; // dependencies
 
                     this.populateIdentifiable ( instance , definition ) ; // identify
 
-                    var flag = isLockable( instance ) && ( ( definition.lock === true ) || ( this.config.lock === true && definition.lock !== false ) ) ;
+                    let flag = isLockable( instance ) && ( ( definition.lock === true ) || ( this.config.lock === true && definition.lock !== false ) ) ;
 
                     if ( flag )
                     {
@@ -314,7 +316,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     }},
 
     /**
-     * Indicates if the <code>factory</code> is dirty, must flush this buffer of not lazy-init singleton object definitions. The user must execute the run or create methods to flush this buffer.
+     * Indicates if the <code>ObjectFactory</code> is dirty, must flush this buffer of not lazy-init singleton object definitions. The user must execute the run or create methods to flush this buffer.
      * @return <code>true</code> if the factory is dirty.
      * @name isDirty
      * @memberof system.ioc.ObjectFactory
@@ -382,7 +384,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     {
         if ( this.isSingleton(id) && this._singletons.has(id) )
         {
-            this.invokeDestroyMethod( this._singletons.get(id), this.getObjectDefinition(id) ) ;
+            this.invokeDestroyMethod( id ) ;
             this._singletons.delete( id ) ;
         }
     }},
@@ -477,17 +479,13 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         if ( (this.objects instanceof Array) && this.objects.length > 0)
         {
-            var definition /*ObjectDefinition*/ ;
-
-            var init ;
-
             while ( this.objects.length > 0 )
             {
-                init = this.objects.shift() ;
+                let init = this.objects.shift() ;
 
                 if ( init !== null )
                 {
-                    definition = createObjectDefinition( init ) ;
+                    let definition = createObjectDefinition( init ) ;
 
                     this.addObjectDefinition( definition ) ;
 
@@ -509,8 +507,8 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         // flush the buffer of singletons to initialize (no lazyInit)
         if ( (this.bufferSingletons instanceof Array) && this.bufferSingletons.length > 0 && !this._config.lazyInit && !this.isLocked() )
         {
-            var size = this.bufferSingletons.length ;
-            for ( var i = 0 ; i < size ; i++ )
+            let len = this.bufferSingletons.length ;
+            for ( let i = 0 ; i < len ; i++ )
             {
                 this.getObject( this.bufferSingletons[i] ) ;
             }
@@ -530,7 +528,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     warn : { value : function( ...args )
     {
-        if ( this.config.useLogger && logger )
+        if ( this.config.useLogger )
         {
             logger.warning.apply( null , args ) ;
         }
@@ -552,17 +550,16 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return null ;
         }
 
-        var len = args.length ;
-        var i ;
-        var stack = [] ;
-        var item /*ObjectArgument*/ ;
-        var value ;
-        for ( i = 0 ; i<len ; i++)
+        let stack = [] ;
+        let len = args.length ;
+
+        for ( let i = 0 ; i<len ; i++)
         {
-            item  = args[i] ;
+            let item = args[i] ;
             if( item instanceof ObjectArgument )
             {
-                value = item.value ;
+                let value = item.value ;
+
                 try
                 {
                     if ( item.policy === ObjectAttribute.REFERENCE )
@@ -585,9 +582,9 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
                     stack.push( value ) ;
                 }
-                catch( e )
+                catch( er )
                 {
-                    this.warn( this + " createArguments failed : " + e.toString() ) ;
+                    this.warn( this + " createArguments failed : " + er.toString() ) ;
                 }
             }
         }
@@ -646,7 +643,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         }
         else if ( strategy instanceof ObjectProperty )
         {
-            var factoryProperty = strategy ;
+            let factoryProperty = strategy ;
 
             name = factoryProperty.name ;
 
@@ -692,13 +689,13 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    dependsOn : { value : function( definition )
+    dependsOn : { value : function( definition ) // FIXME Array of String or String
     {
         if ( (definition instanceof ObjectDefinition) && (definition.dependsOn instanceof Array) && (definition.dependsOn.length > 0 ) )
         {
-            var id ;
-            var len = definition.dependsOn.length ;
-            for ( var i = 0 ; i<len ; i++ )
+            let id ;
+            let len = definition.dependsOn.length ;
+            for ( let i = 0 ; i<len ; i++ )
             {
                 id = definition.dependsOn[i] ;
                 if ( this.hasObjectDefinition(id) )
@@ -727,10 +724,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return value ;
         }
         this._evaluator.clear() ;
-        var o ;
-        var s = evaluators.length ;
-        var a = [] ;
-        for ( var i = 0 ; i < s ; i++ )
+        let o ;
+        let s = evaluators.length ;
+        let a = [] ;
+        for ( let i = 0 ; i < s ; i++ )
         {
             o = evaluators[i] ;
             if ( o === null )
@@ -766,19 +763,19 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    generates : { value : function( definition /*ObjectDefinition*/  )
+    generates : { value : function( definition ) // FIXME can use a String or an Array of String ?
     {
-        if ( (definition instanceof ObjectDefinition) && (definition.generates !== null) )
+        if ( (definition instanceof ObjectDefinition) && ( definition.generates instanceof Array ) )
         {
-            var id ;
-            var ar = definition.generates ;
-            var len = ar.length ;
+            let id ;
+            let ar = definition.generates ;
+            let len = ar.length ;
             if ( len > 0 )
             {
-                for ( var i = 0 ; i<len ; i++ )
+                for ( let i = 0 ; i<len ; i++ )
                 {
                    id = ar[i] ;
-                   if ( this.hasObjectDefinition(id))
+                   if ( this.hasObjectDefinition(id) )
                    {
                        this.getObject(id) ; // not keep in memory
                    }
@@ -788,22 +785,26 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     }},
 
     /**
-     * Invokes the destroy method of the specified object, if the init method is define in the IDefinition object.
+     * Invokes the destroy method of the specified object, if the <code>destroyMethodName</code> property is define in the <code>ObjectDefinition</code> object.
      * @private
      * @name invokeDestroyMethod
      * @memberof system.ioc.ObjectFactory
      * @instance
      * @function
      */
-    invokeDestroyMethod : { value : function( o , definition = null )
+    invokeDestroyMethod : { value : function( id )
     {
-        if( definition && definition instanceof ObjectDefinition )
+        if( this.hasObjectDefinition(id) && this._singletons.has(id) )
         {
-            var name = definition.destroyMethodName || null ;
+            let definition = this.getObjectDefinition(id) ;
+            let o = this._singletons.get(id) ;
+
+            let name = definition.destroyMethodName || null ;
             if ( name === null && this.config !== null )
             {
                 name = this.config.defaultDestroyMethod ;
             }
+
             if( name && (name in o) && (o[name] instanceof Function) )
             {
                 o[name].call(o) ;
@@ -819,11 +820,11 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    invokeInitMethod : { value : function( o , definition /*ObjectDefinition*/ = null )
+    invokeInitMethod : { value : function( o , definition = null )
     {
         if( definition && (definition instanceof ObjectDefinition) )
         {
-            var name = definition.initMethodName || null ;
+            let name = definition.initMethodName || null ;
             if ( (name === null) && this.config )
             {
                 name = this.config.defaultInitMethod || null ;
@@ -843,7 +844,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    populateIdentifiable : { value : function( o , definition /*ObjectDefinition*/ = null )
+    populateIdentifiable : { value : function( o , definition = null )
     {
         if( definition && (definition instanceof ObjectDefinition) )
         {
@@ -869,12 +870,12 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     {
         if( definition && (definition instanceof ObjectDefinition) )
         {
-            var properties = definition.properties ;
+            let properties = definition.properties ;
             if ( properties && (properties instanceof Array) && properties.length > 0 )
             {
-                var id = definition.id ;
-                var size = properties.length ;
-                for( var i = 0 ; i < size ; i++ )
+                let id  = definition.id ;
+                let len = properties.length ;
+                for( let i = 0 ; i < len ; i++ )
                 {
                     this.populateProperty( o , properties[i] , id ) ;
                 }
@@ -893,7 +894,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    populateProperty : { value : function( o , prop /*ObjectProperty*/ , id )
+    populateProperty : { value : function( o , prop , id )
     {
         if ( o === null )
         {
@@ -901,8 +902,8 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return ;
         }
 
-        var name = prop.name ;
-        var value = prop.value ;
+        let name = prop.name ;
+        let value = prop.value ;
 
         //////////// #init magic strategy to populate the property
 
@@ -1009,10 +1010,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         var size = listeners.length ;
         if ( size > 0 )
         {
-            var dispatcher ;
-            var method ;
-            var listener ;
-            for (var i = 0 ; i<size ; i++ )
+            let dispatcher ;
+            let method ;
+            let listener ;
+            for ( let i = 0 ; i<size ; i++ )
             {
                 try
                 {
@@ -1058,10 +1059,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return ;
         }
 
-        var slot , signaler , receiver ;
-        var len = receivers.length ;
+        let slot , signaler , receiver ;
+        let len = receivers.length ;
 
-        for (var i = 0 ; i<len ; i++ )
+        for (let i = 0 ; i<len ; i++ )
         {
             try
             {

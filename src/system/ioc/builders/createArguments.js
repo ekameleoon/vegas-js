@@ -33,19 +33,19 @@ export function createArguments( a )
 
                 if ( ref !== null && ref.length > 0 )
                 {
-                    args.push( new ObjectArgument( ref , ObjectAttribute.REFERENCE , evaluators ) ) ; // ref argument
+                    args.push( new ObjectArgument( ref , ObjectAttribute.REFERENCE , evaluators ) ) ;
                 }
                 else if ( conf !== null && conf.length > 0 )
                 {
-                    args.push( new ObjectArgument( conf , ObjectAttribute.CONFIG , evaluators ) ) ; // config argument
+                    args.push( new ObjectArgument( conf , ObjectAttribute.CONFIG , evaluators ) ) ;
                 }
                 else if ( i18n !== null && i18n.length > 0 )
                 {
-                    args.push( new ObjectArgument( i18n , ObjectAttribute.LOCALE , evaluators ) ) ; // locale argument
+                    args.push( new ObjectArgument( i18n , ObjectAttribute.LOCALE , evaluators ) ) ;
                 }
                 else
                 {
-                    args.push( new ObjectArgument( value , ObjectAttribute.VALUE , evaluators ) ) ; // value argument
+                    args.push( new ObjectArgument( value , ObjectAttribute.VALUE , evaluators ) ) ;
                 }
             }
         }
