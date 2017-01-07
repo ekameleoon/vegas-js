@@ -11,42 +11,53 @@
  */
 export function MapEntry( key , value )
 {
-    /**
-     * The key representation of the entry.
-     */
-    this.key = key   ;
+    Object.defineProperties( this ,
+    {
+        /**
+         * The key representation of the entry.
+         * @name key
+         * @memberof system.data.maps.MapEntry
+         * @instance
+         */
+        key : { value : key , writable : true },
 
-    /**
-     * The value representation of the entry.
-     */
-    this.value = value ;
+        /**
+         * The value representation of the entry.
+         * @name value
+         * @memberof system.data.maps.MapEntry
+         * @instance
+         */
+        value : { value : value , writable : true }
+    }) ;
 }
 
-MapEntry.prototype = Object.create( Object.prototype ) ;
-MapEntry.prototype.constructor = MapEntry ;
-
-/**
- * Creates and returns a shallow copy of the object.
- * @return A new object that is a shallow copy of this instance.
- * @name clone
- * @memberof system.data.maps.MapEntry
- * @instance
- * @function
- */
-MapEntry.prototype.clone = function()
+MapEntry.prototype = Object.create( Object.prototype ,
 {
-    return new MapEntry( this.key , this.value ) ;
-}
+    constructor : { value : MapEntry } ,
 
-/**
- * Returns the String representation of the object.
- * @return the String representation of the object.
- * @name toString
- * @memberof system.data.maps.MapEntry
- * @instance
- * @function
- */
-MapEntry.prototype.toString = function()
-{
-    return "[MapEntry key:" + this.key + " value:" + this.value + "]" ;
-}
+    /**
+     * Creates and returns a shallow copy of the object.
+     * @return A new object that is a shallow copy of this instance.
+     * @name clone
+     * @memberof system.data.maps.MapEntry
+     * @instance
+     * @function
+     */
+    clone : { value : function()
+    {
+        return new MapEntry( this.key , this.value ) ;
+    }},
+
+    /**
+     * Returns the String representation of the object.
+     * @return the String representation of the object.
+     * @name toString
+     * @memberof system.data.maps.MapEntry
+     * @instance
+     * @function
+     */
+    toString : { value : function()
+    {
+        return "[MapEntry key:" + this.key + " value:" + this.value + "]" ;
+    }}
+}) ;

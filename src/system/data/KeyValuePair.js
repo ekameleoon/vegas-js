@@ -45,6 +45,16 @@ KeyValuePair.prototype = Object.create( Object.prototype ,
     clone : { value : function () { return new KeyValuePair() } , writable : true } ,
 
     /**
+     * Copies all of the mappings from the specified map to this map (optional operation).
+     * @param {system.data.KeyValuePair} map - The map to fill the current map.
+     * @name setAll
+     * @memberof system.data.KeyValuePair
+     * @instance
+     * @function
+     */
+    copyFrom : { value : function( map ) {} , writable : true } ,
+
+    /**
      * The <code>delete()</code> method removes the specified element from a KeyValuePair object.
      * @param {*} key - The key of the entry to remove.
      * @name delete
@@ -146,16 +156,6 @@ KeyValuePair.prototype = Object.create( Object.prototype ,
      * @function
      */
     set : { value : function( key , value ) {} , writable : true } ,
-
-    /**
-     * Copies all of the mappings from the specified map to this map (optional operation).
-     * @param {system.data.KeyValuePair} map - The map to fill the current map.
-     * @name setAll
-     * @memberof system.data.KeyValuePair
-     * @instance
-     * @function
-     */
-    setAll : { value : function( map /*KeyValuePair*/ ) {} , writable : true } ,
 
     /**
      * Returns the string representation of this instance.

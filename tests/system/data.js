@@ -6,3 +6,6 @@ import './data/Iterator.js' ;
 import './data/Method.js' ;
 import './data/Property.js' ;
 import './data/ValueObject.js' ;
+
+// maps
+import './data/maps/ArrayMap.js' ;

@@ -165,118 +165,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -3007,9 +2896,13 @@ function isEvaluable(target) {
   return false;
 }
 function Evaluable() {}
-Evaluable.prototype = Object.create(Object.prototype);
-Evaluable.prototype.constructor = Evaluable;
-Evaluable.prototype.eval = function (value) {};
+Evaluable.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: Evaluable },
+  eval: { writable: true, value: function value(_value) {} },
+  toString: { writable: true, value: function value() {
+      return '[' + this.constructor.name + ']';
+    } }
+});
 
 function isFormattable(target) {
   if (target) {
@@ -3106,6 +2999,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   clone: { value: function value() {
       return new KeyValuePair();
     }, writable: true },
+  copyFrom: { value: function value(map) {}, writable: true },
   delete: { value: function value(key) {}, writable: true },
   forEach: { value: function value(callback) {
       var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -3132,7 +3026,6 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
       return null;
     }, writable: true },
   set: { value: function value(key, _value2) {}, writable: true },
-  setAll: { value: function value(map /*KeyValuePair*/) {}, writable: true },
   toString: { value: function value() {
       return '[' + this.constructor.name + ']';
     }, writable: true },
@@ -3259,41 +3152,45 @@ MapIterator.prototype = Object.create(Iterator.prototype, {
 });
 
 function MapEntry(key, value) {
-  this.key = key;
-  this.value = value;
+  Object.defineProperties(this, {
+    key: { value: key, writable: true },
+    value: { value: value, writable: true }
+  });
 }
-MapEntry.prototype = Object.create(Object.prototype);
-MapEntry.prototype.constructor = MapEntry;
-MapEntry.prototype.clone = function () {
-  return new MapEntry(this.key, this.value);
-};
-MapEntry.prototype.toString = function () {
-  return "[MapEntry key:" + this.key + " value:" + this.value + "]";
-};
+MapEntry.prototype = Object.create(Object.prototype, {
+  constructor: { value: MapEntry },
+  clone: { value: function value() {
+      return new MapEntry(this.key, this.value);
+    } },
+  toString: { value: function value() {
+      return "[MapEntry key:" + this.key + " value:" + this.value + "]";
+    } }
+});
 
 function MapFormatter() {}
-MapFormatter.prototype = Object.create(Object.prototype);
-MapFormatter.prototype.constructor = MapFormatter;
-MapFormatter.prototype.format = function (value) {
-    if (value && value instanceof KeyValuePair) {
-        var r = "{";
-        var keys = value.keys();
-        var len = keys.length;
-        if (len > 0) {
-            var values = value.values();
-            for (var i = 0; i < len; i++) {
-                r += keys[i] + ':' + values[i];
-                if (i < len - 1) {
-                    r += ",";
+MapFormatter.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: MapFormatter },
+    format: { value: function value(_value) {
+            if (_value instanceof KeyValuePair) {
+                var r = "{";
+                var keys = _value.keys();
+                var len = keys.length;
+                if (len > 0) {
+                    var values = _value.values();
+                    for (var i = 0; i < len; i++) {
+                        r += keys[i] + ':' + values[i];
+                        if (i < len - 1) {
+                            r += ",";
+                        }
+                    }
                 }
+                r += "}";
+                return r;
+            } else {
+                return "{}";
             }
-        }
-        r += "}";
-        return r;
-    } else {
-        return "{}";
-    }
-};
+        } }
+});
 var formatter = new MapFormatter();
 
 function ArrayMap() {
@@ -3322,138 +3219,137 @@ ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
     constructor: { writable: true, value: ArrayMap },
     length: { get: function get() {
             return this._keys.length;
+        } },
+    clear: { value: function value() {
+            this._keys = [];
+            this._values = [];
+        } },
+    clone: { value: function value() {
+            return new ArrayMap(this._keys, this._values);
+        } },
+    copyFrom: { value: function value(map) {
+            if (!map || !(map instanceof KeyValuePair)) {
+                return;
+            }
+            var keys = map.keys();
+            var values = map.values();
+            var l = keys.length;
+            for (var i = 0; i < l; i = i - -1) {
+                this.set(keys[i], values[i]);
+            }
+        } },
+    delete: { value: function value(key) {
+            var v = null;
+            var i = this.indexOfKey(key);
+            if (i > -1) {
+                v = this._values[i];
+                this._keys.splice(i, 1);
+                this._values.splice(i, 1);
+            }
+            return v;
+        } },
+    forEach: { value: function value(callback) {
+            var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            if (typeof callback !== "function") {
+                throw new TypeError(callback + ' is not a function');
+            }
+            var l = this._keys.length;
+            for (var i = 0; i < l; i++) {
+                callback.call(thisArg, this._values[i], this._keys[i], this);
+            }
+        } },
+    get: { value: function value(key) {
+            return this._values[this.indexOfKey(key)];
+        } },
+    getKeyAt: { value: function value(index) {
+            return this._keys[index];
+        } },
+    getValueAt: { value: function value(index /*uint*/) {
+            return this._values[index];
+        } },
+    has: { value: function value(key) {
+            return this.indexOfKey(key) > -1;
+        } },
+    hasValue: { value: function value(_value) {
+            return this.indexOfValue(_value) > -1;
+        } },
+    indexOfKey: { value: function value(key) {
+            var l = this._keys.length;
+            while (--l > -1) {
+                if (this._keys[l] === key) {
+                    return l;
+                }
+            }
+            return -1;
+        } },
+    indexOfValue: { value: function value(_value2) {
+            var l = this._values.length;
+            while (--l > -1) {
+                if (this._values[l] === _value2) {
+                    return l;
+                }
+            }
+            return -1;
+        } },
+    isEmpty: { value: function value() {
+            return this._keys.length === 0;
+        } },
+    iterator: { value: function value() {
+            return new MapIterator(this);
+        } },
+    keyIterator: { value: function value()
+        {
+            return new ArrayIterator(this._keys);
+        } },
+    keys: { value: function value() {
+            return this._keys.concat();
+        } },
+    set: { value: function value(key, _value3) {
+            var r = null;
+            var i = this.indexOfKey(key);
+            if (i < 0) {
+                this._keys.push(key);
+                this._values.push(_value3);
+            } else {
+                r = this._values[i];
+                this._values[i] = _value3;
+            }
+            return r;
+        } },
+    setKeyAt: { value: function value(index, key) {
+            if (index >= this._keys.length) {
+                throw new RangeError("ArrayMap.setKeyAt(" + index + ") failed with an index out of the range.");
+            }
+            if (this.containsKey(key)) {
+                return null;
+            }
+            var k = this._keys[index];
+            if (k === undefined) {
+                return null;
+            }
+            var v = this._values[index];
+            this._keys[index] = key;
+            return new MapEntry(k, v);
+        } },
+    setValueAt: { value: function value(index, _value4) {
+            if (index >= this._keys.length) {
+                throw new RangeError("ArrayMap.setValueAt(" + index + ") failed with an index out of the range.");
+            }
+            var v = this._values[index];
+            if (v === undefined) {
+                return null;
+            }
+            var k = this._keys[index];
+            this._values[index] = _value4;
+            return new MapEntry(k, v);
+        } },
+    toString: { value: function value() {
+            return formatter.format(this);
+        } },
+    values: { value: function value() {
+            return this._values.concat();
         } }
 });
-ArrayMap.prototype.constructor = ArrayMap;
-ArrayMap.prototype.clear = function () {
-    this._keys = [];
-    this._values = [];
-};
-ArrayMap.prototype.clone = function () {
-    return new ArrayMap(this._keys, this._values);
-};
-ArrayMap.prototype.delete = function (key) {
-    var v = null;
-    var i = this.indexOfKey(key);
-    if (i > -1) {
-        v = this._values[i];
-        this._keys.splice(i, 1);
-        this._values.splice(i, 1);
-    }
-    return v;
-};
-ArrayMap.prototype.forEach = function (callback) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    if (typeof callback !== "function") {
-        throw new TypeError(callback + ' is not a function');
-    }
-    var l = this._keys.length;
-    for (var i = 0; i < l; i++) {
-        callback.call(thisArg, this._values[i], this._keys[i], this);
-    }
-};
-ArrayMap.prototype.get = function (key) {
-    return this._values[this.indexOfKey(key)];
-};
-ArrayMap.prototype.getKeyAt = function (index) {
-    return this._keys[index];
-};
-ArrayMap.prototype.getValueAt = function (index /*uint*/) {
-    return this._values[index];
-};
-ArrayMap.prototype.has = function (key) {
-    return this.indexOfKey(key) > -1;
-};
-ArrayMap.prototype.hasValue = function (value) {
-    return this.indexOfValue(value) > -1;
-};
-ArrayMap.prototype.indexOfKey = function (key) {
-    var l = this._keys.length;
-    while (--l > -1) {
-        if (this._keys[l] === key) {
-            return l;
-        }
-    }
-    return -1;
-};
-ArrayMap.prototype.indexOfValue = function (value) {
-    var l = this._values.length;
-    while (--l > -1) {
-        if (this._values[l] === value) {
-            return l;
-        }
-    }
-    return -1;
-};
-ArrayMap.prototype.isEmpty = function () {
-    return this._keys.length === 0;
-};
-ArrayMap.prototype.iterator = function () {
-    return new MapIterator(this);
-};
-ArrayMap.prototype.keyIterator = function ()
-{
-    return new ArrayIterator(this._keys);
-};
-ArrayMap.prototype.keys = function () {
-    return this._keys.concat();
-};
-ArrayMap.prototype.set = function (key, value) {
-    var r = null;
-    var i = this.indexOfKey(key);
-    if (i < 0) {
-        this._keys.push(key);
-        this._values.push(value);
-    } else {
-        r = this._values[i];
-        this._values[i] = value;
-    }
-    return r;
-};
-ArrayMap.prototype.setAll = function (map) {
-    if (!map || !(map instanceof KeyValuePair)) {
-        return;
-    }
-    var keys = map.keys();
-    var values = map.values();
-    var l = keys.length;
-    for (var i = 0; i < l; i = i - -1) {
-        this.put(keys[i], values[i]);
-    }
-};
-ArrayMap.prototype.setKeyAt = function (index, key) {
-    if (index >= this._keys.length) {
-        throw new RangeError("ArrayMap.setKeyAt(" + index + ") failed with an index out of the range.");
-    }
-    if (this.containsKey(key)) {
-        return null;
-    }
-    var k = this._keys[index];
-    if (k === undefined) {
-        return null;
-    }
-    var v = this._values[index];
-    this._keys[index] = key;
-    return new MapEntry(k, v);
-};
-ArrayMap.prototype.setValueAt = function (index, value) {
-    if (index >= this._keys.length) {
-        throw new RangeError("ArrayMap.setValueAt(" + index + ") failed with an index out of the range.");
-    }
-    var v = this._values[index];
-    if (v === undefined) {
-        return null;
-    }
-    var k = this._keys[index];
-    this._values[index] = value;
-    return new MapEntry(k, v);
-};
-ArrayMap.prototype.toString = function () {
-    return formatter.format(this);
-};
-ArrayMap.prototype.values = function () {
-    return this._values.concat();
-};
 
 /**
  * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
@@ -5024,22 +4920,17 @@ ObjectArgument.prototype = Object.create(Object.prototype, {
         } }
 });
 
-function ConfigEvaluator(config /*ObjectConfig*/) {
+function ConfigEvaluator(config) {
     PropertyEvaluator.call(this);
     this.config = config instanceof ObjectConfig ? config : null;
     Object.defineProperties(this, {
-        target: {
-            get: function get() {
+        target: { get: function get() {
                 return this.config !== null ? this.config.config : null;
-            }
-        }
+            } }
     });
 }
 ConfigEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
-    constructor: { value: ConfigEvaluator },
-    toString: { value: function value() {
-            return '[ConfigEvaluator]';
-        } }
+    constructor: { value: ConfigEvaluator }
 });
 
 function LocaleEvaluator(config) {
@@ -5054,10 +4945,7 @@ function LocaleEvaluator(config) {
     });
 }
 LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
-    constructor: { value: LocaleEvaluator },
-    toString: { value: function value() {
-            return '[LocaleEvaluator]';
-        } }
+    constructor: { value: LocaleEvaluator }
 });
 
 function isLockable(target) {
@@ -5096,21 +4984,15 @@ function createArguments(a) {
         return null;
     } else {
         var args = [];
-        var o;
-        var evaluators;
-        var conf;
-        var i18n;
-        var ref;
-        var value;
         var l = a.length;
         for (var i = 0; i < l; i++) {
-            o = a[i];
+            var o = a[i];
             if (o !== null) {
-                conf = ObjectAttribute.CONFIG in o ? String(o[ObjectAttribute.CONFIG]) : null;
-                i18n = ObjectAttribute.LOCALE in o ? String(o[ObjectAttribute.LOCALE]) : null;
-                ref = ObjectAttribute.REFERENCE in o ? String(o[ObjectAttribute.REFERENCE]) : null;
-                value = ObjectAttribute.VALUE in o ? o[ObjectAttribute.VALUE] : null;
-                evaluators = ObjectAttribute.EVALUATORS in o ? o[ObjectAttribute.EVALUATORS] : null;
+                var conf = ObjectAttribute.CONFIG in o ? String(o[ObjectAttribute.CONFIG]) : null;
+                var i18n = ObjectAttribute.LOCALE in o ? String(o[ObjectAttribute.LOCALE]) : null;
+                var ref = ObjectAttribute.REFERENCE in o ? String(o[ObjectAttribute.REFERENCE]) : null;
+                var value = ObjectAttribute.VALUE in o ? o[ObjectAttribute.VALUE] : null;
+                var evaluators = ObjectAttribute.EVALUATORS in o ? o[ObjectAttribute.EVALUATORS] : null;
                 if (ref !== null && ref.length > 0) {
                     args.push(new ObjectArgument(ref, ObjectAttribute.REFERENCE, evaluators));
                 } else if (conf !== null && conf.length > 0) {
@@ -5223,7 +5105,7 @@ function createListeners(factory) {
 
 function ObjectStrategy() {}
 ObjectStrategy.prototype = Object.create(Object.prototype, {
-  constructor: { value: ObjectStrategy, writable: true },
+  constructor: { writable: true, value: ObjectStrategy },
   toString: { writable: true, value: function value() {
       return '[' + this.constructor.name + ']';
     } }
@@ -5235,34 +5117,34 @@ function ObjectProperty(name, value) {
     Object.defineProperties(this, {
         evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
         name: { value: name, writable: true },
-        policy: {
-            get: function get() {
-                return this._policy;
-            },
-            set: function set(str) {
-                switch (str) {
-                    case ObjectAttribute.ARGUMENTS:
-                    case ObjectAttribute.REFERENCE:
-                    case ObjectAttribute.CONFIG:
-                    case ObjectAttribute.LOCALE:
-                        {
-                            this._policy = str;
-                            break;
-                        }
-                    default:
-                        {
-                            this._policy = ObjectAttribute.VALUE;
-                        }
-                }
-            }
-        },
         value: { value: value, writable: true },
         _policy: { value: null, writable: true }
     });
     this.policy = policy;
 }
 ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { value: ObjectProperty, writable: true }
+    constructor: { writable: true, value: ObjectProperty },
+    policy: {
+        get: function get() {
+            return this._policy;
+        },
+        set: function set(str) {
+            switch (str) {
+                case ObjectAttribute.ARGUMENTS:
+                case ObjectAttribute.REFERENCE:
+                case ObjectAttribute.CONFIG:
+                case ObjectAttribute.LOCALE:
+                    {
+                        this._policy = str;
+                        break;
+                    }
+                default:
+                    {
+                        this._policy = ObjectAttribute.VALUE;
+                    }
+            }
+        }
+    }
 });
 
 function createProperties(factory) {
@@ -5325,10 +5207,8 @@ function createProperties(factory) {
             } else {
                 properties.push(new ObjectProperty(name, value, ObjectAttribute.VALUE, evaluators));
             }
-        } else {
-            if (logger && logger instanceof Logger) {
-                logger.warning("ObjectBuilder.createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
-            }
+        } else if (logger) {
+            logger.warning("createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
         }
     }
     return properties.length > 0 ? properties : null;
@@ -5422,7 +5302,7 @@ function ObjectMethod(name, args) {
   });
 }
 ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
-  constructor: { value: ObjectMethod, writable: true }
+  constructor: { writable: true, value: ObjectMethod }
 });
 
 function ObjectFactoryMethod(factory, name, args) {
@@ -5432,22 +5312,19 @@ function ObjectFactoryMethod(factory, name, args) {
     });
 }
 ObjectFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
-    constructor: { value: ObjectFactoryMethod, writable: true }
+    constructor: { writable: true, value: ObjectFactoryMethod }
 });
 Object.defineProperties(ObjectFactoryMethod, {
-    build: {
-        value: function value(o)
-        {
+    build: { value: function value(o) {
             if (o === null) {
                 return null;
             }
             if (ObjectAttribute.FACTORY in o && ObjectAttribute.NAME in o) {
-                return new ObjectFactoryMethod(o[ObjectAttribute.FACTORY || null], o[ObjectAttribute.NAME || null], createArguments(o[ObjectAttribute.ARGUMENTS] || null));
+                return new ObjectFactoryMethod(o[ObjectAttribute.FACTORY] || null, o[ObjectAttribute.NAME] || null, createArguments(o[ObjectAttribute.ARGUMENTS] || null));
             } else {
                 return null;
             }
-        }
-    }
+        } }
 });
 
 function ObjectFactoryProperty(factory, name) {
@@ -5462,8 +5339,7 @@ ObjectFactoryProperty.prototype = Object.create(ObjectProperty.prototype, {
 });
 Object.defineProperties(ObjectFactoryProperty, {
     build: {
-        value: function value(o)
-        {
+        value: function value(o) {
             if (o === null) {
                 return null;
             }
@@ -5495,8 +5371,7 @@ ObjectStaticFactoryMethod.prototype = Object.create(ObjectMethod.prototype, {
     constructor: { value: ObjectStaticFactoryMethod, writable: true }
 });
 Object.defineProperties(ObjectStaticFactoryMethod, {
-    build: {
-        value: function value(o) {
+    build: { value: function value(o) {
             if (o === null) {
                 return null;
             }
@@ -5506,8 +5381,7 @@ Object.defineProperties(ObjectStaticFactoryMethod, {
             } else {
                 return null;
             }
-        }
-    }
+        } }
 });
 
 function ObjectStaticFactoryProperty(name, type) {
@@ -5521,8 +5395,7 @@ ObjectStaticFactoryProperty.prototype = Object.create(ObjectProperty.prototype, 
     constructor: { value: ObjectStaticFactoryProperty, writable: true }
 });
 Object.defineProperties(ObjectStaticFactoryProperty, {
-    build: {
-        value: function value(o) {
+    build: { value: function value(o) {
             if (o === null) {
                 return null;
             }
@@ -5531,17 +5404,16 @@ Object.defineProperties(ObjectStaticFactoryProperty, {
             } else {
                 return null;
             }
-        }
-    }
+        } }
 });
 
 function ObjectValue(value) {
     Object.defineProperties(this, {
-        value: { value: value, writable: true }
+        value: { writable: true, value: value }
     });
 }
 ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { value: ObjectValue, writable: true }
+    constructor: { writable: true, value: ObjectValue }
 });
 
 function createStrategy(o) {
@@ -6026,22 +5898,24 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (!(id instanceof String || typeof id === 'string')) {
                 return null;
             }
-            var instance;
+            var instance = null;
             try {
                 var definition = this.getObjectDefinition(id);
                 if (!(definition instanceof ObjectDefinition)) {
-                    throw new Error(this + " getObject( " + id + " ) method failed, the object isn't register in the container.");
+                    throw new Error(this + " getObject( " + id + " ) method failed, the object isn't register in the factory.");
                 }
                 if (definition.singleton) {
                     instance = this._singletons.get(id) || null;
                 }
                 if (!instance) {
                     try {
-                        var type = this.config.typeEvaluator.eval(definition.type);
                         if (definition.strategy) {
                             instance = this.createObjectWithStrategy(definition.strategy);
-                        } else if (type instanceof Function) {
-                            instance = invoke(type, this.createArguments(definition.constructorArguments));
+                        } else {
+                            var type = this.config.typeEvaluator.eval(definition.type);
+                            if (type instanceof Function) {
+                                instance = invoke(type, this.createArguments(definition.constructorArguments));
+                            }
                         }
                     } catch (e) {
                         this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.");
@@ -6100,7 +5974,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
     removeSingleton: { value: function value(id) {
             if (this.isSingleton(id) && this._singletons.has(id)) {
-                this.invokeDestroyMethod(this._singletons.get(id), this.getObjectDefinition(id));
+                this.invokeDestroyMethod(id);
                 this._singletons.delete(id);
             }
         } },
@@ -6116,12 +5990,10 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 this.bufferSingletons = [];
             }
             if (this.objects instanceof Array && this.objects.length > 0) {
-                var definition;
-                var init;
                 while (this.objects.length > 0) {
-                    init = this.objects.shift();
+                    var init = this.objects.shift();
                     if (init !== null) {
-                        definition = createObjectDefinition(init);
+                        var definition = createObjectDefinition(init);
                         this.addObjectDefinition(definition);
                         if (definition.singleton && !definition.lazyInit) {
                             if (this.hasObjectDefinition(definition.id)) {
@@ -6134,8 +6006,8 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 }
             }
             if (this.bufferSingletons instanceof Array && this.bufferSingletons.length > 0 && !this._config.lazyInit && !this.isLocked()) {
-                var size = this.bufferSingletons.length;
-                for (var i = 0; i < size; i++) {
+                var len = this.bufferSingletons.length;
+                for (var i = 0; i < len; i++) {
                     this.getObject(this.bufferSingletons[i]);
                 }
                 this.bufferSingletons = null;
@@ -6143,7 +6015,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             this.notifyFinished();
         } },
     warn: { value: function value() {
-            if (this.config.useLogger && logger) {
+            if (this.config.useLogger) {
                 for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
                     args[_key] = arguments[_key];
                 }
@@ -6155,15 +6027,12 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (args === null || !(args instanceof Array) || args.length === 0) {
                 return null;
             }
-            var len = args.length;
-            var i;
             var stack = [];
-            var item;
-            var value;
-            for (i = 0; i < len; i++) {
-                item = args[i];
+            var len = args.length;
+            for (var i = 0; i < len; i++) {
+                var item = args[i];
                 if (item instanceof ObjectArgument) {
-                    value = item.value;
+                    var value = item.value;
                     try {
                         if (item.policy === ObjectAttribute.REFERENCE) {
                             value = this._config.referenceEvaluator.eval(value);
@@ -6176,8 +6045,8 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                             value = this.eval(value, item.evaluators);
                         }
                         stack.push(value);
-                    } catch (e) {
-                        this.warn(this + " createArguments failed : " + e.toString());
+                    } catch (er) {
+                        this.warn(this + " createArguments failed : " + er.toString());
                     }
                 }
             }
@@ -6234,9 +6103,10 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
             return instance;
         } },
-    dependsOn: { value: function value(definition) {
+    dependsOn: { value: function value(definition)
+        {
             if (definition instanceof ObjectDefinition && definition.dependsOn instanceof Array && definition.dependsOn.length > 0) {
-                var id;
+                var id = void 0;
                 var len = definition.dependsOn.length;
                 for (var i = 0; i < len; i++) {
                     id = definition.dependsOn[i];
@@ -6252,7 +6122,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 return _value;
             }
             this._evaluator.clear();
-            var o;
+            var o = void 0;
             var s = evaluators.length;
             var a = [];
             for (var i = 0; i < s; i++) {
@@ -6274,9 +6144,10 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
             return _value;
         } },
-    generates: { value: function value(definition /*ObjectDefinition*/) {
-            if (definition instanceof ObjectDefinition && definition.generates !== null) {
-                var id;
+    generates: { value: function value(definition)
+        {
+            if (definition instanceof ObjectDefinition && definition.generates instanceof Array) {
+                var id = void 0;
                 var ar = definition.generates;
                 var len = ar.length;
                 if (len > 0) {
@@ -6289,9 +6160,10 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 }
             }
         } },
-    invokeDestroyMethod: { value: function value(o) {
-            var definition = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-            if (definition && definition instanceof ObjectDefinition) {
+    invokeDestroyMethod: { value: function value(id) {
+            if (this.hasObjectDefinition(id) && this._singletons.has(id)) {
+                var definition = this.getObjectDefinition(id);
+                var o = this._singletons.get(id);
                 var name = definition.destroyMethodName || null;
                 if (name === null && this.config !== null) {
                     name = this.config.defaultDestroyMethod;
@@ -6302,7 +6174,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
         } },
     invokeInitMethod: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var definition = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             if (definition && definition instanceof ObjectDefinition) {
                 var name = definition.initMethodName || null;
                 if (name === null && this.config) {
@@ -6314,7 +6186,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
         } },
     populateIdentifiable: { value: function value(o) {
-            var definition /*ObjectDefinition*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var definition = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             if (definition && definition instanceof ObjectDefinition) {
                 if (definition.singleton && isIdentifiable(o)) {
                     if (definition.identify === true || this.config.identify === true && definition.identify !== false) {
@@ -6329,14 +6201,14 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 var properties = definition.properties;
                 if (properties && properties instanceof Array && properties.length > 0) {
                     var id = definition.id;
-                    var size = properties.length;
-                    for (var i = 0; i < size; i++) {
+                    var len = properties.length;
+                    for (var i = 0; i < len; i++) {
                         this.populateProperty(o, properties[i], id);
                     }
                 }
             }
         } },
-    populateProperty: { value: function value(o, prop /*ObjectProperty*/, id) {
+    populateProperty: { value: function value(o, prop, id) {
             if (o === null) {
                 this.warn(this + " populate a new property failed, the object not must be 'null' or 'undefined', see the factory with the object definition '" + id + "'.");
                 return;
@@ -6400,9 +6272,9 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
             var size = listeners.length;
             if (size > 0) {
-                var dispatcher;
-                var method;
-                var listener;
+                var dispatcher = void 0;
+                var method = void 0;
+                var listener = void 0;
                 for (var i = 0; i < size; i++) {
                     try {
                         method = null;
@@ -6429,7 +6301,9 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (!(receivers instanceof Array) || receivers.length === 0) {
                 return;
             }
-            var slot, signaler, receiver;
+            var slot = void 0,
+                signaler = void 0,
+                receiver = void 0;
             var len = receivers.length;
             for (var i = 0; i < len; i++) {
                 try {
@@ -6531,9 +6405,6 @@ ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
                 }
             }
             return this.undefineable;
-        } },
-    toString: { value: function value() {
-            return "[ReferenceEvaluator]";
         } }
 });
 
@@ -6587,9 +6458,6 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
                 }
             }
             return null;
-        } },
-    toString: { value: function value() {
-            return "[TypeEvaluator]";
         } }
 });
 

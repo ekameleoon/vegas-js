@@ -11,48 +11,54 @@ import { KeyValuePair } from '../KeyValuePair.js' ;
  */
 export function MapFormatter() {}
 
-MapFormatter.prototype = Object.create( Object.prototype ) ;
-MapFormatter.prototype.constructor = MapFormatter ;
-
-/**
- * Formats the specified value.
- * @param {system.data.KeyValuePair} value - The {@link system.data.KeyValuePair|KeyValuePair} map to format.
- * @return The string representation of the formatted value.
- */
-MapFormatter.prototype.format = function( value )
+MapFormatter.prototype = Object.create( Object.prototype ,
 {
-    if ( value && value instanceof KeyValuePair )
+    constructor : { writable : true , value : MapFormatter },
+
+    /**
+     * Formats the specified value.
+     * @param {system.data.KeyValuePair} value - The {@link system.data.KeyValuePair|KeyValuePair} map to format.
+     * @return The string representation of the formatted value.
+     * @name format
+     * @memberof system.data.maps.MapFormatter
+     * @instance
+     * @function
+     */
+    format : { value : function( value )
     {
-        var r = "{";
-        var keys   = value.keys()   ;
-        var len    = keys.length ;
-        if( len > 0 )
+        if ( value instanceof KeyValuePair )
         {
-            var values = value.values() ;
-            for( var i = 0 ; i<len ; i++ )
+            let r = "{";
+            let keys = value.keys()   ;
+            let len  = keys.length ;
+            if( len > 0 )
             {
-                r += keys[i] + ':' + values[i] ;
-                if( i < len - 1 )
+                let values = value.values() ;
+                for( let i = 0 ; i < len ; i++ )
                 {
-                    r += "," ;
+                    r += keys[i] + ':' + values[i] ;
+                    if( i < len - 1 )
+                    {
+                        r += "," ;
+                    }
                 }
             }
+            r += "}" ;
+            return r ;
         }
-        r += "}" ;
-        return r ;
-    }
-    else
-    {
-        return "{}" ;
-    }
-}
+        else
+        {
+            return "{}" ;
+        }
+    }}
+}) ;
 
 /**
  * The {@link system.data.maps.MapFormatter|MapFormatter} singleton.
- * @name MapFormatter
+ * @name formatter
  * @instance
  * @const
- * @type system.data.maps.MapFormatte
+ * @type system.data.maps.MapFormatter
  * @memberof system.data.maps
  */
 export var formatter = new MapFormatter() ;
