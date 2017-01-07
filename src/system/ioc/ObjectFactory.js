@@ -608,63 +608,55 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return null ;
         }
 
-        let args ;
+        let name = strategy.name ;
+
         let instance = null ;
-        let type ;
-        let factory ;
+        let object ;
         let ref ;
-        let name ;
-        let factoryMethod ;
 
         if ( strategy instanceof ObjectMethod )
         {
-            factoryMethod = strategy ;
-
-            name = factoryMethod.name ;
-            args = this.createArguments( factoryMethod.args ) ;
-
-            if ( factoryMethod instanceof ObjectStaticFactoryMethod )
+            if ( strategy instanceof ObjectStaticFactoryMethod )
             {
-                type = factoryMethod.type ;
-                if ( type !== null && name && (name in type) && (type[name] instanceof Function) )
+                object = strategy.type ;
+                if( object instanceof String || typeof(object) === 'string' )
                 {
-                    instance = type[name].apply( null , args ) ;
+                    object = this.config.typeEvaluator.eval( object ) ;
+                }
+                if ( object && name && (name in object) && (object[name] instanceof Function) )
+                {
+                    instance = object[name].apply( object , this.createArguments( strategy.args ) ) ;
                 }
             }
-            else if ( factoryMethod instanceof ObjectFactoryMethod )
+            else if ( strategy instanceof ObjectFactoryMethod )
             {
-                factory  = factoryMethod.factory ;
-                ref      = this.getObject( factory ) ;
-                if ( ( ref !== null ) && name && (name in ref) && (ref[name] instanceof Function) )
+                ref = this.getObject( strategy.factory ) ;
+                if ( ref && name && (name in ref) && (ref[name] instanceof Function) )
                 {
-                    instance = ref[name].apply( null, args ) ;
+                    instance = ref[name].apply( ref , this.createArguments( strategy.args ) ) ;
                 }
             }
         }
         else if ( strategy instanceof ObjectProperty )
         {
-            let factoryProperty = strategy ;
-
-            name = factoryProperty.name ;
-
-            if ( factoryProperty instanceof ObjectStaticFactoryProperty )
+            if ( strategy instanceof ObjectStaticFactoryProperty )
             {
-                type = this.config.typeEvaluator.eval( factoryProperty.type ) ;
-                if ( type && name && (name in type) )
+                object = strategy.type ;
+                if( object instanceof String || typeof(object) === 'string' )
                 {
-                    instance = type[name] ;
+                    object = this.config.typeEvaluator.eval( object ) ;
+                }
+                if ( object && name && (name in object) )
+                {
+                    instance = object[name] ;
                 }
             }
-            else if ( factoryProperty instanceof ObjectFactoryProperty )
+            else if ( strategy instanceof ObjectFactoryProperty )
             {
-                factory = factoryProperty.factory ;
-                if ( factory && this.hasObjectDefinition(factory) )
+                ref = this.getObject(strategy.factory) ;
+                if ( ref && name && (name in ref) )
                 {
-                    ref = this.getObject(factory) ;
-                    if ( ref && name && (name in ref) )
-                    {
-                        instance = ref[name] ;
-                    }
+                    instance = ref[name] ;
                 }
             }
         }
@@ -678,7 +670,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         }
         return instance ;
     }},
-
 
     /**
      * Invoked to creates all object in the factory register in the dependsOn collection.
