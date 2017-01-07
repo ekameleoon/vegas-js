@@ -116,9 +116,9 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @function
      * @instance
      */
-    internalLog : { value : function( message , level /*LoggerLevel*/ ) //jshint ignore:line
+    internalLog : { value : function( message , level ) //jshint ignore:line
     {
-            // override this method
+        // override this method
     }},
 
     /**
@@ -175,17 +175,14 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    formatDate :
+    formatDate : { value : function( d )
     {
-        value : function( d /*Date*/ ) 
-        {
-            var date  = "" ;
-            date += this.getDigit( d.getDate() ) ;
-            date += "/" + this.getDigit( d.getMonth() + 1 ) ;
-            date += "/" + d.getFullYear() ;
-            return date ;
-        }
-    },
+        var date  = "" ;
+        date += this.getDigit( d.getDate() ) ;
+        date += "/" + this.getDigit( d.getMonth() + 1 ) ;
+        date += "/" + d.getFullYear() ;
+        return date ;
+    }},
 
     /**
      * This method format the passed level in arguments.
@@ -195,13 +192,10 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    formatLevel :
+    formatLevel : { value : function( level  )
     {
-        value : function( level  ) 
-        {
-            return '[' + level + ']' ;
-        }
-    },
+        return '[' + level + ']' ;
+    }},
 
     /**
      * This method format the current line value.
@@ -211,13 +205,10 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    formatLines :
+    formatLines : { value : function()
     {
-        value : function() 
-        {
-            return "[" + this._lineNumber++ + "]" ;
-        }
-    },
+        return "[" + this._lineNumber++ + "]" ;
+    }},
 
     /**
      * This method format the log message.
@@ -227,39 +218,36 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    formatMessage :
+    formatMessage : { value : function( message , level  , channel  , date /*Date*/ )
     {
-        value : function( message , level  , channel  , date /*Date*/ ) 
+        var msg = "" ;
+        if (this.includeLines)
         {
-            var msg = "" ;
-            if (this.includeLines)
-            {
-                msg += this.formatLines() + this.separator ;
-            }
-            if( this.includeDate || this.includeTime )
-            {
-                date = date || new Date() ;
-                if (this.includeDate)
-                {
-                    msg += this.formatDate(date) + this.separator ;
-                }
-                if (this.includeTime)
-                {
-                    msg += this.formatTime(date) + this.separator ;
-                }
-            }
-            if (this.includeLevel)
-            {
-                msg += this.formatLevel(level || "" ) + this.separator ;
-            }
-            if ( this.includeChannel )
-            {
-                msg += ( channel || "" ) + this.separator ;
-            }
-            msg += message ;
-            return msg ;
+            msg += this.formatLines() + this.separator ;
         }
-    },
+        if( this.includeDate || this.includeTime )
+        {
+            date = date || new Date() ;
+            if (this.includeDate)
+            {
+                msg += this.formatDate(date) + this.separator ;
+            }
+            if (this.includeTime)
+            {
+                msg += this.formatTime(date) + this.separator ;
+            }
+        }
+        if (this.includeLevel)
+        {
+            msg += this.formatLevel(level || "" ) + this.separator ;
+        }
+        if ( this.includeChannel )
+        {
+            msg += ( channel || "" ) + this.separator ;
+        }
+        msg += message ;
+        return msg ;
+    }},
 
     /**
      * This method format the current Date passed in argument.
@@ -269,21 +257,18 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    formatTime :
+    formatTime : { value : function( d )
     {
-        value : function( d /*Date*/ ) 
+        var time  = "" ;
+        time += this.getDigit(d.getHours()) ;
+        time += ":" + this.getDigit(d.getMinutes()) ;
+        time += ":" + this.getDigit(d.getSeconds()) ;
+        if( this.includeMilliseconds )
         {
-            var time  = "" ;
-            time += this.getDigit(d.getHours()) ;
-            time += ":" + this.getDigit(d.getMinutes()) ;
-            time += ":" + this.getDigit(d.getSeconds()) ;
-            if( this.includeMilliseconds )
-            {
-                time += ":" + this.getDigit( d.getMilliseconds() ) ;
-            }
-            return time ;
+            time += ":" + this.getDigit( d.getMilliseconds() ) ;
         }
-    },
+        return time ;
+    }},
 
     /**
      * Returns the string representation of a number and use digit conversion.
@@ -294,15 +279,12 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
      * @instance
      * @protected
      */
-    getDigit :
+    getDigit : { value : function( n )
     {
-        value : function( n/*Number*/ ) 
+        if ( isNaN(n) )
         {
-            if ( isNaN(n) )
-            {
-                return "00" ;
-            }
-            return ((n < 10) ? "0" : "") + n ;
+            return "00" ;
         }
-    }
+        return ((n < 10) ? "0" : "") + n ;
+    }}
 });

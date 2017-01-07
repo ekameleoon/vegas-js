@@ -29,7 +29,7 @@ export function LoggerEntry( message , level , channel )
      * @instance
      * @type system.logging.LoggerLevel
      */
-    this.level   = level instanceof LoggerLevel ? level : LoggerLevel.ALL ;
+    this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL ;
 
     /**
      * The message of the log.

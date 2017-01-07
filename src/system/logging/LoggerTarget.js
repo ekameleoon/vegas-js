@@ -32,7 +32,6 @@ export function LoggerTarget()
         _filters : { value : ["*"] , writable : true } ,
         _level   : { value : LoggerLevel.ALL , writable : true }
     }) ;
-
     this.factory = Log ;
 }
 
@@ -49,10 +48,7 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      */
     factory :
     {
-        get : function()
-        {
-            return this._factory ;
-        },
+        get : function() { return this._factory ; },
         set : function( factory )
         {
             if ( this._factory )
@@ -72,17 +68,14 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      */
     filters :
     {
-        get : function()
+        get : function() { return [].concat( this._filters ) ; },
+        set : function( value )
         {
-            return [].concat( this._filters ) ;
-        },
-        set : function( value  ) /*void*/
-        {
-            var filters  = [] ;
+            let filters  = [] ;
             if ( value && value instanceof Array && value.length > 0 )
             {
-                var filter ;
-                var length = value.length ;
+                let filter ;
+                let length = value.length ;
                 for ( var i = 0 ; i < length ; i++ )
                 {
                     filter = value[i] ;
@@ -120,11 +113,8 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      */
     level :
     {
-        get : function()
-        {
-            return this._level ;
-        },
-        set : function( value /*LoggerLevel*/ ) /*void*/
+        get : function() { return this._level ; },
+        set : function( value )
         {
             this._factory.removeTarget( this ) ;
             this._level = value || LoggerLevel.ALL ; // FIXME filter and validate the level
@@ -141,20 +131,17 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @param {string} channel - The channel to rgister.
      * @return <code>true</code> if the channel is add in the list.
      */
-    addFilter :
+    addFilter : { value : function ( channel )
     {
-        value : function ( channel )
+        this._checkFilter( channel ) ;
+        let index = this._filters.indexOf( channel ) ;
+        if ( index === -1 )
         {
-            this._checkFilter( channel ) ;
-            var index = this._filters.indexOf( channel ) ;
-            if ( index === -1 )
-            {
-                this._filters.push( channel ) ;
-                return true ;
-            }
-            return false ;
+            this._filters.push( channel ) ;
+            return true ;
         }
-    },
+        return false ;
+    }},
 
     /**
      * Sets up this target with the specified logger.
@@ -165,17 +152,14 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @function
      * @param {system.logging.Logger} logger - The logger to register.
      */
-    addLogger :
+    addLogger : { value : function ( logger )
     {
-        value : function ( logger )
+        if ( logger && logger instanceof Logger )
         {
-            if ( logger && logger instanceof Logger )
-            {
-                this._count ++ ;
-                logger.connect( this ) ;
-            }
+            this._count ++ ;
+            logger.connect( this ) ;
         }
-    },
+    }},
 
     /**
      * This method receive a <code>LoggerEntry</code> from an associated logger.
@@ -188,13 +172,10 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @function
      * @param {system.logging.LogEntry} entry - The log entry reference.
      */
-    logEntry :
+    logEntry : { value : function( entry ) //jshint ignore:line
     {
-        value : function( entry ) //jshint ignore:line
-        {
-            // override
-        }
-    },
+        // override
+    }},
 
     /**
      * This method is called when the receiver is connected with a Signal object.
@@ -204,23 +185,20 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @function
      * @param {*} values - All the values emitting by the signals connected with this object.
      */
-    receive :
+    receive : { value : function( entry )
     {
-        value : function( entry )
+        if ( entry instanceof LoggerEntry )
         {
-            if ( entry instanceof LoggerEntry )
+            if ( this._level === LoggerLevel.NONE )
             {
-                if ( this._level === LoggerLevel.NONE )
-                {
-                    return ; // logging off
-                }
-                else if ( entry.level.valueOf() >= this._level.valueOf() )
-                {
-                    this.logEntry( entry ) ;
-                }
+                return ; // logging off
+            }
+            else if ( entry.level.valueOf() >= this._level.valueOf() )
+            {
+                this.logEntry( entry ) ;
             }
         }
-    },
+    }},
 
     /**
      * Removes a channel in the fllters collection if this channel exist.
@@ -231,22 +209,19 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @instance
      * @function
      */
-    removeFilter :
+    removeFilter : { value : function( channel )
     {
-        value : function( channel )
+        if ( channel && (typeof(channel) === "string" || (channel instanceof String) ) && ( channel !== "" ) )
         {
-            if ( channel && (typeof(channel) === "string" || (channel instanceof String) ) && ( channel !== "" ) )
+            let index = this._filters.indexOf( channel ) ;
+            if ( index > -1 )
             {
-                var index  = this._filters.indexOf( channel ) ;
-                if ( index > -1 )
-                {
-                    this._filters.splice( index , 1 ) ;
-                    return true ;
-                }
+                this._filters.splice( index , 1 ) ;
+                return true ;
             }
-            return false ;
         }
-    },
+        return false ;
+    }},
 
     /**
      * Stops this target from receiving events from the specified logger.
@@ -255,43 +230,37 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @instance
      * @function
      */
-    removeLogger :
+    removeLogger : { value : function( logger )
     {
-        value : function( logger /*Logger*/ ) /*void*/
+        if ( logger instanceof Logger )
         {
-            if ( logger instanceof Logger )
-            {
-                this._count-- ;
-                logger.disconnect( this ) ;
-            }
+            this._count-- ;
+            logger.disconnect( this ) ;
         }
-    },
+    }},
 
     /**
      * @private
      */
-    _checkFilter :
+    _checkFilter : { value : function( filter )
     {
-        value : function( filter ) /*void*/
+        if ( filter === null )
         {
-            if ( filter === null )
-            {
-                throw new InvalidFilterError( strings.EMPTY_FILTER  ) ;
-            }
-
-            if ( this._factory.hasIllegalCharacters( filter ) )
-            {
-                 throw new InvalidFilterError( fastformat( strings.ERROR_FILTER , filter ) + strings.CHARS_INVALID ) ;
-            }
-
-            var index  = filter.indexOf("*") ;
-
-            if ( (index >= 0) && (index !== (filter.length -1)) )
-            {
-                throw new InvalidFilterError( fastformat( strings.ERROR_FILTER , filter) + strings.CHAR_PLACEMENT ) ;
-            }
+            throw new InvalidFilterError( strings.EMPTY_FILTER  ) ;
         }
-    },
+
+        if ( this._factory.hasIllegalCharacters( filter ) )
+        {
+             throw new InvalidFilterError( fastformat( strings.ERROR_FILTER , filter ) + strings.CHARS_INVALID ) ;
+        }
+
+        var index  = filter.indexOf("*") ;
+
+        if ( (index >= 0) && (index !== (filter.length -1)) )
+        {
+            throw new InvalidFilterError( fastformat( strings.ERROR_FILTER , filter) + strings.CHAR_PLACEMENT ) ;
+        }
+    }},
 
     /**
      * Returns the String representation of the object.
@@ -300,5 +269,5 @@ LoggerTarget.prototype = Object.create( Receiver.prototype ,
      * @instance
      * @function
      */
-    toString : { value : function() { return '[LoggerTarget]' ; } },
+    toString : { value : function() { return '[LoggerTarget]' ; } }
 });

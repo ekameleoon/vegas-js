@@ -62,58 +62,55 @@ ConsoleTarget.prototype = Object.create( LineFormattedTarget.prototype ,
      * @function
      * @instance
      */
-    internalLog :
+    internalLog : { value : function( message , level ) //jshint ignore:line
     {
-        value : function( message , level ) //jshint ignore:line
+        if( console )
         {
-            if( console )
+            switch( level )
             {
-                switch( level )
+                case LoggerLevel.CRITICAL :
                 {
-                    case LoggerLevel.CRITICAL :
+                    console.trace( message ) ;
+                    break ;
+                }
+                case LoggerLevel.DEBUG :
+                {
+                    if( console.debug )
+                    {
+                        console.debug( message ) ;
+                    }
+                    else if ( console.trace )
                     {
                         console.trace( message ) ;
-                        break ;
                     }
-                    case LoggerLevel.DEBUG :
-                    {
-                        if( console.debug )
-                        {
-                            console.debug( message ) ;
-                        }
-                        else if ( console.trace )
-                        {
-                            console.trace( message ) ;
-                        }
-                        break ;
-                    }
-                    case LoggerLevel.ERROR :
-                    {
-                        console.error( message ) ;
-                        break ;
-                    }
-                    case LoggerLevel.INFO :
-                    {
-                        console.info( message ) ;
-                        break ;
-                    }
-                    case LoggerLevel.WARNING :
-                    {
-                        console.warn( message ) ;
-                        break ;
-                    }
-                    default :
-                    case LoggerLevel.ALL :
-                    {
-                        console.log( message ) ;
-                        break ;
-                    }
+                    break ;
+                }
+                case LoggerLevel.ERROR :
+                {
+                    console.error( message ) ;
+                    break ;
+                }
+                case LoggerLevel.INFO :
+                {
+                    console.info( message ) ;
+                    break ;
+                }
+                case LoggerLevel.WARNING :
+                {
+                    console.warn( message ) ;
+                    break ;
+                }
+                default :
+                case LoggerLevel.ALL :
+                {
+                    console.log( message ) ;
+                    break ;
                 }
             }
-            else
-            {
-                throw new new ReferenceError('The console reference is unsupported.') ;
-            }
         }
-    }
+        else
+        {
+            throw new new ReferenceError('The console reference is unsupported.') ;
+        }
+    }}
 });

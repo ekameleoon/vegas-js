@@ -45,11 +45,11 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
     {
         if( target && (target instanceof LoggerTarget) )
         {
-            var channel  ;
-            var log /*Logger*/ ;
+            let channel  ;
+            let log ;
 
-            var filters  = target.filters ;
-            var it /*Iterator*/   = this._loggers.iterator() ;
+            let filters  = target.filters ;
+            let it = this._loggers.iterator() ;
             while ( it.hasNext() )
             {
                 log     = it.next() ;
@@ -111,9 +111,7 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
             logger = new Logger( channel ) ;
             this._loggers.set( channel , logger ) ;
         }
-
         let target;
-
         let len = this._targets.length ;
         for( var i = 0 ; i<len ; i++ )
         {
@@ -123,7 +121,6 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
                 target.addLogger( logger ) ;
             }
         }
-
         return logger ;
     }},
 
@@ -212,41 +209,38 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      * @memberof system.logging.LoggerFactory
      * @function
      */
-    removeTarget :
+    removeTarget : { value : function ( target )
     {
-        value : function ( target )
+        if( target && target instanceof LoggerTarget )
         {
-            if( target && target instanceof LoggerTarget )
+            var log ;
+            var filters = target.filters;
+            var it = this._loggers.iterator() ;
+            while ( it.hasNext() )
             {
-                var log ;
-                var filters = target.filters;
-                var it = this._loggers.iterator() ;
-                while ( it.hasNext() )
+                log = it.next() ;
+                var c = it.key() ;
+                if( this._channelMatchInFilterList( c, filters ) )
                 {
-                    log = it.next() ;
-                    var c = it.key() ;
-                    if( this._channelMatchInFilterList( c, filters ) )
-                    {
-                        target.removeLogger( log );
-                    }
+                    target.removeLogger( log );
                 }
-                var len = this._targets.length ;
-                for( var i = 0  ; i < len ; i++ )
-                {
-                    if( target === this._targets[i] )
-                    {
-                        this._targets.splice(i, 1) ;
-                        i-- ;
-                    }
-                }
-                this._resetTargetLevel() ;
             }
-            else
+            var len = this._targets.length ;
+            for( var i = 0  ; i < len ; i++ )
             {
-                throw new Error( strings.INVALID_TARGET );
+                if( target === this._targets[i] )
+                {
+                    this._targets.splice(i, 1) ;
+                    i-- ;
+                }
             }
+            this._resetTargetLevel() ;
         }
-    },
+        else
+        {
+            throw new Error( strings.INVALID_TARGET );
+        }
+    }},
 
     /**
      * Returns the String representation of the object.
@@ -264,30 +258,27 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      * @return <code>true</code> if the specified category matches any of the filter expressions found in the filters list, <code>false</code> otherwise.
      * @private
      */
-    _channelMatchInFilterList :
+    _channelMatchInFilterList : { value : function( channel  , filters  )
     {
-        value : function( channel  , filters  )
+        let filter  ;
+        let index = -1;
+        let len = filters.length ;
+        for( var i  = 0 ; i<len ; i++ )
         {
-            var filter  ;
-            var index  = -1;
-            var len  = filters.length ;
-            for( var i  = 0 ; i<len ; i++ )
+            filter = filters[i] ;
+            index  = filter.indexOf("*") ;
+            if( index === 0 )
             {
-                filter = filters[i] ;
-                index  = filter.indexOf("*") ;
-                if( index === 0 )
-                {
-                    return true ;
-                }
-                index = (index < 0) ? ( index = channel.length ) : ( index - 1 ) ;
-                if( channel.substring(0, index) === filter.substring(0, index) )
-                {
-                    return true ;
-                }
+                return true ;
             }
-            return false ;
+            index = (index < 0) ? ( index = channel.length ) : ( index - 1 ) ;
+            if( channel.substring(0, index) === filter.substring(0, index) )
+            {
+                return true ;
+            }
         }
-    },
+        return false ;
+    }},
 
     /**
      * This method will ensure that a valid category string has been specified.
@@ -295,41 +286,35 @@ LoggerFactory.prototype = Object.create( Receiver.prototype ,
      * Categories can not contain any blanks or any of the following characters: []`*~,!#$%^&amp;()]{}+=\|'";?&gt;&lt;./&#64; or be less than 1 character in length.
      * @private
      */
-    _checkChannel :
+    _checkChannel : { value : function( channel  ) /*void*/
     {
-        value : function( channel  ) /*void*/
+        if( channel === null || channel.length === 0 )
         {
-            if( channel === null || channel.length === 0 )
-            {
-                throw new InvalidChannelError( strings.INVALID_LENGTH );
-            }
-            if( this.hasIllegalCharacters( channel ) || ( channel.indexOf("*") !== -1 ) )
-            {
-                throw new InvalidChannelError( strings.INVALID_CHARS ) ;
-            }
+            throw new InvalidChannelError( strings.INVALID_LENGTH );
         }
-    },
+        if( this.hasIllegalCharacters( channel ) || ( channel.indexOf("*") !== -1 ) )
+        {
+            throw new InvalidChannelError( strings.INVALID_CHARS ) ;
+        }
+    }},
 
     /**
      * This method resets the Log's target level to the most verbose log level for the currently registered targets.
      * @private
      */
-    _resetTargetLevel :
+    _resetTargetLevel : { value : function()
     {
-        value : function() /*void*/
+        let t ;
+        let min = LoggerLevel.NONE ;
+        let len = this._targets.length ;
+        for ( let i = 0 ; i < len ; i++ )
         {
-            var t /*LoggerTarget*/ ;
-            var min /*LoggerLevel*/ = LoggerLevel.NONE ;
-            var len  = this._targets.length ;
-            for ( var i  = 0 ; i < len ; i++ )
+            t = this._targets[i] ;
+            if ( ( min === LoggerLevel.NONE ) || ( t.level.valueOf() < min.valueOf() ) )
             {
-                t = this._targets[i] ;
-                if ( ( min === LoggerLevel.NONE ) || ( t.level.valueOf() < min.valueOf() ) )
-                {
-                    min = t.level ;
-                }
+                min = t.level ;
             }
-            this._targetLevel = min ;
         }
-    }
+        this._targetLevel = min ;
+    }}
 });

@@ -4396,47 +4396,41 @@ Signal.prototype = Object.create(Signaler.prototype, {
 });
 
 function LoggerLevel(value, name) {
-    Enum.call(this, value, name);
+  Enum.call(this, value, name);
 }
 LoggerLevel.prototype = Object.create(Enum.prototype);
 LoggerLevel.prototype.constructor = LoggerLevel;
 Object.defineProperties(LoggerLevel, {
-    ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
-    CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
-    DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
-    DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
-    ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
-    INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
-    NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
-    WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
-    WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
-    get: {
-        value: function value(_value) {
-            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-            var l = levels.length;
-            while (--l > -1) {
-                if (levels[l]._value === _value) {
-                    return levels[l];
-                }
-            }
-            return null;
+  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+  get: { value: function value(_value) {
+      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      var l = levels.length;
+      while (--l > -1) {
+        if (levels[l]._value === _value) {
+          return levels[l];
         }
-    },
-    getLevelString: {
-        value: function value(_value2) {
-            if (LoggerLevel.validate(_value2)) {
-                return _value2.toString();
-            } else {
-                return LoggerLevel.DEFAULT_LEVEL_STRING;
-            }
-        }
-    },
-    validate: {
-        value: function value(level /*LoggerLevel*/) {
-            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-            return levels.indexOf(level) > -1;
-        }
-    }
+      }
+      return null;
+    } },
+  getLevelString: { value: function value(_value2) {
+      if (LoggerLevel.validate(_value2)) {
+        return _value2.toString();
+      } else {
+        return LoggerLevel.DEFAULT_LEVEL_STRING;
+      }
+    } },
+  validate: { value: function value(level) {
+      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+      return levels.indexOf(level) > -1;
+    } }
 });
 
 function LoggerEntry(message, level, channel) {
@@ -4488,14 +4482,12 @@ Logger.prototype = Object.create(Signal.prototype, {
             }
             this._log(LoggerLevel.ALL, context, options);
         } },
-    warning: {
-        value: function value(context) {
+    warning: { value: function value(context) {
             for (var _len6 = arguments.length, options = Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
                 options[_key6 - 1] = arguments[_key6];
             }
             this._log(LoggerLevel.WARNING, context, options);
-        }
-    },
+        } },
     wtf: { value: function value(context) {
             for (var _len7 = arguments.length, options = Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
                 options[_key7 - 1] = arguments[_key7];
@@ -4505,8 +4497,7 @@ Logger.prototype = Object.create(Signal.prototype, {
     toString: { value: function value() {
             return '[Logger]';
         } },
-    _log: {
-        value: function value(level /*LoggerLevel*/, context, options)
+    _log: { value: function value(level /*LoggerLevel*/, context, options)
         {
             if (this.connected()) {
                 if ((typeof context === "string" || context instanceof String) && options instanceof Array) {
@@ -4519,8 +4510,7 @@ Logger.prototype = Object.create(Signal.prototype, {
                 this._entry.level = level;
                 this.emit(this._entry);
             }
-        }
-    }
+        } }
 });
 
 var strings$1 = Object.defineProperties({}, {
@@ -4562,11 +4552,10 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
         get: function get() {
             return [].concat(this._filters);
         },
-        set: function set(value)
-        {
+        set: function set(value) {
             var filters = [];
             if (value && value instanceof Array && value.length > 0) {
-                var filter;
+                var filter = void 0;
                 var length = value.length;
                 for (var i = 0; i < length; i++) {
                     filter = value[i];
@@ -4591,15 +4580,13 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
         get: function get() {
             return this._level;
         },
-        set: function set(value /*LoggerLevel*/)
-        {
+        set: function set(value) {
             this._factory.removeTarget(this);
             this._level = value || LoggerLevel.ALL;
             this._factory.addTarget(this);
         }
     },
-    addFilter: {
-        value: function value(channel) {
+    addFilter: { value: function value(channel) {
             this._checkFilter(channel);
             var index = this._filters.indexOf(channel);
             if (index === -1) {
@@ -4607,23 +4594,17 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
                 return true;
             }
             return false;
-        }
-    },
-    addLogger: {
-        value: function value(logger) {
+        } },
+    addLogger: { value: function value(logger) {
             if (logger && logger instanceof Logger) {
                 this._count++;
                 logger.connect(this);
             }
-        }
-    },
-    logEntry: {
-        value: function value(entry)
+        } },
+    logEntry: { value: function value(entry)
         {
-        }
-    },
-    receive: {
-        value: function value(entry) {
+        } },
+    receive: { value: function value(entry) {
             if (entry instanceof LoggerEntry) {
                 if (this._level === LoggerLevel.NONE) {
                     return;
@@ -4631,10 +4612,8 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
                     this.logEntry(entry);
                 }
             }
-        }
-    },
-    removeFilter: {
-        value: function value(channel) {
+        } },
+    removeFilter: { value: function value(channel) {
             if (channel && (typeof channel === "string" || channel instanceof String) && channel !== "") {
                 var index = this._filters.indexOf(channel);
                 if (index > -1) {
@@ -4643,20 +4622,14 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
                 }
             }
             return false;
-        }
-    },
-    removeLogger: {
-        value: function value(logger /*Logger*/)
-        {
+        } },
+    removeLogger: { value: function value(logger) {
             if (logger instanceof Logger) {
                 this._count--;
                 logger.disconnect(this);
             }
-        }
-    },
-    _checkFilter: {
-        value: function value(filter)
-        {
+        } },
+    _checkFilter: { value: function value(filter) {
             if (filter === null) {
                 throw new InvalidFilterError(strings$1.EMPTY_FILTER);
             }
@@ -4667,8 +4640,7 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
             if (index >= 0 && index !== filter.length - 1) {
                 throw new InvalidFilterError(fastformat(strings$1.ERROR_FILTER, filter) + strings$1.CHAR_PLACEMENT);
             }
-        }
-    },
+        } },
     toString: { value: function value() {
             return '[LoggerTarget]';
         } }
@@ -4686,10 +4658,10 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     addTarget: { value: function value(target /*LoggerTarget*/)
         {
             if (target && target instanceof LoggerTarget) {
-                var channel;
-                var log;
+                var channel = void 0;
+                var log = void 0;
                 var filters = target.filters;
-                var it /*Iterator*/ = this._loggers.iterator();
+                var it = this._loggers.iterator();
                 while (it.hasNext()) {
                     log = it.next();
                     channel = it.key();
@@ -4753,8 +4725,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
     isWtf: { value: function value() {
             return this._targetLevel === LoggerLevel.WTF;
         } },
-    removeTarget: {
-        value: function value(target) {
+    removeTarget: { value: function value(target) {
             if (target && target instanceof LoggerTarget) {
                 var log;
                 var filters = target.filters;
@@ -4777,14 +4748,12 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
             } else {
                 throw new Error(strings$1.INVALID_TARGET);
             }
-        }
-    },
+        } },
     toString: { value: function value() {
             return '[LoggerFactory]';
         } },
-    _channelMatchInFilterList: {
-        value: function value(channel, filters) {
-            var filter;
+    _channelMatchInFilterList: { value: function value(channel, filters) {
+            var filter = void 0;
             var index = -1;
             var len = filters.length;
             for (var i = 0; i < len; i++) {
@@ -4799,10 +4768,8 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
                 }
             }
             return false;
-        }
-    },
-    _checkChannel: {
-        value: function value(channel)
+        } },
+    _checkChannel: { value: function value(channel)
         {
             if (channel === null || channel.length === 0) {
                 throw new InvalidChannelError(strings$1.INVALID_LENGTH);
@@ -4810,13 +4777,10 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
             if (this.hasIllegalCharacters(channel) || channel.indexOf("*") !== -1) {
                 throw new InvalidChannelError(strings$1.INVALID_CHARS);
             }
-        }
-    },
-    _resetTargetLevel: {
-        value: function value()
-        {
-            var t;
-            var min /*LoggerLevel*/ = LoggerLevel.NONE;
+        } },
+    _resetTargetLevel: { value: function value() {
+            var t = void 0;
+            var min = LoggerLevel.NONE;
             var len = this._targets.length;
             for (var i = 0; i < len; i++) {
                 t = this._targets[i];
@@ -4825,8 +4789,7 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
                 }
             }
             this._targetLevel = min;
-        }
-    }
+        } }
 });
 
 var Log = new LoggerFactory();
@@ -6811,7 +6774,7 @@ function LineFormattedTarget() {
 }
 LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
     constructor: { value: LineFormattedTarget, writable: true },
-    internalLog: { value: function value(message, level /*LoggerLevel*/)
+    internalLog: { value: function value(message, level)
         {
         } },
     toString: { writable: true, value: function value() {
@@ -6824,27 +6787,20 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
     resetLineNumber: { value: function value() {
             this._lineNumber = 1;
         } },
-    formatDate: {
-        value: function value(d /*Date*/) {
+    formatDate: { value: function value(d) {
             var date = "";
             date += this.getDigit(d.getDate());
             date += "/" + this.getDigit(d.getMonth() + 1);
             date += "/" + d.getFullYear();
             return date;
-        }
-    },
-    formatLevel: {
-        value: function value(level) {
+        } },
+    formatLevel: { value: function value(level) {
             return '[' + level + ']';
-        }
-    },
-    formatLines: {
-        value: function value() {
+        } },
+    formatLines: { value: function value() {
             return "[" + this._lineNumber++ + "]";
-        }
-    },
-    formatMessage: {
-        value: function value(message, level, channel, date /*Date*/) {
+        } },
+    formatMessage: { value: function value(message, level, channel, date /*Date*/) {
             var msg = "";
             if (this.includeLines) {
                 msg += this.formatLines() + this.separator;
@@ -6866,10 +6822,8 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
             }
             msg += message;
             return msg;
-        }
-    },
-    formatTime: {
-        value: function value(d /*Date*/) {
+        } },
+    formatTime: { value: function value(d) {
             var time = "";
             time += this.getDigit(d.getHours());
             time += ":" + this.getDigit(d.getMinutes());
@@ -6878,16 +6832,13 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
                 time += ":" + this.getDigit(d.getMilliseconds());
             }
             return time;
-        }
-    },
-    getDigit: {
-        value: function value(n /*Number*/) {
+        } },
+    getDigit: { value: function value(n) {
             if (isNaN(n)) {
                 return "00";
             }
             return (n < 10 ? "0" : "") + n;
-        }
-    }
+        } }
 });
 
 function ConsoleTarget() {
@@ -6896,8 +6847,7 @@ function ConsoleTarget() {
 }
 ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
     constructor: { value: ConsoleTarget },
-    internalLog: {
-        value: function value(message, level)
+    internalLog: { value: function value(message, level)
         {
             if (console) {
                 switch (level) {
@@ -6940,8 +6890,7 @@ ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
             } else {
                 throw new new ReferenceError('The console reference is unsupported.')();
             }
-        }
-    }
+        } }
 });
 
 function TraceTarget() {

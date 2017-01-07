@@ -1,4 +1,3 @@
-/*jshint laxbreak: true*/
 "use strict" ;
 
 import { Logger } from './Logger.js' ;
@@ -49,10 +48,7 @@ Loggable.prototype = Object.create( Object.prototype ,
      */
     logger :
     {
-        get : function()
-        {
-            return this._logger ;
-        },
+        get : function() { return this._logger ; },
         set : function( logger )
         {
             this._logger = (logger instanceof Logger) ? logger : null ;

@@ -112,32 +112,29 @@ Object.defineProperties( LoggerLevel ,
      * @param {number} value - The numeric value corresponding to a valid LoggerLevel object.
      * @return {system.logging.LoggerLevel} The LoggerLevel reference.
      */
-    get :
+    get : { value : function( value )
     {
-        value : function( value )
+        let levels =
+        [
+            LoggerLevel.ALL,
+            LoggerLevel.CRITICAL,
+            LoggerLevel.DEBUG,
+            LoggerLevel.ERROR,
+            LoggerLevel.INFO,
+            LoggerLevel.NONE,
+            LoggerLevel.WARNING,
+            LoggerLevel.WTF
+        ] ;
+        let l = levels.length ;
+        while( --l > -1 )
         {
-            let levels =
-            [
-                LoggerLevel.ALL,
-                LoggerLevel.CRITICAL,
-                LoggerLevel.DEBUG,
-                LoggerLevel.ERROR,
-                LoggerLevel.INFO,
-                LoggerLevel.NONE,
-                LoggerLevel.WARNING,
-                LoggerLevel.WTF
-            ] ;
-            let l = levels.length ;
-            while( --l > -1 )
+            if ( levels[l]._value === value )
             {
-                if ( levels[l]._value === value )
-                {
-                    return levels[l] ;
-                }
+                return levels[l] ;
             }
-            return null ;
         }
-    },
+        return null ;
+    }},
 
     /**
      * Returns a String value representing the specific level.
@@ -146,20 +143,17 @@ Object.defineProperties( LoggerLevel ,
      * @memberof system.logging.LoggerLevel
      * @function
      */
-    getLevelString :
+    getLevelString : { value : function( value )
     {
-        value : function( value )
+        if ( LoggerLevel.validate( value ) )
         {
-            if ( LoggerLevel.validate( value ) )
-            {
-                return value.toString() ;
-            }
-            else
-            {
-                return LoggerLevel.DEFAULT_LEVEL_STRING ;
-            }
+            return value.toString() ;
         }
-    },
+        else
+        {
+            return LoggerLevel.DEFAULT_LEVEL_STRING ;
+        }
+    }},
 
     /**
      * Validates a passed-in level passed in argument.
@@ -168,22 +162,19 @@ Object.defineProperties( LoggerLevel ,
      * @memberof system.logging.LoggerLevel
      * @function
      */
-    validate :
+    validate : { value : function( level )
     {
-        value : function( level /*LoggerLevel*/ ) 
-        {
-            let levels =
-            [
-                LoggerLevel.ALL,
-                LoggerLevel.CRITICAL,
-                LoggerLevel.DEBUG,
-                LoggerLevel.ERROR,
-                LoggerLevel.INFO,
-                LoggerLevel.NONE,
-                LoggerLevel.WARNING,
-                LoggerLevel.WTF
-            ] ;
-            return levels.indexOf( level ) > -1 ;
-        }
-    }
+        let levels =
+        [
+            LoggerLevel.ALL,
+            LoggerLevel.CRITICAL,
+            LoggerLevel.DEBUG,
+            LoggerLevel.ERROR,
+            LoggerLevel.INFO,
+            LoggerLevel.NONE,
+            LoggerLevel.WARNING,
+            LoggerLevel.WTF
+        ] ;
+        return levels.indexOf( level ) > -1 ;
+    }}
 });

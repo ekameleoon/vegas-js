@@ -43,7 +43,6 @@ import { LoggerEntry } from './LoggerEntry.js' ;
 export function Logger( channel )
 {
     Signal.call( this ) ;
-
     Object.defineProperties( this ,
     {
         _entry : { value : new LoggerEntry(null,null,channel) , writable : true }
@@ -144,13 +143,10 @@ Logger.prototype = Object.create( Signal.prototype ,
      * @instance
      * @function
      */
-    warning :
+    warning : { value : function ( context , ...options )
     {
-        value : function ( context , ...options )
-        {
-            this._log( LoggerLevel.WARNING , context , options ) ;
-        }
-    },
+        this._log( LoggerLevel.WARNING , context , options ) ;
+    }},
 
     /**
      * What a Terrible Failure: Report an exception that should never happen.
@@ -184,24 +180,21 @@ Logger.prototype = Object.create( Signal.prototype ,
      * @function
      * @private
      */
-    _log :
+    _log : { value : function ( level /*LoggerLevel*/ , context , options  ) /*void*/
     {
-        value : function ( level /*LoggerLevel*/ , context , options  ) /*void*/
+        if( this.connected() )
         {
-            if( this.connected() )
+            if ( ( typeof(context) === "string" || context instanceof String ) && options instanceof Array )
             {
-                if ( ( typeof(context) === "string" || context instanceof String ) && options instanceof Array )
+                var len = options.length ;
+                for( var i = 0 ; i<len ; i++ )
                 {
-                    var len = options.length ;
-                    for( var i = 0 ; i<len ; i++ )
-                    {
-                        context = String(context).replace( new RegExp( "\\{" + i + "\\}" , "g" ) , options[i] ) ;
-                    }
+                    context = String(context).replace( new RegExp( "\\{" + i + "\\}" , "g" ) , options[i] ) ;
                 }
-                this._entry.message = context ;
-                this._entry.level   = level ;
-                this.emit( this._entry ) ;
             }
+            this._entry.message = context ;
+            this._entry.level   = level ;
+            this.emit( this._entry ) ;
         }
-    }
+    }}
 });
