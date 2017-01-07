@@ -72,7 +72,7 @@ export function ObjectListener( dispatcher , type , method = null , useCapture =
     }) ;
 }
 
-Object.defineProperties(  ObjectListener ,
+Object.defineProperties( ObjectListener ,
 {
     /**
      * Defines the "dispatcher" attribute in a listener object definition.
