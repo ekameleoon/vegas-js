@@ -149,7 +149,6 @@ describe( 'system.ioc.ObjectFactory' , () =>
 
         // TODO factoryProperty
         // TODO factoryReference
-        // TODO test the type of the object ?
 
         describe( '#factoryValue' , () =>
         {
