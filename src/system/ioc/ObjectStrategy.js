@@ -1,7 +1,7 @@
 "use strict" ;
 
 /**
- * Defines factory strategies in the factory.
+ * Defines a custom factory strategy to build the objects.
  * @name ObjectStrategy
  * @class
  * @memberof system.ioc
@@ -10,7 +10,7 @@ export function ObjectStrategy() {}
 
 ObjectStrategy.prototype = Object.create( Object.prototype ,
 {
-    constructor : { value :  ObjectStrategy , writable : true },
+    constructor : { writable : true , value : ObjectStrategy },
 
     /**
      * Returns the string representation of this instance.

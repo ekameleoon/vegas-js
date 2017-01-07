@@ -35,27 +35,24 @@ Object.defineProperties( ObjectStaticFactoryProperty ,
      * @memberof system.ioc.strategies.ObjectStaticFactoryProperty
      * @function
      */
-    build :
+    build : { value : function( o )
     {
-        value : function( o )
+        if ( o === null )
         {
-            if ( o === null )
-            {
-                return null ;
-            }
-            if ( (ObjectAttribute.TYPE in o) && (ObjectAttribute.NAME in o) )
-            {
-                return new ObjectStaticFactoryProperty
-                (
-                    o[ ObjectAttribute.NAME       ] || null ,
-                    o[ ObjectAttribute.TYPE       ] || null ,
-                    o[ ObjectAttribute.EVALUATORS ] || null
-                ) ;
-            }
-            else
-            {
-                return null ;
-            }
+            return null ;
         }
-    }
+        if ( (ObjectAttribute.TYPE in o) && (ObjectAttribute.NAME in o) )
+        {
+            return new ObjectStaticFactoryProperty
+            (
+                o[ ObjectAttribute.NAME       ] || null ,
+                o[ ObjectAttribute.TYPE       ] || null ,
+                o[ ObjectAttribute.EVALUATORS ] || null
+            ) ;
+        }
+        else
+        {
+            return null ;
+        }
+    }}
 });

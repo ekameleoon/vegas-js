@@ -37,7 +37,7 @@ Object.defineProperties( ObjectFactoryProperty ,
      */
     build :
     {
-        value : function( o ) /*ObjectFactoryProperty*/
+        value : function( o )
         {
             if ( o === null )
             {

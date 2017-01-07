@@ -29,16 +29,28 @@ export function isEvaluable( target )
  */
 export function Evaluable() {}
 
-Evaluable.prototype = Object.create( Object.prototype );
-Evaluable.prototype.constructor = Evaluable;
+Evaluable.prototype = Object.create( Object.prototype ,
+{
+    constructor : { writable : true , value : Evaluable } ,
 
-/**
- * Evaluates the specified object.
- * @param {*} value - The object to evaluates.
- * @return The result of the evaluation.
- * @name eval
- * @memberof system.Evaluable
- * @function
- * @instance
- */
-Evaluable.prototype.eval = function( value ) {}
+    /**
+     * Evaluates the specified object.
+     * @param {*} value - The object to evaluates.
+     * @return The result of the evaluation.
+     * @name eval
+     * @memberof system.Evaluable
+     * @function
+     * @instance
+     */
+    eval : { writable : true , value : function( value ) {} } ,
+
+    /**
+     * Returns the string representation of this instance.
+     * @return {string} The string representation of this instance.
+     * @name toString
+     * @memberof system.Evaluable
+     * @instance
+     * @function
+     */
+    toString : { writable : true , value : function() { return '[' + this.constructor.name + ']' ; } }
+});

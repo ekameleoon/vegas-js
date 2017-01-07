@@ -37,36 +37,6 @@ export function ObjectProperty( name , value , policy = "value" , evaluators  = 
         name : { value : name , writable : true } ,
 
         /**
-         * Determinates the policy of the property ( {@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE}, {@link system.ioc.ObjectAttribute.CONFIG|ObjectAttribute.CONFIG}, {@link system.ioc.ObjectAttribute.LOCALE|ObjectAttribute.LOCALE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE} )
-         * @name policy
-         * @memberof system.ioc.ObjectProperty
-         * @instance
-         * @type string
-         */
-        policy :
-        {
-            get : function() { return this._policy ; } ,
-            set : function( str )
-            {
-                switch( str )
-                {
-                    case ObjectAttribute.ARGUMENTS :
-                    case ObjectAttribute.REFERENCE :
-                    case ObjectAttribute.CONFIG    :
-                    case ObjectAttribute.LOCALE    :
-                    {
-                        this._policy = str ;
-                        break ;
-                    }
-                    default :
-                    {
-                        this._policy = ObjectAttribute.VALUE ;
-                    }
-                }
-            }
-        },
-
-        /**
          * The value of the property.
          * @name value
          * @memberof system.ioc.ObjectProperty
@@ -85,5 +55,35 @@ export function ObjectProperty( name , value , policy = "value" , evaluators  = 
 
 ObjectProperty.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectProperty , writable : true }
+    constructor : { writable : true , value : ObjectProperty } ,
+
+    /**
+     * Determinates the policy of the property ( {@link system.ioc.ObjectAttribute.REFERENCE|ObjectAttribute.REFERENCE}, {@link system.ioc.ObjectAttribute.CONFIG|ObjectAttribute.CONFIG}, {@link system.ioc.ObjectAttribute.LOCALE|ObjectAttribute.LOCALE} or by default {@link system.ioc.ObjectAttribute.VALUE|ObjectAttribute.VALUE} )
+     * @name policy
+     * @memberof system.ioc.ObjectProperty
+     * @instance
+     * @type string
+     */
+    policy :
+    {
+        get : function() { return this._policy ; } ,
+        set : function( str )
+        {
+            switch( str )
+            {
+                case ObjectAttribute.ARGUMENTS :
+                case ObjectAttribute.REFERENCE :
+                case ObjectAttribute.CONFIG    :
+                case ObjectAttribute.LOCALE    :
+                {
+                    this._policy = str ;
+                    break ;
+                }
+                default :
+                {
+                    this._policy = ObjectAttribute.VALUE ;
+                }
+            }
+        }
+    }
 }) ;

@@ -41,28 +41,25 @@ Object.defineProperties( ObjectStaticFactoryMethod ,
      * @memberof system.ioc.strategies.ObjectStaticFactoryMethod
      * @function
      */
-    build :
+    build : { value : function( o )
     {
-        value : function( o )
+        if ( o === null )
         {
-            if ( o === null )
-            {
-                return null ;
-            }
-            if ( ( ObjectAttribute.TYPE in o ) && ( ObjectAttribute.NAME in o ) )
-            {
-                let strategy = new ObjectStaticFactoryMethod
-                (
-                    o[ ObjectAttribute.TYPE ] || null ,
-                    o[ ObjectAttribute.NAME ] || null ,
-                    createArguments( o[ ObjectAttribute.ARGUMENTS ] || null )
-                ) ;
-                return strategy ;
-            }
-            else
-            {
-                return null ;
-            }
+            return null ;
         }
-    }
+        if ( ( ObjectAttribute.TYPE in o ) && ( ObjectAttribute.NAME in o ) )
+        {
+            let strategy = new ObjectStaticFactoryMethod
+            (
+                o[ ObjectAttribute.TYPE ] || null ,
+                o[ ObjectAttribute.NAME ] || null ,
+                createArguments( o[ ObjectAttribute.ARGUMENTS ] || null )
+            ) ;
+            return strategy ;
+        }
+        else
+        {
+            return null ;
+        }
+    }}
 });

@@ -18,28 +18,18 @@ export function createArguments( a )
     }
     else
     {
-        var args = [] ;
-        var o ;
-        var evaluators ;
-
-        var conf ;
-        var i18n ;
-        var ref  ;
-
-        var value ;
-
-        var l = a.length ;
-
-        for ( var i = 0 ; i<l ; i++ )
+        let args = [] ;
+        let l = a.length ;
+        for ( let i = 0 ; i<l ; i++ )
         {
-            o = a[i] ;
+            let o = a[i] ;
             if ( o !== null )
             {
-                conf       = ( ObjectAttribute.CONFIG in o )     ? String(o[ ObjectAttribute.CONFIG ]) : null ;
-                i18n       = ( ObjectAttribute.LOCALE in o )     ? String(o[ ObjectAttribute.LOCALE ]) : null ;
-                ref        = ( ObjectAttribute.REFERENCE in o )  ? String(o[ ObjectAttribute.REFERENCE ]) : null ;
-                value      = ( ObjectAttribute.VALUE in o )      ? o[ ObjectAttribute.VALUE ] : null ;
-                evaluators = ( ObjectAttribute.EVALUATORS in o ) ? o[ ObjectAttribute.EVALUATORS ] : null ;
+                let conf       = ( ObjectAttribute.CONFIG in o )     ? String(o[ ObjectAttribute.CONFIG ]) : null ;
+                let i18n       = ( ObjectAttribute.LOCALE in o )     ? String(o[ ObjectAttribute.LOCALE ]) : null ;
+                let ref        = ( ObjectAttribute.REFERENCE in o )  ? String(o[ ObjectAttribute.REFERENCE ]) : null ;
+                let value      = ( ObjectAttribute.VALUE in o )      ? o[ ObjectAttribute.VALUE ] : null ;
+                let evaluators = ( ObjectAttribute.EVALUATORS in o ) ? o[ ObjectAttribute.EVALUATORS ] : null ;
 
                 if ( ref !== null && ref.length > 0 )
                 {
@@ -59,7 +49,6 @@ export function createArguments( a )
                 }
             }
         }
-
         return args.length > 0 ? args : null ;
     }
 }

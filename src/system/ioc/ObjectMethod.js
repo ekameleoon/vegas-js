@@ -37,5 +37,5 @@ export function ObjectMethod( name , args )
 
 ObjectMethod.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectMethod , writable : true }
+    constructor : { writable : true , value : ObjectMethod }
 }) ;

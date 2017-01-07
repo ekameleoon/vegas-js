@@ -5,8 +5,8 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
 
 /**
  * Evaluates a type string expression and return the value who corresponding in the config of the factory.
- * @memberof system.ioc.evaluators
  * @name ConfigEvaluator
+ * @memberof system.ioc.evaluators
  * @class
  * @private
  * @example
@@ -38,22 +38,17 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  * trace( evaluator.eval( "menu.data"  ) ) ; // item1,item2,item3
  * trace( evaluator.eval( "menu.test"  ) ) ; // null
  */
-export function ConfigEvaluator( config /*ObjectConfig*/ )
+export function ConfigEvaluator( config )
 {
     PropertyEvaluator.call(this) ;
     this.config = (config instanceof ObjectConfig) ? config : null ;
     Object.defineProperties( this ,
     {
-        target :
-        {
-            get : function() { return this.config !== null ? this.config.config : null ; }
-        }
+        target : { get : function() { return this.config !== null ? this.config.config : null ; } }
     }) ;
 }
 
 ConfigEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
 {
-    constructor : { value : ConfigEvaluator } ,
-
-    toString : { value : function() { return '[ConfigEvaluator]' ; } }
+    constructor : { value : ConfigEvaluator }
 });

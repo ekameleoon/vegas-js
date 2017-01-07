@@ -31,7 +31,7 @@ export function ObjectFactoryMethod( factory , name , args )
 
 ObjectFactoryMethod.prototype = Object.create( ObjectMethod.prototype ,
 {
-    constructor : { value : ObjectFactoryMethod , writable : true }
+    constructor : { writable : true  , value : ObjectFactoryMethod }
 });
 
 Object.defineProperties( ObjectFactoryMethod ,
@@ -42,27 +42,24 @@ Object.defineProperties( ObjectFactoryMethod ,
      * @memberof system.ioc.strategies.ObjectFactoryMethod
      * @function
      */
-    build :
+    build : { value : function( o )
     {
-        value : function( o ) /*ObjectFactoryMethod*/
+        if ( o === null )
         {
-            if ( o === null )
-            {
-                return null ;
-            }
-            if ( (ObjectAttribute.FACTORY in o) && (ObjectAttribute.NAME in o) )
-            {
-                return new ObjectFactoryMethod
-                (
-                    o[ ObjectAttribute.FACTORY || null ],
-                    o[ ObjectAttribute.NAME    || null ],
-                    createArguments( o[ ObjectAttribute.ARGUMENTS ] || null )
-                ) ;
-            }
-            else
-            {
-                return null ;
-            }
+            return null ;
         }
-    }
+        if ( (ObjectAttribute.FACTORY in o) && (ObjectAttribute.NAME in o) )
+        {
+            return new ObjectFactoryMethod
+            (
+                o[ ObjectAttribute.FACTORY ] || null ,
+                o[ ObjectAttribute.NAME ] || null ,
+                createArguments( o[ ObjectAttribute.ARGUMENTS ] || null )
+            ) ;
+        }
+        else
+        {
+            return null ;
+        }
+    }}
 });

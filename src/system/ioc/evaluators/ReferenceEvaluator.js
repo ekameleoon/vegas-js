@@ -143,18 +143,6 @@ ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
             }
         }
         return this.undefineable ;
-    }},
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @memberof system.ioc.evaluators.ReferenceEvaluator
-     * @function
-     * @instance
-     */
-    toString : { value : function ()
-    {
-        return "[ReferenceEvaluator]" ;
     }}
 });
 

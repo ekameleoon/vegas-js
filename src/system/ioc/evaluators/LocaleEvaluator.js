@@ -51,14 +51,5 @@ export function LocaleEvaluator( config )
 
 LocaleEvaluator.prototype = Object.create( PropertyEvaluator.prototype ,
 {
-    constructor : { value : LocaleEvaluator } ,
-
-    /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
-     * @memberof system.ioc.evaluators.LocaleEvaluator
-     * @function
-     * @instance
-     */
-    toString : { value : function() { return '[LocaleEvaluator]' ; } }
+    constructor : { value : LocaleEvaluator }
 });

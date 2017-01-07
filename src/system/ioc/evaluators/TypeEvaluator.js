@@ -124,18 +124,6 @@ TypeEvaluator.prototype = Object.create( Evaluable.prototype ,
         }
 
         return null ;
-    }},
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @memberof system.ioc.evaluators.TypeEvaluator
-     * @function
-     * @instance
-     */
-    toString : { value : function ()
-    {
-        return "[TypeEvaluator]" ;
     }}
 });
 

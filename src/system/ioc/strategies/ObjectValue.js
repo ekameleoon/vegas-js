@@ -14,11 +14,11 @@ export function ObjectValue( value )
 {
     Object.defineProperties( this ,
     {
-        value : { value : value , writable : true }
+        value : { writable : true , value : value }
     }) ;
 }
 
 ObjectValue.prototype = Object.create( ObjectStrategy.prototype ,
 {
-    constructor : { value : ObjectValue , writable : true }
+    constructor : { writable : true , value : ObjectValue }
 }) ;
