@@ -176,6 +176,7 @@ describe( 'system.ioc.ObjectFactory' , () =>
                     ]
                 }
             ]);
+
             let user = factory.getObject("user")  ;
             it('user.name === "ekameleon"', () => { assert.equal( user.name , "ekameleon" ); });
             it('user.birthday === new Date(1977,2,22)', () => { assert.equal( user.birthday.valueOf() , (new Date(1977,2,22)).valueOf() ); });

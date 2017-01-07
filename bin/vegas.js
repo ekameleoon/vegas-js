@@ -5428,7 +5428,7 @@ function ObjectDefinition(id, type) {
         throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
     }
     if (type === null || type === undefined) {
-        throw new ReferenceError(this + " constructor failed, the string 'type' passed in argument not must be empty or 'null' or 'undefined'.");
+        throw new ReferenceError(this + " constructor failed, the 'type' passed in argument not must be empty or 'null' or 'undefined'.");
     }
     Object.defineProperties(this, {
         afterListeners: { get: function get() {
@@ -5776,49 +5776,36 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
     numObjectDefinition: { get: function get() {
             return this._map.length;
         } },
-    addObjectDefinition: {
-        value: function value(definition) {
+    addObjectDefinition: { value: function value(definition) {
             if (definition instanceof ObjectDefinition) {
                 this._map.set(definition.id, definition);
             } else {
                 throw new ReferenceError(this + " addObjectDefinition failed, the specified object definition must be an ObjectDefinition object.");
             }
-        }
-    },
-    clearObjectDefinition: {
-        value: function value() {
+        } },
+    clearObjectDefinition: { value: function value() {
             this._map.clear();
-        }
-    },
-    clone: {
-        value: function value() {
+        } },
+    clone: { value: function value() {
             return new ObjectDefinitionContainer();
-        }
-    },
-    getObjectDefinition: {
-        value: function value(id)
-        {
+        } },
+    getObjectDefinition: { value: function value(id) {
             if (this._map.has(id)) {
                 return this._map.get(id);
             } else {
                 throw new ReferenceError(this + " getObjectDefinition failed, the specified object definition don't exist : " + id);
             }
-        }
-    },
-    hasObjectDefinition: {
-        value: function value(id) {
+        } },
+    hasObjectDefinition: { value: function value(id) {
             return this._map.has(id);
-        }
-    },
-    removeObjectDefinition: {
-        value: function value(id) {
+        } },
+    removeObjectDefinition: { value: function value(id) {
             if (this._map.has(id)) {
                 this._map.delete(id);
             } else {
                 throw new ReferenceError(this + " removeObjectDefinition failed, the specified object definition don't exist : " + id);
             }
-        }
-    }
+        } }
 });
 
 function ObjectFactory() {
@@ -5863,58 +5850,82 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
             var instance = null;
             try {
-                var definition = this.getObjectDefinition(id);
+                var definition = void 0;
+                try {
+                    definition = this.getObjectDefinition(id);
+                } catch (e) {
+                }
                 if (!(definition instanceof ObjectDefinition)) {
-                    throw new Error(this + " getObject( " + id + " ) method failed, the object isn't register in the factory.");
+                    throw new Error("the definition is not register in the factory");
                 }
                 if (definition.singleton) {
                     instance = this._singletons.get(id) || null;
                 }
                 if (!instance) {
-                    try {
+                    if (!(definition.type instanceof Function)) {
+                        if (definition.type instanceof String || typeof definition.type === 'string') {
+                            definition.type = this.config.typeEvaluator.eval(definition.type);
+                        }
+                    }
+                    if (definition.type instanceof Function) {
                         if (definition.strategy) {
                             instance = this.createObjectWithStrategy(definition.strategy);
                         } else {
-                            var type = this.config.typeEvaluator.eval(definition.type);
-                            if (type instanceof Function) {
-                                instance = invoke(type, this.createArguments(definition.constructorArguments));
+                            try {
+                                instance = invoke(definition.type, this.createArguments(definition.constructorArguments));
+                            } catch (e) {
+                                throw new Error("can't create the instance with the specified definition type " + definition.type + ". The arguments limit exceeded, you can pass a maximum of 32 arguments");
                             }
                         }
-                    } catch (e) {
-                        this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.");
-                    }
-                    if (instance) {
-                        if (definition.singleton) {
-                            this._singletons.set(id, instance);
+                        if (instance) {
+                            var check = false;
+                            if (instance instanceof definition.type) {
+                                check = true;
+                            } else if (definition.type === String) {
+                                check = instance instanceof String || typeof instance === 'string';
+                            } else if (definition.type === Number) {
+                                check = instance instanceof Number || typeof instance === 'number';
+                            } else if (definition.type === Boolean) {
+                                check = instance instanceof Boolean || typeof instance === 'boolean';
+                            }
+                            if (!check) {
+                                instance = null;
+                                throw new Error("the new object is not an instance of the [" + definition.type.name + "] constructor");
+                            }
+                            if (definition.singleton) {
+                                this._singletons.set(id, instance);
+                            }
+                            this.dependsOn(definition);
+                            this.populateIdentifiable(instance, definition);
+                            var flag = isLockable(instance) && (definition.lock === true || this.config.lock === true && definition.lock !== false);
+                            if (flag) {
+                                instance.lock();
+                            }
+                            if (definition.beforeListeners instanceof Array && definition.beforeListeners.length > 0) {
+                                this.registerListeners(instance, definition.beforeListeners);
+                            }
+                            if (definition.beforeReceivers instanceof Array && definition.beforeReceivers.length > 0) {
+                                this.registerReceivers(instance, definition.beforeReceivers);
+                            }
+                            this.populateProperties(instance, definition);
+                            if (definition.afterListeners instanceof Array && definition.afterListeners.length > 0) {
+                                this.registerListeners(instance, definition.afterListeners);
+                            }
+                            if (definition.afterReceivers instanceof Array && definition.afterReceivers.length > 0) {
+                                this.registerReceivers(instance, definition.afterReceivers);
+                            }
+                            if (flag) {
+                                instance.unlock();
+                            }
+                            this.invokeInitMethod(instance, definition);
+                            this.generates(definition);
                         }
-                        this.dependsOn(definition);
-                        this.populateIdentifiable(instance, definition);
-                        var flag = isLockable(instance) && (definition.lock === true || this.config.lock === true && definition.lock !== false);
-                        if (flag) {
-                            instance.lock();
-                        }
-                        if (definition.beforeListeners instanceof Array && definition.beforeListeners.length > 0) {
-                            this.registerListeners(instance, definition.beforeListeners);
-                        }
-                        if (definition.beforeReceivers instanceof Array && definition.beforeReceivers.length > 0) {
-                            this.registerReceivers(instance, definition.beforeReceivers);
-                        }
-                        this.populateProperties(instance, definition);
-                        if (definition.afterListeners instanceof Array && definition.afterListeners.length > 0) {
-                            this.registerListeners(instance, definition.afterListeners);
-                        }
-                        if (definition.afterReceivers instanceof Array && definition.afterReceivers.length > 0) {
-                            this.registerReceivers(instance, definition.afterReceivers);
-                        }
-                        if (flag) {
-                            instance.unlock();
-                        }
-                        this.invokeInitMethod(instance, definition);
-                        this.generates(definition);
+                    } else {
+                        throw new Error("the definition.type property is not a valid constructor");
                     }
                 }
-            } catch (e) {
-                this.warn(this + " getObject failed with the id '" + id + "' : " + e.toString());
+            } catch (er) {
+                this.warn(this + " getObject('" + id + "') failed, " + er.message + ".");
             }
             return instance || null;
         } },
@@ -6019,44 +6030,38 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (!(strategy instanceof ObjectStrategy)) {
                 return null;
             }
-            var args = void 0;
+            var name = strategy.name;
             var instance = null;
-            var type = void 0;
-            var factory = void 0;
+            var object = void 0;
             var ref = void 0;
-            var name = void 0;
-            var factoryMethod = void 0;
             if (strategy instanceof ObjectMethod) {
-                factoryMethod = strategy;
-                name = factoryMethod.name;
-                args = this.createArguments(factoryMethod.args);
-                if (factoryMethod instanceof ObjectStaticFactoryMethod) {
-                    type = factoryMethod.type;
-                    if (type !== null && name && name in type && type[name] instanceof Function) {
-                        instance = type[name].apply(null, args);
+                if (strategy instanceof ObjectStaticFactoryMethod) {
+                    object = strategy.type;
+                    if (object instanceof String || typeof object === 'string') {
+                        object = this.config.typeEvaluator.eval(object);
                     }
-                } else if (factoryMethod instanceof ObjectFactoryMethod) {
-                    factory = factoryMethod.factory;
-                    ref = this.getObject(factory);
-                    if (ref !== null && name && name in ref && ref[name] instanceof Function) {
-                        instance = ref[name].apply(null, args);
+                    if (object && name && name in object && object[name] instanceof Function) {
+                        instance = object[name].apply(object, this.createArguments(strategy.args));
+                    }
+                } else if (strategy instanceof ObjectFactoryMethod) {
+                    ref = this.getObject(strategy.factory);
+                    if (ref && name && name in ref && ref[name] instanceof Function) {
+                        instance = ref[name].apply(ref, this.createArguments(strategy.args));
                     }
                 }
             } else if (strategy instanceof ObjectProperty) {
-                var factoryProperty = strategy;
-                name = factoryProperty.name;
-                if (factoryProperty instanceof ObjectStaticFactoryProperty) {
-                    type = this.config.typeEvaluator.eval(factoryProperty.type);
-                    if (type && name && name in type) {
-                        instance = type[name];
+                if (strategy instanceof ObjectStaticFactoryProperty) {
+                    object = strategy.type;
+                    if (object instanceof String || typeof object === 'string') {
+                        object = this.config.typeEvaluator.eval(object);
                     }
-                } else if (factoryProperty instanceof ObjectFactoryProperty) {
-                    factory = factoryProperty.factory;
-                    if (factory && this.hasObjectDefinition(factory)) {
-                        ref = this.getObject(factory);
-                        if (ref && name && name in ref) {
-                            instance = ref[name];
-                        }
+                    if (object && name && name in object) {
+                        instance = object[name];
+                    }
+                } else if (strategy instanceof ObjectFactoryProperty) {
+                    ref = this.getObject(strategy.factory);
+                    if (ref && name && name in ref) {
+                        instance = ref[name];
                     }
                 }
             } else if (strategy instanceof ObjectValue) {

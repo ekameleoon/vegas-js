@@ -43,20 +43,17 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    addObjectDefinition :
+    addObjectDefinition : { value : function( definition )
     {
-        value : function( definition )
+        if ( definition instanceof ObjectDefinition )
         {
-            if ( definition instanceof ObjectDefinition )
-            {
-                this._map.set( definition.id , definition ) ;
-            }
-            else
-            {
-                throw new ReferenceError( this + " addObjectDefinition failed, the specified object definition must be an ObjectDefinition object." ) ;
-            }
+            this._map.set( definition.id , definition ) ;
         }
-    },
+        else
+        {
+            throw new ReferenceError( this + " addObjectDefinition failed, the specified object definition must be an ObjectDefinition object." ) ;
+        }
+    }},
 
     /**
      * Removes all the object definitions register in the container.
@@ -65,13 +62,10 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    clearObjectDefinition :
+    clearObjectDefinition : { value : function()
     {
-        value : function()
-        {
-            this._map.clear() ;
-        }
-    },
+        this._map.clear() ;
+    }},
 
     /**
      * Returns a shallow copy of this object.
@@ -81,13 +75,10 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    clone :
+    clone : { value : function()
     {
-        value : function()
-        {
-            return new ObjectDefinitionContainer() ;
-        }
-    },
+        return new ObjectDefinitionContainer() ;
+    }},
 
     /**
      * Returns the ObjectDefinition object register in the container with the specified id.
@@ -99,20 +90,17 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    getObjectDefinition :
+    getObjectDefinition : { value : function( id )
     {
-        value : function( id ) /*ObjectDefinition*/
+        if ( this._map.has( id ) )
         {
-            if ( this._map.has( id ) )
-            {
-                return this._map.get( id ) ;
-            }
-            else
-            {
-                throw new ReferenceError( this + " getObjectDefinition failed, the specified object definition don't exist : " + id ) ;
-            }
+            return this._map.get( id ) ;
         }
-    },
+        else
+        {
+            throw new ReferenceError( this + " getObjectDefinition failed, the specified object definition don't exist : " + id ) ;
+        }
+    }},
 
     /**
      * Returns <code>true</code> if the object defines with the specified id is register in the container.
@@ -123,13 +111,10 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    hasObjectDefinition :
+    hasObjectDefinition : { value : function( id )
     {
-        value : function( id )
-        {
-            return this._map.has( id ) ;
-        }
-    },
+        return this._map.has( id ) ;
+    }},
 
     /**
      * Unregisters an object definition in the container.
@@ -140,18 +125,15 @@ ObjectDefinitionContainer.prototype = Object.create( Task.prototype ,
      * @function
      * @instance
      */
-    removeObjectDefinition :
+    removeObjectDefinition : { value : function( id )
     {
-        value : function( id )
+        if ( this._map.has( id ) )
         {
-            if ( this._map.has( id ) )
-            {
-                this._map.delete( id ) ;
-            }
-            else
-            {
-                throw new ReferenceError( this + " removeObjectDefinition failed, the specified object definition don't exist : " + id ) ;
-            }
+            this._map.delete( id ) ;
         }
-    }
+        else
+        {
+            throw new ReferenceError( this + " removeObjectDefinition failed, the specified object definition don't exist : " + id ) ;
+        }
+    }}
 });

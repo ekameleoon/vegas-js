@@ -37,7 +37,7 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
 
     if ( type === null || type === undefined )
     {
-        throw new ReferenceError( this + " constructor failed, the string 'type' passed in argument not must be empty or 'null' or 'undefined'.") ;
+        throw new ReferenceError( this + " constructor failed, the 'type' passed in argument not must be empty or 'null' or 'undefined'.") ;
     }
 
     Object.defineProperties( this ,

@@ -222,11 +222,20 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         try
         {
-            let definition = this.getObjectDefinition( id ) ;
+            let definition ;
+
+            try
+            {
+                definition = this.getObjectDefinition( id ) ;
+            }
+            catch (e)
+            {
+                // do nothing
+            }
 
             if ( !(definition instanceof ObjectDefinition) )
             {
-                throw new Error( this +  " getObject( " + id + " ) method failed, the object isn't register in the factory.") ;
+                throw new Error( "the definition is not register in the factory") ;
             }
 
             if ( definition.singleton )
@@ -236,77 +245,117 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
             if ( !instance )
             {
-                try
+                if( !(definition.type instanceof Function) )
                 {
-                    let type = this.config.typeEvaluator.eval( definition.type )  ;
+                    if( definition.type instanceof String || typeof(definition.type) === 'string' )
+                    {
+                        definition.type = this.config.typeEvaluator.eval( definition.type )  ;
+                    }
+                }
+
+                if( definition.type instanceof Function )
+                {
                     if ( definition.strategy )
                     {
                         instance = this.createObjectWithStrategy( definition.strategy ) ;
                     }
-                    else if ( type instanceof Function )
+                    else
                     {
-                        instance = invoke( type , this.createArguments( definition.constructorArguments ) ) ;
+                        try
+                        {
+                            instance = invoke( definition.type , this.createArguments( definition.constructorArguments ) ) ;
+                        }
+                        catch( e )
+                        {
+                            throw new Error( "can't create the instance with the specified definition type " + definition.type + ". The arguments limit exceeded, you can pass a maximum of 32 arguments" ) ;
+                        }
+                    }
+
+                    if ( instance )
+                    {
+                        let check = false ;
+
+                        if( instance instanceof definition.type )
+                        {
+                            check = true ;
+                        }
+                        else if( definition.type === String )
+                        {
+                            check = (instance instanceof String) || (typeof(instance) === 'string') ;
+                        }
+                        else if( definition.type === Number )
+                        {
+                            check = (instance instanceof Number) || (typeof(instance) === 'number') ;
+                        }
+                        else if( definition.type === Boolean )
+                        {
+                            check = (instance instanceof Boolean) || (typeof(instance) === 'boolean') ;
+                        }
+
+                        if( !check )
+                        {
+                            instance = null ;
+                            throw new Error( "the new object is not an instance of the [" + definition.type.name + "] constructor" ) ;
+                        }
+
+                        if ( definition.singleton )
+                        {
+                            this._singletons.set( id , instance ) ;
+                        }
+
+                        this.dependsOn( definition ) ; // dependencies
+
+                        this.populateIdentifiable ( instance , definition ) ; // identify
+
+                        let flag = isLockable( instance ) && ( ( definition.lock === true ) || ( this.config.lock === true && definition.lock !== false ) ) ;
+
+                        if ( flag )
+                        {
+                            instance.lock() ;
+                        }
+
+                        if( (definition.beforeListeners instanceof Array) && (definition.beforeListeners.length > 0) )
+                        {
+                            this.registerListeners( instance , definition.beforeListeners ) ;
+                        }
+
+                        if( (definition.beforeReceivers instanceof Array) && (definition.beforeReceivers.length > 0) )
+                        {
+                            this.registerReceivers( instance , definition.beforeReceivers ) ;
+                        }
+
+                        this.populateProperties( instance , definition ) ; // init properties
+
+                        if( (definition.afterListeners instanceof Array) && (definition.afterListeners.length > 0) )
+                        {
+                            this.registerListeners( instance , definition.afterListeners ) ;
+                        }
+
+                        if( (definition.afterReceivers instanceof Array) && (definition.afterReceivers.length > 0) )
+                        {
+                            this.registerReceivers( instance , definition.afterReceivers ) ;
+                        }
+
+                        if ( flag )
+                        {
+                            instance.unlock() ;
+                        }
+
+                        this.invokeInitMethod( instance , definition ) ; // init
+
+                        this.generates( definition ) ; // generates
                     }
                 }
-                catch( e )
+                else
                 {
-                    this.warn(this + " failed to create a new object, can't convert the instance with the specified type \"" + definition.type + "\" in the object definition \"" + definition.id + "\", this type don't exist in the application, or arguments limit exceeded, you can pass a maximum of 32 arguments.") ;
-                }
-
-                if ( instance )
-                {
-                    if ( definition.singleton )
-                    {
-                        this._singletons.set( id , instance ) ;
-                    }
-
-                    this.dependsOn( definition ) ; // dependencies
-
-                    this.populateIdentifiable ( instance , definition ) ; // identify
-
-                    let flag = isLockable( instance ) && ( ( definition.lock === true ) || ( this.config.lock === true && definition.lock !== false ) ) ;
-
-                    if ( flag )
-                    {
-                        instance.lock() ;
-                    }
-
-                    if( (definition.beforeListeners instanceof Array) && (definition.beforeListeners.length > 0) )
-                    {
-                        this.registerListeners( instance , definition.beforeListeners ) ;
-                    }
-
-                    if( (definition.beforeReceivers instanceof Array) && (definition.beforeReceivers.length > 0) )
-                    {
-                        this.registerReceivers( instance , definition.beforeReceivers ) ;
-                    }
-
-                    this.populateProperties( instance , definition ) ; // init properties
-
-                    if( (definition.afterListeners instanceof Array) && (definition.afterListeners.length > 0) )
-                    {
-                        this.registerListeners( instance , definition.afterListeners ) ;
-                    }
-
-                    if( (definition.afterReceivers instanceof Array) && (definition.afterReceivers.length > 0) )
-                    {
-                        this.registerReceivers( instance , definition.afterReceivers ) ;
-                    }
-
-                    if ( flag )
-                    {
-                        instance.unlock() ;
-                    }
-
-                    this.invokeInitMethod( instance , definition ) ; // init
-
-                    this.generates( definition ) ; // generates
+                    throw new Error( "the definition.type property is not a valid constructor") ;
                 }
             }
         }
-        catch( e )
+        catch( er )
         {
-            this.warn( this + " getObject failed with the id '" + id + "' : " + e.toString() ) ;
+            // console.log( this + " getObject('" + id + "') failed, " + er.message + "." ) ;
+            this.warn( this + " getObject('" + id + "') failed, " + er.message + "." ) ;
         }
 
         return instance || null ;
