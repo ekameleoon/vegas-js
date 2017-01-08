@@ -119,9 +119,7 @@ export function createProperties( factory )
             logger.warning
             (
                 "createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                id ,
-                i ,
-                dump( prop )
+                id , i , dump( prop )
             ) ;
         }
     }

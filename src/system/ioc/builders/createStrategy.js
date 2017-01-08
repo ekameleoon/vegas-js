@@ -23,7 +23,7 @@ export function createStrategy( o )
         {
             return ObjectFactoryMethod.build( o[ ObjectAttribute.OBJECT_FACTORY_METHOD ] ) ;
         }
-        case ( ObjectAttribute.OBJECT_FACTORY_PROPERTY  in o )  :
+        case ( ObjectAttribute.OBJECT_FACTORY_PROPERTY in o )  :
         {
             return ObjectFactoryProperty.build( o[ ObjectAttribute.OBJECT_FACTORY_PROPERTY ] ) ;
         }

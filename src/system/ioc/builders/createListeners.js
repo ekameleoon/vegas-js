@@ -2,7 +2,6 @@
 
 import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
-import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectListener } from '../ObjectListener.js' ;
 import { ObjectOrder } from '../ObjectOrder.js' ;
@@ -21,7 +20,7 @@ export function createListeners( factory )
         return null ;
     }
 
-    var a = null ;
+    let a = null ;
 
     if ( factory instanceof Array )
     {
@@ -37,16 +36,16 @@ export function createListeners( factory )
         return null ;
     }
 
-    var def ;
-    var dispatcher ;
-    var type ;
+    let def ;
+    let dispatcher ;
+    let type ;
 
-    var listeners = [] ;
+    let listeners = [] ;
 
-    var id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
-    var len = a.length ;
+    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let len = a.length ;
 
-    for ( var i = 0 ; i<len ; i++ )
+    for ( let i = 0 ; i<len ; i++ )
     {
         def = a[i] ;
         if ( def !== null && (ObjectListener.DISPATCHER in def) && (ObjectListener.TYPE in def) )
@@ -73,16 +72,11 @@ export function createListeners( factory )
         }
         else
         {
-            if( logger && (logger instanceof Logger) )
-            {
-                logger.warning
-                (
-                    "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                    id ,
-                    i ,
-                    dump( def )
-                ) ;
-            }
+            logger.warning
+            (
+                "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                id , i , dump( def )
+            ) ;
         }
     }
     return ( listeners.length > 0 ) ? listeners : null ;

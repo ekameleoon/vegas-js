@@ -7,7 +7,7 @@ import { createReceivers }  from './createReceivers.js' ;
 import { createStrategy }   from './createStrategy.js' ;
 
 import { ObjectDefinition } from '../ObjectDefinition.js' ;
-import { ObjectAttribute } from '../ObjectAttribute.js' ;
+import { ObjectAttribute }  from '../ObjectAttribute.js' ;
 
 /**
  * Creates a new ObjectDefinition instance and populated it with the specified init object in argument.

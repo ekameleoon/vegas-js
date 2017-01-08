@@ -2,7 +2,6 @@
 
 import { dump } from '../../../core/dump.js' ;
 import { logger } from '../logger.js' ;
-import { Logger } from '../../logging/Logger.js' ;
 import { ObjectAttribute } from '../ObjectAttribute.js' ;
 import { ObjectReceiver } from '../ObjectReceiver.js' ;
 import { ObjectOrder } from '../ObjectOrder.js' ;
@@ -21,7 +20,7 @@ export function createReceivers( factory )
         return null ;
     }
 
-    var a = null ;
+    let a = null ;
 
     if ( factory instanceof Array )
     {
@@ -37,14 +36,14 @@ export function createReceivers( factory )
         return null ;
     }
 
-    var def ;
-    var receivers = [] ;
-    var signal ;
+    let def ;
+    let receivers = [] ;
+    let signal ;
 
-    var id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
-    var len = a.length ;
+    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let len = a.length ;
 
-    for ( var i = 0 ; i<len ; i++ )
+    for ( let i = 0 ; i<len ; i++ )
     {
         def = a[i] ;
         if ( def !== null && ( ObjectReceiver.SIGNAL in def ) )
@@ -68,16 +67,11 @@ export function createReceivers( factory )
         }
         else
         {
-            if( logger && (logger instanceof Logger) )
-            {
-                logger.warning
-                (
-                    "ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                    id ,
-                    i ,
-                    dump( def )
-                ) ;
-            }
+            logger.warning
+            (
+                "ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                id , i , dump( def )
+            ) ;
         }
     }
     return ( receivers.length > 0 ) ? receivers : null ;
