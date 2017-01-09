@@ -6,63 +6,13 @@ import { ObjectConfig } from '../../../src/system/ioc/ObjectConfig.js' ;
 import { ObjectFactory } from '../../../src/system/ioc/ObjectFactory.js' ;
 import { ObjectDefinitionContainer } from '../../../src/system/ioc/ObjectDefinitionContainer.js' ;
 
+import { Civility , User , UserFactory } from '../../examples/User.js' ;
+
 import chai  from 'chai' ;
 const assert = chai.assert ;
 
 describe( 'system.ioc.ObjectFactory' , () =>
 {
-    // ---------
-
-    var Civility =
-    {
-        MAN   : "man" ,
-        WOMAN : "woman"
-    }
-
-    // ---------
-
-    var User = function( name )
-    {
-        this.name     = name ;
-        this.civility = null ;
-        this.birthday = null ;
-    }
-
-    User.prototype.toString = function()
-    {
-        return '[User ' + this.name + ']' ;
-    }
-
-    // ---------
-
-    var UserFactory =
-    {
-        create : function( name )
-        {
-            return new User(name) ;
-        }
-    }
-
-    // ---------
-
-    var UserFilterFactory = function( blackList )
-    {
-        this.blackList = blackList instanceof Array ? blackList : [] ;
-    }
-
-    UserFilterFactory.prototype.build = function( pseudo )
-    {
-        if ( this.blackList.indexOf( pseudo ) > -1 )
-        {
-            return null ;
-        }
-        return new User( pseudo ) ;
-    }
-
-    UserFilterFactory.prototype.toString = function() { return '[UserFilterFactory]' ; }
-
-    // ---------
-
     describe( '#constructor' , () =>
     {
         let factory = new ObjectFactory() ;
@@ -112,7 +62,7 @@ describe( 'system.ioc.ObjectFactory' , () =>
             ([
                 {
                     id   : "user_factory"     ,
-                    type : UserFilterFactory ,
+                    type : UserFactory ,
                     args : [ { value : [ "lunas" , "pegas" ] } ]
                 },
                 {
@@ -147,8 +97,62 @@ describe( 'system.ioc.ObjectFactory' , () =>
             it('factory.getObject("user2")', () => { assert.isNull( user2 );});
         });
 
-        // TODO factoryProperty
-        // TODO factoryReference
+        describe( '#factoryProperty' , () =>
+        {
+            let factory = new ObjectFactory() ;
+            factory.run
+            ([
+                {
+                    id   : "user" ,
+                    type : User ,
+                    args : [ { value : "JohnDoe" } ]
+                },
+                {
+                    id              : "name"   ,
+                    type            : String ,
+                    factoryProperty : { factory : "user" , name : "name" }
+                }
+            ]);
+            it( 'name === "JohnDoe"' , () =>
+            {
+                assert.equal( factory.getObject('name') , "JohnDoe" );
+            });
+        });
+
+        describe( '#factoryReference' , () =>
+        {
+            let factory = new ObjectFactory() ;
+            factory.run
+            ([
+                {
+                    id   : "user" ,
+                    type : User ,
+                    args : [ { value : "ekameleon" } ] ,
+                    properties :
+                    [
+                        { name : 'city' , value : 'Marseille' }
+                    ]
+                },
+                {
+                    id              : "john"   ,
+                    type            : User ,
+                    factoryReference : 'user' ,
+                    properties       :
+                    [
+                        { name : "city"      , value : "Ventabren" } ,
+                        { name : "name"      , value : "Doe"       } ,
+                        { name : "firstname" , value : "John"      }
+                    ]
+                }
+            ]);
+
+            let user = factory.getObject('john') ;
+
+            it( 'user instanceof User' , () => { assert.instanceOf( user , User ); });
+            it( 'user.name === "Doe"' , () => { assert.equal( user.name , "Doe" ); });
+            it( 'user.firstname === "John"' , () => { assert.equal( user.firstname , "John" ); });
+            it( 'user.city === "Ventabren"' , () => { assert.equal( user.city , "Ventabren" ); });
+        });
 
         describe( '#factoryValue' , () =>
         {
@@ -197,9 +201,7 @@ describe( 'system.ioc.ObjectFactory' , () =>
                     }
                 }
             ]);
-
             let user = factory.getObject("user") ;
-
             it('factory.getObject("user") is not null', () => { assert.isNotNull( user );});
             it('factory.getObject("user") instanceof User', () => { assert.instanceOf( user , User ); });
             it('factory.getObject("user").name === "ekameleon"', () => { assert.equal( user.name , 'ekameleon' ); });
@@ -219,7 +221,6 @@ describe( 'system.ioc.ObjectFactory' , () =>
                     }
                 }
             ]);
-
             it('factory.getObject("civility") === "man"', () =>
             {
                 assert.equal( factory.getObject("civility") , "man" );

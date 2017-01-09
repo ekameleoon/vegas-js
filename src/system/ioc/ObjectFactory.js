@@ -699,7 +699,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             }
             else if ( strategy instanceof ObjectFactoryProperty )
             {
-                ref = this.getObject(strategy.factory) ;
+                ref = this.getObject( strategy.factory ) ;
                 if ( ref && name && (name in ref) )
                 {
                     instance = ref[name] ;
@@ -968,15 +968,19 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 for( var member in value )
                 {
-                    if( value.hasOwnProperty(member) )
+                    if( member in o )
                     {
                         o[member] = value[member] ;
+                    }
+                    else
+                    {
+                        this.warn( this + " populateProperty failed with the magic #init name, the " + member + " attribute is not declared on the object with the object definition '" + id + "'." ) ;
                     }
                 }
             }
             else
             {
-                this.warn( this + " populate a new property failed with the magic name #init, the object to enumerate not must be null, see the factory with the object definition '" + id + "'." ) ;
+                this.warn( this + " populate a new property failed with the magic #init name, the object to enumerate not must be null, see the factory with the object definition '" + id + "'." ) ;
             }
 
             return ;
@@ -986,7 +990,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         if ( !( name in o ) )
         {
-            this.warn( this + " populate a new property failed with the name:" + name + ", this property don't exist in the object:" + o + ", see the factory with the object definition '" + id + "'." ) ;
+            this.warn( this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object:" + o + ", see the factory with the object definition '" + id + "'." ) ;
             return ;
         }
 
@@ -1018,10 +1022,12 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 value = this.config.localeEvaluator.eval( value ) ;
             }
+
             if ( prop.evaluators && prop.evaluators.length > 0 )
             {
                 value = this.eval( value , prop.evaluators ) ;
             }
+
             o[ name ] = value ;
         }
         catch( e )
@@ -1044,7 +1050,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         {
             return ;
         }
-        var size = listeners.length ;
+        let size = listeners.length ;
         if ( size > 0 )
         {
             let dispatcher ;
@@ -1095,10 +1101,8 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         {
             return ;
         }
-
         let slot , signaler , receiver ;
         let len = receivers.length ;
-
         for (let i = 0 ; i<len ; i++ )
         {
             try
@@ -1106,7 +1110,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 receiver = receivers[i] ;
                 signaler = this._config.referenceEvaluator.eval( receiver.signal ) ;
                 slot     = null ;
-
                 if ( signaler instanceof Signaler )
                 {
                     if ( (receiver.slot instanceof String || typeof(receiver.slot) === 'string') && (receiver.slot in o) && ( o[receiver.slot] instanceof Function ) )
