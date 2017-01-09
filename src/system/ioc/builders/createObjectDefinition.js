@@ -24,7 +24,8 @@ export function createObjectDefinition( o )
         o[ ObjectAttribute.ID ]        || null ,
         o[ ObjectAttribute.TYPE ]      || null ,
         o[ ObjectAttribute.SINGLETON ] || false ,
-        o[ ObjectAttribute.LAZY_INIT ] || false
+        o[ ObjectAttribute.LAZY_INIT ] || false ,
+        o[ ObjectAttribute.LAZY_TYPE ] || false
     ) ;
 
     if( (ObjectAttribute.IDENTIFY in o) && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof(o[ObjectAttribute.IDENTIFY]) === 'boolean') )

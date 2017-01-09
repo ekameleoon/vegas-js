@@ -26,9 +26,10 @@ import { ObjectStrategy } from './ObjectStrategy.js' ;
  * @param {string|Function} type - The type of the object (the function reference of the class name).
  * @param {boolean} [singleton=false] - Indicates if the object definition scope is 'singleton' or not.
  * @param {boolean} [lazyInit=false] - Indicates if the object definition scope is 'lazyInit' or not.
+ * @param {boolean} [lazyType=false] - Indicates if the object definition check or not the type of the new object.
  * @throws ReferenceError if the <code>id</code> and <code>type</code> arguments are <code>null</code> or <code>undefined</code>.
  */
-export function ObjectDefinition( id , type , singleton = false , lazyInit = false )
+export function ObjectDefinition( id , type , singleton = false , lazyInit = false , lazyType=false )
 {
     if ( id === null || id === undefined )
     {
@@ -118,6 +119,7 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
         _dependsOn       : { value : null , writable : true } ,
         _generates       : { value : null , writable : true } ,
         _lazyInit        : { value : lazyInit && singleton , writable : true } ,
+        _lazyType        : { value : Boolean(lazyType) , writable : true } ,
         _singleton       : { value : Boolean(singleton) , writable : true } ,
         _scope           : { value : Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE , writable : true } ,
         _strategy        : { value : null , writable : true }
@@ -213,6 +215,22 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
         set : function( flag )
         {
             this._lazyInit = ((flag instanceof Boolean) || (typeof(flag) === 'boolean')) ? flag : false ;
+        }
+    },
+
+    /**
+     * Indicates if the object lazily typed. If <code>false</code>, it will the object is instantiated without type checking.
+     * @name lazyType
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @type boolean
+     */
+    lazyType :
+    {
+        get : function() { return this._lazyType; },
+        set : function( value )
+        {
+            this._lazyType = value === true ;
         }
     },
 

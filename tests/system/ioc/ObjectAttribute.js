@@ -52,6 +52,10 @@ describe( 'system.ioc.ObjectAttribute' , () =>
     {
         assert.equal( ObjectAttribute.LAZY_INIT , 'lazyInit' );
     });
+    it('ObjectAttribute.LAZY_TYPE === "lazyType"', () =>
+    {
+        assert.equal( ObjectAttribute.LAZY_TYPE , 'lazyType' );
+    });
     it('ObjectAttribute.LISTENERS === "listeners"', () =>
     {
         assert.equal( ObjectAttribute.LISTENERS , 'listeners' );

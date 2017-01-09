@@ -108,6 +108,15 @@ export var ObjectAttribute = Object.defineProperties( {} ,
     LAZY_INIT : { value : 'lazyInit' , enumerable : true },
 
     /**
+     * Defines the 'lazyType' attribute of the object definition.
+     * @memberof system.ioc.ObjectAttribute
+     * @type {string}
+     * @default lazyInit
+     * @const
+     */
+    LAZY_TYPE : { value : 'lazyType' , enumerable : true },
+
+    /**
      * Defines the 'listeners' attribute in the object definitions.
      * @memberof system.ioc.ObjectAttribute
      * @type {string}

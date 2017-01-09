@@ -4929,6 +4929,7 @@ var ObjectAttribute = Object.defineProperties({}, {
   IDENTIFY: { value: 'identify', enumerable: true },
   INIT_METHOD_NAME: { value: 'init', enumerable: true },
   LAZY_INIT: { value: 'lazyInit', enumerable: true },
+  LAZY_TYPE: { value: 'lazyType', enumerable: true },
   LISTENERS: { value: 'listeners', enumerable: true },
   LOCALE: { value: 'locale', enumerable: true },
   LOCK: { value: 'lock', enumerable: true },
@@ -5510,6 +5511,7 @@ var ObjectScope = Object.defineProperties({}, {
 function ObjectDefinition(id, type) {
     var singleton = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var lazyInit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var lazyType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     if (id === null || id === undefined) {
         throw new ReferenceError(this + " constructor failed, the 'id' value passed in argument not must be empty or 'null' or 'undefined'.");
     }
@@ -5530,6 +5532,7 @@ function ObjectDefinition(id, type) {
         _dependsOn: { value: null, writable: true },
         _generates: { value: null, writable: true },
         _lazyInit: { value: lazyInit && singleton, writable: true },
+        _lazyType: { value: Boolean(lazyType), writable: true },
         _singleton: { value: Boolean(singleton), writable: true },
         _scope: { value: Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
         _strategy: { value: null, writable: true }
@@ -5571,6 +5574,14 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
         },
         set: function set(flag) {
             this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
+        }
+    },
+    lazyType: {
+        get: function get() {
+            return this._lazyType;
+        },
+        set: function set(value) {
+            this._lazyType = value === true;
         }
     },
     listeners: { set: function set(ar) {
@@ -5642,7 +5653,7 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
 });
 
 function createObjectDefinition(o) {
-    var definition = new ObjectDefinition(o[ObjectAttribute.ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
+    var definition = new ObjectDefinition(o[ObjectAttribute.ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false, o[ObjectAttribute.LAZY_TYPE] || false);
     if (ObjectAttribute.IDENTIFY in o && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
         definition.identify = o[ObjectAttribute.IDENTIFY];
     }
@@ -5951,19 +5962,21 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                             }
                         }
                         if (instance) {
-                            var check = false;
-                            if (instance instanceof definition.type) {
-                                check = true;
-                            } else if (definition.type === String) {
-                                check = instance instanceof String || typeof instance === 'string';
-                            } else if (definition.type === Number) {
-                                check = instance instanceof Number || typeof instance === 'number';
-                            } else if (definition.type === Boolean) {
-                                check = instance instanceof Boolean || typeof instance === 'boolean';
-                            }
-                            if (!check) {
-                                instance = null;
-                                throw new Error("the new object is not an instance of the [" + definition.type.name + "] constructor");
+                            if (!definition.lazyType) {
+                                var check = false;
+                                if (instance instanceof definition.type) {
+                                    check = true;
+                                } else if (definition.type === String) {
+                                    check = instance instanceof String || typeof instance === 'string';
+                                } else if (definition.type === Number) {
+                                    check = instance instanceof Number || typeof instance === 'number';
+                                } else if (definition.type === Boolean) {
+                                    check = instance instanceof Boolean || typeof instance === 'boolean';
+                                }
+                                if (!check) {
+                                    instance = null;
+                                    throw new Error("the new object is not an instance of the [" + definition.type.name + "] constructor");
+                                }
                             }
                             if (definition.singleton) {
                                 this._singletons.set(id, instance);

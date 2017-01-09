@@ -1,3 +1,4 @@
+/* globals PIXI */
 /* globals vegas */
 "use strict" ;
 
@@ -12,6 +13,7 @@ window.onload = function()
     var trace  = vegas.trace  ; // jshint ignore:line
     var core   = vegas.core   ; // jshint ignore:line
     var system = vegas.system ; // jshint ignore:line
+    var graphics = vegas.graphics ; // jshint ignore:line
 
     var Log           = system.logging.Log ;
     var LoggerLevel   = system.logging.LoggerLevel ;
@@ -30,7 +32,7 @@ window.onload = function()
     target.filters = ['*'] ;
     target.level   = LoggerLevel.ALL ;
 
-    var logger = Log.getLogger('channel') ;
+    var logger = Log.getLogger( 'channel' ) ;
 
     logger.info('---------- Start Example');
 
@@ -72,7 +74,7 @@ window.onload = function()
     Slot.prototype = Object.create( system.signals.Receiver.prototype ,
     {
         constructor : { value : Slot } ,
-        receive     : { value : function( message )
+        receive : { value : function( message )
         {
             logger.info( 'slot receive ' + (message || 'an unknow message...') ) ;
         }},
@@ -91,7 +93,16 @@ window.onload = function()
     config.setConfigTarget({
 
         'origin'  : { x : 10 , y : 20 } ,
-        'nirvana' : { x : 0  , y : 0  }
+        'nirvana' : { x : 0  , y : 0  } ,
+        area : new graphics.geom.Rectangle(0,0,700,200) ,
+        renderer :
+        {
+            autoResize      : true ,
+            backgroundColor : 0xA9A988,
+            antialias       : false,
+            transparent     : false,
+            resolution      : 1
+        }
     });
 
     config.setLocaleTarget({
@@ -119,35 +130,35 @@ window.onload = function()
     [
         {
             id        : "signal" ,
-            type      : "Signal" ,
+            type      : system.signals.Signal ,
             dependsOn : [ 'slot' ] ,
             singleton : true ,
             lazyInit  : true
         },
         {
             id        : "slot" ,
-            type      : "Slot" ,
+            type      : Slot ,
             singleton : true ,
             lazyInit  : true ,
             receivers : [ { signal : "signal" } ]
         },
         {
             id   : "position" ,
-            type : "Point" ,
+            type : Point ,
             args : [ { value : 2 } , { ref : 'origin.y' }],
             sigleton   : true ,
             lazyInit   : true ,
             init       : 'init' ,
             properties :
             [
-                { name : "x" , ref   :'origin.x' } ,
-                { name : "y" , value : 100       } ,
+                { name : "x"     , ref   :'origin.x' } ,
+                { name : "y"     , value : 100       } ,
                 { name : '#init' , config : 'nirvana' }
             ]
         },
         {
             id         : "origin" ,
-            type       : "Point" ,
+            type       : Point ,
             singleton  : true ,
             lazyInit   : true ,
             args       : [ { config : 'origin.x' } , { value : 20 }] ,
@@ -155,12 +166,27 @@ window.onload = function()
             [
                 { name : 'test' , args : [ { locale : 'messages.test' } ] }
             ]
+        },
+        {
+            id : "renderer" ,
+            type : Object ,
+            staticFactoryMethod :
+            {
+                type : PIXI , name : 'autoDetectRenderer' , args :
+                [
+                    { config : "area.width"  } , { config : "area.height" } , { config : "renderer"    }
+                ]
+            },
+            singleton : true ,
+            lazyInit  : true
         }
     ];
 
     factory.run( objects );
 
-    var position = factory.getObject('position') ;
+    trace( factory.getObject('position') ) ;
+
+    trace( factory.getObject('renderer') ) ;
 
     var signal = factory.getObject('signal') ;
     if( signal )

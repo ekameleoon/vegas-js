@@ -52,6 +52,47 @@ describe( 'system.ioc.ObjectFactory' , () =>
 
     // --------- strategies
 
+    describe( '#config' , () =>
+    {
+        let factory = new ObjectFactory() ;
+        factory.config.setConfigTarget
+        ({
+            user :
+            {
+                name : "ekameleon" ,
+                city : "Marseille"
+            },
+            info :
+            {
+                civility : "MAN" ,
+                test     : "test"
+            }
+        });
+
+        factory.run
+        ([
+            {
+                id   : "user"   ,
+                type : User ,
+                args : [ { config : 'user.name' } ] ,
+                properties :
+                [
+                    { name : "city"  , config : "user.city" } ,
+                    { name : "#init" , config : "info"      }
+                ]
+            }
+        ]);
+
+        let user = factory.getObject('user') ;
+
+        it( 'user instanceOf User' , () => { assert.instanceOf( user , User ) });
+        it( 'user.name === "ekameleon"' , () => { assert.equal( user.name , "ekameleon" ); });
+        it( 'user.city === "Marseille"' , () => { assert.equal( user.city , "Marseille" ); });
+        it( 'user.civility === "MAN"' , () => { assert.equal( user.civility , "MAN" ); });
+    });
+
+    // --------- strategies
+
     describe( '#strategies' , () =>
     {
         describe( '#factoryMethod' , () =>

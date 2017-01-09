@@ -273,29 +273,32 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
                     if ( instance )
                     {
-                        let check = false ;
+                        if( !definition.lazyType )
+                        {
+                            let check = false ;
 
-                        if( instance instanceof definition.type )
-                        {
-                            check = true ;
-                        }
-                        else if( definition.type === String )
-                        {
-                            check = (instance instanceof String) || (typeof(instance) === 'string') ;
-                        }
-                        else if( definition.type === Number )
-                        {
-                            check = (instance instanceof Number) || (typeof(instance) === 'number') ;
-                        }
-                        else if( definition.type === Boolean )
-                        {
-                            check = (instance instanceof Boolean) || (typeof(instance) === 'boolean') ;
-                        }
+                            if( instance instanceof definition.type )
+                            {
+                                check = true ;
+                            }
+                            else if( definition.type === String )
+                            {
+                                check = (instance instanceof String) || (typeof(instance) === 'string') ;
+                            }
+                            else if( definition.type === Number )
+                            {
+                                check = (instance instanceof Number) || (typeof(instance) === 'number') ;
+                            }
+                            else if( definition.type === Boolean )
+                            {
+                                check = (instance instanceof Boolean) || (typeof(instance) === 'boolean') ;
+                            }
 
-                        if( !check )
-                        {
-                            instance = null ;
-                            throw new Error( "the new object is not an instance of the [" + definition.type.name + "] constructor" ) ;
+                            if( !check )
+                            {
+                                instance = null ;
+                                throw new Error( "the new object is not an instance of the [" + definition.type.name + "] constructor" ) ;
+                            }
                         }
 
                         if ( definition.singleton )
