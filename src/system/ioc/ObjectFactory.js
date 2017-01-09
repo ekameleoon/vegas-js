@@ -348,13 +348,12 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 }
                 else
                 {
-                    throw new Error( "the definition.type property is not a valid constructor") ;
+                    throw new Error( "the definition.type property is not a valid constructor" ) ;
                 }
             }
         }
         catch( er )
         {
-            // console.log( this + " getObject('" + id + "') failed, " + er.message + "." ) ;
             this.warn( this + " getObject('" + id + "') failed, " + er.message + "." ) ;
         }
 
@@ -771,12 +770,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 continue ;
             }
-
             if ( o instanceof String || typeof(o) === 'string' )
             {
                 o = this.getObject( o ) ;
             }
-
             if ( o instanceof Evaluable )
             {
                 a.push( o ) ;
@@ -1101,15 +1098,14 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         {
             return ;
         }
-        let slot , signaler , receiver ;
         let len = receivers.length ;
-        for (let i = 0 ; i<len ; i++ )
+        for( let i = 0 ; i<len ; i++ )
         {
             try
             {
-                receiver = receivers[i] ;
-                signaler = this._config.referenceEvaluator.eval( receiver.signal ) ;
-                slot     = null ;
+                let receiver = receivers[i] ;
+                let signaler = this._config.referenceEvaluator.eval( receiver.signal ) ;
+                let slot     = null ;
                 if ( signaler instanceof Signaler )
                 {
                     if ( (receiver.slot instanceof String || typeof(receiver.slot) === 'string') && (receiver.slot in o) && ( o[receiver.slot] instanceof Function ) )
@@ -1120,7 +1116,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         slot = o ;
                     }
-
                     if ( (slot instanceof Receiver) || (slot instanceof Function) )
                     {
                         signaler.connect( slot , receiver.priority, receiver.autoDisconnect ) ;

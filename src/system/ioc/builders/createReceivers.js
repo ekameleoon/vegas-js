@@ -26,9 +26,9 @@ export function createReceivers( factory )
     {
         a = factory ;
     }
-    else if( ( ObjectAttribute.OBJECT_RECEIVERS in factory ) && (factory[ ObjectAttribute.OBJECT_RECEIVERS ] instanceof Array ) )
+    else if( ( ObjectAttribute.RECEIVERS in factory ) && (factory[ObjectAttribute.RECEIVERS] instanceof Array ) )
     {
-        a = factory[ ObjectAttribute.OBJECT_RECEIVERS ] ;
+        a = factory[ObjectAttribute.RECEIVERS] ;
     }
 
     if ( a === null || a.length === 0 )
@@ -40,7 +40,7 @@ export function createReceivers( factory )
     let receivers = [] ;
     let signal ;
 
-    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let id = String( factory[ObjectAttribute.ID] ) ;
     let len = a.length ;
 
     for ( let i = 0 ; i<len ; i++ )

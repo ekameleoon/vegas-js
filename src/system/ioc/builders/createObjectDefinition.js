@@ -21,18 +21,18 @@ export function createObjectDefinition( o )
 {
     let definition = new ObjectDefinition
     (
-        o[ ObjectAttribute.OBJECT_ID ]        || null ,
-        o[ ObjectAttribute.TYPE ]             || null ,
-        o[ ObjectAttribute.OBJECT_SINGLETON ] || false ,
-        o[ ObjectAttribute.LAZY_INIT ]        || false
+        o[ ObjectAttribute.ID ]        || null ,
+        o[ ObjectAttribute.TYPE ]      || null ,
+        o[ ObjectAttribute.SINGLETON ] || false ,
+        o[ ObjectAttribute.LAZY_INIT ] || false
     ) ;
 
-    if( (ObjectAttribute.IDENTIFY in o) && (o[ ObjectAttribute.IDENTIFY ] instanceof Boolean || typeof(o[ ObjectAttribute.IDENTIFY ]) === 'boolean') )
+    if( (ObjectAttribute.IDENTIFY in o) && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof(o[ObjectAttribute.IDENTIFY]) === 'boolean') )
     {
         definition.identify = o[ ObjectAttribute.IDENTIFY ] ;
     }
 
-    if( (ObjectAttribute.LOCK in o) && (o[ ObjectAttribute.LOCK ] instanceof Boolean || typeof(o[ ObjectAttribute.LOCK ]) === 'boolean') )
+    if( (ObjectAttribute.LOCK in o) && (o[ObjectAttribute.LOCK] instanceof Boolean || typeof(o[ObjectAttribute.LOCK]) === 'boolean') )
     {
         definition.lock = o[ ObjectAttribute.LOCK ] ;
     }
@@ -42,29 +42,29 @@ export function createObjectDefinition( o )
         definition.constructorArguments = createArguments( o[ ObjectAttribute.ARGUMENTS ] );
     }
 
-    if( ObjectAttribute.OBJECT_DESTROY_METHOD_NAME in o )
+    if( ObjectAttribute.DESTROY_METHOD_NAME in o )
     {
-        definition.destroyMethodName = o[ ObjectAttribute.OBJECT_DESTROY_METHOD_NAME ] ;
+        definition.destroyMethodName = o[ ObjectAttribute.DESTROY_METHOD_NAME ] ;
     }
 
-    if( ObjectAttribute.OBJECT_INIT_METHOD_NAME in o )
+    if( ObjectAttribute.INIT_METHOD_NAME in o )
     {
-        definition.initMethodName = o[ ObjectAttribute.OBJECT_INIT_METHOD_NAME ] ;
+        definition.initMethodName = o[ ObjectAttribute.INIT_METHOD_NAME ] ;
     }
 
-    if( ObjectAttribute.OBJECT_SCOPE in o )
+    if( ObjectAttribute.SCOPE in o )
     {
-        definition.scope = o[ ObjectAttribute.OBJECT_SCOPE ] ;
+        definition.scope = o[ ObjectAttribute.SCOPE ] ;
     }
 
-    if( (ObjectAttribute.OBJECT_DEPENDS_ON in o) && ( o[ ObjectAttribute.OBJECT_DEPENDS_ON ] instanceof Array ) )
+    if( (ObjectAttribute.DEPENDS_ON in o) && ( o[ObjectAttribute.DEPENDS_ON] instanceof Array ) )
     {
-        definition.dependsOn = o[ ObjectAttribute.OBJECT_DEPENDS_ON ] ;
+        definition.dependsOn = o[ ObjectAttribute.DEPENDS_ON ] ;
     }
 
-    if( (ObjectAttribute.OBJECT_GENERATES in o) && (o[ ObjectAttribute.OBJECT_GENERATES ] instanceof Array) )
+    if( (ObjectAttribute.GENERATES in o) && (o[ObjectAttribute.GENERATES] instanceof Array) )
     {
-        definition.generates = o[ ObjectAttribute.OBJECT_GENERATES ] ;
+        definition.generates = o[ ObjectAttribute.GENERATES ] ;
     }
 
     let listeners = createListeners( o ) ;

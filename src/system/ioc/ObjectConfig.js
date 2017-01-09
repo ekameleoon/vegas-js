@@ -1,3 +1,4 @@
+/*jshint -W089 */
 "use strict" ;
 
 import { ArrayMap }            from '../data/maps/ArrayMap.js' ;
@@ -34,10 +35,7 @@ export function ObjectConfig( init = null )
             {
                 for( var prop in init )
                 {
-                    if( init.hasOwnProperty( prop ) )
-                    {
-                        this._config[prop] = init[prop] ;
-                    }
+                    this._config[prop] = init[prop] ;
                 }
             }
         },
@@ -107,12 +105,9 @@ export function ObjectConfig( init = null )
             get : function() { return this._locale ; } ,
             set : function( init )
             {
-                for( var prop in init )
+                for( let prop in init )
                 {
-                    if( init.hasOwnProperty( prop ))
-                    {
-                        this._locale[prop] = init[prop] ;
-                    }
+                    this._locale[prop] = init[prop] ;
                 }
             }
         },
@@ -216,28 +211,25 @@ export function ObjectConfig( init = null )
             {
                 if ( aliases instanceof ArrayMap )
                 {
-                    var next ;
-                    var key ;
-                    var it = aliases.iterator() ;
+                    let it = aliases.iterator() ;
                     while( it.hasNext() )
                     {
-                        next = it.next() ;
-                        key  = it.key() ;
+                        let next = it.next() ;
+                        let key  = it.key() ;
                         this._typeAliases.set(key, next) ;
                     }
                 }
                 else if ( aliases instanceof Array )
                 {
-                	var item ;
-                    var len = aliases.length ;
+                    let len = aliases.length ;
                     if ( len > 0 )
                     {
                        while ( --len > -1 )
                        {
-                            item = aliases[len] ;
-                            if ( item !== null && ( ObjectAttribute.TYPE_ALIAS in item ) && ( ObjectAttribute.TYPE in item ) )
+                            let item = aliases[len] ;
+                            if ( item !== null && ( ObjectConfig.TYPE_ALIAS in item ) && ( ObjectAttribute.TYPE in item ) )
                             {
-                                this._typeAliases.set( String(item[ObjectAttribute.TYPE_ALIAS]) , String(item[ObjectAttribute.TYPE]) ) ;
+                                this._typeAliases.set( String(item[ObjectConfig.TYPE_ALIAS]) , String(item[ObjectAttribute.TYPE]) ) ;
                             }
                        }
                     }
@@ -381,6 +373,18 @@ export function ObjectConfig( init = null )
     this.initialize( init ) ;
 }
 
+Object.defineProperties( ObjectConfig ,
+{
+    /**
+     * Defines the attribute name of the alias expression in a typeAlias object in the configuration of the ioc factory.
+     * @memberof system.ioc.ObjectConfig
+     * @type {string}
+     * @default alias
+     * @const
+     */
+    TYPE_ALIAS : { value : 'alias' , enumerable : true }
+});
+
 ObjectConfig.prototype = Object.create( Object.prototype ,
 {
     constructor : { value : ObjectConfig } ,
@@ -401,7 +405,7 @@ ObjectConfig.prototype = Object.create( Object.prototype ,
         }
         for (var prop in init)
         {
-            if ( this.hasOwnProperty(prop) )
+            if ( prop in this )
             {
                 this[prop] = init[prop] ;
             }

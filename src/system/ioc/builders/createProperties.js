@@ -27,9 +27,9 @@ export function createProperties( factory )
     {
         a = factory ;
     }
-    else if( (ObjectAttribute.OBJECT_PROPERTIES in factory) && (factory[ ObjectAttribute.OBJECT_PROPERTIES ] instanceof Array ) )
+    else if( (ObjectAttribute.PROPERTIES in factory) && (factory[ObjectAttribute.PROPERTIES] instanceof Array ) )
     {
-        a = factory[ ObjectAttribute.OBJECT_PROPERTIES ] ;
+        a = factory[ObjectAttribute.PROPERTIES] ;
     }
 
     if ( !(a instanceof Array) || (a.length === 0) )
@@ -38,7 +38,7 @@ export function createProperties( factory )
     }
 
     let properties = [] ;
-    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let id = String(factory[ ObjectAttribute.ID ]) ;
     let len = a.length ;
     let prop = null ;
 

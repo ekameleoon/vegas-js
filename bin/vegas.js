@@ -165,7 +165,118 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
 
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
 
 
 
@@ -4809,40 +4920,25 @@ var MagicReference = Object.defineProperties({}, {
 var ObjectAttribute = Object.defineProperties({}, {
   ARGUMENTS: { value: 'args', enumerable: true },
   CONFIG: { value: 'config', enumerable: true },
-  CONFIGURATION: { value: 'configuration', enumerable: true },
+  DEPENDS_ON: { value: 'dependsOn', enumerable: true },
+  DESTROY_METHOD_NAME: { value: 'destroy', enumerable: true },
   EVALUATORS: { value: 'evaluators', enumerable: true },
   FACTORY: { value: 'factory', enumerable: true },
+  GENERATES: { value: 'generates', enumerable: true },
+  ID: { value: 'id', enumerable: true },
   IDENTIFY: { value: 'identify', enumerable: true },
-  I18N: { value: 'i18n', enumerable: true },
-  IMPORTS: { value: 'imports', enumerable: true },
+  INIT_METHOD_NAME: { value: 'init', enumerable: true },
   LAZY_INIT: { value: 'lazyInit', enumerable: true },
+  LISTENERS: { value: 'listeners', enumerable: true },
   LOCALE: { value: 'locale', enumerable: true },
   LOCK: { value: 'lock', enumerable: true },
   NAME: { value: 'name', enumerable: true },
-  OBJECT_DEPENDS_ON: { value: 'dependsOn', enumerable: true },
-  OBJECT_DESTROY_METHOD_NAME: { value: 'destroy', enumerable: true },
-  OBJECT_FACTORY_LOGIC: { value: 'factoryLogic', enumerable: true },
-  OBJECT_FACTORY_METHOD: { value: 'factoryMethod', enumerable: true },
-  OBJECT_FACTORY_PROPERTY: { value: 'factoryProperty', enumerable: true },
-  OBJECT_FACTORY_REFERENCE: { value: 'factoryReference', enumerable: true },
-  OBJECT_FACTORY_VALUE: { value: 'factoryValue', enumerable: true },
-  OBJECT_GENERATES: { value: 'generates', enumerable: true },
-  OBJECT_ID: { value: 'id', enumerable: true },
-  OBJECT_INIT_METHOD_NAME: { value: 'init', enumerable: true },
-  OBJECT_LISTENERS: { value: 'listeners', enumerable: true },
-  OBJECT_PROPERTIES: { value: 'properties', enumerable: true },
-  OBJECT_RECEIVERS: { value: 'receivers', enumerable: true },
-  OBJECT_SCOPE: { value: 'scope', enumerable: true },
-  OBJECT_SINGLETON: { value: 'singleton', enumerable: true },
-  OBJECT_STATIC_FACTORY_METHOD: { value: 'staticFactoryMethod', enumerable: true },
-  OBJECT_STATIC_FACTORY_PROPERTY: { value: 'staticFactoryProperty', enumerable: true },
-  OBJECTS: { value: 'objects', enumerable: true },
-  RESOURCE: { value: 'resource', enumerable: true },
-  TYPE: { value: 'type', enumerable: true },
-  TYPE_ALIAS: { value: 'alias', enumerable: true },
-  TYPE_ALIASES: { value: 'typeAliases', enumerable: true },
-  TYPE_EXPRESSION: { value: 'typeExpression', enumerable: true },
+  PROPERTIES: { value: 'properties', enumerable: true },
+  RECEIVERS: { value: 'receivers', enumerable: true },
   REFERENCE: { value: 'ref', enumerable: true },
+  SCOPE: { value: 'scope', enumerable: true },
+  SINGLETON: { value: 'singleton', enumerable: true },
+  TYPE: { value: 'type', enumerable: true },
   VALUE: { value: 'value', enumerable: true }
 });
 
@@ -5033,17 +5129,17 @@ function createListeners(factory) {
     var a = null;
     if (factory instanceof Array) {
         a = factory;
-    } else if (ObjectAttribute.OBJECT_LISTENERS in factory && factory[ObjectAttribute.OBJECT_LISTENERS] instanceof Array) {
-        a = factory[ObjectAttribute.OBJECT_LISTENERS];
+    } else if (ObjectAttribute.LISTENERS in factory && factory[ObjectAttribute.LISTENERS] instanceof Array) {
+        a = factory[ObjectAttribute.LISTENERS];
     }
     if (a === null || a.length === 0) {
         return null;
     }
-    var def;
-    var dispatcher;
-    var type;
+    var def = void 0;
+    var dispatcher = void 0;
+    var type = void 0;
     var listeners = [];
-    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var id = String(factory[ObjectAttribute.ID]);
     var len = a.length;
     for (var i = 0; i < len; i++) {
         def = a[i];
@@ -5058,9 +5154,7 @@ function createListeners(factory) {
             }
             listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
         } else {
-            if (logger && logger instanceof Logger) {
-                logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
-            }
+            logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
         }
     }
     return listeners.length > 0 ? listeners : null;
@@ -5117,14 +5211,14 @@ function createProperties(factory) {
     var a = null;
     if (factory instanceof Array) {
         a = factory;
-    } else if (ObjectAttribute.OBJECT_PROPERTIES in factory && factory[ObjectAttribute.OBJECT_PROPERTIES] instanceof Array) {
-        a = factory[ObjectAttribute.OBJECT_PROPERTIES];
+    } else if (ObjectAttribute.PROPERTIES in factory && factory[ObjectAttribute.PROPERTIES] instanceof Array) {
+        a = factory[ObjectAttribute.PROPERTIES];
     }
     if (!(a instanceof Array) || a.length === 0) {
         return null;
     }
     var properties = [];
-    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var id = String(factory[ObjectAttribute.ID]);
     var len = a.length;
     var prop = null;
     for (var i = 0; i < len; i++) {
@@ -5230,16 +5324,16 @@ function createReceivers(factory) {
     var a = null;
     if (factory instanceof Array) {
         a = factory;
-    } else if (ObjectAttribute.OBJECT_RECEIVERS in factory && factory[ObjectAttribute.OBJECT_RECEIVERS] instanceof Array) {
-        a = factory[ObjectAttribute.OBJECT_RECEIVERS];
+    } else if (ObjectAttribute.RECEIVERS in factory && factory[ObjectAttribute.RECEIVERS] instanceof Array) {
+        a = factory[ObjectAttribute.RECEIVERS];
     }
     if (a === null || a.length === 0) {
         return null;
     }
-    var def;
+    var def = void 0;
     var receivers = [];
-    var signal;
-    var id = String(factory[ObjectAttribute.OBJECT_ID]);
+    var signal = void 0;
+    var id = String(factory[ObjectAttribute.ID]);
     var len = a.length;
     for (var i = 0; i < len; i++) {
         def = a[i];
@@ -5250,13 +5344,20 @@ function createReceivers(factory) {
             }
             receivers.push(new ObjectReceiver(signal, def[ObjectReceiver.SLOT], isNaN(def[ObjectReceiver.PRIORITY]) ? 0 : def[ObjectReceiver.PRIORITY], def[ObjectReceiver.AUTO_DISCONNECT] === true, def[ObjectReceiver.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
         } else {
-            if (logger && logger instanceof Logger) {
-                logger.warning("ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
-            }
+            logger.warning("ObjectBuilder.createReceivers failed, a receiver definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
         }
     }
     return receivers.length > 0 ? receivers : null;
 }
+
+var ObjectStrategies = Object.defineProperties({}, {
+  FACTORY_METHOD: { value: 'factoryMethod', enumerable: true },
+  FACTORY_PROPERTY: { value: 'factoryProperty', enumerable: true },
+  FACTORY_REFERENCE: { value: 'factoryReference', enumerable: true },
+  FACTORY_VALUE: { value: 'factoryValue', enumerable: true },
+  STATIC_FACTORY_METHOD: { value: 'staticFactoryMethod', enumerable: true },
+  STATIC_FACTORY_PROPERTY: { value: 'staticFactoryProperty', enumerable: true }
+});
 
 function ObjectMethod(name, args) {
   Object.defineProperties(this, {
@@ -5380,35 +5481,20 @@ ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
 });
 
 function createStrategy(o) {
-    switch (true) {
-        case ObjectAttribute.OBJECT_FACTORY_METHOD in o:
-            {
-                return ObjectFactoryMethod.build(o[ObjectAttribute.OBJECT_FACTORY_METHOD]);
-            }
-        case ObjectAttribute.OBJECT_FACTORY_PROPERTY in o:
-            {
-                return ObjectFactoryProperty.build(o[ObjectAttribute.OBJECT_FACTORY_PROPERTY]);
-            }
-        case ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD in o:
-            {
-                return ObjectStaticFactoryMethod.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD]);
-            }
-        case ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY in o:
-            {
-                return ObjectStaticFactoryProperty.build(o[ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY]);
-            }
-        case ObjectAttribute.OBJECT_FACTORY_REFERENCE in o:
-            {
-                return new ObjectReference(o[ObjectAttribute.OBJECT_FACTORY_REFERENCE]);
-            }
-        case ObjectAttribute.OBJECT_FACTORY_VALUE in o:
-            {
-                return new ObjectValue(o[ObjectAttribute.OBJECT_FACTORY_VALUE]);
-            }
-        default:
-            {
-                return null;
-            }
+    if (ObjectStrategies.FACTORY_METHOD in o) {
+        return ObjectFactoryMethod.build(o[ObjectStrategies.FACTORY_METHOD]);
+    } else if (ObjectStrategies.FACTORY_PROPERTY in o) {
+        return ObjectFactoryProperty.build(o[ObjectStrategies.FACTORY_PROPERTY]);
+    } else if (ObjectStrategies.FACTORY_REFERENCE in o) {
+        return new ObjectReference(o[ObjectStrategies.FACTORY_REFERENCE]);
+    } else if (ObjectStrategies.FACTORY_VALUE in o) {
+        return new ObjectValue(o[ObjectStrategies.FACTORY_VALUE]);
+    } else if (ObjectStrategies.STATIC_FACTORY_METHOD in o) {
+        return ObjectStaticFactoryMethod.build(o[ObjectStrategies.STATIC_FACTORY_METHOD]);
+    } else if (ObjectStrategies.STATIC_FACTORY_PROPERTY in o) {
+        return ObjectStaticFactoryProperty.build(o[ObjectStrategies.STATIC_FACTORY_PROPERTY]);
+    } else {
+        return null;
     }
 }
 
@@ -5431,72 +5517,11 @@ function ObjectDefinition(id, type) {
         throw new ReferenceError(this + " constructor failed, the 'type' passed in argument not must be empty or 'null' or 'undefined'.");
     }
     Object.defineProperties(this, {
-        afterListeners: { get: function get() {
-                return this._afterListeners;
-            } },
-        afterReceivers: { get: function get() {
-                return this._afterReceivers;
-            } },
-        beforeListeners: { get: function get() {
-                return this._beforeListeners;
-            } },
-        beforeReceivers: { get: function get() {
-                return this._beforeReceivers;
-            } },
         constructorArguments: { value: null, enumerable: true, writable: true },
-        dependsOn: {
-            enumerable: true,
-            get: function get() {
-                return this._dependsOn;
-            },
-            set: function set(ar) {
-                this._dependsOn = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
-            }
-        },
         destroyMethodName: { value: null, enumerable: true, writable: true },
-        generates: {
-            enumerable: true,
-            get: function get() {
-                return this._generates;
-            },
-            set: function set(ar) {
-                this._generates = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
-            }
-        },
         id: { value: id, enumerable: true, writable: true },
         identify: { value: false, enumerable: true, writable: true },
         initMethodName: { value: null, enumerable: true, writable: true },
-        lazyInit: {
-            get: function get() {
-                return this._lazyInit;
-            },
-            set: function set(flag) {
-                this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
-            }
-        },
-        listeners: {
-            set: function set(ar) {
-                this._afterListeners = [];
-                this._beforeListeners = [];
-                if (ar === null || !(ar instanceof Array)) {
-                    return;
-                }
-                var r;
-                var l = ar.length;
-                if (l > 0) {
-                    for (var i = 0; i < l; i++) {
-                        r = ar[i];
-                        if (r instanceof ObjectListener) {
-                            if (r.order === ObjectOrder.AFTER) {
-                                this._afterListeners.push(r);
-                            } else {
-                                this._beforeListeners.push(r);
-                            }
-                        }
-                    }
-                }
-            }
-        },
         lock: { value: false, enumerable: true, writable: true },
         properties: { value: null, enumerable: true, writable: true },
         type: { value: type, enumerable: true, writable: true },
@@ -5511,19 +5536,73 @@ function ObjectDefinition(id, type) {
     });
 }
 ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
-    constructor: { value: Identifiable, enumerable: true, writable: true },
-    receivers: {
+    constructor: { writable: true, value: Identifiable },
+    afterListeners: { get: function get() {
+            return this._afterListeners;
+        } },
+    afterReceivers: { get: function get() {
+            return this._afterReceivers;
+        } },
+    beforeListeners: { get: function get() {
+            return this._beforeListeners;
+        } },
+    beforeReceivers: { get: function get() {
+            return this._beforeReceivers;
+        } },
+    dependsOn: {
+        get: function get() {
+            return this._dependsOn;
+        },
         set: function set(ar) {
+            this._dependsOn = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+        }
+    },
+    generates: {
+        get: function get() {
+            return this._generates;
+        },
+        set: function set(ar) {
+            this._generates = ar instanceof Array && ar.length > 0 ? ar.filter(this._filterStrings) : null;
+        }
+    },
+    lazyInit: {
+        get: function get() {
+            return this._lazyInit;
+        },
+        set: function set(flag) {
+            this._lazyInit = flag instanceof Boolean || typeof flag === 'boolean' ? flag : false;
+        }
+    },
+    listeners: { set: function set(ar) {
+            this._afterListeners = [];
+            this._beforeListeners = [];
+            if (ar === null || !(ar instanceof Array)) {
+                return;
+            }
+            var l = ar.length;
+            if (l > 0) {
+                for (var i = 0; i < l; i++) {
+                    var r = ar[i];
+                    if (r instanceof ObjectListener) {
+                        if (r.order === ObjectOrder.AFTER) {
+                            this._afterListeners.push(r);
+                        } else {
+                            this._beforeListeners.push(r);
+                        }
+                    }
+                }
+            }
+        } },
+    receivers: { set: function set(ar) {
             this._afterReceivers = [];
             this._beforeReceivers = [];
             if (ar === null || !(ar instanceof Array)) {
                 return;
             }
-            var r;
             var l = ar.length;
             if (l > 0) {
                 for (var i = 0; i < l; i++) {
-                    r = ar[i];
+                    var r = ar[i];
                     if (r instanceof ObjectReceiver) {
                         if (r.order === ObjectOrder.AFTER) {
                             this._afterReceivers.push(r);
@@ -5533,13 +5612,10 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
                     }
                 }
             }
-        }
-    },
-    singleton: {
-        get: function get() {
+        } },
+    singleton: { get: function get() {
             return this._singleton;
-        }
-    },
+        } },
     scope: {
         get: function get() {
             return this._scope;
@@ -5550,7 +5626,6 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
         }
     },
     strategy: {
-        enumerable: true,
         get: function get() {
             return this._strategy;
         },
@@ -5561,15 +5636,13 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
     toString: { value: function value() {
             return "[ObjectDefinition]";
         } },
-    _filterStrings: {
-        value: function value(item) {
+    _filterStrings: { value: function value(item) {
             return (typeof item === 'string' || item instanceof String) && item.length > 0;
-        }
-    }
+        } }
 });
 
 function createObjectDefinition(o) {
-    var definition = new ObjectDefinition(o[ObjectAttribute.OBJECT_ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.OBJECT_SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
+    var definition = new ObjectDefinition(o[ObjectAttribute.ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false);
     if (ObjectAttribute.IDENTIFY in o && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
         definition.identify = o[ObjectAttribute.IDENTIFY];
     }
@@ -5579,20 +5652,20 @@ function createObjectDefinition(o) {
     if (ObjectAttribute.ARGUMENTS in o && o[ObjectAttribute.ARGUMENTS] instanceof Array) {
         definition.constructorArguments = createArguments(o[ObjectAttribute.ARGUMENTS]);
     }
-    if (ObjectAttribute.OBJECT_DESTROY_METHOD_NAME in o) {
-        definition.destroyMethodName = o[ObjectAttribute.OBJECT_DESTROY_METHOD_NAME];
+    if (ObjectAttribute.DESTROY_METHOD_NAME in o) {
+        definition.destroyMethodName = o[ObjectAttribute.DESTROY_METHOD_NAME];
     }
-    if (ObjectAttribute.OBJECT_INIT_METHOD_NAME in o) {
-        definition.initMethodName = o[ObjectAttribute.OBJECT_INIT_METHOD_NAME];
+    if (ObjectAttribute.INIT_METHOD_NAME in o) {
+        definition.initMethodName = o[ObjectAttribute.INIT_METHOD_NAME];
     }
-    if (ObjectAttribute.OBJECT_SCOPE in o) {
-        definition.scope = o[ObjectAttribute.OBJECT_SCOPE];
+    if (ObjectAttribute.SCOPE in o) {
+        definition.scope = o[ObjectAttribute.SCOPE];
     }
-    if (ObjectAttribute.OBJECT_DEPENDS_ON in o && o[ObjectAttribute.OBJECT_DEPENDS_ON] instanceof Array) {
-        definition.dependsOn = o[ObjectAttribute.OBJECT_DEPENDS_ON];
+    if (ObjectAttribute.DEPENDS_ON in o && o[ObjectAttribute.DEPENDS_ON] instanceof Array) {
+        definition.dependsOn = o[ObjectAttribute.DEPENDS_ON];
     }
-    if (ObjectAttribute.OBJECT_GENERATES in o && o[ObjectAttribute.OBJECT_GENERATES] instanceof Array) {
-        definition.generates = o[ObjectAttribute.OBJECT_GENERATES];
+    if (ObjectAttribute.GENERATES in o && o[ObjectAttribute.GENERATES] instanceof Array) {
+        definition.generates = o[ObjectAttribute.GENERATES];
     }
     var listeners = createListeners(o);
     if (listeners) {
@@ -6196,17 +6269,19 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 }
                 if (value) {
                     for (var member in value) {
-                        if (value.hasOwnProperty(member)) {
+                        if (member in o) {
                             o[member] = value[member];
+                        } else {
+                            this.warn(this + " populateProperty failed with the magic #init name, the " + member + " attribute is not declared on the object with the object definition '" + id + "'.");
                         }
                     }
                 } else {
-                    this.warn(this + " populate a new property failed with the magic name #init, the object to enumerate not must be null, see the factory with the object definition '" + id + "'.");
+                    this.warn(this + " populate a new property failed with the magic #init name, the object to enumerate not must be null, see the factory with the object definition '" + id + "'.");
                 }
                 return;
             }
             if (!(name in o)) {
-                this.warn(this + " populate a new property failed with the name:" + name + ", this property don't exist in the object:" + o + ", see the factory with the object definition '" + id + "'.");
+                this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object:" + o + ", see the factory with the object definition '" + id + "'.");
                 return;
             }
             if (o[name] instanceof Function) {
@@ -6269,15 +6344,12 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (!(receivers instanceof Array) || receivers.length === 0) {
                 return;
             }
-            var slot = void 0,
-                signaler = void 0,
-                receiver = void 0;
             var len = receivers.length;
             for (var i = 0; i < len; i++) {
                 try {
-                    receiver = receivers[i];
-                    signaler = this._config.referenceEvaluator.eval(receiver.signal);
-                    slot = null;
+                    var receiver = receivers[i];
+                    var signaler = this._config.referenceEvaluator.eval(receiver.signal);
+                    var slot = null;
                     if (signaler instanceof Signaler) {
                         if ((receiver.slot instanceof String || typeof receiver.slot === 'string') && receiver.slot in o && o[receiver.slot] instanceof Function) {
                             slot = o[receiver.slot];
@@ -6438,9 +6510,7 @@ function ObjectConfig() {
             },
             set: function set(init) {
                 for (var prop in init) {
-                    if (init.hasOwnProperty(prop)) {
-                        this._config[prop] = init[prop];
-                    }
+                    this._config[prop] = init[prop];
                 }
             }
         },
@@ -6460,9 +6530,7 @@ function ObjectConfig() {
             },
             set: function set(init) {
                 for (var prop in init) {
-                    if (init.hasOwnProperty(prop)) {
-                        this._locale[prop] = init[prop];
-                    }
+                    this._locale[prop] = init[prop];
                 }
             }
         },
@@ -6497,22 +6565,19 @@ function ObjectConfig() {
             },
             set: function set(aliases) {
                 if (aliases instanceof ArrayMap) {
-                    var next;
-                    var key;
                     var it = aliases.iterator();
                     while (it.hasNext()) {
-                        next = it.next();
-                        key = it.key();
+                        var next = it.next();
+                        var key = it.key();
                         this._typeAliases.set(key, next);
                     }
                 } else if (aliases instanceof Array) {
-                    var item;
                     var len = aliases.length;
                     if (len > 0) {
                         while (--len > -1) {
-                            item = aliases[len];
-                            if (item !== null && ObjectAttribute.TYPE_ALIAS in item && ObjectAttribute.TYPE in item) {
-                                this._typeAliases.set(String(item[ObjectAttribute.TYPE_ALIAS]), String(item[ObjectAttribute.TYPE]));
+                            var item = aliases[len];
+                            if (item !== null && ObjectConfig.TYPE_ALIAS in item && ObjectAttribute.TYPE in item) {
+                                this._typeAliases.set(String(item[ObjectConfig.TYPE_ALIAS]), String(item[ObjectAttribute.TYPE]));
                             }
                         }
                     }
@@ -6584,6 +6649,9 @@ function ObjectConfig() {
     this.throwError = false;
     this.initialize(init);
 }
+Object.defineProperties(ObjectConfig, {
+    TYPE_ALIAS: { value: 'alias', enumerable: true }
+});
 ObjectConfig.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectConfig },
     initialize: { value: function value(init) {
@@ -6591,7 +6659,7 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
                 return;
             }
             for (var prop in init) {
-                if (this.hasOwnProperty(prop)) {
+                if (prop in this) {
                     this[prop] = init[prop];
                 }
             }

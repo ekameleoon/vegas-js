@@ -26,9 +26,9 @@ export function createListeners( factory )
     {
         a = factory ;
     }
-    else if( ( ObjectAttribute.OBJECT_LISTENERS in factory ) && (factory[ ObjectAttribute.OBJECT_LISTENERS ] instanceof Array ) )
+    else if( ( ObjectAttribute.LISTENERS in factory ) && (factory[ ObjectAttribute.LISTENERS ] instanceof Array ) )
     {
-        a = factory[ ObjectAttribute.OBJECT_LISTENERS ] ;
+        a = factory[ ObjectAttribute.LISTENERS ] ;
     }
 
     if ( a === null || a.length === 0 )
@@ -42,7 +42,7 @@ export function createListeners( factory )
 
     let listeners = [] ;
 
-    let id = String(factory[ ObjectAttribute.OBJECT_ID ]) ;
+    let id = String(factory[ ObjectAttribute.ID ]) ;
     let len = a.length ;
 
     for ( let i = 0 ; i<len ; i++ )

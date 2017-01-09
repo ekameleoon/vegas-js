@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectAttribute } from '../ObjectAttribute.js' ;
+import { ObjectStrategies } from '../ObjectStrategies.js' ;
 
 import { ObjectFactoryMethod }         from '../strategies/ObjectFactoryMethod.js' ;
 import { ObjectFactoryProperty }       from '../strategies/ObjectFactoryProperty.js' ;
@@ -10,42 +10,39 @@ import { ObjectStaticFactoryProperty } from '../strategies/ObjectStaticFactoryPr
 import { ObjectValue }                 from '../strategies/ObjectValue.js' ;
 
 /**
- * This helper create an ObjectStrategy object with a generic object in the IoC context.
+ * This helper create an <code>ObjectStrategy</code> object based on a specific generic object definition.
  * @memberof system.ioc.builders
  * @function
  * @private
  */
 export function createStrategy( o )
 {
-    switch( true )
+    if ( ObjectStrategies.FACTORY_METHOD in o )
     {
-        case ( ObjectAttribute.OBJECT_FACTORY_METHOD in o )  :
-        {
-            return ObjectFactoryMethod.build( o[ ObjectAttribute.OBJECT_FACTORY_METHOD ] ) ;
-        }
-        case ( ObjectAttribute.OBJECT_FACTORY_PROPERTY in o )  :
-        {
-            return ObjectFactoryProperty.build( o[ ObjectAttribute.OBJECT_FACTORY_PROPERTY ] ) ;
-        }
-        case ( ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD  in o )  :
-        {
-            return ObjectStaticFactoryMethod.build( o[ ObjectAttribute.OBJECT_STATIC_FACTORY_METHOD ] ) ;
-        }
-        case ( ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY in o )  :
-        {
-            return ObjectStaticFactoryProperty.build( o[ ObjectAttribute.OBJECT_STATIC_FACTORY_PROPERTY ] ) ;
-        }
-        case ( ObjectAttribute.OBJECT_FACTORY_REFERENCE in o )  :
-        {
-            return new ObjectReference( o[ ObjectAttribute.OBJECT_FACTORY_REFERENCE ] ) ;
-        }
-        case ( ObjectAttribute.OBJECT_FACTORY_VALUE in o )  :
-        {
-            return new ObjectValue( o[ ObjectAttribute.OBJECT_FACTORY_VALUE ] ) ;
-        }
-        default :
-        {
-            return null ;
-        }
+        return ObjectFactoryMethod.build( o[ ObjectStrategies.FACTORY_METHOD ] ) ;
+    }
+    else if ( ObjectStrategies.FACTORY_PROPERTY in o )
+    {
+        return ObjectFactoryProperty.build( o[ ObjectStrategies.FACTORY_PROPERTY ] ) ;
+    }
+    else if ( ObjectStrategies.FACTORY_REFERENCE in o )
+    {
+        return new ObjectReference( o[ ObjectStrategies.FACTORY_REFERENCE ] ) ;
+    }
+    else if ( ObjectStrategies.FACTORY_VALUE in o )
+    {
+        return new ObjectValue( o[ ObjectStrategies.FACTORY_VALUE ] ) ;
+    }
+    else if ( ObjectStrategies.STATIC_FACTORY_METHOD  in o )
+    {
+        return ObjectStaticFactoryMethod.build( o[ ObjectStrategies.STATIC_FACTORY_METHOD ] ) ;
+    }
+    else if ( ObjectStrategies.STATIC_FACTORY_PROPERTY in o )
+    {
+        return ObjectStaticFactoryProperty.build( o[ ObjectStrategies.STATIC_FACTORY_PROPERTY ] ) ;
+    }
+    else
+    {
+        return null ;
     }
 }

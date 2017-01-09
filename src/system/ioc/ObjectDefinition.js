@@ -43,48 +43,6 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
     Object.defineProperties( this ,
     {
         /**
-         * The <code>Array</code> of all listener definitions of this object definition register after the object initialization.
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @readonly
-         * @type Array
-         */
-        afterListeners : { get : function() { return this._afterListeners ; } },
-
-        /**
-         * Returns the Array of all receiver definitions of this object definition register after the object initialization.
-         * @return the Array of all receiver definitions of this object definition register after the object initialization.
-         * @name afterReceivers
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @readonly
-         * @type Array
-         */
-        afterReceivers : { get : function() { return this._afterReceivers ; } },
-
-        /**
-         * Returns the Array of all listener definitions of this object definition register before the object initialization.
-         * @return the Array of all listener definitions of this object definition register before the object initialization.
-         * @name beforeListeners
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @readonly
-         * @type Array
-         */
-        beforeListeners : { get : function() { return this._beforeListeners ; } },
-
-        /**
-         * Returns the Array of all receiver definitions of this object definition register before the object initialization.
-         * @return the Array of all receiver definitions of this object definition register before the object initialization.
-         * @name beforeReceivers
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @readonly
-         * @type Array
-         */
-        beforeReceivers : { get : function() { return this._beforeReceivers ; } },
-
-        /**
          * The constructor arguments values of this object in a Array list.
          * @name constructorArguments
          * @memberof system.ioc.ObjectDefinition
@@ -93,44 +51,12 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
         constructorArguments : { value : null , enumerable : true , writable : true } ,
 
         /**
-         * Defines the "dependsOn" collection.
-         * @name dependsOn
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        dependsOn :
-        {
-            enumerable : true ,
-            get : function() { return this._dependsOn ; } ,
-            set : function( ar )
-            {
-                this._dependsOn = ( ar instanceof Array && ar.length > 0 ) ? ar.filter( this._filterStrings ) : null ;
-            }
-        },
-
-        /**
          * Determinates the name of the method invoked when the object is destroyed.
          * @name destroyMethodName
          * @memberof system.ioc.ObjectDefinition
          * @instance
          */
         destroyMethodName : { value : null , enumerable : true , writable : true } ,
-
-        /**
-         * Defines the "generates" collection.
-         * @name generates
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        generates :
-        {
-            enumerable : true ,
-            get : function() { return this._generates ; } ,
-            set : function( ar )
-            {
-                this._generates = ( ar instanceof Array && ar.length > 0 ) ? ar.filter( this._filterStrings ) : null ;
-            }
-        },
 
         /**
          * Indicates the unique identifier value of this object.
@@ -160,65 +86,6 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
         initMethodName : { value : null , enumerable : true , writable : true } ,
 
         /**
-         * Indicates if the object lazily initialized. Only applicable to a singleton object. If <code>false</code>, it will get instantiated on startup by object factories that perform eager initialization of singletons.
-         * @name lazyInit
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         * @type boolean
-         */
-        lazyInit :
-        {
-            get : function()
-            {
-                return this._lazyInit;
-            },
-            set : function( flag )
-            {
-                this._lazyInit = ((flag instanceof Boolean) || (typeof(flag) === 'boolean')) ? flag : false ;
-            }
-        },
-
-        /**
-         * Sets the Array of all receiver definition of this object definition.
-         * @param ar the Array of all receiver definitions of the object.
-         * @name listeners
-         * @memberof system.ioc.ObjectDefinition
-         * @instance
-         */
-        listeners :
-        {
-            set : function( ar )
-            {
-                this._afterListeners  = [] ;
-                this._beforeListeners = [] ;
-                if ( ar === null || !(ar instanceof Array) )
-                {
-                    return ;
-                }
-                var r /*ObjectListener*/ ;
-                var l = ar.length ;
-                if ( l > 0 )
-                {
-                    for( var i = 0 ; i < l ; i++ )
-                    {
-                        r = ar[i] ;
-                        if ( r instanceof ObjectListener )
-                        {
-                            if( r.order === ObjectOrder.AFTER )
-                            {
-                                this._afterListeners.push( r ) ;
-                            }
-                            else
-                            {
-                                this._beforeListeners.push( r ) ;
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        /**
          * Indicates if the object definition lock this Lockable object during the population of the properties and the initialization of the methods defines in the object definition.
          * @name lock
          * @memberof system.ioc.ObjectDefinition
@@ -243,6 +110,9 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
          */
         type : { value : type , enumerable : true , writable : true } ,
 
+        /**
+         * @private
+         */
         _afterListeners  : { value : null , writable : true } ,
         _beforeListeners : { value : null , writable : true } ,
         _dependsOn       : { value : null , writable : true } ,
@@ -256,7 +126,131 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
 
 ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
 {
-    constructor : { value :  Identifiable , enumerable : true , writable : true },
+    constructor : { writable : true , value : Identifiable },
+
+    /**
+     * The <code>Array</code> of all listener definitions of this object definition register after the object initialization.
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @readonly
+     * @type Array
+     */
+    afterListeners : { get : function() { return this._afterListeners ; } },
+
+    /**
+     * Returns the Array of all receiver definitions of this object definition register after the object initialization.
+     * @return the Array of all receiver definitions of this object definition register after the object initialization.
+     * @name afterReceivers
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @readonly
+     * @type Array
+     */
+    afterReceivers : { get : function() { return this._afterReceivers ; } },
+
+    /**
+     * Returns the Array of all listener definitions of this object definition register before the object initialization.
+     * @return the Array of all listener definitions of this object definition register before the object initialization.
+     * @name beforeListeners
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @readonly
+     * @type Array
+     */
+    beforeListeners : { get : function() { return this._beforeListeners ; } },
+
+    /**
+     * Returns the Array of all receiver definitions of this object definition register before the object initialization.
+     * @return the Array of all receiver definitions of this object definition register before the object initialization.
+     * @name beforeReceivers
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @readonly
+     * @type Array
+     */
+    beforeReceivers : { get : function() { return this._beforeReceivers ; } },
+
+    /**
+     * Defines the "dependsOn" collection.
+     * @name dependsOn
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    dependsOn :
+    {
+        get : function() { return this._dependsOn ; } ,
+        set : function( ar )
+        {
+            this._dependsOn = ( ar instanceof Array && ar.length > 0 ) ? ar.filter( this._filterStrings ) : null ;
+        }
+    },
+
+    /**
+     * Defines the "generates" collection.
+     * @name generates
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    generates :
+    {
+        get : function() { return this._generates ; } ,
+        set : function( ar )
+        {
+            this._generates = ( ar instanceof Array && ar.length > 0 ) ? ar.filter( this._filterStrings ) : null ;
+        }
+    },
+
+    /**
+     * Indicates if the object lazily initialized. Only applicable to a singleton object. If <code>false</code>, it will get instantiated on startup by object factories that perform eager initialization of singletons.
+     * @name lazyInit
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     * @type boolean
+     */
+    lazyInit :
+    {
+        get : function() { return this._lazyInit; },
+        set : function( flag )
+        {
+            this._lazyInit = ((flag instanceof Boolean) || (typeof(flag) === 'boolean')) ? flag : false ;
+        }
+    },
+
+    /**
+     * Sets the Array of all receiver definition of this object definition.
+     * @param ar the Array of all receiver definitions of the object.
+     * @name listeners
+     * @memberof system.ioc.ObjectDefinition
+     * @instance
+     */
+    listeners : { set : function( ar )
+    {
+        this._afterListeners  = [] ;
+        this._beforeListeners = [] ;
+        if ( ar === null || !(ar instanceof Array) )
+        {
+            return ;
+        }
+        let l = ar.length ;
+        if ( l > 0 )
+        {
+            for( let i = 0 ; i < l ; i++ )
+            {
+                let r = ar[i] ;
+                if ( r instanceof ObjectListener )
+                {
+                    if( r.order === ObjectOrder.AFTER )
+                    {
+                        this._afterListeners.push( r ) ;
+                    }
+                    else
+                    {
+                        this._beforeListeners.push( r ) ;
+                    }
+                }
+            }
+        }
+    }},
 
     /**
      * Sets the Array of all receiver definition of this object definition.
@@ -265,40 +259,34 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      * @memberof system.ioc.ObjectDefinition
      * @instance
      */
-    receivers :
+    receivers : { set : function( ar )
     {
-        set : function( ar )
+        this._afterReceivers  = [] ;
+        this._beforeReceivers = [] ;
+        if ( ar === null || !(ar instanceof Array) )
         {
-            this._afterReceivers  = [] ;
-            this._beforeReceivers = [] ;
-
-            if ( ar === null || !(ar instanceof Array) )
+            return ;
+        }
+        let l = ar.length ;
+        if ( l > 0 )
+        {
+            for( var i = 0 ; i < l ; i++ )
             {
-                return ;
-            }
-
-            var r /*ObjectReceiver*/ ;
-            var l = ar.length ;
-            if ( l > 0 )
-            {
-                for( var i = 0 ; i < l ; i++ )
+                let r = ar[i] ;
+                if ( r instanceof ObjectReceiver )
                 {
-                    r = ar[i] ;
-                    if ( r instanceof ObjectReceiver )
+                    if( r.order === ObjectOrder.AFTER )
                     {
-                        if( r.order === ObjectOrder.AFTER )
-                        {
-                            this._afterReceivers.push( r ) ;
-                        }
-                        else
-                        {
-                            this._beforeReceivers.push( r ) ;
-                        }
+                        this._afterReceivers.push( r ) ;
+                    }
+                    else
+                    {
+                        this._beforeReceivers.push( r ) ;
                     }
                 }
             }
         }
-    },
+    }},
 
     /**
      * Indicates if the object in a singleton else the object is a prototype (read only, use the scope property to change it).
@@ -308,13 +296,7 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      * @type boolean
      * @type readonly
      */
-    singleton :
-    {
-        get : function()
-        {
-            return this._singleton;
-        }
-    },
+    singleton : { get : function() { return this._singleton; } },
 
     /**
      * Determinates the scope of the object.
@@ -340,7 +322,6 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      */
     strategy :
     {
-        enumerable : true ,
         get : function() { return this._strategy ; } ,
         set : function( strategy )
         {
@@ -365,11 +346,8 @@ ObjectDefinition.prototype = Object.create( Identifiable.prototype ,
      * @instance
      * @function
      */
-    _filterStrings :
+    _filterStrings : { value : function( item )
     {
-        value : function( item )
-        {
-            return (typeof(item) === 'string' || item instanceof String) && item.length > 0 ;
-        }
-    }
+        return (typeof(item) === 'string' || item instanceof String) && item.length > 0 ;
+    }}
 }) ;
