@@ -1,5 +1,7 @@
 'use strict' ;
 
+import './ioc/MagicReference.js' ;
+import './ioc/ObjectArgument.js' ;
 import './ioc/ObjectAttribute.js' ;
 import './ioc/ObjectConfig.js' ;
 import './ioc/ObjectDefinitionContainer.js' ;
