@@ -10,9 +10,6 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  * @class
  * @private
  * @example
- * var ConfigEvaluator = system.ioc.evaluators.ConfigEvaluator ;
- * var ObjectConfig = system.ioc.ObjectConfig ;
- *
  * var init =
  * {
  *     message : "hello world" ,

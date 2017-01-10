@@ -17,10 +17,6 @@ import { TypePolicy } from '../TypePolicy.js' ;
  * @memberof system.ioc.evaluators
  * @private
  * @example
- * var TypeEvaluator = system.ioc.evaluators.TypeEvaluator ;
- * var ObjectConfig  = system.ioc.ObjectConfig ;
- * var TypePolicy    = system.ioc.TypePolicy ;
- *
  * var conf = new ObjectConfig() ;
  *
  * conf.typePolicy  = TypePolicy.ALL ; // TypePolicy.NONE, TypePolicy.ALIAS, TypePolicy.EXPRESSION

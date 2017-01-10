@@ -10,9 +10,6 @@ import { ObjectConfig }      from '../ObjectConfig.js' ;
  * @class
  * @private
  * @example
- * var LocaleEvaluator = system.ioc.evaluators.LocaleEvaluator ;
- * var ObjectConfig = system.ioc.ObjectConfig ;
- *
  * var i18n =
  * {
  *     message : "hello world" ,
