@@ -119,9 +119,9 @@ export function ObjectDefinition( id , type , singleton = false , lazyInit = fal
         _dependsOn       : { value : null , writable : true } ,
         _generates       : { value : null , writable : true } ,
         _lazyInit        : { value : lazyInit && singleton , writable : true } ,
-        _lazyType        : { value : Boolean(lazyType) , writable : true } ,
-        _singleton       : { value : Boolean(singleton) , writable : true } ,
-        _scope           : { value : Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE , writable : true } ,
+        _lazyType        : { value : lazyType === true , writable : true } ,
+        _singleton       : { value : singleton === true , writable : true } ,
+        _scope           : { value : singleton === true ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE , writable : true } ,
         _strategy        : { value : null , writable : true }
     }) ;
 }

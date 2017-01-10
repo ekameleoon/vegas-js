@@ -101,8 +101,5 @@ Parameters.prototype = Object.create( Object.prototype ,
      * @instance
      * @function
      */
-    toString : { value : function ()
-    {
-        return '[Parameters]' ;
-    }}
+    toString : { value : function () { return '[Parameters]' ; }}
 }) ;

@@ -217,13 +217,10 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         {
            return null ;
         }
-
         let instance = null ;
-
         try
         {
             let definition ;
-
             try
             {
                 definition = this.getObjectDefinition( id ) ;
@@ -482,7 +479,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * [
      *     {
      *         id   : "position" ,
-     *         type : "Point" ,
+     *         type : Point ,
      *         args : [ { value : 2 } , { ref : 'origin.y' }],
      *         properties :
      *         [
@@ -492,7 +489,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      *     },
      *     {
      *         id         : "origin" ,
-     *         type       : "Point" ,
+     *         type       : Point ,
      *         singleton  : true ,
      *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
      *         properties :
@@ -607,7 +604,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             if( item instanceof ObjectArgument )
             {
                 let value = item.value ;
-
                 try
                 {
                     if ( item.policy === ObjectAttribute.REFERENCE )
@@ -627,7 +623,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         value = this.eval( value , item.evaluators  ) ;
                     }
-
                     stack.push( value ) ;
                 }
                 catch( er )
@@ -804,17 +799,16 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     {
         if ( (definition instanceof ObjectDefinition) && ( definition.generates instanceof Array ) )
         {
-            let id ;
             let ar = definition.generates ;
             let len = ar.length ;
             if ( len > 0 )
             {
                 for ( let i = 0 ; i<len ; i++ )
                 {
-                   id = ar[i] ;
+                   let id = ar[i] ;
                    if ( this.hasObjectDefinition(id) )
                    {
-                       this.getObject(id) ; // not keep in memory
+                       this.getObject(id) ; // Note: not keep in memory
                    }
                 }
             }

@@ -13,7 +13,7 @@ import { ObjectOrder } from './ObjectOrder.js' ;
  * @param {boolean} [useCapture=false] -  Determinates if the event flow use capture or not.
  * @param {string} [order=after] Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
  */
-export function ObjectListener( dispatcher , type , method = null , useCapture = false, order = "after" )
+export function ObjectListener( dispatcher , type , method = null , useCapture = false , order = "after" )
 {
     Object.defineProperties( this ,
     {
@@ -34,21 +34,6 @@ export function ObjectListener( dispatcher , type , method = null , useCapture =
         method : { value : method , writable : true } ,
 
         /**
-         * Determinates the <code>order</code> of the receiver registration (<code>'after'</code> or by default <code>'before'</code>).
-         * @name order
-         * @memberof system.ioc.ObjectListener
-         * @instance
-         */
-        order :
-        {
-            get : function() { return this._order ; } ,
-            set : function( value )
-            {
-                this._order = ( value === ObjectOrder.BEFORE ) ? ObjectOrder.BEFORE : ObjectOrder.AFTER ;
-            }
-        },
-
-        /**
          * The type name of the event dispatched by the dispatcher.
          * @name type
          * @memberof system.ioc.ObjectListener
@@ -63,7 +48,7 @@ export function ObjectListener( dispatcher , type , method = null , useCapture =
          * @instance
          * @type boolean
          */
-        useCapture : { value : Boolean(useCapture) , writable : true } ,
+        useCapture : { value : useCapture === true , writable : true } ,
 
         /**
          * @private
@@ -71,6 +56,37 @@ export function ObjectListener( dispatcher , type , method = null , useCapture =
         _order : { value : ( order === ObjectOrder.BEFORE ) ? ObjectOrder.BEFORE : ObjectOrder.AFTER  , writable : true }
     }) ;
 }
+
+
+ObjectListener.prototype = Object.create( Object.prototype ,
+{
+    constructor : { value : ObjectListener } ,
+
+    /**
+     * Determinates the <code>order</code> of the receiver registration (<code>'after'</code> or by default <code>'before'</code>).
+     * @name order
+     * @memberof system.ioc.ObjectListener
+     * @instance
+     */
+    order :
+    {
+        get : function() { return this._order ; } ,
+        set : function( value )
+        {
+            this._order = ( value === ObjectOrder.BEFORE ) ? ObjectOrder.BEFORE : ObjectOrder.AFTER ;
+        }
+    },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name toString
+     * @memberof system.ioc.ObjectListener
+     * @instance
+     * @function
+     */
+    toString : { value : function () { return '[ObjectListener]' ; }}
+}) ;
 
 Object.defineProperties( ObjectListener ,
 {
@@ -114,39 +130,3 @@ Object.defineProperties( ObjectListener ,
      */
     TYPE : { value : "type" , enumerable : true }
 });
-
-ObjectListener.prototype = Object.create( Object.prototype ,
-{
-    constructor : { value :  ObjectListener } ,
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @name toString
-     * @memberof system.ioc.ObjectListener
-     * @instance
-     * @function
-     */
-    toString : { value : function ()
-    {
-        var s = '[ObjectListener' ;
-        if ( this.signal )
-        {
-           s += ' dispatcher:"' + this.dispatcher + '"' ;
-        }
-        if ( this.slot )
-        {
-           s += ' type:"' + this.type + '"' ;
-        }
-        if ( this.method )
-        {
-            s += ' method:"' + this.method + '"' ;
-        }
-        if ( this._order )
-        {
-            s += ' order:"' + this._order + '"' ;
-        }
-        s += ']' ;
-        return s ;
-    }}
-}) ;

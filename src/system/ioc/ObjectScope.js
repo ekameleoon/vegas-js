@@ -33,7 +33,7 @@ export var ObjectScope = Object.defineProperties( {} ,
      * @default singleton
      * @const
      */
-    SCOPES : { value : [ "prototype" , "singleton" ] , enumerable : true },
+    SCOPES : { value : [ "prototype" , "singleton" ] },
 
     /**
      * Returns <code>true</code> if the passed value is a valid scope reference.

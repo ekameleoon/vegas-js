@@ -79,6 +79,20 @@ export function ObjectReceiver( signal , slot = null , priority = 0 , autoDiscon
     }) ;
 }
 
+ObjectReceiver.prototype = Object.create( Object.prototype ,
+{
+    constructor : { value : ObjectReceiver },
+
+    /**
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @memberof system.ioc.ObjectReceiver
+     * @function
+     * @instance
+     */
+    toString : { value : function () { return '[ObjectReceiver]' ; }}
+});
+
 Object.defineProperties( ObjectReceiver ,
 {
     /**
@@ -126,34 +140,3 @@ Object.defineProperties( ObjectReceiver ,
      */
     SLOT : { value : "slot" , enumerable : true }
 });
-
-ObjectReceiver.prototype = Object.create( Object.prototype ,
-{
-    constructor : { value : ObjectReceiver },
-
-    /**
-     * Returns the string representation of this instance.
-     * @return the string representation of this instance.
-     * @memberof system.ioc.ObjectReceiver
-     * @function
-     * @instance
-     */
-    toString : { value : function ()
-    {
-        var s = '[ObjectReceiver' ;
-        if ( this.signal )
-        {
-           s += ' signal:"' + this.signal + '"' ;
-        }
-        if ( this.slot )
-        {
-           s += ' slot:"' + this.slot + '"' ;
-        }
-        if ( this._order )
-        {
-            s += ' order:"' + this._order + '"' ;
-        }
-        s += ']' ;
-        return s ;
-    }}
-}) ;
