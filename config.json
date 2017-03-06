@@ -4,7 +4,7 @@
     "output"    : "./bin" ,
     "cache"     : false ,
     "debug"     : false ,
-    "header"    : "/* VEGAS JS - version ${version} - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */\n" ,
+    "header"    : "/* VEGAS JS - version ${version} - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */\n" ,
     "reporter"  : "spec" ,
     "reporters" :
     [
@@ -34,7 +34,7 @@
         ],
         "templates" :
         {
-            "footer"          : "<p align='center'>VEGAS JS - by <strong><a href='http://www.ooopener.com'>Ooopener</a></strong></p>",
+            "footer"          : "<p align='center'>VEGAS JS - by <strong><a href='https://www.ooopener.com'>Ooopener</a></strong></p>",
             "systemName"      : "VEGAS JS",
             "cleverLinks"     : true,
             "monospaceLinks"  : true,

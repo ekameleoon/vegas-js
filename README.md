@@ -6,23 +6,23 @@ This project contains a set of libraries writing in **Javascript** and based on 
 
 | package  | description                                                                                                                                                                                                                                                                                                                                         |
 |----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **[core](http://vegasjs.ooopener.com/core.html)**     | The [core](http://vegasjs.ooopener.com/core.html) package is specialized in functions utilities that are highly reusable without creating any dependencies :  arrays, strings, chars, objects, numbers, maths, date, colors, etc.                                                                                                                                                                                          |
-| **[system](http://vegasjs.ooopener.com/system.html)**   | The [system](http://vegasjs.ooopener.com/system.html) package is the root for the **VEGAS JS** framework. It is the starting point of our RIA framework structure : signals, W3C events, datas and collections (ADT), IoC container (Dependency Injection), logger, tasks, transitions, logics, rules, models, etc.                                                                                                                                                                              |
-| **[graphics](http://vegasjs.ooopener.com/graphics.html)** | The [graphics](http://vegasjs.ooopener.com/graphics.html) library is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface. |
+| **[core](https://vegasjs.ooopener.com/core.html)**     | The [core](https://vegasjs.ooopener.com/core.html) package is specialized in functions utilities that are highly reusable without creating any dependencies :  arrays, strings, chars, objects, numbers, maths, date, colors, etc.                                                                                                                                                                                          |
+| **[system](https://vegasjs.ooopener.com/system.html)**   | The [system](https://vegasjs.ooopener.com/system.html) package is the root for the **VEGAS JS** framework. It is the starting point of our RIA framework structure : signals, W3C events, datas and collections (ADT), IoC container (Dependency Injection), logger, tasks, transitions, logics, rules, models, etc.                                                                                                                                                                              |
+| **[graphics](https://vegasjs.ooopener.com/graphics.html)** | The [graphics](https://vegasjs.ooopener.com/graphics.html) library is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface. |
 
 ### About
 
  * Author : Marc ALCARAZ (aka eKameleon)
  * Mail : ekameleon[at]gmail.com
- * Link : [http://www.ooopener.com](http://www.ooopener.com)
+ * Link : [https://www.ooopener.com](https://www.ooopener.com)
 
 ### License
 
 Under tree opensource licenses :
 
  * [License MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/)
- * [License GPL 2.0+](http://www.gnu.org/licenses/gpl-2.0.html)
- * [License LGPL 2.1+](http://www.gnu.org/licenses/lgpl-2.1.html)
+ * [License GPL 2.0+](https://www.gnu.org/licenses/gpl-2.0.html)
+ * [License LGPL 2.1+](https://www.gnu.org/licenses/lgpl-2.1.html)
 
 ## Resources
 
@@ -30,13 +30,13 @@ Under tree opensource licenses :
 
 Download on **Bitbucket** the latest code, report an issue, ask a question or contribute :
 
- * [http://bitbucket.org/ekameleon/vegas-js](http://bitbucket.org/ekameleon/vegas-js)
+ * [https://bitbucket.org/ekameleon/vegas-js](https://bitbucket.org/ekameleon/vegas-js)
 
 #### ⌜ Documentation
 
 Get started with the the **Vegas JS** API :
 
- * [http://vegasjs.ooopener.com/](http://vegasjs.ooopener.com/)
+ * [https://vegasjs.ooopener.com/](https://vegasjs.ooopener.com/)
 
 #### ⌜ Tutorials
 
@@ -114,7 +114,7 @@ The **--entry** option trigger the a specific unit test entry. By default the un
 ```
 gulp ut --entry core.maths
 ```
-or 
+or
 ```
 gulp ut --entry core.maths.wrap
 ```
