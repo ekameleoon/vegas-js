@@ -8,10 +8,10 @@ const assert = chai.assert ;
 
 describe( 'core.date.daysInMonth' , () =>
 {
-    describe( 'daysInMonth() use Date.now()' , () =>
-    {
-        it('daysInMonth() === 31)', () => { assert.equal( daysInMonth() , 31 ); });
-    });
+    // describe( 'daysInMonth() use Date.now()' , () =>
+    // {
+    //     it('daysInMonth() === 31)', () => { assert.equal( daysInMonth() , 31 ); });
+    // });
 
     describe( 'daysInMonth(2016,xx,1) - Leap year' , () =>
     {

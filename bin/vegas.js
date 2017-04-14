@@ -1,4 +1,4 @@
-/* VEGAS JS - version 1.0.7 - Opensource Licences : MPL 1.1/GPL 2.0/LGPL 2.1 - Follow me on Twitter! @ekameleon */
+/* VEGAS JS - version 1.0.7 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
                   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
                   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -4947,27 +4947,7 @@ function ObjectArgument(value) {
     var policy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "value";
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     Object.defineProperties(this, {
-        _policy: { value: null, writable: true },
-        policy: {
-            get: function policy() {
-                return this._policy;
-            },
-            set: function set(str) {
-                switch (str) {
-                    case ObjectAttribute.REFERENCE:
-                    case ObjectAttribute.CONFIG:
-                    case ObjectAttribute.LOCALE:
-                        {
-                            this._policy = str;
-                            break;
-                        }
-                    default:
-                        {
-                            this._policy = ObjectAttribute.VALUE;
-                        }
-                }
-            }
-        }
+        _policy: { value: null, writable: true }
     });
     this.policy = policy;
     this.value = value;
@@ -4975,6 +4955,26 @@ function ObjectArgument(value) {
 }
 ObjectArgument.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectArgument },
+    policy: {
+        get: function policy() {
+            return this._policy;
+        },
+        set: function set(str) {
+            switch (str) {
+                case ObjectAttribute.REFERENCE:
+                case ObjectAttribute.CONFIG:
+                case ObjectAttribute.LOCALE:
+                    {
+                        this._policy = str;
+                        break;
+                    }
+                default:
+                    {
+                        this._policy = ObjectAttribute.VALUE;
+                    }
+            }
+        }
+    },
     toString: { value: function value() {
             return '[ObjectArgument]';
         } }
@@ -5082,45 +5082,31 @@ function ObjectListener(dispatcher, type) {
   Object.defineProperties(this, {
     dispatcher: { value: dispatcher, writable: true },
     method: { value: method, writable: true },
-    order: {
-      get: function get() {
-        return this._order;
-      },
-      set: function set(value) {
-        this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
-      }
-    },
     type: { value: type, writable: true },
-    useCapture: { value: Boolean(useCapture), writable: true },
+    useCapture: { value: useCapture === true, writable: true },
     _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
   });
 }
+ObjectListener.prototype = Object.create(Object.prototype, {
+  constructor: { value: ObjectListener },
+  order: {
+    get: function get() {
+      return this._order;
+    },
+    set: function set(value) {
+      this._order = value === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER;
+    }
+  },
+  toString: { value: function value() {
+      return '[ObjectListener]';
+    } }
+});
 Object.defineProperties(ObjectListener, {
   DISPATCHER: { value: "dispatcher", enumerable: true },
   METHOD: { value: "method", enumerable: true },
   ORDER: { value: "order", enumerable: true },
   USE_CAPTURE: { value: "useCapture", enumerable: true },
   TYPE: { value: "type", enumerable: true }
-});
-ObjectListener.prototype = Object.create(Object.prototype, {
-  constructor: { value: ObjectListener },
-  toString: { value: function value() {
-      var s = '[ObjectListener';
-      if (this.signal) {
-        s += ' dispatcher:"' + this.dispatcher + '"';
-      }
-      if (this.slot) {
-        s += ' type:"' + this.type + '"';
-      }
-      if (this.method) {
-        s += ' method:"' + this.method + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
 });
 
 function createListeners(factory) {
@@ -5293,29 +5279,18 @@ function ObjectReceiver(signal) {
     _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
   });
 }
+ObjectReceiver.prototype = Object.create(Object.prototype, {
+  constructor: { value: ObjectReceiver },
+  toString: { value: function value() {
+      return '[ObjectReceiver]';
+    } }
+});
 Object.defineProperties(ObjectReceiver, {
   AUTO_DISCONNECT: { value: "autoDisconnect", enumerable: true },
   ORDER: { value: "order", enumerable: true },
   PRIORITY: { value: "priority", enumerable: true },
   SIGNAL: { value: "signal", enumerable: true },
   SLOT: { value: "slot", enumerable: true }
-});
-ObjectReceiver.prototype = Object.create(Object.prototype, {
-  constructor: { value: ObjectReceiver },
-  toString: { value: function value() {
-      var s = '[ObjectReceiver';
-      if (this.signal) {
-        s += ' signal:"' + this.signal + '"';
-      }
-      if (this.slot) {
-        s += ' slot:"' + this.slot + '"';
-      }
-      if (this._order) {
-        s += ' order:"' + this._order + '"';
-      }
-      s += ']';
-      return s;
-    } }
 });
 
 function createReceivers(factory) {
@@ -5502,7 +5477,7 @@ function createStrategy(o) {
 var ObjectScope = Object.defineProperties({}, {
   PROTOTYPE: { value: "prototype", enumerable: true },
   SINGLETON: { value: "singleton", enumerable: true },
-  SCOPES: { value: ["prototype", "singleton"], enumerable: true },
+  SCOPES: { value: ["prototype", "singleton"] },
   validate: { value: function value(scope) {
       return ObjectScope.SCOPES.indexOf(scope) > -1;
     } }
@@ -5532,9 +5507,9 @@ function ObjectDefinition(id, type) {
         _dependsOn: { value: null, writable: true },
         _generates: { value: null, writable: true },
         _lazyInit: { value: lazyInit && singleton, writable: true },
-        _lazyType: { value: Boolean(lazyType), writable: true },
-        _singleton: { value: Boolean(singleton), writable: true },
-        _scope: { value: Boolean(singleton) ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
+        _lazyType: { value: lazyType === true, writable: true },
+        _singleton: { value: singleton === true, writable: true },
+        _scope: { value: singleton === true ? ObjectScope.SINGLETON : ObjectScope.PROTOTYPE, writable: true },
         _strategy: { value: null, writable: true }
     });
 }
@@ -6201,12 +6176,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
     generates: { value: function value(definition)
         {
             if (definition instanceof ObjectDefinition && definition.generates instanceof Array) {
-                var id = void 0;
                 var ar = definition.generates;
                 var len = ar.length;
                 if (len > 0) {
                     for (var i = 0; i < len; i++) {
-                        id = ar[i];
+                        var id = ar[i];
                         if (this.hasObjectDefinition(id)) {
                             this.getObject(id);
                         }
@@ -6517,137 +6491,15 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
 function ObjectConfig() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
-        config: {
-            get: function get() {
-                return this._config;
-            },
-            set: function set(init) {
-                for (var prop in init) {
-                    this._config[prop] = init[prop];
-                }
-            }
-        },
-        configEvaluator: {
-            get: function get() {
-                return this._configEvaluator;
-            }
-        },
         defaultDestroyMethod: { value: null, writable: true, enumerable: true },
         defaultInitMethod: { value: null, writable: true, enumerable: true },
         domain: { value: null, writable: true, enumerable: true },
         identify: { value: false, writable: true, enumerable: true },
         lazyInit: { value: false, writable: true, enumerable: true },
-        locale: {
-            get: function get() {
-                return this._locale;
-            },
-            set: function set(init) {
-                for (var prop in init) {
-                    this._locale[prop] = init[prop];
-                }
-            }
-        },
-        localeEvaluator: {
-            get: function get() {
-                return this._localeEvaluator;
-            }
-        },
         lock: { value: false, writable: true, enumerable: true },
         parameters: { value: null, writable: true, enumerable: true },
-        referenceEvaluator: {
-            get: function get() {
-                return this._referenceEvaluator;
-            }
-        },
         root: { value: null, writable: true, enumerable: true },
         stage: { value: null, writable: true, enumerable: true },
-        throwError: {
-            get: function get() {
-                return this._configEvaluator.throwError && this._localeEvaluator.throwError && this._typeEvaluator.throwError && this._referenceEvaluator.throwError;
-            },
-            set: function set(flag) {
-                this._configEvaluator.throwError = flag;
-                this._localeEvaluator.throwError = flag;
-                this._referenceEvaluator.throwError = flag;
-                this._typeEvaluator.throwError = flag;
-            }
-        },
-        typeAliases: {
-            get: function get() {
-                return this._typeAliases;
-            },
-            set: function set(aliases) {
-                if (aliases instanceof ArrayMap) {
-                    var it = aliases.iterator();
-                    while (it.hasNext()) {
-                        var next = it.next();
-                        var key = it.key();
-                        this._typeAliases.set(key, next);
-                    }
-                } else if (aliases instanceof Array) {
-                    var len = aliases.length;
-                    if (len > 0) {
-                        while (--len > -1) {
-                            var item = aliases[len];
-                            if (item !== null && ObjectConfig.TYPE_ALIAS in item && ObjectAttribute.TYPE in item) {
-                                this._typeAliases.set(String(item[ObjectConfig.TYPE_ALIAS]), String(item[ObjectAttribute.TYPE]));
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        typeEvaluator: {
-            get: function get() {
-                return this._typeEvaluator;
-            }
-        },
-        typeExpression: {
-            get: function get() {
-                return this._typeExpression;
-            },
-            set: function set(expressions /*ExpressionFormatter|Array*/) {
-                if (expressions instanceof ExpressionFormatter) {
-                    this._typeExpression = expressions;
-                } else if (expressions instanceof Array) {
-                    if (this._typeExpression === null) {
-                        this._typeExpression = new ExpressionFormatter();
-                    }
-                    var item;
-                    var len = expressions.length;
-                    if (len > 0) {
-                        while (--len > -1) {
-                            item = expressions[len];
-                            if (item !== null && ObjectAttribute.NAME in item && ObjectAttribute.VALUE in item) {
-                                this._typeExpression.set(String(item[ObjectAttribute.NAME]), String(item[ObjectAttribute.VALUE]));
-                            }
-                        }
-                    }
-                } else {
-                    this._typeExpression = new ExpressionFormatter();
-                }
-            }
-        },
-        typePolicy: {
-            get: function get() {
-                return this._typePolicy;
-            },
-            set: function set(policy) {
-                switch (policy) {
-                    case TypePolicy.ALIAS:
-                    case TypePolicy.EXPRESSION:
-                    case TypePolicy.ALL:
-                        {
-                            this._typePolicy = policy;
-                            break;
-                        }
-                    default:
-                        {
-                            this._typePolicy = TypePolicy.NONE;
-                        }
-                }
-            }
-        },
         useLogger: { value: false, writable: true, enumerable: true },
         _config: { value: {}, writable: true },
         _configEvaluator: { value: new ConfigEvaluator(this), writable: true },
@@ -6660,13 +6512,136 @@ function ObjectConfig() {
         _typePolicy: { value: TypePolicy.NONE, writable: true }
     });
     this.throwError = false;
-    this.initialize(init);
+    if (init) {
+        this.initialize(init);
+    }
 }
 Object.defineProperties(ObjectConfig, {
     TYPE_ALIAS: { value: 'alias', enumerable: true }
 });
 ObjectConfig.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectConfig },
+    config: {
+        get: function get() {
+            return this._config;
+        },
+        set: function set(init) {
+            for (var prop in init) {
+                this._config[prop] = init[prop];
+            }
+        }
+    },
+    configEvaluator: {
+        get: function get() {
+            return this._configEvaluator;
+        }
+    },
+    locale: {
+        get: function get() {
+            return this._locale;
+        },
+        set: function set(init) {
+            for (var prop in init) {
+                this._locale[prop] = init[prop];
+            }
+        }
+    },
+    localeEvaluator: {
+        get: function get() {
+            return this._localeEvaluator;
+        }
+    },
+    referenceEvaluator: {
+        get: function get() {
+            return this._referenceEvaluator;
+        }
+    },
+    throwError: {
+        get: function get() {
+            return this._configEvaluator.throwError && this._localeEvaluator.throwError && this._typeEvaluator.throwError && this._referenceEvaluator.throwError;
+        },
+        set: function set(flag) {
+            this._configEvaluator.throwError = flag;
+            this._localeEvaluator.throwError = flag;
+            this._referenceEvaluator.throwError = flag;
+            this._typeEvaluator.throwError = flag;
+        }
+    },
+    typeAliases: {
+        get: function get() {
+            return this._typeAliases;
+        },
+        set: function set(aliases) {
+            if (aliases instanceof ArrayMap) {
+                var it = aliases.iterator();
+                while (it.hasNext()) {
+                    var next = it.next();
+                    var key = it.key();
+                    this._typeAliases.set(key, next);
+                }
+            } else if (aliases instanceof Array) {
+                var len = aliases.length;
+                if (len > 0) {
+                    while (--len > -1) {
+                        var item = aliases[len];
+                        if (item !== null && ObjectConfig.TYPE_ALIAS in item && ObjectAttribute.TYPE in item) {
+                            this._typeAliases.set(String(item[ObjectConfig.TYPE_ALIAS]), String(item[ObjectAttribute.TYPE]));
+                        }
+                    }
+                }
+            }
+        }
+    },
+    typeEvaluator: {
+        get: function get() {
+            return this._typeEvaluator;
+        }
+    },
+    typeExpression: {
+        get: function get() {
+            return this._typeExpression;
+        },
+        set: function set(expressions /*ExpressionFormatter|Array*/) {
+            if (expressions instanceof ExpressionFormatter) {
+                this._typeExpression = expressions;
+            } else if (expressions instanceof Array) {
+                if (this._typeExpression === null) {
+                    this._typeExpression = new ExpressionFormatter();
+                }
+                var len = expressions.length;
+                if (len > 0) {
+                    while (--len > -1) {
+                        var item = expressions[len];
+                        if (item !== null && ObjectAttribute.NAME in item && ObjectAttribute.VALUE in item) {
+                            this._typeExpression.set(String(item[ObjectAttribute.NAME]), String(item[ObjectAttribute.VALUE]));
+                        }
+                    }
+                }
+            } else {
+                this._typeExpression = new ExpressionFormatter();
+            }
+        }
+    },
+    typePolicy: {
+        get: function get() {
+            return this._typePolicy;
+        },
+        set: function set(policy) {
+            switch (policy) {
+                case TypePolicy.ALIAS:
+                case TypePolicy.EXPRESSION:
+                case TypePolicy.ALL:
+                    {
+                        this._typePolicy = policy;
+                        break;
+                    }
+                default:
+                    {
+                        this._typePolicy = TypePolicy.NONE;
+                    }
+            }
+        }
+    },
     initialize: { value: function value(init) {
             if (init === null) {
                 return;
@@ -8417,6 +8392,37 @@ ActionEntry.prototype = Object.create(Object.prototype, {
     } }
 });
 
+function Apply() {
+    var func = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var scope = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    Action.call(this);
+    Object.defineProperties(this, {
+        args: { value: args instanceof Array ? args : null, writable: true },
+        func: { value: func instanceof Function ? func : null, writable: true },
+        scope: { value: scope, writable: true }
+    });
+}
+Apply.prototype = Object.create(Action.prototype, {
+    constructor: { writable: true, value: Apply },
+    clone: { writable: true, value: function value() {
+            return new Apply(this.func, this.args, this.scope);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if (this.func instanceof Function) {
+                if (this.args && this.args.length > 0) {
+                    this.func.apply(this.scope, this.args);
+                } else {
+                    this.func.apply(this.scope);
+                }
+            } else {
+                throw new TypeError('[Apply] run failed, the \'func\' property must be a Function.');
+            }
+            this.notifyFinished();
+        } }
+});
+
 function Batch() {
     var _this = this;
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -8981,6 +8987,38 @@ Cache.prototype.run = function () {
     this.notifyFinished();
 };
 
+function Call() {
+    var func = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Action.call(this);
+    Object.defineProperties(this, {
+        func: { value: func instanceof Function ? func : null, writable: true },
+        scope: { value: scope, writable: true }
+    });
+}
+Call.prototype = Object.create(Action.prototype, {
+    constructor: { writable: true, value: Call },
+    clone: { writable: true, value: function value() {
+            return new Call(this.func, this.scope);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if (this.func instanceof Function) {
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+                if (args && args.length > 0) {
+                    this.func.apply(this.scope, args);
+                } else {
+                    this.func.call(this.scope);
+                }
+            } else {
+                throw new TypeError('[Call] run failed, the \'func\' property must be a Function.');
+            }
+            this.notifyFinished();
+        } }
+});
+
 function ChainNext() {
     var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     this.chain = chain;
@@ -9472,9 +9510,11 @@ var process = Object.assign({
     isStoppable: isStoppable,
     Action: Action,
     ActionEntry: ActionEntry,
+    Apply: Apply,
     Batch: Batch,
     BatchTask: BatchTask,
     Cache: Cache,
+    Call: Call,
     Chain: Chain,
     Do: Do,
     FrameTimer: FrameTimer,

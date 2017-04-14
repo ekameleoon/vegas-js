@@ -1,5 +1,7 @@
 'use strict' ;
 
+import './process/Apply.js' ;
+import './process/Call.js' ;
 import './process/Lockable.js' ;
 import './process/Priority.js' ;
 import './process/Resetable.js' ;

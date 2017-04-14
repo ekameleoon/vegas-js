@@ -4,9 +4,11 @@ import '../polyfill/Object.js' ;
 
 import { Action }        from './process/Action.js' ;
 import { ActionEntry }   from './process/ActionEntry.js' ;
+import { Apply }         from './process/Apply.js' ;
 import { Batch }         from './process/Batch.js' ;
 import { BatchTask }     from './process/BatchTask.js' ;
 import { Cache }         from './process/Cache.js' ;
+import { Call }          from './process/Call.js' ;
 import { Chain }         from './process/Chain.js' ;
 import { Do }            from './process/Do.js' ;
 import { FrameTimer }    from './process/FrameTimer.js' ;
@@ -51,9 +53,11 @@ export var process = Object.assign
 
     Action        : Action ,
     ActionEntry   : ActionEntry ,
+    Apply         : Apply ,
     Batch         : Batch ,
     BatchTask     : BatchTask ,
     Cache         : Cache ,
+    Call          : Call ,
     Chain         : Chain ,
     Do            : Do,
     FrameTimer    : FrameTimer,
