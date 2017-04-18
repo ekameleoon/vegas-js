@@ -8157,6 +8157,77 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
         } }
 });
 
+function InitMapModel() {
+    var model = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var autoClear = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var autoSelect = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var autoDequeue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var cleanFirst = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+    Action.call(this);
+    Object.defineProperties(this, {
+        autoClear: { value: autoClear === true, writable: true },
+        autoDequeue: { value: autoDequeue === true, writable: true },
+        autoSelect: { value: autoSelect === true, writable: true },
+        cleanFirst: { value: cleanFirst === true, writable: true },
+        datas: { value: datas instanceof Array ? datas : null, writable: true },
+        first: { value: null, writable: true },
+        model: { value: model instanceof MapModel ? model : null, writable: true }
+    });
+}
+InitMapModel.prototype = Object.create(Action.prototype, {
+    constructor: { writable: true, value: InitMapModel },
+    clone: { writable: true, value: function value() {
+            return new InitMapModel(this.models, this.datas, this.autoClear, this.autoSelect, this.autoDequeue, this.cleanFirst);
+        } },
+    filterEntry: { writable: true, value: function value(_value) {
+            return _value;
+        } },
+    reset: { writable: true, value: function value() {
+            this.datas = null;
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            if (!(this.model instanceof MapModel)) {
+                this.notifyFinished();
+                return;
+            }
+            if (this.autoClear === true && !this.model.isEmpty()) {
+                this.model.clear();
+            }
+            if (arguments.length > 0) {
+                this.datas = (arguments.length <= 0 ? undefined : arguments[0]) instanceof Array ? arguments.length <= 0 ? undefined : arguments[0] : null;
+            }
+            if (!(this.datas instanceof Array) || this.datas.length === 0) {
+                this.notifyFinished();
+                return;
+            }
+            var entry = void 0;
+            var size = this.datas.length;
+            for (var i = 0; i < size; i++) {
+                entry = this.filterEntry(this.datas[i]);
+                this.model.add(entry);
+                if (this.first === null && entry !== null) {
+                    this.first = entry;
+                }
+            }
+            if (this.datas && this.datas instanceof Array && this.autoDequeue === true) {
+                this.datas.length = 0;
+            }
+            if (this.first !== null && this.autoSelect === true) {
+                if (this.model.has(this.first)) {
+                    this.model.current = this.model.get(this.first);
+                } else {
+                    this.model.current = this.first;
+                }
+                if (this.cleanFirst === true) {
+                    this.first = null;
+                }
+            }
+            this.notifyFinished();
+        } }
+});
+
 /**
  * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
  * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
@@ -8198,6 +8269,7 @@ var models = Object.assign({
     ArrayModel: ArrayModel
   }),
   maps: Object.assign({
+    InitMapModel: InitMapModel,
     MapModel: MapModel
   })
 });
