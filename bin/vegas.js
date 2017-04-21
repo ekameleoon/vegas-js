@@ -6312,9 +6312,9 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
                         if (dispatcher !== null && listener.type !== null) {
                             if (listener.method && listener.method in o && o[listener.method] instanceof Function) {
-                                method = o[listener.method];
+                                method = o[listener.method].bind(o);
                             } else if ('handleEvent' in o && o.handleEvent instanceof Function) {
-                                method = o.handleEvent;
+                                method = o.handleEvent.bind(o);
                             }
                             if (method !== null) {
                                 dispatcher.addEventListener(listener.type, method, listener.useCapture);

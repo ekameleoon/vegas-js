@@ -1061,11 +1061,11 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         if ( listener.method && (listener.method in o) && (o[listener.method] instanceof Function))
                         {
-                            method = o[listener.method]   ;
+                            method = o[listener.method].bind(o) ;
                         }
                         else if( ('handleEvent' in o) && (o.handleEvent instanceof Function)  )
                         {
-                            method = o.handleEvent ;
+                            method = o.handleEvent.bind(o) ;
                         }
                         if ( method !== null )
                         {
