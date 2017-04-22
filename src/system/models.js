@@ -6,8 +6,9 @@ import { ChangeModel } from './models/ChangeModel.js' ;
 import { MemoryModel } from './models/MemoryModel.js' ;
 import { Model }       from './models/Model.js' ;
 
-import { ArrayModel } from './models/arrays/ArrayModel.js' ;
-import { MapModel }   from './models/maps/MapModel.js' ;
+import { ArrayModel }   from './models/arrays/ArrayModel.js' ;
+import { InitMapModel } from './models/maps/InitMapModel.js' ;
+import { MapModel }     from './models/maps/MapModel.js' ;
 
 /**
  * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
@@ -67,6 +68,7 @@ export var models = Object.assign
      */
     maps : Object.assign
     ({
+        InitMapModel ,
         MapModel
     })
 }) ;
