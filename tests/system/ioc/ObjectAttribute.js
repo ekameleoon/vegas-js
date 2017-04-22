@@ -12,6 +12,10 @@ describe( 'system.ioc.ObjectAttribute' , () =>
     {
         assert.equal( ObjectAttribute.ARGUMENTS , 'args' );
     });
+    it('ObjectAttribute.CALLBACK === "callback"', () =>
+    {
+        assert.equal( ObjectAttribute.CALLBACK , 'callback' );
+    });
     it('ObjectAttribute.CONFIG === "config"', () =>
     {
         assert.equal( ObjectAttribute.CONFIG , 'config' );

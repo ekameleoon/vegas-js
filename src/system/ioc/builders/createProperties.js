@@ -47,6 +47,7 @@ export function createProperties( factory )
         prop = a[i] ;
 
         let args = null ;
+        let call = null ;
         let conf = null ;
         let i18n = null ;
         let name = null ;
@@ -70,7 +71,7 @@ export function createProperties( factory )
 
             if( ObjectAttribute.ARGUMENTS in prop )
             {
-                args = prop[ ObjectAttribute.ARGUMENTS  ] || null ;
+                args = prop[ ObjectAttribute.ARGUMENTS ] || null ;
             }
 
             if( ObjectAttribute.CONFIG in prop )
@@ -83,9 +84,14 @@ export function createProperties( factory )
                 i18n = prop[ ObjectAttribute.LOCALE ] || null ;
             }
 
+            if( ObjectAttribute.CALLBACK in prop )
+            {
+                call = prop[ ObjectAttribute.CALLBACK ] ;
+            }
+
             if( ObjectAttribute.REFERENCE in prop )
             {
-                ref = prop[ ObjectAttribute.REFERENCE  ] || null ;
+                ref = prop[ ObjectAttribute.REFERENCE ] || null ;
             }
 
             if( ObjectAttribute.VALUE in prop )
@@ -93,25 +99,44 @@ export function createProperties( factory )
                 value = prop[ ObjectAttribute.VALUE ] ;
             }
 
-            if ( args && (args instanceof Array) )
+            let property = null ;
+
+            if ( (ref instanceof String || typeof(ref) === 'string') && (ref !== '') )
             {
-                properties.push( new ObjectProperty( name , createArguments( args ) , ObjectAttribute.ARGUMENTS ) ) ;
-            }
-            else if ( (ref instanceof String || typeof(ref) === 'string') && (ref !== '') )
-            {
-                properties.push( new ObjectProperty( name , ref , ObjectAttribute.REFERENCE , evaluators ) ) ;
+                property = new ObjectProperty( name , ref , ObjectAttribute.REFERENCE , evaluators ) ;
             }
             else if ( (conf instanceof String || typeof(conf) === 'string') && (conf !== '') )
             {
-                properties.push( new ObjectProperty( name, conf , ObjectAttribute.CONFIG , evaluators ) ) ;
+                property = new ObjectProperty( name , conf , ObjectAttribute.CONFIG , evaluators ) ;
             }
             else if ( (i18n instanceof String || typeof(i18n) === 'string') && (i18n !== '') )
             {
-                properties.push( new ObjectProperty( name, i18n , ObjectAttribute.LOCALE , evaluators ) ) ;
+                property = new ObjectProperty( name , i18n , ObjectAttribute.LOCALE , evaluators ) ;
+            }
+            else if( call instanceof Function || ( (call instanceof String || typeof(call) === 'string') && (call !== '') ) )
+            {
+                property = new ObjectProperty( name , call , ObjectAttribute.CALLBACK , evaluators ) ;
+                if( args && (args instanceof Array) )
+                {
+                    property.args = createArguments( args )
+                }
+                if( ObjectAttribute.SCOPE in prop )
+                {
+                    property.scope = prop[ ObjectAttribute.SCOPE ] || null ;
+                }
+            }
+            else if ( args && (args instanceof Array) )
+            {
+                property = new ObjectProperty( name , createArguments( args ) , ObjectAttribute.ARGUMENTS ) ;
             }
             else
             {
-                properties.push( new ObjectProperty( name , value , ObjectAttribute.VALUE , evaluators ) ) ;
+                property = new ObjectProperty( name , value , ObjectAttribute.VALUE , evaluators ) ;
+            }
+
+            if( property )
+            {
+                properties.push( property ) ;
             }
         }
         else if( logger )

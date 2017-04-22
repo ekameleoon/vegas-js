@@ -78,7 +78,7 @@ import { ObjectStrategy } from './ObjectStrategy.js' ;
  *     {
  *         id   : "position" ,
  *         type : "Point" ,
- *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         args : [ { value : 2 } , { ref : 'origin.y' } ],
  *         properties :
  *         [
  *             { name : "x" , ref   :'origin.x' } ,
@@ -101,7 +101,7 @@ import { ObjectStrategy } from './ObjectStrategy.js' ;
  *
  * trace( factory.getObject('position') ) ;
  * @param {system.ioc.ObjectConfig} [config=null] - The configuration object of the factory.
- * @param {array} [objects=null] - The object definitions collection to initialize the factory.
+ * @param {Array} [objects=null] - The object definitions collection to initialize the factory.
  */
 export function ObjectFactory( config = null , objects = null )
 {
@@ -623,6 +623,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         value = this.eval( value , item.evaluators  ) ;
                     }
+
                     stack.push( value ) ;
                 }
                 catch( er )
@@ -933,7 +934,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return ;
         }
 
-        let name = prop.name ;
+        let name  = prop.name ;
         let value = prop.value ;
 
         //////////// #init magic strategy to populate the property
@@ -988,20 +989,6 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             return ;
         }
 
-        if ( o[name] instanceof Function )
-        {
-            if( prop.policy === ObjectAttribute.ARGUMENTS )
-            {
-                o[ name ].apply( o , this.createArguments( value  ) ) ;
-                return ;
-            }
-            else if ( (prop.policy === ObjectAttribute.VALUE) )
-            {
-                o[ name ]() ;
-                return ;
-            }
-        }
-
         try
         {
             if ( (prop.policy === ObjectAttribute.REFERENCE) )
@@ -1015,6 +1002,48 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             else if ( prop.policy === ObjectAttribute.LOCALE )
             {
                 value = this.config.localeEvaluator.eval( value ) ;
+            }
+            else if ( prop.policy === ObjectAttribute.CALLBACK )
+            {
+                if( value instanceof String || typeof(value) === 'string' )
+                {
+                    value = this._config.referenceEvaluator.eval( value ) ;
+                }
+                if( value instanceof Function )
+                {
+                    if( prop.scope )
+                    {
+                        if( prop.args instanceof Array )
+                        {
+                            value = value.bind.apply( prop.scope , [prop.scope].concat(this.createArguments( prop.args )) ) ;
+                        }
+                        else
+                        {
+                            value = value.bind( prop.scope ) ;
+                        }
+                    }
+                    value = value  ;
+                }
+                else
+                {
+                    value = null ;
+                }
+            }
+            else
+            {
+                if ( o[name] instanceof Function )
+                {
+                    if( prop.policy === ObjectAttribute.ARGUMENTS )
+                    {
+                        o[name].apply( o , this.createArguments( value ) ) ;
+                        return ;
+                    }
+                    else if ( (prop.policy === ObjectAttribute.VALUE) )
+                    {
+                        o[name]() ;
+                        return ;
+                    }
+                }
             }
 
             if ( prop.evaluators && prop.evaluators.length > 0 )

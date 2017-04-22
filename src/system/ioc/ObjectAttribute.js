@@ -18,6 +18,15 @@ export var ObjectAttribute = Object.defineProperties( {} ,
     ARGUMENTS : { value : 'args' , enumerable : true }, // The Javascript keyword 'arguments' is reserved, use 'args' !
 
     /**
+     * Defines the 'callback' attribute name.
+     * @memberof system.ioc.ObjectAttribute
+     * @type {string}
+     * @default callback
+     * @const
+     */
+    CALLBACK : { value : 'callback' , enumerable : true },
+
+    /**
      * Defines the attribute name of the 'config' object in the configuration of the ioc factory.
      * @memberof system.ioc.ObjectAttribute
      * @type {string}
@@ -180,7 +189,7 @@ export var ObjectAttribute = Object.defineProperties( {} ,
     REFERENCE : { value : 'ref' , enumerable : true },
 
     /**
-     * Defines the 'scope' attribute in the object definitions.
+     * Defines the 'scope' attribute in the object definitions or in an object property definition.
      * @memberof system.ioc.ObjectAttribute
      * @type {string}
      * @default scope

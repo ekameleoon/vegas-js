@@ -30,6 +30,7 @@ export function createArguments( a )
                 let ref        = ( ObjectAttribute.REFERENCE in o )  ? String(o[ ObjectAttribute.REFERENCE ]) : null ;
                 let value      = ( ObjectAttribute.VALUE in o )      ? o[ ObjectAttribute.VALUE ] : null ;
                 let evaluators = ( ObjectAttribute.EVALUATORS in o ) ? o[ ObjectAttribute.EVALUATORS ] : null ;
+
                 if ( ref !== null && ref.length > 0 )
                 {
                     args.push( new ObjectArgument( ref , ObjectAttribute.REFERENCE , evaluators ) ) ;
