@@ -125,11 +125,11 @@ ReferenceEvaluator.prototype = Object.create( Evaluable.prototype ,
                     }
                     default :
                     {
-                        var members = exp.split( this.separator ) ;
+                        let members = exp.split( this.separator ) ;
                         if ( members.length > 0 )
                         {
-                            var ref   = members.shift() ;
-                            var value = this.factory.getObject( ref ) ;
+                            let ref   = members.shift() ;
+                            let value = this.factory.getObject( ref ) ;
                             if ( value && members.length > 0 )
                             {
                                 this._propEvaluator.target = value ;

@@ -372,7 +372,7 @@ Object.defineProperties( EventDispatcher ,
                 {
                     flag = listener.handleEvent(event) ;
                 }
-                else
+                else if( listener instanceof Function )
                 {
                     flag = listener(event) ;
                 }

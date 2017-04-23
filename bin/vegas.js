@@ -4112,7 +4112,7 @@ Object.defineProperties(EventDispatcher, {
                     var flag = void 0;
                     if (listener instanceof EventListener) {
                         flag = listener.handleEvent(event);
-                    } else {
+                    } else if (listener instanceof Function) {
                         flag = listener(event);
                     }
                     if (flag === false) {
@@ -4919,6 +4919,7 @@ var MagicReference = Object.defineProperties({}, {
 
 var ObjectAttribute = Object.defineProperties({}, {
   ARGUMENTS: { value: 'args', enumerable: true },
+  CALLBACK: { value: 'callback', enumerable: true },
   CONFIG: { value: 'config', enumerable: true },
   DEPENDS_ON: { value: 'dependsOn', enumerable: true },
   DESTROY_METHOD_NAME: { value: 'destroy', enumerable: true },
@@ -5079,9 +5080,11 @@ function ObjectListener(dispatcher, type) {
   var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   var order = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "after";
+  var priority = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
   Object.defineProperties(this, {
     dispatcher: { value: dispatcher, writable: true },
     method: { value: method, writable: true },
+    priority: { value: priority, writable: true },
     type: { value: type, writable: true },
     useCapture: { value: useCapture === true, writable: true },
     _order: { value: order === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, writable: true }
@@ -5105,6 +5108,7 @@ Object.defineProperties(ObjectListener, {
   DISPATCHER: { value: "dispatcher", enumerable: true },
   METHOD: { value: "method", enumerable: true },
   ORDER: { value: "order", enumerable: true },
+  PRIORITY: { value: "priority", enumerable: true },
   USE_CAPTURE: { value: "useCapture", enumerable: true },
   TYPE: { value: "type", enumerable: true }
 });
@@ -5139,9 +5143,11 @@ function createListeners(factory) {
             if (!(type instanceof String || typeof type === 'string') || type.length === 0) {
                 continue;
             }
-            listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER));
+            listeners.push(new ObjectListener(dispatcher, type, def[ObjectListener.METHOD], def[ObjectListener.USE_CAPTURE] === true, def[ObjectListener.ORDER] === ObjectOrder.BEFORE ? ObjectOrder.BEFORE : ObjectOrder.AFTER, isNaN(def[ObjectListener.PRIORITY]) ? 0 : def[ObjectListener.PRIORITY]));
         } else {
-            logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+            if (logger) {
+                logger.warning("ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(def));
+            }
         }
     }
     return listeners.length > 0 ? listeners : null;
@@ -5156,39 +5162,42 @@ ObjectStrategy.prototype = Object.create(Object.prototype, {
 });
 
 function ObjectProperty(name, value) {
-    var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
-    var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    Object.defineProperties(this, {
-        evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
-        name: { value: name, writable: true },
-        value: { value: value, writable: true },
-        _policy: { value: null, writable: true }
-    });
-    this.policy = policy;
+  var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
+  var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  Object.defineProperties(this, {
+    args: { value: null, writable: true },
+    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+    name: { value: name, writable: true },
+    scope: { value: null, writable: true },
+    value: { value: value, writable: true },
+    _policy: { value: null, writable: true }
+  });
+  this.policy = policy;
 }
 ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-    constructor: { writable: true, value: ObjectProperty },
-    policy: {
-        get: function get() {
-            return this._policy;
-        },
-        set: function set(str) {
-            switch (str) {
-                case ObjectAttribute.ARGUMENTS:
-                case ObjectAttribute.REFERENCE:
-                case ObjectAttribute.CONFIG:
-                case ObjectAttribute.LOCALE:
-                    {
-                        this._policy = str;
-                        break;
-                    }
-                default:
-                    {
-                        this._policy = ObjectAttribute.VALUE;
-                    }
-            }
-        }
+  constructor: { writable: true, value: ObjectProperty },
+  policy: {
+    get: function get() {
+      return this._policy;
+    },
+    set: function set(str) {
+      switch (str) {
+        case ObjectAttribute.ARGUMENTS:
+        case ObjectAttribute.CALLBACK:
+        case ObjectAttribute.CONFIG:
+        case ObjectAttribute.LOCALE:
+        case ObjectAttribute.REFERENCE:
+          {
+            this._policy = str;
+            break;
+          }
+        default:
+          {
+            this._policy = ObjectAttribute.VALUE;
+          }
+      }
     }
+  }
 });
 
 function createProperties(factory) {
@@ -5211,6 +5220,7 @@ function createProperties(factory) {
     for (var i = 0; i < len; i++) {
         prop = a[i];
         var args = null;
+        var call = null;
         var conf = null;
         var i18n = null;
         var name = null;
@@ -5234,22 +5244,37 @@ function createProperties(factory) {
             if (ObjectAttribute.LOCALE in prop) {
                 i18n = prop[ObjectAttribute.LOCALE] || null;
             }
+            if (ObjectAttribute.CALLBACK in prop) {
+                call = prop[ObjectAttribute.CALLBACK];
+            }
             if (ObjectAttribute.REFERENCE in prop) {
                 ref = prop[ObjectAttribute.REFERENCE] || null;
             }
             if (ObjectAttribute.VALUE in prop) {
                 value = prop[ObjectAttribute.VALUE];
             }
-            if (args && args instanceof Array) {
-                properties.push(new ObjectProperty(name, createArguments(args), ObjectAttribute.ARGUMENTS));
-            } else if ((ref instanceof String || typeof ref === 'string') && ref !== '') {
-                properties.push(new ObjectProperty(name, ref, ObjectAttribute.REFERENCE, evaluators));
+            var property = null;
+            if ((ref instanceof String || typeof ref === 'string') && ref !== '') {
+                property = new ObjectProperty(name, ref, ObjectAttribute.REFERENCE, evaluators);
             } else if ((conf instanceof String || typeof conf === 'string') && conf !== '') {
-                properties.push(new ObjectProperty(name, conf, ObjectAttribute.CONFIG, evaluators));
+                property = new ObjectProperty(name, conf, ObjectAttribute.CONFIG, evaluators);
             } else if ((i18n instanceof String || typeof i18n === 'string') && i18n !== '') {
-                properties.push(new ObjectProperty(name, i18n, ObjectAttribute.LOCALE, evaluators));
+                property = new ObjectProperty(name, i18n, ObjectAttribute.LOCALE, evaluators);
+            } else if (call instanceof Function || (call instanceof String || typeof call === 'string') && call !== '') {
+                property = new ObjectProperty(name, call, ObjectAttribute.CALLBACK, evaluators);
+                if (args && args instanceof Array) {
+                    property.args = createArguments(args);
+                }
+                if (ObjectAttribute.SCOPE in prop) {
+                    property.scope = prop[ObjectAttribute.SCOPE] || null;
+                }
+            } else if (args && args instanceof Array) {
+                property = new ObjectProperty(name, createArguments(args), ObjectAttribute.ARGUMENTS);
             } else {
-                properties.push(new ObjectProperty(name, value, ObjectAttribute.VALUE, evaluators));
+                property = new ObjectProperty(name, value, ObjectAttribute.VALUE, evaluators);
+            }
+            if (property) {
+                properties.push(property);
             }
         } else if (logger) {
             logger.warning("createProperties failed, a property definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}", id, i, dump(prop));
@@ -6271,15 +6296,6 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object:" + o + ", see the factory with the object definition '" + id + "'.");
                 return;
             }
-            if (o[name] instanceof Function) {
-                if (prop.policy === ObjectAttribute.ARGUMENTS) {
-                    o[name].apply(o, this.createArguments(value));
-                    return;
-                } else if (prop.policy === ObjectAttribute.VALUE) {
-                    o[name]();
-                    return;
-                }
-            }
             try {
                 if (prop.policy === ObjectAttribute.REFERENCE) {
                     value = this._config.referenceEvaluator.eval(value);
@@ -6287,6 +6303,32 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     value = this.config.configEvaluator.eval(value);
                 } else if (prop.policy === ObjectAttribute.LOCALE) {
                     value = this.config.localeEvaluator.eval(value);
+                } else if (prop.policy === ObjectAttribute.CALLBACK) {
+                    if (value instanceof String || typeof value === 'string') {
+                        value = this._config.referenceEvaluator.eval(value);
+                    }
+                    if (value instanceof Function) {
+                        if (prop.scope) {
+                            if (prop.args instanceof Array) {
+                                value = value.bind.apply(prop.scope, [prop.scope].concat(this.createArguments(prop.args)));
+                            } else {
+                                value = value.bind(prop.scope);
+                            }
+                        }
+                        value = value;
+                    } else {
+                        value = null;
+                    }
+                } else {
+                    if (o[name] instanceof Function) {
+                        if (prop.policy === ObjectAttribute.ARGUMENTS) {
+                            o[name].apply(o, this.createArguments(value));
+                            return;
+                        } else if (prop.policy === ObjectAttribute.VALUE) {
+                            o[name]();
+                            return;
+                        }
+                    }
                 }
                 if (prop.evaluators && prop.evaluators.length > 0) {
                     value = this.eval(value, prop.evaluators);
@@ -6297,27 +6339,21 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             }
         } },
     registerListeners: { value: function value(o, listeners) {
-            if (o === null || listeners === null) {
+            if (o === null || listeners === null || !(listeners instanceof Array)) {
                 return;
             }
-            var size = listeners.length;
-            if (size > 0) {
-                var dispatcher = void 0;
-                var method = void 0;
-                var listener = void 0;
-                for (var i = 0; i < size; i++) {
+            var len = listeners.length;
+            if (len > 0) {
+                for (var i = 0; i < len; i++) {
                     try {
-                        method = null;
-                        listener = listeners[i];
-                        dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
-                        if (dispatcher !== null && listener.type !== null) {
-                            if (listener.method && listener.method in o && o[listener.method] instanceof Function) {
-                                method = o[listener.method].bind(o);
-                            } else if ('handleEvent' in o && o.handleEvent instanceof Function) {
-                                method = o.handleEvent.bind(o);
-                            }
-                            if (method !== null) {
-                                dispatcher.addEventListener(listener.type, method, listener.useCapture);
+                        var listener = listeners[i];
+                        var dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
+                        if (dispatcher instanceof IEventDispatcher && listener.type !== null) {
+                            if (o instanceof EventListener) {
+                                dispatcher.addEventListener(listener.type, o, listener.useCapture, listener.priority);
+                                continue;
+                            } else if (listener.method && listener.method in o && o[listener.method] instanceof Function) {
+                                dispatcher.addEventListener(listener.type, o[listener.method].bind(o), listener.useCapture, listener.priority);
                             }
                         }
                     } catch (e) {

@@ -62,5 +62,7 @@ window.onload = function()
 
     // ------
 
+    trace( "-------" ) ;
+
     dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
 }

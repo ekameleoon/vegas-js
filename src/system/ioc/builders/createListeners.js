@@ -64,19 +64,24 @@ export function createListeners( factory )
             (
                 new ObjectListener
                 (
-                    dispatcher , type , def[ ObjectListener.METHOD ] ,
+                    dispatcher , type ,
+                    def[ ObjectListener.METHOD ] ,
                     def[ ObjectListener.USE_CAPTURE ] === true ,
-                    (def[ ObjectListener.ORDER ] === ObjectOrder.BEFORE) ? ObjectOrder.BEFORE : ObjectOrder.AFTER
+                    (def[ ObjectListener.ORDER ] === ObjectOrder.BEFORE) ? ObjectOrder.BEFORE : ObjectOrder.AFTER ,
+                    isNaN(def[ ObjectListener.PRIORITY ]) ? 0 : def[ ObjectListener.PRIORITY ]
                 )
             ) ;
         }
         else
         {
-            logger.warning
-            (
-                "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
-                id , i , dump( def )
-            ) ;
+            if( logger )
+            {
+                logger.warning
+                (
+                    "ObjectBuilder.createListeners failed, a listener definition is invalid in the object definition \"{0}\" at \"{1}\" with the value : {2}" ,
+                    id , i , dump( def )
+                ) ;
+            }
         }
     }
     return ( listeners.length > 0 ) ? listeners : null ;

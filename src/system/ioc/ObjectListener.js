@@ -12,8 +12,9 @@ import { ObjectOrder } from './ObjectOrder.js' ;
  * @param {string} [method=null] - The name of the method to invoke when the event is handle.
  * @param {boolean} [useCapture=false] -  Determinates if the event flow use capture or not.
  * @param {string} [order=after] Indicates the order to register the listener "after" or "before" (see the system.ioc.ObjectOrder enumeration class).
+ * @param {number} [priority=0] - Determines the priority level of the listener.
  */
-export function ObjectListener( dispatcher , type , method = null , useCapture = false , order = "after" )
+export function ObjectListener( dispatcher , type , method = null , useCapture = false , order = "after" , priority = 0 )
 {
     Object.defineProperties( this ,
     {
@@ -32,6 +33,16 @@ export function ObjectListener( dispatcher , type , method = null , useCapture =
          * @instance
          */
         method : { value : method , writable : true } ,
+
+        /**
+         * Determines the priority level of the event listener.
+         * @name priority
+         * @memberof system.ioc.ObjectReceiver
+         * @instance
+         * @type number
+         * @default 0
+         */
+        priority : { value : priority , writable : true } ,
 
         /**
          * The type name of the event dispatched by the dispatcher.
@@ -113,6 +124,15 @@ Object.defineProperties( ObjectListener ,
      * @default order
      */
     ORDER : { value : "order" , enumerable : true } ,
+
+    /**
+     * Defines the <code>"priority"</code> attribute in a listener definition.
+     * @memberof system.ioc.ObjectListener
+     * @type {string}
+     * @default priority
+     * @const
+     */
+    PRIORITY : { value : "priority" , enumerable : true } ,
 
     /**
      * Defines the "useCapture" attribute in a listener object definition.

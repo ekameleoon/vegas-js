@@ -6,6 +6,8 @@ import { Evaluable } from '../Evaluable.js' ;
 import { ArrayMap } from '../data/maps/ArrayMap.js' ;
 import { isIdentifiable } from '../data/Identifiable.js' ;
 import { MultiEvaluator } from '../evaluators/MultiEvaluator.js' ;
+import { EventListener } from '../events/EventListener.js' ;
+import { IEventDispatcher } from '../events/IEventDispatcher.js' ;
 import { Receiver } from '../signals/Receiver.js' ;
 import { Signaler } from '../signals/Signaler.js' ;
 import { isLockable } from '../process/Lockable.js' ;
@@ -1069,36 +1071,31 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      */
     registerListeners : { value : function( o , listeners )
     {
-        if ( o === null || listeners === null )
+        if ( o === null || listeners === null || !(listeners instanceof Array) )
         {
             return ;
         }
-        let size = listeners.length ;
-        if ( size > 0 )
+        let len = listeners.length ;
+        if ( len > 0 )
         {
-            let dispatcher ;
-            let method ;
-            let listener ;
-            for ( let i = 0 ; i<size ; i++ )
+            for ( let i = 0 ; i<len ; i++ )
             {
                 try
                 {
-                    method     = null ;
-                    listener   = listeners[i] ;
-                    dispatcher = this._config.referenceEvaluator.eval( listener.dispatcher ) ;
-                    if ( dispatcher !== null && listener.type !== null )
+                    let listener = listeners[i] ;
+
+                    let dispatcher = this._config.referenceEvaluator.eval( listener.dispatcher ) ;
+
+                    if ( (dispatcher instanceof IEventDispatcher) && listener.type !== null )
                     {
-                        if ( listener.method && (listener.method in o) && (o[listener.method] instanceof Function))
+                        if( o instanceof EventListener )
                         {
-                            method = o[listener.method].bind(o) ;
+                            dispatcher.addEventListener( listener.type , o , listener.useCapture , listener.priority ) ;
+                            continue ;
                         }
-                        else if( ('handleEvent' in o) && (o.handleEvent instanceof Function)  )
+                        else if ( listener.method && (listener.method in o) && (o[listener.method] instanceof Function))
                         {
-                            method = o.handleEvent.bind(o) ;
-                        }
-                        if ( method !== null )
-                        {
-                            dispatcher.addEventListener( listener.type , method , listener.useCapture ) ;
+                            dispatcher.addEventListener( listener.type , o[listener.method].bind(o) , listener.useCapture , listener.priority ) ;
                         }
                     }
                 }

@@ -36,8 +36,6 @@ window.onload = function()
 
     logger.info('---------- Start Example');
 
-    // -----------------------
-
     var Point = function( x , y )
     {
         this.x = x ;
@@ -66,6 +64,23 @@ window.onload = function()
 
     // -----------------------
 
+    var Listener = function()
+    {
+        logger.debug( this + ' constructor invoked') ;
+    }
+
+    Listener.prototype = Object.create( system.events.EventListener.prototype ,
+    {
+        constructor : { value : Slot } ,
+        handleEvent : { value : function( event )
+        {
+            logger.info( this + ' handleEvent ' + event ) ;
+        }},
+        toString : { value : function() { return '[Listener]' ; } }
+    });
+
+    // -----------------------
+
     var Slot = function()
     {
         logger.debug( this + ' constructor invoked') ;
@@ -79,7 +94,7 @@ window.onload = function()
             logger.info( 'slot receive ' + (message || 'an unknow message...') ) ;
         }},
         toString : { value : function() { return '[Slot]' ; } }
-    })
+    });
 
     // -----------------------
 
@@ -128,6 +143,25 @@ window.onload = function()
 
     var objects =
     [
+        // -----------
+
+        {
+            id        : "dispatcher" ,
+            type      : system.events.EventDispatcher ,
+            dependsOn : [ 'listener' ] ,
+            singleton : true ,
+            lazyInit  : true
+        },
+        {
+            id        : "listener" ,
+            type      : Listener ,
+            singleton : true ,
+            lazyInit  : true ,
+            listeners : [ { dispatcher : "dispatcher" , type : "emit" } ]
+        },
+
+        // -----------
+
         {
             id        : "signal" ,
             type      : system.signals.Signal ,
@@ -142,6 +176,9 @@ window.onload = function()
             lazyInit  : true ,
             receivers : [ { signal : "signal" } ]
         },
+
+        // -----------
+
         {
             id   : "position" ,
             type : Point ,
@@ -166,27 +203,28 @@ window.onload = function()
             [
                 { name : 'test' , args : [ { locale : 'messages.test' } ] }
             ]
-        },
-        {
-            id : "renderer" ,
-            type : Object ,
-            staticFactoryMethod :
-            {
-                type : PIXI , name : 'autoDetectRenderer' , args :
-                [
-                    { config : "area.width"  } , { config : "area.height" } , { config : "renderer"    }
-                ]
-            },
-            singleton : true ,
-            lazyInit  : true
         }
     ];
 
     factory.run( objects );
 
+    logger.info('---------- Simple Example');
+
     trace( factory.getObject('position') ) ;
 
-    trace( factory.getObject('renderer') ) ;
+    logger.info('---------- Listener Example');
+
+    var dispatcher = factory.getObject('dispatcher') ;
+    if( dispatcher )
+    {
+        dispatcher.dispatchEvent( new system.events.Event( 'emit' ) ) ;
+    }
+    else
+    {
+        logger.warning( 'The dispatcher reference not must be null.' );
+    }
+
+    logger.info('---------- Slot Example');
 
     var signal = factory.getObject('signal') ;
     if( signal )
@@ -195,6 +233,6 @@ window.onload = function()
     }
     else
     {
-        logger.warning( 'The slot reference not must be null or undefined.' );
+        logger.warning( 'The slot reference not must be null.' );
     }
 }
