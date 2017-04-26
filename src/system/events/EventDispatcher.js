@@ -346,7 +346,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
     processBubble : { value : function( event )
     {
         event.withCurrentTarget( this.target || this );
-        var listeners = this._listeners[ event.type ];
+        let listeners = this._listeners[ event.type ];
         if ( listeners )
         {
             EventDispatcher.processListeners( event, listeners ) ;
@@ -418,10 +418,12 @@ Object.defineProperties( EventDispatcher ,
         }
         let dispatcher ;
         let len = ancestors.length ;
-        for ( let i = 0; i < len ; i++)
+        for ( let i = 0 ; i < len ; i++ )
         {
             dispatcher = ancestors[i];
+
             dispatcher.processBubble( event ) ;
+
             if ( event.isPropagationStopped() )
             {
                 break;

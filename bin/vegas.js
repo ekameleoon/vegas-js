@@ -6346,14 +6346,26 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
             if (len > 0) {
                 for (var i = 0; i < len; i++) {
                     try {
-                        var listener = listeners[i];
-                        var dispatcher = this._config.referenceEvaluator.eval(listener.dispatcher);
-                        if (dispatcher instanceof IEventDispatcher && listener.type !== null) {
-                            if (o instanceof EventListener) {
-                                dispatcher.addEventListener(listener.type, o, listener.useCapture, listener.priority);
-                                continue;
-                            } else if (listener.method && listener.method in o && o[listener.method] instanceof Function) {
-                                dispatcher.addEventListener(listener.type, o[listener.method].bind(o), listener.useCapture, listener.priority);
+                        var entry = listeners[i];
+                        var dispatcher = this._config.referenceEvaluator.eval(entry.dispatcher);
+                        if (dispatcher && entry.type !== null) {
+                            var listener = void 0;
+                            if (dispatcher instanceof IEventDispatcher) {
+                                if (entry.method && entry.method in o && o[entry.method] instanceof Function) {
+                                    listener = o[entry.method].bind(o);
+                                } else if (o instanceof EventListener) {
+                                    listener = o;
+                                }
+                            } else if ("addEventListener" in dispatcher && dispatcher.addEventListener instanceof Function)
+                                {
+                                    if (entry.method && entry.method in o && o[entry.method] instanceof Function) {
+                                        listener = o[entry.method].bind(o);
+                                    } else if (o instanceof EventListener) {
+                                        listener = o[o.handleEvent].bind(o);
+                                    }
+                                }
+                            if (listener) {
+                                dispatcher.addEventListener(entry.type, listener, entry.useCapture, entry.priority);
                             }
                         }
                     } catch (e) {

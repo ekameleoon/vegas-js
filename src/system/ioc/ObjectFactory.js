@@ -1082,22 +1082,43 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
             {
                 try
                 {
-                    let listener = listeners[i] ;
+                    let entry = listeners[i] ;
 
-                    let dispatcher = this._config.referenceEvaluator.eval( listener.dispatcher ) ;
+                    let dispatcher = this._config.referenceEvaluator.eval( entry.dispatcher ) ;
 
-                    if ( (dispatcher instanceof IEventDispatcher) && listener.type !== null )
+                    if( dispatcher && entry.type !== null )
                     {
-                        if( o instanceof EventListener )
+                        let listener ;
+
+                        if ( dispatcher instanceof IEventDispatcher )
                         {
-                            dispatcher.addEventListener( listener.type , o , listener.useCapture , listener.priority ) ;
-                            continue ;
+                            if ( entry.method && (entry.method in o) && (o[entry.method] instanceof Function))
+                            {
+                                listener = o[entry.method].bind(o) ;
+                            }
+                            else if( o instanceof EventListener )
+                            {
+                                listener = o ;
+                            }
                         }
-                        else if ( listener.method && (listener.method in o) && (o[listener.method] instanceof Function))
+                        else if ( ("addEventListener" in dispatcher) && (dispatcher.addEventListener instanceof Function) ) // default EventDispatcher implementation
                         {
-                            dispatcher.addEventListener( listener.type , o[listener.method].bind(o) , listener.useCapture , listener.priority ) ;
+                            if ( entry.method && (entry.method in o) && (o[entry.method] instanceof Function))
+                            {
+                                listener = o[entry.method].bind(o) ;
+                            }
+                            else if( o instanceof EventListener )
+                            {
+                                listener = o[o.handleEvent].bind(o)
+                            }
+                        }
+
+                        if( listener )
+                        {
+                            dispatcher.addEventListener( entry.type , listener , entry.useCapture , entry.priority ) ;
                         }
                     }
+
                 }
                 catch( e )
                 {
