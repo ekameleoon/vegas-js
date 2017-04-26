@@ -1100,6 +1100,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                             {
                                 listener = o ;
                             }
+                            dispatcher.addEventListener( entry.type , listener , entry.useCapture , entry.priority ) ;
                         }
                         else if ( ("addEventListener" in dispatcher) && (dispatcher.addEventListener instanceof Function) ) // default EventDispatcher implementation
                         {
@@ -1111,14 +1112,9 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                             {
                                 listener = o[o.handleEvent].bind(o)
                             }
-                        }
-
-                        if( listener )
-                        {
-                            dispatcher.addEventListener( entry.type , listener , entry.useCapture , entry.priority ) ;
+                            dispatcher.addEventListener( entry.type , listener , entry.useCapture ) ;
                         }
                     }
-
                 }
                 catch( e )
                 {

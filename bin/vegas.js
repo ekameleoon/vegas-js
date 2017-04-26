@@ -6356,6 +6356,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                                 } else if (o instanceof EventListener) {
                                     listener = o;
                                 }
+                                dispatcher.addEventListener(entry.type, listener, entry.useCapture, entry.priority);
                             } else if ("addEventListener" in dispatcher && dispatcher.addEventListener instanceof Function)
                                 {
                                     if (entry.method && entry.method in o && o[entry.method] instanceof Function) {
@@ -6363,10 +6364,8 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                                     } else if (o instanceof EventListener) {
                                         listener = o[o.handleEvent].bind(o);
                                     }
+                                    dispatcher.addEventListener(entry.type, listener, entry.useCapture);
                                 }
-                            if (listener) {
-                                dispatcher.addEventListener(entry.type, listener, entry.useCapture, entry.priority);
-                            }
                         }
                     } catch (e) {
                         this.warn(this + " registerListeners failed with the target '" + o + "' , in the collection of this listeners at {" + i + "} : " + e.toString());
