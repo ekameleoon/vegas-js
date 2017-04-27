@@ -6079,7 +6079,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
                     args[_key] = arguments[_key];
                 }
-                logger.warning.apply(null, args);
+                logger.warning.apply(logger, args);
             }
         } },
     createArguments: { value: function value() {

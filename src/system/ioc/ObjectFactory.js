@@ -577,7 +577,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
     {
         if ( this.config.useLogger )
         {
-            logger.warning.apply( null , args ) ;
+            logger.warning.apply( logger , args ) ;
         }
     }},
 
