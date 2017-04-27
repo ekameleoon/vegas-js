@@ -6362,7 +6362,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                                     if (entry.method && entry.method in o && o[entry.method] instanceof Function) {
                                         listener = o[entry.method].bind(o);
                                     } else if (o instanceof EventListener) {
-                                        listener = o[o.handleEvent].bind(o);
+                                        listener = o.handleEvent.bind(o);
                                     }
                                     dispatcher.addEventListener(entry.type, listener, entry.useCapture);
                                 }

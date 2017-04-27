@@ -1110,7 +1110,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                             }
                             else if( o instanceof EventListener )
                             {
-                                listener = o[o.handleEvent].bind(o)
+                                listener = o.handleEvent.bind(o) ;
                             }
                             dispatcher.addEventListener( entry.type , listener , entry.useCapture ) ;
                         }
