@@ -6293,19 +6293,31 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 return;
             }
             if (!(name in o)) {
-                this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object:" + o + ", see the factory with the object definition '" + id + "'.");
+                this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object, see the factory with the object definition '" + id + "'.");
                 return;
             }
             try {
                 if (prop.policy === ObjectAttribute.REFERENCE) {
                     value = this._config.referenceEvaluator.eval(value);
+                    if (value === null) {
+                        this.warn(this + " populateProperty with the name '" + name + "' return a 'null' factory reference, see the object definition with the id : " + id);
+                    }
                 } else if (prop.policy === ObjectAttribute.CONFIG) {
                     value = this.config.configEvaluator.eval(value);
+                    if (value === null) {
+                        this.warn(this + " populateProperty with the name '" + name + "' return a 'null' config reference, see the object definition with the id : " + id);
+                    }
                 } else if (prop.policy === ObjectAttribute.LOCALE) {
                     value = this.config.localeEvaluator.eval(value);
+                    if (value === null) {
+                        this.warn(this + " populateProperty with the name '" + name + "' return a null locale reference, see the object definition with the id : " + id);
+                    }
                 } else if (prop.policy === ObjectAttribute.CALLBACK) {
                     if (value instanceof String || typeof value === 'string') {
                         value = this._config.referenceEvaluator.eval(value);
+                        if (value === null) {
+                            this.warn(this + " populateProperty with the name '" + name + "' return a null callback reference, see the object definition with the id : " + id);
+                        }
                     }
                     if (value instanceof Function) {
                         if (prop.scope) {
@@ -6319,15 +6331,13 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     } else {
                         value = null;
                     }
-                } else {
-                    if (o[name] instanceof Function) {
-                        if (prop.policy === ObjectAttribute.ARGUMENTS) {
-                            o[name].apply(o, this.createArguments(value));
-                            return;
-                        } else if (prop.policy === ObjectAttribute.VALUE) {
-                            o[name]();
-                            return;
-                        }
+                } else if (o[name] instanceof Function) {
+                    if (prop.policy === ObjectAttribute.ARGUMENTS) {
+                        o[name].apply(o, this.createArguments(value));
+                        return;
+                    } else if (prop.policy === ObjectAttribute.VALUE) {
+                        o[name]();
+                        return;
                     }
                 }
                 if (prop.evaluators && prop.evaluators.length > 0) {
