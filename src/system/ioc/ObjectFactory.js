@@ -262,7 +262,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         try
                         {
-                            instance = invoke( definition.type , this.createArguments( definition.constructorArguments ) ) ;
+                            instance = invoke( definition.type , this.createArguments( definition.constructorArguments , definition.id ) ) ;
                         }
                         catch( e )
                         {
@@ -589,8 +589,28 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      * @private
+     * @example
+     * let context =
+     * [
+     *     {
+     *         id   : "position" ,
+     *         type : Point ,
+     *         args : [ { value : 2 } , { ref : 'origin.y' } , { callback : 'listener.onChange' } ]
+     *     },
+     *     {
+     *         id   : "origin" ,
+     *         type : Point ,
+     *         args : [ { config : "origin.x" } , { locale : "origin.y" } ]
+     *     },
+     *     {
+     *         id   : "listener" ,
+     *         type : Listener
+     *     }
+     * ] ;
+     *
+     * // let position = new Point( 2 , origin.y , listener.onChange ) ;
      */
-    createArguments : { value : function( args = null )
+    createArguments : { value : function( args = null , id = null )
     {
         if ( args === null || !(args instanceof Array) || args.length === 0 )
         {
@@ -600,7 +620,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         let stack = [] ;
         let len = args.length ;
 
-        for ( let i = 0 ; i<len ; i++)
+        for ( let i = 0 ; i < len ; i++ )
         {
             let item = args[i] ;
             if( item instanceof ObjectArgument )
@@ -608,17 +628,65 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 let value = item.value ;
                 try
                 {
+                    let alert = null ;
+                    if ( item.policy === ObjectAttribute.CALLBACK )
+                    {
+                        let callback = value ;
+
+                        if( value instanceof String || typeof(value) === 'string' )
+                        {
+                            callback = this._config.referenceEvaluator.eval( value ) ;
+                        }
+
+                        if( callback instanceof Function )
+                        {
+                            if( item.scope )
+                            {
+                                if( item.args instanceof Array )
+                                {
+                                    callback = value.bind.apply( item.scope , [item.scope].concat( this.createArguments( item.args , id ) ) ) ;
+                                }
+                                else
+                                {
+                                    callback = value.bind( item.scope ) ;
+                                }
+                            }
+                            value = callback  ;
+                        }
+                        else
+                        {
+                            alert = ObjectAttribute.CALLBACK ;
+                            value = null ;
+                        }
+                    }
                     if ( item.policy === ObjectAttribute.REFERENCE )
                     {
                         value = this._config.referenceEvaluator.eval( value ) ;
+                        if( value === null )
+                        {
+                            alert = ObjectAttribute.FACTORY ;
+                        }
                     }
                     else if ( item.policy === ObjectAttribute.CONFIG )
                     {
                         value = this._config.configEvaluator.eval( value ) ;
+                        if( value === null )
+                        {
+                            alert = ObjectAttribute.LOCALE ;
+                        }
                     }
                     else if ( item.policy === ObjectAttribute.LOCALE )
                     {
                         value = this._config.localeEvaluator.eval( value ) ;
+                        if( value === null )
+                        {
+                            alert = ObjectAttribute.LOCALE ;
+                        }
+                    }
+
+                    if( alert !== null )
+                    {
+                        this.warn( this + " createArguments failed at the index '" + i + "' and return a 'null' " + alert + " reference, see the object definition with the id : " + id ) ;
                     }
 
                     if ( item.evaluators !== null && item.evaluators.length > 0 )
@@ -630,7 +698,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 }
                 catch( er )
                 {
-                    this.warn( this + " createArguments failed : " + er.toString() ) ;
+                    this.warn( this + " createArguments failed in the object definition with the id : " + id + ", " + er.toString() ) ;
                 }
             }
         }
@@ -647,7 +715,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
      * @instance
      * @function
      */
-    createObjectWithStrategy : { value : function( strategy )
+    createObjectWithStrategy : { value : function( strategy , id = null )
     {
         if ( !(strategy instanceof ObjectStrategy) )
         {
@@ -671,7 +739,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 }
                 if ( object && name && (name in object) && (object[name] instanceof Function) )
                 {
-                    instance = object[name].apply( object , this.createArguments( strategy.args ) ) ;
+                    instance = object[name].apply( object , this.createArguments( strategy.args , id ) ) ;
                 }
             }
             else if ( strategy instanceof ObjectFactoryMethod )
@@ -679,7 +747,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                 ref = this.getObject( strategy.factory ) ;
                 if ( ref && name && (name in ref) && (ref[name] instanceof Function) )
                 {
-                    instance = ref[name].apply( ref , this.createArguments( strategy.args ) ) ;
+                    instance = ref[name].apply( ref , this.createArguments( strategy.args , id ) ) ;
                 }
             }
         }
@@ -987,37 +1055,13 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
 
         if ( !( name in o ) )
         {
-            this.warn( this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object, see the factory with the object definition '" + id + "'." ) ;
+            this.warn( this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object, see the object definition '" + id + "'." ) ;
             return ;
         }
 
         try
         {
-            if ( (prop.policy === ObjectAttribute.REFERENCE) )
-            {
-                value = this._config.referenceEvaluator.eval( value ) ;
-                if( value === null )
-                {
-                    this.warn( this + " populateProperty with the name '" + name + "' return a 'null' factory reference, see the object definition with the id : " + id ) ;
-                }
-            }
-            else if ( prop.policy === ObjectAttribute.CONFIG )
-            {
-                value = this.config.configEvaluator.eval( value ) ;
-                if( value === null )
-                {
-                    this.warn( this + " populateProperty with the name '" + name + "' return a 'null' config reference, see the object definition with the id : " + id ) ;
-                }
-            }
-            else if ( prop.policy === ObjectAttribute.LOCALE )
-            {
-                value = this.config.localeEvaluator.eval( value ) ;
-                if( value === null )
-                {
-                    this.warn( this + " populateProperty with the name '" + name + "' return a null locale reference, see the object definition with the id : " + id ) ;
-                }
-            }
-            else if ( prop.policy === ObjectAttribute.CALLBACK )
+            if ( prop.policy === ObjectAttribute.CALLBACK )
             {
                 if( value instanceof String || typeof(value) === 'string' )
                 {
@@ -1033,7 +1077,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     {
                         if( prop.args instanceof Array )
                         {
-                            value = value.bind.apply( prop.scope , [prop.scope].concat(this.createArguments( prop.args )) ) ;
+                            value = value.bind.apply( prop.scope , [prop.scope].concat( this.createArguments( prop.args , id ) ) ) ;
                         }
                         else
                         {
@@ -1047,14 +1091,38 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
                     value = null ;
                 }
             }
-            else if ( o[name] instanceof Function )
+            else if( prop.policy === ObjectAttribute.REFERENCE )
+            {
+                value = this._config.referenceEvaluator.eval( value ) ;
+                if( value === null )
+                {
+                    this.warn( this + " populateProperty with the name '" + name + "' return a 'null' factory reference, see the object definition with the id : " + id ) ;
+                }
+            }
+            else if( prop.policy === ObjectAttribute.CONFIG )
+            {
+                value = this.config.configEvaluator.eval( value ) ;
+                if( value === null )
+                {
+                    this.warn( this + " populateProperty with the name '" + name + "' return a 'null' config reference, see the object definition with the id : " + id ) ;
+                }
+            }
+            else if( prop.policy === ObjectAttribute.LOCALE )
+            {
+                value = this.config.localeEvaluator.eval( value ) ;
+                if( value === null )
+                {
+                    this.warn( this + " populateProperty with the name '" + name + "' return a null locale reference, see the object definition with the id : " + id ) ;
+                }
+            }
+            else if( o[name] instanceof Function )
             {
                 if( prop.policy === ObjectAttribute.ARGUMENTS )
                 {
-                    o[name].apply( o , this.createArguments( value ) ) ;
+                    o[name].apply( o , this.createArguments( value , id ) ) ;
                     return ;
                 }
-                else if ( (prop.policy === ObjectAttribute.VALUE) )
+                else
                 {
                     o[name]() ;
                     return ;
@@ -1070,7 +1138,7 @@ ObjectFactory.prototype = Object.create( ObjectDefinitionContainer.prototype ,
         }
         catch( e )
         {
-            this.warn( this + " populateProperty failed with the name '" + name + "' in the object '" + o + ", see the factory with the object definition '" + id + "' error: " + e.toString() ) ;
+            this.warn( this + " populateProperty failed with the name '" + name + ", see the object definition '" + id + "', error: " + e.toString() ) ;
         }
     }},
 

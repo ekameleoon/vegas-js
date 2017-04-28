@@ -36,10 +36,11 @@ window.onload = function()
 
     logger.info('---------- Start Example');
 
-    var Point = function( x , y )
+    var Point = function( x , y , callback )
     {
         this.x = x ;
         this.y = y ;
+        this.callback = callback ;
     };
 
     Point.prototype.destroy = function()
@@ -52,6 +53,16 @@ window.onload = function()
         logger.info( this + " init" ) ;
     }
 
+    Point.prototype.move = function( x = 0 , y = 0 )
+    {
+        this.x = x ;
+        this.y = y ;
+        if( this.callback instanceof Function )
+        {
+            this.callback( "move" , this ) ;
+        }
+    }
+
     Point.prototype.test = function( message = null )
     {
         logger.info( this + ' test message: ' + message ) ;
@@ -61,6 +72,13 @@ window.onload = function()
     {
         return "[Point x:" + this.x + " y:" + this.y + "]" ;
     } ;
+
+    // -----------------------
+
+    var callback = function( action , owner )
+    {
+        trace( 'callback ' + action + " - " + owner ) ;
+    };
 
     // -----------------------
 
@@ -128,6 +146,7 @@ window.onload = function()
         }
     });
 
+    config.useLogger  = true ;
     config.typePolicy = system.ioc.TypePolicy.ALL ;
 
     config.typeAliases =
@@ -180,17 +199,24 @@ window.onload = function()
         // -----------
 
         {
+            id   : "position_change" ,
+            type : Function ,
+            factoryValue : callback
+        },
+        {
             id   : "position" ,
             type : Point ,
-            args : [ { value : 2 } , { ref : 'origin.y' }],
+            args : [ { value : 2 } , { ref : 'origin.y' } ],
+            //args : [ { value : 2 } , { ref : 'origin.y' } , { callback : callback } ],
             sigleton   : true ,
             lazyInit   : true ,
             init       : 'init' ,
             properties :
             [
-                { name : "x"     , ref   :'origin.x' } ,
-                { name : "y"     , value : 100       } ,
-                { name : '#init' , config : 'nirvana' }
+                // { name : "x"     , ref   :'origin.x'  } ,
+                // { name : "y"     , value : 100        } ,
+                // { name : '#init' , config : 'nirvana' }
+                //{ name : "callback" , callback : 'position_change'  }
             ]
         },
         {
@@ -210,7 +236,10 @@ window.onload = function()
 
     logger.info('---------- Simple Example');
 
-    trace( factory.getObject('position') ) ;
+    trace(  "position : " + factory.getObject('position') ) ;
+    trace(  "origin   : " + factory.getObject('origin') ) ;
+
+    factory.getObject('position').move( 8 , 8 ) ;
 
     logger.info('---------- Listener Example');
 

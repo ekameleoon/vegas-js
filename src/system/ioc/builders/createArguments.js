@@ -25,6 +25,7 @@ export function createArguments( a )
             let o = a[i] ;
             if ( o !== null )
             {
+                let call       = ( ObjectAttribute.CALLBACK in o )   ? o[ ObjectAttribute.CALLBACK ]  : null ;
                 let conf       = ( ObjectAttribute.CONFIG in o )     ? String(o[ ObjectAttribute.CONFIG ]) : null ;
                 let i18n       = ( ObjectAttribute.LOCALE in o )     ? String(o[ ObjectAttribute.LOCALE ]) : null ;
                 let ref        = ( ObjectAttribute.REFERENCE in o )  ? String(o[ ObjectAttribute.REFERENCE ]) : null ;
@@ -42,6 +43,19 @@ export function createArguments( a )
                 else if ( i18n !== null && i18n.length > 0 )
                 {
                     args.push( new ObjectArgument( i18n , ObjectAttribute.LOCALE , evaluators ) ) ;
+                }
+                else if ( call instanceof Function || ( (call instanceof String || typeof(call) === 'string') && (call !== '') ) )
+                {
+                    let def = new ObjectArgument( call , ObjectAttribute.CALLBACK , evaluators ) ;
+                    if( ObjectAttribute.SCOPE in o )
+                    {
+                        def.scope = o[ObjectAttribute.SCOPE] ;
+                    }
+                    if( ( ObjectAttribute.ARGUMENTS in o ) && (o[ ObjectAttribute.ARGUMENTS ] instanceof Array) )
+                    {
+                        def.args = createArguments( o[ ObjectAttribute.ARGUMENTS ] ) ; // warn with a recursive call of the function
+                    }
+                    args.push( def ) ;
                 }
                 else
                 {

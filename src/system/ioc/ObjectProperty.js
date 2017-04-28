@@ -19,7 +19,7 @@ export function ObjectProperty( name , value , policy = "value" , evaluators = n
     Object.defineProperties( this ,
     {
         /**
-         * The optional <code>Array</code> representation of all regiered arguments if the property is a method or a callback.
+         * The optional <code>Array</code> representation of all registered arguments if the property is a callback function reference.
          * @name args
          * @memberof system.ioc.ObjectProperty
          * @instance

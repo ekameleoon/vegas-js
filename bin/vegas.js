@@ -3173,6 +3173,9 @@ Method.prototype.toString = function () {
 
 function ValueObject() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _constructorName: { writable: true, value: null }
+    });
     Identifiable.call(this);
     if (init) {
         this.setTo(init);
@@ -3180,6 +3183,25 @@ function ValueObject() {
 }
 ValueObject.prototype = Object.create(Identifiable.prototype, {
     constructor: { writable: true, value: ValueObject },
+    formatToString: { value: function value(className) {
+            if (!className) {
+                if (!this._constructorName) {
+                    this._constructorName = this.constructor.name;
+                }
+                className = this._constructorName;
+            }
+            var ar = [className];
+            for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                rest[_key - 1] = arguments[_key];
+            }
+            var len = rest.length;
+            for (var i = 0; i < len; ++i) {
+                if (rest[i] in this) {
+                    ar.push(rest[i] + ":" + this[rest[i]]);
+                }
+            }
+            return "[" + ar.join(' ') + "]";
+        } },
     setTo: { writable: true, value: function value(init) {
             if (init) {
                 for (var prop in init) {
@@ -3191,7 +3213,7 @@ ValueObject.prototype = Object.create(Identifiable.prototype, {
             return this;
         } },
     toString: { writable: true, value: function value() {
-            return '[' + this.constructor.name + ']';
+            return this.formatToString(null);
         } }
 });
 
@@ -3829,7 +3851,6 @@ function Event(type) {
   Object.defineProperties(this, {
     _bubbles: { writable: true, value: Boolean(bubbles) },
     _cancelable: { writable: true, value: Boolean(cancelable) },
-    _constructorName: { writable: true, value: null },
     _currentTarget: { writable: true, value: null },
     _defaultPrevented: { writable: true, value: false },
     _eventPhase: { writable: true, value: 0 },
@@ -3838,8 +3859,9 @@ function Event(type) {
     _target: { writable: true, value: null },
     _type: { writable: true, value: type instanceof String || typeof type === 'string' ? type : null }
   });
+  ValueObject.call(this);
 }
-Event.prototype = Object.create(Object.prototype, {
+Event.prototype = Object.create(ValueObject.prototype, {
   constructor: { writable: true, value: Event },
   bubbles: { get: function get() {
       return this._bubbles;
@@ -3862,25 +3884,6 @@ Event.prototype = Object.create(Object.prototype, {
     } },
   clone: { writable: true, value: function value() {
       return new Event(this._type, this._bubbles, this._cancelable);
-    } },
-  formatToString: { value: function value(className) {
-      if (!className) {
-        if (!this._constructorName) {
-          this._constructorName = this.constructor.name;
-        }
-        className = this._constructorName;
-      }
-      var ar = [];
-      for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        rest[_key - 1] = arguments[_key];
-      }
-      var len = rest.length;
-      for (var i = 0; i < len; ++i) {
-        if (rest[i] in this) {
-          ar.push(rest[i] + ":" + this[rest[i]]);
-        }
-      }
-      return "[" + className + " " + ar.join(' ') + "]";
     } },
   isDefaultPrevented: { value: function value() {
       return this._defaultPrevented;
@@ -4948,11 +4951,13 @@ function ObjectArgument(value) {
     var policy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "value";
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     Object.defineProperties(this, {
+        args: { value: null, writable: true },
+        evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+        scope: { value: null, writable: true },
+        value: { value: value, writable: true },
         _policy: { value: null, writable: true }
     });
     this.policy = policy;
-    this.value = value;
-    this.evaluators = evaluators instanceof Array ? [].concat(evaluators) : null;
 }
 ObjectArgument.prototype = Object.create(Object.prototype, {
     constructor: { value: ObjectArgument },
@@ -4962,6 +4967,7 @@ ObjectArgument.prototype = Object.create(Object.prototype, {
         },
         set: function set(str) {
             switch (str) {
+                case ObjectAttribute.CALLBACK:
                 case ObjectAttribute.REFERENCE:
                 case ObjectAttribute.CONFIG:
                 case ObjectAttribute.LOCALE:
@@ -5049,6 +5055,7 @@ function createArguments(a) {
         for (var i = 0; i < l; i++) {
             var o = a[i];
             if (o !== null) {
+                var call = ObjectAttribute.CALLBACK in o ? o[ObjectAttribute.CALLBACK] : null;
                 var conf = ObjectAttribute.CONFIG in o ? String(o[ObjectAttribute.CONFIG]) : null;
                 var i18n = ObjectAttribute.LOCALE in o ? String(o[ObjectAttribute.LOCALE]) : null;
                 var ref = ObjectAttribute.REFERENCE in o ? String(o[ObjectAttribute.REFERENCE]) : null;
@@ -5060,6 +5067,15 @@ function createArguments(a) {
                     args.push(new ObjectArgument(conf, ObjectAttribute.CONFIG, evaluators));
                 } else if (i18n !== null && i18n.length > 0) {
                     args.push(new ObjectArgument(i18n, ObjectAttribute.LOCALE, evaluators));
+                } else if (call instanceof Function || (call instanceof String || typeof call === 'string') && call !== '') {
+                    var def = new ObjectArgument(call, ObjectAttribute.CALLBACK, evaluators);
+                    if (ObjectAttribute.SCOPE in o) {
+                        def.scope = o[ObjectAttribute.SCOPE];
+                    }
+                    if (ObjectAttribute.ARGUMENTS in o && o[ObjectAttribute.ARGUMENTS] instanceof Array) {
+                        def.args = createArguments(o[ObjectAttribute.ARGUMENTS]);
+                    }
+                    args.push(def);
                 } else {
                     args.push(new ObjectArgument(value, ObjectAttribute.VALUE, evaluators));
                 }
@@ -5956,7 +5972,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                             instance = this.createObjectWithStrategy(definition.strategy);
                         } else {
                             try {
-                                instance = invoke(definition.type, this.createArguments(definition.constructorArguments));
+                                instance = invoke(definition.type, this.createArguments(definition.constructorArguments, definition.id));
                             } catch (e) {
                                 throw new Error("can't create the instance with the specified definition type " + definition.type + ". The arguments limit exceeded, you can pass a maximum of 32 arguments");
                             }
@@ -6084,6 +6100,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } },
     createArguments: { value: function value() {
             var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             if (args === null || !(args instanceof Array) || args.length === 0) {
                 return null;
             }
@@ -6094,25 +6111,58 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 if (item instanceof ObjectArgument) {
                     var value = item.value;
                     try {
+                        var alert = null;
+                        if (item.policy === ObjectAttribute.CALLBACK) {
+                            var callback = value;
+                            if (value instanceof String || typeof value === 'string') {
+                                callback = this._config.referenceEvaluator.eval(value);
+                            }
+                            if (callback instanceof Function) {
+                                if (item.scope) {
+                                    if (item.args instanceof Array) {
+                                        callback = value.bind.apply(item.scope, [item.scope].concat(this.createArguments(item.args, id)));
+                                    } else {
+                                        callback = value.bind(item.scope);
+                                    }
+                                }
+                                value = callback;
+                            } else {
+                                alert = ObjectAttribute.CALLBACK;
+                                value = null;
+                            }
+                        }
                         if (item.policy === ObjectAttribute.REFERENCE) {
                             value = this._config.referenceEvaluator.eval(value);
+                            if (value === null) {
+                                alert = ObjectAttribute.FACTORY;
+                            }
                         } else if (item.policy === ObjectAttribute.CONFIG) {
                             value = this._config.configEvaluator.eval(value);
+                            if (value === null) {
+                                alert = ObjectAttribute.LOCALE;
+                            }
                         } else if (item.policy === ObjectAttribute.LOCALE) {
                             value = this._config.localeEvaluator.eval(value);
+                            if (value === null) {
+                                alert = ObjectAttribute.LOCALE;
+                            }
+                        }
+                        if (alert !== null) {
+                            this.warn(this + " createArguments failed at the index '" + i + "' and return a 'null' " + alert + " reference, see the object definition with the id : " + id);
                         }
                         if (item.evaluators !== null && item.evaluators.length > 0) {
                             value = this.eval(value, item.evaluators);
                         }
                         stack.push(value);
                     } catch (er) {
-                        this.warn(this + " createArguments failed : " + er.toString());
+                        this.warn(this + " createArguments failed in the object definition with the id : " + id + ", " + er.toString());
                     }
                 }
             }
             return stack;
         } },
     createObjectWithStrategy: { value: function value(strategy) {
+            var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             if (!(strategy instanceof ObjectStrategy)) {
                 return null;
             }
@@ -6127,12 +6177,12 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                         object = this.config.typeEvaluator.eval(object);
                     }
                     if (object && name && name in object && object[name] instanceof Function) {
-                        instance = object[name].apply(object, this.createArguments(strategy.args));
+                        instance = object[name].apply(object, this.createArguments(strategy.args, id));
                     }
                 } else if (strategy instanceof ObjectFactoryMethod) {
                     ref = this.getObject(strategy.factory);
                     if (ref && name && name in ref && ref[name] instanceof Function) {
-                        instance = ref[name].apply(ref, this.createArguments(strategy.args));
+                        instance = ref[name].apply(ref, this.createArguments(strategy.args, id));
                     }
                 }
             } else if (strategy instanceof ObjectProperty) {
@@ -6293,11 +6343,30 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 return;
             }
             if (!(name in o)) {
-                this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object, see the factory with the object definition '" + id + "'.");
+                this.warn(this + " populate a new property failed with the " + name + " attribute, this property is not registered in the object, see the object definition '" + id + "'.");
                 return;
             }
             try {
-                if (prop.policy === ObjectAttribute.REFERENCE) {
+                if (prop.policy === ObjectAttribute.CALLBACK) {
+                    if (value instanceof String || typeof value === 'string') {
+                        value = this._config.referenceEvaluator.eval(value);
+                        if (value === null) {
+                            this.warn(this + " populateProperty with the name '" + name + "' return a null callback reference, see the object definition with the id : " + id);
+                        }
+                    }
+                    if (value instanceof Function) {
+                        if (prop.scope) {
+                            if (prop.args instanceof Array) {
+                                value = value.bind.apply(prop.scope, [prop.scope].concat(this.createArguments(prop.args, id)));
+                            } else {
+                                value = value.bind(prop.scope);
+                            }
+                        }
+                        value = value;
+                    } else {
+                        value = null;
+                    }
+                } else if (prop.policy === ObjectAttribute.REFERENCE) {
                     value = this._config.referenceEvaluator.eval(value);
                     if (value === null) {
                         this.warn(this + " populateProperty with the name '" + name + "' return a 'null' factory reference, see the object definition with the id : " + id);
@@ -6312,30 +6381,11 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                     if (value === null) {
                         this.warn(this + " populateProperty with the name '" + name + "' return a null locale reference, see the object definition with the id : " + id);
                     }
-                } else if (prop.policy === ObjectAttribute.CALLBACK) {
-                    if (value instanceof String || typeof value === 'string') {
-                        value = this._config.referenceEvaluator.eval(value);
-                        if (value === null) {
-                            this.warn(this + " populateProperty with the name '" + name + "' return a null callback reference, see the object definition with the id : " + id);
-                        }
-                    }
-                    if (value instanceof Function) {
-                        if (prop.scope) {
-                            if (prop.args instanceof Array) {
-                                value = value.bind.apply(prop.scope, [prop.scope].concat(this.createArguments(prop.args)));
-                            } else {
-                                value = value.bind(prop.scope);
-                            }
-                        }
-                        value = value;
-                    } else {
-                        value = null;
-                    }
                 } else if (o[name] instanceof Function) {
                     if (prop.policy === ObjectAttribute.ARGUMENTS) {
-                        o[name].apply(o, this.createArguments(value));
+                        o[name].apply(o, this.createArguments(value, id));
                         return;
-                    } else if (prop.policy === ObjectAttribute.VALUE) {
+                    } else {
                         o[name]();
                         return;
                     }
@@ -6345,7 +6395,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
                 }
                 o[name] = value;
             } catch (e) {
-                this.warn(this + " populateProperty failed with the name '" + name + "' in the object '" + o + ", see the factory with the object definition '" + id + "' error: " + e.toString());
+                this.warn(this + " populateProperty failed with the name '" + name + ", see the object definition '" + id + "', error: " + e.toString());
             }
         } },
     registerListeners: { value: function value(o, listeners) {

@@ -161,51 +161,6 @@ Event.prototype = Object.create( ValueObject.prototype ,
     }},
 
     /**
-     * A utility function for implementing the <code>toString()</code> method in custom Event classes. Overriding the <code>toString()</code> method is recommended, but not required.
-     * @name formatToString
-     * @memberof system.events.Event
-     * @instance
-     * @function
-     * @param {string} className - The class name to passed-in the string expression.
-     * @param {...string} [rest] - rest The properties of the <code>Event<code> class and the properties that you add in your custom <code>Event</code> class.
-     * @example
-     * class UrlEvent extends Event
-     * {
-     *     constructor( type , url , bubbles = false, cancelable = false )
-     *     {
-     *         super( type , bubbles , cancelable ) ;
-     *         this.url = url;
-     *     }
-     *
-     *     toString()
-     *     {
-     *         return this.formatToString( this.constructor.name , "type", "url" , "bubbles", "cancelable", "eventPhase" );
-     *     }
-     * }
-     */
-    formatToString : { value : function( className , ...rest )
-    {
-        if( !className )
-        {
-            if( !this._constructorName )
-            {
-                this._constructorName = this.constructor.name ;
-            }
-            className = this._constructorName ;
-        }
-        let ar  = [] ;
-        let len = rest.length ;
-        for ( let i = 0; i < len ; ++i )
-        {
-            if( rest[i] in this )
-            {
-                ar.push( rest[i] + ":" + this[rest[i]] ) ;
-            }
-        }
-        return "[" + className + " " + ar.join(' ') + "]" ;
-    }},
-
-    /**
      * Checks whether the <code>preventDefault()</code> method has been called on the event. If the <code>preventDefault()</code> method has been called, returns <code>true</code>; otherwise, returns <code>false</code>.
      * @return If <code>preventDefault()</code> has been called, returns <code>true</code>; otherwise, returns <code>false</code>.
      * @see system.events.Event.preventDefault

@@ -16,29 +16,46 @@ export function ObjectArgument( value , policy = "value" , evaluators = null )
     Object.defineProperties( this ,
     {
         /**
+         * The optional <code>Array</code> representation of all registered arguments if the passed-in argument is a callback function reference.
+         * @name args
+         * @memberof system.ioc.ObjectArgument
+         * @instance
+         * @type Array
+         */
+        args : { value : null, writable : true } ,
+
+        /**
+         * The optional <code>Array</code> representation of all evaluators to transform the value of this object.
+         * @name evaluators
+         * @memberof system.ioc.ObjectArgument
+         * @instance
+         * @type Array
+         */
+        evaluators : { value : evaluators instanceof Array ? evaluators : null, writable : true } ,
+
+        /**
+         * The optional <code>scope</code> object if the argument definition target a callback function reference.
+         * @name scope
+         * @memberof system.ioc.ObjectArgument
+         * @instance
+         */
+        scope : { value : null, writable : true } ,
+
+        /**
+         * The value of the argument.
+         * @name value
+         * @memberof system.ioc.ObjectArgument
+         * @instance
+         */
+        value : { value : value , writable : true } ,
+
+        /**
          * @private
          */
         _policy : { value : null , writable : true }
     });
 
     this.policy = policy ;
-
-    /**
-     * Defines the value of the argument.
-     * @name value
-     * @memberof system.ioc.ObjectArgument
-     * @instance
-     */
-    this.value = value ;
-
-    /**
-     * The optional <code>Array</code> representation of all evaluators to transform the value of this object.
-     * @name evaluators
-     * @memberof system.ioc.ObjectArgument
-     * @instance
-     * @type Array
-     */
-    this.evaluators = (evaluators instanceof Array) ? [].concat(evaluators) : null ;
 }
 
 ObjectArgument.prototype = Object.create( Object.prototype ,
@@ -62,6 +79,7 @@ ObjectArgument.prototype = Object.create( Object.prototype ,
         {
             switch (str)
             {
+                case ObjectAttribute.CALLBACK  :
                 case ObjectAttribute.REFERENCE :
                 case ObjectAttribute.CONFIG    :
                 case ObjectAttribute.LOCALE    :
@@ -78,11 +96,12 @@ ObjectArgument.prototype = Object.create( Object.prototype ,
     },
 
     /**
-     * Returns the String representation of the object.
-     * @return the String representation of the object.
+     * Returns the string representation of this instance.
+     * @return the string representation of this instance.
+     * @name toString
      * @memberof system.ioc.ObjectArgument
-     * @function
      * @instance
+     * @function
      */
-    toString : { value : function() { return '[ObjectArgument]' ; } }
+    toString : { value : function () { return '[ObjectArgument]' ; }}
 });
