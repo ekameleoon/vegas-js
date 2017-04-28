@@ -1,5 +1,7 @@
 "use strict" ;
 
+import { ValueObject } from '../data/ValueObject.js' ;
+
 /**
  * The <code>Event</code> class is used as the base class for the creation of Event objects, which are passed as parameters to event listeners when an event occurs.
  * @name Event
@@ -27,7 +29,6 @@ export function Event( type , bubbles = false, cancelable = false )
     {
         _bubbles                     : { writable : true , value : Boolean(bubbles) } ,
         _cancelable                  : { writable : true , value : Boolean(cancelable) } ,
-        _constructorName             : { writable : true , value : null } ,
         _currentTarget               : { writable : true , value : null } ,
         _defaultPrevented            : { writable : true , value : false } ,
         _eventPhase                  : { writable : true , value : 0 } ,
@@ -36,9 +37,10 @@ export function Event( type , bubbles = false, cancelable = false )
         _target                      : { writable : true , value : null } ,
         _type                        : { writable : true , value : (type instanceof String || typeof(type) === 'string') ? type : null } ,
     });
+    ValueObject.call( this ) ;
 }
 
-Event.prototype = Object.create( Object.prototype ,
+Event.prototype = Object.create( ValueObject.prototype ,
 {
     /**
      * @private
@@ -159,7 +161,7 @@ Event.prototype = Object.create( Object.prototype ,
     }},
 
     /**
-     * A utility function for implementing the <code>toString()</code> method in custom ActionScript 3.0 Event classes. Overriding the <code>toString()</code> method is recommended, but not required.
+     * A utility function for implementing the <code>toString()</code> method in custom Event classes. Overriding the <code>toString()</code> method is recommended, but not required.
      * @name formatToString
      * @memberof system.events.Event
      * @instance

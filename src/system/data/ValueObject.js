@@ -14,6 +14,10 @@ import { Identifiable } from './Identifiable.js' ;
  */
 export function ValueObject( init = null )
 {
+    Object.defineProperties( this ,
+    {
+        _constructorName : { writable : true , value : null }
+    });
     Identifiable.call( this ) ;
     if( init )
     {
@@ -24,6 +28,50 @@ export function ValueObject( init = null )
 ValueObject.prototype = Object.create( Identifiable.prototype ,
 {
     constructor : { writable : true , value : ValueObject } ,
+
+    /**
+     * A utility function for implementing the <code>toString()</code> method in custom classes. Overriding the <code>toString()</code> method is recommended, but not required.
+     * @name formatToString
+     * @memberof system.data.ValueObject
+     * @instance
+     * @function
+     * @param {string} className - The class name to passed-in the string expression.
+     * @param {...string} [rest] - rest The properties of the class and the properties that you add in your custom class.
+     * @example
+     * class Thing extends ValueObject
+     * {
+     *     constructor( name )
+     *     {
+     *         this.name = name;
+     *     }
+     *
+     *     toString()
+     *     {
+     *         return this.formatToString( this.constructor.name , "name" );
+     *     }
+     * }
+     */
+    formatToString : { value : function( className , ...rest )
+    {
+        if( !className )
+        {
+            if( !this._constructorName )
+            {
+                this._constructorName = this.constructor.name ;
+            }
+            className = this._constructorName ;
+        }
+        let ar = [ className ] ;
+        let len = rest.length ;
+        for ( let i = 0; i < len ; ++i )
+        {
+            if( rest[i] in this )
+            {
+                ar.push( rest[i] + ":" + this[rest[i]] ) ;
+            }
+        }
+        return "[" + ar.join(' ') + "]" ;
+    }},
 
     /**
      * Sets the members of the object to the specified values.
@@ -57,6 +105,6 @@ ValueObject.prototype = Object.create( Identifiable.prototype ,
      */
     toString : { writable : true , value : function()
     {
-        return '[' + this.constructor.name + ']' ;
+        return this.formatToString( null ) ;
     }}
 }) ;

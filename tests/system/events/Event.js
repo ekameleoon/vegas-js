@@ -1,5 +1,6 @@
 "use strict" ;
 
+import { ValueObject } from '../../../src/system/data/ValueObject.js' ;
 import { Event } from '../../../src/system/events/Event.js' ;
 
 import chai  from 'chai' ;
@@ -10,6 +11,11 @@ describe( 'system.events.Event' , () =>
     describe( 'new Event()' , () =>
     {
         let event = new Event() ;
+
+        it('new Event() instanceof ValueObject', () =>
+        {
+            assert.instanceOf( event , ValueObject );
+        });
 
         it('new Event().bubbles === false', () =>
         {
