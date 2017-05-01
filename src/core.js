@@ -19,6 +19,7 @@ import { arrays   } from './core/arrays.js' ;
 import { chars    } from './core/chars.js' ;
 import { colors   } from './core/colors.js' ;
 import { date     } from './core/date.js' ;
+import { dom      } from './core/dom.js' ;
 import { easings  } from './core/easings.js' ;
 import { functors } from './core/functors.js' ;
 import { maths    } from './core/maths.js' ;
@@ -57,6 +58,7 @@ export var core = Object.assign
     chars    : chars ,
     colors   : colors ,
     date     : date ,
+    dom      : dom ,
     easings  : easings,
     functors : functors,
     maths    : maths ,

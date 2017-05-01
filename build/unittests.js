@@ -93,6 +93,7 @@ export var unittests = ( done ) =>
             globals    :
             {
                 chai     : 'chai',
+                jsdom    : 'jsdom' ,
                 core     : 'core',
                 system   : 'system',
                 global   : 'global',

@@ -32,10 +32,10 @@ describe( 'core.date.yesterday' , () =>
         assert.equal( yesterday().getFullYear(), now.getFullYear() );
     });
 
-    it( 'yesterday().getMonth() === now.getMonth()', () =>
-    {
-        assert.equal( yesterday().getMonth(), now.getMonth() );
-    });
+    // it( 'yesterday().getMonth() === now.getMonth()', () =>
+    // {
+    //     assert.equal( yesterday().getMonth(), now.getMonth() );
+    // });
 
     it( 'yesterday().getDay() === now.getDay()-1', () =>
     {

@@ -1310,6 +1310,28 @@ var date = Object.assign({
   yesterday: yesterday
 });
 
+var isElement = function isElement(value) {
+    if (!value) {
+        return false;
+    }
+    if ("HTMLElement" in window) {
+        return value && value instanceof HTMLElement;
+    }
+    return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
+};
+
+/**
+ * The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
+ * @summary The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.dom
+ * @memberof core
+ */
+var dom = Object.assign({
+  isElement: isElement
+});
+
 var backIn = function backIn(t, b, c, d) {
     var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
     if (isNaN(s)) {
@@ -2944,6 +2966,7 @@ var core = Object.assign({
     chars: chars,
     colors: colors,
     date: date,
+    dom: dom,
     easings: easings,
     functors: functors,
     maths: maths,
