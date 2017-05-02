@@ -1314,8 +1314,8 @@ var isElement = function isElement(value) {
     if (!value) {
         return false;
     }
-    if ("HTMLElement" in window) {
-        return value && value instanceof HTMLElement;
+    if ("Element" in window) {
+        return value && value instanceof Element;
     }
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
 };
