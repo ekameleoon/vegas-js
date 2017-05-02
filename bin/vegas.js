@@ -1320,16 +1320,38 @@ var isElement = function isElement(value) {
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
 };
 
+var isHTMLElement = function isHTMLElement(value) {
+    if (!value) {
+        return false;
+    }
+    if ("HTMLElement" in window) {
+        return value && value instanceof HTMLElement;
+    }
+    return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
+};
+
+var isSVGElement = function isSVGElement(value) {
+    if (!value) {
+        return false;
+    }
+    if ("SVGElement" in window) {
+        return value && value instanceof SVGElement;
+    }
+    return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName && value.xmlbase);
+};
+
 /**
  * The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
- * @summary The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
+ * @summary The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace core.dom
  * @memberof core
  */
 var dom = Object.assign({
-  isElement: isElement
+  isElement: isElement,
+  isHTMLElement: isHTMLElement,
+  isSVGElement: isSVGElement
 });
 
 var backIn = function backIn(t, b, c, d) {

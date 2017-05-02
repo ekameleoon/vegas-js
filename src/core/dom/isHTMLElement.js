@@ -1,8 +1,8 @@
 "use strict" ;
 
 /**
- * Indicates if a value is an Element object in the DOM.
- * @name isElement
+ * Indicates if a value is an HTMLElement object in the DOM.
+ * @name isHTMLElement
  * @memberof core.dom
  * @function
  * @instance
@@ -10,17 +10,17 @@
  * @return <code>true</code> if the passed-in value is an HTMLElement object.
  * @example
  * var div = document.createElement('div') ;
- * console.log( isElement( div ) ) ;
+ * console.log( isHTMLElement( div ) ) ;
  */
-export var isElement = ( value ) =>
+export var isHTMLElement = ( value ) =>
 {
     if( !value )
     {
         return false ;
     }
-    if ( "Element" in window )
+    if ( "HTMLElement" in window )
     {
-        return (value && value instanceof Element);
+        return (value && value instanceof HTMLElement);
     }
     return !!( value && typeof(obj) === "object" && ('nodeType' in value) && (value.nodeType === 1) && value.nodeName );
 }

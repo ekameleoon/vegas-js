@@ -9,7 +9,7 @@ if( !vegas )
 
 window.onload = function()
 {
-    var core = vegas.core   ; // jshint ignore:line
+    var core = vegas.core ; // jshint ignore:line
 
     var div = document.createElement('div') ;
 
