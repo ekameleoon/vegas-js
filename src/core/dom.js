@@ -2,8 +2,11 @@
 
 import '../polyfill/Object.js' ;
 
+import { isDOMElement }  from './dom/isDOMElement.js' ;
+import { isDOMObject }   from './dom/isDOMObject.js' ;
 import { isElement }     from './dom/isElement.js' ;
 import { isHTMLElement } from './dom/isHTMLElement.js' ;
+import { isListObject }  from './dom/isListObject.js' ;
 import { isSVGElement }  from './dom/isSVGElement.js' ;
 
 /**
@@ -16,7 +19,10 @@ import { isSVGElement }  from './dom/isSVGElement.js' ;
  */
 export var dom = Object.assign
 ({
+    isDOMElement  : isDOMElement ,
+    isDOMObject   : isDOMObject ,
     isElement     : isElement ,
     isHTMLElement : isHTMLElement ,
+    isListObject  : isListObject ,
     isSVGElement  : isSVGElement
 }) ;

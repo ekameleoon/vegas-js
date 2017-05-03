@@ -18,9 +18,13 @@ export var isElement = ( value ) =>
     {
         return false ;
     }
-    if ( "Element" in window )
+    try
     {
-        return (value && value instanceof Element);
+        return value instanceof Element;
     }
-    return !!( value && typeof(obj) === "object" && ('nodeType' in value) && (value.nodeType === 1) && value.nodeName );
+    catch (e)
+    {
+        return !!( value && typeof(obj) === "object" && ('nodeType' in value) && (value.nodeType === 1) && value.nodeName );
+    }
+
 }

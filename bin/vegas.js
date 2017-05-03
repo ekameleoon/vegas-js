@@ -1310,14 +1310,37 @@ var date = Object.assign({
   yesterday: yesterday
 });
 
+var isDOMElement = function isDOMElement(value) {
+    if (!value) {
+        return false;
+    }
+    try {
+        return value instanceof Node;
+    } catch (e) {
+        return false;
+    }
+};
+
+var isDOMObject = function isDOMObject(value) {
+    if (!value) {
+        return false;
+    }
+    try {
+        return value instanceof EventTarget;
+    } catch (e) {
+        return false;
+    }
+};
+
 var isElement = function isElement(value) {
     if (!value) {
         return false;
     }
-    if ("Element" in window) {
-        return value && value instanceof Element;
+    try {
+        return value instanceof Element;
+    } catch (e) {
+        return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
     }
-    return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
 };
 
 var isHTMLElement = function isHTMLElement(value) {
@@ -1328,6 +1351,17 @@ var isHTMLElement = function isHTMLElement(value) {
         return value && value instanceof HTMLElement;
     }
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
+};
+
+var isListObject = function isListObject(value) {
+    if (!value) {
+        return false;
+    }
+    try {
+        return value instanceof NodeList;
+    } catch (e) {
+        return false;
+    }
 };
 
 var isSVGElement = function isSVGElement(value) {
@@ -1349,8 +1383,11 @@ var isSVGElement = function isSVGElement(value) {
  * @memberof core
  */
 var dom = Object.assign({
+  isDOMElement: isDOMElement,
+  isDOMObject: isDOMObject,
   isElement: isElement,
   isHTMLElement: isHTMLElement,
+  isListObject: isListObject,
   isSVGElement: isSVGElement
 });
 
