@@ -2,6 +2,7 @@
 
 import './polyfill/Object.js' ;
 
+import { Groupable } from './molecule/Groupable.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 /**
@@ -20,6 +21,7 @@ export var molecule = Object.assign
 
     // ----- Classes and enumerations
 
+    Groupable    : Groupable ,
     ScrollPolicy : ScrollPolicy
 
     // ----- packages
