@@ -53,5 +53,8 @@ export function Groupable()
 
 Groupable.prototype = Object.create( Object.prototype ,
 {
+    /**
+     * The reference to the Object function that created the instance's prototype.
+     */
     constructor : { value : Groupable , writable : true }
 });
