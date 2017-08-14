@@ -16,7 +16,7 @@ export var ScrollPolicy = Object.defineProperties( {} ,
      * @memberof molecule.ScrollPolicy
      * @static
      * @type {string}
-     * @default 'chord'
+     * @default 'auto'
      */
     AUTO : { enumerable : true , value : 'auto' } ,
 
@@ -25,7 +25,7 @@ export var ScrollPolicy = Object.defineProperties( {} ,
      * @memberof molecule.ScrollPolicy
      * @static
      * @type {string}
-     * @default 'none'
+     * @default 'off'
      */
     OFF : { enumerable : true , value : 'off' } ,
 
@@ -36,7 +36,7 @@ export var ScrollPolicy = Object.defineProperties( {} ,
      * @memberof molecule.ScrollPolicy
      * @static
      * @type {string}
-     * @default 'pie'
+     * @default 'on'
      */
     ON : { enumerable : true , value : 'on' }
 }) ;

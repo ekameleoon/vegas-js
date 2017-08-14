@@ -13046,6 +13046,25 @@ var ScrollPolicy = Object.defineProperties({}, {
   ON: { enumerable: true, value: 'on' }
 });
 
+var ButtonPhase = Object.defineProperties({}, {
+  DISABLE: { enumerable: true, value: 'disable' },
+  DOWN: { enumerable: true, value: 'down' },
+  OVER: { enumerable: true, value: 'over' },
+  UP: { enumerable: true, value: 'up' }
+});
+
+/**
+ * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @summary The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.components
+ * @memberof molecule
+ */
+var components = Object.assign({
+  ButtonPhase: ButtonPhase
+});
+
 function DisplayObject() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     EventDispatcher.call(this);
@@ -13415,7 +13434,7 @@ var label = {
     }
 };
 
-var components = [].concat({ name: "draw", value: draw }, { name: "label", value: label });
+var components$1 = [].concat({ name: "draw", value: draw }, { name: "label", value: label });
 
 function Node$1() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -14880,7 +14899,7 @@ var display$2 = Object.assign({
  * @memberof molecule.render
  */
 var aframe = Object.assign({
-  components: components,
+  components: components$1,
   display: display$2
 });
 
@@ -16331,6 +16350,7 @@ var molecule = Object.assign({
     logger: logger$1,
     Groupable: Groupable,
     ScrollPolicy: ScrollPolicy,
+    components: components,
     display: display$1,
     render: render$1,
     states: states
