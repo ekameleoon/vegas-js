@@ -15192,6 +15192,18 @@ Button$1.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+function Canvas() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Node$1.call(this, init, tag instanceof HTMLCanvasElement || isString(tag) ? tag : null);
+}
+Canvas.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Canvas, writable: true },
+    toString: { writable: true, value: function value() {
+            return '[Canvas]';
+        } }
+});
+
 function Div() {
     Node$1.call(this, null, 'div');
 }
@@ -15589,6 +15601,7 @@ var dom$1 = Object.assign({
     Anchor: Anchor,
     Body: Body,
     Button: Button$1,
+    Canvas: Canvas,
     Div: Div,
     G: G,
     Img: Img,
@@ -15609,6 +15622,388 @@ var dom$1 = Object.assign({
   }
 });
 
+function EdgeMetrics() {
+    var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    Object.defineProperties(this, {
+        bottom: { value: isNaN(bottom) ? 0 : bottom, writable: true },
+        left: { value: isNaN(left) ? 0 : left, writable: true },
+        right: { value: isNaN(right) ? 0 : right, writable: true },
+        top: { value: isNaN(top) ? 0 : top, writable: true }
+    });
+}
+EdgeMetrics.prototype = Object.create(Object.prototype, {
+    horizontal: { get: function get() {
+            return this.left + this.right;
+        } },
+    vertical: { get: function get() {
+            return this.top + this.bottom;
+        } },
+    clone: { writable: true, value: function value() {
+            return new EdgeMetrics(this.left, this.top, this.right, this.bottom);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof EdgeMetrics)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an EdgeMetrics object.');
+            }
+            this.bottom = source.bottom;
+            this.left = source.left;
+            this.right = source.right;
+            this.top = source.top;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof EdgeMetrics) {
+                return o.bottom === this.bottom && o.left === this.left && o.right === this.right && o.top === this.top;
+            } else {
+                return false;
+            }
+        } },
+    setTo: { writable: true, value: function value() {
+            var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            this.left = isNaN(left) ? 0 : left;
+            this.top = isNaN(top) ? 0 : top;
+            this.bottom = isNaN(bottom) ? 0 : bottom;
+            this.right = isNaN(right) ? 0 : right;
+            return this;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { bottom: this.bottom, left: this.left, right: this.right, top: this.top };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[EdgeMetrics left:" + this.left + " top:" + this.top + " right:" + this.right + " bottom:" + this.bottom + "]";
+        } }
+});
+
+function MOB() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        changed: { value: new Signal() },
+        renderer: { value: new Signal() },
+        resized: { value: new Signal() },
+        updater: { value: new Signal() },
+        _align: { writable: true, value: 10 },
+        _enabled: { writable: true, value: 0 },
+        _h: { writable: true, value: 0 },
+        _layout: { writable: true, value: null },
+        _locked: { writable: true, value: 0 },
+        _maxHeight: { writable: true, value: null },
+        _maxWidth: { writable: true, value: null },
+        _minHeight: { writable: true, value: 0 },
+        _minWidth: { writable: true, value: 0 },
+        _real: { writable: false, value: new Rectangle() },
+        _scope: { writable: true, value: this },
+        _w: { writable: true, value: 0 }
+    });
+    PIXI.Sprite.call(this, texture);
+}
+MOB.prototype = Object.create(PIXI.Sprite.prototype, {
+    constructor: { value: MOB },
+    align: {
+        get: function get() {
+            return this._align;
+        },
+        set: function set(value) {
+            this._align = value;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    enabled: {
+        get: function get() {
+            return this._enabled;
+        },
+        set: function set(value) {
+            this._enabled = value;
+            if (this._locked === 0) {
+                this.viewEnabled();
+            }
+        }
+    },
+    h: {
+        get: function get() {
+            return clamp(this._h, this._minHeight, this._maxHeight);
+        },
+        set: function set(value) {
+            this._h = clamp(value, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        }
+    },
+    layout: {
+        get: function get() {
+            return this._layout;
+        },
+        set: function set(layout) {
+            if (this._layout) {
+                this._layout.unlock();
+                this._layout.renderer.disconnect(this.renderLayout);
+                this._layout.updater.disconnect(this.updateLayout);
+            }
+            this._layout = layout instanceof Layout ? layout : null;
+            if (this._layout) {
+                this._layout.renderer.connect(this.renderLayout);
+                this._layout.updater.connect(this.updateLayout);
+                this._layout.container = this._scope;
+                if (this.isLocked()) {
+                    this._layout.lock();
+                } else {
+                    this._layout.unlock();
+                }
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    maxHeight: {
+        get: function get() {
+            return this._maxHeight;
+        },
+        set: function set(value) {
+            this._maxHeight = value;
+            if (this._maxHeight < this._minHeight) {
+                this._maxHeight = this._minHeight;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    maxWidth: {
+        get: function get() {
+            return this._maxWidth;
+        },
+        set: function set(value) {
+            this._maxWidth = value;
+            if (this._maxWidth < this._minWidth) {
+                this._maxWidth = this._minWidth;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    minHeight: {
+        get: function get() {
+            return this._minHeight;
+        },
+        set: function set(value) {
+            this._minHeight = value > 0 ? value : 0;
+            if (this._minHeight > this._maxHeight) {
+                this._minHeight = this._maxHeight;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    minWidth: {
+        get: function get() {
+            return this._minWidth;
+        },
+        set: function set(value) {
+            this._minWidth = value > 0 ? value : 0;
+            if (this._minWidth > this._maxWidth) {
+                this._minWidth = this._maxWidth;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    scope: {
+        get: function get() {
+            return this._scope;
+        },
+        set: function set(scope) {
+            if (scope) {
+                this._scope = scope;
+            } else {
+                this._scope = this;
+            }
+            if (this._layout) {
+                this._layout.container = this._scope;
+            }
+        }
+    },
+    w: {
+        get: function get() {
+            return clamp(this._w, this._minWidth, this._maxWidth);
+        },
+        set: function set(value) {
+            this._w = clamp(value, this._minWidth, this._maxWidth);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        }
+    },
+    fixArea: { value: function value() {
+            this._real.width = this.w;
+            this._real.height = this.h;
+            this._real.x = 0;
+            this._real.y = 0;
+            if (this._align === Align.BOTTOM) {
+                this._real.x -= this._real.width / 2;
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.BOTTOM_LEFT) {
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.BOTTOM_RIGHT) {
+                this._real.x -= this._real.width;
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.CENTER) {
+                this._real.x -= this._real.width / 2;
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.LEFT) {
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.RIGHT) {
+                this._real.x -= this._real.width;
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.TOP) {
+                this._real.x -= this._real.width / 2;
+            } else if (this._align === Align.TOP_RIGHT) {
+                this._real.x -= this._real.width;
+            }
+            return this._real;
+        } },
+    isLocked: { value: function value() {
+            return this._locked > 0;
+        } },
+    lock: { value: function value() {
+            this._locked++;
+            if (this._layout) {
+                this._layout.lock();
+            }
+        } },
+    move: { value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+            if (!isNaN(x)) {
+                this.x = x;
+            }
+            if (!isNaN(y)) {
+                this.y = y;
+            }
+        } },
+    notifyResized: { writable: true, value: function value() {
+            this.viewResize();
+            this.resized.emit(this);
+        } },
+    renderLayout: { writable: true, value: function value() /* layout = null */{
+        } },
+    resetLock: { value: function value() {
+            this._locked = 0;
+        } },
+    setPreferredSize: { value: function value(w, h) {
+            this._w = isNaN(w) ? 0 : clamp(w, this._minWidth, this._maxWidth);
+            this._h = isNaN(h) ? 0 : clamp(h, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        } },
+    setSize: { value: function value(w, h) {
+            this.width = isNaN(w) ? 0 : clamp(w, this._minWidth, this._maxWidth);
+            this.height = isNaN(h) ? 0 : clamp(h, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        } },
+    toString: { value: function value() {
+            return '[MOB]';
+        } },
+    unlock: { value: function value() {
+            this._locked = --this._locked > 0 ? this._locked : 0;
+            if (this._layout) {
+                this._layout.unlock();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            if (this._locked > 0) {
+                return;
+            }
+            this.renderer.emit(this);
+            if (this._layout) {
+                this._layout.run();
+            }
+            this.draw();
+            this.viewChanged();
+            this.altered = false;
+            this.updater.emit(this);
+        } },
+    viewChanged: { value: function value() {
+        } },
+    viewEnabled: { value: function value() {
+        } },
+    viewResize: { value: function value() {
+        } }
+});
+
+function Element$1() {
+  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    _border: { value: new EdgeMetrics() }
+  });
+  MOB.call(this, texture);
+}
+Element$1.prototype = Object.create(MOB.prototype, {
+  constructor: { value: Element$1 },
+  toString: { value: function value() {
+      return '[Element]';
+    } }
+});
+
+function Background() {
+  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    _autoSize: { writable: true, value: false }
+  });
+  Element$1.call(this, texture);
+}
+Background.prototype = Object.create(Element$1.prototype, {
+  constructor: { value: Background },
+  toString: { value: function value() {
+      return '[Background]';
+    } }
+});
+
+/**
+ * The {@link molecule.render.pixi.display} package.
+ * @summary The {@link molecule.render.pixi.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.display
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$3 = Object.assign({
+  Background: Background,
+  Element: Element$1,
+  MOB: MOB
+});
+
+/**
+ * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi
+ * @memberof molecule.render
+ */
+var pixi = Object.assign({
+  display: display$3
+});
+
 /**
  * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
  * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
@@ -15619,7 +16014,8 @@ var dom$1 = Object.assign({
  */
 var render$1 = Object.assign({
   aframe: aframe,
-  dom: dom$1
+  dom: dom$1,
+  pixi: pixi
 });
 
 function State() {

@@ -63,7 +63,7 @@ export function CoreButton( texture = null )
     // init
 
     this.interactive = true ;
-    this.buttonMode = true ;
+    this.buttonMode  = true ;
 
     this.pointerdown = this._down ;
 }

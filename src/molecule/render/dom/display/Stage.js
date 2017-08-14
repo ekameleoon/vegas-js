@@ -612,7 +612,7 @@ Stage.prototype = Object.create( Node.prototype ,
 
         if( this._allowFullScreen === true )
         {
-            this._notifyFullScreen        = this.notifyFullScreen.bind( this ) ;
+            this._notifyFullScreen = this.notifyFullScreen.bind( this ) ;
             window.addEventListener( this._fullScreenChange , this._notifyFullScreen , false );
         }
 
@@ -624,7 +624,7 @@ Stage.prototype = Object.create( Node.prototype ,
 
         window.addEventListener( "resize" , this.notifyResized.bind( this ) , false );
 
-        window.addEventListener( "focus" , this.notifyActivated.bind( this ) , false );
-        window.addEventListener( "blur" , this.notifyDesactivated.bind( this ) , false );
+        window.addEventListener( "focus" , this.notifyActivated.bind( this )    , false );
+        window.addEventListener( "blur"  , this.notifyDesactivated.bind( this ) , false );
     }}
 }) ;

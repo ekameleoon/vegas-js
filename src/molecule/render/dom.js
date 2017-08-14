@@ -5,6 +5,7 @@ import '../../polyfill/Object.js' ;
 import { Anchor } from './dom/display/Anchor.js' ;
 import { Body } from './dom/display/Body.js' ;
 import { Button } from './dom/display/Button.js' ;
+import { Canvas } from './dom/display/Canvas.js' ;
 import { Div } from './dom/display/Div.js' ;
 import { G } from './dom/display/G.js' ;
 import { Img } from './dom/display/Img.js' ;
@@ -42,6 +43,7 @@ export var dom = Object.assign
         Anchor : Anchor,
         Body : Body,
         Button : Button,
+        Canvas : Canvas,
         Div : Div,
         G : G,
         Img : Img,
