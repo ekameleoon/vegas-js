@@ -13334,6 +13334,319 @@ var display$1 = Object.assign({
   DisplayObjectContainer: DisplayObjectContainer
 });
 
+var logger$1 = Log.getLogger('molecule.logging.logger');
+
+/**
+ * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render
+ * @memberof molecule
+ */
+var render = Object.assign({});
+
+function State() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    owner: { value: null, writable: true },
+    view: { value: null, writable: true }
+  });
+  ValueObject.call(this, init);
+}
+State.prototype = Object.create(ValueObject.prototype, {
+  constructor: { writable: true, value: State },
+  toString: { writable: true, value: function value() {
+      return this.formatToString(null, "id");
+    } }
+});
+
+function StateModel() {
+    MapModel.call(this);
+}
+StateModel.prototype = Object.create(MapModel.prototype, {
+    constructor: { writable: true, value: StateModel },
+    supports: { writable: true, value: function value(_value) {
+            return _value instanceof State;
+        } }
+});
+
+function View() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _closeAfter: { writable: true, value: null },
+        _closeBefore: { writable: true, value: null },
+        _openAfter: { writable: true, value: null },
+        _openBefore: { writable: true, value: null }
+    });
+    ValueObject.call(this, init);
+}
+View.prototype = Object.create(ValueObject.prototype, {
+    constructor: { value: View, writable: true },
+    closeAfter: {
+        get: function get() {
+            return this._closeAfter;
+        },
+        set: function set(action) {
+            this._closeAfter = action instanceof Action ? action : null;
+        }
+    },
+    closeBefore: {
+        get: function get() {
+            return this._closeBefore;
+        },
+        set: function set(action) {
+            this._closeBefore = action instanceof Action ? action : null;
+        }
+    },
+    openAfter: {
+        get: function get() {
+            return this._openAfter;
+        },
+        set: function set(action) {
+            this._openAfter = action instanceof Action ? action : null;
+        }
+    },
+    openBefore: {
+        get: function get() {
+            return this._openBefore;
+        },
+        set: function set(action) {
+            this._openBefore = action instanceof Action ? action : null;
+        }
+    },
+    attach: { writable: true, value: function value() {
+        } },
+    close: { writable: true, value: function value() {
+        } },
+    detach: { writable: true, value: function value() {
+        } },
+    dispose: { writable: true, value: function value() {
+        } },
+    initialize: { writable: true, value: function value() {
+        } },
+    open: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+        } }
+});
+
+function AddState() {}
+AddState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: AddState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function StateTask() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  Object.defineProperties(this, {
+    factory: { writable: true, value: factory },
+    state: { writable: true, value: state }
+  });
+  Task.call(this);
+}
+StateTask.prototype = Object.create(Task.prototype, {
+  constructor: { writable: true, value: StateTask }
+});
+
+function CloseState() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    StateTask.call(this, state, factory);
+    Object.defineProperties(this, {
+        _chain: { value: new Chain() }
+    });
+    this._chain.mode = TaskGroup.TRANSIENT;
+    this._chain.finishIt.connect(this.notifyFinished.bind(this));
+}
+CloseState.prototype = Object.create(StateTask.prototype, {
+    constructor: { writable: true, value: CloseState },
+    run: { value: function value() {
+            logger$1.debug(this + " run " + this.state);
+            this.notifyStarted();
+            if (!(this.state instanceof State)) {
+                logger$1.warn(this + " failed, the State reference of this process not must be 'null'.");
+                this.notifyFinished();
+                return;
+            }
+            var view = this.state.view;
+            if (view instanceof String || typeof view === 'string' && this.factory instanceof ObjectFactory) {
+                view = this.factory.getObject(view);
+            } else {
+                logger$1.warn(this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view);
+            }
+            if (view instanceof View) {
+                if (view.closeBefore) {
+                    this._chain.add(view.closeBefore);
+                }
+                this._chain.add(new Call(view.close, view));
+                if (view.closeAfter) {
+                    this._chain.add(view.closeAfter);
+                }
+            } else {
+                logger$1.warn(this + " failed, we can't find no View with the State : " + this.state);
+            }
+            if (this._chain.length > 0 && !this._chain.running) {
+                this._chain.run();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+function BeforeChangeState() {
+    var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        chain: { writable: true, value: chain instanceof Chain ? chain : null },
+        factory: { writable: true, value: factory }
+    });
+}
+BeforeChangeState.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: BeforeChangeState },
+    receive: { value: function value(state, model) {
+            logger$1.info(this + " receive " + state);
+            if (this.chain && state) {
+                this.chain.add(new CloseState(state, this.factory), 0, true);
+                if (model && model.current === null && !this.chain.running) {
+                    this.chain.run();
+                }
+            } else {
+                logger$1.warn(this + " failed with the state:" + state + " and the chain:" + this.chain);
+            }
+        } }
+});
+
+function OpenState() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _chain: { value: new Chain() }
+    });
+    StateTask.call(this, state, factory);
+    this._chain.mode = TaskGroup.TRANSIENT;
+    this._chain.finishIt.connect(this.notifyFinished.bind(this));
+}
+OpenState.prototype = Object.create(StateTask.prototype, {
+    constructor: { writable: true, value: OpenState },
+    run: { value: function value() {
+            logger$1.debug(this + " run " + this.state);
+            this.notifyStarted();
+            if (!(this.state instanceof State)) {
+                logger$1.warn(this + " failed, the State reference of this process not must be 'null'.");
+                this.notifyFinished();
+                return;
+            }
+            var view = this.state.view;
+            if (view instanceof String || typeof view === 'string' && this.factory instanceof ObjectFactory) {
+                view = this.factory.getObject(view);
+            } else {
+                logger$1.warn(this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view);
+            }
+            if (view instanceof View) {
+                if (view.openBefore) {
+                    this._chain.add(view.openBefore);
+                }
+                this._chain.add(new Call(view.open, view));
+                if (view.openAfter) {
+                    this._chain.add(view.openAfter);
+                }
+            } else {
+                logger$1.warn(this + " failed, we can't find no View in the State : " + this.state);
+            }
+            if (this._chain.length > 0 && !this._chain.running) {
+                this._chain.run();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+function ChangeState() {
+    var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        chain: { writable: true, value: chain instanceof Chain ? chain : null },
+        factory: { writable: true, value: factory }
+    });
+}
+ChangeState.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: ChangeState },
+    receive: { value: function value(state) {
+            logger$1.info(this + " receive " + state);
+            if (this.chain && state) {
+                this.chain.add(new OpenState(state, this.factory), 0, true);
+                if (!this.chain.running) {
+                    this.chain.run();
+                }
+            } else {
+                logger$1.warn(this + " failed with the state:" + state + " and the chain:" + this.chain);
+            }
+        } }
+});
+
+function ClearState() {}
+ClearState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: ClearState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function RemoveState() {}
+RemoveState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: RemoveState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function InitStates() {
+    var model = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var autoClear = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var autoSelect = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var autoDequeue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var cleanFirst = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+    InitMapModel.call(this, model, datas, autoClear, autoSelect, autoDequeue, cleanFirst);
+}
+InitStates.prototype = Object.create(InitMapModel.prototype, {
+    constructor: { writable: true, value: InitStates },
+    filterEntry: { value: function value(_value) {
+            return _value instanceof State ? _value : null;
+        } }
+});
+
+/**
+ * The {@link molecule.states} library contains the core classes of the application state engine.
+ * @summary The {@link molecule.render} library contains the core classes of the application state engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.states
+ * @memberof molecule
+ */
+var states = Object.assign({
+  State: State,
+  StateModel: StateModel,
+  View: View,
+  controllers: {
+    AddState: AddState,
+    BeforeChangeState: BeforeChangeState,
+    ChangeState: ChangeState,
+    ClearState: ClearState,
+    RemoveState: RemoveState
+  },
+  process: {
+    CloseState: CloseState,
+    InitStates: InitStates,
+    OpenState: OpenState,
+    StateTask: StateTask
+  }
+});
+
 /**
  * The {@link graphics} package is a library for develop crossplatform Rich Internet Applications and Games.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -13343,9 +13656,12 @@ var display$1 = Object.assign({
  * @since 1.0.8
  */
 var molecule = Object.assign({
-  Groupable: Groupable,
-  ScrollPolicy: ScrollPolicy,
-  display: display$1
+    logger: logger$1,
+    Groupable: Groupable,
+    ScrollPolicy: ScrollPolicy,
+    display: display$1,
+    render: render,
+    states: states
 });
 
 var Device = Object.defineProperties({}, {

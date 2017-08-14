@@ -41,6 +41,9 @@ OpenState.prototype = Object.create( StateTask.prototype ,
 
     /**
      * Run the process.
+     * @memberof molecule.states.process.OpenState
+     * @instance
+     * @function
      */
     run : { value : function( )
     {

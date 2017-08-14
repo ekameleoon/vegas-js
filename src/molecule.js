@@ -6,7 +6,7 @@ import { Groupable } from './molecule/Groupable.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 import { display } from './molecule/display.js' ;
-import { logger }  from './molecule/logging.logger.js' ;
+import { logger }  from './molecule/logging/logger.js' ;
 import { render }  from './molecule/render.js' ;
 import { states }  from './molecule/states.js' ;
 

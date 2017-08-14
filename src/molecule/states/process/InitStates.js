@@ -29,8 +29,8 @@ InitStates.prototype = Object.create( InitMapModel.prototype ,
 
     /**
      * Transforms the passed-in value in a State or a null object.
-     * @name run
-     * @memberof vr.states.process
+     * @name filterEntry
+     * @memberof molecule.states.process.InitStates
      * @instance
      * @function
      */

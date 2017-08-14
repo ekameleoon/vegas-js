@@ -42,6 +42,9 @@ CloseState.prototype = Object.create( StateTask.prototype ,
 
     /**
      * Run the process.
+     * @memberof molecule.states.process.CloseState
+     * @instance
+     * @function
      */
     run : { value : function( )
     {
