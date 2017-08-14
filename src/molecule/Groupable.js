@@ -37,7 +37,7 @@ export function Groupable()
          * @type {boolean}
          * @instance
          */
-        group : { value : false, configurable : true , writable : true } ,
+        group : { value : false , configurable : true , writable : true } ,
 
         /**
          * Indicates the name of the group of this object.
@@ -47,7 +47,7 @@ export function Groupable()
          * @type {string}
          * @instance
          */
-        groupName : { value : null, configurable : true , writable : true }
+        groupName : { value : null , configurable : true , writable : true }
     }) ;
 }
 
