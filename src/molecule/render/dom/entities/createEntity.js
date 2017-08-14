@@ -3,11 +3,11 @@
 /**
  * Creates an AFrame a-entity element.
  * @name createEntity
- * @memberof com.ooopener.entities
+ * @memberof molecule.render.dom.entities
  * @function
  * @instance
  * @param {Object} init - The generic object to initialize the entity.
- * @return The aframe entity.
+ * @return The entity reference.
  * @example
  * var entity = createEntity( 'a-entity' , { attribute : "material.opacity" , begin : "fade" , to : "0" } ) ;
  * var scene = document.querySelector('a-scene') ;

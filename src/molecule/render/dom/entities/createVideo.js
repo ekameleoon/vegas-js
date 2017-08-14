@@ -3,7 +3,7 @@
 /**
  * Creates a DOM Video element.
  * @name createImg
- * @memberof molecule.dom.entities
+ * @memberof molecule.render.dom.entities
  * @function
  * @instance
  * @param {Object} init - The generic object to initialize the entity.

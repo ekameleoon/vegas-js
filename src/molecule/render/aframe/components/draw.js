@@ -3,14 +3,14 @@
 /**
  * The draw component.
  * @name draw
- * @memberof vr.display.components
+ * @memberof molecule.render.aframe.display.components
  */
 export const draw =
 {
     /**
      * Defines and describes the property or properties of the component.
      * @name schema
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @instance
      */
     schema :
@@ -23,7 +23,7 @@ export const draw =
     /**
      * Invoked to create the new Canvas object.
      * @name create
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */
@@ -69,7 +69,7 @@ export const draw =
     /**
      * Invoked when the component is initialized
      * @name init
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */
@@ -82,7 +82,7 @@ export const draw =
     /**
      * Invoked to register a new object to render.
      * @name register
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */
@@ -94,7 +94,7 @@ export const draw =
     /**
      * Invoked when the component is removed.
      * @name remove
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */
@@ -106,7 +106,7 @@ export const draw =
     /**
      * Invoked when the component render all registered elements.
      * @name render
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */
@@ -128,7 +128,7 @@ export const draw =
     /**
      * Invoked when the component is updated
      * @name update
-     * @memberof vr.display.components.canvas
+     * @memberof molecule.render.aframe.display.components.canvas
      * @function
      * @instance
      */

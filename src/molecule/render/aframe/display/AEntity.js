@@ -83,6 +83,13 @@ AEntity.prototype = Object.create( Node.prototype ,
         }
     },
 
+    /**
+     * This method dispose the instance before to be removed.
+     * @name dispose
+     * @memberof molecule.render.aframe.display.AEntity
+     * @instance
+     * @function
+     */
     dispose : { value : function()
     {
         this.removeEventListener( EventType.ADDED_TO_STAGE     , this._addedToStage ) ;
@@ -90,7 +97,7 @@ AEntity.prototype = Object.create( Node.prototype ,
     }},
 
     /**
-     * 	The geometry of the entity.
+     * The geometry of the entity.
      * @name geometry
      * @memberof molecule.render.aframe.display.AEntity
      * @instance

@@ -6,7 +6,7 @@ import { Svg } from './Svg.js' ;
  * Creates a new Path instance.
  * @name Path
  * @class
- * @memberof molecule.render.node.display
+ * @memberof molecule.render.dom.display
  * @extends molecule.render.dom.display.Node
  */
 export function Path ()

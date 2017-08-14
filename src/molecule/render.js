@@ -2,6 +2,8 @@
 
 import '../polyfill/Object.js' ;
 
+import { dom } from './render/dom.js' ;
+
 /**
  * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
  * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
@@ -12,5 +14,7 @@ import '../polyfill/Object.js' ;
  */
 export var render = Object.assign
 ({
+    // packages
 
+    dom : dom
 }) ;

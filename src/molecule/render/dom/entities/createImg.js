@@ -3,7 +3,7 @@
 /**
  * Creates a DOM Img element.
  * @name createImg
- * @memberof com.ooopener.entities
+ * @memberof molecule.render.dom.entities
  * @function
  * @instance
  * @param {Object} init - The generic object to initialize the entity.

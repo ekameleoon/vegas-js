@@ -6,7 +6,7 @@ import { Node } from './Node.js' ;
  * Creates a new Button instance.
  * @name Button
  * @class
- * @memberof molecule.render.node.display
+ * @memberof molecule.render.dom.display
  * @extends molecule.render.dom.display.Node
  */
 export function Button ()

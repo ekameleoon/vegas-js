@@ -11,7 +11,7 @@ import { DisplayObjectContainer } from '../../../display/DisplayObjectContainer.
  * Creates a new Svg instance.
  * @name Svg
  * @class
- * @memberof molecule.render.node.display
+ * @memberof molecule.render.dom.display
  * @extends molecule.render.dom.display.Node
  */
 export function Svg ( init = null , tag = 'svg' )

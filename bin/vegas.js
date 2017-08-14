@@ -13336,6 +13336,814 @@ var display$1 = Object.assign({
 
 var logger$1 = Log.getLogger('molecule.logging.logger');
 
+function Node$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var el = null;
+    if (isHTMLElement(tag)) {
+        el = tag;
+    } else if (isString(tag)) {
+        el = document.createElement(tag);
+    }
+    Object.defineProperties(this, {
+        _element: { value: el, writable: true }
+    });
+    DisplayObjectContainer.call(this, init);
+}
+Node$1.prototype = Object.create(DisplayObjectContainer.prototype, {
+    constructor: { value: Node$1, writable: true },
+    addClass: { value: function value(_value) {
+            if (!this._element.classList.contains(_value)) {
+                this._element.classList.add(_value);
+            }
+        } },
+    id: {
+        get: function get() {
+            return this._element.id;
+        },
+        set: function set(value) {
+            this._element.id = value;
+        }
+    },
+    class: {
+        get: function get() {
+            return this.getAttribute("class");
+        },
+        set: function set(value) {
+            this.setAttribute("class", value);
+        }
+    },
+    element: {
+        get: function get() {
+            return this._element;
+        },
+        set: function set(value) {
+            this._element = null;
+            if (isHTMLElement(value)) {
+                this._element = value;
+            } else if (isString(value)) {
+                this._element = document.getElementById(value);
+            }
+        }
+    },
+    getAttribute: { value: function value(name) {
+            if (this._element) {
+                return this._element.getAttribute(name);
+            }
+            return null;
+        } },
+    removeClass: { value: function value(_value2) {
+            if (this._element.classList.contains(_value2)) {
+                this._element.classList.remove(_value2);
+            }
+        } },
+    setAttribute: { value: function value(name, _value3) {
+            if (this._element) {
+                this._element.setAttribute(name, _value3);
+            }
+        } },
+    _appendChild: { writable: true, value: function value(child) {
+            if (child && child._element && this._element) {
+                this._element.appendChild(child._element);
+            }
+        } },
+    _insertChildAt: { writable: true, value: function value(child, index) {
+            if (this._element && child && child._element) {
+                this._element.insertBefore(child._element, this._element.children[index]);
+            }
+        } },
+    _removeChild: { writable: true, value: function value(child) {
+            if (child && child._element) {
+                child._element.parentNode.removeChild(child._element);
+            }
+        } }
+});
+
+function Anchor() {
+    Node$1.call(this, null, 'a');
+}
+Anchor.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Anchor, writable: true },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    class: {
+        get: function get() {
+            return this.element.classList;
+        },
+        set: function set(value) {
+            if (!this.element.classList.contains(value)) {
+                this.element.classList.add(value);
+            }
+        }
+    },
+    href: {
+        get: function get() {
+            return this.element.href;
+        },
+        set: function set(value) {
+            this.element.href = value;
+        }
+    }
+});
+
+function Stage$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Node$1.call(this, init, tag);
+    Object.defineProperties(this, {
+        activated: { value: new Signal() },
+        desactivated: { value: new Signal() },
+        fullScreen: { value: new Signal() },
+        orientationChange: { value: new Signal() },
+        resize: { value: new Signal() },
+        _allowFullScreen: { writable: true, value: false },
+        _aspectRatio: { writable: true, value: StageAspectRatio.ANY },
+        _displayState: { writable: true, value: StageDisplayState.NORMAL },
+        _fullScreenChange: { writable: true, value: null },
+        _fullScreenElement: { writable: true, value: null },
+        _fullScreenExit: { writable: true, value: null },
+        _fullScreenHeight: { writable: true, value: null },
+        _fullScreenInteractive: { writable: true, value: false },
+        _fullScreenRequest: { writable: true, value: null },
+        _fullScreenWidth: { writable: true, value: null },
+        _height: { writable: true, value: null },
+        __isStage: { value: true },
+        _launchedFromHomeScreen: { writable: true, value: false },
+        _orientation: { writable: true, value: StageOrientation.UNKNOWN },
+        _pixelRatio: { writable: true, value: 1 },
+        _supportedOrientations: { writable: true, value: null },
+        _supportsOrientationChange: { writable: true, value: false },
+        _width: { writable: true, value: null }
+    });
+    this.__initialize__();
+}
+Stage$1.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Stage$1, writable: true },
+    allowFullScreen: { get: function get() {
+            return this._allowFullScreen;
+        } },
+    allowFullScreenInteractive: { get: function get() {
+            return this._fullScreenInteractive;
+        } },
+    aspectRatio: { get: function get() {
+            return this._aspectRatio;
+        } },
+    displayState: {
+        get: function get() {
+            return this._displayState;
+        },
+        set: function set(state) {
+            if (this._displayState !== state) {
+                this._displayState = state;
+                switch (this._displayState) {
+                    case StageDisplayState.FULL_SCREEN:
+                        {
+                            document.documentElement[this._fullScreenRequest]();
+                            break;
+                        }
+                    case StageDisplayState.FULL_SCREEN_INTERACTIVE:
+                        {
+                            document.documentElement[this._fullScreenRequest](Element.ALLOW_KEYBOARD_INPUT);
+                            break;
+                        }
+                    case StageDisplayState.NORMAL:
+                    default:
+                        {
+                            document[this._fullScreenExit]();
+                            break;
+                        }
+                }
+            }
+        }
+    },
+    fullScreenHeight: { get: function get() {
+            return this._fullScreenHeight;
+        } },
+    fullScreenWidth: { get: function get() {
+            return this._fullScreenWidth;
+        } },
+    height: { get: function get() {
+            return this._height;
+        } },
+    launchedFromHomeScreen: { get: function get() {
+            return this._launchedFromHomeScreen;
+        } },
+    orientation: { get: function get() {
+            return this._orientation;
+        } },
+    pixelRatio: { get: function get() {
+            return this._pixelRatio;
+        } },
+    width: { get: function get() {
+            return this._width;
+        } },
+    dispose: { value: function value() {
+            if (this._notifyFullScreen instanceof Function) {
+                window.removeEventListener(this._fullScreenChange, this._notifyFullScreen, false);
+                this._notifyFullScreen = null;
+            }
+            if (this._notifyOrientationChange instanceof Function) {
+                window.removeEventListener("orientationchange", this._notifyOrientationChange, false);
+                this._notifyOrientationChange = null;
+            }
+        } },
+    getDeviceOrientation: { writable: true, value: function value() {
+            if (window.screen.orientation && window.screen.orientation.type) {
+                switch (window.screen.orientation.type) {
+                    case 'portrait-secondary':
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                    case 'landscape-primary':
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 'landscape-secondary':
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 'portrait-primary':
+                    default:
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                }
+            } else if (window.orientation !== undefined) {
+                switch (window.orientation) {
+                    case 180:
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                    case 90:
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case -90:
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 0:
+                    default:
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                        }
+                }
+            }
+        } },
+    getViewportSize: { writable: true, value: function value() {
+            this._width = Math.min(document.documentElement.clientWidth, window.innerWidth || 0);
+            this._height = Math.min(document.documentElement.clientHeight, window.innerHeight || 0);
+            return { width: this._width, height: this._height };
+        } },
+    notifyActivated: { writable: true, value: function value() {
+            this.activated.emit(this);
+        } },
+    notifyDesactivated: { writable: true, value: function value() {
+            this.desactivated.emit(this);
+        } },
+    notifyFullScreen: { writable: true, value: function value() {
+            if (document[this._fullScreenElement] === null) {
+                this.displayState = StageDisplayState.NORMAL;
+            }
+            this.fullScreen.emit(this._displayState, this);
+        } },
+    notifyOrientationChange: { writable: true, value: function value() {
+            this.getDeviceOrientation();
+            this.orientationChange.emit(this._orientation, this);
+        } },
+    notifyResized: { writable: true, value: function value() {
+            this.getViewportSize();
+            this.resize.emit(this);
+        } },
+    toString: { writable: true, value: function value() {
+            return '[Stage]';
+        } },
+    __initialize__: { writable: true, value: function value() {
+            if (navigator.standalone === true || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches) {
+                this._launchedFromHomeScreen = true;
+            }
+            this._pixelRatio = window.devicePixelRatio || 1;
+            this.getViewportSize();
+            this._fullScreenWidth = window.screen.width;
+            this._fullScreenHeight = window.screen.height;
+            if (window.orientation !== undefined || window.screen.orientation !== undefined) {
+                this._supportsOrientationChange = true;
+                this.getDeviceOrientation();
+            } else {
+                this._supportsOrientationChange = false;
+            }
+            var fullscreen = ['requestFullscreen', 'requestFullScreen', 'webkitRequestFullscreen', 'webkitRequestFullScreen', 'msRequestFullscreen', 'msRequestFullScreen', 'mozRequestFullScreen', 'mozRequestFullscreen'];
+            var cancel = ['cancelFullScreen', 'exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'msCancelFullScreen', 'msExitFullscreen', 'mozCancelFullScreen', 'mozExitFullscreen'];
+            var change = ['fullscreenchange', 'fullscreenchange', 'webkitfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange', 'msfullscreenchange', 'mozfullscreenchange', 'mozfullscreenchange'];
+            var element = ['fullscreenElement', 'fullscreenElement', 'webkitFullscreenElement', 'webkitFullscreenElement', 'msFullScreenElement', 'msFullscreenElement', 'mozFullScreenElement', 'mozFullscreenElement'];
+            var len = fullscreen.length;
+            for (var i = 0; i < len; i++) {
+                if (document.documentElement[fullscreen[i]] && document[cancel[i]]) {
+                    this._allowFullScreen = true;
+                    this._fullScreenRequest = fullscreen[i];
+                    this._fullScreenExit = cancel[i];
+                    this._fullScreenChange = change[i];
+                    this._fullScreenElement = element[i];
+                    break;
+                }
+            }
+            if (window.Element && Element.ALLOW_KEYBOARD_INPUT) {
+                this._fullScreenInteractive = true;
+            }
+            if (this._allowFullScreen === true) {
+                this._notifyFullScreen = this.notifyFullScreen.bind(this);
+                window.addEventListener(this._fullScreenChange, this._notifyFullScreen, false);
+            }
+            if (this._supportsOrientationChange === true) {
+                this._notifyOrientationChange = this.notifyOrientationChange.bind(this);
+                window.addEventListener("orientationchange", this._notifyOrientationChange, false);
+            }
+            window.addEventListener("resize", this.notifyResized.bind(this), false);
+            window.addEventListener("focus", this.notifyActivated.bind(this), false);
+            window.addEventListener("blur", this.notifyDesactivated.bind(this), false);
+        } }
+});
+
+function Body() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Stage$1.call(this, init, document.body || document.createElement('body'));
+}
+Body.prototype = Object.create(Stage$1.prototype, {
+  constructor: { value: Body, writable: true },
+  toString: { writable: true, value: function value() {
+      return '[Body]';
+    } }
+});
+
+function Button() {
+  Node$1.call(this, null, 'button');
+}
+Button.prototype = Object.create(Node$1.prototype, {
+  constructor: { value: Button, writable: true },
+  text: {
+    get: function get() {
+      return this._element.innerHTML;
+    },
+    set: function set(value) {
+      this._element.innerHTML = value;
+    }
+  },
+  type: {
+    get: function get() {
+      return this.getAttribute('type');
+    },
+    set: function set(value) {
+      this.setAttribute('type', value);
+    }
+  },
+  value: {
+    get: function get() {
+      return this.getAttribute('value');
+    },
+    set: function set(value) {
+      this.setAttribute('value', value);
+    }
+  }
+});
+
+function Div() {
+  Node$1.call(this, null, 'div');
+}
+Div.prototype = Object.create(Node$1.prototype, {
+  constructor: { value: Div, writable: true }
+});
+
+function Svg() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'svg';
+    var xmlns = "http://www.w3.org/2000/svg";
+    var el = null;
+    if (isSVGElement(tag)) {
+        el = tag;
+    } else if (isString(tag)) {
+        el = document.createElementNS(xmlns, tag);
+    }
+    Object.defineProperties(this, {
+        _element: { value: el, writable: true }
+    });
+    DisplayObjectContainer.call(this, init);
+}
+Svg.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Svg, writable: true },
+    enableBackground: {
+        get: function get() {
+            return this.getAttribute('enable-background');
+        },
+        set: function set(value) {
+            this.setAttribute('enable-background', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    viewBox: {
+        get: function get() {
+            return this._element.getAttribute('viewBox');
+        },
+        set: function set(value) {
+            this._element.setAttribute('viewBox', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    },
+    x: {
+        get: function get() {
+            return this.getAttribute('x');
+        },
+        set: function set(value) {
+            this.setAttribute('x', value);
+        }
+    },
+    y: {
+        get: function get() {
+            return this.getAttribute('y');
+        },
+        set: function set(value) {
+            this.setAttribute('y', value);
+        }
+    }
+});
+
+function G() {
+  Svg.call(this, null, "g");
+}
+G.prototype = Object.create(Svg.prototype, {
+  constructor: { value: G, writable: true }
+});
+
+function Img() {
+    Node$1.call(this, null, 'img');
+}
+Img.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Img, writable: true },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    }
+});
+
+function Paragraph() {
+  Node$1.call(this, null, 'p');
+}
+Paragraph.prototype = Object.create(Node$1.prototype, {
+  constructor: { value: Paragraph, writable: true },
+  text: {
+    get: function get() {
+      return this._element.innerHTML;
+    },
+    set: function set(value) {
+      this._element.innerHTML = value;
+    }
+  }
+});
+
+function Path() {
+    Svg.call(this, null, "path");
+}
+Path.prototype = Object.create(Svg.prototype, {
+    constructor: { value: Path, writable: true },
+    d: {
+        get: function get() {
+            return this.getAttribute("d");
+        },
+        set: function set(value) {
+            this.setAttribute("d", value);
+        }
+    }
+});
+
+var createEntity = function createEntity() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'a-entity';
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var el = null;
+    if (name instanceof String || typeof name === 'string') {
+        el = document.createElement(name);
+    } else {
+        el = document.createElement('a-entity');
+        if (name !== null) {
+            init = name;
+        }
+    }
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+var createImg = function createImg() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var el = document.createElement('img');
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+var createVideo = function createVideo() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var el = document.createElement('video');
+    el.setAttribute('crossorigin', 'anonymous');
+    el.setAttribute('webkit-playsinline', 'true');
+    el.setAttribute('autoplay', '');
+    el.setAttribute('controls', '');
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+function Audio() {
+    Node$1.call(this, null, 'audio');
+}
+Audio.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Audio, writable: true },
+    autoplay: {
+        get: function get() {
+            return this.getAttribute('autoplay');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('autoplay', '');
+            } else {
+                this.removeAttribute('autoplay');
+            }
+        }
+    },
+    controls: {
+        get: function get() {
+            return this.getAttribute('controls');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('controls', '');
+            } else {
+                this.removeAttribute('controls');
+            }
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('loop');
+        },
+        set: function set(value) {
+            this.setAttribute('loop', value);
+        }
+    },
+    muted: {
+        get: function get() {
+            return this.getAttribute('muted');
+        },
+        set: function set(value) {
+            this.setAttribute('muted', value);
+        }
+    },
+    preload: {
+        get: function get() {
+            return this.getAttribute('preload');
+        },
+        set: function set(value) {
+            this.setAttribute('preload', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('volume');
+        },
+        set: function set(value) {
+            this.setAttribute('volume', clamp(value, 0, 1));
+        }
+    }
+});
+
+function Video() {
+    Node$1.call(this, null, 'video');
+}
+Video.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Video, writable: true },
+    autoplay: {
+        get: function get() {
+            return this.getAttribute('autoplay');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('autoplay', '');
+            } else {
+                this.removeAttribute('autoplay');
+            }
+        }
+    },
+    controls: {
+        get: function get() {
+            return this.getAttribute('controls');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('controls', '');
+            } else {
+                this.removeAttribute('controls');
+            }
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('loop');
+        },
+        set: function set(value) {
+            this.setAttribute('loop', value);
+        }
+    },
+    muted: {
+        get: function get() {
+            return this.getAttribute('muted');
+        },
+        set: function set(value) {
+            this.setAttribute('muted', value);
+        }
+    },
+    poster: {
+        get: function get() {
+            return this.getAttribute('poster');
+        },
+        set: function set(value) {
+            this.setAttribute('poster', value);
+        }
+    },
+    preload: {
+        get: function get() {
+            return this.getAttribute('preload');
+        },
+        set: function set(value) {
+            this.setAttribute('preload', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('volume');
+        },
+        set: function set(value) {
+            this.setAttribute('volume', clamp(value, 0, 1));
+        }
+    }
+});
+
+/**
+ * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom
+ * @memberof molecule.render
+ */
+var dom$1 = Object.assign({
+  display: {
+    Anchor: Anchor,
+    Body: Body,
+    Button: Button,
+    Div: Div,
+    G: G,
+    Img: Img,
+    Node: Node$1,
+    Paragraph: Paragraph,
+    Path: Path,
+    Stage: Stage$1,
+    Svg: Svg
+  },
+  entities: {
+    createEntity: createEntity,
+    createImg: createImg,
+    createVideo: createVideo
+  },
+  medias: {
+    Audio: Audio,
+    Video: Video
+  }
+});
+
 /**
  * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
  * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
@@ -13344,7 +14152,9 @@ var logger$1 = Log.getLogger('molecule.logging.logger');
  * @namespace molecule.render
  * @memberof molecule
  */
-var render = Object.assign({});
+var render = Object.assign({
+  dom: dom$1
+});
 
 function State() {
   var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;

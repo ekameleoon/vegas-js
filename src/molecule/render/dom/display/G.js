@@ -6,7 +6,7 @@ import { Svg } from './Svg.js' ;
  * Creates a new G instance.
  * @name G
  * @class
- * @memberof molecule.render.node.display
+ * @memberof molecule.render.dom.display
  * @extends molecule.render.dom.display.Node
  */
 export function G ()

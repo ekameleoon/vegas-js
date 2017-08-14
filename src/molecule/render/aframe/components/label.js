@@ -4,7 +4,7 @@
  * The label components.
  * @name label
  * @class
- * @memberof vr.display.components
+ * @memberof molecule.render.aframe.display.components
  */
 export const label =
 {
