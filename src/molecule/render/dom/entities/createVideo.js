@@ -2,7 +2,7 @@
 
 /**
  * Creates a DOM Video element.
- * @name createImg
+ * @name createVideo
  * @memberof molecule.render.dom.entities
  * @function
  * @instance
