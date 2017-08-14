@@ -33,9 +33,6 @@ export function Box( init = null )
 
 Box.prototype = Object.create( Material.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Box , writable : true } ,
 
     /**

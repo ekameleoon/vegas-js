@@ -27,9 +27,6 @@ export function View( init = null )
 
 View.prototype = Object.create( ValueObject.prototype ,
 {
-    /**
-     * The reference to the constructor function that created the instance's prototype.
-     */
     constructor : { value : View , writable : true } ,
 
     /**

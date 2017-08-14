@@ -38,9 +38,6 @@ export function Node( init = null , tag = null )
 
 Node.prototype = Object.create( DisplayObjectContainer.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Node , writable : true } ,
 
     /**

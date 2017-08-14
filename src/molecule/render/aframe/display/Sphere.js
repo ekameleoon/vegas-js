@@ -28,9 +28,6 @@ export function Sphere( init = null )
 
 Sphere.prototype = Object.create( Material.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Sphere , writable : true } ,
 
     /**

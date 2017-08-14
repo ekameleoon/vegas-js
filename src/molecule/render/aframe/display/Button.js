@@ -87,9 +87,6 @@ export function Button( init = null )
 
 Button.prototype = Object.create( Material.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Button , writable : true } ,
 
     /**

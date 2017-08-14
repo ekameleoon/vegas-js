@@ -79,6 +79,9 @@ ParallaxLayer.prototype = Object.create( Object.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
+     * @memberof molecule.display.ParallaxLayer
+     * @instance
+     * @function
      */
     toString : { value : function () { return '[ParallaxLayer]' ; }}
 });

@@ -17,9 +17,6 @@ export function Material( init = null , tag = 'a-entity' )
 
 Material.prototype = Object.create( AEntity.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Material , writable : true } ,
 
     /**

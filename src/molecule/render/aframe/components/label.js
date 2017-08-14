@@ -3,8 +3,8 @@
 /**
  * The label components.
  * @name label
- * @class
- * @memberof molecule.render.aframe.display.components
+ * @const
+ * @memberof molecule.render.aframe.components
  */
 export const label =
 {

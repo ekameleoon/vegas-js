@@ -30,9 +30,6 @@ export function Text( init = null )
 
 Text.prototype = Object.create( AEntity.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Text , writable : true } ,
 
     /**

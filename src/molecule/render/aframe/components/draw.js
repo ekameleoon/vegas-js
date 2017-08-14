@@ -3,14 +3,15 @@
 /**
  * The draw component.
  * @name draw
- * @memberof molecule.render.aframe.display.components
+ * @const
+ * @memberof molecule.render.aframe.components
  */
 export const draw =
 {
     /**
      * Defines and describes the property or properties of the component.
      * @name schema
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @instance
      */
     schema :
@@ -23,7 +24,7 @@ export const draw =
     /**
      * Invoked to create the new Canvas object.
      * @name create
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */
@@ -69,7 +70,7 @@ export const draw =
     /**
      * Invoked when the component is initialized
      * @name init
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */
@@ -82,7 +83,7 @@ export const draw =
     /**
      * Invoked to register a new object to render.
      * @name register
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */
@@ -94,7 +95,7 @@ export const draw =
     /**
      * Invoked when the component is removed.
      * @name remove
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */
@@ -106,7 +107,7 @@ export const draw =
     /**
      * Invoked when the component render all registered elements.
      * @name render
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */
@@ -128,7 +129,7 @@ export const draw =
     /**
      * Invoked when the component is updated
      * @name update
-     * @memberof molecule.render.aframe.display.components.canvas
+     * @memberof molecule.render.aframe.components.canvas
      * @function
      * @instance
      */

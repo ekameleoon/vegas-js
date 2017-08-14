@@ -1,6 +1,6 @@
 "use strict"
 
-import { logger } from './vr/logging/logger.js' ;
+import { logger } from './molecule/logging/logger.js' ;
 import { Node }   from './molecule/render/dom/display/Node.js' ;
 
 /**
@@ -23,9 +23,6 @@ export function Assets( init = null )
 
 Assets.prototype = Object.create( Node.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Assets , writable : true } ,
 
     /**

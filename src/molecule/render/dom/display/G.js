@@ -16,8 +16,5 @@ export function G ()
 
 G.prototype = Object.create( Svg.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : G , writable : true }
 }) ;

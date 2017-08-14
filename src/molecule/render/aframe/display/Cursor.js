@@ -91,9 +91,6 @@ export function Cursor( init = null )
 
 Cursor.prototype = Object.create( AEntity.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { writable : true , value : Cursor } ,
 
     /**

@@ -15,7 +15,7 @@ export function Background( texture = null )
     Object.defineProperties( this ,
     {
         /**
-         * private
+         * @private
          */
         _autoSize : { writable : true , value : false }
     });

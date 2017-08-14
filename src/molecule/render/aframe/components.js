@@ -9,8 +9,8 @@ import { label } from './components/label.js' ;
 
 export const components = [].concat
 (
-    { name : "draw"  , value : draw   } ,
+    { name : "draw"  , value : draw  } ,
     { name : "label" , value : label }
 );
 
-components.forEach( ( component ) => AFRAME.registerComponent( component.name , component.value ) ) ;
+// components.forEach( ( component ) => AFRAME.registerComponent( component.name , component.value ) ) ;

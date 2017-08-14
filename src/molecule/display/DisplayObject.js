@@ -37,9 +37,6 @@ export function DisplayObject( init = null )
 
 DisplayObject.prototype = Object.create( EventDispatcher.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : DisplayObject , writable : true } ,
 
     /**

@@ -17,7 +17,7 @@ export function MOB( texture = null )
     Object.defineProperties( this ,
     {
         /**
-         * private
+         * @private
          */
         _changed   : { value : new Signal() } ,
         _h         : { writable : true , value : 0 } ,
@@ -36,9 +36,6 @@ export function MOB( texture = null )
 
 MOB.prototype = Object.create( PIXI.Sprite.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : MOB } ,
 
     /**

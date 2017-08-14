@@ -16,9 +16,6 @@ export function Path ()
 
 Path.prototype = Object.create( Svg.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Path , writable : true } ,
 
     /**

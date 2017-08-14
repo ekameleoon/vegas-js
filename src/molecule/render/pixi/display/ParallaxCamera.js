@@ -74,9 +74,6 @@ export function ParallaxCamera( renderer, root, focalLength = 300 , damping = 10
 
 ParallaxCamera.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : ParallaxCamera } ,
 
     /**

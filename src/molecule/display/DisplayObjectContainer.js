@@ -25,9 +25,6 @@ export function DisplayObjectContainer( init = null )
 
 DisplayObjectContainer.prototype = Object.create( DisplayObject.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : DisplayObjectContainer , writable : true } ,
 
     /**

@@ -62,9 +62,6 @@ export function AEntity( init = null , tag = 'a-entity' )
 
 AEntity.prototype = Object.create( Node.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : AEntity , writable : true } ,
 
     /**

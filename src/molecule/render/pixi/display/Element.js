@@ -17,7 +17,7 @@ export function Element( texture = null )
     Object.defineProperties( this ,
     {
         /**
-         * private
+         * @private
          */
         _border : { value : new EdgeMetrics() }
     });
@@ -27,9 +27,6 @@ export function Element( texture = null )
 
 Element.prototype = Object.create( MOB.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Element } ,
 
     /**

@@ -315,6 +315,10 @@ RGB.prototype = Object.create( Object.prototype ,
     /**
      * Returns the real value of the object.
      * @return the real value of the object.
+     * @name valueOf
+     * @memberof graphics.colors.RGB
+     * @instance
+     * @function
      */
     valueOf : { writable : true , value : function()
     {

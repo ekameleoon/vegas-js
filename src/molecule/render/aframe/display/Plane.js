@@ -32,9 +32,6 @@ export function Plane( init = null )
 
 Plane.prototype = Object.create( Material.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Plane , writable : true } ,
 
     /**

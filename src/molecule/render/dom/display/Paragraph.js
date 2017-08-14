@@ -16,9 +16,6 @@ export function Paragraph ()
 
 Paragraph.prototype = Object.create( Node.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Paragraph , writable : true } ,
 
     /**

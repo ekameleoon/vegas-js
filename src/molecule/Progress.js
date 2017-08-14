@@ -33,9 +33,6 @@ export function Progress()
 
 Progress.prototype = Object.create( Object.prototype ,
 {
-    /**
-     * The reference to the Object function that created the instance's prototype.
-     */
     constructor : { value : Progress , writable : true } ,
 
     /**

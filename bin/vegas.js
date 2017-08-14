@@ -3927,7 +3927,7 @@ var evaluators = Object.assign({
   RomanEvaluator: RomanEvaluator
 });
 
-function Event(type) {
+function Event$1(type) {
   var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   Object.defineProperties(this, {
@@ -3943,8 +3943,8 @@ function Event(type) {
   });
   ValueObject.call(this);
 }
-Event.prototype = Object.create(ValueObject.prototype, {
-  constructor: { writable: true, value: Event },
+Event$1.prototype = Object.create(ValueObject.prototype, {
+  constructor: { writable: true, value: Event$1 },
   bubbles: { get: function get() {
       return this._bubbles;
     } },
@@ -3965,7 +3965,7 @@ Event.prototype = Object.create(ValueObject.prototype, {
       return this._type;
     } },
   clone: { writable: true, value: function value() {
-      return new Event(this._type, this._bubbles, this._cancelable);
+      return new Event$1(this._type, this._bubbles, this._cancelable);
     } },
   isDefaultPrevented: { value: function value() {
       return this._defaultPrevented;
@@ -4000,7 +4000,7 @@ Event.prototype = Object.create(ValueObject.prototype, {
       return this;
     } }
 });
-Object.defineProperties(Event, {
+Object.defineProperties(Event$1, {
   ACTIVATE: { value: "activate" },
   ADDED: { value: "added" },
   ADDED_TO_STAGE: { value: "addedToStage" },
@@ -4091,7 +4091,7 @@ EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
             collection[type].sort(this.compare);
         } },
     dispatchEvent: { writable: true, value: function value(event) {
-            if (!(event instanceof Event)) {
+            if (!(event instanceof Event$1)) {
                 throw new TypeError(this + " dispatchEvent failed, the event argument must be a valid Event object.");
             }
             event = event.withTarget(this.target || this);
@@ -4287,7 +4287,7 @@ Object.defineProperties(EventDispatcher, {
  * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 var events = Object.assign({
-  Event: Event,
+  Event: Event$1,
   EventDispatcher: EventDispatcher,
   EventListener: EventListener,
   EventPhase: EventPhase,
@@ -13031,13 +13031,13 @@ var graphics = Object.assign({
 });
 
 function Groupable() {
-  Object.defineProperties(this, {
-    group: { value: false, configurable: true, writable: true },
-    groupName: { value: null, configurable: true, writable: true }
-  });
+    Object.defineProperties(this, {
+        group: { value: false, configurable: true, writable: true },
+        groupName: { value: null, configurable: true, writable: true }
+    });
 }
 Groupable.prototype = Object.create(Object.prototype, {
-  constructor: { value: Groupable, writable: true }
+    constructor: { value: Groupable, writable: true }
 });
 
 var ScrollPolicy = Object.defineProperties({}, {
@@ -13172,9 +13172,9 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
                         }
                         child.removeFromParent();
                         child.setParent(this);
-                        child.dispatchEvent(new Event(Event.ADDED, true));
+                        child.dispatchEvent(new Event$1(Event$1.ADDED, true));
                         if (this.stage) {
-                            var event = new Event(Event.ADDED_TO_STAGE);
+                            var event = new Event$1(Event$1.ADDED_TO_STAGE);
                             if (child instanceof DisplayObjectContainer) {
                                 child.broadcastEvent(event);
                             } else {
@@ -13225,9 +13225,9 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
             var dispose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
             if (index >= 0 && index < this._children.length) {
                 var child = this._children[index];
-                child.dispatchEvent(new Event(Event.REMOVED, true));
+                child.dispatchEvent(new Event$1(Event$1.REMOVED, true));
                 if (this.stage) {
-                    var event = new Event(Event.REMOVED_FROM_STAGE);
+                    var event = new Event$1(Event$1.REMOVED_FROM_STAGE);
                     if (child instanceof DisplayObjectContainer) {
                         child.broadcastEvent(event);
                     } else {
@@ -13283,7 +13283,7 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
             }
         } },
     broadcastEvent: { value: function value(event) {
-            if (!(event instanceof Event)) {
+            if (!(event instanceof Event$1)) {
                 throw new ReferenceError(this + " broadcastEvent failed, the event parameter must be a valid system.events.Event reference.");
             }
             if (event.bubbles) {
@@ -13335,6 +13335,87 @@ var display$1 = Object.assign({
 });
 
 var logger$1 = Log.getLogger('molecule.logging.logger');
+
+var draw = {
+    schema: {
+        width: { default: 256 },
+        height: { default: 256 },
+        background: { default: "#FFFFFF" }
+    },
+    create: function create(w, h) {
+        var owner = this;
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style = "display: none";
+        owner.canvas = canvas;
+        owner.ctx = canvas.getContext("2d");
+        this.texture = new THREE.Texture(owner.canvas);
+        if (this.el.object3D.children.length > 0) {
+            this.el.object3D.children[0].material = new THREE.MeshBasicMaterial();
+            this.el.object3D.children[0].material.map = this.texture;
+        } else {
+            this.el.object3D.material = new THREE.MeshBasicMaterial();
+            this.el.object3D.material.map = this.texture;
+        }
+        if (!this.el.hasLoaded) {
+            this.el.addEventListener("loaded", function () {
+                owner.render();
+            });
+        } else {
+            owner.render();
+        }
+    },
+    init: function init() {
+        this.registers = [];
+        this.update();
+    },
+    register: function register(render) {
+        this.registers.push(render);
+    },
+    remove: function remove() {
+    },
+    render: function render() {
+        if (this.registers && this.registers.length > 0) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = this.data.background;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.registers.forEach(function (item) {
+                item();
+            });
+        }
+        this.texture.needsUpdate = true;
+    },
+    update: function update(oldData) {
+        if (!oldData) {
+            this.create(this.data.width, this.data.height);
+        }
+    }
+};
+
+var label = {
+    schema: {
+        color: { default: "#FF0000" },
+        font: { default: "36px Georgia" },
+        text: { default: "" }
+    },
+    dependencies: ["draw"],
+    update: function update() {
+        var draw = this.el.components.draw;
+        var ctx = draw.ctx;
+        var canvas = draw.canvas;
+        ctx.fillStyle = this.el.getAttribute('color');
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = this.data.color;
+        ctx.font = this.data.font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.data.text, canvas.width * 0.5, canvas.height * 0.5);
+        draw.render();
+    }
+};
+
+var components = [].concat({ name: "draw", value: draw }, { name: "label", value: label });
 
 function Node$1() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -13417,6 +13498,1390 @@ Node$1.prototype = Object.create(DisplayObjectContainer.prototype, {
                 child._element.parentNode.removeChild(child._element);
             }
         } }
+});
+
+function AEntity() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
+    Object.defineProperties(this, {
+        addedToStage: { value: new Signal() },
+        removedFromStage: { value: new Signal() },
+        _addedToStage: { writable: true, value: null },
+        _onStage: { writable: true, value: false },
+        _position: { writable: false, value: { x: 0, y: 0, z: 0 } },
+        _raycast: { writable: false, value: 'button' },
+        _removedFromStage: { writable: true, value: null },
+        _rotation: { writable: false, value: { x: 0, y: 0, z: 0 } },
+        _root: { writable: true, value: null },
+        _scale: { writable: false, value: { x: 1, y: 1, z: 1 } }
+    });
+    Node$1.call(this, init, tag);
+    this._addedToStage = this.__addedToStage.bind(this);
+    this._removedFromStage = this.__removedFromStage.bind(this);
+    this.addEventListener(Event$1.ADDED_TO_STAGE, this._addedToStage);
+    this.addEventListener(Event$1.REMOVED_FROM_STAGE, this._removedFromStage);
+}
+AEntity.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: AEntity, writable: true },
+    alpha: {
+        get: function get() {
+            return this.getAttribute('opacity');
+        },
+        set: function set(value) {
+            this.setAttribute('opacity', clamp(value, 0, 1));
+        }
+    },
+    dispose: { value: function value() {
+            this.removeEventListener(Event$1.ADDED_TO_STAGE, this._addedToStage);
+            this.removeEventListener(Event$1.REMOVED_FROM_STAGE, this._removedFromStage);
+        } },
+    geometry: {
+        get: function get() {
+            return this.getAttribute('geometry');
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', value);
+        }
+    },
+    raycasted: {
+        get: function get() {
+            return this._element.classList.contains(this._raycast);
+        },
+        set: function set(value) {
+            if (value === true) {
+                this._element.classList.add(this._raycast);
+            } else {
+                if (this._element.classList.contains(this._raycast)) {
+                    this._element.classList.remove(this._raycast);
+                }
+            }
+        }
+    },
+    raycast: {
+        get: function get() {
+            return this._raycast;
+        },
+        set: function set(value) {
+            if (value !== this._raycast) {
+                this.raycasted = false;
+            }
+            this._raycast = value;
+            this.raycasted = true;
+        }
+    },
+    opacity: {
+        get: function get() {
+            return this.getAttribute('opacity');
+        },
+        set: function set(value) {
+            this.setAttribute('opacity', clamp(value, 0, 1));
+        }
+    },
+    position: {
+        get: function get() {
+            return this._position;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._position.x = value.x;
+            }
+            if ('y' in value) {
+                this._position.y = value.y;
+            }
+            if ('z' in value) {
+                this._position.z = value.z;
+            }
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    rotation: {
+        get: function get() {
+            return this._rotation;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._rotation.x = value.x;
+            }
+            if ('y' in value) {
+                this._rotation.y = value.y;
+            }
+            if ('z' in value) {
+                this._rotation.z = value.z;
+            }
+            this.setAttribute('position', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationX: {
+        get: function get() {
+            return this._rotation.x;
+        },
+        set: function set(value) {
+            this._rotation.x = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationY: {
+        get: function get() {
+            return this._rotation.y;
+        },
+        set: function set(value) {
+            this._rotation.y = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationZ: {
+        get: function get() {
+            return this._rotation.z;
+        },
+        set: function set(value) {
+            this._rotation.z = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    scale: {
+        get: function get() {
+            return this._scale;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._scale.x = value.x;
+            }
+            if ('y' in value) {
+                this._scale.y = value.y;
+            }
+            if ('z' in value) {
+                this._scale.z = value.z;
+            }
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleX: {
+        get: function get() {
+            return this._scale.x;
+        },
+        set: function set(value) {
+            this._scale.x = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleY: {
+        get: function get() {
+            return this._scale.y;
+        },
+        set: function set(value) {
+            this._scale.y = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleZ: {
+        get: function get() {
+            return this._scale.z;
+        },
+        set: function set(value) {
+            this._scale.z = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    visible: {
+        get: function get() {
+            return this.getAttribute('visible') === "true";
+        },
+        set: function set(value) {
+            this.setAttribute('visible', value === true ? 'true' : 'false');
+        }
+    },
+    x: {
+        get: function get() {
+            return this._position.x;
+        },
+        set: function set(value) {
+            this._position.x = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    y: {
+        get: function get() {
+            return this._position.y;
+        },
+        set: function set(value) {
+            this._position.y = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    z: {
+        get: function get() {
+            return this._position.z;
+        },
+        set: function set(value) {
+            this._position.z = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    notifyAddedToStage: { value: function value() {
+            this.addedToStage.emit(this);
+        } },
+    notifyRemovedFromStage: { value: function value() {
+            this.removedFromStage.emit(this);
+        } },
+    setAttribute: { value: function value(attr, _value, componentAttrValue) {
+            if (this._element) {
+                this._element.setAttribute(attr, _value, componentAttrValue);
+            }
+        } },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            this.notifyAddedToStage();
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            this.notifyRemovedFromStage();
+        } }
+});
+
+function Assets() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Node$1.call(this, init, 'a-assets');
+    if (this.element) {
+        this.element.addEventListener('error', this._error.bind(this));
+        this.element.addEventListener('loaded', this._loaded.bind(this));
+    }
+}
+Assets.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Assets, writable: true },
+    _error: { value: function value(event) {
+            logger$1.error(this + " error, " + event);
+        } },
+    _loaded: { value: function value(event) {
+            logger$1.debug(this + " loaded, " + event);
+        } }
+});
+
+function Material() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
+    AEntity.call(this, init, tag);
+}
+Material.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Material, writable: true },
+    color: {
+        get: function get() {
+            return this.getAttribute('color');
+        },
+        set: function set(value) {
+            this.setAttribute('color', value);
+        }
+    },
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
+    },
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    }
+});
+
+function Box() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-box');
+}
+Box.prototype = Object.create(Material.prototype, {
+    constructor: { value: Box, writable: true },
+    depth: {
+        get: function get() {
+            return this.getAttribute('geometry').depth;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'depth', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Text() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    AEntity.call(this, init, 'a-text');
+}
+Text.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Text, writable: true },
+    align: {
+        get: function get() {
+            return this.getAttribute('align');
+        },
+        set: function set(value) {
+            this.setAttribute('align', value);
+        }
+    },
+    alphaTest: {
+        get: function get() {
+            return this.getAttribute('alphaTest');
+        },
+        set: function set(value) {
+            this.setAttribute('alphaTest', value);
+        }
+    },
+    anchor: {
+        get: function get() {
+            return this.getAttribute('anchor');
+        },
+        set: function set(value) {
+            this.setAttribute('anchor', value);
+        }
+    },
+    baseline: {
+        get: function get() {
+            return this.getAttribute('baseline');
+        },
+        set: function set(value) {
+            this.setAttribute('baseline', value);
+        }
+    },
+    color: {
+        get: function get() {
+            return this.getAttribute('color');
+        },
+        set: function set(value) {
+            this.setAttribute('color', value);
+        }
+    },
+    font: {
+        get: function get() {
+            return this.getAttribute('font');
+        },
+        set: function set(value) {
+            this.setAttribute('font', value);
+        }
+    },
+    fontImage: {
+        get: function get() {
+            return this.getAttribute('fontImage');
+        },
+        set: function set(value) {
+            this.setAttribute('fontImage', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    letterSpacing: {
+        get: function get() {
+            return this.getAttribute('letterSpacing');
+        },
+        set: function set(value) {
+            this.setAttribute('letterSpacing', value);
+        }
+    },
+    letterHeight: {
+        get: function get() {
+            return this.getAttribute('letterHeight');
+        },
+        set: function set(value) {
+            this.setAttribute('letterHeight', value);
+        }
+    },
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
+    },
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
+    },
+    tabSize: {
+        get: function get() {
+            return this.getAttribute('tabSize');
+        },
+        set: function set(value) {
+            this.setAttribute('tabSize', value);
+        }
+    },
+    value: {
+        get: function get() {
+            return this.getAttribute('value');
+        },
+        set: function set(value) {
+            this.setAttribute('value', value);
+        }
+    },
+    whitespace: {
+        get: function get() {
+            return this.getAttribute('whitespace');
+        },
+        set: function set(value) {
+            this.setAttribute('whitespace', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    },
+    wrapCount: {
+        get: function get() {
+            return this.getAttribute('wrapCount');
+        },
+        set: function set(value) {
+            this.setAttribute('wrapCount', value);
+        }
+    },
+    wrapPixels: {
+        get: function get() {
+            return this.getAttribute('wrapPixels');
+        },
+        set: function set(value) {
+            this.setAttribute('wrapPixels', value);
+        }
+    },
+    zOffset: {
+        get: function get() {
+            return this.getAttribute('zOffset');
+        },
+        set: function set(value) {
+            this.setAttribute('zOffset', value);
+        }
+    }
+});
+
+function Button() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    backgroundColor: { writable: true, value: "#00FFFF" },
+    height: { writable: true, value: 1 },
+    radius: { writable: true, value: 0 },
+    width: { writable: true, value: 1 },
+    _geometry: { writable: true, value: null },
+    _loaded: { writable: true, value: null },
+    _material: { writable: true, value: null },
+    _mesh: { writable: true, value: null },
+    _text: { writable: true, value: null }
+  });
+  Material.call(this, init, 'a-entity');
+  this._text = new Text();
+  this.addChild(this._text);
+  this._loaded = this.loaded.bind(this);
+  this._element.addEventListener("loaded", this._loaded);
+}
+Button.prototype = Object.create(Material.prototype, {
+  constructor: { value: Button, writable: true },
+  align: {
+    get: function get() {
+      return this._text.align;
+    },
+    set: function set(value) {
+      this._text.align = value;
+    }
+  },
+  alphaTest: {
+    get: function get() {
+      return this._text.alphaTest;
+    },
+    set: function set(value) {
+      this._text.alphaTest = value;
+    }
+  },
+  anchor: {
+    get: function get() {
+      return this._text.anchor;
+    },
+    set: function set(value) {
+      this._text.anchor = value;
+    }
+  },
+  baseline: {
+    get: function get() {
+      return this._text.baseline;
+    },
+    set: function set(value) {
+      this._text.baseline = value;
+    }
+  },
+  color: {
+    get: function get() {
+      return this._text.color;
+    },
+    set: function set(value) {
+      this._text.color = value;
+    }
+  },
+  font: {
+    get: function get() {
+      return this._text.font;
+    },
+    set: function set(value) {
+      this._text.font = value;
+    }
+  },
+  fontImage: {
+    get: function get() {
+      return this._text.fontImage;
+    },
+    set: function set(value) {
+      this._text.fontImage = value;
+    }
+  },
+  letterSpacing: {
+    get: function get() {
+      return this._text.letterSpacing;
+    },
+    set: function set(value) {
+      this._text.letterSpacing = value;
+    }
+  },
+  letterHeight: {
+    get: function get() {
+      return this._text.letterHeight;
+    },
+    set: function set(value) {
+      this._text.letterHeight = value;
+    }
+  },
+  shader: {
+    get: function get() {
+      return this.getAttribute('shader');
+    },
+    set: function set(value) {
+      this.setAttribute('shader', value);
+    }
+  },
+  side: {
+    get: function get() {
+      return this.getAttribute('side');
+    },
+    set: function set(value) {
+      this.setAttribute('side', value);
+    }
+  },
+  tabSize: {
+    get: function get() {
+      return this._text.tabSize;
+    },
+    set: function set(value) {
+      this._text.tabSize = value;
+    }
+  },
+  value: {
+    get: function get() {
+      return this._text.value;
+    },
+    set: function set(value) {
+      this._text.value = value;
+    }
+  },
+  whitespace: {
+    get: function get() {
+      return this._text.whitespace;
+    },
+    set: function set(value) {
+      this._text.whitespace = value;
+    }
+  },
+  wrapCount: {
+    get: function get() {
+      return this._text.wrapCount;
+    },
+    set: function set(value) {
+      this._text.wrapCount = value;
+    }
+  },
+  wrapPixels: {
+    get: function get() {
+      return this._text.wrapPixels;
+    },
+    set: function set(value) {
+      this._text.wrapPixels = value;
+    }
+  },
+  zOffset: {
+    get: function get() {
+      return this._text.zOffset;
+    },
+    set: function set(value) {
+      this._text.zOffset = value;
+    }
+  },
+  loaded: { value: function value() {
+      this._element.removeEventListener('loaded', this._loaded);
+      this._loaded = null;
+      this.render();
+    } },
+  render: { value: function value() {
+      var h = this.height;
+      var radius = this.radius;
+      var w = this.width;
+      var x = 0;
+      var y = 0;
+      var round = new THREE.Shape();
+      round.moveTo(x, y + radius);
+      round.lineTo(x, y + h - radius);
+      round.quadraticCurveTo(x, y + h, x + radius, y + h);
+      round.lineTo(x + w - radius, y + h);
+      round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
+      round.lineTo(x + w, y + radius);
+      round.quadraticCurveTo(x + w, y, x + w - radius, y);
+      round.lineTo(x + radius, y);
+      round.quadraticCurveTo(x, y, x, y + radius);
+      this._geometry = new THREE.ShapeGeometry(round);
+      this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
+      this._mesh = new THREE.Mesh(this._geometry, this._material);
+      this._mesh.position.x = -(w / 2);
+      this._mesh.position.y = -(h / 2);
+      this._element.setObject3D('mesh', this._mesh);
+      this._geometry = null;
+      this._material = null;
+      this._mesh = null;
+    } }
+});
+
+function Circle$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-circle');
+}
+Circle$1.prototype = Object.create(Material.prototype, {
+    constructor: { value: Circle$1, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    },
+    thetaLength: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaLength;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaLength', value);
+        }
+    },
+    thetaStart: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaStart;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaStart', value);
+        }
+    }
+});
+
+function Cursor() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        click: { value: new Signal() },
+        down: { value: new Signal() },
+        out: { value: new Signal() },
+        over: { value: new Signal() },
+        up: { value: new Signal() },
+        _enabled: { writable: true, value: true },
+        _intersection: { writable: true, value: null },
+        _intersectionCleared: { writable: true, value: null },
+        _launchedRaycaster: { writable: true, value: false },
+        _objects: { writable: true, value: 'button' },
+        _mouseDown: { writable: true, value: null },
+        _mouseUp: { writable: true, value: null },
+        _notifyClick: { writable: true, value: null },
+        _target: { writable: true, value: null },
+        _timer: { value: new Timer(0, 1) }
+    });
+    AEntity.call(this, init);
+    this.objects = this._objects;
+}
+Cursor.prototype = Object.create(AEntity.prototype, {
+    constructor: { writable: true, value: Cursor },
+    duration: {
+        get: function get() {
+            return this._timer.delay;
+        },
+        set: function set(value) {
+            this._timer.delay = value;
+        }
+    },
+    dispose: { value: function value() {
+            this.removeEventListener('addedToStage', this._addedToStage);
+            this.removeEventListener('removedFromStage', this._removedFromStage);
+        } },
+    enabled: {
+        get: function get() {
+            return this._enabled;
+        },
+        set: function set(value) {
+            this._enabled = value === true;
+            if (this._enabled === true) {
+                if (this._onStage === true && this._launchedRaycaster === false) {
+                    this.launchRaycaster();
+                }
+            } else {
+                if (this._launchedRaycaster === true) {
+                    this.stopRaycaster();
+                }
+            }
+        }
+    },
+    objects: {
+        get: function get() {
+            return this._objects;
+        },
+        set: function set(value) {
+            if (isString(this._objects) && this._objects !== '') {
+                this._objects = value;
+                this.setAttribute('raycaster', 'objects', '.' + this._objects);
+            } else {
+                this._objects = '';
+                this.setAttribute('raycaster', '');
+            }
+        }
+    },
+    notifyClick: { value: function value() {
+            if (this._target) {
+                if (this.click.connected) {
+                    this.click.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('click'));
+            }
+        } },
+    notifyDown: { value: function value() {
+            if (this.down.connected) {
+                this.down.emit(this._target, this);
+            }
+            this._target.dispatchEvent(new Event('mousedown'));
+        } },
+    notifyOver: { value: function value() {
+            if (this._target) {
+                if (this.over.connected) {
+                    this.over.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('mouseenter'));
+                this._timer.run();
+            }
+        } },
+    notifyOut: { value: function value() {
+            if (this._timer.running) {
+                this._timer.stop();
+            }
+            if (this._target) {
+                if (this.out.connected) {
+                    this.out.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('mouseleave'));
+            }
+        } },
+    notifyUp: { value: function value() {
+            if (this.up.connected) {
+                this.up.emit(this._target, this);
+            }
+            this._target.dispatchEvent(new Event('mouseup'));
+        } },
+    useSeconds: {
+        get: function get() {
+            return this._timer.useSeconds;
+        },
+        set: function set(flag) {
+            this._timer.useSeconds = flag;
+        }
+    },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            if (this._enabled === true && this._launchedRaycaster === false) {
+                this.launchRaycaster();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            if (this._launchedRaycaster === true) {
+                this.stopRaycaster();
+            }
+        } },
+    launchRaycaster: { value: function value() {
+            this._notifyClick = this.notifyClick.bind(this);
+            this._intersection = this.intersection.bind(this);
+            this._intersectionCleared = this.intersectionCleared.bind(this);
+            this._mouseDown = this.notifyDown.bind(this);
+            this._mouseUp = this.notifyUp.bind(this);
+            this._timer.finishIt.connect(this._notifyClick);
+            this.element.addEventListener('raycaster-intersection', this._intersection);
+            this.element.addEventListener('raycaster-intersection-cleared', this._intersectionCleared);
+            this._launchedRaycaster = true;
+        } },
+    stopRaycaster: { value: function value() {
+            this.element.removeEventListener('raycaster-intersection', this._intersection);
+            this.element.removeEventListener('raycaster-intersection-cleared', this._intersectionCleared);
+            this._timer.finishIt.disconnect();
+            this._notifyClick = null;
+            this._intersection = null;
+            this._intersectionCleared = null;
+            this._mouseDown = null;
+            this._mouseUp = null;
+            this._launchedRaycaster = false;
+        } },
+    intersection: { value: function value(event) {
+            var cursor = this.element;
+            var index = void 0;
+            var intersected = void 0;
+            index = event.detail.els[0] === cursor ? 1 : 0;
+            intersected = event.detail.els[index];
+            if (!intersected) {
+                return;
+            }
+            if (intersected === this._target) {
+                return;
+            }
+            if (this._target) {
+                this.notifyOut();
+            }
+            this._target = intersected;
+            this.notifyOver();
+        } },
+    intersectionCleared: { value: function value(event) {
+            var cursor = this.element;
+            var intersected = event.detail.el;
+            if (cursor === intersected) {
+                return;
+            }
+            if (intersected !== this._target) {
+                return;
+            }
+            this.notifyOut();
+            this._target = null;
+        } }
+});
+
+function Cylinder() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-cylinder');
+}
+Cylinder.prototype = Object.create(Material.prototype, {
+    constructor: { value: Cylinder, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Image() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-image');
+}
+Image.prototype = Object.create(Material.prototype, {
+    constructor: { value: Image, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Plane() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-plane');
+}
+Plane.prototype = Object.create(Material.prototype, {
+    constructor: { value: Plane, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Ring() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-ring');
+}
+Ring.prototype = Object.create(Material.prototype, {
+    constructor: { value: Ring, writable: true },
+    radiusInner: {
+        get: function get() {
+            return this.getAttribute('geometry').radiusInner;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radiusInner', value);
+        }
+    },
+    radiusOuter: {
+        get: function get() {
+            return this.getAttribute('geometry').radiusOuter;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radiusOuter', value);
+        }
+    },
+    thetaLength: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaLength;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaLength', value);
+        }
+    },
+    thetaStart: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaStart;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaStart', value);
+        }
+    }
+});
+
+function Scene() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    AEntity.call(this, init, 'a-scene');
+}
+Scene.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Scene, writable: true },
+    antialias: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('antialias') === "true" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('antialias', value === true ? 'true' : 'false');
+            }
+        }
+    },
+    embedded: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('embedded') === "" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('embedded', value === true ? '' : null);
+            }
+        }
+    },
+    fog: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('fog') === "" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('fog', value === true ? '' : null);
+            }
+        }
+    },
+    isMobile: { get: function get() {
+            return this._element ? this._element.isMobile : false;
+        } },
+    vrModeUI: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('vr-mode-ui', 'enabled') === "true" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('vr-mode-ui', 'enabled', value === true ? 'true' : 'false');
+            }
+        }
+    },
+    enterVR: { value: function value() {
+            if (this._element) {
+                this._element.enterVR();
+            }
+        } },
+    exitVR: { value: function value() {
+            if (this._element) {
+                this._element.exitVR();
+            }
+        } },
+    reload: { value: function value() {
+            if (this._element) {
+                this._element.reload();
+            }
+        } }
+});
+
+function Sky() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-sky');
+}
+Sky.prototype = Object.create(Material.prototype, {
+    constructor: { value: Sky, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry', 'radius');
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Sound() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        _ended: { writable: true, value: null },
+        _playing: { writable: true, value: false },
+        _requestPlay: { writable: true, value: false },
+        _running: { writable: true, value: false }
+    });
+    AEntity.call(this, init, 'a-sound');
+}
+Sound.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Sound, writable: true },
+    autoplay: {
+        get: function get() {
+            return this._requestPlay;
+        },
+        set: function set(value) {
+            this._requestPlay = value === true;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('sound').loop;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'loop', value);
+        }
+    },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this.finishIt.emit(this);
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this.startIt.emit(this);
+        } },
+    play: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                setTimeout(this.__playSound.bind(this), 100);
+            } else {
+                this._requestPlay = true;
+            }
+        } },
+    pause: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._element.components.sound.pauseSound();
+                this._playing = false;
+            }
+        } },
+    stop: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                if (this._ended) {
+                    this._element.removeEventListener('sound-ended', this._ended);
+                    this._ended = false;
+                }
+                this._element.components.sound.stopSound();
+                this._playing = false;
+            }
+        } },
+    src: {
+        get: function get() {
+            return this.getAttribute('sound').src;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('sound').volume;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'volume', value);
+        }
+    },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            if (this._requestPlay === true) {
+                this._requestPlay = false;
+                this.play();
+            }
+        } },
+    __playSound: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                this._playing = true;
+                this.notifyStarted();
+                this._ended = this.__ended.bind(this);
+                this._element.addEventListener('sound-ended', this._ended);
+                this._element.components.sound.playSound();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            if (this._ended) {
+                this._element.removeEventListener('sound-ended', this._ended);
+                this._ended = false;
+            }
+            if (this._playing === true) {
+                this.stop();
+            }
+        } },
+    __ended: { value: function value() {
+            this._playing = false;
+            this._element.removeEventListener('sound-ended', this._ended);
+            this._ended = null;
+            this.notifyFinished();
+        } }
+});
+
+function Sphere() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-sphere');
+}
+Sphere.prototype = Object.create(Material.prototype, {
+    constructor: { value: Sphere, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Videosphere() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        loopIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        _ended: { writable: true, value: null },
+        _loop: { writable: true, value: false },
+        _playing: { writable: true, value: false },
+        _requestPlay: { writable: true, value: false },
+        _running: { writable: true, value: false },
+        _video: { writable: true, value: null }
+    });
+    Material.call(this, init, 'a-videosphere');
+}
+Videosphere.prototype = Object.create(Material.prototype, {
+    constructor: { value: Videosphere, writable: true },
+    autoplay: {
+        get: function get() {
+            return this._requestPlay;
+        },
+        set: function set(value) {
+            this._requestPlay = Boolean(value);
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    loop: {
+        get: function get() {
+            return this._loop;
+        },
+        set: function set(value) {
+            this._loop = Boolean(value);
+        }
+    },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    },
+    video: {
+        get: function get() {
+            return this._video;
+        },
+        set: function set(value) {
+            this._video = value;
+            this.src = '#' + this._video.id;
+        }
+    },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this.finishIt.emit(this);
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this.loopIt.emit(this);
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this.startIt.emit(this);
+        } },
+    play: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                this._video._element.play();
+                this._playing = true;
+                this.notifyStarted();
+            } else {
+                this._requestPlay = true;
+            }
+        } },
+    pause: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._video.element.pause();
+                this._playing = false;
+            }
+        } },
+    stop: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._video._element.pause();
+                this._playing = false;
+            }
+        } },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            this._ended = this.ended.bind(this);
+            this._video.element.addEventListener('ended', this._ended);
+            if (this._requestPlay === true) {
+                this.play();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            if (this._playing === true) {
+                this.stop();
+            }
+            this._onStage = false;
+            this._video.element.removeEventListener('ended', this._ended);
+            this._ended = null;
+        } },
+    ended: { value: function value() {
+            this._playing = false;
+            if (this._loop === true) {
+                this.notifyLooped();
+                this.play();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.aframe.display} package.
+ * @summary The {@link molecule.render.aframe.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe.display
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$2 = Object.assign({
+    AEntity: AEntity,
+    Assets: Assets,
+    Box: Box,
+    Button: Button,
+    Circle: Circle$1,
+    Cursor: Cursor,
+    Cylinder: Cylinder,
+    Image: Image,
+    Material: Material,
+    Plane: Plane,
+    Ring: Ring,
+    Scene: Scene,
+    Sky: Sky,
+    Sound: Sound,
+    Sphere: Sphere,
+    Text: Text,
+    Videosphere: Videosphere
+});
+
+/**
+ * The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @summary The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe
+ * @memberof molecule.render
+ */
+var aframe = Object.assign({
+  components: components,
+  display: display$2
 });
 
 function Anchor() {
@@ -13686,52 +15151,52 @@ Stage$1.prototype = Object.create(Node$1.prototype, {
 });
 
 function Body() {
-  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Stage$1.call(this, init, document.body || document.createElement('body'));
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Stage$1.call(this, init, document.body || document.createElement('body'));
 }
 Body.prototype = Object.create(Stage$1.prototype, {
-  constructor: { value: Body, writable: true },
-  toString: { writable: true, value: function value() {
-      return '[Body]';
-    } }
+    constructor: { value: Body, writable: true },
+    toString: { writable: true, value: function value() {
+            return '[Body]';
+        } }
 });
 
-function Button() {
-  Node$1.call(this, null, 'button');
+function Button$1() {
+    Node$1.call(this, null, 'button');
 }
-Button.prototype = Object.create(Node$1.prototype, {
-  constructor: { value: Button, writable: true },
-  text: {
-    get: function get() {
-      return this._element.innerHTML;
+Button$1.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Button$1, writable: true },
+    text: {
+        get: function get() {
+            return this._element.innerHTML;
+        },
+        set: function set(value) {
+            this._element.innerHTML = value;
+        }
     },
-    set: function set(value) {
-      this._element.innerHTML = value;
-    }
-  },
-  type: {
-    get: function get() {
-      return this.getAttribute('type');
+    type: {
+        get: function get() {
+            return this.getAttribute('type');
+        },
+        set: function set(value) {
+            this.setAttribute('type', value);
+        }
     },
-    set: function set(value) {
-      this.setAttribute('type', value);
+    value: {
+        get: function get() {
+            return this.getAttribute('value');
+        },
+        set: function set(value) {
+            this.setAttribute('value', value);
+        }
     }
-  },
-  value: {
-    get: function get() {
-      return this.getAttribute('value');
-    },
-    set: function set(value) {
-      this.setAttribute('value', value);
-    }
-  }
 });
 
 function Div() {
-  Node$1.call(this, null, 'div');
+    Node$1.call(this, null, 'div');
 }
 Div.prototype = Object.create(Node$1.prototype, {
-  constructor: { value: Div, writable: true }
+    constructor: { value: Div, writable: true }
 });
 
 function Svg() {
@@ -13802,10 +15267,10 @@ Svg.prototype = Object.create(Node$1.prototype, {
 });
 
 function G() {
-  Svg.call(this, null, "g");
+    Svg.call(this, null, "g");
 }
 G.prototype = Object.create(Svg.prototype, {
-  constructor: { value: G, writable: true }
+    constructor: { value: G, writable: true }
 });
 
 function Img() {
@@ -13848,18 +15313,18 @@ Img.prototype = Object.create(Node$1.prototype, {
 });
 
 function Paragraph() {
-  Node$1.call(this, null, 'p');
+    Node$1.call(this, null, 'p');
 }
 Paragraph.prototype = Object.create(Node$1.prototype, {
-  constructor: { value: Paragraph, writable: true },
-  text: {
-    get: function get() {
-      return this._element.innerHTML;
-    },
-    set: function set(value) {
-      this._element.innerHTML = value;
+    constructor: { value: Paragraph, writable: true },
+    text: {
+        get: function get() {
+            return this._element.innerHTML;
+        },
+        set: function set(value) {
+            this._element.innerHTML = value;
+        }
     }
-  }
 });
 
 function Path() {
@@ -14123,7 +15588,7 @@ var dom$1 = Object.assign({
   display: {
     Anchor: Anchor,
     Body: Body,
-    Button: Button,
+    Button: Button$1,
     Div: Div,
     G: G,
     Img: Img,
@@ -14152,7 +15617,8 @@ var dom$1 = Object.assign({
  * @namespace molecule.render
  * @memberof molecule
  */
-var render = Object.assign({
+var render$1 = Object.assign({
+  aframe: aframe,
   dom: dom$1
 });
 
@@ -14470,7 +15936,7 @@ var molecule = Object.assign({
     Groupable: Groupable,
     ScrollPolicy: ScrollPolicy,
     display: display$1,
-    render: render,
+    render: render$1,
     states: states
 });
 
