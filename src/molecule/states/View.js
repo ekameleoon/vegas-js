@@ -8,7 +8,7 @@ import { ValueObject } from './system/data/ValueObject.js' ;
  * @summary Defines a basic state object.
  * @name View
  * @class
- * @memberof com.ooopener.states
+ * @memberof molecule.states
  * @implements system.data.ValueObject
  * @constructs
  * @param {Object} [init=null] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
@@ -35,7 +35,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Invoked when the state is closed (after the close).
      * @name closeAfter
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      */
     closeAfter :
@@ -47,7 +47,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Invoked when the state is closed (before the close).
      * @name closeBefore
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      */
     closeBefore :
@@ -59,7 +59,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Invoked when the state is opened (after the open).
      * @name openAfter
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      */
     openAfter :
@@ -71,7 +71,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Invoked when the state is opened (before the open).
      * @name openBefore
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      */
     openBefore :
@@ -83,7 +83,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Attach the View.
      * @name attach
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -95,7 +95,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Close the View.
      * @name close
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -107,7 +107,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Detach the View and remove the set of matched elements from the DOM or dislay list.
      * @name detach
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -119,7 +119,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Dispose the View to clean all elements.
      * @name dispose
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -131,7 +131,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Initialize the View.
      * @name initialize
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -143,7 +143,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Open the View.
      * @name open
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */
@@ -155,7 +155,7 @@ View.prototype = Object.create( ValueObject.prototype ,
     /**
      * Update the View.
      * @name update
-     * @memberof com.ooopener.states.view
+     * @memberof molecule.states.view
      * @instance
      * @function
      */

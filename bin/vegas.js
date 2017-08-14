@@ -13030,6 +13030,324 @@ var graphics = Object.assign({
     geom: geom
 });
 
+function Groupable() {
+  Object.defineProperties(this, {
+    group: { value: false, configurable: true, writable: true },
+    groupName: { value: null, configurable: true, writable: true }
+  });
+}
+Groupable.prototype = Object.create(Object.prototype, {
+  constructor: { value: Groupable, writable: true }
+});
+
+var ScrollPolicy = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  OFF: { enumerable: true, value: 'off' },
+  ON: { enumerable: true, value: 'on' }
+});
+
+function DisplayObject() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    EventDispatcher.call(this);
+    Object.defineProperties(this, {
+        _id: { value: null, writable: true },
+        __isStage: { value: false, writable: true },
+        _parent: { value: null, writable: true }
+    });
+    if (init) {
+        for (var prop in init) {
+            if (prop in this) {
+                this[prop] = init[prop];
+            }
+        }
+    }
+}
+DisplayObject.prototype = Object.create(EventDispatcher.prototype, {
+    constructor: { value: DisplayObject, writable: true },
+    base: {
+        get: function get() {
+            var current = this;
+            while (current._parent) {
+                current = current._parent;
+            }
+            return current;
+        }
+    },
+    id: {
+        get: function get() {
+            return this._id;
+        },
+        set: function set(value) {
+            this._id = isString(value) ? value : null;
+            if (this._element) {
+                this.setAttribute('id', value);
+            }
+        }
+    },
+    parent: {
+        get: function get() {
+            return this._parent;
+        }
+    },
+    root: {
+        get: function get() {
+            var current = this;
+            while (current._parent) {
+                if (current._parent.__isStage) {
+                    return current;
+                } else {
+                    current = current._parent;
+                }
+            }
+            return current;
+        }
+    },
+    stage: {
+        get: function get() {
+            var base = this.base;
+            return base && base.__isStage ? base : null;
+        }
+    },
+    dispose: { value: function value() {
+        } },
+    removeFromParent: { value: function value() {
+            if (this._parent) {
+                this._parent.removeChild(this);
+            }
+        } },
+    createAncestorChain: { value: function value() {
+            var ancestors = [];
+            var current = this;
+            while (current._parent) {
+                ancestors.push(current._parent);
+                current = current._parent;
+            }
+            return ancestors;
+        } },
+    setParent: { value: function value(_value) {
+            var ancestor = _value;
+            while (ancestor !== this && ancestor !== null) {
+                ancestor = ancestor._parent;
+            }
+            if (ancestor === this) {
+                throw new ReferenceError("An object cannot be added as a child to itself or one of its children.");
+            } else {
+                this._parent = _value;
+            }
+        } }
+});
+
+function DisplayObjectContainer() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _broadcastListeners: { value: [] },
+        _children: { value: [] }
+    });
+    DisplayObject.call(this, init);
+}
+DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
+    constructor: { value: DisplayObjectContainer, writable: true },
+    children: { get: function get() {
+            return this._children;
+        } },
+    numChildren: { get: function get() {
+            return this._children.length;
+        } },
+    addChild: { value: function value(child) {
+            return this.addChildAt(child, this._children.length);
+        } },
+    addChildAt: { value: function value(child, index) {
+            if (child instanceof DisplayObject) {
+                var numChildren = this._children.length;
+                if (index >= 0 && index <= numChildren) {
+                    if (child.parent === this) {
+                        this.setChildIndex(child, index);
+                    } else {
+                        if (index >= numChildren) {
+                            this._children.push(child);
+                            this._appendChild(child);
+                        } else {
+                            this._children.splice(index, 0, child);
+                            this._insertChildAt(child, index);
+                        }
+                        child.removeFromParent();
+                        child.setParent(this);
+                        child.dispatchEvent(new Event(Event.ADDED, true));
+                        if (this.stage) {
+                            var event = new Event(Event.ADDED_TO_STAGE);
+                            if (child instanceof DisplayObjectContainer) {
+                                child.broadcastEvent(event);
+                            } else {
+                                child.dispatchEvent(event);
+                            }
+                        }
+                    }
+                    return child;
+                } else {
+                    throw new RangeError(this + " addChildAt(" + index + ") failed, invalid child index.");
+                }
+            }
+            return null;
+        } },
+    contains: { value: function value(child) {
+            while (child) {
+                if (child === this) {
+                    return true;
+                } else {
+                    child = child._parent;
+                }
+            }
+            return false;
+        } },
+    getChildAt: { value: function value(index) {
+            var numChildren = this._children.length;
+            if (index < 0) {
+                index = numChildren + index;
+            }
+            if (index >= 0 && index < numChildren) {
+                return this._children[index];
+            } else {
+                throw new RangeError("Invalid child index");
+            }
+        } },
+    getChildIndex: { value: function value(child) {
+            return this._children.indexOf(child);
+        } },
+    removeChild: { value: function value(child) {
+            var dispose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var index = this.getChildIndex(child);
+            if (index !== -1) {
+                return this.removeChildAt(index, dispose);
+            }
+            return null;
+        } },
+    removeChildAt: { value: function value(index) {
+            var dispose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (index >= 0 && index < this._children.length) {
+                var child = this._children[index];
+                child.dispatchEvent(new Event(Event.REMOVED, true));
+                if (this.stage) {
+                    var event = new Event(Event.REMOVED_FROM_STAGE);
+                    if (child instanceof DisplayObjectContainer) {
+                        child.broadcastEvent(event);
+                    } else {
+                        child.dispatchEvent(event);
+                    }
+                }
+                child.setParent(null);
+                index = this._children.indexOf(child);
+                if (index >= 0) {
+                    this._children.splice(index, 0, child);
+                    this._removeChild(child);
+                }
+                if (dispose === true) {
+                    child.dispose();
+                }
+                return child;
+            } else {
+                throw new RangeError(this + " removeChildAt failed with an invalid child index");
+            }
+        } },
+    removeChildren: { value: function value() {
+            var beginIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var endIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+            var dispose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var len = this._children.length;
+            if (endIndex < 0 || endIndex >= len) {
+                endIndex = len - 1;
+            }
+            var children = this._children.slice(beginIndex, endIndex - beginIndex + 1);
+            len = children.length;
+            for (var i = 0; i <= len; i++) {
+                this.removeChild(children[i], dispose);
+            }
+        } },
+    setChildIndex: { value: function value(child, index) {
+            if (child instanceof Node) {
+                var oldIndex = this.getChildIndex(child);
+                if (oldIndex === index) {
+                    return;
+                }
+                if (oldIndex === -1) {
+                    throw new Error(this + " setChildIndex failed, the passed-in child reference is not a child of this container.");
+                }
+                this._children.splice(oldIndex, 1);
+                this._children.splice(index, 0, child);
+                if (this._element) {
+                    if (index >= this._children.length) {
+                        this._element.appendChild(child._element);
+                    } else {
+                        this._element.insertBefore(child._element, this._element.children[index]);
+                    }
+                }
+            }
+        } },
+    broadcastEvent: { value: function value(event) {
+            if (!(event instanceof Event)) {
+                throw new ReferenceError(this + " broadcastEvent failed, the event parameter must be a valid system.events.Event reference.");
+            }
+            if (event.bubbles) {
+                throw new ReferenceError("Broadcast of bubbling events is prohibited");
+            }
+            var fromIndex = this._broadcastListeners.length;
+            this.getChildEventListeners(this, event.type, this._broadcastListeners);
+            var toIndex = this._broadcastListeners.length;
+            for (var i = fromIndex; i < toIndex; i++) {
+                this._broadcastListeners[i].dispatchEvent(event);
+            }
+            this._broadcastListeners.length = fromIndex;
+        } },
+    getChildEventListeners: { value: function value(object, eventType, listeners) {
+            try {
+                if (object.hasEventListener(eventType)) {
+                    listeners[listeners.length] = object;
+                }
+                if (object instanceof DisplayObjectContainer) {
+                    var children = object._children;
+                    var len = children.length;
+                    for (var i = 0; i < len; i++) {
+                        this.getChildEventListeners(children[i], eventType, listeners);
+                    }
+                }
+            } catch (e) {
+                console.log(this + " error " + e);
+            }
+        } },
+    _appendChild: { writable: true, value: function value(child) {
+        } },
+    _insertChildAt: { writable: true, value: function value(child, index) {
+        } },
+    _removeChild: { writable: true, value: function value(child) {
+        } }
+});
+
+/**
+ * The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @summary The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.display
+ * @memberof molecule
+ */
+var display$1 = Object.assign({
+  DisplayObject: DisplayObject,
+  DisplayObjectContainer: DisplayObjectContainer
+});
+
+/**
+ * The {@link graphics} package is a library for develop crossplatform Rich Internet Applications and Games.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var molecule = Object.assign({
+  Groupable: Groupable,
+  ScrollPolicy: ScrollPolicy,
+  display: display$1
+});
+
 var Device = Object.defineProperties({}, {
   DESKTOP: { enumerable: true, value: "desktop" },
   MOBILE: { enumerable: true, value: "mobile" },
@@ -13302,6 +13620,7 @@ exports.trace = trace;
 exports.core = core;
 exports.system = system;
 exports.graphics = graphics;
+exports.molecule = molecule;
 exports.screens = screens;
 
 Object.defineProperty(exports, '__esModule', { value: true });

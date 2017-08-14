@@ -19,7 +19,7 @@ export function ChangeState( chain = null , factory = null )
         /**
          * The state Chain reference of the state engine.
          * @name chain
-         * @memberof com.ooopener.states.controllers.ChangeState
+         * @memberof molecule.states.controllers.ChangeState
          * @instance
          */
         chain : { writable : true , value : (chain instanceof Chain) ? chain : null } ,
@@ -27,7 +27,7 @@ export function ChangeState( chain = null , factory = null )
         /**
          * The factory reference.
          * @name factory
-         * @memberof com.ooopener.states.controllers.ChangeState
+         * @memberof molecule.states.controllers.ChangeState
          * @instance
          */
         factory : { writable : true , value : factory }
@@ -41,7 +41,7 @@ ChangeState.prototype = Object.create( Receiver.prototype ,
     /**
      * Receive a message from a state model.
      * @name reveive
-     * @memberof com.ooopener.states.controllers.ChangeState
+     * @memberof molecule.states.controllers.ChangeState
      * @instance
      * @function
      */

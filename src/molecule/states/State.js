@@ -7,7 +7,7 @@ import { ValueObject } from './system/data/ValueObject.js' ;
  * @summary Defines a basic state object.
  * @name State
  * @class
- * @memberof com.ooopener.states
+ * @memberof molecule.states
  * @implements system.data.ValueObject
  * @constructs
  * @param {Object} [init=null] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
@@ -19,7 +19,7 @@ export function State( init = null )
         /**
          * The parent owner container of this state. It can be a Screen reference or a String identifier to get the reference in a IoC factory.
          * @name owner
-         * @memberof com.ooopener.states.State
+         * @memberof molecule.states.State
          * @instance
          */
         owner : { value : null  , writable : true } ,
@@ -27,7 +27,7 @@ export function State( init = null )
         /**
          * The view reference of the state. It can be a View object or a String identifier to get the reference in a IoC factory.
          * @name view
-         * @memberof com.ooopener.states.State
+         * @memberof molecule.states.State
          * @instance
          */
         view : { value : null  , writable : true }
@@ -44,7 +44,7 @@ State.prototype = Object.create( ValueObject.prototype ,
      * Returns the string representation of this instance.
      * @return the string representation of this instance.
      * @name toString
-     * @memberof com.ooopener.states.State
+     * @memberof molecule.states.State
      * @function
      * @instance
      */

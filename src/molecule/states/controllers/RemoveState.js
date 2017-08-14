@@ -19,7 +19,7 @@ RemoveState.prototype = Object.create( Receiver.prototype ,
     /**
      * Receive a message from a state model.
      * @name reveive
-     * @memberof com.ooopener.states.controllers.RemoveState
+     * @memberof molecule.states.controllers.RemoveState
      * @instance
      * @function
      */

@@ -8,7 +8,7 @@ import { State }    from './State.js' ;
  * @summary Defines a state model.
  * @name StateModel
  * @class
- * @memberof com.ooopener.states
+ * @memberof molecule.states
  * @implements system.models.maps.MapModel
  * @constructs
  */

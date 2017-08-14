@@ -19,7 +19,7 @@ AddState.prototype = Object.create( Receiver.prototype ,
     /**
      * Receive a message from a state model.
      * @name reveive
-     * @memberof com.ooopener.states.controllers.AddState
+     * @memberof molecule.states.controllers.AddState
      * @instance
      * @function
      */

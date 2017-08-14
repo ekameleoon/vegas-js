@@ -19,7 +19,7 @@ export function BeforeChangeState( chain = null , factory = null )
         /**
          * The state Chain reference of the state engine.
          * @name chain
-         * @memberof com.ooopener.states.controllers.BeforeChangeState
+         * @memberof molecule.states.controllers.BeforeChangeState
          * @instance
          */
         chain : { writable : true , value : chain instanceof Chain ? chain : null } ,
@@ -27,7 +27,7 @@ export function BeforeChangeState( chain = null , factory = null )
         /**
          * The factory reference.
          * @name factory
-         * @memberof com.ooopener.states.controllers.BeforeChangeState
+         * @memberof molecule.states.controllers.BeforeChangeState
          * @instance
          */
         factory : { writable : true , value : factory }
@@ -41,7 +41,7 @@ BeforeChangeState.prototype = Object.create( Receiver.prototype ,
     /**
      * Receive a message from a state model.
      * @name reveive
-     * @memberof com.ooopener.states.controllers.BeforeChangeState
+     * @memberof molecule.states.controllers.BeforeChangeState
      * @instance
      * @function
      */

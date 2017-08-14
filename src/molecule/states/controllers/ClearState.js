@@ -19,7 +19,7 @@ ClearState.prototype = Object.create( Receiver.prototype ,
     /**
      * Receive a message from a state model.
      * @name reveive
-     * @memberof com.ooopener.states.controllers.ClearState
+     * @memberof molecule.states.controllers.ClearState
      * @instance
      * @function
      */

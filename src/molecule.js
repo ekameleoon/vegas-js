@@ -5,6 +5,11 @@ import './polyfill/Object.js' ;
 import { Groupable } from './molecule/Groupable.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
+import { display } from './molecule/display.js' ;
+import { logger }  from './molecule/logging.logger.js' ;
+import { render }  from './molecule/render.js' ;
+import { states }  from './molecule/states.js' ;
+
 /**
  * The {@link graphics} package is a library for develop crossplatform Rich Internet Applications and Games.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -17,15 +22,16 @@ export var molecule = Object.assign
 ({
     // ----- Singletons
 
-    //
+    logger,
 
     // ----- Classes and enumerations
 
     Groupable    : Groupable ,
-    ScrollPolicy : ScrollPolicy
+    ScrollPolicy : ScrollPolicy,
 
     // ----- packages
 
-    //
-
+    display : display,
+    render  : render,
+    states  : states
 }) ;
