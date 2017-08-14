@@ -4,6 +4,7 @@ import './polyfill/Object.js' ;
 
 import { Groupable } from './molecule/Groupable.js' ;
 import { Focusable } from './molecule/Focusable.js' ;
+import { Iconifiable } from './molecule/Iconifiable.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 import { components } from './molecule/components.js' ;
@@ -30,6 +31,7 @@ export var molecule = Object.assign
 
     Focusable    : Focusable ,
     Groupable    : Groupable ,
+    Iconifiable  : Iconifiable ,
     ScrollPolicy : ScrollPolicy,
 
     // ----- packages

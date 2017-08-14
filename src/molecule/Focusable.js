@@ -4,11 +4,11 @@
 import { isGroupable , Groupable } from './Groupable.js' ;
 
 /**
- * Indicates if the specific objet is Groupable.
+ * Indicates if the specific objet is Focusable.
  * @function
  * @memberof molecule
  * @param {object} target - The object to evaluate.
- * @return <code>true</code> if the object is {@link molecule.Groupable|Groupable}.
+ * @return <code>true</code> if the object is {@link molecule.Focusable|Focusable}.
  */
 export function isFocusable( target )
 {
@@ -35,7 +35,7 @@ export function Focusable()
         /**
          * A flag that indicates whether this control is selected.
          * @name selected
-         * @memberof molecule.Groupable
+         * @memberof molecule.Focusable
          * @default false
          * @type {boolean}
          * @instance
