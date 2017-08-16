@@ -1,8 +1,8 @@
 "use strict" ;
 
 
-import { Motion }     from './system/transitions/Motion.js' ;
-import { Transition } from './system/transitions/Transition.js' ;
+import { Motion }     from '../../../system/transitions/Motion.js' ;
+import { Transition } from '../../../system/transitions/Transition.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

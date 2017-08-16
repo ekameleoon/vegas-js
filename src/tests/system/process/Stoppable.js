@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isStoppable } from './system/process/Stoppable.js' ;
-import { Stoppable } from './system/process/Stoppable.js' ;
+import { isStoppable } from '../../../system/process/Stoppable.js' ;
+import { Stoppable } from '../../../system/process/Stoppable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isLockable } from './system/process/Lockable.js' ;
-import { Lockable } from './system/process/Lockable.js' ;
+import { isLockable } from '../../../system/process/Lockable.js' ;
+import { Lockable } from '../../../system/process/Lockable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

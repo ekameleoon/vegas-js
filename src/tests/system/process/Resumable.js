@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isResumable } from './system/process/Resumable.js' ;
-import { Resumable } from './system/process/Resumable.js' ;
+import { isResumable } from '../../../system/process/Resumable.js' ;
+import { Resumable } from '../../../system/process/Resumable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

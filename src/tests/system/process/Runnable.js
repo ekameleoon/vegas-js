@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isRunnable } from './system/process/Runnable.js' ;
-import { Runnable } from './system/process/Runnable.js' ;
+import { isRunnable } from '../../../system/process/Runnable.js' ;
+import { Runnable } from '../../../system/process/Runnable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

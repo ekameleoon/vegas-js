@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isPrioritizable } from './system/process/Priority.js' ;
-import { Priority } from './system/process/Priority.js' ;
+import { isPrioritizable } from '../../../system/process/Priority.js' ;
+import { Priority } from '../../../system/process/Priority.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

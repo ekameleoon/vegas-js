@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { IsNaN } from './system/rules/IsNaN.js' ;
-import { Rule } from './system/rules/Rule.js' ;
+import { IsNaN } from '../../../system/rules/IsNaN.js' ;
+import { Rule } from '../../../system/rules/Rule.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

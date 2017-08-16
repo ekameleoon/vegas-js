@@ -2,7 +2,7 @@
 
 import { MockSlot } from './mocks/MockSlot.js';
 
-import { Receiver } from '../src/system/signals/Receiver.js' ;
+import { Receiver } from '../system/signals/Receiver.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

@@ -1,12 +1,12 @@
 "use strict" ;
 
-import { Action }    from './system/process/Action.js' ;
-import { Runnable }  from './system/process/Runnable.js' ;
-import { Signal }    from './system/signals/Signal.js' ;
-import { TaskPhase } from './system/process/TaskPhase.js' ;
+import { Action }    from '../../../system/process/Action.js' ;
+import { Runnable }  from '../../../system/process/Runnable.js' ;
+import { Signal }    from '../../../system/signals/Signal.js' ;
+import { TaskPhase } from '../../../system/process/TaskPhase.js' ;
 
-import { isLockable }  from './system/process/Lockable.js' ;
-import { isRunnable }  from './system/process/Runnable.js' ;
+import { isLockable }  from '../../../system/process/Lockable.js' ;
+import { isRunnable }  from '../../../system/process/Runnable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Task }       from './system/process/Task.js' ;
-import { Transition } from './system/transitions/Transition.js' ;
+import { Task }       from '../../../system/process/Task.js' ;
+import { Transition } from '../../../system/transitions/Transition.js' ;
 
 import chai from 'chai' ;
 

@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Action } from './system/process/Action.js' ;
-import { Apply }  from './system/process/Apply.js' ;
+import { Action } from '../../../system/process/Action.js' ;
+import { Apply }  from '../../../system/process/Apply.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

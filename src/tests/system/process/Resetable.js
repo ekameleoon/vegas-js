@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isResetable } from './system/process/Resetable.js' ;
-import { Resetable } from './system/process/Resetable.js' ;
+import { isResetable } from '../../../system/process/Resetable.js' ;
+import { Resetable } from '../../../system/process/Resetable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

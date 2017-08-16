@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isStartable } from './system/process/Startable.js' ;
-import { Startable } from './system/process/Startable.js' ;
+import { isStartable } from '../../../system/process/Startable.js' ;
+import { Startable } from '../../../system/process/Startable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

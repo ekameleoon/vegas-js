@@ -1,8 +1,8 @@
 "use strict" ;
 
 
-import { Motion }    from './system/transitions/Motion.js' ;
-import { TweenUnit } from './system/transitions/TweenUnit.js' ;
+import { Motion }    from '../../../system/transitions/Motion.js' ;
+import { TweenUnit } from '../../../system/transitions/TweenUnit.js' ;
 
 import chai  from 'chai' ;
 

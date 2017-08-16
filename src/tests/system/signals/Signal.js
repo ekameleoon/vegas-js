@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Signal } from './system/signals/Signal.js' ;
-import { Signaler } from './system/signals/Signaler.js' ;
+import { Signal } from '../../../system/signals/Signal.js' ;
+import { Signaler } from '../../../system/signals/Signaler.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
