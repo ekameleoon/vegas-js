@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Action } from './system/process/Action.js' ;
-import { ValueObject } from './system/data/ValueObject.js' ;
+import { Action } from '../../system/process/Action.js' ;
+import { ValueObject } from '../../system/data/ValueObject.js' ;
 
 /**
  * A View value object.

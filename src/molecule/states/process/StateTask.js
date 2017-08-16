@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Task } from './system/process/Task.js' ;
+import { Task } from '../../../system/process/Task.js' ;
 
 /**
  * The abstract state task representation.

@@ -1,6 +1,6 @@
 "use strict"
 
-import { Signal } from './system/signals/Signal.js' ;
+import { Signal } from '../../../../system/signals/Signal.js' ;
 
 import { AEntity } from './AEntity.js' ;
 

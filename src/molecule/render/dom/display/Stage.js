@@ -1,10 +1,10 @@
 /* jshint -W086 */
 "use strict" ;
 
-import { Signal }            from './system/signals/Signal.js' ;
-import { StageAspectRatio }  from './graphics/display/StageAspectRatio.js' ;
-import { StageDisplayState } from './graphics/display/StageDisplayState.js' ;
-import { StageOrientation }  from './graphics/display/StageOrientation.js' ;
+import { Signal }            from '../../../../system/signals/Signal.js' ;
+import { StageAspectRatio }  from '../../../../graphics/display/StageAspectRatio.js' ;
+import { StageDisplayState } from '../../../../graphics/display/StageDisplayState.js' ;
+import { StageOrientation }  from '../../../../graphics/display/StageOrientation.js' ;
 
 import { Node } from './Node.js' ;
 

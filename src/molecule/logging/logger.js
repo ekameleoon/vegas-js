@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Log } from './system/logging/Log.js' ;
+import { Log } from '../../system/logging/Log.js' ;
 
 /**
  * The molecule logger singleton constant.

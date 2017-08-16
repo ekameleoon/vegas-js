@@ -1,10 +1,10 @@
 "use strict" ;
 
-import { ArrayMap } from './system/data/maps/ArrayMap.js' ;
-import { Point } from './graphics/geom/Point.js' ;
-import { Rectangle } from './graphics/geom/Rectangle.js' ;
+import { normalize } from '../../core/maths/normalize.js' ;
 
-import { normalize } from './core/maths/normalize.js' ;
+import { ArrayMap } from '../../system/data/maps/ArrayMap.js' ;
+import { Point } from '../../graphics/geom/Point.js' ;
+import { Rectangle } from '../../graphics/geom/Rectangle.js' ;
 
 import { ParallaxLayer } from './ParallaxLayer.js' ;
 

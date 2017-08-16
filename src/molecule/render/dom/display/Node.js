@@ -1,8 +1,8 @@
 /* jshint -W089*/
 "use strict" ;
 
-import { isString }  from './core/isString.js' ;
-import { isHTMLElement } from './core/dom/isHTMLElement.js' ;
+import { isString }  from '../../../../core/isString.js' ;
+import { isHTMLElement } from '../../../../core/dom/isHTMLElement.js' ;
 
 import { DisplayObjectContainer } from '../../../display/DisplayObjectContainer.js' ;
 

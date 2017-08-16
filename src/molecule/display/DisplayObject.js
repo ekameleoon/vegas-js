@@ -1,8 +1,8 @@
 /* jshint -W089*/
 "use strict" ;
 
-import { isString }  from './core/isString.js' ;
-import { EventDispatcher } from './system/events/EventDispatcher.js' ;
+import { EventDispatcher } from '../../system/events/EventDispatcher.js' ;
+import { isString } from '../../core/isString.js' ;
 
 /**
  * Creates a new DisplayObject instance.

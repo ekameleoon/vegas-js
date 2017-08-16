@@ -1,7 +1,7 @@
 "use strict" ;
 
 import { Node }  from '../display/Node.js' ;
-import { clamp } from './core/maths/clamp.js' ;
+import { clamp } from '../../../../core/maths/clamp.js' ;
 
 /**
  * Creates a new Video instance.

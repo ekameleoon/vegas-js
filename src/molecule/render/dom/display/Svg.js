@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isString }  from './core/isString.js' ;
-import { isSVGElement } from './core/dom/isSVGElement.js' ;
+import { isString }  from '../../../../core/isString.js' ;
+import { isSVGElement } from '../../../../core/dom/isSVGElement.js' ;
 
 import { Node } from './Node.js' ;
 

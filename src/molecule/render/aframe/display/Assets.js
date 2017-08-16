@@ -1,7 +1,7 @@
 "use strict"
 
-import { logger } from './molecule/logging/logger.js' ;
-import { Node }   from './molecule/render/dom/display/Node.js' ;
+import { logger } from '../../../../molecule/logging/logger.js' ;
+import { Node }   from '../../../../molecule/render/dom/display/Node.js' ;
 
 /**
  * Creates a new Assets instance.

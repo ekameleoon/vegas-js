@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Point } from './graphics/geom/Point.js' ;
-import { Rectangle } from './graphics/geom/Rectangle.js' ;
+import { Point } from '../../graphics/geom/Point.js' ;
+import { Rectangle } from '../../graphics/geom/Rectangle.js' ;
 
 /**
  * This class defines a layer in the Parallaxe container.

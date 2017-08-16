@@ -1,10 +1,10 @@
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
-import { Align } from './graphics/Align.js' ;
-import { Layout } from './graphics/Layout.js' ;
-import { Rectangle } from './graphics/geom/Rectangle.js' ;
-import { Signal } from './system/signals/Signal.js' ;
+import { clamp } from '../../../../core/maths/clamp.js' ;
+import { Align } from '../../../../graphics/Align.js' ;
+import { Layout } from '../../../../graphics/Layout.js' ;
+import { Rectangle } from '../../../../graphics/geom/Rectangle.js' ;
+import { Signal } from '../../../../system/signals/Signal.js' ;
 
 /**
  * The Movable Object Block (MOB) defines an advanced Sprite object.

@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
+import { EdgeMetrics } from '../../../../graphics/geom/EdgeMetrics.js' ;
 
-import { MOB } from './molecule/render/pixi/display/MOB' ;
+import { MOB } from '../../../../molecule/render/pixi/display/MOB' ;
 
 /**
  * This class provides a skeletal implementation of all the components, to minimize the effort required to implement this interface.

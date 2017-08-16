@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Element } from './molecule/render/pixi/display/Element' ;
+import { Element } from '../../../../molecule/render/pixi/display/Element' ;
 
 /**
  * This display is used to create a background in your application or in an other display of the application.

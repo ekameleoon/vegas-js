@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ValueObject } from './system/data/ValueObject.js' ;
+import { ValueObject } from '../../system/data/ValueObject.js' ;
 
 /**
  * A State value object.

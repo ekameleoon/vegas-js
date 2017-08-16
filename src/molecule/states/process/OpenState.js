@@ -2,10 +2,10 @@
 
 import { logger } from '../../logging/logger.js' ;
 
-import { ObjectFactory } from './system/ioc/ObjectFactory.js' ;
-import { Call }          from './system/process/Call.js' ;
-import { Chain }         from './system/process/Chain.js' ;
-import { TaskGroup }     from './system/process/TaskGroup.js' ;
+import { ObjectFactory } from '../../../system/ioc/ObjectFactory.js' ;
+import { Call }          from '../../../system/process/Call.js' ;
+import { Chain }         from '../../../system/process/Chain.js' ;
+import { TaskGroup }     from '../../../system/process/TaskGroup.js' ;
 
 import { State }     from '../State.js' ;
 import { StateTask } from './StateTask.js' ;

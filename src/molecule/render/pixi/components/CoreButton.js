@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { Signal } from './system/signals/Signal.js' ;
+import { Signal } from '../../../../system/signals/Signal.js' ;
 
-import { Element } from './molecule/render/pixi/display/Element.js' ;
+import { Element } from '../../../../molecule/render/pixi/display/Element.js' ;
 
 /**
  * This class provides a skeletal implementation of the <code class="prettyprint">Button</code> interface,

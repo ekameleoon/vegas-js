@@ -101,7 +101,7 @@ export var unittests = ( done ) =>
                 validate : 'validate' ,
                 version  : 'version'
             },
-            plugins    :
+            plugins  :
             [
                 replace
                 ({
