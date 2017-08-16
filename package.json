@@ -1,7 +1,7 @@
 {
   "name": "vegas-js",
   "description": "VEGAS JS - Opensource Framework",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": "MPL-2.0 OR GPL-2.0+ OR LGPL-2.1+",
   "homepage": "https://bitbucket.org/ekameleon/vegas-js",
   "author": {
@@ -89,7 +89,11 @@
     "yargs": "^6.4.0"
   },
   "dependencies": {
-    "minimatch": "^3.0.3"
+    "babel-cli": "^6.24.1",
+    "gulp-better-rollup": "^1.1.1",
+    "minimatch": "^3.0.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "repository": {
     "type": "git",

@@ -1,17 +1,43 @@
 "use strict" ;
 
-import { hello } from './molecule/hello.js' ;
+import './polyfill/Object.js' ;
+
+import { Groupable } from './molecule/Groupable.js' ;
+import { Focusable } from './molecule/Focusable.js' ;
+import { Iconifiable } from './molecule/Iconifiable.js' ;
+import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
+
+import { components } from './molecule/components.js' ;
+import { display } from './molecule/display.js' ;
+import { logger } from './molecule/logging/logger.js' ;
+import { render } from './molecule/render.js' ;
+import { states } from './molecule/states.js' ;
 
 /**
- * The {@link molecule} library is the root package for the <strong>MOLECULE JS</strong> library.
- * @summary The {@link molecule} library is the root package for the <strong>MOLECULE JS</strong> library.
- * @license {@link https://www.mozilla.org/en-US/MPL/1.1/|MPL 1.1} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * The {@link molecule} package is a library for develop crossplatform Rich Internet Applications and Games.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace molecule
- * @version 1.0.0
- * @since 1.0.0
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export var molecule = Object.assign
 ({
-    hello : hello
+    // ----- Singletons
+
+    logger,
+
+    // ----- Classes and enumerations
+
+    Focusable    : Focusable ,
+    Groupable    : Groupable ,
+    Iconifiable  : Iconifiable ,
+    ScrollPolicy : ScrollPolicy,
+
+    // ----- packages
+
+    components : components,
+    display : display,
+    render  : render,
+    states  : states
 }) ;

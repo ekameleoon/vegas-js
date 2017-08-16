@@ -46,8 +46,12 @@ export var roll = ( done ) =>
             }),
             includePaths
             ({
-                include    : {},
-                paths      : [ './src/' , './libs/molecule/src/' ] ,
+                include : {},
+                paths   :
+                [
+                    './src/' ,
+                    './libs/molecule/src/'
+                ] ,
                 external   : [],
                 extensions : [ '.js' ]
             }) ,
@@ -58,12 +62,12 @@ export var roll = ( done ) =>
             cleanup()
         ]
     })
-    .on('error', ( error ) =>
+    .once('error', ( error ) =>
     {
         log( colors.magenta( `${error.stack}` ) );
         done() ;
     })
-    .on('bundle', function( bundle )
+    .once('bundle', function( bundle )
     {
         cache = config.cache ? bundle : null ;
     })

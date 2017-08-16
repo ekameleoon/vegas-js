@@ -2,6 +2,7 @@
 
 import { sayHello } from './core/hello.js' ;
 import { ucFirst } from './core/strings/ucFirst.js' ;
+
 import './polyfill/index.js' ;
 
 /**
@@ -9,10 +10,10 @@ import './polyfill/index.js' ;
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  */
-export { global } from './core/global.js' ;
-export { sayHello } from './core/hello.js' ;
+export { global }    from './core/global.js' ;
+export { sayHello }  from './core/hello.js' ;
 export { skipHello } from './core/hello.js' ;
-export { trace } from './core/trace.js' ;
+export { trace }     from './core/trace.js' ;
 
 export { core }     from './core.js' ;
 export { system }   from './system.js' ;

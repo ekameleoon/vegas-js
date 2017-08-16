@@ -5,6 +5,7 @@
 
 import babel        from 'rollup-plugin-babel' ;
 import babelrc      from 'babelrc-rollup';
+import buffer       from 'vinyl-buffer';
 import cleanup      from 'rollup-plugin-cleanup';
 import gulp         from 'gulp' ;
 import includePaths from 'rollup-plugin-includepaths';
@@ -12,17 +13,17 @@ import mocha        from 'gulp-mocha' ;
 import pump         from 'pump' ;
 import replace      from 'rollup-plugin-replace';
 import rollup       from 'gulp-rollup' ;
+import source       from 'vinyl-source-stream' ;
 import util         from 'gulp-util' ;
 import yargs        from 'yargs' ;
 
-import { version  } from './version.js' ;
 import { watching } from './watch.js' ;
 
 import config from '../config.json' ;
+import setting from '../package.json' ;
 
 // --------- Initialize
 
-var name   = config.name ;
 var argv   = yargs.argv ;
 var colors = util.colors ;
 var log    = util.log ;
@@ -33,7 +34,7 @@ var log    = util.log ;
  * If not null, the default mocha entry is the /tests/main.js file.
  * You can use the dot notation to target a specific test entry, ex: --entry core.maths to use the /test/core/maths.js file.
  */
-var entry = 'main' ;
+var entry = 'tests' ;
 
 if( argv && argv.entry )
 {
@@ -82,23 +83,26 @@ export var unittests = ( done ) =>
 {
     pump
     ([
-        gulp.src( [ './src/**/*.js' , './tests/**/*.js' ] ) ,
+        gulp.src( [ './src/**/*.js' ] ) ,
         rollup
         ({
-            moduleName : name ,
-            entry      : './tests/' + entry + '.js' ,
+            moduleName : config.name ,
+            entry      : './src/tests/' + entry + '.js' ,
             format     : 'umd' ,
-            sourceMap  : 'inline' ,
+            sourceMap  : false ,
             useStrict  : true ,
             globals    :
             {
                 chai     : 'chai',
                 jsdom    : 'jsdom' ,
                 core     : 'core',
+                molecule : 'molecule' ,
                 system   : 'system',
+                graphics : 'graphics',
                 global   : 'global',
                 trace    : 'trace',
                 validate : 'validate' ,
+                vegas    : 'vegas' ,
                 version  : 'version'
             },
             plugins  :
@@ -106,11 +110,23 @@ export var unittests = ( done ) =>
                 replace
                 ({
                     delimiters : [ '<@' , '@>' ] ,
-                    values     : { VERSION : version }
+                    values     :
+                    {
+                        NAME        : setting.name ,
+                        DESCRIPTION : setting.description ,
+                        HOMEPAGE    : setting.homepage ,
+                        LICENSE     : setting.license ,
+                        VERSION     : setting.version
+                    }
                 }),
                 includePaths
                 ({
-                    include    : {},
+                    include : {},
+                    paths :
+                    [
+                        './src/' ,
+                        './libs/molecule/src/'
+                    ] ,
                     external   : [ 'chai' ],
                     extensions : [ '.js' ]
                 }) ,
@@ -120,7 +136,21 @@ export var unittests = ( done ) =>
                 ),
                 cleanup()
             ]
-        }),
+        }).on( 'error' , function( error )
+        {
+            log( colors.magenta( error.toString() ) );
+            if( watching.flag )
+            {
+                this.emit('end') ;
+            }
+            else
+            {
+                this.emit('end') ;
+                process.exit(1);
+            }
+        } ),
+        buffer(),
+        // source( config.name + '.js' ) ,
         mocha
         ({
             reporter        : reporter ,

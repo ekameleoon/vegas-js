@@ -1,4 +1,4 @@
-/* VEGAS JS - version 1.0.7 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
+/* VEGAS JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
                   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
                   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -13040,6 +13040,25 @@ Groupable.prototype = Object.create(Object.prototype, {
     constructor: { value: Groupable, writable: true }
 });
 
+function Focusable() {
+    Groupable.call(this);
+    Object.defineProperties(this, {
+        selected: { value: false, configurable: true, writable: true }
+    });
+}
+Focusable.prototype = Object.create(Groupable.prototype, {
+    constructor: { value: Focusable, writable: true }
+});
+
+function Iconifiable() {
+    Object.defineProperties(this, {
+        icon: { value: null, configurable: true, writable: true }
+    });
+}
+Iconifiable.prototype = Object.create(Object.prototype, {
+    constructor: { value: Iconifiable, writable: true }
+});
+
 var ScrollPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   OFF: { enumerable: true, value: 'off' },
@@ -16339,7 +16358,7 @@ var states = Object.assign({
 });
 
 /**
- * The {@link graphics} package is a library for develop crossplatform Rich Internet Applications and Games.
+ * The {@link molecule} package is a library for develop crossplatform Rich Internet Applications and Games.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace molecule
@@ -16348,7 +16367,9 @@ var states = Object.assign({
  */
 var molecule = Object.assign({
     logger: logger$1,
+    Focusable: Focusable,
     Groupable: Groupable,
+    Iconifiable: Iconifiable,
     ScrollPolicy: ScrollPolicy,
     components: components,
     display: display$1,
@@ -16602,7 +16623,7 @@ var screens = Object.assign({
   sensors: sensors
 });
 
-var version = '1.0.7';
+var version = '1.0.8';
 var metas = Object.defineProperties({}, {
     name: { enumerable: true, value: ucFirst('vegas-js') },
     description: { enumerable: true, value: "VEGAS JS - Opensource Framework" },
