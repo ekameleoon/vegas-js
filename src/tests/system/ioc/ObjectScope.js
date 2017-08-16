@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectScope } from './system/ioc/ObjectScope.js' ;
+import { ObjectScope } from '../../../system/ioc/ObjectScope.js' ;
 
 import chai from 'chai' ;
 

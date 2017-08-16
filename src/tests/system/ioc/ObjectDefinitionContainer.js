@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Task } from './system/process/Task.js' ;
-import { ObjectDefinitionContainer } from './system/ioc/ObjectDefinitionContainer.js' ;
+import { Task } from '../../../system/process/Task.js' ;
+import { ObjectDefinitionContainer } from '../../../system/ioc/ObjectDefinitionContainer.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

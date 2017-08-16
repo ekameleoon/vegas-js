@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectStrategies } from './system/ioc/ObjectStrategies.js' ;
+import { ObjectStrategies } from '../../../system/ioc/ObjectStrategies.js' ;
 
 import chai from 'chai' ;
 

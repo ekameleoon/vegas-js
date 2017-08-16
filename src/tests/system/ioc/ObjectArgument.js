@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectArgument } from './system/ioc/ObjectArgument.js' ;
+import { ObjectArgument } from '../../../system/ioc/ObjectArgument.js' ;
 
 import chai from 'chai' ;
 

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectOrder } from './system/ioc/ObjectOrder.js' ;
+import { ObjectOrder } from '../../../system/ioc/ObjectOrder.js' ;
 
 import chai from 'chai' ;
 

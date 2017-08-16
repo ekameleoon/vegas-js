@@ -1,11 +1,11 @@
 "use strict" ;
 
-import { ChangeModel }        from './system/models/ChangeModel.js' ;
-import { MemoryModel }        from './system/models/MemoryModel.js' ;
-import { NoSuchElementError } from "./system/errors/NoSuchElementError.js" ;
-import { Signal }             from './system/signals/Signal.js' ;
+import { ChangeModel }        from '../../../system/models/ChangeModel.js' ;
+import { MemoryModel }        from '../../../system/models/MemoryModel.js' ;
+import { NoSuchElementError } from "../../../system/errors/NoSuchElementError.js" ;
+import { Signal }             from '../../../system/signals/Signal.js' ;
 
-import { isLockable }  from './system/process/Lockable.js' ;
+import { isLockable }  from '../../../system/process/Lockable.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

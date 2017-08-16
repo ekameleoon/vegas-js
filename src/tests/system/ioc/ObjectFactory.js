@@ -1,10 +1,10 @@
 "use strict" ;
 
-import { ArrayMap } from './system/data/maps/ArrayMap.js' ;
+import { ArrayMap } from '../../../system/data/maps/ArrayMap.js' ;
 
-import { ObjectConfig } from './system/ioc/ObjectConfig.js' ;
-import { ObjectFactory } from './system/ioc/ObjectFactory.js' ;
-import { ObjectDefinitionContainer } from './system/ioc/ObjectDefinitionContainer.js' ;
+import { ObjectConfig } from '../../../system/ioc/ObjectConfig.js' ;
+import { ObjectFactory } from '../../../system/ioc/ObjectFactory.js' ;
+import { ObjectDefinitionContainer } from '../../../system/ioc/ObjectDefinitionContainer.js' ;
 
 import { Civility , User , UserFactory } from '../../examples/User.js' ;
 

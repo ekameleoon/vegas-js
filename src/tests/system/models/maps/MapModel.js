@@ -1,8 +1,8 @@
 'use strict' ;
 
-import { ChangeModel } from './system/models/ChangeModel.js' ;
-import { MapModel }    from './system/models/maps/MapModel.js' ;
-import { Signal }      from './system/signals/Signal.js' ;
+import { ChangeModel } from '../../../../system/models/ChangeModel.js' ;
+import { MapModel }    from '../../../../system/models/maps/MapModel.js' ;
+import { Signal }      from '../../../../system/signals/Signal.js' ;
 
 import { MockSlot }    from '../../../mocks/MockSlot.js' ;
 

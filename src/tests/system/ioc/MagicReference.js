@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { MagicReference } from './system/ioc/MagicReference.js' ;
+import { MagicReference } from '../../../system/ioc/MagicReference.js' ;
 
 import chai from 'chai' ;
 

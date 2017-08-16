@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { isFloat } from './core/isFloat.js' ;
-import { isInt   } from './core/isInt.js' ;
-import { Range   } from './system/numeric/Range.js' ;
+import { isFloat } from '../../../core/isFloat.js' ;
+import { isInt   } from '../../../core/isInt.js' ;
+import { Range   } from '../../../system/numeric/Range.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;

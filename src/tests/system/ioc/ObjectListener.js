@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { ObjectOrder } from './system/ioc/ObjectOrder.js' ;
-import { ObjectListener } from './system/ioc/ObjectListener.js' ;
+import { ObjectOrder } from '../../../system/ioc/ObjectOrder.js' ;
+import { ObjectListener } from '../../../system/ioc/ObjectListener.js' ;
 
 import chai from 'chai' ;
 

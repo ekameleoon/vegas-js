@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectAttribute } from './system/ioc/ObjectAttribute.js' ;
+import { ObjectAttribute } from '../../../system/ioc/ObjectAttribute.js' ;
 
 import chai from 'chai' ;
 

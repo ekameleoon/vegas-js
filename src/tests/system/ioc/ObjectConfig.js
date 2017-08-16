@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ObjectConfig } from './system/ioc/ObjectConfig.js' ;
+import { ObjectConfig } from '../../../system/ioc/ObjectConfig.js' ;
 
 import chai from 'chai' ;
 

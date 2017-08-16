@@ -1,8 +1,8 @@
 'use strict' ;
 
-import { Action }       from './system/process/Action.js' ;
-import { InitMapModel } from './system/models/maps/InitMapModel.js' ;
-import { MapModel }     from './system/models/maps/MapModel.js' ;
+import { Action }       from '../../../../system/process/Action.js' ;
+import { InitMapModel } from '../../../../system/models/maps/InitMapModel.js' ;
+import { MapModel }     from '../../../../system/models/maps/MapModel.js' ;
 
 import chai  from 'chai' ;
 const assert = chai.assert ;
