@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { isIconifiable , Iconifiable } from '../../src/molecule/Iconifiable.js' ;
+import { isIconifiable , Iconifiable } from '../../molecule/Iconifiable.js' ;
 
 import chai from 'chai' ;
 

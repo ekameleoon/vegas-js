@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Groupable } from '../../src/molecule/Groupable.js' ;
+import { Groupable } from '../../molecule/Groupable.js' ;
 
 import chai from 'chai' ;
 

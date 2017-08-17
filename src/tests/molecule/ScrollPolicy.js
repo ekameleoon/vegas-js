@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ScrollPolicy } from '../../src/molecule/ScrollPolicy.js' ;
+import { ScrollPolicy } from '../../molecule/ScrollPolicy.js' ;
 
 import chai from 'chai' ;
 

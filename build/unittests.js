@@ -5,7 +5,6 @@
 
 import babel        from 'rollup-plugin-babel' ;
 import babelrc      from 'babelrc-rollup';
-import buffer       from 'vinyl-buffer';
 import cleanup      from 'rollup-plugin-cleanup';
 import gulp         from 'gulp' ;
 import includePaths from 'rollup-plugin-includepaths';
@@ -13,7 +12,6 @@ import mocha        from 'gulp-mocha' ;
 import pump         from 'pump' ;
 import replace      from 'rollup-plugin-replace';
 import rollup       from 'gulp-rollup' ;
-import source       from 'vinyl-source-stream' ;
 import util         from 'gulp-util' ;
 import yargs        from 'yargs' ;
 
@@ -83,7 +81,11 @@ export var unittests = ( done ) =>
 {
     pump
     ([
-        gulp.src( [ './src/**/*.js' ] ) ,
+        gulp.src
+        ([
+            './src/**/*.js' ,
+            './libs/molecule/src/**/*.js'
+        ]) ,
         rollup
         ({
             moduleName : config.name ,
@@ -149,8 +151,6 @@ export var unittests = ( done ) =>
                 process.exit(1);
             }
         } ),
-        buffer(),
-        // source( config.name + '.js' ) ,
         mocha
         ({
             reporter        : reporter ,

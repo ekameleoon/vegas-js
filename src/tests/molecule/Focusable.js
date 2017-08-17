@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { isFocusable , Focusable } from '../../src/molecule/Focusable.js' ;
-import { Groupable } from '../../src/molecule/Groupable.js' ;
+import { isFocusable , Focusable } from '../../molecule/Focusable.js' ;
+import { Groupable } from '../../molecule/Groupable.js' ;
 
 import chai from 'chai' ;
 

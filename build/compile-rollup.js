@@ -47,11 +47,7 @@ export var roll = ( done ) =>
             includePaths
             ({
                 include : {},
-                paths   :
-                [
-                    './src/' ,
-                    './libs/molecule/src/'
-                ] ,
+                paths   : [ './src/' ] ,
                 external   : [],
                 extensions : [ '.js' ]
             }) ,

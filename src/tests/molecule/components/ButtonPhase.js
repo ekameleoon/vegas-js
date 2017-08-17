@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { ButtonPhase } from '../../../src/molecule/components/ButtonPhase.js' ;
+import { ButtonPhase } from '../../../molecule/components/ButtonPhase.js' ;
 
 import chai from 'chai' ;
 
