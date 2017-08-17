@@ -16001,6 +16001,45 @@ Element$1.prototype = Object.create(MOB.prototype, {
     } }
 });
 
+function CoreButton() {
+  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    down: { value: new Signal() },
+    out: { value: new Signal() },
+    over: { value: new Signal() },
+    up: { value: new Signal() }
+  });
+  Element$1.call(this, texture);
+  this.interactive = true;
+  this.buttonMode = true;
+  this.pointerdown = this._down;
+}
+CoreButton.prototype = Object.create(Element$1.prototype, {
+  constructor: { value: CoreButton },
+  notifyDown: { writable: true, value: function value() {
+      this.down.emit(this);
+    } },
+  _down: { value: function value() {
+      this.notifyDown();
+    } },
+  toString: { value: function value() {
+      return '[CoreButton]';
+    } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var components$2 = Object.assign({
+  CoreButton: CoreButton
+});
+
 function Background() {
   var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   Object.defineProperties(this, {
@@ -16039,6 +16078,7 @@ var display$3 = Object.assign({
  * @memberof molecule.render
  */
 var pixi = Object.assign({
+  components: components$2,
   display: display$3
 });
 

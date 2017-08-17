@@ -60,8 +60,6 @@ export function CoreButton( texture = null )
 
     Element.call( this , texture ) ;
 
-    // init
-
     this.interactive = true ;
     this.buttonMode  = true ;
 
