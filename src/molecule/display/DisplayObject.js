@@ -10,7 +10,7 @@ import { EventDispatcher } from './system/events/EventDispatcher.js' ;
  * @class
  * @memberof molecule.display
  * @extends system.events.EventDispatcher
- * @param {Object} [init] - The optional generic object to populates and initialize the current node.
+ * @param {Object} [init=null] - The optional generic object to populates and initialize the current node.
  */
 export function DisplayObject( init = null )
 {

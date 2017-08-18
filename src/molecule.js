@@ -2,9 +2,12 @@
 
 import './polyfill/Object.js' ;
 
-import { Groupable } from './molecule/Groupable.js' ;
+import { Builder } from './molecule/Builder.js' ;
+import { Deployment } from './molecule/Deployment.js' ;
 import { Focusable } from './molecule/Focusable.js' ;
+import { Groupable } from './molecule/Groupable.js' ;
 import { Iconifiable } from './molecule/Iconifiable.js' ;
+import { LabelPolicy } from './molecule/LabelPolicy.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 import { components } from './molecule/components.js' ;
@@ -29,9 +32,12 @@ export var molecule = Object.assign
 
     // ----- Classes and enumerations
 
+    Builder      : Builder ,
+    Deployment   : Deployment ,
     Focusable    : Focusable ,
     Groupable    : Groupable ,
     Iconifiable  : Iconifiable ,
+    LabelPolicy  : LabelPolicy ,
     ScrollPolicy : ScrollPolicy,
 
     // ----- packages

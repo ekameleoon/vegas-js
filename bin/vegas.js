@@ -15660,6 +15660,29 @@ var dom$1 = Object.assign({
   }
 });
 
+function Builder() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Runnable.call(this);
+    Object.defineProperties(this, {
+        _target: { value: target, configurable: true, writable: true }
+    });
+}
+Builder.prototype = Object.create(Runnable.prototype, {
+    constructor: { value: Builder, writable: true },
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+        }
+    },
+    clear: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+        } }
+});
+
 function EdgeMetrics() {
     var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -15741,7 +15764,7 @@ function MOB() {
     PIXI.Sprite.call(this, texture);
 }
 MOB.prototype = Object.create(PIXI.Sprite.prototype, {
-    constructor: { value: MOB },
+    constructor: { value: MOB, writable: true },
     align: {
         get: function get() {
             return this._align;
@@ -15988,17 +16011,26 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
 });
 
 function Element$1() {
-  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    _border: { value: new EdgeMetrics() }
-  });
-  MOB.call(this, texture);
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _border: { writable: false, value: new EdgeMetrics() },
+        _builder: { writable: true, value: null }
+    });
+    this._builder = this.getBuilderRenderer();
+    if (this._builder instanceof Builder) {
+        this._builder.target = this;
+        this._builder.run();
+    }
+    MOB.call(this, texture);
 }
 Element$1.prototype = Object.create(MOB.prototype, {
-  constructor: { value: Element$1 },
-  toString: { value: function value() {
-      return '[Element]';
-    } }
+    constructor: { value: Element$1, writable: true },
+    getBuilderRenderer: { writable: true, value: function value() {
+            return null;
+        } },
+    toString: { value: function value() {
+            return '[Element]';
+        } }
 });
 
 function CoreButton() {
@@ -16011,7 +16043,9 @@ function CoreButton() {
       } },
     over: { value: new Signal() },
     up: { value: new Signal() },
-    _phase: { value: ButtonPhase.UP, writable: true }
+    _phase: { value: ButtonPhase.UP, writable: true },
+    _toggle: { value: false, writable: true },
+    _selected: { value: false, writable: true }
   });
   Element$1.call(this, texture);
   this.interactive = true;

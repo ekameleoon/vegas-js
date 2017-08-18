@@ -7,7 +7,9 @@ import { Runnable } from '../system/process/Runnable.js' ;
  * The Builder interface.
  * @name Builder
  * @memberof molecule
- * @interface
+ * @class
+ * @extends system.process.Runnable
+ * @param {Object} [target=null] - The target reference of the builder.
  */
 export function Builder( target = null )
 {
