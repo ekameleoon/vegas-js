@@ -16523,17 +16523,140 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+function SimpleButton() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _current: { writable: true, value: null },
+        _downState: { writable: true, value: null },
+        _disabledState: { writable: true, value: null },
+        _overState: { writable: true, value: null },
+        _upState: { writable: true, value: null }
+    });
+    CoreButton.call(this, texture);
+    this.__update = this.update.bind(this);
+    this.disable.connect(this.__update);
+    this.down.connect(this.__update);
+    this.out.connect(this.__update);
+    this.over.connect(this.__update);
+    this.up.connect(this.__update);
+    this.update();
+}
+SimpleButton.prototype = Object.create(CoreButton.prototype, {
+    constructor: { value: SimpleButton },
+    disabledState: {
+        get: function get() {
+            return this._disabledState;
+        },
+        set: function set(display) {
+            this._disabledState = display instanceof PIXI.DisplayObject ? display : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    downState: {
+        get: function get() {
+            return this._downState;
+        },
+        set: function set(display) {
+            this._downState = display instanceof PIXI.DisplayObject ? display : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    overState: {
+        get: function get() {
+            return this._overState;
+        },
+        set: function set(display) {
+            this._overState = display instanceof PIXI.DisplayObject ? display : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    upState: {
+        get: function get() {
+            return this._upState;
+        },
+        set: function set(display) {
+            this._upState = display instanceof PIXI.DisplayObject ? display : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    toString: { value: function value() {
+            return '[SimpleButton]';
+        } },
+    viewChanged: { writable: true, value: function value() {
+            if (this._current) {
+                if (this.children.indexOf(this._current) > -1) {
+                    this.removeChild(this._current);
+                }
+                this._current = null;
+            }
+            switch (this._phase) {
+                case ButtonPhase.DISABLE:
+                    {
+                        this._current = this._disabledState;
+                        break;
+                    }
+                case ButtonPhase.DOWN:
+                    {
+                        this._current = this._downState;
+                        break;
+                    }
+                case ButtonPhase.OVER:
+                    {
+                        this._current = this._overState;
+                        break;
+                    }
+                default:
+                case ButtonPhase.UP:
+                    {
+                        this._current = this._upState;
+                        break;
+                    }
+            }
+            if (this._current && this.children.indexOf(this._current) < 0) {
+                if (this.children.length > 0) {
+                    this.addChildAt(this._current, 0);
+                } else {
+                    this.addChild(this._current);
+                }
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components.buttons} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.buttons
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var buttons = Object.assign({
+  SimpleButton: SimpleButton
+});
+
 /**
  * The {@link molecule.render.pixi.components} package.
  * @summary The {@link molecule.render.pixi.components} package.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace molecule.render.pixi.components
+ * @memberof molecule.render.pixi
  * @version 1.0.8
  * @since 1.0.8
  */
 var components$2 = Object.assign({
-  CoreButton: CoreButton
+  CoreButton: CoreButton,
+  buttons: buttons
 });
 
 function Background() {
@@ -16556,6 +16679,7 @@ Background.prototype = Object.create(Element$1.prototype, {
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
  * @namespace molecule.render.pixi.display
+ * @memberof molecule.render.pixi
  * @version 1.0.8
  * @since 1.0.8
  */

@@ -607,7 +607,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
 
     /**
      * This method is invoked after the draw() method in the update() method.
-     * @name viewResize
+     * @name viewChanged
      * @memberof molecule.render.pixi.display.MOB
      * @function
      * @instance

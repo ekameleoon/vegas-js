@@ -25,9 +25,8 @@ window.onload = function()
     var Body        = molecule.render.dom.display.Body ;
     var Canvas      = molecule.render.dom.display.Canvas ;
 
-    var ButtonPhase = molecule.components.ButtonPhase ;
-    var CoreButton  = molecule.render.pixi.components.CoreButton ;
-    var MOB         = molecule.render.pixi.display.MOB ;
+    var SimpleButton = molecule.render.pixi.components.buttons.SimpleButton ;
+    var MOB          = molecule.render.pixi.display.MOB ;
 
     // ----------------
 
@@ -69,44 +68,15 @@ window.onload = function()
 
         // --------- Button
 
-        button = new CoreButton( resources.button.textures.up ); // resources.bunny.texture
+        button = new SimpleButton( resources.button.textures.up ); // resources.bunny.texture
 
         button.x = 25 ;
         button.y = 25 ;
 
-        var update = function( )
-        {
-            switch( button.phase )
-            {
-                case ButtonPhase.DISABLE :
-                {
-                    button.texture = resources.button.textures.disable ;
-                    break ;
-                }
-                case ButtonPhase.DOWN :
-                {
-                    button.texture = resources.button.textures.down ;
-                    break ;
-                }
-                case ButtonPhase.OVER :
-                {
-                    button.texture = resources.button.textures.over ;
-                    break ;
-                }
-                default :
-                case ButtonPhase.UP :
-                {
-                    button.texture = resources.button.textures.up ;
-                    break ;
-                }
-            }
-        }
-
-        button.disable.connect( update ) ;
-        button.over.connect( update ) ;
-        button.out.connect( update ) ;
-        button.down.connect( update ) ;
-        button.up.connect( update ) ;
+        button.disabledState = new PIXI.Sprite( resources.button.textures.disable ) ;
+        button.downState     = new PIXI.Sprite( resources.button.textures.down ) ;
+        button.overState     = new PIXI.Sprite( resources.button.textures.over ) ;
+        button.upState       = new PIXI.Sprite( resources.button.textures.up ) ;
 
         button.pressed.connect( function()
         {
@@ -117,13 +87,20 @@ window.onload = function()
         button.select.connect( function()
         {
             console.log( "select" ) ;
-            button.enabled = false ;
+            //button.enabled = false ;
+            tween.to = { x : 600 , y : 500 } ;
             tween.run() ;
         });
 
         button.unselect.connect( function()
         {
             console.log( "unselect" ) ;
+            tween.to =
+            {
+                x : app.renderer.width  * 0.5 ,
+                y : app.renderer.height * 0.5
+            } ;
+            tween.run() ;
         });
 
         stage.addChild( button ) ;
@@ -142,7 +119,7 @@ window.onload = function()
 
         // --------- run
 
-        //button.toggle = true ;
+        button.toggle = true ;
         //button.selected = true ;
     };
 
