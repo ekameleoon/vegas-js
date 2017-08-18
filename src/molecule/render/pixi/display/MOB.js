@@ -61,7 +61,7 @@ export function MOB( texture = null , init = null , locked = false )
          */
          altered   : { writable :  true , value : false } ,
          _align    : { writable :  true , value :    10 } , // top left
-         _enabled  : { writable :  true , value :     0 } ,
+         _enabled  : { writable :  true , value :  true } ,
         _h         : { writable :  true , value :     0 } ,
         _layout    : { writable :  true , value :  null } ,
         _locked    : { writable :  true , value :     0 } ,
@@ -129,7 +129,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         get : function() { return this._enabled ; },
         set : function ( value )
         {
-            this._enabled = value ;
+            this._enabled = value === true ;
             if ( this._locked === 0 )
             {
                 this.viewEnabled() ;
@@ -300,20 +300,15 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     scope :
     {
         get : function() { return this._scope ; },
-        set : function( scope )
+        set : function( target )
         {
-            if( scope )
-            {
-                this._scope = scope ;
-            }
-            else
-            {
-                this._scope = this ;
-            }
+            this.preScope() ;
+            this._scope = this.checkScope(target) ;
             if ( this._layout )
             {
                 this._layout.container = this._scope ;
             }
+            this.postScope() ;
         }
     },
 
@@ -644,5 +639,28 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     viewResize : { writable : true , value : function()
     {
         // override
-    }}
+    }},
+
+    //// -------- private
+
+    /**
+     * Invoked after the scope of the element is changed.
+     * @private
+     */
+    checkScope : { writable : true , value : function( target )
+    {
+        return target || this
+    }} ,
+
+    /**
+     * Invoked after the scope of the element is changed.
+     * @private
+     */
+    postScope : { writable : true , value : function() {} } ,
+
+    /**
+     * Invoked before the scope of the element is changed.
+     * @private
+     */
+    preScope  : { writable : true , value : function() {} }
 }) ;

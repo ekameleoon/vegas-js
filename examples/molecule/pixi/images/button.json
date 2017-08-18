@@ -1,7 +1,7 @@
 ﻿{
     "frames":
     {
-        "disabled":
+        "disable":
         {
             "frame": {"x":0,"y":0,"w":142,"h":47},
             "rotated": false,

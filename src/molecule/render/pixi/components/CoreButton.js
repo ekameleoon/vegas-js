@@ -4,6 +4,7 @@ import { Signal } from './system/signals/Signal.js' ;
 
 import { ButtonPhase } from '../../../components/ButtonPhase.js' ;
 import { Element } from '../display/Element.js' ;
+import { radio } from './radio.js' ;
 
 /**
  * This class provides a skeletal implementation of the <code class="prettyprint">Button</code> interface,
@@ -165,6 +166,16 @@ export function CoreButton( texture = null )
         /**
          * @private
          */
+        _isOver : { value : false , writable : true } ,
+
+        /**
+         * @private
+         */
+        _isPress : { value : false, writable : true } ,
+
+        /**
+         * @private
+         */
         _phase : { value : ButtonPhase.UP , writable : true } ,
 
         /**
@@ -183,7 +194,7 @@ export function CoreButton( texture = null )
     this.interactive = true ;
     this.buttonMode  = true ;
 
-    this.pointerdown = this._down ;
+    this.postScope() ;
 }
 
 CoreButton.prototype = Object.create( Element.prototype ,
@@ -224,6 +235,24 @@ CoreButton.prototype = Object.create( Element.prototype ,
     },
 
     /**
+     * Invoked when the group property or the groupName property changed.
+     * @memberof molecule.render.pixi.components.CoreButton
+     * @instance
+     * @function
+     */
+    groupPolicyChanged : { writable : true , value : function()
+    {
+        if ( this._group === true )
+        {
+            this.down.connect( radio ) ;
+        }
+        else
+        {
+            this.down.disconnect( radio ) ;
+        }
+    }},
+
+    /**
      * Sets a boolean value indicating whether the button is selected (true) or not (false).
      * @param {boolean} value - The selected flag value.
      * @param {string} options - The optional flag to control the method (default null).
@@ -233,7 +262,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
     setSelected : { value : function( value , options = null )
     {
         this._selected = this._toggle && (value === true) ;
-
         if ( this._enabled )
         {
             if( this._selected )
@@ -281,28 +309,227 @@ CoreButton.prototype = Object.create( Element.prototype ,
     }},
 
     /**
-     * Notify when the button is down.
-     * @name notifyDown
-     * @memberof molecule.render.pixi.components.CoreButton
-     * @function
-     * @instance
-     */
-    notifyDown : { writable : true , value : function()
-    {
-        this.down.emit( this ) ;
-    }},
-
-    _down : { value : function()
-    {
-        this.notifyDown() ;
-    }},
-
-    /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
      * @memberof molecule.render.pixi.components.CoreButton
      * @instance
      * @function
      */
-    toString : { value : function () { return '[CoreButton]' ; }}
+    toString : { value : function () { return '[CoreButton]' ; }} ,
+
+    /**
+     * Invoked when the enabled property of the component change.
+     * @name viewEnabled
+     * @memberof molecule.render.pixi.components.CoreButton
+     * @function
+     * @instance
+     */
+    viewEnabled : { writable : true , value : function()
+    {
+        if ( this._enabled )
+        {
+            this.interactive = true ;
+            this.buttonMode  = true ;
+            if ( this._toggle && this._selected )
+            {
+                this._phase = ButtonPhase.DOWN ;
+                if( this.down.connected() )
+                {
+                    this.down.emit( this ) ;
+                }
+            }
+            else
+            {
+                this._phase = ButtonPhase.UP ;
+                if( this.up.connected() )
+                {
+                    this.up.emit( this ) ;
+                }
+            }
+        }
+        else
+        {
+            this.interactive = false ;
+            this.buttonMode  = false ;
+            if( this._isOver )
+            {
+                this._isOver = false ;
+            }
+            this._isPress = false ;
+            this._phase = ButtonPhase.DISABLE ;
+            if( this.disable.connected() )
+            {
+                this.disable.emit( this ) ;
+            }
+        }
+    }},
+
+    // ----- private
+
+    /**
+     * Invoked after the scope of the element is changed.
+     * @private
+     */
+    checkScope : { writable : true , value : function( target )
+    {
+        return target || this ;
+    }} ,
+
+    /**
+     * Invoked after the scope of the element is changed.
+     * @private
+     */
+    postScope : { writable : true , value : function()
+    {
+        if( this._scope )
+        {
+            this._scope.mousedown      = this.____down.bind(this) ;
+            this._scope.mouseout       = this.____out.bind(this) ;
+            this._scope.mouseover      = this.____over.bind(this) ;
+            this._scope.mouseup        = this.____up.bind(this) ;
+            this._scope.mouseupoutside = this.____upOutside.bind(this) ;
+        }
+    }} ,
+
+    /**
+     * Invoked before the scope of the element is changed.
+     * @private
+     */
+    preScope  : { writable : true , value : function()
+    {
+        if( this._scope )
+        {
+            this._scope.mousedown      = null ;
+            this._scope.mouseout       = null ;
+            this._scope.mouseover      = null ;
+            this._scope.mouseup        = null ;
+            this._scope.mouseupoutside = null ;
+        }
+    }},
+
+    // ----- behaviors
+
+    /**
+     * @private
+     */
+    ____down : { value : function()
+    {
+        if( this._isOver )
+        {
+            this._isOver = false ;
+        }
+
+        this._isPress = true ;
+
+        if ( this._toggle )
+        {
+            this.selected = !this._selected ;
+        }
+        else
+        {
+            this._phase = ButtonPhase.DOWN ;
+            if( this.down.connected() )
+            {
+                this.down.emit( this ) ;
+            }
+        }
+
+        if( this.pressed.connected() )
+        {
+            this.pressed.emit( this ) ;
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____out : { value : function()
+    {
+        this._isOver = false ;
+        this._phase = (this._toggle && this._selected) ? ButtonPhase.DOWN : ButtonPhase.UP ;
+        if( this.out.connected() )
+        {
+            this.out.emit( this ) ;
+        }
+        if( this.rollOut.connected() )
+        {
+            this.rollOut.emit( this ) ;
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____over : { value : function()
+    {
+        if( !this._isPress && !this._isOver )
+        {
+            this._isOver = true ;
+            if ( !this._toggle || !this._selected )
+            {
+                this._phase = ButtonPhase.OVER ;
+                if( this.over.connected() )
+                {
+                    this.over.emit( this ) ;
+                }
+                if( this.rollOver.connected() )
+                {
+                    this.rollOver.emit( this ) ;
+                }
+            }
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____up : { value : function()
+    {
+        if( this._isOver )
+        {
+            this._isOver = false ;
+        }
+
+        this._isPress = false ;
+        if ( !this._toggle && this._enabled )
+        {
+            this._phase = ButtonPhase.UP ;
+            if( this.up.connected() )
+            {
+                this.up.emit( this ) ;
+            }
+        }
+
+        if( this.release.connected() )
+        {
+            this.release.emit( this ) ;
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____upOutside : { value : function()
+    {
+        if( this._isOver )
+        {
+            this._isOver = false ;
+        }
+
+        this._isPress = false ;
+
+        if ( !this._toggle && this.enabled )
+        {
+            this._phase = ButtonPhase.UP ;
+            if( this.up.connected() )
+            {
+                this.up.emit( this ) ;
+            }
+        }
+
+        if( this.releaseOutside.connected() )
+        {
+            this.releaseOutside.emit( this ) ;
+        }
+    }}
 }) ;

@@ -13059,6 +13059,12 @@ var Deployment = Object.defineProperties({}, {
   PROTECTED: { enumerable: true, value: 'protected' }
 });
 
+function isGroupable(target) {
+    if (target) {
+        return target instanceof Groupable || 'group' in target && 'groupName' in target;
+    }
+    return false;
+}
 function Groupable() {
     Object.defineProperties(this, {
         group: { value: false, configurable: true, writable: true },
@@ -13106,6 +13112,13 @@ var ButtonPhase = Object.defineProperties({}, {
   UP: { enumerable: true, value: 'up' }
 });
 
+function isButton(target) {
+    if (target) {
+        return 'group' in target && isBoolean(target.group) && 'groupName' in target && 'selected' in target && isBoolean(target.selected) && 'toggle' in target && isBoolean(target.toggle) && 'setSelected' in target && target.setSelected instanceof Function;
+    }
+    return false;
+}
+
 /**
  * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
  * @summary The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
@@ -13115,7 +13128,8 @@ var ButtonPhase = Object.defineProperties({}, {
  * @memberof molecule
  */
 var components = Object.assign({
-  ButtonPhase: ButtonPhase
+  ButtonPhase: ButtonPhase,
+  isButton: isButton
 });
 
 function DisplayObject() {
@@ -13404,6 +13418,83 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
 var display$1 = Object.assign({
   DisplayObject: DisplayObject,
   DisplayObjectContainer: DisplayObjectContainer
+});
+
+function CoreGroup() {
+    Object.defineProperties(this, {
+        groups: { writable: true, value: new ArrayMap() }
+    });
+    Receiver.call(this);
+}
+CoreGroup.prototype = Object.create(Receiver.prototype, {
+    constructor: { writable: true, value: CoreGroup },
+    contains: { value: function value(name) {
+            return this.groups.has(name);
+        } },
+    get: { value: function value(name) {
+            return this.groups.get(name);
+        } },
+    receive: { writable: true, value: function value(group) {
+            var target = isGroupable(group) ? group : null;
+            if (target) {
+                this.select(target);
+            }
+        } },
+    select: { writable: true, value: function value(item) {
+            return item;
+        } },
+    unSelect: { writable: true, value: function value(item) {
+            return item;
+        } }
+});
+
+function RadioButtonGroup() {
+    CoreGroup.call(this);
+}
+RadioButtonGroup.prototype = Object.create(CoreGroup.prototype, {
+    constructor: { writable: true, value: RadioButtonGroup },
+    select: { writable: true, value: function value(item) {
+            var button = isButton(item) ? item : null;
+            if (!button || button.toggle !== true) {
+                return;
+            }
+            var name = button.groupName;
+            if (this.groups.has(name)) {
+                var current = this.groups.get(name);
+                if (current !== button) {
+                    current.setSelected(false, 'deselect');
+                }
+            }
+            this.groups.set(name, button);
+        } },
+    unSelect: { writable: true, value: function value(item) {
+            var name = null;
+            if (isString(item)) {
+                name = item;
+            } else if ('groupName' in item && isString(item.groupName) && item.groupName.length > 0) {
+                name = item.groupName;
+            }
+            if (this.groups.has(name)) {
+                var current = this.groups.get(name);
+                if (current) {
+                    current.setSelected(false, true);
+                    this.groups.delete(name);
+                }
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.groups} library contains the core groups helpers.
+ * @summary The {@link molecule.groups} library contains the groups helpers.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.groups
+ * @memberof molecule
+ */
+var groups = Object.assign({
+  CoreGroup: CoreGroup,
+  RadioButtonGroup: RadioButtonGroup
 });
 
 var logger$1 = Log.getLogger('molecule.logging.logger');
@@ -15763,7 +15854,7 @@ function MOB() {
         updater: { value: new Signal() },
         altered: { writable: true, value: false },
         _align: { writable: true, value: 10 },
-        _enabled: { writable: true, value: 0 },
+        _enabled: { writable: true, value: true },
         _h: { writable: true, value: 0 },
         _layout: { writable: true, value: null },
         _locked: { writable: true, value: 0 },
@@ -15802,7 +15893,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             return this._enabled;
         },
         set: function set(value) {
-            this._enabled = value;
+            this._enabled = value === true;
             if (this._locked === 0) {
                 this.viewEnabled();
             }
@@ -15906,15 +15997,13 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
         get: function get() {
             return this._scope;
         },
-        set: function set(scope) {
-            if (scope) {
-                this._scope = scope;
-            } else {
-                this._scope = this;
-            }
+        set: function set(target) {
+            this.preScope();
+            this._scope = this.checkScope(target);
             if (this._layout) {
                 this._layout.container = this._scope;
             }
+            this.postScope();
         }
     },
     w: {
@@ -16040,12 +16129,17 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.altered = false;
             this.updater.emit(this);
         } },
-    viewChanged: { value: function value() {
+    viewChanged: { writable: true, value: function value() {
         } },
-    viewEnabled: { value: function value() {
+    viewEnabled: { writable: true, value: function value() {
         } },
-    viewResize: { value: function value() {
-        } }
+    viewResize: { writable: true, value: function value() {
+        } },
+    checkScope: { writable: true, value: function value(target) {
+            return target || this;
+        } },
+    postScope: { writable: true, value: function value() {} },
+    preScope: { writable: true, value: function value() {} }
 });
 
 function Element$1() {
@@ -16206,36 +16300,227 @@ Element$1.prototype = Object.create(MOB.prototype, {
         } }
 });
 
+/**
+ * The RadioButtonGroup singleton.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @memberof molecule.render.pixi.components
+ * @static
+ * @private
+ */
+var radio = new RadioButtonGroup();
+
 function CoreButton() {
-  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    down: { value: new Signal() },
-    out: { value: new Signal() },
-    phase: { get: function get() {
-        return this._phase;
-      } },
-    over: { value: new Signal() },
-    up: { value: new Signal() },
-    _phase: { value: ButtonPhase.UP, writable: true },
-    _toggle: { value: false, writable: true },
-    _selected: { value: false, writable: true }
-  });
-  Element$1.call(this, texture);
-  this.interactive = true;
-  this.buttonMode = true;
-  this.pointerdown = this._down;
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        deselect: { value: new Signal() },
+        disable: { value: new Signal() },
+        down: { value: new Signal() },
+        out: { value: new Signal() },
+        over: { value: new Signal() },
+        phase: { get: function get() {
+                return this._phase;
+            } },
+        pressed: { value: new Signal() },
+        release: { value: new Signal() },
+        releaseOutside: { value: new Signal() },
+        rollOut: { value: new Signal() },
+        rollOver: { value: new Signal() },
+        select: { value: new Signal() },
+        unselect: { value: new Signal() },
+        up: { value: new Signal() },
+        _isOver: { value: false, writable: true },
+        _isPress: { value: false, writable: true },
+        _phase: { value: ButtonPhase.UP, writable: true },
+        _toggle: { value: false, writable: true },
+        _selected: { value: false, writable: true }
+    });
+    Element$1.call(this, texture);
+    this.interactive = true;
+    this.buttonMode = true;
+    this.postScope();
 }
 CoreButton.prototype = Object.create(Element$1.prototype, {
-  constructor: { value: CoreButton },
-  notifyDown: { writable: true, value: function value() {
-      this.down.emit(this);
-    } },
-  _down: { value: function value() {
-      this.notifyDown();
-    } },
-  toString: { value: function value() {
-      return '[CoreButton]';
-    } }
+    constructor: { value: CoreButton },
+    selected: {
+        get: function get() {
+            return this._selected;
+        },
+        set: function set(value) {
+            this.setSelected(value === true);
+        }
+    },
+    toggle: {
+        get: function get() {
+            return this._toggle;
+        },
+        set: function set(value) {
+            this._toggle = value === true;
+            this.setSelected(false, true);
+        }
+    },
+    groupPolicyChanged: { writable: true, value: function value() {
+            if (this._group === true) {
+                this.down.connect(radio);
+            } else {
+                this.down.disconnect(radio);
+            }
+        } },
+    setSelected: { value: function value(_value) {
+            var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            this._selected = this._toggle && _value === true;
+            if (this._enabled) {
+                if (this._selected) {
+                    this._phase = ButtonPhase.DOWN;
+                    if (this.down.connected()) {
+                        this.down.emit(this);
+                    }
+                } else {
+                    this._phase = ButtonPhase.UP;
+                    if (this.up.connected()) {
+                        this.up.emit(this);
+                    }
+                }
+            }
+            if (options === null) {
+                if (this._selected) {
+                    if (this.select.connected()) {
+                        this.select.emit(this);
+                    }
+                } else {
+                    if (this.unselect.connected()) {
+                        this.unselect.emit(this);
+                    }
+                }
+            } else if (options === "deselect") {
+                if (this.deselect.connected()) {
+                    this.deselect.emit(this);
+                }
+            }
+        } },
+    toString: { value: function value() {
+            return '[CoreButton]';
+        } },
+    viewEnabled: { writable: true, value: function value() {
+            if (this._enabled) {
+                this.interactive = true;
+                this.buttonMode = true;
+                if (this._toggle && this._selected) {
+                    this._phase = ButtonPhase.DOWN;
+                    if (this.down.connected()) {
+                        this.down.emit(this);
+                    }
+                } else {
+                    this._phase = ButtonPhase.UP;
+                    if (this.up.connected()) {
+                        this.up.emit(this);
+                    }
+                }
+            } else {
+                this.interactive = false;
+                this.buttonMode = false;
+                if (this._isOver) {
+                    this._isOver = false;
+                }
+                this._isPress = false;
+                this._phase = ButtonPhase.DISABLE;
+                if (this.disable.connected()) {
+                    this.disable.emit(this);
+                }
+            }
+        } },
+    checkScope: { writable: true, value: function value(target) {
+            return target || this;
+        } },
+    postScope: { writable: true, value: function value() {
+            if (this._scope) {
+                this._scope.mousedown = this.____down.bind(this);
+                this._scope.mouseout = this.____out.bind(this);
+                this._scope.mouseover = this.____over.bind(this);
+                this._scope.mouseup = this.____up.bind(this);
+                this._scope.mouseupoutside = this.____upOutside.bind(this);
+            }
+        } },
+    preScope: { writable: true, value: function value() {
+            if (this._scope) {
+                this._scope.mousedown = null;
+                this._scope.mouseout = null;
+                this._scope.mouseover = null;
+                this._scope.mouseup = null;
+                this._scope.mouseupoutside = null;
+            }
+        } },
+    ____down: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = true;
+            if (this._toggle) {
+                this.selected = !this._selected;
+            } else {
+                this._phase = ButtonPhase.DOWN;
+                if (this.down.connected()) {
+                    this.down.emit(this);
+                }
+            }
+            if (this.pressed.connected()) {
+                this.pressed.emit(this);
+            }
+        } },
+    ____out: { value: function value() {
+            this._isOver = false;
+            this._phase = this._toggle && this._selected ? ButtonPhase.DOWN : ButtonPhase.UP;
+            if (this.out.connected()) {
+                this.out.emit(this);
+            }
+            if (this.rollOut.connected()) {
+                this.rollOut.emit(this);
+            }
+        } },
+    ____over: { value: function value() {
+            if (!this._isPress && !this._isOver) {
+                this._isOver = true;
+                if (!this._toggle || !this._selected) {
+                    this._phase = ButtonPhase.OVER;
+                    if (this.over.connected()) {
+                        this.over.emit(this);
+                    }
+                    if (this.rollOver.connected()) {
+                        this.rollOver.emit(this);
+                    }
+                }
+            }
+        } },
+    ____up: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = false;
+            if (!this._toggle && this._enabled) {
+                this._phase = ButtonPhase.UP;
+                if (this.up.connected()) {
+                    this.up.emit(this);
+                }
+            }
+            if (this.release.connected()) {
+                this.release.emit(this);
+            }
+        } },
+    ____upOutside: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = false;
+            if (!this._toggle && this.enabled) {
+                this._phase = ButtonPhase.UP;
+                if (this.up.connected()) {
+                    this.up.emit(this);
+                }
+            }
+            if (this.releaseOutside.connected()) {
+                this.releaseOutside.emit(this);
+            }
+        } }
 });
 
 /**
@@ -16627,6 +16912,7 @@ var molecule = Object.assign({
     ScrollPolicy: ScrollPolicy,
     components: components,
     display: display$1,
+    groups: groups,
     render: render$1,
     states: states
 });

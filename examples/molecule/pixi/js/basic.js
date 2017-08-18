@@ -11,6 +11,26 @@ if( !vegas )
 
 window.onload = function()
 {
+    // ---------------- Dependencies
+
+    var global   = vegas.global ; // jshint ignore:line
+    var trace    = vegas.trace  ; // jshint ignore:line
+    var core     = vegas.core   ; // jshint ignore:line
+    var system   = vegas.system ; // jshint ignore:line
+    var molecule = vegas.molecule ; // jshint ignore:line
+
+    var Tween       = system.transitions.Tween ;
+
+    var Application = PIXI.Application ;
+    var Body        = molecule.render.dom.display.Body ;
+    var Canvas      = molecule.render.dom.display.Canvas ;
+
+    var ButtonPhase = molecule.components.ButtonPhase ;
+    var CoreButton  = molecule.render.pixi.components.CoreButton ;
+    var MOB         = molecule.render.pixi.display.MOB ;
+
+    // ----------------
+
     var bunny ;
     var button ;
 
@@ -33,6 +53,8 @@ window.onload = function()
     {
         trace( '=== complete !' ) ;
 
+        var tween ;
+
         // --------- bunny
 
         bunny = new MOB( resources.bunny.texture ) ;
@@ -52,18 +74,63 @@ window.onload = function()
         button.x = 25 ;
         button.y = 25 ;
 
-        button.down.connect( function()
+        var update = function( )
         {
-            trace( "down" ) ;
-            button.texture = resources.button.textures.down ;
+            switch( button.phase )
+            {
+                case ButtonPhase.DISABLE :
+                {
+                    button.texture = resources.button.textures.disable ;
+                    break ;
+                }
+                case ButtonPhase.DOWN :
+                {
+                    button.texture = resources.button.textures.down ;
+                    break ;
+                }
+                case ButtonPhase.OVER :
+                {
+                    button.texture = resources.button.textures.over ;
+                    break ;
+                }
+                default :
+                case ButtonPhase.UP :
+                {
+                    button.texture = resources.button.textures.up ;
+                    break ;
+                }
+            }
+        }
+
+        button.disable.connect( update ) ;
+        button.over.connect( update ) ;
+        button.out.connect( update ) ;
+        button.down.connect( update ) ;
+        button.up.connect( update ) ;
+
+        button.pressed.connect( function()
+        {
+            console.log( "pressed" ) ;
             tween.run() ;
+        });
+
+        button.select.connect( function()
+        {
+            console.log( "select" ) ;
+            button.enabled = false ;
+            tween.run() ;
+        });
+
+        button.unselect.connect( function()
+        {
+            console.log( "unselect" ) ;
         });
 
         stage.addChild( button ) ;
 
         // --------- Tween
 
-        var tween = new Tween
+        tween = new Tween
         ({
             auto       : false,
             duration   : 24 ,
@@ -72,22 +139,12 @@ window.onload = function()
             target     : bunny ,
             to         : { x : 600 , y : 500 }
         }) ;
+
+        // --------- run
+
+        //button.toggle = true ;
+        //button.selected = true ;
     };
-
-    var global   = vegas.global ; // jshint ignore:line
-    var trace    = vegas.trace  ; // jshint ignore:line
-    var core     = vegas.core   ; // jshint ignore:line
-    var system   = vegas.system ; // jshint ignore:line
-    var molecule = vegas.molecule ; // jshint ignore:line
-
-    var Tween       = system.transitions.Tween ;
-
-    var Application = PIXI.Application ;
-    var Body        = molecule.render.dom.display.Body ;
-    var Canvas      = molecule.render.dom.display.Canvas ;
-
-    var CoreButton = molecule.render.pixi.components.CoreButton ;
-    var MOB        = molecule.render.pixi.display.MOB ;
 
     var app       = new Application();
     var body      = new Body() ;

@@ -5,11 +5,11 @@ import { isGroupable } from '../Groupable.js' ;
 import { Receiver }  from '../../system/signals/Receiver.js' ;
 
 /**
- * This display is used to create a background in your application or in an other display of the application.
- * @name Background
+ * This abstract class defined a skeletal implementation to create component's groups.
+ * @name CoreGroup
  * @class
- * @memberof molecule.render.pixi.display
- * @extends molecule.render.pixi.display.Element
+ * @memberof molecule.groups
+ * @extends system.signals.Receiver
  * @constructor
  */
 export function CoreGroup()

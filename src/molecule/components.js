@@ -3,6 +3,7 @@
 import './polyfill/Object.js' ;
 
 import { ButtonPhase } from './components/ButtonPhase.js' ;
+import { isButton }    from './components/isButton.js' ;
 
 /**
  * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
@@ -14,5 +15,6 @@ import { ButtonPhase } from './components/ButtonPhase.js' ;
  */
 export var components = Object.assign
 ({
-    ButtonPhase : ButtonPhase
+    ButtonPhase : ButtonPhase,
+    isButton    : isButton
 }) ;

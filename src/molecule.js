@@ -12,6 +12,7 @@ import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 import { components } from './molecule/components.js' ;
 import { display } from './molecule/display.js' ;
+import { groups } from './molecule/groups.js' ;
 import { logger } from './molecule/logging/logger.js' ;
 import { render } from './molecule/render.js' ;
 import { states } from './molecule/states.js' ;
@@ -43,7 +44,8 @@ export var molecule = Object.assign
     // ----- packages
 
     components : components,
-    display : display,
-    render  : render,
-    states  : states
+    display    : display,
+    groups     : groups,
+    render     : render,
+    states     : states
 }) ;
