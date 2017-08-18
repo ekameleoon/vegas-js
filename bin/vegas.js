@@ -16548,7 +16548,12 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             return this._disabledState;
         },
         set: function set(display) {
-            this._disabledState = display instanceof PIXI.DisplayObject ? display : null;
+            this._disabledState = null;
+            if (display instanceof PIXI.DisplayObject) {
+                this._disabledState = display;
+            } else if (display instanceof PIXI.Texture) {
+                this._disabledState = new MOB(display);
+            }
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16559,7 +16564,12 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             return this._downState;
         },
         set: function set(display) {
-            this._downState = display instanceof PIXI.DisplayObject ? display : null;
+            this._downState = null;
+            if (display instanceof PIXI.DisplayObject) {
+                this._downState = display;
+            } else if (display instanceof PIXI.Texture) {
+                this._downState = new MOB(display);
+            }
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16570,7 +16580,12 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             return this._overState;
         },
         set: function set(display) {
-            this._overState = display instanceof PIXI.DisplayObject ? display : null;
+            this._overState = null;
+            if (display instanceof PIXI.DisplayObject) {
+                this._overState = display;
+            } else if (display instanceof PIXI.Texture) {
+                this._overState = new MOB(display);
+            }
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16581,12 +16596,30 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             return this._upState;
         },
         set: function set(display) {
-            this._upState = display instanceof PIXI.DisplayObject ? display : null;
+            this._upState = null;
+            if (display instanceof PIXI.DisplayObject) {
+                this._upState = display;
+            } else if (display instanceof PIXI.Texture) {
+                this._upState = new MOB(display);
+            }
             if (!this.isLocked()) {
                 this.update();
             }
         }
     },
+    set: { value: function value() {
+            var up = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var over = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var down = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            var disable = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+            this.lock();
+            this.upState = up;
+            this.overState = over;
+            this.downState = down;
+            this.disabledState = disable;
+            this.unlock();
+            this.update();
+        } },
     toString: { value: function value() {
             return '[SimpleButton]';
         } },

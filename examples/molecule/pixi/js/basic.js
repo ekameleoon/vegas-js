@@ -53,10 +53,13 @@ window.onload = function()
         trace( '=== complete !' ) ;
 
         var tween ;
+        var texture ;
 
         // --------- bunny
 
-        bunny = new MOB( resources.bunny.texture ) ;
+        texture = resources.bunny.texture ;
+
+        bunny = new MOB( texture ) ;
 
         bunny.x = app.renderer.width  * 0.5 ;
         bunny.y = app.renderer.height * 0.5 ;
@@ -66,17 +69,44 @@ window.onload = function()
 
         stage.addChild( bunny );
 
+        // --------- tween
+
+        tween = new Tween
+        ({
+            auto       : false,
+            duration   : 24 ,
+            useSeconds : false ,
+            easing     : core.easings.backOut,
+            target     : bunny ,
+            to         : { x : 600 , y : 500 }
+        }) ;
+
         // --------- Button
 
-        button = new SimpleButton( resources.button.textures.up ); // resources.bunny.texture
+        // Note : The texture collection contains the disable, down, over and up PIXI.Texture references.
+        texture = resources.button.textures ;
+
+        button = new SimpleButton(); // resources.bunny.texture
+
+        button.toggle = true ;
 
         button.x = 25 ;
         button.y = 25 ;
 
-        button.disabledState = new PIXI.Sprite( resources.button.textures.disable ) ;
-        button.downState     = new PIXI.Sprite( resources.button.textures.down ) ;
-        button.overState     = new PIXI.Sprite( resources.button.textures.over ) ;
-        button.upState       = new PIXI.Sprite( resources.button.textures.up ) ;
+        // button.lock() ;
+        // button.disabledState = texture.disable ;
+        // button.downState     = texture.down ;
+        // button.overState     = texture.over ;
+        // button.upState       = texture.up ;
+        // button.unlock() ;
+
+        button.set
+        (
+            texture.up,
+            texture.over,
+            texture.down,
+            texture.disable
+        ) ;
 
         button.pressed.connect( function()
         {
@@ -104,23 +134,6 @@ window.onload = function()
         });
 
         stage.addChild( button ) ;
-
-        // --------- Tween
-
-        tween = new Tween
-        ({
-            auto       : false,
-            duration   : 24 ,
-            useSeconds : false ,
-            easing     : core.easings.backOut,
-            target     : bunny ,
-            to         : { x : 600 , y : 500 }
-        }) ;
-
-        // --------- run
-
-        button.toggle = true ;
-        //button.selected = true ;
     };
 
     var app       = new Application();

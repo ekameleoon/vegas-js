@@ -2,6 +2,7 @@
 
 import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
 import { CoreButton }  from '../CoreButton.js' ;
+import { MOB } from '../../display/MOB.js' ;
 
 /**
  * The SimpleButton class lets you control all basic instances of button in the framework.
@@ -10,6 +11,52 @@ import { CoreButton }  from '../CoreButton.js' ;
  * @memberof molecule.render.pixi.components.buttons
  * @extends molecule.render.pixi.components.CoreButton
  * @constructor
+ * @example
+ * var Application = PIXI.Application ;
+ * var Body        = molecule.render.dom.display.Body ;
+ * var Canvas      = molecule.render.dom.display.Canvas ;
+ *
+ * var app  = new Application();
+ * var body = new molecule.render.dom.display.Body() ;
+ * var canvas    = new Canvas( null , app.view ) ;
+ * var stage     = app.stage ;
+ *
+ * // Note : The texture collection contains the disable, down, over and up PIXI.Texture references.
+ * texture = PIXI.loader.resources.button.textures ;
+ *
+ * button = new SimpleButton();
+ *
+ * button.toggle = true ;
+ *
+ * button.x = 25 ;
+ * button.y = 25 ;
+ *
+ * button.lock() ;
+ * button.disabledState = texture.disable ;
+ * button.downState     = texture.down ;
+ * button.overState     = texture.over ;
+ * button.upState       = texture.up ;
+ * button.unlock() ;
+ *
+ * button.update() ; // update one time
+ *
+ * button.pressed.connect( function()
+ * {
+ *     console.log( "pressed" ) ;
+ * tween.run() ;
+ * });
+ *
+ * button.select.connect( function()
+ * {
+ *     console.log( "select" ) ;
+ * });
+ *
+ * button.unselect.connect( function()
+ * {
+ *     console.log( "unselect" ) ;
+ * });
+ *
+ * stage.addChild( button ) ;
  */
 export function SimpleButton( texture = null )
 {
@@ -47,14 +94,22 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
      * @name disabledState
      * @memberof molecule.render.pixi.components.buttons.SimpleButton
      * @instance
-     * @type {PIXI.DisplayObject}
+     * @type {PIXI.DisplayObject|PIXI.Texture}
      */
     disabledState :
     {
         get : function() { return this._disabledState ; } ,
         set : function( display )
         {
-            this._disabledState = display instanceof PIXI.DisplayObject ? display : null ;
+            this._disabledState = null ;
+            if( display instanceof PIXI.DisplayObject )
+            {
+                this._disabledState = display ;
+            }
+            else if( display instanceof PIXI.Texture )
+            {
+                this._disabledState = new MOB(display) ;
+            }
             if( !this.isLocked() )
             {
                 this.update() ;
@@ -67,14 +122,22 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
      * @name downState
      * @memberof molecule.render.pixi.components.buttons.SimpleButton
      * @instance
-     * @type {PIXI.DisplayObject}
+     * @type {PIXI.DisplayObject|PIXI.Texture}
      */
     downState :
     {
         get : function() { return this._downState ; } ,
         set : function( display )
         {
-            this._downState = display instanceof PIXI.DisplayObject ? display : null ;
+            this._downState = null ;
+            if( display instanceof PIXI.DisplayObject )
+            {
+                this._downState = display ;
+            }
+            else if( display instanceof PIXI.Texture )
+            {
+                this._downState = new MOB(display) ;
+            }
             if( !this.isLocked() )
             {
                 this.update() ;
@@ -87,14 +150,22 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
      * @name overState
      * @memberof molecule.render.pixi.components.buttons.SimpleButton
      * @instance
-     * @type {PIXI.DisplayObject}
+     * @type {PIXI.DisplayObject|PIXI.Texture}
      */
     overState :
     {
         get : function() { return this._overState ; } ,
         set : function( display )
         {
-            this._overState = display instanceof PIXI.DisplayObject ? display : null ;
+            this._overState = null ;
+            if( display instanceof PIXI.DisplayObject )
+            {
+                this._overState = display ;
+            }
+            else if( display instanceof PIXI.Texture )
+            {
+                this._overState = new MOB(display) ;
+            }
             if( !this.isLocked() )
             {
                 this.update() ;
@@ -103,24 +174,62 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
     },
 
     /**
-     * Specifies a display object that is used as the visual object for the "up" state — the state that the button is in when the pointer is not positioned over the button.
+     * Specifies a display object or a Texture that is used as the visual object for the "up" state — the state that the button is in when the pointer is not positioned over the button.
      * @name upState
      * @memberof molecule.render.pixi.components.buttons.SimpleButton
      * @instance
-     * @type {PIXI.DisplayObject}
+     * @type {PIXI.DisplayObject|PIXI.Texture}
      */
     upState :
     {
         get : function() { return this._upState ; } ,
         set : function( display )
         {
-            this._upState = display instanceof PIXI.DisplayObject ? display : null ;
+            this._upState = null ;
+            if( display instanceof PIXI.DisplayObject )
+            {
+                this._upState = display ;
+            }
+            else if( display instanceof PIXI.Texture )
+            {
+                this._upState = new MOB(display) ;
+            }
             if( !this.isLocked() )
             {
                 this.update() ;
             }
         }
     },
+
+    /**
+     * Specifies a display object that is used as the visual object for the "down" state.
+     * @name set
+     * @memberof molecule.render.pixi.components.buttons.SimpleButton
+     * @instance
+     * @function
+     * @param {PIXI.DisplayObject|PIXI.Texture} up - Specifies a display object or a {PIXI.Texture} that is used as the visual object for the "up" state — the state that the button is in when the pointer is not positioned over the button.
+     * @param {PIXI.DisplayObject|PIXI.Texture} over - Specifies a display object or a {PIXI.Texture} that is used as the visual object for the "over" state — the state that the button is in when the pointer is positioned over the button.
+     * @param {PIXI.DisplayObject|PIXI.Texture} down - Specifies a display object or a {PIXI.Texture} that is used as the visual object for the "down" state.
+     * @param {PIXI.DisplayObject|PIXI.Texture} disable - Specifies a display object or a {PIXI.Texture} that is used as the visual object for the "disabled" state.
+     * @example
+     * button.set
+     * (
+     *   texture.up,
+     *   texture.over,
+     *   texture.down,
+     *   texture.disable
+     * ) ;
+     */
+    set : { value : function( up = null , over = null , down = null , disable = null )
+    {
+        this.lock() ;
+        this.upState = up ;
+        this.overState = over ;
+        this.downState = down ;
+        this.disabledState = disable ;
+        this.unlock() ;
+        this.update() ;
+    }},
 
     /**
      * Returns the string representation of this instance.
