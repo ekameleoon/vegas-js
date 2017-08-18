@@ -16006,8 +16006,12 @@ function CoreButton() {
   Object.defineProperties(this, {
     down: { value: new Signal() },
     out: { value: new Signal() },
+    phase: { get: function get() {
+        return this._phase;
+      } },
     over: { value: new Signal() },
-    up: { value: new Signal() }
+    up: { value: new Signal() },
+    _phase: { value: ButtonPhase.UP, writable: true }
   });
   Element$1.call(this, texture);
   this.interactive = true;

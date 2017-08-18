@@ -27,7 +27,7 @@ export function Element( texture = null )
 
 Element.prototype = Object.create( MOB.prototype ,
 {
-    constructor : { value : Element } ,
+    constructor : { value : Element , writable : true } ,
 
     /**
      * Returns the string representation of this instance.

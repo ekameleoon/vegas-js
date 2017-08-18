@@ -75,7 +75,7 @@ export function MOB( texture = null )
 
 MOB.prototype = Object.create( PIXI.Sprite.prototype ,
 {
-    constructor : { value : MOB } ,
+    constructor : { value : MOB , writable : true  } ,
 
     /**
      * The alignment of the display element.

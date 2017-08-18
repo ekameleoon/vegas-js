@@ -2,7 +2,8 @@
 
 import { Signal } from './system/signals/Signal.js' ;
 
-import { Element } from './molecule/render/pixi/display/Element.js' ;
+import { ButtonPhase } from '../../../components/ButtonPhase.js' ;
+import { Element } from '../display/Element.js' ;
 
 /**
  * This class provides a skeletal implementation of the <code class="prettyprint">Button</code> interface,
@@ -17,6 +18,8 @@ export function CoreButton( texture = null )
 {
     Object.defineProperties( this ,
     {
+        // ------- public
+
         /**
          * This signal emit when button is down.
          * @name down
@@ -38,6 +41,16 @@ export function CoreButton( texture = null )
         out : { value : new Signal() } ,
 
         /**
+         * The current visual phase of the button.
+         * @name phase
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {string}
+         * @instance
+         * @readonly
+         */
+        phase : { get : function(){ return this._phase ; } } ,
+
+        /**
          * This signal emit when button is over.
          * @name over
          * @memberof molecule.render.pixi.components.CoreButton
@@ -55,7 +68,24 @@ export function CoreButton( texture = null )
          * @instance
          * @const
          */
-        up : { value : new Signal() }
+        up : { value : new Signal() } ,
+
+        // ------- private
+
+        /**
+         * @private
+         */
+        _phase : { value : ButtonPhase.UP , writable : true } ,
+
+        /**
+         * @private
+         */
+        _toggle : { value : false , writable : true } ,
+
+        /**
+         * @private
+         */
+        _selected : { value : false , writable : true }
     });
 
     Element.call( this , texture ) ;
