@@ -21,6 +21,26 @@ export function CoreButton( texture = null )
         // ------- public
 
         /**
+         * This signal emit when button is deselected.
+         * @name deselect
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        deselect : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is disabled.
+         * @name disable
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        disable : { value : new Signal() } ,
+
+        /**
          * This signal emit when button is down.
          * @name down
          * @memberof molecule.render.pixi.components.CoreButton
@@ -41,6 +61,16 @@ export function CoreButton( texture = null )
         out : { value : new Signal() } ,
 
         /**
+         * This signal emit when button is over.
+         * @name over
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        over : { value : new Signal() } ,
+
+        /**
          * The current visual phase of the button.
          * @name phase
          * @memberof molecule.render.pixi.components.CoreButton
@@ -51,14 +81,74 @@ export function CoreButton( texture = null )
         phase : { get : function(){ return this._phase ; } } ,
 
         /**
-         * This signal emit when button is over.
-         * @name over
+         * This signal emit when button is pressed.
+         * @name pressed
          * @memberof molecule.render.pixi.components.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
          */
-        over : { value : new Signal() } ,
+        pressed : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is released.
+         * @name release
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        release : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is released outside.
+         * @name releaseOutside
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        releaseOutside : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is rollout.
+         * @name rollOut
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        rollOut : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is rollover.
+         * @name rollOver
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        rollOver : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is selected.
+         * @name select
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        select : { value : new Signal() } ,
+
+        /**
+         * This signal emit when button is unselected.
+         * @name select
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        unselect : { value : new Signal() } ,
 
         /**
          * This signal emit when button is up.
@@ -99,6 +189,96 @@ export function CoreButton( texture = null )
 CoreButton.prototype = Object.create( Element.prototype ,
 {
     constructor : { value : CoreButton } ,
+
+    /**
+     * A flag that indicates whether this control is selected.
+     * @name selected
+     * @memberof molecule.render.pixi.components.CoreButton
+     * @instance
+     * @type {boolean}
+     */
+    selected :
+    {
+        get : function() {return this._selected ; } ,
+        set : function( value )
+        {
+            this.setSelected( value === true ) ;
+        }
+    },
+
+    /**
+     * Indicates a boolean value indicating whether the button behaves as a toggle switch (true) or not (false).
+     * @name toggle
+     * @memberof molecule.render.pixi.components.CoreButton
+     * @instance
+     * @type {boolean}
+     */
+    toggle :
+    {
+        get : function() { return this._toggle ; } ,
+        set : function( value )
+        {
+            this._toggle = value === true ;
+            this.setSelected( false , true ) ;
+        }
+    },
+
+    /**
+     * Sets a boolean value indicating whether the button is selected (true) or not (false).
+     * @param {boolean} value - The selected flag value.
+     * @param {string} options - The optional flag to control the method (default null).
+     * - Use the "true" value to disabled the "select" or "unselect" signals propagation.
+     * - Use the value "deselect" to enforce the propagation of the 'deselect' signal.
+     */
+    setSelected : { value : function( value , options = null )
+    {
+        this._selected = this._toggle && (value === true) ;
+
+        if ( this._enabled )
+        {
+            if( this._selected )
+            {
+                this._phase = ButtonPhase.DOWN ;
+                if( this.down.connected() )
+                {
+                    this.down.emit( this ) ;
+                }
+            }
+            else
+            {
+                this._phase = ButtonPhase.UP ;
+                if( this.up.connected() )
+                {
+                    this.up.emit( this ) ;
+                }
+            }
+        }
+
+        if ( options === null )
+        {
+            if( this._selected )
+            {
+                if( this.select.connected() )
+                {
+                    this.select.emit( this ) ;
+                }
+            }
+            else
+            {
+                if( this.unselect.connected() )
+                {
+                    this.unselect.emit( this ) ;
+                }
+            }
+        }
+        else if ( options === "deselect" )
+        {
+            if( this.deselect.connected() )
+            {
+                this.deselect.emit( this ) ;
+            }
+        }
+    }},
 
     /**
      * Notify when the button is down.

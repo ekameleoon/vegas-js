@@ -13,8 +13,11 @@ import { Signal } from './system/signals/Signal.js' ;
  * @memberof molecule.render.pixi.display
  * @extends PIXI.Sprite
  * @constructor
+ * @param {PIXI.Texture} [texture=null] - The texture for this sprite.
+ * @param {Object} [init=null] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @param {Boolean} [locked=false] - The flag to lock the new current object when is created.
  */
-export function MOB( texture = null )
+export function MOB( texture = null , init = null , locked = false )
 {
     Object.defineProperties( this ,
     {
@@ -56,21 +59,39 @@ export function MOB( texture = null )
         /**
          * @private
          */
-         _align    : { writable :  true , value :   10 } , // top left
-         _enabled  : { writable :  true , value :    0 } ,
-        _h         : { writable :  true , value :    0 } ,
-        _layout    : { writable :  true , value : null } ,
-        _locked    : { writable :  true , value :    0 } ,
-        _maxHeight : { writable :  true , value : null } ,
-        _maxWidth  : { writable :  true , value : null } ,
-        _minHeight : { writable :  true , value :    0 } ,
-        _minWidth  : { writable :  true , value :    0 } ,
+         altered   : { writable :  true , value : false } ,
+         _align    : { writable :  true , value :    10 } , // top left
+         _enabled  : { writable :  true , value :     0 } ,
+        _h         : { writable :  true , value :     0 } ,
+        _layout    : { writable :  true , value :  null } ,
+        _locked    : { writable :  true , value :     0 } ,
+        _maxHeight : { writable :  true , value :  null } ,
+        _maxWidth  : { writable :  true , value :  null } ,
+        _minHeight : { writable :  true , value :     0 } ,
+        _minWidth  : { writable :  true , value :     0 } ,
         _real      : { writable : false , value : new Rectangle() } ,
-        _scope     : { writable :  true , value : this } ,
-        _w         : { writable :  true , value :    0 }
+        _scope     : { writable :  true , value : !(this._scope) ? this : this._scope } ,
+        _w         : { writable :  true , value :     0 }
     });
 
     PIXI.Sprite.call( this , texture ) ;
+
+    ///////////
+
+    if( locked )
+    {
+        this.lock() ;
+    }
+
+    this.initialize( init ) ;
+
+    if( locked )
+    {
+        this.unlock() ;
+    }
+
+    ///////////
+
 }
 
 MOB.prototype = Object.create( PIXI.Sprite.prototype ,
@@ -105,10 +126,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     enabled :
     {
-        get : function()
-        {
-            return this._enabled ;
-        },
+        get : function() { return this._enabled ; },
         set : function ( value )
         {
             this._enabled = value ;
@@ -150,10 +168,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     layout :
     {
-        get : function()
-        {
-            return this._layout ;
-        },
+        get : function() { return this._layout ; },
         set : function( layout )
         {
             if ( this._layout )
@@ -284,10 +299,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     scope :
     {
-        get : function()
-        {
-            return this._scope ;
-        },
+        get : function() { return this._scope ; },
         set : function( scope )
         {
             if( scope )
@@ -309,15 +321,11 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * Determinates the virtual width value of this component.
      * @name w
      * @memberof molecule.render.pixi.display.MOB
-     * @function
      * @instance
      */
     w :
     {
-        get : function()
-        {
-            return clamp( this._w , this._minWidth , this._maxWidth ) ;
-        } ,
+        get : function() { return clamp( this._w , this._minWidth , this._maxWidth ) ; } ,
         set : function(value)
         {
             this._w = clamp( value , this._minWidth , this._maxWidth ) ;
@@ -328,6 +336,19 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
             this.notifyResized() ;
         }
     },
+
+
+    /**
+     * Draw the display.
+     * @name draw
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     * @function
+     */
+    draw : { writable : true , value : function()
+    {
+        // overrides
+    }},
 
     /**
      * Refresh the real area Rectangle of the background with the current alignement.
@@ -387,6 +408,35 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         // result
 
         return this._real ;
+    }},
+
+
+    /**
+     * Initialize the canvas.
+     * @name isLocked
+     * @memberof molecule.render.pixi.display.MOB
+     * @function
+     * @instance
+     * @param [init=null] - An object that contains properties with which to populate the newly instance. If init is not an object, it is ignored.
+     */
+    initialize : { value : function( init = null )
+    {
+        if( init )
+        {
+            this.lock() ;
+            for( var prop in init )
+            {
+                if( prop in init )
+                {
+                    this[prop] = init[prop] ;
+                }
+            }
+            this.unlock() ;
+        }
+        if ( this._locked === 0 )
+        {
+            this.update() ;
+        }
     }},
 
     /**
@@ -513,7 +563,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * @instance
      * @function
      */
-    toString : { value : function () { return '[MOB]' ; }} ,
+    toString : { writable : true , value : function () { return '[MOB]' ; }} ,
 
     /**
      * Unlocks the display.
@@ -567,7 +617,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * @function
      * @instance
      */
-    viewChanged : { value : function()
+    viewChanged : { writable : true , value : function()
     {
         // override
     }},
@@ -579,7 +629,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * @function
      * @instance
      */
-    viewEnabled : { value : function()
+    viewEnabled : { writable : true , value : function()
     {
         // override
     }},
@@ -591,7 +641,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * @function
      * @instance
      */
-    viewResize : { value : function()
+    viewResize : { writable : true , value : function()
     {
         // override
     }}

@@ -9,3 +9,4 @@ import './molecule/LabelPolicy.js' ;
 import './molecule/ScrollPolicy.js' ;
 
 import './molecule/components.js' ;
+import './molecule/groups.js' ;

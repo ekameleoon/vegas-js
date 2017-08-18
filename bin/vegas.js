@@ -13030,6 +13030,35 @@ var graphics = Object.assign({
     geom: geom
 });
 
+function Builder() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Runnable.call(this);
+    Object.defineProperties(this, {
+        _target: { value: target, configurable: true, writable: true }
+    });
+}
+Builder.prototype = Object.create(Runnable.prototype, {
+    constructor: { value: Builder, writable: true },
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+        }
+    },
+    clear: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+        } }
+});
+
+var Deployment = Object.defineProperties({}, {
+  CLOSE: { enumerable: true, value: 'close' },
+  OPEN: { enumerable: true, value: 'open' },
+  PROTECTED: { enumerable: true, value: 'protected' }
+});
+
 function Groupable() {
     Object.defineProperties(this, {
         group: { value: false, configurable: true, writable: true },
@@ -13057,6 +13086,11 @@ function Iconifiable() {
 }
 Iconifiable.prototype = Object.create(Object.prototype, {
     constructor: { value: Iconifiable, writable: true }
+});
+
+var LabelPolicy = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  NORMAL: { enumerable: true, value: 'normal' }
 });
 
 var ScrollPolicy = Object.defineProperties({}, {
@@ -15660,29 +15694,6 @@ var dom$1 = Object.assign({
   }
 });
 
-function Builder() {
-    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    Runnable.call(this);
-    Object.defineProperties(this, {
-        _target: { value: target, configurable: true, writable: true }
-    });
-}
-Builder.prototype = Object.create(Runnable.prototype, {
-    constructor: { value: Builder, writable: true },
-    target: {
-        get: function get() {
-            return this._target;
-        },
-        set: function set(value) {
-            this._target = value;
-        }
-    },
-    clear: { writable: true, value: function value() {
-        } },
-    update: { writable: true, value: function value() {
-        } }
-});
-
 function EdgeMetrics() {
     var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -15743,11 +15754,14 @@ EdgeMetrics.prototype = Object.create(Object.prototype, {
 
 function MOB() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     Object.defineProperties(this, {
         changed: { value: new Signal() },
         renderer: { value: new Signal() },
         resized: { value: new Signal() },
         updater: { value: new Signal() },
+        altered: { writable: true, value: false },
         _align: { writable: true, value: 10 },
         _enabled: { writable: true, value: 0 },
         _h: { writable: true, value: 0 },
@@ -15758,10 +15772,17 @@ function MOB() {
         _minHeight: { writable: true, value: 0 },
         _minWidth: { writable: true, value: 0 },
         _real: { writable: false, value: new Rectangle() },
-        _scope: { writable: true, value: this },
+        _scope: { writable: true, value: !this._scope ? this : this._scope },
         _w: { writable: true, value: 0 }
     });
     PIXI.Sprite.call(this, texture);
+    if (locked) {
+        this.lock();
+    }
+    this.initialize(init);
+    if (locked) {
+        this.unlock();
+    }
 }
 MOB.prototype = Object.create(PIXI.Sprite.prototype, {
     constructor: { value: MOB, writable: true },
@@ -15908,6 +15929,8 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.notifyResized();
         }
     },
+    draw: { writable: true, value: function value() {
+        } },
     fixArea: { value: function value() {
             this._real.width = this.w;
             this._real.height = this.h;
@@ -15935,6 +15958,21 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
                 this._real.x -= this._real.width;
             }
             return this._real;
+        } },
+    initialize: { value: function value() {
+            var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            if (init) {
+                this.lock();
+                for (var prop in init) {
+                    if (prop in init) {
+                        this[prop] = init[prop];
+                    }
+                }
+                this.unlock();
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
         } },
     isLocked: { value: function value() {
             return this._locked > 0;
@@ -15980,7 +16018,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             }
             this.notifyResized();
         } },
-    toString: { value: function value() {
+    toString: { writable: true, value: function value() {
             return '[MOB]';
         } },
     unlock: { value: function value() {
@@ -16014,7 +16052,12 @@ function Element$1() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
         _border: { writable: false, value: new EdgeMetrics() },
-        _builder: { writable: true, value: null }
+        _builder: { writable: true, value: null },
+        _direction: { writable: true, value: null },
+        _group: { writable: true, value: false },
+        _groupName: { writable: true, value: null },
+        _invalides: { writable: false, value: {} },
+        _oldGroupName: { writable: true, value: null }
     });
     this._builder = this.getBuilderRenderer();
     if (this._builder instanceof Builder) {
@@ -16023,13 +16066,143 @@ function Element$1() {
     }
     MOB.call(this, texture);
 }
+Object.defineProperties(Element$1, {
+    BUILDER: { value: "builder" },
+    DRAW: { value: "draw" },
+    LAYOUT: { value: "draw" },
+    VIEW_CHANGED: { value: "view_changed" }
+});
 Element$1.prototype = Object.create(MOB.prototype, {
     constructor: { value: Element$1, writable: true },
+    border: {
+        get: function get() {
+            return this._border;
+        },
+        set: function set(em) {
+            var isEM = em instanceof EdgeMetrics;
+            this._border.bottom = isEM ? em.bottom : 0;
+            this._border.left = isEM ? em.left : 0;
+            this._border.right = isEM ? em.right : 0;
+            this._border.top = isEM ? em.top : 0;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    builder: {
+        get: function get() {
+            return this._builder;
+        },
+        set: function set(builder) {
+            if (this._builder) {
+                this._builder.clear();
+            }
+            this._builder = builder instanceof Builder || this.getBuilderRenderer();
+            if (this._builder instanceof Builder) {
+                this._builder.target = this;
+                this._builder.run();
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    direction: {
+        get: function get() {
+            return this._direction;
+        },
+        set: function set(value) {
+            this._direction = value === Direction.VERTICAL || value === Direction.HORIZONTAL ? value : null;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    group: {
+        get: function get() {
+            return this._group;
+        },
+        set: function set(value) {
+            this._group = value === true;
+            this.groupPolicyChanged();
+        }
+    },
+    groupName: {
+        get: function get() {
+            return this._groupName;
+        },
+        set: function set(value) {
+            this._oldGroupName = this._groupName;
+            this._groupName = isString(value) ? value : null;
+            this._group = isString(value) && value.length > 0;
+            this.groupPolicyChanged();
+            this._oldGroupName = null;
+        }
+    },
     getBuilderRenderer: { writable: true, value: function value() {
             return null;
         } },
-    toString: { value: function value() {
+    groupPolicyChanged: { writable: true, value: function value() {
+        } },
+    notifyChanged: { value: function value() {
+            if (this.changed.connected()) {
+                this.changed.emit(this);
+            }
+        } },
+    toString: { writable: true, value: function value() {
             return '[Element]';
+        } },
+    update: { writable: true, value: function value() {
+            if (this._locked > 0) {
+                return;
+            }
+            this.renderer.emit(this);
+            if (this._invalides[Element$1.LAYOUT]) {
+                this._invalides[Element$1.LAYOUT] = undefined;
+            } else if (this._layout) {
+                this._layout.run();
+            }
+            if (this._invalides[Element$1.BUILDER]) {
+                this._invalides[Element$1.BUILDER] = undefined;
+            } else if (this._builder) {
+                this._builder.update();
+            }
+            if (this._invalides[Element$1.DRAW]) {
+                this._invalides[Element$1.DRAW] = undefined;
+            } else {
+                this.draw();
+            }
+            if (this._invalides[Element$1.VIEW_CHANGED]) {
+                this._invalides[Element$1.VIEW_CHANGED] = undefined;
+            } else {
+                this.viewChanged();
+            }
+            this.altered = false;
+            this.updater.emit(this);
+        } },
+    invalidate: { value: function value(type) {
+            if (isString(type) && type !== "") {
+                this._invalides[type] = true;
+            }
+        } },
+    invalidateBuilder: { value: function value() {
+            this._invalides[Element$1.BUILDER] = true;
+        } },
+    invalidateDraw: { value: function value() {
+            this._invalides[Element$1.DRAW] = true;
+        } },
+    invalidateLayout: { value: function value() {
+            this._invalides[Element$1.LAYOUT] = true;
+        } },
+    invalidateViewChanged: { value: function value() {
+            this._invalides[Element$1.VIEW_CHANGED] = true;
+        } },
+    validate: { value: function value() {
+            for (var prop in this._invalides) {
+                if (prop in this._invalides) {
+                    delete this._invalides[prop];
+                }
+            }
         } }
 });
 
@@ -16445,9 +16618,12 @@ var states = Object.assign({
  */
 var molecule = Object.assign({
     logger: logger$1,
+    Builder: Builder,
+    Deployment: Deployment,
     Focusable: Focusable,
     Groupable: Groupable,
     Iconifiable: Iconifiable,
+    LabelPolicy: LabelPolicy,
     ScrollPolicy: ScrollPolicy,
     components: components,
     display: display$1,

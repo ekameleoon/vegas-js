@@ -1,9 +1,12 @@
 "use strict" ;
 
-import { Builder }     from '../../../Builder.js' ;
+import { isString } from './core/isString.js' ;
+
 import { Direction }   from './graphics/Direction.js' ;
 import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
-import { MOB }         from './MOB' ;
+
+import { Builder } from '../../../Builder.js' ;
+import { MOB }     from './MOB' ;
 
 /**
  * This class provides a skeletal implementation of all the components, to minimize the effort required to implement this interface.
@@ -20,11 +23,13 @@ export function Element( texture = null )
         /**
          * @private
          */
-        _border    : { writable : false , value : new EdgeMetrics() } ,
-        _builder   : { writable : true  , value :  null } ,
-        _direction : { writable : true  , value :  null } ,
-        _group     : { writable : true  , value : false } ,
-        _groupName : { writable : true  , value :  null }
+        _border       : { writable : false , value : new EdgeMetrics() } ,
+        _builder      : { writable : true  , value :  null } ,
+        _direction    : { writable : true  , value :  null } ,
+        _group        : { writable : true  , value : false } ,
+        _groupName    : { writable : true  , value :  null } ,
+        _invalides    : { writable : false , value :  {}   } ,
+        _oldGroupName : { writable : true  , value :  null }
     });
 
     ///////////
@@ -40,6 +45,49 @@ export function Element( texture = null )
 
     MOB.call( this , texture ) ;
 }
+
+Object.defineProperties( Element ,
+{
+    /**
+     * The "builder" invalidate type.
+     * @name BUILDER
+     * @memberof molecule.render.pixi.display.Element
+     * @static
+     * @type {String}
+     * @default "builder"
+     */
+    BUILDER : { value : "builder" } ,
+
+    /**
+     * The "draw" invalidate type.
+     * @name DRAW
+     * @memberof molecule.render.pixi.display.Element
+     * @static
+     * @type {String}
+     * @default "draw"
+     */
+    DRAW : { value : "draw" } ,
+
+    /**
+     * The "layout" invalidate type.
+     * @name LAYOUT
+     * @memberof molecule.render.pixi.display.Element
+     * @static
+     * @type {String}
+     * @default "layout"
+     */
+    LAYOUT : { value : "draw" } ,
+
+    /**
+     * The "view_changed" invalidate type.
+     * @name VIEW_CHANGED
+     * @memberof molecule.render.pixi.display.Element
+     * @static
+     * @type {String}
+     * @default "draw"
+     */
+    VIEW_CHANGED : { value : "view_changed" }
+});
 
 Element.prototype = Object.create( MOB.prototype ,
 {
@@ -129,6 +177,42 @@ Element.prototype = Object.create( MOB.prototype ,
     },
 
     /**
+     * Indicates with a boolean if this object is grouped.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @type {Boolean}
+     * @default false
+     */
+    group :
+    {
+        get : function() { return this._group ; },
+        set : function( value )
+        {
+            this._group = value === true ;
+            this.groupPolicyChanged() ;
+        }
+    },
+
+    /**
+     * Indicates the name of the group of this object.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @type {String}
+     */
+    groupName :
+    {
+        get : function() { return this._groupName ; },
+        set : function( value )
+        {
+            this._oldGroupName = this._groupName ;
+            this._groupName    = isString(value) ? value : null ;
+            this._group        = isString(value) && value.length > 0 ;
+            this.groupPolicyChanged() ;
+            this._oldGroupName = null ;
+        }
+    },
+
+    /**
      * Returns the {molecule.Builder} instance use to initialize this component.
      * @return the {molecule.Builder} instance use to initialize this component.
      * @memberof molecule.render.pixi.display.Element
@@ -141,11 +225,160 @@ Element.prototype = Object.create( MOB.prototype ,
     }},
 
     /**
+     * Invoked when the group property or the groupName property changed.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @function
+     */
+    groupPolicyChanged : { writable : true , value : function()
+    {
+        // override
+    }},
+
+    /**
+     * Notify a change of the element.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @function
+     */
+    notifyChanged : { value : function()
+    {
+        if( this.changed.connected() )
+        {
+            this.changed.emit( this ) ;
+        }
+    }},
+
+    /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
      * @memberof molecule.render.pixi.display.Element
      * @instance
      * @function
      */
-    toString : { value : function () { return '[Element]' ; }}
+    toString : { writable : true , value : function () { return '[Element]' ; }},
+
+    /**
+     * Update the display.
+     */
+    update : { writable : true , value : function()
+    {
+        if ( this._locked > 0 )
+        {
+            return ;
+        }
+
+        this.renderer.emit(this) ;
+
+        ////// layout
+
+        if( this._invalides[ Element.LAYOUT ] )
+        {
+            this._invalides[ Element.LAYOUT ] = undefined ;
+        }
+        else if( this._layout )
+        {
+            this._layout.run() ;
+        }
+
+        ////// builder
+
+        if ( this._invalides[ Element.BUILDER ] )
+        {
+            this._invalides[ Element.BUILDER ] = undefined ;
+        }
+        else if( this._builder )
+        {
+            this._builder.update() ;
+        }
+
+        ////// drawing
+
+        if( this._invalides[ Element.DRAW ] )
+        {
+            this._invalides[ Element.DRAW ] = undefined ;
+        }
+        else
+        {
+            this.draw() ;
+        }
+
+        ////// view_changed
+
+        if( this._invalides[ Element.VIEW_CHANGED ] )
+        {
+            this._invalides[ Element.VIEW_CHANGED ] = undefined ;
+        }
+        else
+        {
+            this.viewChanged() ;
+        }
+
+        this.altered = false ;
+
+        this.updater.emit(this) ;
+    }},
+
+    /**
+     * Invalidates a specific process.
+     * @private
+     */
+    invalidate : { value : function ( type )
+    {
+        if( isString(type) && type !== "" )
+        {
+            this._invalides[ type ] = true ;
+        }
+    }},
+
+    /**
+     * Invalidates the builder in the update method of the component.
+     * @private
+     */
+    invalidateBuilder : { value : function()
+    {
+        this._invalides[ Element.BUILDER ] = true ;
+    }},
+
+    /**
+     * Invalidates the drawing command in the update method of the component.
+     * @private
+     */
+    invalidateDraw : { value : function()
+    {
+        this._invalides[ Element.DRAW ] = true ;
+    }},
+
+    /**
+     * Invalidates the layout in the update method of the component.
+     * @private
+     */
+    invalidateLayout : { value : function()
+    {
+        this._invalides[ Element.LAYOUT ] = true ;
+    }},
+
+    /**
+     * Invalidates the viewChanged callback invokation in the update method of the component.
+     * @private
+     */
+    invalidateViewChanged : { value : function()
+    {
+        this._invalides[ Element.VIEW_CHANGED ] = true ;
+    }},
+
+    /**
+     * Validates all the commands in the component.
+     * @private
+     */
+    validate : { value : function()
+    {
+        for( var prop in this._invalides )
+        {
+            if( prop in this._invalides )
+            {
+                delete this._invalides[prop] ;
+            }
+        }
+    }}
 }) ;
