@@ -50,7 +50,7 @@ window.onload = function()
 
     var complete = function( loader , resources )
     {
-        trace( '=== complete ...' ) ;
+        trace( '=== complete !' ) ;
 
         var tween ;
         var texture ;

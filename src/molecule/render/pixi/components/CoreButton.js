@@ -19,7 +19,14 @@ export function CoreButton( texture = null )
 {
     Object.defineProperties( this ,
     {
-        // ------- public
+        /**
+         * Indicates the data value object of the component.
+         * @name data
+         * @memberof molecule.render.pixi.components.CoreButton
+         * @instance
+         * @type {Object}
+         */
+        data : { writable : true , value : null },
 
         /**
          * This signal emit when button is deselected.
@@ -181,18 +188,23 @@ export function CoreButton( texture = null )
         /**
          * @private
          */
+        _selected : { value : false , writable : true } ,
+
+        /**
+         * @private
+         */
         _toggle : { value : false , writable : true } ,
 
         /**
          * @private
          */
-        _selected : { value : false , writable : true }
+        _useHandCursor : { value : true , writable : true }
     });
 
     Element.call( this , texture ) ;
 
     this.interactive = true ;
-    this.buttonMode  = true ;
+    this.buttonMode  = this._useHandCursor && this._enabled ;
 
     this.postScope() ;
 }
@@ -231,6 +243,23 @@ CoreButton.prototype = Object.create( Element.prototype ,
         {
             this._toggle = value === true ;
             this.setSelected( false , true ) ;
+        }
+    },
+
+    /**
+     * A flag that indicates whether this control is selected.
+     * @name selected
+     * @memberof molecule.render.pixi.components.CoreButton
+     * @instance
+     * @type {boolean}
+     */
+    useHandCursor :
+    {
+        get : function() {return this._useHandCursor ; } ,
+        set : function( value )
+        {
+            this._useHandCursor = value === true ;
+            this.buttonMode  = this._useHandCursor && this._enabled ;
         }
     },
 
@@ -326,10 +355,10 @@ CoreButton.prototype = Object.create( Element.prototype ,
      */
     viewEnabled : { writable : true , value : function()
     {
+        this.buttonMode  = this._useHandCursor && this._enabled ;
         if ( this._enabled )
         {
             this.interactive = true ;
-            this.buttonMode  = true ;
             if ( this._toggle && this._selected )
             {
                 this._phase = ButtonPhase.DOWN ;
@@ -350,7 +379,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
         else
         {
             this.interactive = false ;
-            this.buttonMode  = false ;
             if( this._isOver )
             {
                 this._isOver = false ;
@@ -399,10 +427,10 @@ CoreButton.prototype = Object.create( Element.prototype ,
     {
         if( this._scope )
         {
-            this._scope.mousedown      = null ;
-            this._scope.mouseout       = null ;
-            this._scope.mouseover      = null ;
-            this._scope.mouseup        = null ;
+            this._scope.mousedown =
+            this._scope.mouseout =
+            this._scope.mouseover =
+            this._scope.mouseup =
             this._scope.mouseupoutside = null ;
         }
     }},
@@ -489,7 +517,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
         {
             this._isOver = false ;
         }
-
         this._isPress = false ;
         if ( !this._toggle && this._enabled )
         {
@@ -499,7 +526,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
                 this.up.emit( this ) ;
             }
         }
-
         if( this.release.connected() )
         {
             this.release.emit( this ) ;
@@ -515,9 +541,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
         {
             this._isOver = false ;
         }
-
         this._isPress = false ;
-
         if ( !this._toggle && this.enabled )
         {
             this._phase = ButtonPhase.UP ;
@@ -526,7 +550,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
                 this.up.emit( this ) ;
             }
         }
-
         if( this.releaseOutside.connected() )
         {
             this.releaseOutside.emit( this ) ;

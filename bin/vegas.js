@@ -16313,6 +16313,7 @@ var radio = new RadioButtonGroup();
 function CoreButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
+        data: { writable: true, value: null },
         deselect: { value: new Signal() },
         disable: { value: new Signal() },
         down: { value: new Signal() },
@@ -16332,12 +16333,13 @@ function CoreButton() {
         _isOver: { value: false, writable: true },
         _isPress: { value: false, writable: true },
         _phase: { value: ButtonPhase.UP, writable: true },
+        _selected: { value: false, writable: true },
         _toggle: { value: false, writable: true },
-        _selected: { value: false, writable: true }
+        _useHandCursor: { value: true, writable: true }
     });
     Element$1.call(this, texture);
     this.interactive = true;
-    this.buttonMode = true;
+    this.buttonMode = this._useHandCursor && this._enabled;
     this.postScope();
 }
 CoreButton.prototype = Object.create(Element$1.prototype, {
@@ -16357,6 +16359,15 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         set: function set(value) {
             this._toggle = value === true;
             this.setSelected(false, true);
+        }
+    },
+    useHandCursor: {
+        get: function get() {
+            return this._useHandCursor;
+        },
+        set: function set(value) {
+            this._useHandCursor = value === true;
+            this.buttonMode = this._useHandCursor && this._enabled;
         }
     },
     groupPolicyChanged: { writable: true, value: function value() {
@@ -16402,9 +16413,9 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
             return '[CoreButton]';
         } },
     viewEnabled: { writable: true, value: function value() {
+            this.buttonMode = this._useHandCursor && this._enabled;
             if (this._enabled) {
                 this.interactive = true;
-                this.buttonMode = true;
                 if (this._toggle && this._selected) {
                     this._phase = ButtonPhase.DOWN;
                     if (this.down.connected()) {
@@ -16418,7 +16429,6 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                 }
             } else {
                 this.interactive = false;
-                this.buttonMode = false;
                 if (this._isOver) {
                     this._isOver = false;
                 }
@@ -16443,11 +16453,7 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } },
     preScope: { writable: true, value: function value() {
             if (this._scope) {
-                this._scope.mousedown = null;
-                this._scope.mouseout = null;
-                this._scope.mouseover = null;
-                this._scope.mouseup = null;
-                this._scope.mouseupoutside = null;
+                this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
             }
         } },
     ____down: { value: function value() {
@@ -16526,7 +16532,6 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
 function SimpleButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
-        _current: { writable: true, value: null },
         _downState: { writable: true, value: null },
         _disabledState: { writable: true, value: null },
         _overState: { writable: true, value: null },
@@ -16547,13 +16552,8 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
         get: function get() {
             return this._disabledState;
         },
-        set: function set(display) {
-            this._disabledState = null;
-            if (display instanceof PIXI.DisplayObject) {
-                this._disabledState = display;
-            } else if (display instanceof PIXI.Texture) {
-                this._disabledState = new MOB(display);
-            }
+        set: function set(texture) {
+            this._disabledState = texture instanceof PIXI.Texture ? texture : null;
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16563,13 +16563,8 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
         get: function get() {
             return this._downState;
         },
-        set: function set(display) {
-            this._downState = null;
-            if (display instanceof PIXI.DisplayObject) {
-                this._downState = display;
-            } else if (display instanceof PIXI.Texture) {
-                this._downState = new MOB(display);
-            }
+        set: function set(texture) {
+            this._downState = texture instanceof PIXI.Texture ? texture : null;
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16579,13 +16574,8 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
         get: function get() {
             return this._overState;
         },
-        set: function set(display) {
-            this._overState = null;
-            if (display instanceof PIXI.DisplayObject) {
-                this._overState = display;
-            } else if (display instanceof PIXI.Texture) {
-                this._overState = new MOB(display);
-            }
+        set: function set(texture) {
+            this._overState = texture instanceof PIXI.Texture ? texture : null;
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16595,13 +16585,8 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
         get: function get() {
             return this._upState;
         },
-        set: function set(display) {
-            this._upState = null;
-            if (display instanceof PIXI.DisplayObject) {
-                this._upState = display;
-            } else if (display instanceof PIXI.Texture) {
-                this._upState = new MOB(display);
-            }
+        set: function set(texture) {
+            this._upState = texture instanceof PIXI.Texture ? texture : null;
             if (!this.isLocked()) {
                 this.update();
             }
@@ -16624,41 +16609,28 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             return '[SimpleButton]';
         } },
     viewChanged: { writable: true, value: function value() {
-            if (this._current) {
-                if (this.children.indexOf(this._current) > -1) {
-                    this.removeChild(this._current);
-                }
-                this._current = null;
-            }
             switch (this._phase) {
                 case ButtonPhase.DISABLE:
                     {
-                        this._current = this._disabledState;
+                        this.texture = this._disabledState || PIXI.Texture.EMPTY;
                         break;
                     }
                 case ButtonPhase.DOWN:
                     {
-                        this._current = this._downState;
+                        this.texture = this._downState || PIXI.Texture.EMPTY;
                         break;
                     }
                 case ButtonPhase.OVER:
                     {
-                        this._current = this._overState;
+                        this.texture = this._overState || PIXI.Texture.EMPTY;
                         break;
                     }
                 default:
                 case ButtonPhase.UP:
                     {
-                        this._current = this._upState;
+                        this.texture = this._upState || PIXI.Texture.EMPTY;
                         break;
                     }
-            }
-            if (this._current && this.children.indexOf(this._current) < 0) {
-                if (this.children.length > 0) {
-                    this.addChildAt(this._current, 0);
-                } else {
-                    this.addChild(this._current);
-                }
             }
         } }
 });
