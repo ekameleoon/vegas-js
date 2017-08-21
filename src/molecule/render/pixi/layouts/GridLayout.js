@@ -82,7 +82,7 @@ GridLayout.prototype = Object.create( BoxLayout.prototype ,
 
     /**
      * Indicates if the layout is bottom to top.
-     * @memberof molecule.render.pixi.layouts.BoxLayout
+     * @memberof molecule.render.pixi.layouts.GridLayout
      * @function
      * @instance
      */
@@ -95,7 +95,7 @@ GridLayout.prototype = Object.create( BoxLayout.prototype ,
 
     /**
      * Indicates if the layout is right to left.
-     * @memberof molecule.render.pixi.layouts.BoxLayout
+     * @memberof molecule.render.pixi.layouts.GridLayout
      * @function
      * @instance
      */
@@ -111,7 +111,7 @@ GridLayout.prototype = Object.create( BoxLayout.prototype ,
      * If the Box layout's direction property is set to Direction.HORIZONTAL,
      * its measuredWidth property is equal to the sum of default widths of all of the children in the container, plus the thickness of the borders (padding), plus the left and right padding, plus the horizontal gap between each child. The value of the measuredHeight property is the maximum of all the children's default heights, plus room for the borders and padding.
      * If the Box layout's direction property is set to Direction.VERTICAL, these two values are reversed.
-     * @memberof molecule.render.pixi.layouts.BoxLayout
+     * @memberof molecule.render.pixi.layouts.GridLayout
      * @function
      * @instance
      */
@@ -210,7 +210,7 @@ GridLayout.prototype = Object.create( BoxLayout.prototype ,
 
     /**
      * Render the layout, refresh and change the position of all childs in a specific container.
-     * @memberof molecule.render.pixi.layouts.BoxLayout
+     * @memberof molecule.render.pixi.layouts.GridLayout
      * @function
      * @instance
      */

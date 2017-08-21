@@ -17133,6 +17133,130 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
         } }
 });
 
+function radiansToDegrees(angle /*Number*/)
+{
+  return angle * RAD2DEG;
+}
+
+function CircleLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _childAngle: { writable: true, value: 0 },
+        _childCount: { writable: true, value: 10 },
+        _childOrientation: { writable: true, value: false },
+        _radius: { writable: true, value: 100 },
+        _startAngle: { writable: true, value: 0 },
+        _pi1: { writable: false, value: Math.PI * 0.5 },
+        _pi2: { writable: false, value: Math.PI * 2 }
+    });
+    LayoutContainer.call(this, container, init);
+}
+CircleLayout.prototype = Object.create(LayoutContainer.prototype, {
+    constructor: { writable: true, value: CircleLayout },
+    childAngle: {
+        get: function get() {
+            return this._childAngle;
+        },
+        set: function set(value) {
+            this._childAngle = isNaN(value) ? 0 : value;
+        }
+    },
+    childCount: {
+        get: function get() {
+            return this._childCount;
+        },
+        set: function set(value) {
+            this._childCount = value > 1 ? value : 1;
+        }
+    },
+    childOrientation: {
+        get: function get() {
+            return this._childOrientation;
+        },
+        set: function set(value) {
+            this._childOrientation = value === true;
+        }
+    },
+    radius: {
+        get: function get() {
+            return this._radius;
+        },
+        set: function set(value) {
+            this._radius = isNaN(value) ? 0 : value;
+        }
+    },
+    startAngle: {
+        get: function get() {
+            return radiansToDegrees(this._startAngle);
+        },
+        set: function set(value) {
+            this._startAngle = degreesToRadians(isNaN(value) ? 0 : value % 360);
+        }
+    },
+    measure: { value: function value() {
+            this._bounds.width = this._bounds.height = 2 * this._radius;
+            if (this._align === Align.BOTTOM) {
+                this._bounds.x = -this._radius;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.BOTTOM_LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.BOTTOM_RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = -this._radius;
+            } else if (this._align === Align.RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = -this._radius;
+            } else if (this._align === Align.TOP) {
+                this._bounds.x = -this._radius;
+                this._bounds.y = 0;
+            } else if (this._align === Align.TOP_LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = 0;
+            } else if (this._align === Align.TOP_RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = 0;
+            } else
+                {
+                    this._bounds.x = -this._radius;
+                    this._bounds.y = -this._radius;
+                }
+        } },
+    render: { writable: true, value: function value() {
+            var _this = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var i = 0;
+                    var child = void 0;
+                    _this._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
+                        child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
+                        if (_this._childOrientation) {
+                            child.rotation = atan2D(child.y, child.x) + _this._childAngle;
+                        } else {
+                            var flag = isMeasurable(child) && _this.usePreferredSize;
+                            child.rotation = 0;
+                            child.x -= (flag ? child.w : child.width) * 0.5;
+                            child.y -= (flag ? child.h : child.height) * 0.5;
+                        }
+                        child.x += _this._bounds.x + _this._radius;
+                        child.y += _this._bounds.y + _this._radius;
+                        i++;
+                    });
+                })();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            this.updater.emit(this);
+            this.notifyFinished();
+        } }
+});
+
 function GridLayout() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -17293,6 +17417,7 @@ GridLayout.prototype = Object.create(BoxLayout.prototype, {
  */
 var layouts = Object.assign({
   BoxLayout: BoxLayout,
+  CircleLayout: CircleLayout,
   GridLayout: GridLayout,
   LayoutContainer: LayoutContainer
 });

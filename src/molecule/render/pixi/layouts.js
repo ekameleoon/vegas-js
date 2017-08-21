@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { BoxLayout } from './layouts/BoxLayout.js' ;
+import { CircleLayout } from './layouts/CircleLayout.js' ;
 import { GridLayout } from './layouts/GridLayout.js' ;
 import { LayoutContainer } from './layouts/LayoutContainer.js' ;
 
@@ -17,6 +18,7 @@ import { LayoutContainer } from './layouts/LayoutContainer.js' ;
 export var layouts = Object.assign
 ({
     BoxLayout       : BoxLayout,
+    CircleLayout    : CircleLayout,
     GridLayout      : GridLayout,
     LayoutContainer : LayoutContainer
 });
