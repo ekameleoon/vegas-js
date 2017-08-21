@@ -610,6 +610,18 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     }},
 
     /**
+     * Receives a message when the layout emit when is updated.
+     * @name renderLayout
+     * @memberof molecule.render.pixi.display.MOB
+     * @function
+     * @instance
+     */
+    updateLayout : { writable : true , value : function( /* layout = null */ )
+    {
+        //
+    }},
+
+    /**
      * This method is invoked after the draw() method in the update() method.
      * @name viewChanged
      * @memberof molecule.render.pixi.display.MOB

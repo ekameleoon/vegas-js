@@ -25,6 +25,7 @@ window.onload = function()
     var Canvas      = molecule.render.dom.display.Canvas ;
 
     var BoxLayout    = molecule.render.pixi.layouts.BoxLayout ;
+    var Element      = molecule.render.pixi.display.Element ;
     var Direction    = graphics.Direction ;
     var EdgeMetrics  = graphics.geom.EdgeMetrics ;
     var SimpleButton = molecule.render.pixi.components.buttons.SimpleButton ;
@@ -38,8 +39,15 @@ window.onload = function()
     var loader = PIXI.loader ;
 
     var background = new PIXI.Graphics() ;
-    var container  = new PIXI.Container() ;
+    var container  = new Element() ;
     var layout     = new BoxLayout() ;
+
+    var update = function()
+    {
+        background.clear() ;
+        background.beginFill( 0x333333 ) ;
+        background.drawRect( layout.bounds.x , layout.bounds.y , layout.bounds.width , layout.bounds.height ) ;
+    }
 
     background.x = container.x = 10 ;
     background.y = container.y = 10 ;
@@ -50,12 +58,15 @@ window.onload = function()
     layout.verticalGap   = 4 ;
     layout.usePreferredSize = false ;
 
+    // layout.childCount = 3 ;
+    // stage.mask = background ;
+
+    container.layout = layout ;
+    container.updater.connect( update ) ;
+
     body.addChild( canvas );
     stage.addChild( background );
     stage.addChild( container );
-
-    // layout.childCount = 3 ;
-    // stage.mask = background ;
 
     // --------
 
@@ -64,50 +75,35 @@ window.onload = function()
         trace( '--- error : ' + current.name + " failed !" ) ;
     }
 
-    var click = function( target )
-    {
-        trace( "click : " + target ) ;
-        layout.direction = layout.direction === Direction.HORIZONTAL ? Direction.VERTICAL : Direction.HORIZONTAL ;
-        layout.run() ;
-    }
-
     var complete = function( loader , resources )
     {
-        trace( '=== complete !' ) ;
+        trace( '=== complete' ) ;
 
-        // --------- texture
-
+        var button ;
         var numChildren = 5 ;
         var texture = resources.button.textures ;
 
+        var click = function()
+        {
+            trace( "___ click" ) ;
+            layout.direction = layout.direction === Direction.HORIZONTAL ? Direction.VERTICAL : Direction.HORIZONTAL ;
+            container.update() ;
+        }
+
         for( var i = 0 ; i<numChildren ; i++ )
         {
-            var button = new SimpleButton();
-
+            button = new SimpleButton();
             button.set
             (
                 texture.up, texture.over,
                 texture.down, texture.disable
             ) ;
-
             button.pressed.connect( click ) ;
-
             container.addChild( button ) ;
         }
 
-        // --------- layout
-
-        layout.updater.connect( update ) ;
-        layout.initialize( container ) ;
-        layout.run() ;
+        container.update() ;
     };
-
-    var update = function( layout )
-    {
-        background.clear() ;
-        background.beginFill( 0x333333 ) ;
-        background.drawRect( layout.bounds.x , layout.bounds.y , layout.bounds.width , layout.bounds.height ) ;
-    }
 
     loader.add( 'button' , './images/button.json') ;
 

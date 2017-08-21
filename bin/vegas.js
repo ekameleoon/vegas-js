@@ -16173,6 +16173,8 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.altered = false;
             this.updater.emit(this);
         } },
+    updateLayout: { writable: true, value: function value() /* layout = null */{
+        } },
     viewChanged: { writable: true, value: function value() {
         } },
     viewEnabled: { writable: true, value: function value() {
