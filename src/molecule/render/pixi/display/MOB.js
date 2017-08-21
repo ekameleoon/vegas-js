@@ -65,10 +65,10 @@ export function MOB( texture = null , init = null , locked = false )
         _h         : { writable :  true , value :     0 } ,
         _layout    : { writable :  true , value :  null } ,
         _locked    : { writable :  true , value :     0 } ,
-        _maxHeight : { writable :  true , value :  null } ,
-        _maxWidth  : { writable :  true , value :  null } ,
-        _minHeight : { writable :  true , value :     0 } ,
-        _minWidth  : { writable :  true , value :     0 } ,
+        _maxHeight : { writable :  true , value :   NaN } ,
+        _maxWidth  : { writable :  true , value :   NaN } ,
+        _minHeight : { writable :  true , value :   NaN } ,
+        _minWidth  : { writable :  true , value :   NaN } ,
         _real      : { writable : false , value : new Rectangle() } ,
         _scope     : { writable :  true , value : !(this._scope) ? this : this._scope } ,
         _w         : { writable :  true , value :     0 }
@@ -145,10 +145,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     h :
     {
-        get : function()
-        {
-            return clamp( this._h , this._minHeight , this._maxHeight ) ;
-        } ,
+        get : function() { return this._h ; } ,
         set : function(value)
         {
             this._h = clamp( value , this._minHeight , this._maxHeight ) ;
@@ -173,9 +170,9 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         {
             if ( this._layout )
             {
-                this._layout.unlock() ;
                 this._layout.renderer.disconnect( this.renderLayout ) ;
                 this._layout.updater.disconnect( this.updateLayout ) ;
+                this._layout.unlock() ;
             }
             this._layout = layout instanceof Layout ? layout : null ;
             if ( this._layout )
@@ -320,7 +317,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     w :
     {
-        get : function() { return clamp( this._w , this._minWidth , this._maxWidth ) ; } ,
+        get : function() { return this._w ; } ,
         set : function(value)
         {
             this._w = clamp( value , this._minWidth , this._maxWidth ) ;

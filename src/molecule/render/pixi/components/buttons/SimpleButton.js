@@ -1,8 +1,8 @@
 "use strict" ;
 
+import { clamp } from './core/maths/clamp.js' ;
 import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
 import { CoreButton }  from '../CoreButton.js' ;
-import { MOB } from '../../display/MOB.js' ;
 
 /**
  * The SimpleButton class lets you control all basic instances of button in the framework.
@@ -240,5 +240,7 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
                 break ;
             }
         }
+        this._w = clamp( this.texture.orig.width  , this._minWidth  , this._maxWidth  ) ;
+        this._h = clamp( this.texture.orig.height , this._minHeight , this._maxHeight ) ;
     }}
 }) ;
