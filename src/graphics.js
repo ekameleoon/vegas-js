@@ -14,6 +14,7 @@ import { Directionable }      from './graphics/Directionable.js' ;
 import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
 import { Layout }             from './graphics/Layout.js' ;
 import { LayoutBufferMode }   from './graphics/LayoutBufferMode.js' ;
+import { LayoutEntry }        from './graphics/LayoutEntry.js' ;
 import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
@@ -48,6 +49,7 @@ export var graphics = Object.assign
     DirectionOrder     : DirectionOrder ,
     Layout             : Layout ,
     LayoutBufferMode   : LayoutBufferMode ,
+    LayoutEntry        : LayoutEntry ,
     Orientation        : Orientation ,
     Position           : Position ,
     ZOrder             : ZOrder ,

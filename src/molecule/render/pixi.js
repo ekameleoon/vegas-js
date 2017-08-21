@@ -4,6 +4,7 @@ import './polyfill/Object.js' ;
 
 import { components } from './pixi/components.js' ;
 import { display } from './pixi/display.js' ;
+import { layouts } from './pixi/layouts.js' ;
 
 /**
  * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
@@ -15,7 +16,7 @@ import { display } from './pixi/display.js' ;
  */
 export var pixi = Object.assign
 ({
-    // package
     components : components,
-    display    : display
+    display    : display,
+    layouts    : layouts
 }) ;
