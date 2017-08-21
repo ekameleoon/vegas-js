@@ -40,29 +40,16 @@ export function Layout()
         /**
          * @private
          */
-        _align : { value : Align.TOP_LEFT , writable : true },
-
-        /**
-         * @private
-         */
-        _bufferMode : { value : LayoutBufferMode.AUTO , writable : true },
-
-        /**
-         * The absolute rectangle bound area calculate with the measure method.
-         * @private
-         */
-        _bounds : {  value : new Rectangle() } ,
-
-        /**
-         * @private
-         */
-        _container : {  value : null , writable : true }
+        _align      : { writable :  true , value : Align.TOP_LEFT  },
+        _bufferMode : { writable :  true , value : LayoutBufferMode.AUTO },
+        _bounds     : { writable : false , value : new Rectangle() } ,
+        _container  : { writable :  true , value : null }
     });
 }
 
 Layout.prototype = Object.create( Task.prototype ,
 {
-    // ------------- getters/setters
+    constructor : { writable : true , value : Layout },
 
     /**
      * The alignement of the layout.
@@ -87,10 +74,7 @@ Layout.prototype = Object.create( Task.prototype ,
      */
     bounds :
     {
-        get : function()
-        {
-            return this._bounds ;
-        }
+        get : function() { return this._bounds ; }
     },
 
     /**
@@ -121,14 +105,8 @@ Layout.prototype = Object.create( Task.prototype ,
      */
     container :
     {
-        get : function()
-        {
-            return this._container ;
-        },
-        set : function( target )
-        {
-            this._container = target ;
-        }
+        get : function() { return this._container ; },
+        set : function( target ) { this._container = target ; }
     },
 
     /**
