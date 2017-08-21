@@ -44,6 +44,8 @@ export function Rectangle( x = 0 , y = 0 , width = 0 , height = 0 )
 
 Rectangle.prototype = Object.create( Dimension.prototype ,
 {
+    constructor : { writable : true , value : Rectangle },
+
     /**
      * The area of the rectangle.
      * @name area

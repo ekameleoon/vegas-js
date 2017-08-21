@@ -68,6 +68,8 @@ export function AspectRatio( width = 0 , height = 0 , lock = false , verbose = f
 
 AspectRatio.prototype = Object.create( Dimension.prototype ,
 {
+    constructor : { writable : true , value : AspectRatio },
+
     /**
      * Determinates the greatest common divisor if the current object.
      * <p>This property cast the width and the height Number in two int objects to calculate the value.</p>

@@ -86,6 +86,8 @@ Object.defineProperties( Matrix ,
 
 Matrix.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : Matrix },
+
     /**
      * Create a shallow copy of the object.
      * @return a shallow copy of the object.

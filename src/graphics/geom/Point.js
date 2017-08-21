@@ -24,6 +24,8 @@ export function Point( x = 0 , y = 0 )
 
 Point.prototype = Object.create( Vector2D.prototype ,
 {
+    constructor : { writable : true , value : Point },
+
     /**
      * The angle value of this Point object.
      * @memberof graphics.geom.Point

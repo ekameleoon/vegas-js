@@ -55,6 +55,8 @@ export function EdgeMetrics( left = 0, top = 0, right = 0, bottom = 0 )
 
 EdgeMetrics.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : EdgeMetrics },
+
     /**
      * The horizontal, in pixels, of the sum of left and right region.
      * @readonly

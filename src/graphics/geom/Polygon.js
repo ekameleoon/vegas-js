@@ -42,6 +42,8 @@ export function Polygon()
 
 Polygon.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : Polygon },
+
     /**
      * Indicates the area measure of the polygon.
      * @name area

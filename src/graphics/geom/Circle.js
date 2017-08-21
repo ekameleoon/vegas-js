@@ -32,6 +32,8 @@ export function Circle( x = 0 , y = 0 , radius = 0 )
 
 Circle.prototype = Object.create( Vector2D.prototype ,
 {
+    constructor : { writable : true , value : Circle },
+
     /**
      * The area of the circle.
      * @name area

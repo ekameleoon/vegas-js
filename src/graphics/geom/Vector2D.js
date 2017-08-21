@@ -38,6 +38,8 @@ export function Vector2D( x = 0 , y = 0 )
 
 Vector2D.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : Vector2D },
+
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.

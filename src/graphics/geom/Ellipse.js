@@ -45,6 +45,8 @@ export function Ellipse( x = 0 , y = 0 , width = 0 , height = 0 )
 
 Ellipse.prototype = Object.create( Dimension.prototype ,
 {
+    constructor : { writable : true , value : Ellipse },
+
     /**
      * The area of the ellipse.
      * @name area

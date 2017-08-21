@@ -45,6 +45,8 @@ export function Vector3D( x = 0 , y = 0 , z = 0 , w = 0 )
 
 Vector3D.prototype = Object.create( Vector2D.prototype ,
 {
+    constructor : { writable : true , value : Vector3D },
+
     /**
      * The length, magnitude, of the current <code>Vector3D</code> object from the origin (0,0,0) to the object's x, y, and z coordinates. The w property is ignored. A unit vector has a length or magnitude of one.
      * @memberof graphics.geom.Vector3D

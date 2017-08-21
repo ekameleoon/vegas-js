@@ -37,6 +37,8 @@ export function Dimension( width = 0 , height = 0 )
 
 Dimension.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : Dimension },
+
     /**
      * Returns a shallow copy of the object.
      * @return a shallow copy of the object.

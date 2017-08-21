@@ -99,6 +99,8 @@ export function ColorTransform( redMultiplier = 1, greenMultiplier = 1, blueMult
 
 ColorTransform.prototype = Object.create( Object.prototype ,
 {
+    constructor : { writable : true , value : ColorTransform },
+
     /**
      * A decimal value that is multiplied with the alpha transparency channel value.
      * <p>If you set the alpha transparency value of a display object directly by using the <code>alpha</code> property of the DisplayObject instance, it affects the value of the <code>alphaMultiplier</code> property of that display object's <code>transform.colorTransform</code> property.</p>
