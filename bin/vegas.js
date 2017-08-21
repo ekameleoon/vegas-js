@@ -17133,6 +17133,154 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
         } }
 });
 
+function GridLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _columns: { writable: true, value: 1 },
+        _lines: { writable: true, value: 1 },
+        _orientation: { writable: true, value: Orientation.NONE }
+    });
+    BoxLayout.call(this, container, init);
+}
+GridLayout.prototype = Object.create(BoxLayout.prototype, {
+    constructor: { writable: true, value: GridLayout },
+    columns: {
+        get: function get() {
+            return this._columns;
+        },
+        set: function set(value) {
+            this._columns = value > 1 ? value : 1;
+        }
+    },
+    lines: {
+        get: function get() {
+            return this._lines;
+        },
+        set: function set(value) {
+            this._lines = value > 1 ? value : 1;
+        }
+    },
+    orientation: {
+        get: function get() {
+            return this._orientation;
+        },
+        set: function set(value) {
+            this._orientation = Orientation.validate(value) ? value : Orientation.NONE;
+        }
+    },
+    isBottomToTop: { value: function value() {
+            return this._orientation === Orientation.BOTTOM_TO_TOP || this._orientation === Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP || this._orientation === Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP;
+        } },
+    isRightToLeft: { value: function value() {
+            return this._orientation === Orientation.RIGHT_TO_LEFT || this._orientation === Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP || this._orientation === Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM;
+        } },
+    measure: { value: function value() {
+            var _this = this;
+            this._bounds.setTo();
+            if (this._children.length > 0) {
+                (function () {
+                    var i = 0;
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var w = 0;
+                    var h = 0;
+                    var c = hor ? _this._columns : 0;
+                    var l = hor ? 0 : _this._lines;
+                    _this._children.forEach(function (entry) {
+                        var child = entry.child;
+                        var flag = isMeasurable(child) && _this.usePreferredSize;
+                        w = Math.max(child[flag ? "w" : _this.propWidth], w);
+                        h = Math.max(child[flag ? "h" : _this.propHeight], h);
+                        if (hor) {
+                            if (i % _this._columns === 0) {
+                                l++;
+                            }
+                        } else {
+                            if (i % _this._lines === 0) {
+                                c++;
+                            }
+                        }
+                        i++;
+                    });
+                    _this._bounds.width += c * (w + _this._horizontalGap);
+                    _this._bounds.height += l * (h + _this._verticalGap);
+                    _this._bounds.width -= _this._horizontalGap;
+                    _this._bounds.height -= _this._verticalGap;
+                    _this._bounds.width += _this._padding.horizontal;
+                    _this._bounds.height += _this._padding.vertical;
+                    if (_this._align === Align.CENTER) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.BOTTOM) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_LEFT) {
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.LEFT) {
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.TOP) {
+                        _this._bounds.x -= _this._bounds.width / 2;
+                    } else if (_this._align === Align.TOP_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                    }
+                })();
+            }
+        } },
+    render: { writable: true, value: function value() {
+            var _this2 = this;
+            if (this._children.length > 0) {
+                if (this._lines > 1 && this._direction === Direction.VERTICAL || this._columns > 1 && this._direction === Direction.HORIZONTAL) {
+                    var i;
+                    var c;
+                    var l;
+                    var pw;
+                    var ph;
+                    (function () {
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
+                        }
+                        var left = _this2._padding.left;
+                        var top = _this2._padding.top;
+                        var hor = _this2._direction === Direction.HORIZONTAL;
+                        i = 0;
+                        _this2._children.forEach(function (entry) {
+                            var child = entry.child;
+                            var flag = isMeasurable(child) && _this2.usePreferredSize;
+                            pw = flag ? "w" : _this2.propWidth;
+                            ph = flag ? "h" : _this2.propHeight;
+                            c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
+                            l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
+                            entry.tx = left + c * (child[pw] + _this2._horizontalGap);
+                            entry.ty = top + l * (child[ph] + _this2._verticalGap);
+                            if (_this2.isRightToLeft()) {
+                                entry.tx *= -1;
+                                entry.tx += _this2._bounds.width - child[pw];
+                            }
+                            if (_this2.isBottomToTop()) {
+                                entry.ty *= -1;
+                                entry.ty += _this2._bounds.height - child[ph];
+                            }
+                            i++;
+                        });
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
+                        }
+                        _this2.arrange();
+                        _this2.renderer.emit(_this2);
+                    })();
+                } else {
+                    BoxLayout.prototype.render.call(this);
+                }
+            }
+        } }
+});
+
 /**
  * The {@link molecule.render.pixi.layouts} package.
  * @summary The {@link molecule.render.pixi.layouts} package.
@@ -17145,6 +17293,7 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
  */
 var layouts = Object.assign({
   BoxLayout: BoxLayout,
+  GridLayout: GridLayout,
   LayoutContainer: LayoutContainer
 });
 
