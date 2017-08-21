@@ -6,9 +6,9 @@ import { LayoutEntry } from './graphics/LayoutEntry.js' ;
 /**
  * The basic implementation of the layouts.
  * @name LayoutContainer
- * @class
  * @memberof molecule.render.pixi.layouts
  * @extends graphics.Layout
+ * @class
  * @constructor
  */
 export function LayoutContainer( container = null , init = null )
@@ -16,6 +16,15 @@ export function LayoutContainer( container = null , init = null )
     Layout.call( this ) ;
     Object.defineProperties( this ,
     {
+        /**
+         * Indicates if the layout try to use the preferred size components.
+         * @memberof molecule.render.pixi.layouts.LayoutContainer
+         * @type {boolean}
+         * @instance
+         * @default true
+         */
+        usePreferredSize : { writable : true , value : true } ,
+
         /**
          * @private
          */

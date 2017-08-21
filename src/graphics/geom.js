@@ -6,6 +6,7 @@ import { AspectRatio }    from './geom/AspectRatio.js' ;
 import { Circle }         from './geom/Circle.js' ;
 import { ColorTransform } from './geom/ColorTransform.js' ;
 import { Dimension }      from './geom/Dimension.js' ;
+import { EdgeMetrics }    from './geom/EdgeMetrics.js' ;
 import { Ellipse }        from './geom/Ellipse.js' ;
 import { Matrix }         from './geom/Matrix.js' ;
 import { Point }          from './geom/Point.js' ;
@@ -28,6 +29,7 @@ export var geom = Object.assign
     Circle         : Circle ,
     ColorTransform : ColorTransform ,
     Dimension      : Dimension ,
+    EdgeMetrics    : EdgeMetrics ,
     Ellipse        : Ellipse ,
     Matrix         : Matrix ,
     Point          : Point ,

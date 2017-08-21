@@ -10914,6 +10914,13 @@ var DirectionOrder = Object.defineProperties({}, {
   REVERSE: { enumerable: true, value: 'reverse' }
 });
 
+function isMeasurable(target) {
+    if (target) {
+        return 'h' in target && isNumber(target.h) && 'w' in target && isNumber(target.w) && 'maxHeight' in target && isNumber(target.maxHeight) && 'maxWidth' in target && isNumber(target.maxWidth) && 'minHeight' in target && isNumber(target.minHeight) && 'minWidth' in target && isNumber(target.minWidth) && 'setPreferredSize' in target && target.setPreferredSize instanceof Function && 'setSize' in target && target.setSize instanceof Function;
+    }
+    return false;
+}
+
 var LayoutBufferMode = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
@@ -10928,6 +10935,7 @@ function Dimension() {
     });
 }
 Dimension.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Dimension },
     clone: { writable: true, value: function value() {
             return new Dimension(this.width, this.height);
         } },
@@ -10984,6 +10992,7 @@ function Vector2D() {
     });
 }
 Vector2D.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Vector2D },
     clone: { writable: true, value: function value() {
             return new Vector2D(this.x, this.y);
         } },
@@ -11022,6 +11031,7 @@ function Point() {
     Vector2D.call(this, x, y);
 }
 Point.prototype = Object.create(Vector2D.prototype, {
+    constructor: { writable: true, value: Point },
     angle: {
         get: function get() {
             return atan2D(this.y, this.x);
@@ -11175,6 +11185,7 @@ function Rectangle() {
     Dimension.call(this, width, height);
 }
 Rectangle.prototype = Object.create(Dimension.prototype, {
+    constructor: { writable: true, value: Rectangle },
     area: { get: function get() {
             return this.width * this.height;
         } },
@@ -11449,13 +11460,15 @@ function Layout() {
     Object.defineProperties(this, {
         renderer: { value: new Signal() },
         updater: { value: new Signal() },
-        _align: { value: Align.TOP_LEFT, writable: true },
-        _bufferMode: { value: LayoutBufferMode.AUTO, writable: true },
-        _bounds: { value: new Rectangle() },
-        _container: { value: null, writable: true }
+        _align: { writable: true, value: Align.TOP_LEFT },
+        _bufferMode: { writable: true, value: LayoutBufferMode.AUTO },
+        _bounds: { writable: false, value: new Rectangle() },
+        _container: { writable: true, value: null }
     });
+    Task.call(this);
 }
 Layout.prototype = Object.create(Task.prototype, {
+    constructor: { writable: true, value: Layout },
     align: {
         get: function get() {
             return this._align;
@@ -11512,6 +11525,23 @@ Layout.prototype = Object.create(Task.prototype, {
             this.update();
         } },
     update: { writable: true, value: function value() {} }
+});
+
+function LayoutEntry() {
+  var child = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    child: { value: child, writable: true },
+    x: { value: child && "x" in child ? child.x : 0, writable: true },
+    y: { value: child && "y" in child ? child.y : 0, writable: true },
+    tx: { value: 0, writable: true },
+    ty: { value: 0, writable: true }
+  });
+}
+LayoutEntry.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: LayoutEntry },
+  toString: { writable: true, value: function value() {
+      return '[LayoutEntry]';
+    } }
 });
 
 var Orientation = Object.defineProperties({}, {
@@ -12041,6 +12071,7 @@ function AspectRatio() {
     this._GCD();
 }
 AspectRatio.prototype = Object.create(Dimension.prototype, {
+    constructor: { writable: true, value: AspectRatio },
     gcd: { get: function get() {
             return this._gcd;
         } },
@@ -12122,6 +12153,7 @@ function Circle() {
     this._radiusSquared = this._radius * this._radius;
 }
 Circle.prototype = Object.create(Vector2D.prototype, {
+    constructor: { writable: true, value: Circle },
     area: { get: function get() {
             return this._radius > 0 ? Math.PI * this._radius * this._radius : 0;
         } },
@@ -12275,6 +12307,7 @@ function ColorTransform() {
     });
 }
 ColorTransform.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: ColorTransform },
     alphaMultiplier: {
         get: function get() {
             return this._alphaMultiplier;
@@ -12384,6 +12417,65 @@ ColorTransform.prototype = Object.create(Object.prototype, {
         } }
 });
 
+function EdgeMetrics() {
+    var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+    Object.defineProperties(this, {
+        bottom: { value: isNaN(bottom) ? 0 : bottom, writable: true },
+        left: { value: isNaN(left) ? 0 : left, writable: true },
+        right: { value: isNaN(right) ? 0 : right, writable: true },
+        top: { value: isNaN(top) ? 0 : top, writable: true }
+    });
+}
+EdgeMetrics.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: EdgeMetrics },
+    horizontal: { get: function get() {
+            return this.left + this.right;
+        } },
+    vertical: { get: function get() {
+            return this.top + this.bottom;
+        } },
+    clone: { writable: true, value: function value() {
+            return new EdgeMetrics(this.left, this.top, this.right, this.bottom);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof EdgeMetrics)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an EdgeMetrics object.');
+            }
+            this.bottom = source.bottom;
+            this.left = source.left;
+            this.right = source.right;
+            this.top = source.top;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof EdgeMetrics) {
+                return o.bottom === this.bottom && o.left === this.left && o.right === this.right && o.top === this.top;
+            } else {
+                return false;
+            }
+        } },
+    setTo: { writable: true, value: function value() {
+            var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            this.left = isNaN(left) ? 0 : left;
+            this.top = isNaN(top) ? 0 : top;
+            this.bottom = isNaN(bottom) ? 0 : bottom;
+            this.right = isNaN(right) ? 0 : right;
+            return this;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { bottom: this.bottom, left: this.left, right: this.right, top: this.top };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[EdgeMetrics left:" + this.left + " top:" + this.top + " right:" + this.right + " bottom:" + this.bottom + "]";
+        } }
+});
+
 function Ellipse() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12396,6 +12488,7 @@ function Ellipse() {
     Dimension.call(this, width, height);
 }
 Ellipse.prototype = Object.create(Dimension.prototype, {
+    constructor: { writable: true, value: Ellipse },
     area: { get: function get() {
             return Math.PI * (this.width * this.height) * 0.5;
         } },
@@ -12534,6 +12627,7 @@ Object.defineProperties(Matrix, {
     MAGIC_GRADIENT_FACTOR: { value: 1638.4 }
 });
 Matrix.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Matrix },
     clone: { writable: true, value: function value() {
             return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty);
         } },
@@ -12692,6 +12786,7 @@ function Polygon() {
     }
 }
 Polygon.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: Polygon },
     area: { get: function get() {
             return this._area;
         } },
@@ -12886,6 +12981,7 @@ function Vector3D() {
     });
 }
 Vector3D.prototype = Object.create(Vector2D.prototype, {
+    constructor: { writable: true, value: Vector3D },
     length: { get: function get() {
             var r = this.x * this.x + this.y * this.y + this.z * this.z;
             if (r <= 0) {
@@ -12993,6 +13089,7 @@ var geom = Object.assign({
     Circle: Circle,
     ColorTransform: ColorTransform,
     Dimension: Dimension,
+    EdgeMetrics: EdgeMetrics,
     Ellipse: Ellipse,
     Matrix: Matrix,
     Point: Point,
@@ -13020,8 +13117,10 @@ var graphics = Object.assign({
     Direction: Direction,
     Directionable: Directionable,
     DirectionOrder: DirectionOrder,
+    isMeasurable: isMeasurable,
     Layout: Layout,
     LayoutBufferMode: LayoutBufferMode,
+    LayoutEntry: LayoutEntry,
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
@@ -15785,64 +15884,6 @@ var dom$1 = Object.assign({
   }
 });
 
-function EdgeMetrics() {
-    var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-    Object.defineProperties(this, {
-        bottom: { value: isNaN(bottom) ? 0 : bottom, writable: true },
-        left: { value: isNaN(left) ? 0 : left, writable: true },
-        right: { value: isNaN(right) ? 0 : right, writable: true },
-        top: { value: isNaN(top) ? 0 : top, writable: true }
-    });
-}
-EdgeMetrics.prototype = Object.create(Object.prototype, {
-    horizontal: { get: function get() {
-            return this.left + this.right;
-        } },
-    vertical: { get: function get() {
-            return this.top + this.bottom;
-        } },
-    clone: { writable: true, value: function value() {
-            return new EdgeMetrics(this.left, this.top, this.right, this.bottom);
-        } },
-    copyFrom: { writable: true, value: function value(source) {
-            if (!(source instanceof EdgeMetrics)) {
-                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an EdgeMetrics object.');
-            }
-            this.bottom = source.bottom;
-            this.left = source.left;
-            this.right = source.right;
-            this.top = source.top;
-            return this;
-        } },
-    equals: { writable: true, value: function value(o) {
-            if (o instanceof EdgeMetrics) {
-                return o.bottom === this.bottom && o.left === this.left && o.right === this.right && o.top === this.top;
-            } else {
-                return false;
-            }
-        } },
-    setTo: { writable: true, value: function value() {
-            var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-            var bottom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-            this.left = isNaN(left) ? 0 : left;
-            this.top = isNaN(top) ? 0 : top;
-            this.bottom = isNaN(bottom) ? 0 : bottom;
-            this.right = isNaN(right) ? 0 : right;
-            return this;
-        } },
-    toObject: { writable: true, value: function value() {
-            return { bottom: this.bottom, left: this.left, right: this.right, top: this.top };
-        } },
-    toString: { writable: true, value: function value() {
-            return "[EdgeMetrics left:" + this.left + " top:" + this.top + " right:" + this.right + " bottom:" + this.bottom + "]";
-        } }
-});
-
 function MOB() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -15858,10 +15899,10 @@ function MOB() {
         _h: { writable: true, value: 0 },
         _layout: { writable: true, value: null },
         _locked: { writable: true, value: 0 },
-        _maxHeight: { writable: true, value: null },
-        _maxWidth: { writable: true, value: null },
-        _minHeight: { writable: true, value: 0 },
-        _minWidth: { writable: true, value: 0 },
+        _maxHeight: { writable: true, value: NaN },
+        _maxWidth: { writable: true, value: NaN },
+        _minHeight: { writable: true, value: NaN },
+        _minWidth: { writable: true, value: NaN },
         _real: { writable: false, value: new Rectangle() },
         _scope: { writable: true, value: !this._scope ? this : this._scope },
         _w: { writable: true, value: 0 }
@@ -15901,7 +15942,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
     },
     h: {
         get: function get() {
-            return clamp(this._h, this._minHeight, this._maxHeight);
+            return this._h;
         },
         set: function set(value) {
             this._h = clamp(value, this._minHeight, this._maxHeight);
@@ -15917,9 +15958,9 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
         },
         set: function set(layout) {
             if (this._layout) {
-                this._layout.unlock();
                 this._layout.renderer.disconnect(this.renderLayout);
                 this._layout.updater.disconnect(this.updateLayout);
+                this._layout.unlock();
             }
             this._layout = layout instanceof Layout ? layout : null;
             if (this._layout) {
@@ -16008,7 +16049,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
     },
     w: {
         get: function get() {
-            return clamp(this._w, this._minWidth, this._maxWidth);
+            return this._w;
         },
         set: function set(value) {
             this._w = clamp(value, this._minWidth, this._maxWidth);
@@ -16090,6 +16131,9 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
         } },
     resetLock: { value: function value() {
             this._locked = 0;
+            if (this._layout) {
+                this._layout.unlock();
+            }
         } },
     setPreferredSize: { value: function value(w, h) {
             this._w = isNaN(w) ? 0 : clamp(w, this._minWidth, this._maxWidth);
@@ -16112,7 +16156,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
         } },
     unlock: { value: function value() {
             this._locked = --this._locked > 0 ? this._locked : 0;
-            if (this._layout) {
+            if (this._layout && this._locked === 0) {
                 this._layout.unlock();
             }
         } },
@@ -16304,7 +16348,7 @@ Element$1.prototype = Object.create(MOB.prototype, {
  * The RadioButtonGroup singleton.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
  * @author Marc Alcaraz <ekameleon@gmail.com>
- * @memberof molecule.render.pixi.components
+ * @memberof molecule.render.pixi.components.buttons
  * @static
  * @private
  */
@@ -16632,6 +16676,8 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
                         break;
                     }
             }
+            this._w = clamp(this.texture.orig.width, this._minWidth, this._maxWidth);
+            this._h = clamp(this.texture.orig.height, this._minHeight, this._maxHeight);
         } }
 });
 
@@ -16646,6 +16692,7 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
  * @since 1.0.8
  */
 var buttons = Object.assign({
+  CoreButton: CoreButton,
   SimpleButton: SimpleButton
 });
 
@@ -16660,7 +16707,6 @@ var buttons = Object.assign({
  * @since 1.0.8
  */
 var components$2 = Object.assign({
-  CoreButton: CoreButton,
   buttons: buttons
 });
 
@@ -16694,6 +16740,412 @@ var display$3 = Object.assign({
   MOB: MOB
 });
 
+function LayoutContainer() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Layout.call(this);
+    Object.defineProperties(this, {
+        usePreferredSize: { writable: true, value: true },
+        _children: { writable: false, value: [] }
+    });
+    this.container = container;
+    if (init) {
+        this.lock();
+        if (init) {
+            for (var prop in init) {
+                if (prop in this) {
+                    this[prop] = init[prop];
+                }
+            }
+        }
+        this.unlock();
+    }
+}
+LayoutContainer.prototype = Object.create(Layout.prototype, {
+    constructor: { writable: true, value: LayoutContainer },
+    children: { get: function get() {
+            var result = [];
+            this._children.forEach(function (entry) {
+                return result.push(entry.child);
+            });
+            return result;
+        } },
+    numChildren: { get: function get() {
+            return this._children.length;
+        } },
+    addChild: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                this._children.splice(index, 1);
+            }
+            this._children.push(new LayoutEntry(child));
+            return child;
+        } },
+    addChildAt: { value: function value(child, index) {
+            if (index < 0 || index > this._children.length) {
+                throw new RangeError(this + " addChildAt failed, the index position does not exist in the child list.");
+            }
+            var who = this.indexOf(child);
+            if (who > -1) {
+                this._children.splice(who, 1);
+            }
+            this._children.splice(index, 0, new LayoutEntry(child));
+            return child;
+        } },
+    contains: { value: function value(child) {
+            return this.indexOf(child) > -1;
+        } },
+    getChildAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " getChildAt failed, the index does not exist in the child list.");
+            }
+            return this._children[index].child;
+        } },
+    getChildIndex: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                return index;
+            } else {
+                throw new ReferenceError(this + " getChildIndex failed, the child parameter is not a child of this object.");
+            }
+        } },
+    indexOf: { value: function value(child) {
+            var i = 0;
+            this._children.forEach(function (entry) {
+                if (entry.child === child) {
+                    return i;
+                }
+                i++;
+            });
+            return -1;
+        } },
+    initialize: { writable: true, value: function value() {
+            var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var children = this._children;
+            children.length = 0;
+            if (elements instanceof Array) {
+                elements.forEach(function (child) {
+                    if (child instanceof PIXI.DisplayObject) {
+                        children.push(new LayoutEntry(child));
+                    }
+                });
+            } else if (elements instanceof PIXI.Container) {
+                var len = elements.children.length;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        children.push(new LayoutEntry(elements.getChildAt(i)));
+                    }
+                }
+            }
+        } },
+    removeChild: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                this._children.splice(index, 1);
+                return child;
+            } else {
+                throw new ReferenceError(this + " removeChild failed, the child parameter is not a child of this object.");
+            }
+        } },
+    removeChildAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " removeChildAt failed, the index does not exist in the child list.");
+            }
+            var child = this._children[index].child;
+            this._children.splice(index, 1);
+            return child;
+        } },
+    removeChildren: { value: function value() {
+            var beginIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var endIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x7FFFFFFF;
+            this._children.splice(beginIndex, endIndex - beginIndex + 1);
+        } },
+    setChildIndex: { value: function value(child, index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " setChildIndex failed, the index does not exist in the child list.");
+            }
+            var who = this.indexOf(child);
+            if (who > -1) {
+                var entry = this._children[index];
+                this._children[who] = this._children[index];
+                this._children[index] = entry;
+            } else {
+                throw new ReferenceError(this + " setChildIndex failed, the child parameter is not a child of this object.");
+            }
+        } },
+    swapChildren: { value: function value(child1, child2) {
+            var index1 = this.indexOf(child1);
+            var index2 = this.indexOf(child2);
+            if (index1 > -1 && index2 > -1) {
+                var entry = this._children[index1];
+                this._children[index1] = this._children[index2];
+                this._children[index2] = entry;
+            } else {
+                throw new ReferenceError(this + " swapChildren failed, either child parameter is not a child of this object.");
+            }
+        } },
+    swapChildrenAt: { value: function value(index1, index2) {
+            if (index1 < 0 || index1 >= this._children.length || index2 < 0 || index2 >= this._children.length) {
+                throw new RangeError(this + " swapChildrenAt failed, either index does not exist in the child list.");
+            }
+            var entry = this._children[index1];
+            this._children[index1] = this._children[index2];
+            this._children[index2] = entry;
+        } }
+});
+
+function BoxLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        propHeight: { writable: true, value: 'height' },
+        propX: { writable: true, value: 'x' },
+        propY: { writable: true, value: 'y' },
+        propWidth: { writable: true, value: 'width' },
+        _childCount: { writable: true, value: -1 },
+        _direction: { writable: true, value: Direction.VERTICAL },
+        _horizontalGap: { writable: true, value: 0 },
+        _index: { writable: true, value: 0 },
+        _order: { writable: true, value: DirectionOrder.NORMAL },
+        _padding: { writable: false, value: new EdgeMetrics() },
+        _verticalGap: { writable: true, value: 0 }
+    });
+    LayoutContainer.call(this, container, init);
+}
+BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
+    constructor: { writable: true, value: BoxLayout },
+    childCount: {
+        get: function get() {
+            return this._childCount;
+        },
+        set: function set(value) {
+            this._childCount = value > -1 ? value : -1;
+        }
+    },
+    direction: {
+        get: function get() {
+            return this._direction;
+        },
+        set: function set(value) {
+            this._direction = value === Direction.HORIZONTAL ? Direction.HORIZONTAL : Direction.VERTICAL;
+        }
+    },
+    horizontalGap: {
+        get: function get() {
+            return this._horizontalGap;
+        },
+        set: function set(value) {
+            this._horizontalGap = isNaN(value) ? 0 : value;
+        }
+    },
+    order: {
+        get: function get() {
+            return this._order;
+        },
+        set: function set(value) {
+            this._order = value === DirectionOrder.REVERSE ? DirectionOrder.REVERSE : DirectionOrder.NORMAL;
+        }
+    },
+    padding: {
+        get: function get() {
+            return this._padding;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._padding.left = em ? replaceNaN(em.left) : 0;
+                this._padding.top = em ? replaceNaN(em.top) : 0;
+                this._padding.right = em ? replaceNaN(em.right) : 0;
+                this._padding.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    verticalGap: {
+        get: function get() {
+            return this._verticalGap;
+        },
+        set: function set(value) {
+            this._verticalGap = isNaN(value) ? 0 : value;
+        }
+    },
+    getChildPositionAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " getChildPositionAt failed, the index does not exist in the child list.");
+            }
+            var child = this.getChildAt(index);
+            return new Point(child.x, child.y);
+        } },
+    getCoordinateProperty: { value: function value() {
+            return this._direction === Direction.VERTICAL ? this.propY : this.propX;
+        } },
+    getSizeProperty: { value: function value() {
+            var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            if (target && isMeasurable(target) && this.usePreferredSize) {
+                return this._direction === Direction.HORIZONTAL ? "w" : "h";
+            } else {
+                return this._direction === Direction.HORIZONTAL ? this.propWidth : this.propHeight;
+            }
+        } },
+    isHorizontal: { value: function value() {
+            return this._direction === Direction.HORIZONTAL;
+        } },
+    isVertical: { value: function value() {
+            return this._direction === Direction.VERTICAL;
+        } },
+    measure: { value: function value() {
+            this._bounds.setTo();
+            var len = this._children.length;
+            if (len > 0) {
+                var i = 0;
+                var n = 0;
+                var n1 = 0;
+                var n2 = 0;
+                var hor = this.direction === Direction.HORIZONTAL;
+                var gap = hor ? this._horizontalGap : this._verticalGap;
+                var siz = hor ? this.propWidth : this.propHeight;
+                var sim = hor ? "w" : "h";
+                var isiz = hor ? this.propHeight : this.propWidth;
+                var isim = hor ? "h" : "w";
+                var child = void 0;
+                var prop = void 0;
+                n = this._childCount > -1 ? Math.min(this._childCount, len) : len;
+                for (i = 0; i < n; i++) {
+                    child = this._children[i].child;
+                    prop = isMeasurable(child) && this.usePreferredSize ? sim : siz;
+                    n1 += child[prop] + gap;
+                }
+                n1 -= gap;
+                n = len;
+                for (i = 0; i < n; i++) {
+                    child = this._children[i].child;
+                    prop = isMeasurable(child) && this.usePreferredSize ? isim : isiz;
+                    n2 = Math.max(child[prop], n2);
+                }
+                this._bounds.width = (hor ? n1 : n2) + this._padding.horizontal;
+                this._bounds.height = (hor ? n2 : n1) + this._padding.vertical;
+                if (this._align === Align.CENTER) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.BOTTOM) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_LEFT) {
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.LEFT) {
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.TOP) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                } else if (this._align === Align.TOP_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                }
+            }
+        } },
+    render: { writable: true, value: function value() {
+            var _this = this;
+            if (this._children.length > 0) {
+                (function () {
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
+                    }
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var gap = hor ? _this._horizontalGap : _this._verticalGap;
+                    var left = _this._padding.left;
+                    var top = _this._padding.top;
+                    var pro = hor ? _this.propX : _this.propY;
+                    var siz = hor ? _this.propWidth : _this.propHeight;
+                    var sim = hor ? "w" : "h";
+                    var inv = pro === _this.propY ? _this.propX : _this.propY;
+                    var tpr = "t" + pro;
+                    var tin = "t" + inv;
+                    var child = void 0;
+                    var prev = void 0;
+                    var size = void 0;
+                    _this._children.forEach(function (entry) {
+                        if (prev) {
+                            child = prev.child;
+                            size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
+                        }
+                        entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
+                        entry[tin] = hor ? top : left;
+                        prev = entry;
+                    });
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
+                    }
+                    _this.arrange();
+                    _this.renderer.emit(_this);
+                })();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            var _this2 = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var child = void 0;
+                    _this2._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = entry.x = entry.tx;
+                        child.y = entry.y = entry.ty;
+                    });
+                    _this2.updater.emit(_this2);
+                })();
+            }
+            this.notifyFinished();
+        } },
+    arrange: { value: function value() {
+            var _this3 = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var align = _this3._align;
+                    var bounds = _this3._bounds;
+                    _this3._children.forEach(function (entry) {
+                        if (align === Align.CENTER) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.BOTTOM) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_LEFT) {
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.LEFT) {
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.TOP) {
+                            entry.tx -= bounds.width * 0.5;
+                        } else if (align === Align.TOP_RIGHT) {
+                            entry.tx -= bounds.width;
+                        }
+                    });
+                })();
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.layouts} package.
+ * @summary The {@link molecule.render.pixi.layouts} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.layouts
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var layouts = Object.assign({
+  BoxLayout: BoxLayout,
+  LayoutContainer: LayoutContainer
+});
+
 /**
  * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
  * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
@@ -16704,7 +17156,8 @@ var display$3 = Object.assign({
  */
 var pixi = Object.assign({
   components: components$2,
-  display: display$3
+  display: display$3,
+  layouts: layouts
 });
 
 /**

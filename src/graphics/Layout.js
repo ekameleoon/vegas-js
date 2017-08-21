@@ -45,6 +45,7 @@ export function Layout()
         _bounds     : { writable : false , value : new Rectangle() } ,
         _container  : { writable :  true , value : null }
     });
+    Task.call( this ) ;
 }
 
 Layout.prototype = Object.create( Task.prototype ,
