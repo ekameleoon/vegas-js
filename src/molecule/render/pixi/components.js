@@ -1,7 +1,5 @@
 "use strict" ;
 
-import { CoreButton } from './components/CoreButton.js' ;
-
 import { buttons } from './components/buttons.js' ;
 
 /**
@@ -16,9 +14,5 @@ import { buttons } from './components/buttons.js' ;
  */
 export var components = Object.assign
 ({
-    // classes
-    CoreButton : CoreButton,
-
-    // packages
     buttons
 });

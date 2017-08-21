@@ -1,15 +1,15 @@
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
+import { clamp }       from './core/maths/clamp.js' ;
 import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
-import { CoreButton }  from '../CoreButton.js' ;
+import { CoreButton }  from './CoreButton.js' ;
 
 /**
  * The SimpleButton class lets you control all basic instances of button in the framework.
  * @name SimpleButton
  * @class
  * @memberof molecule.render.pixi.components.buttons
- * @extends molecule.render.pixi.components.CoreButton
+ * @extends molecule.render.pixi.components.buttons.CoreButton
  * @constructor
  * @example
  * var Application = PIXI.Application ;

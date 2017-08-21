@@ -512,7 +512,14 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      * @function
      * @instance
      */
-    resetLock : { value : function() { this._locked = 0 ; } } ,
+    resetLock : { value : function()
+    {
+        this._locked = 0 ;
+        if ( this._layout )
+        {
+            this._layout.unlock() ;
+        }
+    }},
 
     /**
      * Sets the preferred width (w) and height (h) values of the display.
@@ -567,7 +574,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     unlock : { value : function()
     {
         this._locked = (--this._locked > 0 ) ? this._locked : 0 ;
-        if ( this._layout )
+        if ( this._layout && this._locked === 0 )
         {
             this._layout.unlock() ;
         }

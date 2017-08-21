@@ -2,8 +2,8 @@
 
 import { Signal } from './system/signals/Signal.js' ;
 
-import { ButtonPhase } from '../../../components/ButtonPhase.js' ;
-import { Element } from '../display/Element.js' ;
+import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
+import { Element } from '../../display/Element.js' ;
 import { radio } from './radio.js' ;
 
 /**
@@ -11,7 +11,7 @@ import { radio } from './radio.js' ;
  * to minimize the effort required to implement this interface.
  * @name CoreButton
  * @class
- * @memberof molecule.render.pixi.components
+ * @memberof molecule.render.pixi.components.buttons
  * @extends molecule.render.pixi.display.Element
  * @constructor
  */
@@ -22,7 +22,7 @@ export function CoreButton( texture = null )
         /**
          * Indicates the data value object of the component.
          * @name data
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @instance
          * @type {Object}
          */
@@ -31,7 +31,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is deselected.
          * @name deselect
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -41,7 +41,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is disabled.
          * @name disable
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -51,7 +51,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is down.
          * @name down
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -61,7 +61,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is out.
          * @name out
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -71,7 +71,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is over.
          * @name over
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -81,7 +81,7 @@ export function CoreButton( texture = null )
         /**
          * The current visual phase of the button.
          * @name phase
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {string}
          * @instance
          * @readonly
@@ -91,7 +91,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is pressed.
          * @name pressed
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -101,7 +101,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is released.
          * @name release
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -111,7 +111,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is released outside.
          * @name releaseOutside
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -121,7 +121,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is rollout.
          * @name rollOut
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -131,7 +131,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is rollover.
          * @name rollOver
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -141,7 +141,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is selected.
          * @name select
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -151,7 +151,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is unselected.
          * @name select
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -161,7 +161,7 @@ export function CoreButton( texture = null )
         /**
          * This signal emit when button is up.
          * @name up
-         * @memberof molecule.render.pixi.components.CoreButton
+         * @memberof molecule.render.pixi.components.buttons.CoreButton
          * @type {system.signals.Signal}
          * @instance
          * @const
@@ -216,7 +216,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     /**
      * A flag that indicates whether this control is selected.
      * @name selected
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @instance
      * @type {boolean}
      */
@@ -232,7 +232,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     /**
      * Indicates a boolean value indicating whether the button behaves as a toggle switch (true) or not (false).
      * @name toggle
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @instance
      * @type {boolean}
      */
@@ -249,7 +249,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     /**
      * A flag that indicates whether this control is selected.
      * @name selected
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @instance
      * @type {boolean}
      */
@@ -265,7 +265,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
 
     /**
      * Invoked when the group property or the groupName property changed.
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @instance
      * @function
      */
@@ -340,7 +340,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     /**
      * Returns the string representation of this instance.
      * @return {string} the string representation of this instance.
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @instance
      * @function
      */
@@ -349,7 +349,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     /**
      * Invoked when the enabled property of the component change.
      * @name viewEnabled
-     * @memberof molecule.render.pixi.components.CoreButton
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
      * @function
      * @instance
      */
