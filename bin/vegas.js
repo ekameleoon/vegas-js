@@ -16207,7 +16207,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.notifyResized();
         } },
     toString: { writable: true, value: function value() {
-            return '[MOB]';
+            return '[' + this.constructor.name + ']';
         } },
     unlock: { value: function value() {
             this._locked = --this._locked > 0 ? this._locked : 0;
@@ -16397,9 +16397,6 @@ Element$1.prototype = Object.create(MOB.prototype, {
             return null;
         } },
     groupPolicyChanged: { writable: true, value: function value() {
-        } },
-    toString: { writable: true, value: function value() {
-            return '[Element]';
         } },
     update: { writable: true, value: function value() {
             if (this._locked > 0) {
@@ -16698,9 +16695,6 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                 }
             }
         } },
-    toString: { value: function value() {
-            return '[CoreButton]';
-        } },
     viewEnabled: { writable: true, value: function value() {
             this.buttonMode = this._useHandCursor && this._enabled;
             if (this._enabled) {
@@ -16894,9 +16888,6 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
             this.unlock();
             this.update();
         } },
-    toString: { value: function value() {
-            return '[SimpleButton]';
-        } },
     viewChanged: { writable: true, value: function value() {
             switch (this._phase) {
                 case ButtonPhase.DISABLE:
@@ -16958,17 +16949,14 @@ var components$2 = Object.assign({
 });
 
 function Background() {
-  var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    _autoSize: { writable: true, value: false }
-  });
-  Element$1.call(this, texture);
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _autoSize: { writable: true, value: false }
+    });
+    Element$1.call(this, texture);
 }
 Background.prototype = Object.create(Element$1.prototype, {
-  constructor: { value: Background },
-  toString: { value: function value() {
-      return '[Background]';
-    } }
+    constructor: { value: Background }
 });
 
 /**

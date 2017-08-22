@@ -338,15 +338,6 @@ CoreButton.prototype = Object.create( Element.prototype ,
     }},
 
     /**
-     * Returns the string representation of this instance.
-     * @return {string} the string representation of this instance.
-     * @memberof molecule.render.pixi.components.buttons.CoreButton
-     * @instance
-     * @function
-     */
-    toString : { value : function () { return '[CoreButton]' ; }} ,
-
-    /**
      * Invoked when the enabled property of the component change.
      * @name viewEnabled
      * @memberof molecule.render.pixi.components.buttons.CoreButton

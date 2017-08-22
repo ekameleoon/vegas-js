@@ -199,15 +199,6 @@ SimpleButton.prototype = Object.create( CoreButton.prototype ,
     }},
 
     /**
-     * Returns the string representation of this instance.
-     * @return {string} the string representation of this instance.
-     * @memberof molecule.render.pixi.display.Element
-     * @instance
-     * @function
-     */
-    toString : { value : function () { return '[SimpleButton]' ; }} ,
-
-    /**
      * This method is invoked after the draw() method in the update() method.
      * @name viewChanged
      * @memberof molecule.render.pixi.components.buttons.SimpleButton

@@ -25,14 +25,5 @@ export function Background( texture = null )
 
 Background.prototype = Object.create( Element.prototype ,
 {
-    constructor : { value : Background } ,
-
-    /**
-     * Returns the string representation of this instance.
-     * @return {string} the string representation of this instance.
-     * @memberof molecule.render.pixi.display.Element
-     * @instance
-     * @function
-     */
-    toString : { value : function () { return '[Background]' ; }}
+    constructor : { value : Background }
 }) ;

@@ -331,15 +331,6 @@ Element.prototype = Object.create( MOB.prototype ,
     }},
 
     /**
-     * Returns the string representation of this instance.
-     * @return {string} the string representation of this instance.
-     * @memberof molecule.render.pixi.display.Element
-     * @instance
-     * @function
-     */
-    toString : { writable : true , value : function () { return '[Element]' ; }},
-
-    /**
      * Update the display.
      * @memberof molecule.render.pixi.display.Element
      * @instance

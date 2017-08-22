@@ -424,7 +424,6 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         return this._real ;
     }},
 
-
     /**
      * Initialize the canvas.
      * @name isLocked
@@ -596,12 +595,15 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
 
     /**
      * Returns the string representation of this instance.
-     * @return {string} the string representation of this instance.
+     * @return the string representation of this instance.
      * @memberof molecule.render.pixi.display.MOB
-     * @instance
      * @function
+     * @instance
      */
-    toString : { writable : true , value : function () { return '[MOB]' ; }} ,
+    toString : { writable : true , value : function ()
+    {
+        return '[' + this.constructor.name + ']' ;
+    }},
 
     /**
      * Unlocks the display.
