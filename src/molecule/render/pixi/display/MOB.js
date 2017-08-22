@@ -89,9 +89,6 @@ export function MOB( texture = null , init = null , locked = false )
     {
         this.unlock() ;
     }
-
-    ///////////
-
 }
 
 MOB.prototype = Object.create( PIXI.Sprite.prototype ,
@@ -289,6 +286,15 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     },
 
     /**
+     * Returns the number of children of this object.
+     * @name numChildren
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     * @readonly
+     */
+    numChildren : { get : function() { return this.children.length } },
+
+    /**
      * Determinates the scope of the container. By default the scope is the container itself but can target any other DisplayObject reference.
      * @name scope
      * @memberof molecule.render.pixi.display.MOB
@@ -329,6 +335,22 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         }
     },
 
+    /**
+     * Determines whether the specified display object is a child of the DisplayObjectContainer instance or the instance itself.
+     * @name contains
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     * @function
+     * @param {PIXI.DisplayObject} child - The child object to test.
+     */
+    contains : { value : function( child )
+    {
+        if( this.children && (child instanceof PIXI.DisplayObject) )
+        {
+            return this.children.indexOf( child ) > -1 ;
+        }
+        return false ;
+    }},
 
     /**
      * Draw the display.
