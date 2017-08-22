@@ -19,7 +19,7 @@ window.onload = function()
     var system   = vegas.system ; // jshint ignore:line
     var molecule = vegas.molecule ; // jshint ignore:line
 
-    var Tween       = system.transitions.Tween ;
+    var Tween = system.transitions.Tween ;
 
     var Application = PIXI.Application ;
     var Body        = molecule.render.dom.display.Body ;
@@ -67,7 +67,7 @@ window.onload = function()
         bunny.anchor.x = 0.5;
         bunny.anchor.y = 0.5;
 
-        stage.addChild( bunny );
+        stage.addChild( bunny ) ;
 
         // --------- tween
 

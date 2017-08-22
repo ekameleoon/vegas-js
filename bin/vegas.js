@@ -13204,6 +13204,50 @@ var ScrollPolicy = Object.defineProperties({}, {
   ON: { enumerable: true, value: 'on' }
 });
 
+function Style() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        changed: { value: new Signal() }
+    });
+    this.initialize();
+    this.map(init);
+}
+Style.prototype = Object.create(Object.prototype, {
+    constructor: { value: Style, writable: true },
+    initialize: { writable: true, value: function value() {
+        } },
+    map: { value: function value(init) {
+            if (init) {
+                for (var member in init) {
+                    if (member in this) {
+                        this[member] = init[member];
+                    }
+                }
+                if (this.changed.connected()) {
+                    this.changed.emit(this);
+                }
+            }
+        } },
+    set: { value: function value() {
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+            if (args.length === 0) {
+                return;
+            }
+            if (args.length === 2 && isString(args[0])) {
+                if (args[0] in this) {
+                    this[args[0]] = args[1];
+                    if (this.changed.connected()) {
+                        this.changed.emit(this);
+                    }
+                }
+            } else {
+                this.map(args[0]);
+            }
+        } }
+});
+
 var ButtonPhase = Object.defineProperties({}, {
   DISABLE: { enumerable: true, value: 'disable' },
   DOWN: { enumerable: true, value: 'down' },
@@ -16034,6 +16078,9 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             }
         }
     },
+    numChildren: { get: function get() {
+            return this.children.length;
+        } },
     scope: {
         get: function get() {
             return this._scope;
@@ -16059,6 +16106,12 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.notifyResized();
         }
     },
+    contains: { value: function value(child) {
+            if (this.children && child instanceof PIXI.DisplayObject) {
+                return this.children.indexOf(child) > -1;
+            }
+            return false;
+        } },
     draw: { writable: true, value: function value() {
         } },
     fixArea: { value: function value() {
@@ -16123,9 +16176,16 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
                 this.y = y;
             }
         } },
+    notifyChanged: { value: function value() {
+            if (this.changed.connected()) {
+                this.changed.emit(this);
+            }
+        } },
     notifyResized: { writable: true, value: function value() {
             this.viewResize();
-            this.resized.emit(this);
+            if (this.resized.connected()) {
+                this.resized.emit(this);
+            }
         } },
     renderLayout: { writable: true, value: function value() /* layout = null */{
         } },
@@ -16190,6 +16250,8 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
 
 function Element$1() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     Object.defineProperties(this, {
         _border: { writable: false, value: new EdgeMetrics() },
         _builder: { writable: true, value: null },
@@ -16197,14 +16259,23 @@ function Element$1() {
         _group: { writable: true, value: false },
         _groupName: { writable: true, value: null },
         _invalides: { writable: false, value: {} },
-        _oldGroupName: { writable: true, value: null }
+        _oldGroupName: { writable: true, value: null },
+        _padding: { writable: false, value: new EdgeMetrics() },
+        _margin: { writable: false, value: new EdgeMetrics() },
+        _style: { writable: true, value: null },
+        _viewStyleChanged: { writable: true, value: null }
     });
     this._builder = this.getBuilderRenderer();
     if (this._builder instanceof Builder) {
         this._builder.target = this;
         this._builder.run();
     }
-    MOB.call(this, texture);
+    this._style = this.getStyleRenderer();
+    if (this._style instanceof Style) {
+        this._viewStyleChanged = this.viewStyleChanged.bind(this);
+        this._style.changed.connect(this._viewStyleChanged);
+    }
+    MOB.call(this, texture, init, locked);
 }
 Object.defineProperties(Element$1, {
     BUILDER: { value: "builder" },
@@ -16279,15 +16350,58 @@ Element$1.prototype = Object.create(MOB.prototype, {
             this._oldGroupName = null;
         }
     },
+    margin: {
+        get: function get() {
+            return this._margin;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._margin.left = em ? replaceNaN(em.left) : 0;
+                this._margin.top = em ? replaceNaN(em.top) : 0;
+                this._margin.right = em ? replaceNaN(em.right) : 0;
+                this._margin.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    padding: {
+        get: function get() {
+            return this._padding;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._padding.left = em ? replaceNaN(em.left) : 0;
+                this._padding.top = em ? replaceNaN(em.top) : 0;
+                this._padding.right = em ? replaceNaN(em.right) : 0;
+                this._padding.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    style: {
+        get: function get() {
+            return this._style;
+        },
+        set: function set(style) {
+            if (this._style) {
+                this._style.changed.disconnect(this._viewStyleChanged);
+                this._viewStyleChanged = null;
+            }
+            this._style = style instanceof Style || this.getStyleRenderer();
+            if (this._style instanceof Style) {
+                this._viewStyleChanged = this.viewStyleChanged.bind(this);
+                this._style.changed.connect(this._viewStyleChanged);
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
     getBuilderRenderer: { writable: true, value: function value() {
             return null;
         } },
-    groupPolicyChanged: { writable: true, value: function value() {
+    getStyleRenderer: { writable: true, value: function value() {
+            return null;
         } },
-    notifyChanged: { value: function value() {
-            if (this.changed.connected()) {
-                this.changed.emit(this);
-            }
+    groupPolicyChanged: { writable: true, value: function value() {
         } },
     toString: { writable: true, value: function value() {
             return '[Element]';
@@ -16320,6 +16434,9 @@ Element$1.prototype = Object.create(MOB.prototype, {
             this.altered = false;
             this.updater.emit(this);
         } },
+    viewStyleChanged: { writable: true, value: function value() /* style = null */{
+            this.update();
+        } },
     invalidate: { value: function value(type) {
             if (isString(type) && type !== "") {
                 this._invalides[type] = true;
@@ -16344,6 +16461,133 @@ Element$1.prototype = Object.create(MOB.prototype, {
                 }
             }
         } }
+});
+
+function CoreProgress() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        autoResetPosition: { writable: true, value: false },
+        _max: { value: 100, configurable: true, writable: true },
+        _min: { value: 0, configurable: true, writable: true },
+        _position: { value: 0, configurable: true, writable: true }
+    });
+    Element$1.call(this, texture, init, locked);
+}
+CoreProgress.prototype = Object.create(Element$1.prototype, {
+    constructor: { writable: true, value: CoreProgress },
+    maximum: {
+        get: function get() {
+            return this._max;
+        },
+        set: function set(value) {
+            var tmp = this._max;
+            this._max = value;
+            this.setPosition(map(this._position, this._min, tmp, this._min, this._max));
+        }
+    },
+    minimum: {
+        get: function get() {
+            return this._min;
+        },
+        set: function set(value) {
+            var tmp = this._min;
+            this._min = value;
+            this.setPosition(map(this._position, this._max, tmp, this._min, this._max));
+        }
+    },
+    position: {
+        get: function get() {
+            return isNaN(this._position) ? 0 : this._position;
+        },
+        set: function set(value) {
+            this.setPosition(value);
+        }
+    },
+    setPosition: { value: function value(_value) {
+            var noEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var flag = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var old = this._position;
+            this._position = clamp(isNaN(_value) ? 0 : _value, this._min, this._max);
+            this.viewPositionChanged(flag);
+            if (this._position !== old && !noEvent) {
+                this.notifyChanged();
+            }
+        } },
+    viewChanged: { writable: true, value: function value() {
+            this.setPosition(this.autoResetPosition ? 0 : this.position, true, true);
+        } },
+    viewPositionChanged: { writable: true, value: function value() /* flag = false */{
+        } }
+});
+
+function SimpleProgressbar() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    Object.defineProperties(this, {
+        backgroundAlpha: { writable: true, value: 1 },
+        backgroundColor: { writable: true, value: 0x333333 },
+        barAlpha: { writable: true, value: 1 },
+        barColor: { writable: true, value: 0xFFFFFF },
+        _alignments: { value: [Align.BOTTOM, Align.LEFT, Align.CENTER, Align.RIGHT, Align.TOP] },
+        _background: { value: new PIXI.Graphics() },
+        _bar: { value: new PIXI.Graphics() }
+    });
+    CoreProgress.call(this, texture, init, locked);
+    this.addChild(this._background);
+    this.addChild(this._bar);
+}
+SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
+    constructor: { writable: true, value: SimpleProgressbar },
+    draw: { writable: true, value: function value() {
+            this._background.beginFill(this.backgroundColor, this.backgroundAlpha);
+            this._background.drawRect(0, 0, this.w, this.h);
+        } },
+    viewPositionChanged: { writable: true, value: function value() {
+            var isVertical = this.direction === Direction.VERTICAL;
+            var horizontal = replaceNaN(this._padding.horizontal);
+            var vertical = replaceNaN(this._padding.vertical);
+            var margin = isVertical ? vertical : horizontal;
+            var max = isVertical ? this.h : this.w;
+            var size = map(this.position, this.minimum, this.maximum, 0, max - margin);
+            var $b = replaceNaN(this._padding.bottom);
+            var $l = replaceNaN(this._padding.left);
+            var $r = replaceNaN(this._padding.right);
+            var $t = replaceNaN(this._padding.top);
+            var $w = isVertical ? this.w - horizontal : size;
+            var $h = isVertical ? size : this.h - vertical;
+            this._bar.clear();
+            this._bar.beginFill(this.barColor, this.barAlpha);
+            this._bar.drawRect(0, 0, $w, $h);
+            this._bar.visible = this.position > 0;
+            if (this._align === Align.RIGHT || this._align === Align.BOTTOM) {
+                this._bar.x = isVertical ? $l : this.w - this._bar.width - $r;
+                this._bar.y = isVertical ? this.h - this._bar.height - $b : $t;
+            } else if (this._align === Align.CENTER) {
+                this._bar.x = isVertical ? $l : (this.w - this._bar.width) * 0.5;
+                this._bar.y = isVertical ? (this.h - this._bar.height) * 0.5 : $t;
+            } else
+                {
+                    this._bar.x = $l;
+                    this._bar.y = $t;
+                }
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components.bars} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.bars
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var bars = Object.assign({
+  SimpleProgressbar: SimpleProgressbar
 });
 
 /**
@@ -16389,7 +16633,7 @@ function CoreButton() {
     this.postScope();
 }
 CoreButton.prototype = Object.create(Element$1.prototype, {
-    constructor: { value: CoreButton },
+    constructor: { writable: true, value: CoreButton },
     selected: {
         get: function get() {
             return this._selected;
@@ -16709,6 +16953,8 @@ var buttons = Object.assign({
  * @since 1.0.8
  */
 var components$2 = Object.assign({
+  CoreProgress: CoreProgress,
+  bars: bars,
   buttons: buttons
 });
 
@@ -17422,6 +17668,403 @@ var layouts = Object.assign({
   LayoutContainer: LayoutContainer
 });
 
+function warn(message) {
+    var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    if (enableErrorChecking === true) {
+        throw new Error(message);
+    } else if (verbose === true) {
+        logger$1.warn(message);
+    }
+}
+
+function AddChild() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+AddChild.prototype = Object.create(Task.prototype, {
+  constructor: { value: AddChild },
+  clone: { writable: true, value: function value() {
+      return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.addChild(this.child);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function AddChildAt() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    AddChild.call(this, container, child, enableErrorChecking, verbose);
+    Object.defineProperties(this, {
+        index: { writable: true, value: index > 0 ? index : 0 }
+    });
+}
+AddChildAt.prototype = Object.create(AddChild.prototype, {
+    constructor: { value: AddChildAt },
+    clone: { writable: true, value: function value() {
+            return new AddChildAt(this.container, this.child, this.index, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChildAt(this.child, this.index);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + " at the position: " + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+function Hide() {
+  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+Hide.prototype = Object.create(Task.prototype, {
+  constructor: { value: Hide },
+  clone: { writable: true, value: function value() {
+      return new Hide(this.display, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.display.visible = false;
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function Contains() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null }
+    });
+}
+Contains.prototype = Object.create(Rule.prototype, {
+    constructor: { value: Contains },
+    eval: { writable: true, value: function value() {
+            if (this.container instanceof PIXI.Container && this.child instanceof PIXI.DisplayObject) {
+                return Boolean(this.container.children.indexOf(this.child) > -1);
+            }
+            return false;
+        } }
+});
+
+function IfContains()
+{
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    IfTask.call(this, new Contains(container, child), thenTask, elseTask);
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+IfContains.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfContains }
+});
+
+function NotContains() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null }
+    });
+}
+NotContains.prototype = Object.create(Rule.prototype, {
+    constructor: { value: NotContains },
+    eval: { writable: true, value: function value() {
+            if (this.container instanceof PIXI.Container && this.child instanceof PIXI.DisplayObject) {
+                return Boolean(this.container.children.indexOf(this.child) < 0);
+            }
+            return false;
+        } }
+});
+
+function IfNotContains()
+{
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    IfTask.call(this, new NotContains(container, child), thenTask, elseTask);
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+IfNotContains.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfNotContains }
+});
+
+function MoveTo() {
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+    var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NaN;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose },
+        x: { writable: true, value: x },
+        y: { writable: true, value: y }
+    });
+}
+MoveTo.prototype = Object.create(Task.prototype, {
+    constructor: { value: MoveTo },
+    clone: { writable: true, value: function value() {
+            return new MoveTo(this.display, this.x, this.y, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                if (!(isNaN(this.x) || this.x === null)) {
+                    this.display.x = this.x;
+                }
+                if (!(isNaN(this.y) || this.y === null)) {
+                    this.display.y = this.y;
+                }
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+function RemoveChild() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChild.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChild },
+  clone: { writable: true, value: function value() {
+      return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChild(this.child);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function RemoveChildAt() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    index: { writable: true, value: index > 0 ? index : 0 },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChildAt.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChildAt },
+  clone: { writable: true, value: function value() {
+      return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChildAt(this.index);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function RemoveChildren() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChildren.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChildren },
+  clone: { writable: true, value: function value() {
+      return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChildren();
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function Show() {
+  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+Show.prototype = Object.create(Task.prototype, {
+  constructor: { value: Show },
+  clone: { writable: true, value: function value() {
+      return new Show(this.display, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.display.visible = true;
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function SwapChildren() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    child1: { writable: true, value: child1 },
+    child2: { writable: true, value: child2 },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+SwapChildren.prototype = Object.create(Task.prototype, {
+  constructor: { value: SwapChildren },
+  clone: { writable: true, value: function value() {
+      return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.swapChildren(this.child1, this.child2);
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+/**
+ * The {@link molecule.render.pixi.process.display} package.
+ * @summary The {@link molecule.render.pixi.process.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process.display
+ * @memberof molecule.render.pixi.process
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$4 = Object.assign({
+    AddChild: AddChild,
+    AddChildAt: AddChildAt,
+    Hide: Hide,
+    IfContains: IfContains,
+    IfNotContains: IfNotContains,
+    MoveTo: MoveTo,
+    RemoveChild: RemoveChild,
+    RemoveChildAt: RemoveChildAt,
+    RemoveChildren: RemoveChildren,
+    Show: Show,
+    SwapChildren: SwapChildren
+});
+
+/**
+ * The {@link molecule.render.pixi.process} package.
+ * @summary The {@link molecule.render.pixi.process} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var process$1 = Object.assign({
+  display: display$4
+});
+
+/**
+ * The {@link molecule.render.pixi.rules} package.
+ * @summary The {@link molecule.render.pixi.rules} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.rules
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var rules$1 = Object.assign({
+  Contains: Contains,
+  NotContains: NotContains
+});
+
 /**
  * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
  * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
@@ -17433,7 +18076,9 @@ var layouts = Object.assign({
 var pixi = Object.assign({
   components: components$2,
   display: display$3,
-  layouts: layouts
+  layouts: layouts,
+  process: process$1,
+  rules: rules$1
 });
 
 /**
@@ -17768,6 +18413,7 @@ var molecule = Object.assign({
     Iconifiable: Iconifiable,
     LabelPolicy: LabelPolicy,
     ScrollPolicy: ScrollPolicy,
+    Style: Style,
     components: components,
     display: display$1,
     groups: groups,
