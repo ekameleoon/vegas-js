@@ -60,6 +60,7 @@ export function RemoveChild( container = null , child = null , enableErrorChecki
 
         /**
          * Specifies the verbose mode.
+         * @memberof molecule.render.pixi.process.display.RemoveChild
          * @instance
          * @type Boolean
          * @default false

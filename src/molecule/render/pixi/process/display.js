@@ -6,6 +6,7 @@ import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
 import { RemoveChild } from './display/RemoveChild.js' ;
 import { RemoveChildAt } from './display/RemoveChildAt.js' ;
+import { RemoveChildren } from './display/RemoveChildren.js' ;
 
 /**
  * The {@link molecule.render.pixi.process.display} package.
@@ -24,5 +25,6 @@ export var display = Object.assign
     IfContains : IfContains,
     IfNotContains : IfNotContains,
     RemoveChild : RemoveChild,
-    RemoveChildAt : RemoveChildAt
+    RemoveChildAt : RemoveChildAt,
+    RemoveChildren : RemoveChildren
 });

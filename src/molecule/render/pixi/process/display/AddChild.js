@@ -60,6 +60,7 @@ export function AddChild( container = null , child = null , enableErrorChecking 
 
         /**
          * Specifies the verbose mode.
+         * @memberof molecule.render.pixi.process.display.AddChild
          * @instance
          * @type Boolean
          * @default false
