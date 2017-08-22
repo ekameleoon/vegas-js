@@ -6,6 +6,7 @@ import { Direction }   from './graphics/Direction.js' ;
 import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
 
 import { Builder } from '../../../Builder.js' ;
+import { Style }   from '../../../Style.js' ;
 import { MOB }     from './MOB' ;
 
 /**
@@ -23,13 +24,15 @@ export function Element( texture = null )
         /**
          * @private
          */
-        _border       : { writable : false , value : new EdgeMetrics() } ,
-        _builder      : { writable : true  , value :  null } ,
-        _direction    : { writable : true  , value :  null } ,
-        _group        : { writable : true  , value : false } ,
-        _groupName    : { writable : true  , value :  null } ,
-        _invalides    : { writable : false , value :  {}   } ,
-        _oldGroupName : { writable : true  , value :  null }
+        _border           : { writable : false , value : new EdgeMetrics() } ,
+        _builder          : { writable : true  , value :  null } ,
+        _direction        : { writable : true  , value :  null } ,
+        _group            : { writable : true  , value : false } ,
+        _groupName        : { writable : true  , value :  null } ,
+        _invalides        : { writable : false , value :  {}   } ,
+        _oldGroupName     : { writable : true  , value :  null } ,
+        _style            : { writable : true  , value :  null } ,
+        _viewStyleChanged : { writable : true  , value :  null }
     });
 
     ///////////
@@ -39,6 +42,15 @@ export function Element( texture = null )
     {
         this._builder.target = this ;
         this._builder.run() ;
+    }
+
+    ///////////
+
+    this._style = this.getStyleRenderer() ;
+    if( this._style instanceof Style )
+    {
+        this._viewStyleChanged = this.viewStyleChanged.bind( this ) ;
+        this._style.changed.connect( this._viewStyleChanged ) ;
     }
 
     ///////////
@@ -127,10 +139,7 @@ Element.prototype = Object.create( MOB.prototype ,
      */
     builder :
     {
-        get : function()
-        {
-            return this._builder ;
-        },
+        get : function() { return this._builder ; },
         set : function( builder )
         {
             if (this._builder )
@@ -162,10 +171,7 @@ Element.prototype = Object.create( MOB.prototype ,
      */
     direction :
     {
-        get : function()
-        {
-            return this._direction ;
-        },
+        get : function() { return this._direction ; },
         set : function( value )
         {
             this._direction = (value === Direction.VERTICAL || value === Direction.HORIZONTAL ) ? value : null ;
@@ -213,6 +219,38 @@ Element.prototype = Object.create( MOB.prototype ,
     },
 
     /**
+     * Defines the {molecule.Style} reference of this instance.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @type {molecule.Style}
+     */
+    style :
+    {
+        get : function() { return this._style ; },
+        set : function( style )
+        {
+            if( this._style )
+            {
+                this._style.changed.disconnect(this._viewStyleChanged) ;
+                this._viewStyleChanged = null ;
+            }
+
+            this._style = ( style instanceof Style ) || this.getStyleRenderer() ;
+
+            if( this._style instanceof Style )
+            {
+                this._viewStyleChanged = this.viewStyleChanged.bind( this ) ;
+                this._style.changed.connect( this._viewStyleChanged ) ;
+            }
+
+            if( this._locked === 0 )
+            {
+                this.update() ;
+            }
+        }
+    },
+
+    /**
      * Returns the {molecule.Builder} instance use to initialize this component.
      * @return the {molecule.Builder} instance use to initialize this component.
      * @memberof molecule.render.pixi.display.Element
@@ -221,7 +259,19 @@ Element.prototype = Object.create( MOB.prototype ,
      */
     getBuilderRenderer : { writable : true , value : function()
     {
-        return null ; // override
+        return null ; // override and return a Builder instance.
+    }},
+
+    /**
+     * Returns the {molecule.Style} instance use to initialize this component.
+     * @return the {molecule.Style} instance use to initialize this component.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @function
+     */
+    getStyleRenderer : { writable : true , value : function()
+    {
+        return null ; // override and returns a Style instance.
     }},
 
     /**
@@ -260,6 +310,9 @@ Element.prototype = Object.create( MOB.prototype ,
 
     /**
      * Update the display.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @function
      */
     update : { writable : true , value : function()
     {
@@ -317,6 +370,17 @@ Element.prototype = Object.create( MOB.prototype ,
         this.altered = false ;
 
         this.updater.emit(this) ;
+    }},
+
+    /**
+     * Invoked when the component Style is changed.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @function
+     */
+    viewStyleChanged : { writable : true , value : function( /* style = null */ )
+    {
+        this.update() ;
     }},
 
     /**
