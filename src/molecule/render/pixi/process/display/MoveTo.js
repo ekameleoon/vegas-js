@@ -26,7 +26,7 @@ export function MoveTo( display = null , x = NaN , y = NaN , enableErrorChecking
     Object.defineProperties( this ,
     {
         /**
-         * The DisplayObject reference to show.
+         * The DisplayObject reference to move.
          * @memberof molecule.render.pixi.process.display.MoveTo
          * @instance
          */

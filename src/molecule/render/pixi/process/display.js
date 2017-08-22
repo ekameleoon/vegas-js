@@ -10,6 +10,7 @@ import { RemoveChild } from './display/RemoveChild.js' ;
 import { RemoveChildAt } from './display/RemoveChildAt.js' ;
 import { RemoveChildren } from './display/RemoveChildren.js' ;
 import { Show } from './display/Show.js' ;
+import { SwapChildren } from './display/SwapChildren.js' ;
 
 /**
  * The {@link molecule.render.pixi.process.display} package.
@@ -32,5 +33,6 @@ export var display = Object.assign
     RemoveChild : RemoveChild,
     RemoveChildAt : RemoveChildAt,
     RemoveChildren : RemoveChildren,
-    Show : Show
+    Show : Show,
+    SwapChildren : SwapChildren
 });
