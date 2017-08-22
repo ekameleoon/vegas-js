@@ -7,7 +7,7 @@ import { Element } from '../../display/Element.js' ;
 import { radio } from './radio.js' ;
 
 /**
- * This class provides a skeletal implementation of the <code class="prettyprint">Button</code> interface,
+ * This class provides a skeletal implementation of the <code>Button</code> interface,
  * to minimize the effort required to implement this interface.
  * @name CoreButton
  * @class

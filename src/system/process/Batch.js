@@ -6,7 +6,7 @@ import { Runnable } from './Runnable.js' ;
 /**
  * Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
  * <p>All {@link system.process.Action|Action} objects are processed as a single unit.<p>
- * <p>This class use an internal typed Collection to register all <code class="prettyprint">Runnable</code> objects.</p>
+ * <p>This class use an internal typed Collection to register all {system.process.Runnable|Runnable} objects.</p>
  * @summary Enables you to apply a common {@link system.process.Action|Action} to a group of {@link system.process.Action|Action} objects.
  * @name Batch
  * @class
@@ -32,7 +32,7 @@ import { Runnable } from './Runnable.js' ;
  * {
  *     return '[Command ' + this.name + ']' ;
  * }
-
+ *
  * var batch = new system.process.Batch() ;
  *
  * batch.add( new Command( "command1" ) ) ;
@@ -186,7 +186,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @function
      * @instance
      */
-    indexOf : { writable : true , value : function( command , fromIndex /*uint*/ ) 
+    indexOf : { writable : true , value : function( command , fromIndex /*uint*/ )
     {
         if ( isNaN( fromIndex ) )
         {
@@ -216,7 +216,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @function
      * @instance
      */
-    isEmpty : { writable : true , value : function () 
+    isEmpty : { writable : true , value : function ()
     {
         return this._entries.length === 0 ;
     }},
@@ -306,7 +306,7 @@ Batch.prototype = Object.create( Runnable.prototype ,
      * @instance
      * @return the source code string representation of the object.
      */
-    toString : { writable : true , value : function () 
+    toString : { writable : true , value : function ()
     {
         var r = "[Batch";
         var l = this._entries.length ;

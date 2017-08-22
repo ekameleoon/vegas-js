@@ -7,7 +7,7 @@ import { map }   from './core/maths/map.js' ;
 import { Element } from '../display/Element.js' ;
 
 /**
- * This class provides a skeletal implementation of all the <code class="prettyprint">Progress</code> display components, to minimize the effort required to implement this interface.
+ * This class provides a skeletal implementation of all the <code>Progress</code> display components, to minimize the effort required to implement this interface.
  * @name CoreProgress
  * @memberof molecule.render.pixi.components
  * @extends molecule.render.pixi.display.Element
@@ -98,9 +98,9 @@ CoreProgress.prototype = Object.create( Element.prototype ,
      * Sets the position of the progress bar.
      * @memberof molecule.CoreProgress
      * @method
-     * @param value the position value of the progress bar.
-     * @param noEvent (optional) this flag disabled the events of this method if this argument is <code class="prettyprint">true</code>
-     * @param flag (optional) An optional boolean flag use in the method.
+     * @param {number} value - the position value of the progress bar.
+     * @param {boolean} [noEvent=false] - This flag disabled the events of this method if this argument is <code>true</code>
+     * @param {boolean} [flag=false] -An optional boolean flag use in the method.
      */
     setPosition : { value : function( value, noEvent = false , flag = false )
     {

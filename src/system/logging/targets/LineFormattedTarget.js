@@ -61,7 +61,7 @@ export function LineFormattedTarget( init = null )
     this.includeLines = false ;
 
     /**
-     * Indicates if the milliseconds should be added to the trace. Only relevant when includeTime is <code class="prettyprint">true</code>.
+     * Indicates if the milliseconds should be added to the trace. Only relevant when includeTime is <code>true</code>.
      * @name includeMilliseconds
      * @memberof system.logging.targets.LineFormattedTarget
      * @instance
@@ -132,7 +132,7 @@ LineFormattedTarget.prototype = Object.create( LoggerTarget.prototype ,
     toString : { writable : true , value : function() { return '[' + this.constructor.name + ']' ; } } ,
 
     /**
-     *  This method receive a <code class="prettyprint">LoggerEntry</code> from an associated logger.
+     *  This method receive a <code>LoggerEntry</code> from an associated logger.
      *  A target uses this method to translate the event into the appropriate format for transmission, storage, or display.
      *  This method will be called only if the event's level is in range of the target's level.
      *  <b><i>Descendants need to override this method to make it useful.</i></b>

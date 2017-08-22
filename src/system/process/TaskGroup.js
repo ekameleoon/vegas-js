@@ -306,12 +306,12 @@ TaskGroup.prototype = Object.create( Task.prototype ,
     }},
 
     /**
-     * Returns <code class="prettyprint">true</code> if the specified Action is register in the group.
+     * Returns <code>true</code> if the specified Action is register in the group.
      * @name contains
      * @memberof system.process.TaskGroup
      * @function
      * @instance
-     * @return <code class="prettyprint">true</code> if the specified Action is register in the group.
+     * @return <code>true</code> if the specified Action is register in the group.
      */
     contains : { writable : true , value : function( action )
     {

@@ -58,7 +58,7 @@ Progress.prototype = Object.create( Object.prototype ,
      * @memberof molecule.Progress
      * @method
      * @param value the position value of the progress bar.
-     * @param noEvent (optional) this flag disabled the events of this method if this argument is <code class="prettyprint">true</code>
+     * @param noEvent (optional) this flag disabled the events of this method if this argument is <code>true</code>
      * @param flag (optional) An optional boolean flag use in the method.
      */
     setPosition : { value : function( value, noEvent = false , flag = false )

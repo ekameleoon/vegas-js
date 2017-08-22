@@ -1,15 +1,12 @@
 "use strict" ;
 
 /**
- * The <code>Receiver</code> interface is the primary method for receiving values from Signal objects.
+ * The {system.signals.Receiver|Receiver} interface is the primary method for receiving values from Signal objects.
  * @name Receiver
  * @interface
  * @memberof system.signals
  */
-export function Receiver()
-{
-
-}
+export function Receiver() {}
 
 Receiver.prototype = Object.create( Object.prototype ,
 {

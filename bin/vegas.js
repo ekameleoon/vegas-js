@@ -4412,24 +4412,19 @@ Receiver.prototype = Object.create(Object.prototype, {
 
 function Signaler() {}
 Signaler.prototype = Object.create(Object.prototype, {
-    length: {
-        get: function get() {
-            return 0;
-        }
-    }
+  constructor: { writable: true, value: Signaler },
+  length: { get: function get() {
+      return 0;
+    } },
+  connect: { writable: true, value: function value(receiver) {
+      var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    } },
+  connected: { writable: true, value: function value() {} },
+  disconnect: { writable: true, value: function value(receiver) {} },
+  emit: { writable: true, value: function value() {} },
+  hasReceiver: { writable: true, value: function value(receiver) {} }
 });
-Signaler.prototype.constructor = Signaler;
-Signaler.prototype.connect = function (receiver)
-{
-    var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-}
-;Signaler.prototype.connected = function () {}
-;Signaler.prototype.disconnect = function (receiver) {}
-;Signaler.prototype.emit = function ()
-{}
-;Signaler.prototype.hasReceiver = function (receiver) {
-};
 
 function SignalEntry(receiver) {
   var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
