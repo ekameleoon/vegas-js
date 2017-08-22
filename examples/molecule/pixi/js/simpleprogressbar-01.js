@@ -61,7 +61,19 @@ window.onload = function()
     bar.x = (app.renderer.width - bar.w) * 0.5 ;
     bar.y = (app.renderer.height - bar.h) * 0.5 ;
 
-    bar.position = 50 ;
+    bar.position = 0 ;
 
-    stage.addChild( bar )
+    stage.addChild( bar ) ;
+
+    var tween = new system.transitions.Tween
+    ({
+        auto       : false,
+        duration   : 100 ,
+        useSeconds : false ,
+        easing     : core.easings.bounceOut,
+        target     : bar ,
+        to         : { position : 100 }
+    }) ;
+
+    tween.run() ;
 }

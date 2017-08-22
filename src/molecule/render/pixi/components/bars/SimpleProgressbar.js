@@ -15,21 +15,109 @@ import { CoreProgress } from '../CoreProgress.js' ;
  * @memberof molecule.render.pixi.components.bars
  * @extends molecule.render.pixi.components.CoreProgress
  * @constructor
+ * @example
+ * "use strict" ;
+ *
+ * if( !vegas )
+ * {
+ *     throw new Error("The VEGAS library is not found.") ;
+ * }
+ *
+ * window.onload = function()
+ * {
+ *     // ---------------- Dependencies
+ *
+ *     var global   = vegas.global ;
+ *     var trace    = vegas.trace  ;
+ *     var core     = vegas.core   ;
+ *     var graphics = vegas.graphics ;
+ *     var system   = vegas.system ;
+ *     var molecule = vegas.molecule ;
+ *
+ *     var Application = PIXI.Application ;
+ *     var Body        = molecule.render.dom.display.Body ;
+ *     var Canvas      = molecule.render.dom.display.Canvas ;
+ *
+ *     var Align = graphics.Align ;
+ *     var Direction = graphics.Direction ;
+ *     var EdgeMetrics = graphics.geom.EdgeMetrics ;
+ *     var SimpleProgressbar = molecule.render.pixi.components.bars.SimpleProgressbar ;
+ *
+ *     // ----------------
+ *
+ *     var app    = new Application();
+ *     var body   = new Body() ;
+ *     var canvas = new Canvas( null , app.view ) ;
+ *     var stage  = app.stage ;
+ *
+ *     body.addChild( canvas );
+ *
+ *     var change = function( bar )
+ *     {
+ *         trace( "change position: " + bar.position ) ;
+ *     }
+ *
+ *     var bar = new SimpleProgressbar
+ *     ({
+ *         w         : 200 ,
+ *         h         : 10  ,
+ *         align     : Align.CENTER , // or Align.LEFT / Align.RIGHT
+ *         direction : Direction.HORIZONTAL , // or Direction.VERTICAL
+ *         padding   :  new EdgeMetrics(2,2,2,2) ,
+ *         backgroundAlpha : 1,
+ *         backgroundColor : 0xFFFFFF,
+ *         barAlpha  : 1,
+ *         barColor  : 0xFF0000
+ *     });
+ *
+ *     bar.changed.connect( change ) ;
+ *
+ *     bar.x = (app.renderer.width - bar.w) * 0.5 ;
+ *     bar.y = (app.renderer.height - bar.h) * 0.5 ;
+ *
+ *     bar.position = 50 ;
+ *
+ *     stage.addChild( bar )
+ * }
  */
 export function SimpleProgressbar( init = null , locked = false , texture = null )
 {
     Object.defineProperties( this ,
     {
         /**
-         * The color of the background.
+         * The alpha component of the background (between 0 and 1).
          * @name backgroundAlpha
          * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
          * @instance
+         * @default 1
          */
         backgroundAlpha : { writable : true , value : 1 } ,
+
+        /**
+         * The color component of the background.
+         * @name backgroundColor
+         * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+         * @instance
+         * @default 0x333333
+         */
         backgroundColor : { writable : true , value : 0x333333 } ,
 
+        /**
+         * The alpha component of the bar (between 0 and 1).
+         * @name barAlpha
+         * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+         * @instance
+         * @default 1
+         */
         barAlpha : { writable : true , value : 1 } ,
+
+        /**
+         * The color component of the bar.
+         * @name barColor
+         * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+         * @instance
+         * @default 0xFFFFFF
+         */
         barColor : { writable : true , value : 0xFFFFFF } ,
 
         /**
@@ -39,6 +127,11 @@ export function SimpleProgressbar( init = null , locked = false , texture = null
         _background : { value : new PIXI.Graphics() } ,
         _bar        : { value : new PIXI.Graphics() }
     });
+
+    if( init === null )
+    {
+        init = { w : 200 , h : 100 } ;
+    }
 
     CoreProgress.call( this , texture , init , locked ) ;
 
@@ -59,6 +152,7 @@ SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
      */
     draw : { writable : true , value : function()
     {
+        this._background.clear() ;
         this._background.beginFill(this.backgroundColor,this.backgroundAlpha);
         this._background.drawRect(0,0,this.w,this.h) ;
     }},

@@ -16535,6 +16535,9 @@ function SimpleProgressbar() {
         _background: { value: new PIXI.Graphics() },
         _bar: { value: new PIXI.Graphics() }
     });
+    if (init === null) {
+        init = { w: 200, h: 100 };
+    }
     CoreProgress.call(this, texture, init, locked);
     this.addChild(this._background);
     this.addChild(this._bar);
@@ -16542,6 +16545,7 @@ function SimpleProgressbar() {
 SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
     constructor: { writable: true, value: SimpleProgressbar },
     draw: { writable: true, value: function value() {
+            this._background.clear();
             this._background.beginFill(this.backgroundColor, this.backgroundAlpha);
             this._background.drawRect(0, 0, this.w, this.h);
         } },
@@ -16556,8 +16560,8 @@ SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
             var $l = replaceNaN(this._padding.left);
             var $r = replaceNaN(this._padding.right);
             var $t = replaceNaN(this._padding.top);
-            var $w = isVertical ? this.w - horizontal : size;
-            var $h = isVertical ? size : this.h - vertical;
+            var $w = isVertical ? this._w - horizontal : size;
+            var $h = isVertical ? size : this._h - vertical;
             this._bar.clear();
             this._bar.beginFill(this.barColor, this.barAlpha);
             this._bar.drawRect(0, 0, $w, $h);
