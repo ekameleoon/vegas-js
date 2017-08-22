@@ -17,12 +17,7 @@ export function Builder( target = null )
     Object.defineProperties( this ,
     {
         /**
-         * A flag that indicates whether this control is selected.
-         * @name selected
-         * @memberof molecule.Focusable
-         * @default false
-         * @type {boolean}
-         * @instance
+         * @private
          */
         _target : { value : target , configurable : true , writable : true }
     }) ;
@@ -42,10 +37,7 @@ Builder.prototype = Object.create( Runnable.prototype ,
     target :
     {
         get : function() { return this._target }  ,
-        set : function( value )
-        {
-            this._target = value ;
-        }
+        set : function( value ) { this._target = value ; }
     },
 
     /**
@@ -61,7 +53,7 @@ Builder.prototype = Object.create( Runnable.prototype ,
     }},
 
     /**
-     * Update the view of the component.
+     * Updates the view of the component.
      * @name update
      * @memberof molecule.Builder
      * @instance
