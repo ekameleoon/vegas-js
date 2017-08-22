@@ -2,11 +2,13 @@
 
 import { AddChild } from './display/AddChild.js' ;
 import { AddChildAt } from './display/AddChildAt.js' ;
+import { Hide } from './display/Hide.js' ;
 import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
 import { RemoveChild } from './display/RemoveChild.js' ;
 import { RemoveChildAt } from './display/RemoveChildAt.js' ;
 import { RemoveChildren } from './display/RemoveChildren.js' ;
+import { Show } from './display/Show.js' ;
 
 /**
  * The {@link molecule.render.pixi.process.display} package.
@@ -22,9 +24,11 @@ export var display = Object.assign
 ({
     AddChild : AddChild,
     AddChildAt : AddChildAt,
+    Hide : Hide,
     IfContains : IfContains,
     IfNotContains : IfNotContains,
     RemoveChild : RemoveChild,
     RemoveChildAt : RemoveChildAt,
-    RemoveChildren : RemoveChildren
+    RemoveChildren : RemoveChildren,
+    Show : Show
 });
