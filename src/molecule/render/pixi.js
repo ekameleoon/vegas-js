@@ -5,6 +5,7 @@ import './polyfill/Object.js' ;
 import { components } from './pixi/components.js' ;
 import { display } from './pixi/display.js' ;
 import { layouts } from './pixi/layouts.js' ;
+import { process } from './pixi/process.js' ;
 import { rules } from './pixi/rules.js' ;
 
 /**
@@ -20,5 +21,6 @@ export var pixi = Object.assign
     components : components,
     display    : display,
     layouts    : layouts,
+    process    : process,
     rules      : rules
 }) ;

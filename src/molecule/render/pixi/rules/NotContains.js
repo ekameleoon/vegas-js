@@ -9,6 +9,8 @@ import { Rule } from './system/rules/Rule.js' ;
  * @memberof molecule.render.pixi.rules
  * @extends system.rules.Rule
  * @constructor
+ * @param {PIXI.Container} container - The {PIXI.Container} reference to evaluate.
+ * @param {PIXI.DisplayObject} child - The {PIXI.DisplayObject} reference to evaluate.
  */
 export function NotContains( container = null , child = null )
 {
