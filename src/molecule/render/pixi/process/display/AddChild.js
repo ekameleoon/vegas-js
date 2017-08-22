@@ -82,7 +82,7 @@ AddChild.prototype = Object.create( Task.prototype ,
      */
     clone : { writable : true , value : function()
     {
-        return new AddChild( this.container , this.child ) ;
+        return new AddChild( this.container , this.child , this.enableErrorChecking , this.verbose ) ;
     }},
 
     /**

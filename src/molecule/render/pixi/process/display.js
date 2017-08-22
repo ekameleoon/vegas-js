@@ -1,9 +1,11 @@
 "use strict" ;
 
 import { AddChild } from './display/AddChild.js' ;
+import { AddChildAt } from './display/AddChildAt.js' ;
 import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
 import { RemoveChild } from './display/RemoveChild.js' ;
+import { RemoveChildAt } from './display/RemoveChildAt.js' ;
 
 /**
  * The {@link molecule.render.pixi.process.display} package.
@@ -18,7 +20,9 @@ import { RemoveChild } from './display/RemoveChild.js' ;
 export var display = Object.assign
 ({
     AddChild : AddChild,
+    AddChildAt : AddChildAt,
     IfContains : IfContains,
     IfNotContains : IfNotContains,
     RemoveChild : RemoveChild,
+    RemoveChildAt : RemoveChildAt
 });
