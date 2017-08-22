@@ -107,6 +107,7 @@ window.onload = function()
         for( var i = 0 ; i<numChildren ; i++ )
         {
             button = new SimpleButton();
+
             button.data = '#' + (i+1) ;
             button.set
             (
