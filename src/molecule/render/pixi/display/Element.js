@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { isString } from './core/isString.js' ;
+import { replaceNaN } from './core/maths/replaceNaN.js' ;
 
 import { Direction }   from './graphics/Direction.js' ;
 import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
@@ -16,8 +17,11 @@ import { MOB }     from './MOB' ;
  * @memberof molecule.render.pixi.display
  * @extends molecule.render.pixi.display.MOB
  * @constructor
+ * @param {PIXI.Texture} [texture=null] - The texture for this sprite.
+ * @param {Object} [init=null] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
+ * @param {Boolean} [locked=false] - The flag to lock the new current object when is created.
  */
-export function Element( texture = null )
+export function Element( texture = null , init = null , locked = false )
 {
     Object.defineProperties( this ,
     {
@@ -31,6 +35,8 @@ export function Element( texture = null )
         _groupName        : { writable : true  , value :  null } ,
         _invalides        : { writable : false , value :  {}   } ,
         _oldGroupName     : { writable : true  , value :  null } ,
+        _padding          : { writable : false , value : new EdgeMetrics() } ,
+        _margin           : { writable : false , value : new EdgeMetrics() } ,
         _style            : { writable : true  , value :  null } ,
         _viewStyleChanged : { writable : true  , value :  null }
     });
@@ -55,7 +61,7 @@ export function Element( texture = null )
 
     ///////////
 
-    MOB.call( this , texture ) ;
+    MOB.call( this , texture , init , locked ) ;
 }
 
 Object.defineProperties( Element ,
@@ -113,10 +119,7 @@ Element.prototype = Object.create( MOB.prototype ,
      */
     border :
     {
-        get : function()
-        {
-            return this._border ;
-        },
+        get : function() { return this._border ; },
         set : function( em )
         {
             let isEM = em instanceof EdgeMetrics ;
@@ -219,6 +222,48 @@ Element.prototype = Object.create( MOB.prototype ,
     },
 
     /**
+     * Specifies the margin, in pixels around the element.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @see {graphics.geom.EdgeMetrics}
+     */
+    margin :
+    {
+        get : function() { return this._margin ; } ,
+        set : function( em )
+        {
+            if( em instanceof EdgeMetrics )
+            {
+                this._margin.left   = em ? replaceNaN(em.left)   : 0 ;
+                this._margin.top    = em ? replaceNaN(em.top)    : 0 ;
+                this._margin.right  = em ? replaceNaN(em.right)  : 0 ;
+                this._margin.bottom = em ? replaceNaN(em.bottom) : 0 ;
+            }
+        }
+    },
+
+    /**
+     * Specifies the thickness, in pixels, of the four edge regions around the element.
+     * @memberof molecule.render.pixi.display.Element
+     * @instance
+     * @see {graphics.geom.EdgeMetrics}
+     */
+    padding :
+    {
+        get : function() { return this._padding ; } ,
+        set : function( em )
+        {
+            if( em instanceof EdgeMetrics )
+            {
+                this._padding.left   = em ? replaceNaN(em.left)   : 0 ;
+                this._padding.top    = em ? replaceNaN(em.top)    : 0 ;
+                this._padding.right  = em ? replaceNaN(em.right)  : 0 ;
+                this._padding.bottom = em ? replaceNaN(em.bottom) : 0 ;
+            }
+        }
+    },
+
+    /**
      * Defines the {molecule.Style} reference of this instance.
      * @memberof molecule.render.pixi.display.Element
      * @instance
@@ -283,20 +328,6 @@ Element.prototype = Object.create( MOB.prototype ,
     groupPolicyChanged : { writable : true , value : function()
     {
         // override
-    }},
-
-    /**
-     * Notify a change of the element.
-     * @memberof molecule.render.pixi.display.Element
-     * @instance
-     * @function
-     */
-    notifyChanged : { value : function()
-    {
-        if( this.changed.connected() )
-        {
-            this.changed.emit( this ) ;
-        }
     }},
 
     /**

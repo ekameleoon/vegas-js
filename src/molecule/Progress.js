@@ -1,7 +1,7 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { clamp } from './core/maths/map.js' ;
+import { clamp } from './core/maths/clamp.js' ;
 import { map } from './core/maths/map.js' ;
 
 /**

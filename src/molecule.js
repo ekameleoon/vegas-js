@@ -9,6 +9,7 @@ import { Groupable } from './molecule/Groupable.js' ;
 import { Iconifiable } from './molecule/Iconifiable.js' ;
 import { LabelPolicy } from './molecule/LabelPolicy.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
+import { Style } from './molecule/Style.js' ;
 
 import { components } from './molecule/components.js' ;
 import { display } from './molecule/display.js' ;
@@ -40,6 +41,7 @@ export var molecule = Object.assign
     Iconifiable  : Iconifiable ,
     LabelPolicy  : LabelPolicy ,
     ScrollPolicy : ScrollPolicy,
+    Style        : Style,
 
     // ----- packages
 

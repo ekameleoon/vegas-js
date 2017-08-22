@@ -211,7 +211,7 @@ export function CoreButton( texture = null )
 
 CoreButton.prototype = Object.create( Element.prototype ,
 {
-    constructor : { value : CoreButton } ,
+    constructor : { writable : true , value : CoreButton } ,
 
     /**
      * A flag that indicates whether this control is selected.

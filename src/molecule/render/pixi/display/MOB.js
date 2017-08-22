@@ -503,6 +503,20 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     }},
 
     /**
+     * Notify a change of the element.
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     * @function
+     */
+    notifyChanged : { value : function()
+    {
+        if( this.changed.connected() )
+        {
+            this.changed.emit( this ) ;
+        }
+    }},
+
+    /**
      * Notify an event when you resize the component.
      * @name notifyResized
      * @memberof molecule.render.pixi.display.MOB
@@ -512,7 +526,10 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     notifyResized : { writable : true , value : function()
     {
         this.viewResize() ;
-        this.resized.emit( this ) ;
+        if( this.resized.connected() )
+        {
+            this.resized.emit( this ) ;
+        }
     }},
 
     /**
