@@ -5,6 +5,7 @@ import { AddChildAt } from './display/AddChildAt.js' ;
 import { Hide } from './display/Hide.js' ;
 import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
+import { MoveTo } from './display/MoveTo.js' ;
 import { RemoveChild } from './display/RemoveChild.js' ;
 import { RemoveChildAt } from './display/RemoveChildAt.js' ;
 import { RemoveChildren } from './display/RemoveChildren.js' ;
@@ -27,6 +28,7 @@ export var display = Object.assign
     Hide : Hide,
     IfContains : IfContains,
     IfNotContains : IfNotContains,
+    MoveTo : MoveTo,
     RemoveChild : RemoveChild,
     RemoveChildAt : RemoveChildAt,
     RemoveChildren : RemoveChildren,
