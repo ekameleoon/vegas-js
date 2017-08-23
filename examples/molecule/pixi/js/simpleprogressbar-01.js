@@ -26,6 +26,7 @@ window.onload = function()
 
     var Align = graphics.Align ;
     var Direction = graphics.Direction ;
+    var FillStyle = graphics.FillStyle ;
     var EdgeMetrics = graphics.geom.EdgeMetrics ;
     var SimpleProgressbar = molecule.render.pixi.components.bars.SimpleProgressbar ;
 
@@ -43,37 +44,69 @@ window.onload = function()
         trace( "change position: " + bar.position ) ;
     }
 
-    var bar = new SimpleProgressbar
+    var bar1 = new SimpleProgressbar
     ({
         w         : 200 ,
         h         : 10  ,
-        align     : Align.CENTER , // or Align.LEFT / Align.RIGHT
-        direction : Direction.HORIZONTAL , // or Direction.VERTICAL
-        padding   :  new EdgeMetrics(2,2,2,2) ,
-        backgroundAlpha : 1,
-        backgroundColor : 0xFFFFFF,
-        barAlpha  : 1,
-        barColor  : 0xFF0000
+        align     : Align.CENTER,
+        barAlign  : Align.CENTER , // or Align.LEFT or Align.RIGHT
+        direction : Direction.HORIZONTAL ,
+        padding   : new EdgeMetrics(2,2,2,2) ,
+        fill      : new FillStyle( 0xFFFFFF ) ,
+        barFill   : new FillStyle( 0xFF0000 )
     });
 
-    bar.changed.connect( change ) ;
+    bar1.changed.connect( change ) ;
 
-    bar.x = (app.renderer.width - bar.w) * 0.5 ;
-    bar.y = (app.renderer.height - bar.h) * 0.5 ;
+    bar1.x = app.renderer.width  * 0.5 ;
+    bar1.y = app.renderer.height * 0.5 ;
 
-    bar.position = 0 ;
+    bar1.position = 50 ;
 
-    stage.addChild( bar ) ;
+    stage.addChild( bar1 ) ;
 
-    var tween = new system.transitions.Tween
+    // ------- VERTICAL
+
+    var bar2 = new SimpleProgressbar
+    ({
+        w         : 10 ,
+        h         : 200  ,
+        x         : 10 ,
+        y         : 10 ,
+        barAlign  : Align.BOTTOM , // or Align.TOP or Align.CENTER
+        direction : Direction.VERTICAL ,
+        padding   : new EdgeMetrics(2,2,2,2) ,
+        position  : 50 ,
+        fill      : new FillStyle( 0xFFFFFF ) ,
+        barFill   : new FillStyle( 0xFF22A3 )
+    });
+
+    stage.addChild( bar2 ) ;
+
+    // ------- TEST
+
+    var tween1 = new system.transitions.Tween
     ({
         auto       : false,
         duration   : 100 ,
         useSeconds : false ,
         easing     : core.easings.bounceOut,
-        target     : bar ,
+        target     : bar1 ,
+        from       : { position : 0 } ,
         to         : { position : 100 }
     }) ;
 
-    tween.run() ;
+    var tween2 = new system.transitions.Tween
+    ({
+        auto       : false,
+        duration   : 100 ,
+        useSeconds : false ,
+        easing     : core.easings.sineOut,
+        target     : bar2 ,
+        from       : { position : 0 } ,
+        to         : { position : 100 }
+    }) ;
+
+    tween1.run() ;
+    tween2.run() ;
 }

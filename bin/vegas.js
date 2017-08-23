@@ -16670,13 +16670,14 @@ function SimpleProgressbar() {
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     Object.defineProperties(this, {
-        backgroundAlpha: { writable: true, value: 1 },
-        backgroundColor: { writable: true, value: 0x333333 },
-        barAlpha: { writable: true, value: 1 },
-        barColor: { writable: true, value: 0xFFFFFF },
         _alignments: { value: [Align.BOTTOM, Align.LEFT, Align.CENTER, Align.RIGHT, Align.TOP] },
         _background: { value: new PIXI.Graphics() },
-        _bar: { value: new PIXI.Graphics() }
+        _bar: { value: new PIXI.Graphics() },
+        _barAlign: { writable: true, value: null },
+        _barFill: { writable: true, value: new FillStyle(0x0000FF) },
+        _barLine: { writable: true, value: null },
+        _fill: { writable: true, value: new FillStyle(0x333333) },
+        _line: { writable: true, value: null }
     });
     if (init === null) {
         init = { w: 200, h: 100 };
@@ -16687,10 +16688,63 @@ function SimpleProgressbar() {
 }
 SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
     constructor: { writable: true, value: SimpleProgressbar },
+    barAlign: {
+        get: function get() {
+            return this._barAlign;
+        },
+        set: function set(value) {
+            this._barAlign = value;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    barLine: {
+        get: function get() {
+            return this._barLine;
+        },
+        set: function set(value) {
+            this._barLine = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    barFill: {
+        get: function get() {
+            return this._barFill;
+        },
+        set: function set(value) {
+            this._barFill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
     draw: { writable: true, value: function value() {
+            this.fixArea();
             this._background.clear();
-            this._background.beginFill(this.backgroundColor, this.backgroundAlpha);
-            this._background.drawRect(0, 0, this.w, this.h);
+            if (this._fill instanceof FillStyle) {
+                this._background.beginFill(this._fill._color, this._fill._alpha);
+            }
+            if (this._line instanceof LineStyle) {
+                this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+            }
+            this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
         } },
     viewPositionChanged: { writable: true, value: function value() {
             var isVertical = this.direction === Direction.VERTICAL;
@@ -16703,23 +16757,38 @@ SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
             var $l = replaceNaN(this._padding.left);
             var $r = replaceNaN(this._padding.right);
             var $t = replaceNaN(this._padding.top);
+            var $x = this._real.x;
+            var $y = this._real.y;
             var $w = isVertical ? this._w - horizontal : size;
             var $h = isVertical ? size : this._h - vertical;
-            this._bar.clear();
-            this._bar.beginFill(this.barColor, this.barAlpha);
-            this._bar.drawRect(0, 0, $w, $h);
-            this._bar.visible = this.position > 0;
-            if (this._align === Align.RIGHT || this._align === Align.BOTTOM) {
-                this._bar.x = isVertical ? $l : this.w - this._bar.width - $r;
-                this._bar.y = isVertical ? this.h - this._bar.height - $b : $t;
-            } else if (this._align === Align.CENTER) {
-                this._bar.x = isVertical ? $l : (this.w - this._bar.width) * 0.5;
-                this._bar.y = isVertical ? (this.h - this._bar.height) * 0.5 : $t;
-            } else
-                {
-                    this._bar.x = $l;
-                    this._bar.y = $t;
+            if (isVertical) {
+                $x += $l;
+                if (this._barAlign === Align.BOTTOM) {
+                    $y += this.h - $h - $b;
+                } else if (this._barAlign === Align.CENTER) {
+                    $y += (this.h - $h) * 0.5;
+                } else {
+                    $y += $t;
                 }
+            } else {
+                $y += $t;
+                if (this._barAlign === Align.RIGHT) {
+                    $x += this.w - $w - $r;
+                } else if (this._barAlign === Align.CENTER) {
+                    $x += (this.w - $w) * 0.5;
+                } else {
+                    $x += $l;
+                }
+            }
+            this._bar.clear();
+            if (this._barFill instanceof FillStyle) {
+                this._bar.beginFill(this._barFill._color, this._barFill._alpha);
+            }
+            if (this._barLine instanceof LineStyle) {
+                this._bar.lineStyle(this._barLine._thickness, this._barLine._color, this._barLine._alpha);
+            }
+            this._bar.drawRect($x, $y, $w, $h);
+            this._bar.visible = this.position > 0;
         } }
 });
 
