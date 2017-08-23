@@ -25,18 +25,6 @@ export function LineStyle( thickness = 1 , color = 0 , alpha = 1 )
     });
 }
 
-Object.defineProperties( LineStyle ,
-{
-    /**
-     * The empty LineStyle singleton.
-     * @name EMPTY
-     * @memberof graphics.LineStyle
-     * @static
-     * @type {graphics.LineStyle}
-     */
-    EMPTY : { value : new LineStyle(0,0,0) }
-});
-
 LineStyle.prototype = Object.create( Object.prototype ,
 {
     constructor : { writable : true , value : LineStyle } ,
@@ -185,4 +173,16 @@ LineStyle.prototype = Object.create( Object.prototype ,
     {
         return "[LineStyle thickness:" + this._thickness + " color:" + this._color + " alpha:" + this._alpha + "]" ;
     }}
+});
+
+Object.defineProperties( LineStyle ,
+{
+    /**
+     * The empty LineStyle singleton.
+     * @name EMPTY
+     * @memberof graphics.LineStyle
+     * @static
+     * @type {graphics.LineStyle}
+     */
+    EMPTY : { value : new LineStyle(0,0,0) }
 });

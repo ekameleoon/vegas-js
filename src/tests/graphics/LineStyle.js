@@ -168,4 +168,16 @@ describe( 'graphics.LineStyle' , () =>
             assert.isFalse( new LineStyle(25,0xFF0000,0).equals(new LineStyle(25,0xFF0000,1)) );
         });
     });
+
+    describe( 'LineStyle.EMPTY' , () =>
+    {
+        let style = LineStyle.EMPTY ;
+        it('style.thickness === 0' , () => { assert.equal( style.thickness , 0 ); });
+        it('style.color === 0' , () => { assert.equal( style.color     , 0 ); });
+        it('style.alpha === 0' , () => { assert.equal( style.alpha     , 0 ); });
+        it('new LineStyle(0,0,0).equals(LineStyle.EMPTY)' , () =>
+        {
+            assert.isTrue( new LineStyle(0,0,0).equals(LineStyle.EMPTY) );
+        });
+    });
 }) ;
