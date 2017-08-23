@@ -16356,6 +16356,10 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             if (this._locked > 0) {
                 return;
             }
+            var cached = this.cacheAsBitmap === true;
+            if (cached) {
+                this.cacheAsBitmap = false;
+            }
             this.renderer.emit(this);
             if (this._layout) {
                 this._layout.run();
@@ -16363,6 +16367,9 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.draw();
             this.viewChanged();
             this.altered = false;
+            if (cached) {
+                this.cacheAsBitmap = true;
+            }
             this.updater.emit(this);
         } },
     updateLayout: { writable: true, value: function value() /* layout = null */{
@@ -16539,6 +16546,10 @@ Element$1.prototype = Object.create(MOB.prototype, {
             if (this._locked > 0) {
                 return;
             }
+            var cached = this.cacheAsBitmap === true;
+            if (cached) {
+                this.cacheAsBitmap = false;
+            }
             this.renderer.emit(this);
             if (this._invalides[Element$1.LAYOUT]) {
                 this._invalides[Element$1.LAYOUT] = undefined;
@@ -16561,6 +16572,9 @@ Element$1.prototype = Object.create(MOB.prototype, {
                 this.viewChanged();
             }
             this.altered = false;
+            if (cached) {
+                this.cacheAsBitmap = true;
+            }
             this.updater.emit(this);
         } },
     viewStyleChanged: { writable: true, value: function value() /* style = null */{
@@ -17094,7 +17108,7 @@ function Background() {
         _line: { writable: true, value: null }
     });
     Element$1.call(this, PIXI.Texture.EMPTY, init, true);
-    this.addChild(this._background);
+    this.registerViews();
     if (locked) {
         this.lock();
     }
@@ -17105,6 +17119,9 @@ function Background() {
 }
 Background.prototype = Object.create(Element$1.prototype, {
     constructor: { value: Background },
+    background: { get: function get() {
+            return this._background;
+        } },
     line: {
         get: function get() {
             return this._line;
@@ -17124,6 +17141,7 @@ Background.prototype = Object.create(Element$1.prototype, {
         }
     },
     draw: { writable: true, value: function value() {
+            this.fixArea();
             this._background.clear();
             if (this._fill instanceof FillStyle) {
                 this._background.beginFill(this._fill._color, this._fill._alpha);
@@ -17131,8 +17149,13 @@ Background.prototype = Object.create(Element$1.prototype, {
             if (this._line instanceof LineStyle) {
                 this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
             }
-            this.fixArea();
             this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+        } },
+    registerViews: { writable: true, value: function value() {
+            if (this.children.length > 0) {
+                this.removeChildren();
+            }
+            this.addChild(this._background);
         } }
 });
 

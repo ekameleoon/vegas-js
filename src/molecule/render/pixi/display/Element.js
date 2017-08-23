@@ -343,6 +343,13 @@ Element.prototype = Object.create( MOB.prototype ,
             return ;
         }
 
+        let cached = this.cacheAsBitmap === true ;
+
+        if( cached )
+        {
+            this.cacheAsBitmap = false ;
+        }
+
         this.renderer.emit(this) ;
 
         ////// layout
@@ -390,6 +397,11 @@ Element.prototype = Object.create( MOB.prototype ,
         }
 
         this.altered = false ;
+
+        if( cached )
+        {
+            this.cacheAsBitmap = true ;
+        }
 
         this.updater.emit(this) ;
     }},

@@ -31,6 +31,15 @@ window.onload = function()
 
     // ----------------
 
+    var alignments =
+    [
+        Align.TOP_LEFT , Align.TOP , Align.TOP_RIGHT ,
+        Align.RIGHT , Align.CENTER, Align.LEFT ,
+        Align.BOTTOM_LEFT , Align.BOTTOM, Align.BOTTOM_RIGHT
+    ];
+
+    var count = 0 ;
+
     var app    = new Application();
     var body   = new Body() ;
     var canvas = new Canvas( null , app.view ) ;
@@ -38,7 +47,7 @@ window.onload = function()
 
     body.addChild( canvas );
 
-    var background = new Background
+    var cell = new Background
     ({
         w : 200 ,
         h : 200 ,
@@ -46,10 +55,22 @@ window.onload = function()
         line : new LineStyle( 2 , 0xFFFFFF)
     });
 
-    background.x = app.renderer.width  * 0.5 ;
-    background.y = app.renderer.height * 0.5 ;
+    cell.x = app.renderer.width  * 0.5 ;
+    cell.y = app.renderer.height * 0.5 ;
 
-    background.align = Align.CENTER ; // see graphics.Align
+    cell.align = Align.CENTER ; // see graphics.Align
 
-    stage.addChild( background ) ;
+    cell.interactive = true ;
+    cell.buttonMode  = true ;
+
+    cell.pointerdown = function()
+    {
+        cell.align = alignments[count++] ;
+        if( count === alignments.length )
+        {
+            count = 0 ;
+        }
+    }
+
+    stage.addChild( cell ) ;
 }

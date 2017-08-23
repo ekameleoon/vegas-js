@@ -80,7 +80,7 @@ export function Background( init = null , locked = false )
 
     Element.call( this , PIXI.Texture.EMPTY , init , true ) ;
 
-    this.addChild( this._background ) ;
+    this.registerViews() ;
 
     if( locked )
     {
@@ -98,6 +98,14 @@ export function Background( init = null , locked = false )
 Background.prototype = Object.create( Element.prototype ,
 {
     constructor : { value : Background } ,
+
+    /**
+     * Determinates the internal {PIXI.Graphics} reference of the background.
+     * @memberof molecule.render.pixi.display.Background
+     * @instance
+     * @type {graphics.LineStyle}
+     */
+    background : { get : function() { return this._background ; } },
 
     /**
      * Determinates the {graphics.LineStyle|LineStyle} of the background.
@@ -140,6 +148,8 @@ Background.prototype = Object.create( Element.prototype ,
      */
     draw : { writable : true , value : function()
     {
+        this.fixArea() ;
+
         this._background.clear() ;
 
         if( this._fill instanceof FillStyle )
@@ -151,8 +161,6 @@ Background.prototype = Object.create( Element.prototype ,
             this._background.lineStyle(this._line._thickness,this._line._color,this._line._alpha) ;
         }
 
-        this.fixArea() ;
-
         this._background.drawRect
         (
             this._real.x,
@@ -161,4 +169,16 @@ Background.prototype = Object.create( Element.prototype ,
             this._real.height
         ) ;
     }},
+
+    /**
+     * @private
+     */
+    registerViews : { writable : true , value : function()
+    {
+        if( this.children.length > 0 )
+        {
+            this.removeChildren() ;
+        }
+        this.addChild( this._background ) ;
+    }}
 }) ;

@@ -634,6 +634,13 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
             return ;
         }
 
+        let cached = this.cacheAsBitmap === true ;
+
+        if( cached )
+        {
+            this.cacheAsBitmap = false ;
+        }
+
         this.renderer.emit(this) ;
 
         if ( this._layout )
@@ -646,6 +653,11 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         this.viewChanged() ;
 
         this.altered = false ;
+
+        if( cached )
+        {
+            this.cacheAsBitmap = true ;
+        }
 
         this.updater.emit(this) ;
     }},
