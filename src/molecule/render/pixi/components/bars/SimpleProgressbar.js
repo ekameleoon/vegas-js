@@ -81,6 +81,8 @@ import { CoreProgress } from '../CoreProgress.js' ;
  *
  *     stage.addChild( bar )
  * }
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export function SimpleProgressbar( init = null , locked = false , texture = null )
 {
@@ -118,7 +120,7 @@ SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
      * The internal background {PIXI.Graphics} reference of the component.
      * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
      * @instance
-     * @type {graphics.LineStyle}
+     * @type {PIXI.Graphics}
      */
     background : { get : function() { return this._background ; } },
 
@@ -126,7 +128,7 @@ SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
      * The internal bar {PIXI.Graphics} reference of the component.
      * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
      * @instance
-     * @type {graphics.LineStyle}
+     * @type {PIXI.Graphics}
      */
     bar : { get : function() { return this._bar ; } } ,
 
@@ -252,8 +254,8 @@ SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
 
     /**
      * Invoked when the position of the bar is changed.
-     * @param flag (optional) An optional boolean. By default this flag is passed-in the setPosition method.
-     * @private
+     * @param {boolean} [flag=false] - An optional boolean. By default this flag is passed-in the setPosition method.
+     * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
      */
     viewPositionChanged : { writable : true , value : function()
     {

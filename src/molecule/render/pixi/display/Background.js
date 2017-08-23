@@ -103,7 +103,7 @@ Background.prototype = Object.create( Element.prototype ,
      * The internal {PIXI.Graphics} reference of the background.
      * @memberof molecule.render.pixi.display.Background
      * @instance
-     * @type {graphics.LineStyle}
+     * @type {PIXI.Graphics}
      */
     background : { get : function() { return this._background ; } },
 

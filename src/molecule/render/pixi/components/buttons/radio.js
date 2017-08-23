@@ -11,5 +11,7 @@ import { RadioButtonGroup } from '../../../../groups/RadioButtonGroup.js' ;
  * @memberof molecule.render.pixi.components.buttons
  * @static
  * @private
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export var radio = new RadioButtonGroup() ;

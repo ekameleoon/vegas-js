@@ -16,6 +16,8 @@ import { Element } from '../display/Element.js' ;
  * @param {PIXI.Texture} [texture=null] - The texture for this sprite.
  * @param {Object} [init=null] - A generic object containing properties with which to populate the newly instance. If this argument is null, it is ignored.
  * @param {Boolean} [locked=false] - The flag to lock the new current object when is created.
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export function CoreProgress( texture = null , init = null , locked = false )
 {
@@ -115,6 +117,7 @@ CoreProgress.prototype = Object.create( Element.prototype ,
 
     /**
      * Invoked when the view of the display is changed.
+     * @memberof molecule.CoreProgress
      */
     viewChanged : { writable : true , value : function()
     {
@@ -123,7 +126,8 @@ CoreProgress.prototype = Object.create( Element.prototype ,
 
     /**
      * Invoked when the position of the bar is changed.
-     * @param flag (optional) An optional boolean. By default this flag is passed-in the setPosition method.
+     * @param {boolean} [flag=false] - An optional boolean. By default this flag is passed-in the setPosition method.
+     * @memberof molecule.CoreProgress
      */
     viewPositionChanged : { writable : true , value : function( /* flag = false */ )
     {

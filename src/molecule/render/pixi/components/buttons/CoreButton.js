@@ -14,6 +14,8 @@ import { radio } from './radio.js' ;
  * @memberof molecule.render.pixi.components.buttons
  * @extends molecule.render.pixi.display.Element
  * @constructor
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export function CoreButton( texture = null )
 {

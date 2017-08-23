@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { CoreProgress } from './components/CoreProgress.js' ;
+import { CoreScrollbar } from './components/CoreScrollbar.js' ;
 
 import { bars } from './components/bars.js' ;
 import { buttons } from './components/buttons.js' ;
@@ -17,8 +18,11 @@ import { buttons } from './components/buttons.js' ;
  */
 export var components = Object.assign
 ({
+    // classes
     CoreProgress : CoreProgress ,
+    CoreScrollbar : CoreScrollbar ,
 
+    // packages
     bars,
     buttons
 });

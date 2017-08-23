@@ -57,6 +57,8 @@ import { CoreButton }  from './CoreButton.js' ;
  * });
  *
  * stage.addChild( button ) ;
+ * @version 1.0.8
+ * @since 1.0.8
  */
 export function SimpleButton( texture = null )
 {
