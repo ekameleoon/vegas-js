@@ -115,6 +115,22 @@ SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
     constructor : { writable : true , value : SimpleProgressbar } ,
 
     /**
+     * The internal background {PIXI.Graphics} reference of the component.
+     * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+     * @instance
+     * @type {graphics.LineStyle}
+     */
+    background : { get : function() { return this._background ; } },
+
+    /**
+     * The internal bar {PIXI.Graphics} reference of the component.
+     * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+     * @instance
+     * @type {graphics.LineStyle}
+     */
+    bar : { get : function() { return this._bar ; } } ,
+
+    /**
      * The alignment of the bar element in the component. Use the Align.CENTER to center the bar, the Align.LEFT or Align.TOP or Align.BOTTOM or Align.RIGHT
      * @name barAlign
      * @memberof molecule.render.pixi.components.bars.SimpleProgressbar

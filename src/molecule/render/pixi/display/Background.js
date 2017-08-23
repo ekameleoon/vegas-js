@@ -100,7 +100,7 @@ Background.prototype = Object.create( Element.prototype ,
     constructor : { value : Background } ,
 
     /**
-     * Determinates the internal {PIXI.Graphics} reference of the background.
+     * The internal {PIXI.Graphics} reference of the background.
      * @memberof molecule.render.pixi.display.Background
      * @instance
      * @type {graphics.LineStyle}
