@@ -7,7 +7,7 @@ import { isMeasurable } from './graphics/isMeasurable.js' ;
 import { CoreProgress } from './CoreProgress.js' ;
 
 /**
- * This class provides a skeletal implementation of all the <code>Progress</code> display components, to minimize the effort required to implement this interface.
+ * This class provides a skeletal implementation of all the Scrollbar display components, to minimize the effort required to implement this interface.
  * @name CoreScrollbar
  * @memberof molecule.render.pixi.components
  * @extends molecule.render.pixi.components.CoreProgress
