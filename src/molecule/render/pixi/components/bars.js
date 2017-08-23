@@ -1,5 +1,6 @@
 "use strict" ;
 
+import { ScrollIndicator } from './bars/ScrollIndicator.js' ;
 import { SimpleProgressbar } from './bars/SimpleProgressbar.js' ;
 
 /**
@@ -14,5 +15,6 @@ import { SimpleProgressbar } from './bars/SimpleProgressbar.js' ;
  */
 export var bars = Object.assign
 ({
-    SimpleProgressbar
+    ScrollIndicator : ScrollIndicator ,
+    SimpleProgressbar : SimpleProgressbar
 });

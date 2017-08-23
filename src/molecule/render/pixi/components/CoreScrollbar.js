@@ -135,37 +135,38 @@ CoreScrollbar.prototype = Object.create( CoreProgress.prototype ,
      */
     viewPositionChanged : { writable : true , value : function( /* flag = false */ )
     {
-        try
+        this._fixPosition() ;
+        if( this._thumb && !this._lockPosition )
         {
-            this._fixPosition() ;
-            if ( !this._lockPosition )
+            let $hor = this._padding.horizontal ;
+            let $ver = this._padding.vertical ;
+
+            let $l = this._padding.left ;
+            let $t = this._padding.top ;
+            let $w = this.w ;
+            let $h = this.h ;
+
+            let range ;
+            if( this._direction !== Direction.HORIZONTAL )
             {
-                let range ;
-                if( this._direction === Direction.HORIZONTAL )
+                range = $h - this.thumbSize - $ver ;
+                this._thumb.x = $l + this._real.x ;
+                this._thumb.y = $t + this._real.y + (this._position - this._min) / (this._max - this._min) * range ;
+                if ( this._invert )
                 {
-                    range = (isMeasurable(this._bar) ? this._bar.w : this._bar.width) - this._thumbSize - this._padding.horizontal;
-                    this._thumb.x = this._padding.left + this._real.x + (this._position - this._min) / (this._max - this._min) * range ;
-                    this._thumb.y = this._padding.top  + this._real.y ;
-                    if ( this._invert )
-                    {
-                        this._thumb.x = this._padding.left + this._real.x + range - this._thumb.x + this._padding.right ;
-                    }
-                }
-                else
-                {
-                    range = (isMeasurable(this._bar) ? this._bar.h : this._bar.height) - this._thumbSize - this._padding.vertical ;
-                    this._thumb.x = this._padding.left + this._real.x ;
-                    this._thumb.y = this._padding.top + this._real.y + (this._position - this._min) / (this._max - this._min) * range ;
-                    if ( this._invert )
-                    {
-                        this._thumb.y = this._padding.top + this._real.y + range - this._thumb.y + this._padding.bottom ;
-                    }
+                    this._thumb.y = $h - $ver + this._real.y + range - this._thumb.y ;
                 }
             }
-        }
-        catch( er )
-        {
-            //
+            else
+            {
+                range = $w - this.thumbSize - $hor;
+                this._thumb.x = $l + this._real.x + (this._position - this._min) / (this._max - this._min) * range ;
+                this._thumb.y = $t + this._real.y ;
+                if ( this._invert )
+                {
+                    this._thumb.x = $hor + this._real.x + range - this._thumb.x - $w*0.5 ;
+                }
+            }
         }
     }},
 

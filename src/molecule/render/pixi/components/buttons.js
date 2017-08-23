@@ -15,6 +15,6 @@ import { SimpleButton } from './buttons/SimpleButton.js' ;
  */
 export var buttons = Object.assign
 ({
-    CoreButton,
-    SimpleButton
+    CoreButton : CoreButton,
+    SimpleButton : SimpleButton
 });

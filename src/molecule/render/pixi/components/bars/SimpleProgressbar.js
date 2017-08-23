@@ -91,11 +91,10 @@ export function SimpleProgressbar( init = null , locked = false , texture = null
         /**
          * @private
          */
-        _alignments : { value : [ Align.BOTTOM , Align.LEFT  , Align.CENTER , Align.RIGHT , Align.TOP ] } ,
         _background : { value : new PIXI.Graphics() } ,
         _bar        : { value : new PIXI.Graphics() } ,
         _barAlign   : { writable :  true , value : null } ,
-        _barFill    : { writable : true  , value : new FillStyle(0x0000FF) } ,
+        _barFill    : { writable : true  , value : new FillStyle(0xFF0000) } ,
         _barLine    : { writable : true  , value : null  } ,
         _fill       : { writable : true  , value : new FillStyle(0x333333) } ,
         _line       : { writable : true  , value : null  }
@@ -103,13 +102,25 @@ export function SimpleProgressbar( init = null , locked = false , texture = null
 
     if( init === null )
     {
-        init = { w : 200 , h : 100 } ;
+        init = { w : 200 , h : 10 } ;
     }
 
-    CoreProgress.call( this , texture , init , locked ) ;
+    CoreProgress.call( this , texture , init , true ) ;
 
     this.addChild( this._background ) ;
     this.addChild( this._bar ) ;
+
+    if( locked )
+    {
+        this.lock() ;
+    }
+
+    this.update() ;
+
+    if( locked )
+    {
+        this.unlock() ;
+    }
 }
 
 SimpleProgressbar.prototype = Object.create( CoreProgress.prototype ,
