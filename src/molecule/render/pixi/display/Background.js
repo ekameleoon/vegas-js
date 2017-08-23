@@ -134,7 +134,7 @@ Background.prototype = Object.create( Element.prototype ,
     /**
      * Draw the display.
      * @name draw
-     * @memberof molecule.render.pixi.components.bars.SimpleProgressbar
+     * @memberof molecule.render.pixi.display.Background
      * @instance
      * @function
      */
