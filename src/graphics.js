@@ -12,6 +12,7 @@ import { Corner }             from './graphics/Corner.js' ;
 import { Direction }          from './graphics/Direction.js' ;
 import { Directionable }      from './graphics/Directionable.js' ;
 import { DirectionOrder }     from './graphics/DirectionOrder.js' ;
+import { FillStyle }          from './graphics/FillStyle.js' ;
 import { isMeasurable }       from './graphics/isMeasurable.js' ;
 import { Layout }             from './graphics/Layout.js' ;
 import { LayoutBufferMode }   from './graphics/LayoutBufferMode.js' ;
@@ -49,6 +50,7 @@ export var graphics = Object.assign
     Direction          : Direction ,
     Directionable      : Directionable ,
     DirectionOrder     : DirectionOrder ,
+    FillStyle          : FillStyle ,
     isMeasurable       : isMeasurable ,
     Layout             : Layout ,
     LayoutBufferMode   : LayoutBufferMode ,
