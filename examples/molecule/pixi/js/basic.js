@@ -69,18 +69,6 @@ window.onload = function()
 
         stage.addChild( bunny ) ;
 
-        // --------- Graphics
-
-        var graphic = new PIXI.Graphics() ;
-
-        graphic.beginFill(0x00ffcc)
-        graphic.lineStyle(0,0xFFFFFF) ;
-        graphic.drawRect(0, 0, 200, 150) ;
-
-        graphic.x = 150 ;
-        graphic.y = 150 ;
-        stage.addChild( graphic ) ;
-
         // --------- tween
 
         tween = new Tween

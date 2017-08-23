@@ -10909,6 +10909,67 @@ var DirectionOrder = Object.defineProperties({}, {
   REVERSE: { enumerable: true, value: 'reverse' }
 });
 
+function FillStyle() {
+    var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    Object.defineProperties(this, {
+        _alpha: { writable: true, value: clamp(isNaN(alpha) ? 0 : alpha, 0, 1) },
+        _color: { writable: true, value: clamp(isNaN(color) ? 0 : color, 0, 0xFFFFFF) }
+    });
+}
+FillStyle.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: FillStyle },
+    alpha: {
+        get: function get() {
+            return this._alpha;
+        },
+        set: function set(value) {
+            this._alpha = clamp(isNaN(value) ? 0 : value, 0, 1);
+        }
+    },
+    color: {
+        get: function get() {
+            return this._color;
+        },
+        set: function set(value) {
+            this._color = clamp(isNaN(value) ? 0 : value, 0, 0xFFFFFF);
+        }
+    },
+    clone: { writable: true, value: function value() {
+            return new FillStyle(this._color, this._alpha);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof FillStyle)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an FillStyle object.');
+            }
+            this._color = source._color;
+            this._alpha = source._alpha;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof FillStyle) {
+                return o._color === this._color && o._alpha === this._alpha;
+            } else {
+                return false;
+            }
+        } },
+    setTo: { writable: true, value: function value() {
+            var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+            this.alpha = alpha;
+            this.color = color;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { alpha: this._alpha, color: this._color };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[FillStyle color:" + this._color + " alpha:" + this._alpha + "]";
+        } }
+});
+Object.defineProperties(FillStyle, {
+    EMPTY: { value: new FillStyle(0, 0) }
+});
+
 function isMeasurable(target) {
     if (target) {
         return 'h' in target && isNumber(target.h) && 'w' in target && isNumber(target.w) && 'maxHeight' in target && isNumber(target.maxHeight) && 'maxWidth' in target && isNumber(target.maxWidth) && 'minHeight' in target && isNumber(target.minHeight) && 'minWidth' in target && isNumber(target.minWidth) && 'setPreferredSize' in target && target.setPreferredSize instanceof Function && 'setSize' in target && target.setSize instanceof Function;
@@ -11537,6 +11598,80 @@ LayoutEntry.prototype = Object.create(Object.prototype, {
   toString: { writable: true, value: function value() {
       return '[LayoutEntry]';
     } }
+});
+
+function LineStyle() {
+    var thickness = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var alpha = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+    Object.defineProperties(this, {
+        _alpha: { writable: true, value: clamp(isNaN(alpha) ? 0 : alpha, 0, 1) },
+        _color: { writable: true, value: clamp(isNaN(color) ? 0 : color, 0, 0xFFFFFF) },
+        _thickness: { value: clamp(isNaN(thickness) ? 0 : thickness, 0, 0xFF), writable: true }
+    });
+}
+LineStyle.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: LineStyle },
+    alpha: {
+        get: function get() {
+            return this._alpha;
+        },
+        set: function set(value) {
+            this._alpha = clamp(isNaN(value) ? 0 : value, 0, 1);
+        }
+    },
+    color: {
+        get: function get() {
+            return this._color;
+        },
+        set: function set(value) {
+            this._color = clamp(isNaN(value) ? 0 : value, 0, 0xFFFFFF);
+        }
+    },
+    thickness: {
+        get: function get() {
+            return this._thickness;
+        },
+        set: function set(value) {
+            this._thickness = clamp(isNaN(value) ? 0 : value, 0, 0xFF);
+        }
+    },
+    clone: { writable: true, value: function value() {
+            return new LineStyle(this._thickness, this._color, this._alpha);
+        } },
+    copyFrom: { writable: true, value: function value(source) {
+            if (!(source instanceof LineStyle)) {
+                throw TypeError(this + ' copyFrom failed, the passed-in source argument must be an LineStyle object.');
+            }
+            this._thickness = source._thickness;
+            this._color = source._color;
+            this._alpha = source._alpha;
+            return this;
+        } },
+    equals: { writable: true, value: function value(o) {
+            if (o instanceof LineStyle) {
+                return o._color === this._color && o._alpha === this._alpha && o._thickness === this._thickness;
+            } else {
+                return false;
+            }
+        } },
+    setTo: { writable: true, value: function value() {
+            var thickness = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+            var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var alpha = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+            this.thickness = thickness;
+            this.color = color;
+            this.alpha = alpha;
+        } },
+    toObject: { writable: true, value: function value() {
+            return { alpha: this._alpha, color: this._color, thickness: this._thickness };
+        } },
+    toString: { writable: true, value: function value() {
+            return "[LineStyle thickness:" + this._thickness + " color:" + this._color + " alpha:" + this._alpha + "]";
+        } }
+});
+Object.defineProperties(LineStyle, {
+    EMPTY: { value: new LineStyle(0, 0, 0) }
 });
 
 var Orientation = Object.defineProperties({}, {
@@ -13112,10 +13247,12 @@ var graphics = Object.assign({
     Direction: Direction,
     Directionable: Directionable,
     DirectionOrder: DirectionOrder,
+    FillStyle: FillStyle,
     isMeasurable: isMeasurable,
     Layout: Layout,
     LayoutBufferMode: LayoutBufferMode,
     LayoutEntry: LayoutEntry,
+    LineStyle: LineStyle,
     Orientation: Orientation,
     Position: Position,
     ZOrder: ZOrder,
@@ -16949,14 +17086,54 @@ var components$2 = Object.assign({
 });
 
 function Background() {
-    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     Object.defineProperties(this, {
-        _autoSize: { writable: true, value: false }
+        _background: { value: new PIXI.Graphics() },
+        _fill: { writable: true, value: null },
+        _line: { writable: true, value: null }
     });
-    Element$1.call(this, texture);
+    Element$1.call(this, PIXI.Texture.EMPTY, init, true);
+    this.addChild(this._background);
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
 }
 Background.prototype = Object.create(Element$1.prototype, {
-    constructor: { value: Background }
+    constructor: { value: Background },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    draw: { writable: true, value: function value() {
+            this._background.clear();
+            if (this._fill instanceof FillStyle) {
+                this._background.beginFill(this._fill._color, this._fill._alpha);
+            }
+            if (this._line instanceof LineStyle) {
+                this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+            }
+            this.fixArea();
+            this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+        } }
 });
 
 /**
