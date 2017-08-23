@@ -16,6 +16,7 @@ import { isMeasurable }       from './graphics/isMeasurable.js' ;
 import { Layout }             from './graphics/Layout.js' ;
 import { LayoutBufferMode }   from './graphics/LayoutBufferMode.js' ;
 import { LayoutEntry }        from './graphics/LayoutEntry.js' ;
+import { LineStyle }          from './graphics/LineStyle.js' ;
 import { Orientation }        from './graphics/Orientation.js' ;
 import { Position }           from './graphics/Position.js' ;
 import { ZOrder }             from './graphics/ZOrder.js' ;
@@ -52,6 +53,7 @@ export var graphics = Object.assign
     Layout             : Layout ,
     LayoutBufferMode   : LayoutBufferMode ,
     LayoutEntry        : LayoutEntry ,
+    LineStyle          : LineStyle ,
     Orientation        : Orientation ,
     Position           : Position ,
     ZOrder             : ZOrder ,
