@@ -285,10 +285,13 @@ CoreButton.prototype = Object.create( Element.prototype ,
 
     /**
      * Sets a boolean value indicating whether the button is selected (true) or not (false).
+     * @memberof molecule.render.pixi.components.buttons.CoreButton
+     * @instance
+     * @function
      * @param {boolean} value - The selected flag value.
      * @param {string} options - The optional flag to control the method (default null).
-     * - Use the "true" value to disabled the "select" or "unselect" signals propagation.
-     * - Use the value "deselect" to enforce the propagation of the 'deselect' signal.
+     * Use the "true" value to disabled the "select" or "unselect" signals propagation.
+     * Use the value "deselect" to enforce the propagation of the 'deselect' signal.
      */
     setSelected : { value : function( value , options = null )
     {
