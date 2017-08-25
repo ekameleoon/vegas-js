@@ -16665,29 +16665,245 @@ CoreProgress.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+function CoreScrollbar() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        _background: { writable: true, value: null },
+        _invert: { writable: true, value: false },
+        _lockPosition: { writable: true, value: false },
+        _lineScrollSize: { writable: true, value: 1 },
+        _pageSize: { writable: true, value: 0 },
+        _thumb: { writable: true, value: null },
+        _thumbSize: { writable: true, value: null }
+    });
+    CoreProgress.call(this, texture, init, locked);
+}
+CoreScrollbar.prototype = Object.create(CoreProgress.prototype, {
+    constructor: { writable: true, value: CoreScrollbar },
+    background: { get: function get() {
+            return this._background;
+        } },
+    invert: {
+        get: function get() {
+            return this._invert;
+        },
+        set: function set(value) {
+            this._invert = value === true;
+            this.update();
+        }
+    },
+    lineScrollSize: {
+        get: function get() {
+            return this._lineScrollSize;
+        },
+        set: function set(value) {
+            this._lineScrollSize = value > 1 ? value : 1;
+        }
+    },
+    pageSize: {
+        get: function get() {
+            return this._pageSize > 0 ? this._pageSize : this._lineScrollSize;
+        },
+        set: function set(value) {
+            this._pageSize = value > 0 ? value : 0;
+        }
+    },
+    thumb: { get: function get() {
+            return this._thumb;
+        } },
+    thumbSize: {
+        get: function get() {
+            if (this._thumbSize === null || isNaN(this._thumbSize)) {
+                return this._direction === Direction.HORIZONTAL ? this.h - this._padding.vertical : this.w - this._padding.horizontal;
+            } else {
+                return this._direction === Direction.HORIZONTAL ? Math.min(this._thumbSize, this.w) : Math.min(this._thumbSize, this.h);
+            }
+        },
+        set: function set(value) {
+            this._thumbSize = value === null || isNaN(value) ? null : value;
+        }
+    },
+    viewPositionChanged: { writable: true, value: function value() /* flag = false */{
+            this._fixPosition();
+            if (this._thumb && !this._lockPosition) {
+                this._thumb.x = this._real.x;
+                this._thumb.y = this._real.y;
+                var $hor = this._padding.horizontal;
+                var $ver = this._padding.vertical;
+                var $b = this._padding.bottom;
+                var $l = this._padding.left;
+                var $r = this._padding.right;
+                var $t = this._padding.top;
+                var $w = this.w;
+                var $h = this.h;
+                var current = (this._position - this._min) / (this._max - this._min);
+                switch (this._direction) {
+                    case Direction.VERTICAL:
+                        {
+                            current *= $h - this.thumbSize - $ver;
+                            this._thumb.x += $l;
+                            if (this._invert) {
+                                this._thumb.y += $h - $b - (current + this._thumb.height);
+                            } else {
+                                this._thumb.y += $t + current;
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            current *= $w - this.thumbSize - $hor;
+                            this._thumb.y += $t;
+                            if (this._invert) {
+                                this._thumb.x += $w - $r - (current + this._thumb.width);
+                            } else {
+                                this._thumb.x += $l + current;
+                            }
+                        }
+                }
+            }
+        } },
+    _fixPosition: { value: function value() {
+            if (this._max > this._min) {
+                this._position = Math.min(this._position, this._max);
+                this._position = Math.max(this._position, this._min);
+            } else {
+                this._position = Math.max(this._position, this._max);
+                this._position = Math.min(this._position, this._min);
+            }
+        } }
+});
+
+function ScrollIndicator() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    Object.defineProperties(this, {
+        _fill: { writable: true, value: new FillStyle(0x333333) },
+        _line: { writable: true, value: null },
+        _thumbFill: { writable: true, value: new FillStyle(0xFF0000) },
+        _thumbLine: { writable: true, value: null }
+    });
+    if (init === null) {
+        init = { w: 200, h: 10 };
+    }
+    CoreScrollbar.call(this, texture, init, true);
+    Object.defineProperties(this, {
+        _background: { writable: true, value: new PIXI.Graphics() },
+        _thumb: { writable: true, value: new PIXI.Graphics() }
+    });
+    this.addChild(this._background);
+    this.addChild(this._thumb);
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
+}
+ScrollIndicator.prototype = Object.create(CoreScrollbar.prototype, {
+    constructor: { writable: true, value: ScrollIndicator },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    thumbLine: {
+        get: function get() {
+            return this._thumbLine;
+        },
+        set: function set(value) {
+            this._thumbLine = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    thumbFill: {
+        get: function get() {
+            return this._thumbFill;
+        },
+        set: function set(value) {
+            this._thumbFill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    draw: { writable: true, value: function value() {
+            this.fixArea();
+            if (this._background) {
+                this._background.clear();
+                if (this._fill instanceof FillStyle) {
+                    this._background.beginFill(this._fill._color, this._fill._alpha);
+                }
+                if (this._line instanceof LineStyle) {
+                    this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+                }
+                this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+            }
+            if (this._thumb) {
+                this._thumb.clear();
+                if (this._thumbFill instanceof FillStyle) {
+                    this._thumb.beginFill(this._thumbFill._color, this._thumbFill._alpha);
+                }
+                if (this._thumbLine instanceof LineStyle) {
+                    this._thumb.lineStyle(this._thumbLine._thickness, this._thumbLine._color, this._thumbLine._alpha);
+                }
+                var isHor = this._direction === Direction.HORIZONTAL;
+                this._thumb.drawRect(0, 0, isHor ? this.thumbSize : this._real.width - this._padding.horizontal, isHor ? this._real.height - this._padding.vertical : this.thumbSize);
+                this._thumb.x = this._real.x + this._padding.left;
+                this._thumb.y = this._real.y + this._padding.top;
+            }
+        } }
+});
+
 function SimpleProgressbar() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     Object.defineProperties(this, {
-        _alignments: { value: [Align.BOTTOM, Align.LEFT, Align.CENTER, Align.RIGHT, Align.TOP] },
         _background: { value: new PIXI.Graphics() },
         _bar: { value: new PIXI.Graphics() },
         _barAlign: { writable: true, value: null },
-        _barFill: { writable: true, value: new FillStyle(0x0000FF) },
+        _barFill: { writable: true, value: new FillStyle(0xFF0000) },
         _barLine: { writable: true, value: null },
         _fill: { writable: true, value: new FillStyle(0x333333) },
         _line: { writable: true, value: null }
     });
     if (init === null) {
-        init = { w: 200, h: 100 };
+        init = { w: 200, h: 10 };
     }
-    CoreProgress.call(this, texture, init, locked);
+    CoreProgress.call(this, texture, init, true);
     this.addChild(this._background);
     this.addChild(this._bar);
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
 }
 SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
     constructor: { writable: true, value: SimpleProgressbar },
+    background: { get: function get() {
+            return this._background;
+        } },
+    bar: { get: function get() {
+            return this._bar;
+        } },
     barAlign: {
         get: function get() {
             return this._barAlign;
@@ -16803,6 +17019,7 @@ SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
  * @since 1.0.8
  */
 var bars = Object.assign({
+  ScrollIndicator: ScrollIndicator,
   SimpleProgressbar: SimpleProgressbar
 });
 
@@ -16813,6 +17030,8 @@ var bars = Object.assign({
  * @memberof molecule.render.pixi.components.buttons
  * @static
  * @private
+ * @version 1.0.8
+ * @since 1.0.8
  */
 var radio = new RadioButtonGroup();
 
@@ -17164,6 +17383,7 @@ var buttons = Object.assign({
  */
 var components$2 = Object.assign({
   CoreProgress: CoreProgress,
+  CoreScrollbar: CoreScrollbar,
   bars: bars,
   buttons: buttons
 });

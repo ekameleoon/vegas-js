@@ -138,33 +138,49 @@ CoreScrollbar.prototype = Object.create( CoreProgress.prototype ,
         this._fixPosition() ;
         if( this._thumb && !this._lockPosition )
         {
+            this._thumb.x = this._real.x ;
+            this._thumb.y = this._real.y ;
+
             let $hor = this._padding.horizontal ;
             let $ver = this._padding.vertical ;
 
+            let $b = this._padding.bottom ;
             let $l = this._padding.left ;
+            let $r = this._padding.right ;
             let $t = this._padding.top ;
+
             let $w = this.w ;
             let $h = this.h ;
 
-            let range ;
-            if( this._direction !== Direction.HORIZONTAL )
+            let current = (this._position - this._min) / (this._max - this._min) ;
+            switch( this._direction )
             {
-                range = $h - this.thumbSize - $ver ;
-                this._thumb.x = $l + this._real.x ;
-                this._thumb.y = $t + this._real.y + (this._position - this._min) / (this._max - this._min) * range ;
-                if ( this._invert )
+                case Direction.VERTICAL :
                 {
-                    this._thumb.y = $h - $ver + this._real.y + range - this._thumb.y ;
+                    current *= $h - this.thumbSize - $ver ;
+                    this._thumb.x += $l  ;
+                    if ( this._invert )
+                    {
+                        this._thumb.y += $h - $b - ( current + this._thumb.height ) ;
+                    }
+                    else
+                    {
+                        this._thumb.y += $t + current ;
+                    }
+                    break ;
                 }
-            }
-            else
-            {
-                range = $w - this.thumbSize - $hor;
-                this._thumb.x = $l + this._real.x + (this._position - this._min) / (this._max - this._min) * range ;
-                this._thumb.y = $t + this._real.y ;
-                if ( this._invert )
+                default :
                 {
-                    this._thumb.x = $hor + this._real.x + range - this._thumb.x - $w*0.5 ;
+                    current *= $w - this.thumbSize - $hor;
+                    this._thumb.y += $t ;
+                    if ( this._invert )
+                    {
+                        this._thumb.x += $w - $r - ( current + this._thumb.width ) ;
+                    }
+                    else
+                    {
+                        this._thumb.x += $l + current ;
+                    }
                 }
             }
         }
