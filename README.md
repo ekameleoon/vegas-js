@@ -93,6 +93,26 @@ yarn
 gulp
 ```
 
+4 - Build only the vegas.js and vegas.min.js, without the unit tests and the documentation.
+```
+gulp build
+```
+
+
+#### ⌜ Molecule
+
+Molecule is an advanced extension of VEGAS JS to develop rich applications based on the standard DOM UI, AFrame or PIXI...
+
+To compile the full VEGAS library use the command :
+
+```
+gulp build --library molecule
+```
+
+This command generates the vegas.molecule.js and vegas.molecule.min.js files ! 
+
+See all the examples of the **molecule** library in the examples/ folder of the project.
+
 #### ⌜ Unit tests
 
 We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
