@@ -12,7 +12,7 @@ This project contains a set of libraries writing in **Javascript** and based on 
 
 ### About
 
- * Author : Marc ALCARAZ (aka eKameleon)
+ * Author : Marc ALCARAZ (aka eKameleon) - Creative Technologist and Digital Architect
  * Mail : ekameleon[at]gmail.com
  * LinkedIn : [https://www.linkedin.com/in/ekameleon/](https://www.linkedin.com/in/ekameleon/)
 
