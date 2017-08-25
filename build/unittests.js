@@ -25,6 +25,7 @@ import setting from '../package.json' ;
 var argv   = yargs.argv ;
 var colors = util.colors ;
 var log    = util.log ;
+var ut     = config.unittests ;
 
 // --------- Arguments
 
@@ -54,9 +55,9 @@ if( argv && argv.match )
 /**
  * The reporters name of the unit tests : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list'
  */
-var reporters = config.reporters ;
+var reporters = ut.reporters ;
+var reporter  = ut.defaultReporter ;
 
-var reporter = 'spec' ;
 var reporterOptions = null ;
 
 if( argv && argv.reporter && reporters.indexOf(argv.reporter) > -1 )
@@ -66,13 +67,7 @@ if( argv && argv.reporter && reporters.indexOf(argv.reporter) > -1 )
 
 if( reporter === 'mochawesome' )
 {
-    reporterOptions =
-    {
-        reportDir    : './bin/tests',
-        reportName   : 'index',
-        reportTitle  : 'VEGAS JS - Unit tests',
-        inlineAssets : true
-    };
+    reporterOptions = ut.mochawesome;
 }
 
 // --------- Unit tests
@@ -88,7 +83,7 @@ export var unittests = ( done ) =>
         ]) ,
         rollup
         ({
-            moduleName : config.name ,
+            moduleName : 'vegas-test' ,
             entry      : './src/tests/' + entry + '.js' ,
             format     : 'umd' ,
             sourceMap  : false ,

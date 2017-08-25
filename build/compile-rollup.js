@@ -10,21 +10,34 @@ import replace      from 'rollup-plugin-replace';
 import rollup       from 'rollup-stream' ;
 import source       from 'vinyl-source-stream' ;
 import util         from 'gulp-util' ;
+import yargs        from 'yargs' ;
 
-import config  from '../config.json' ;
+import config from '../config.json' ;
 import setting from '../package.json' ;
 
 var cache ;
 
+var argv   = yargs.argv ;
 var colors = util.colors ;
 var log    = util.log ;
+
+/**
+ * If not null, the default build library is 'vegas'. Use the library settings with the values : 'vegas' or 'molecule'.
+ * You can use the dot notation to target a specific build, ex: --library molecule.
+ */
+var build = config.vegas ;
+if( argv && argv.library && argv.library in config)
+{
+    log( colors.yellow( "Builds with the '" + argv.library + "' settings" ) );
+    build = config[argv.library] ;
+}
 
 export var roll = ( done ) =>
 {
     return rollup
     ({
-        moduleName : config.name ,
-        entry      : config.entry ,
+        moduleName : build.name ,
+        entry      : build.entry ,
         format     : 'umd' ,
         sourceMap  : false ,
         useStrict  : true ,
@@ -65,9 +78,9 @@ export var roll = ( done ) =>
     })
     .once('bundle', function( bundle )
     {
-        cache = config.cache ? bundle : null ;
+        cache = build.cache ? bundle : null ;
     })
-    .pipe( source( config.name + '.js' ) )
-    .pipe( header( config.header , { version : setting.version } ) )
-    .pipe( gulp.dest( config.output ) );
+    .pipe( source( build.file + '.js' ) )
+    .pipe( header( build.header , { version : setting.version } ) )
+    .pipe( gulp.dest( build.output ) );
 }

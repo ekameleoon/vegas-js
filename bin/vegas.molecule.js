@@ -1,4 +1,4 @@
-/* VEGAS JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
+/* VEGAS - Molecule JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
                   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
                   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -3927,7 +3927,7 @@ var evaluators = Object.assign({
   RomanEvaluator: RomanEvaluator
 });
 
-function Event(type) {
+function Event$1(type) {
   var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   Object.defineProperties(this, {
@@ -3943,8 +3943,8 @@ function Event(type) {
   });
   ValueObject.call(this);
 }
-Event.prototype = Object.create(ValueObject.prototype, {
-  constructor: { writable: true, value: Event },
+Event$1.prototype = Object.create(ValueObject.prototype, {
+  constructor: { writable: true, value: Event$1 },
   bubbles: { get: function get() {
       return this._bubbles;
     } },
@@ -3965,7 +3965,7 @@ Event.prototype = Object.create(ValueObject.prototype, {
       return this._type;
     } },
   clone: { writable: true, value: function value() {
-      return new Event(this._type, this._bubbles, this._cancelable);
+      return new Event$1(this._type, this._bubbles, this._cancelable);
     } },
   isDefaultPrevented: { value: function value() {
       return this._defaultPrevented;
@@ -4000,7 +4000,7 @@ Event.prototype = Object.create(ValueObject.prototype, {
       return this;
     } }
 });
-Object.defineProperties(Event, {
+Object.defineProperties(Event$1, {
   ACTIVATE: { value: "activate" },
   ADDED: { value: "added" },
   ADDED_TO_STAGE: { value: "addedToStage" },
@@ -4091,7 +4091,7 @@ EventDispatcher.prototype = Object.create(IEventDispatcher.prototype, {
             collection[type].sort(this.compare);
         } },
     dispatchEvent: { writable: true, value: function value(event) {
-            if (!(event instanceof Event)) {
+            if (!(event instanceof Event$1)) {
                 throw new TypeError(this + " dispatchEvent failed, the event argument must be a valid Event object.");
             }
             event = event.withTarget(this.target || this);
@@ -4287,7 +4287,7 @@ Object.defineProperties(EventDispatcher, {
  * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
  */
 var events = Object.assign({
-  Event: Event,
+  Event: Event$1,
   EventDispatcher: EventDispatcher,
   EventListener: EventListener,
   EventPhase: EventPhase,
@@ -13261,6 +13261,5642 @@ var graphics = Object.assign({
     geom: geom
 });
 
+function Builder() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Runnable.call(this);
+    Object.defineProperties(this, {
+        _target: { value: target, configurable: true, writable: true }
+    });
+}
+Builder.prototype = Object.create(Runnable.prototype, {
+    constructor: { value: Builder, writable: true },
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+        }
+    },
+    clear: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+        } }
+});
+
+var Deployment = Object.defineProperties({}, {
+  CLOSE: { enumerable: true, value: 'close' },
+  OPEN: { enumerable: true, value: 'open' },
+  PROTECTED: { enumerable: true, value: 'protected' }
+});
+
+function isGroupable(target) {
+    if (target) {
+        return target instanceof Groupable || 'group' in target && 'groupName' in target;
+    }
+    return false;
+}
+function Groupable() {
+    Object.defineProperties(this, {
+        group: { value: false, configurable: true, writable: true },
+        groupName: { value: null, configurable: true, writable: true }
+    });
+}
+Groupable.prototype = Object.create(Object.prototype, {
+    constructor: { value: Groupable, writable: true }
+});
+
+function Focusable() {
+    Groupable.call(this);
+    Object.defineProperties(this, {
+        selected: { value: false, configurable: true, writable: true }
+    });
+}
+Focusable.prototype = Object.create(Groupable.prototype, {
+    constructor: { value: Focusable, writable: true }
+});
+
+function Iconifiable() {
+    Object.defineProperties(this, {
+        icon: { value: null, configurable: true, writable: true }
+    });
+}
+Iconifiable.prototype = Object.create(Object.prototype, {
+    constructor: { value: Iconifiable, writable: true }
+});
+
+var LabelPolicy = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  NORMAL: { enumerable: true, value: 'normal' }
+});
+
+var ScrollPolicy = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  OFF: { enumerable: true, value: 'off' },
+  ON: { enumerable: true, value: 'on' }
+});
+
+function Style() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        changed: { value: new Signal() }
+    });
+    this.initialize();
+    this.map(init);
+}
+Style.prototype = Object.create(Object.prototype, {
+    constructor: { value: Style, writable: true },
+    initialize: { writable: true, value: function value() {
+        } },
+    map: { value: function value(init) {
+            if (init) {
+                for (var member in init) {
+                    if (member in this) {
+                        this[member] = init[member];
+                    }
+                }
+                if (this.changed.connected()) {
+                    this.changed.emit(this);
+                }
+            }
+        } },
+    set: { value: function value() {
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+            if (args.length === 0) {
+                return;
+            }
+            if (args.length === 2 && isString(args[0])) {
+                if (args[0] in this) {
+                    this[args[0]] = args[1];
+                    if (this.changed.connected()) {
+                        this.changed.emit(this);
+                    }
+                }
+            } else {
+                this.map(args[0]);
+            }
+        } }
+});
+
+var ButtonPhase = Object.defineProperties({}, {
+  DISABLE: { enumerable: true, value: 'disable' },
+  DOWN: { enumerable: true, value: 'down' },
+  OVER: { enumerable: true, value: 'over' },
+  UP: { enumerable: true, value: 'up' }
+});
+
+function isButton(target) {
+    if (target) {
+        return 'group' in target && isBoolean(target.group) && 'groupName' in target && 'selected' in target && isBoolean(target.selected) && 'toggle' in target && isBoolean(target.toggle) && 'setSelected' in target && target.setSelected instanceof Function;
+    }
+    return false;
+}
+
+/**
+ * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @summary The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.components
+ * @memberof molecule
+ */
+var components = Object.assign({
+  ButtonPhase: ButtonPhase,
+  isButton: isButton
+});
+
+function DisplayObject() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    EventDispatcher.call(this);
+    Object.defineProperties(this, {
+        _id: { value: null, writable: true },
+        __isStage: { value: false, writable: true },
+        _parent: { value: null, writable: true }
+    });
+    if (init) {
+        for (var prop in init) {
+            if (prop in this) {
+                this[prop] = init[prop];
+            }
+        }
+    }
+}
+DisplayObject.prototype = Object.create(EventDispatcher.prototype, {
+    constructor: { value: DisplayObject, writable: true },
+    base: {
+        get: function get() {
+            var current = this;
+            while (current._parent) {
+                current = current._parent;
+            }
+            return current;
+        }
+    },
+    id: {
+        get: function get() {
+            return this._id;
+        },
+        set: function set(value) {
+            this._id = isString(value) ? value : null;
+            if (this._element) {
+                this.setAttribute('id', value);
+            }
+        }
+    },
+    parent: {
+        get: function get() {
+            return this._parent;
+        }
+    },
+    root: {
+        get: function get() {
+            var current = this;
+            while (current._parent) {
+                if (current._parent.__isStage) {
+                    return current;
+                } else {
+                    current = current._parent;
+                }
+            }
+            return current;
+        }
+    },
+    stage: {
+        get: function get() {
+            var base = this.base;
+            return base && base.__isStage ? base : null;
+        }
+    },
+    dispose: { value: function value() {
+        } },
+    removeFromParent: { value: function value() {
+            if (this._parent) {
+                this._parent.removeChild(this);
+            }
+        } },
+    createAncestorChain: { value: function value() {
+            var ancestors = [];
+            var current = this;
+            while (current._parent) {
+                ancestors.push(current._parent);
+                current = current._parent;
+            }
+            return ancestors;
+        } },
+    setParent: { value: function value(_value) {
+            var ancestor = _value;
+            while (ancestor !== this && ancestor !== null) {
+                ancestor = ancestor._parent;
+            }
+            if (ancestor === this) {
+                throw new ReferenceError("An object cannot be added as a child to itself or one of its children.");
+            } else {
+                this._parent = _value;
+            }
+        } }
+});
+
+function DisplayObjectContainer() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _broadcastListeners: { value: [] },
+        _children: { value: [] }
+    });
+    DisplayObject.call(this, init);
+}
+DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
+    constructor: { value: DisplayObjectContainer, writable: true },
+    children: { get: function get() {
+            return this._children;
+        } },
+    numChildren: { get: function get() {
+            return this._children.length;
+        } },
+    addChild: { value: function value(child) {
+            return this.addChildAt(child, this._children.length);
+        } },
+    addChildAt: { value: function value(child, index) {
+            if (child instanceof DisplayObject) {
+                var numChildren = this._children.length;
+                if (index >= 0 && index <= numChildren) {
+                    if (child.parent === this) {
+                        this.setChildIndex(child, index);
+                    } else {
+                        if (index >= numChildren) {
+                            this._children.push(child);
+                            this._appendChild(child);
+                        } else {
+                            this._children.splice(index, 0, child);
+                            this._insertChildAt(child, index);
+                        }
+                        child.removeFromParent();
+                        child.setParent(this);
+                        child.dispatchEvent(new Event$1(Event$1.ADDED, true));
+                        if (this.stage) {
+                            var event = new Event$1(Event$1.ADDED_TO_STAGE);
+                            if (child instanceof DisplayObjectContainer) {
+                                child.broadcastEvent(event);
+                            } else {
+                                child.dispatchEvent(event);
+                            }
+                        }
+                    }
+                    return child;
+                } else {
+                    throw new RangeError(this + " addChildAt(" + index + ") failed, invalid child index.");
+                }
+            }
+            return null;
+        } },
+    contains: { value: function value(child) {
+            while (child) {
+                if (child === this) {
+                    return true;
+                } else {
+                    child = child._parent;
+                }
+            }
+            return false;
+        } },
+    getChildAt: { value: function value(index) {
+            var numChildren = this._children.length;
+            if (index < 0) {
+                index = numChildren + index;
+            }
+            if (index >= 0 && index < numChildren) {
+                return this._children[index];
+            } else {
+                throw new RangeError("Invalid child index");
+            }
+        } },
+    getChildIndex: { value: function value(child) {
+            return this._children.indexOf(child);
+        } },
+    removeChild: { value: function value(child) {
+            var dispose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var index = this.getChildIndex(child);
+            if (index !== -1) {
+                return this.removeChildAt(index, dispose);
+            }
+            return null;
+        } },
+    removeChildAt: { value: function value(index) {
+            var dispose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (index >= 0 && index < this._children.length) {
+                var child = this._children[index];
+                child.dispatchEvent(new Event$1(Event$1.REMOVED, true));
+                if (this.stage) {
+                    var event = new Event$1(Event$1.REMOVED_FROM_STAGE);
+                    if (child instanceof DisplayObjectContainer) {
+                        child.broadcastEvent(event);
+                    } else {
+                        child.dispatchEvent(event);
+                    }
+                }
+                child.setParent(null);
+                index = this._children.indexOf(child);
+                if (index >= 0) {
+                    this._children.splice(index, 0, child);
+                    this._removeChild(child);
+                }
+                if (dispose === true) {
+                    child.dispose();
+                }
+                return child;
+            } else {
+                throw new RangeError(this + " removeChildAt failed with an invalid child index");
+            }
+        } },
+    removeChildren: { value: function value() {
+            var beginIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var endIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+            var dispose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var len = this._children.length;
+            if (endIndex < 0 || endIndex >= len) {
+                endIndex = len - 1;
+            }
+            var children = this._children.slice(beginIndex, endIndex - beginIndex + 1);
+            len = children.length;
+            for (var i = 0; i <= len; i++) {
+                this.removeChild(children[i], dispose);
+            }
+        } },
+    setChildIndex: { value: function value(child, index) {
+            if (child instanceof Node) {
+                var oldIndex = this.getChildIndex(child);
+                if (oldIndex === index) {
+                    return;
+                }
+                if (oldIndex === -1) {
+                    throw new Error(this + " setChildIndex failed, the passed-in child reference is not a child of this container.");
+                }
+                this._children.splice(oldIndex, 1);
+                this._children.splice(index, 0, child);
+                if (this._element) {
+                    if (index >= this._children.length) {
+                        this._element.appendChild(child._element);
+                    } else {
+                        this._element.insertBefore(child._element, this._element.children[index]);
+                    }
+                }
+            }
+        } },
+    broadcastEvent: { value: function value(event) {
+            if (!(event instanceof Event$1)) {
+                throw new ReferenceError(this + " broadcastEvent failed, the event parameter must be a valid system.events.Event reference.");
+            }
+            if (event.bubbles) {
+                throw new ReferenceError("Broadcast of bubbling events is prohibited");
+            }
+            var fromIndex = this._broadcastListeners.length;
+            this.getChildEventListeners(this, event.type, this._broadcastListeners);
+            var toIndex = this._broadcastListeners.length;
+            for (var i = fromIndex; i < toIndex; i++) {
+                this._broadcastListeners[i].dispatchEvent(event);
+            }
+            this._broadcastListeners.length = fromIndex;
+        } },
+    getChildEventListeners: { value: function value(object, eventType, listeners) {
+            try {
+                if (object.hasEventListener(eventType)) {
+                    listeners[listeners.length] = object;
+                }
+                if (object instanceof DisplayObjectContainer) {
+                    var children = object._children;
+                    var len = children.length;
+                    for (var i = 0; i < len; i++) {
+                        this.getChildEventListeners(children[i], eventType, listeners);
+                    }
+                }
+            } catch (e) {
+                console.log(this + " error " + e);
+            }
+        } },
+    _appendChild: { writable: true, value: function value(child) {
+        } },
+    _insertChildAt: { writable: true, value: function value(child, index) {
+        } },
+    _removeChild: { writable: true, value: function value(child) {
+        } }
+});
+
+/**
+ * The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @summary The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.display
+ * @memberof molecule
+ */
+var display$1 = Object.assign({
+  DisplayObject: DisplayObject,
+  DisplayObjectContainer: DisplayObjectContainer
+});
+
+function CoreGroup() {
+    Object.defineProperties(this, {
+        groups: { writable: true, value: new ArrayMap() }
+    });
+    Receiver.call(this);
+}
+CoreGroup.prototype = Object.create(Receiver.prototype, {
+    constructor: { writable: true, value: CoreGroup },
+    contains: { value: function value(name) {
+            return this.groups.has(name);
+        } },
+    get: { value: function value(name) {
+            return this.groups.get(name);
+        } },
+    receive: { writable: true, value: function value(group) {
+            var target = isGroupable(group) ? group : null;
+            if (target) {
+                this.select(target);
+            }
+        } },
+    select: { writable: true, value: function value(item) {
+            return item;
+        } },
+    unSelect: { writable: true, value: function value(item) {
+            return item;
+        } }
+});
+
+function RadioButtonGroup() {
+    CoreGroup.call(this);
+}
+RadioButtonGroup.prototype = Object.create(CoreGroup.prototype, {
+    constructor: { writable: true, value: RadioButtonGroup },
+    select: { writable: true, value: function value(item) {
+            var button = isButton(item) ? item : null;
+            if (!button || button.toggle !== true) {
+                return;
+            }
+            var name = button.groupName;
+            if (this.groups.has(name)) {
+                var current = this.groups.get(name);
+                if (current !== button) {
+                    current.setSelected(false, 'deselect');
+                }
+            }
+            this.groups.set(name, button);
+        } },
+    unSelect: { writable: true, value: function value(item) {
+            var name = null;
+            if (isString(item)) {
+                name = item;
+            } else if ('groupName' in item && isString(item.groupName) && item.groupName.length > 0) {
+                name = item.groupName;
+            }
+            if (this.groups.has(name)) {
+                var current = this.groups.get(name);
+                if (current) {
+                    current.setSelected(false, true);
+                    this.groups.delete(name);
+                }
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.groups} library contains the core groups helpers.
+ * @summary The {@link molecule.groups} library contains the groups helpers.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.groups
+ * @memberof molecule
+ */
+var groups = Object.assign({
+  CoreGroup: CoreGroup,
+  RadioButtonGroup: RadioButtonGroup
+});
+
+var logger$1 = Log.getLogger('molecule.logging.logger');
+
+var draw = {
+    schema: {
+        width: { default: 256 },
+        height: { default: 256 },
+        background: { default: "#FFFFFF" }
+    },
+    create: function create(w, h) {
+        var owner = this;
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style = "display: none";
+        owner.canvas = canvas;
+        owner.ctx = canvas.getContext("2d");
+        this.texture = new THREE.Texture(owner.canvas);
+        if (this.el.object3D.children.length > 0) {
+            this.el.object3D.children[0].material = new THREE.MeshBasicMaterial();
+            this.el.object3D.children[0].material.map = this.texture;
+        } else {
+            this.el.object3D.material = new THREE.MeshBasicMaterial();
+            this.el.object3D.material.map = this.texture;
+        }
+        if (!this.el.hasLoaded) {
+            this.el.addEventListener("loaded", function () {
+                owner.render();
+            });
+        } else {
+            owner.render();
+        }
+    },
+    init: function init() {
+        this.registers = [];
+        this.update();
+    },
+    register: function register(render) {
+        this.registers.push(render);
+    },
+    remove: function remove() {
+    },
+    render: function render() {
+        if (this.registers && this.registers.length > 0) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = this.data.background;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.registers.forEach(function (item) {
+                item();
+            });
+        }
+        this.texture.needsUpdate = true;
+    },
+    update: function update(oldData) {
+        if (!oldData) {
+            this.create(this.data.width, this.data.height);
+        }
+    }
+};
+
+var label = {
+    schema: {
+        color: { default: "#FF0000" },
+        font: { default: "36px Georgia" },
+        text: { default: "" }
+    },
+    dependencies: ["draw"],
+    update: function update() {
+        var draw = this.el.components.draw;
+        var ctx = draw.ctx;
+        var canvas = draw.canvas;
+        ctx.fillStyle = this.el.getAttribute('color');
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = this.data.color;
+        ctx.font = this.data.font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.data.text, canvas.width * 0.5, canvas.height * 0.5);
+        draw.render();
+    }
+};
+
+var components$1 = [].concat({ name: "draw", value: draw }, { name: "label", value: label });
+
+function Node$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var el = null;
+    if (isHTMLElement(tag)) {
+        el = tag;
+    } else if (isString(tag)) {
+        el = document.createElement(tag);
+    }
+    Object.defineProperties(this, {
+        _element: { value: el, writable: true }
+    });
+    DisplayObjectContainer.call(this, init);
+}
+Node$1.prototype = Object.create(DisplayObjectContainer.prototype, {
+    constructor: { value: Node$1, writable: true },
+    addClass: { value: function value(_value) {
+            if (!this._element.classList.contains(_value)) {
+                this._element.classList.add(_value);
+            }
+        } },
+    id: {
+        get: function get() {
+            return this._element.id;
+        },
+        set: function set(value) {
+            this._element.id = value;
+        }
+    },
+    class: {
+        get: function get() {
+            return this.getAttribute("class");
+        },
+        set: function set(value) {
+            this.setAttribute("class", value);
+        }
+    },
+    element: {
+        get: function get() {
+            return this._element;
+        },
+        set: function set(value) {
+            this._element = null;
+            if (isHTMLElement(value)) {
+                this._element = value;
+            } else if (isString(value)) {
+                this._element = document.getElementById(value);
+            }
+        }
+    },
+    getAttribute: { value: function value(name) {
+            if (this._element) {
+                return this._element.getAttribute(name);
+            }
+            return null;
+        } },
+    removeClass: { value: function value(_value2) {
+            if (this._element.classList.contains(_value2)) {
+                this._element.classList.remove(_value2);
+            }
+        } },
+    setAttribute: { value: function value(name, _value3) {
+            if (this._element) {
+                this._element.setAttribute(name, _value3);
+            }
+        } },
+    _appendChild: { writable: true, value: function value(child) {
+            if (child && child._element && this._element) {
+                this._element.appendChild(child._element);
+            }
+        } },
+    _insertChildAt: { writable: true, value: function value(child, index) {
+            if (this._element && child && child._element) {
+                this._element.insertBefore(child._element, this._element.children[index]);
+            }
+        } },
+    _removeChild: { writable: true, value: function value(child) {
+            if (child && child._element) {
+                child._element.parentNode.removeChild(child._element);
+            }
+        } }
+});
+
+function AEntity() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
+    Object.defineProperties(this, {
+        addedToStage: { value: new Signal() },
+        removedFromStage: { value: new Signal() },
+        _addedToStage: { writable: true, value: null },
+        _onStage: { writable: true, value: false },
+        _position: { writable: false, value: { x: 0, y: 0, z: 0 } },
+        _raycast: { writable: false, value: 'button' },
+        _removedFromStage: { writable: true, value: null },
+        _rotation: { writable: false, value: { x: 0, y: 0, z: 0 } },
+        _root: { writable: true, value: null },
+        _scale: { writable: false, value: { x: 1, y: 1, z: 1 } }
+    });
+    Node$1.call(this, init, tag);
+    this._addedToStage = this.__addedToStage.bind(this);
+    this._removedFromStage = this.__removedFromStage.bind(this);
+    this.addEventListener(Event$1.ADDED_TO_STAGE, this._addedToStage);
+    this.addEventListener(Event$1.REMOVED_FROM_STAGE, this._removedFromStage);
+}
+AEntity.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: AEntity, writable: true },
+    alpha: {
+        get: function get() {
+            return this.getAttribute('opacity');
+        },
+        set: function set(value) {
+            this.setAttribute('opacity', clamp(value, 0, 1));
+        }
+    },
+    dispose: { value: function value() {
+            this.removeEventListener(Event$1.ADDED_TO_STAGE, this._addedToStage);
+            this.removeEventListener(Event$1.REMOVED_FROM_STAGE, this._removedFromStage);
+        } },
+    geometry: {
+        get: function get() {
+            return this.getAttribute('geometry');
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', value);
+        }
+    },
+    raycasted: {
+        get: function get() {
+            return this._element.classList.contains(this._raycast);
+        },
+        set: function set(value) {
+            if (value === true) {
+                this._element.classList.add(this._raycast);
+            } else {
+                if (this._element.classList.contains(this._raycast)) {
+                    this._element.classList.remove(this._raycast);
+                }
+            }
+        }
+    },
+    raycast: {
+        get: function get() {
+            return this._raycast;
+        },
+        set: function set(value) {
+            if (value !== this._raycast) {
+                this.raycasted = false;
+            }
+            this._raycast = value;
+            this.raycasted = true;
+        }
+    },
+    opacity: {
+        get: function get() {
+            return this.getAttribute('opacity');
+        },
+        set: function set(value) {
+            this.setAttribute('opacity', clamp(value, 0, 1));
+        }
+    },
+    position: {
+        get: function get() {
+            return this._position;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._position.x = value.x;
+            }
+            if ('y' in value) {
+                this._position.y = value.y;
+            }
+            if ('z' in value) {
+                this._position.z = value.z;
+            }
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    rotation: {
+        get: function get() {
+            return this._rotation;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._rotation.x = value.x;
+            }
+            if ('y' in value) {
+                this._rotation.y = value.y;
+            }
+            if ('z' in value) {
+                this._rotation.z = value.z;
+            }
+            this.setAttribute('position', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationX: {
+        get: function get() {
+            return this._rotation.x;
+        },
+        set: function set(value) {
+            this._rotation.x = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationY: {
+        get: function get() {
+            return this._rotation.y;
+        },
+        set: function set(value) {
+            this._rotation.y = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    rotationZ: {
+        get: function get() {
+            return this._rotation.z;
+        },
+        set: function set(value) {
+            this._rotation.z = value;
+            this.setAttribute('rotation', this._rotation.x + ' ' + this._rotation.y + ' ' + this._rotation.z);
+        }
+    },
+    scale: {
+        get: function get() {
+            return this._scale;
+        },
+        set: function set(value) {
+            if ('x' in value) {
+                this._scale.x = value.x;
+            }
+            if ('y' in value) {
+                this._scale.y = value.y;
+            }
+            if ('z' in value) {
+                this._scale.z = value.z;
+            }
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleX: {
+        get: function get() {
+            return this._scale.x;
+        },
+        set: function set(value) {
+            this._scale.x = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleY: {
+        get: function get() {
+            return this._scale.y;
+        },
+        set: function set(value) {
+            this._scale.y = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    scaleZ: {
+        get: function get() {
+            return this._scale.z;
+        },
+        set: function set(value) {
+            this._scale.z = value;
+            this.setAttribute('scale', this._scale.x + ' ' + this._scale.y + ' ' + this._scale.z);
+        }
+    },
+    visible: {
+        get: function get() {
+            return this.getAttribute('visible') === "true";
+        },
+        set: function set(value) {
+            this.setAttribute('visible', value === true ? 'true' : 'false');
+        }
+    },
+    x: {
+        get: function get() {
+            return this._position.x;
+        },
+        set: function set(value) {
+            this._position.x = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    y: {
+        get: function get() {
+            return this._position.y;
+        },
+        set: function set(value) {
+            this._position.y = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    z: {
+        get: function get() {
+            return this._position.z;
+        },
+        set: function set(value) {
+            this._position.z = value;
+            this.setAttribute('position', this._position.x + ' ' + this._position.y + ' ' + this._position.z);
+        }
+    },
+    notifyAddedToStage: { value: function value() {
+            this.addedToStage.emit(this);
+        } },
+    notifyRemovedFromStage: { value: function value() {
+            this.removedFromStage.emit(this);
+        } },
+    setAttribute: { value: function value(attr, _value, componentAttrValue) {
+            if (this._element) {
+                this._element.setAttribute(attr, _value, componentAttrValue);
+            }
+        } },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            this.notifyAddedToStage();
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            this.notifyRemovedFromStage();
+        } }
+});
+
+function Assets() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Node$1.call(this, init, 'a-assets');
+    if (this.element) {
+        this.element.addEventListener('error', this._error.bind(this));
+        this.element.addEventListener('loaded', this._loaded.bind(this));
+    }
+}
+Assets.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Assets, writable: true },
+    _error: { value: function value(event) {
+            logger$1.error(this + " error, " + event);
+        } },
+    _loaded: { value: function value(event) {
+            logger$1.debug(this + " loaded, " + event);
+        } }
+});
+
+function Material() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
+    AEntity.call(this, init, tag);
+}
+Material.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Material, writable: true },
+    color: {
+        get: function get() {
+            return this.getAttribute('color');
+        },
+        set: function set(value) {
+            this.setAttribute('color', value);
+        }
+    },
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
+    },
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    }
+});
+
+function Box() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-box');
+}
+Box.prototype = Object.create(Material.prototype, {
+    constructor: { value: Box, writable: true },
+    depth: {
+        get: function get() {
+            return this.getAttribute('geometry').depth;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'depth', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Text() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    AEntity.call(this, init, 'a-text');
+}
+Text.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Text, writable: true },
+    align: {
+        get: function get() {
+            return this.getAttribute('align');
+        },
+        set: function set(value) {
+            this.setAttribute('align', value);
+        }
+    },
+    alphaTest: {
+        get: function get() {
+            return this.getAttribute('alphaTest');
+        },
+        set: function set(value) {
+            this.setAttribute('alphaTest', value);
+        }
+    },
+    anchor: {
+        get: function get() {
+            return this.getAttribute('anchor');
+        },
+        set: function set(value) {
+            this.setAttribute('anchor', value);
+        }
+    },
+    baseline: {
+        get: function get() {
+            return this.getAttribute('baseline');
+        },
+        set: function set(value) {
+            this.setAttribute('baseline', value);
+        }
+    },
+    color: {
+        get: function get() {
+            return this.getAttribute('color');
+        },
+        set: function set(value) {
+            this.setAttribute('color', value);
+        }
+    },
+    font: {
+        get: function get() {
+            return this.getAttribute('font');
+        },
+        set: function set(value) {
+            this.setAttribute('font', value);
+        }
+    },
+    fontImage: {
+        get: function get() {
+            return this.getAttribute('fontImage');
+        },
+        set: function set(value) {
+            this.setAttribute('fontImage', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    letterSpacing: {
+        get: function get() {
+            return this.getAttribute('letterSpacing');
+        },
+        set: function set(value) {
+            this.setAttribute('letterSpacing', value);
+        }
+    },
+    letterHeight: {
+        get: function get() {
+            return this.getAttribute('letterHeight');
+        },
+        set: function set(value) {
+            this.setAttribute('letterHeight', value);
+        }
+    },
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
+    },
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
+    },
+    tabSize: {
+        get: function get() {
+            return this.getAttribute('tabSize');
+        },
+        set: function set(value) {
+            this.setAttribute('tabSize', value);
+        }
+    },
+    value: {
+        get: function get() {
+            return this.getAttribute('value');
+        },
+        set: function set(value) {
+            this.setAttribute('value', value);
+        }
+    },
+    whitespace: {
+        get: function get() {
+            return this.getAttribute('whitespace');
+        },
+        set: function set(value) {
+            this.setAttribute('whitespace', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    },
+    wrapCount: {
+        get: function get() {
+            return this.getAttribute('wrapCount');
+        },
+        set: function set(value) {
+            this.setAttribute('wrapCount', value);
+        }
+    },
+    wrapPixels: {
+        get: function get() {
+            return this.getAttribute('wrapPixels');
+        },
+        set: function set(value) {
+            this.setAttribute('wrapPixels', value);
+        }
+    },
+    zOffset: {
+        get: function get() {
+            return this.getAttribute('zOffset');
+        },
+        set: function set(value) {
+            this.setAttribute('zOffset', value);
+        }
+    }
+});
+
+function Button() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    backgroundColor: { writable: true, value: "#00FFFF" },
+    height: { writable: true, value: 1 },
+    radius: { writable: true, value: 0 },
+    width: { writable: true, value: 1 },
+    _geometry: { writable: true, value: null },
+    _loaded: { writable: true, value: null },
+    _material: { writable: true, value: null },
+    _mesh: { writable: true, value: null },
+    _text: { writable: true, value: null }
+  });
+  Material.call(this, init, 'a-entity');
+  this._text = new Text();
+  this.addChild(this._text);
+  this._loaded = this.loaded.bind(this);
+  this._element.addEventListener("loaded", this._loaded);
+}
+Button.prototype = Object.create(Material.prototype, {
+  constructor: { value: Button, writable: true },
+  align: {
+    get: function get() {
+      return this._text.align;
+    },
+    set: function set(value) {
+      this._text.align = value;
+    }
+  },
+  alphaTest: {
+    get: function get() {
+      return this._text.alphaTest;
+    },
+    set: function set(value) {
+      this._text.alphaTest = value;
+    }
+  },
+  anchor: {
+    get: function get() {
+      return this._text.anchor;
+    },
+    set: function set(value) {
+      this._text.anchor = value;
+    }
+  },
+  baseline: {
+    get: function get() {
+      return this._text.baseline;
+    },
+    set: function set(value) {
+      this._text.baseline = value;
+    }
+  },
+  color: {
+    get: function get() {
+      return this._text.color;
+    },
+    set: function set(value) {
+      this._text.color = value;
+    }
+  },
+  font: {
+    get: function get() {
+      return this._text.font;
+    },
+    set: function set(value) {
+      this._text.font = value;
+    }
+  },
+  fontImage: {
+    get: function get() {
+      return this._text.fontImage;
+    },
+    set: function set(value) {
+      this._text.fontImage = value;
+    }
+  },
+  letterSpacing: {
+    get: function get() {
+      return this._text.letterSpacing;
+    },
+    set: function set(value) {
+      this._text.letterSpacing = value;
+    }
+  },
+  letterHeight: {
+    get: function get() {
+      return this._text.letterHeight;
+    },
+    set: function set(value) {
+      this._text.letterHeight = value;
+    }
+  },
+  shader: {
+    get: function get() {
+      return this.getAttribute('shader');
+    },
+    set: function set(value) {
+      this.setAttribute('shader', value);
+    }
+  },
+  side: {
+    get: function get() {
+      return this.getAttribute('side');
+    },
+    set: function set(value) {
+      this.setAttribute('side', value);
+    }
+  },
+  tabSize: {
+    get: function get() {
+      return this._text.tabSize;
+    },
+    set: function set(value) {
+      this._text.tabSize = value;
+    }
+  },
+  value: {
+    get: function get() {
+      return this._text.value;
+    },
+    set: function set(value) {
+      this._text.value = value;
+    }
+  },
+  whitespace: {
+    get: function get() {
+      return this._text.whitespace;
+    },
+    set: function set(value) {
+      this._text.whitespace = value;
+    }
+  },
+  wrapCount: {
+    get: function get() {
+      return this._text.wrapCount;
+    },
+    set: function set(value) {
+      this._text.wrapCount = value;
+    }
+  },
+  wrapPixels: {
+    get: function get() {
+      return this._text.wrapPixels;
+    },
+    set: function set(value) {
+      this._text.wrapPixels = value;
+    }
+  },
+  zOffset: {
+    get: function get() {
+      return this._text.zOffset;
+    },
+    set: function set(value) {
+      this._text.zOffset = value;
+    }
+  },
+  loaded: { value: function value() {
+      this._element.removeEventListener('loaded', this._loaded);
+      this._loaded = null;
+      this.render();
+    } },
+  render: { value: function value() {
+      var h = this.height;
+      var radius = this.radius;
+      var w = this.width;
+      var x = 0;
+      var y = 0;
+      var round = new THREE.Shape();
+      round.moveTo(x, y + radius);
+      round.lineTo(x, y + h - radius);
+      round.quadraticCurveTo(x, y + h, x + radius, y + h);
+      round.lineTo(x + w - radius, y + h);
+      round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
+      round.lineTo(x + w, y + radius);
+      round.quadraticCurveTo(x + w, y, x + w - radius, y);
+      round.lineTo(x + radius, y);
+      round.quadraticCurveTo(x, y, x, y + radius);
+      this._geometry = new THREE.ShapeGeometry(round);
+      this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
+      this._mesh = new THREE.Mesh(this._geometry, this._material);
+      this._mesh.position.x = -(w / 2);
+      this._mesh.position.y = -(h / 2);
+      this._element.setObject3D('mesh', this._mesh);
+      this._geometry = null;
+      this._material = null;
+      this._mesh = null;
+    } }
+});
+
+function Circle$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-circle');
+}
+Circle$1.prototype = Object.create(Material.prototype, {
+    constructor: { value: Circle$1, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    },
+    thetaLength: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaLength;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaLength', value);
+        }
+    },
+    thetaStart: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaStart;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaStart', value);
+        }
+    }
+});
+
+function Cursor() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        click: { value: new Signal() },
+        down: { value: new Signal() },
+        out: { value: new Signal() },
+        over: { value: new Signal() },
+        up: { value: new Signal() },
+        _enabled: { writable: true, value: true },
+        _intersection: { writable: true, value: null },
+        _intersectionCleared: { writable: true, value: null },
+        _launchedRaycaster: { writable: true, value: false },
+        _objects: { writable: true, value: 'button' },
+        _mouseDown: { writable: true, value: null },
+        _mouseUp: { writable: true, value: null },
+        _notifyClick: { writable: true, value: null },
+        _target: { writable: true, value: null },
+        _timer: { value: new Timer(0, 1) }
+    });
+    AEntity.call(this, init);
+    this.objects = this._objects;
+}
+Cursor.prototype = Object.create(AEntity.prototype, {
+    constructor: { writable: true, value: Cursor },
+    duration: {
+        get: function get() {
+            return this._timer.delay;
+        },
+        set: function set(value) {
+            this._timer.delay = value;
+        }
+    },
+    dispose: { value: function value() {
+            this.removeEventListener('addedToStage', this._addedToStage);
+            this.removeEventListener('removedFromStage', this._removedFromStage);
+        } },
+    enabled: {
+        get: function get() {
+            return this._enabled;
+        },
+        set: function set(value) {
+            this._enabled = value === true;
+            if (this._enabled === true) {
+                if (this._onStage === true && this._launchedRaycaster === false) {
+                    this.launchRaycaster();
+                }
+            } else {
+                if (this._launchedRaycaster === true) {
+                    this.stopRaycaster();
+                }
+            }
+        }
+    },
+    objects: {
+        get: function get() {
+            return this._objects;
+        },
+        set: function set(value) {
+            if (isString(this._objects) && this._objects !== '') {
+                this._objects = value;
+                this.setAttribute('raycaster', 'objects', '.' + this._objects);
+            } else {
+                this._objects = '';
+                this.setAttribute('raycaster', '');
+            }
+        }
+    },
+    notifyClick: { value: function value() {
+            if (this._target) {
+                if (this.click.connected) {
+                    this.click.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('click'));
+            }
+        } },
+    notifyDown: { value: function value() {
+            if (this.down.connected) {
+                this.down.emit(this._target, this);
+            }
+            this._target.dispatchEvent(new Event('mousedown'));
+        } },
+    notifyOver: { value: function value() {
+            if (this._target) {
+                if (this.over.connected) {
+                    this.over.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('mouseenter'));
+                this._timer.run();
+            }
+        } },
+    notifyOut: { value: function value() {
+            if (this._timer.running) {
+                this._timer.stop();
+            }
+            if (this._target) {
+                if (this.out.connected) {
+                    this.out.emit(this._target, this);
+                }
+                this._target.dispatchEvent(new Event('mouseleave'));
+            }
+        } },
+    notifyUp: { value: function value() {
+            if (this.up.connected) {
+                this.up.emit(this._target, this);
+            }
+            this._target.dispatchEvent(new Event('mouseup'));
+        } },
+    useSeconds: {
+        get: function get() {
+            return this._timer.useSeconds;
+        },
+        set: function set(flag) {
+            this._timer.useSeconds = flag;
+        }
+    },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            if (this._enabled === true && this._launchedRaycaster === false) {
+                this.launchRaycaster();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            if (this._launchedRaycaster === true) {
+                this.stopRaycaster();
+            }
+        } },
+    launchRaycaster: { value: function value() {
+            this._notifyClick = this.notifyClick.bind(this);
+            this._intersection = this.intersection.bind(this);
+            this._intersectionCleared = this.intersectionCleared.bind(this);
+            this._mouseDown = this.notifyDown.bind(this);
+            this._mouseUp = this.notifyUp.bind(this);
+            this._timer.finishIt.connect(this._notifyClick);
+            this.element.addEventListener('raycaster-intersection', this._intersection);
+            this.element.addEventListener('raycaster-intersection-cleared', this._intersectionCleared);
+            this._launchedRaycaster = true;
+        } },
+    stopRaycaster: { value: function value() {
+            this.element.removeEventListener('raycaster-intersection', this._intersection);
+            this.element.removeEventListener('raycaster-intersection-cleared', this._intersectionCleared);
+            this._timer.finishIt.disconnect();
+            this._notifyClick = null;
+            this._intersection = null;
+            this._intersectionCleared = null;
+            this._mouseDown = null;
+            this._mouseUp = null;
+            this._launchedRaycaster = false;
+        } },
+    intersection: { value: function value(event) {
+            var cursor = this.element;
+            var index = void 0;
+            var intersected = void 0;
+            index = event.detail.els[0] === cursor ? 1 : 0;
+            intersected = event.detail.els[index];
+            if (!intersected) {
+                return;
+            }
+            if (intersected === this._target) {
+                return;
+            }
+            if (this._target) {
+                this.notifyOut();
+            }
+            this._target = intersected;
+            this.notifyOver();
+        } },
+    intersectionCleared: { value: function value(event) {
+            var cursor = this.element;
+            var intersected = event.detail.el;
+            if (cursor === intersected) {
+                return;
+            }
+            if (intersected !== this._target) {
+                return;
+            }
+            this.notifyOut();
+            this._target = null;
+        } }
+});
+
+function Cylinder() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-cylinder');
+}
+Cylinder.prototype = Object.create(Material.prototype, {
+    constructor: { value: Cylinder, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Image() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-image');
+}
+Image.prototype = Object.create(Material.prototype, {
+    constructor: { value: Image, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Plane() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-plane');
+}
+Plane.prototype = Object.create(Material.prototype, {
+    constructor: { value: Plane, writable: true },
+    height: {
+        get: function get() {
+            return this.getAttribute('geometry').height;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'height', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('geometry').width;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'width', value);
+        }
+    }
+});
+
+function Ring() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-ring');
+}
+Ring.prototype = Object.create(Material.prototype, {
+    constructor: { value: Ring, writable: true },
+    radiusInner: {
+        get: function get() {
+            return this.getAttribute('geometry').radiusInner;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radiusInner', value);
+        }
+    },
+    radiusOuter: {
+        get: function get() {
+            return this.getAttribute('geometry').radiusOuter;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radiusOuter', value);
+        }
+    },
+    thetaLength: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaLength;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaLength', value);
+        }
+    },
+    thetaStart: {
+        get: function get() {
+            return this.getAttribute('geometry').thetaStart;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'thetaStart', value);
+        }
+    }
+});
+
+function Scene() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    AEntity.call(this, init, 'a-scene');
+}
+Scene.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Scene, writable: true },
+    antialias: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('antialias') === "true" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('antialias', value === true ? 'true' : 'false');
+            }
+        }
+    },
+    embedded: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('embedded') === "" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('embedded', value === true ? '' : null);
+            }
+        }
+    },
+    fog: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('fog') === "" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('fog', value === true ? '' : null);
+            }
+        }
+    },
+    isMobile: { get: function get() {
+            return this._element ? this._element.isMobile : false;
+        } },
+    vrModeUI: {
+        get: function get() {
+            return this._element ? this._element.getAttribute('vr-mode-ui', 'enabled') === "true" : false;
+        },
+        set: function set(value) {
+            if (this._element) {
+                this._element.setAttribute('vr-mode-ui', 'enabled', value === true ? 'true' : 'false');
+            }
+        }
+    },
+    enterVR: { value: function value() {
+            if (this._element) {
+                this._element.enterVR();
+            }
+        } },
+    exitVR: { value: function value() {
+            if (this._element) {
+                this._element.exitVR();
+            }
+        } },
+    reload: { value: function value() {
+            if (this._element) {
+                this._element.reload();
+            }
+        } }
+});
+
+function Sky() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-sky');
+}
+Sky.prototype = Object.create(Material.prototype, {
+    constructor: { value: Sky, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry', 'radius');
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Sound() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        _ended: { writable: true, value: null },
+        _playing: { writable: true, value: false },
+        _requestPlay: { writable: true, value: false },
+        _running: { writable: true, value: false }
+    });
+    AEntity.call(this, init, 'a-sound');
+}
+Sound.prototype = Object.create(AEntity.prototype, {
+    constructor: { value: Sound, writable: true },
+    autoplay: {
+        get: function get() {
+            return this._requestPlay;
+        },
+        set: function set(value) {
+            this._requestPlay = value === true;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('sound').loop;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'loop', value);
+        }
+    },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this.finishIt.emit(this);
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this.startIt.emit(this);
+        } },
+    play: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                setTimeout(this.__playSound.bind(this), 100);
+            } else {
+                this._requestPlay = true;
+            }
+        } },
+    pause: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._element.components.sound.pauseSound();
+                this._playing = false;
+            }
+        } },
+    stop: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                if (this._ended) {
+                    this._element.removeEventListener('sound-ended', this._ended);
+                    this._ended = false;
+                }
+                this._element.components.sound.stopSound();
+                this._playing = false;
+            }
+        } },
+    src: {
+        get: function get() {
+            return this.getAttribute('sound').src;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('sound').volume;
+        },
+        set: function set(value) {
+            this.setAttribute('sound', 'volume', value);
+        }
+    },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            if (this._requestPlay === true) {
+                this._requestPlay = false;
+                this.play();
+            }
+        } },
+    __playSound: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                this._playing = true;
+                this.notifyStarted();
+                this._ended = this.__ended.bind(this);
+                this._element.addEventListener('sound-ended', this._ended);
+                this._element.components.sound.playSound();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            this._onStage = false;
+            if (this._ended) {
+                this._element.removeEventListener('sound-ended', this._ended);
+                this._ended = false;
+            }
+            if (this._playing === true) {
+                this.stop();
+            }
+        } },
+    __ended: { value: function value() {
+            this._playing = false;
+            this._element.removeEventListener('sound-ended', this._ended);
+            this._ended = null;
+            this.notifyFinished();
+        } }
+});
+
+function Sphere() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Material.call(this, init, 'a-sphere');
+}
+Sphere.prototype = Object.create(Material.prototype, {
+    constructor: { value: Sphere, writable: true },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    }
+});
+
+function Videosphere() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        loopIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        _ended: { writable: true, value: null },
+        _loop: { writable: true, value: false },
+        _playing: { writable: true, value: false },
+        _requestPlay: { writable: true, value: false },
+        _running: { writable: true, value: false },
+        _video: { writable: true, value: null }
+    });
+    Material.call(this, init, 'a-videosphere');
+}
+Videosphere.prototype = Object.create(Material.prototype, {
+    constructor: { value: Videosphere, writable: true },
+    autoplay: {
+        get: function get() {
+            return this._requestPlay;
+        },
+        set: function set(value) {
+            this._requestPlay = Boolean(value);
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    loop: {
+        get: function get() {
+            return this._loop;
+        },
+        set: function set(value) {
+            this._loop = Boolean(value);
+        }
+    },
+    radius: {
+        get: function get() {
+            return this.getAttribute('geometry').radius;
+        },
+        set: function set(value) {
+            this.setAttribute('geometry', 'radius', value);
+        }
+    },
+    video: {
+        get: function get() {
+            return this._video;
+        },
+        set: function set(value) {
+            this._video = value;
+            this.src = '#' + this._video.id;
+        }
+    },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this.finishIt.emit(this);
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this.loopIt.emit(this);
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this.startIt.emit(this);
+        } },
+    play: { value: function value() {
+            if (this._onStage === true && this._playing === false) {
+                this._video._element.play();
+                this._playing = true;
+                this.notifyStarted();
+            } else {
+                this._requestPlay = true;
+            }
+        } },
+    pause: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._video.element.pause();
+                this._playing = false;
+            }
+        } },
+    stop: { value: function value() {
+            if (this._onStage === true && this._playing === true) {
+                this._video._element.pause();
+                this._playing = false;
+            }
+        } },
+    __addedToStage: { value: function value() {
+            this._onStage = true;
+            this._ended = this.ended.bind(this);
+            this._video.element.addEventListener('ended', this._ended);
+            if (this._requestPlay === true) {
+                this.play();
+            }
+        } },
+    __removedFromStage: { value: function value() {
+            if (this._playing === true) {
+                this.stop();
+            }
+            this._onStage = false;
+            this._video.element.removeEventListener('ended', this._ended);
+            this._ended = null;
+        } },
+    ended: { value: function value() {
+            this._playing = false;
+            if (this._loop === true) {
+                this.notifyLooped();
+                this.play();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.aframe.display} package.
+ * @summary The {@link molecule.render.aframe.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe.display
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$2 = Object.assign({
+    AEntity: AEntity,
+    Assets: Assets,
+    Box: Box,
+    Button: Button,
+    Circle: Circle$1,
+    Cursor: Cursor,
+    Cylinder: Cylinder,
+    Image: Image,
+    Material: Material,
+    Plane: Plane,
+    Ring: Ring,
+    Scene: Scene,
+    Sky: Sky,
+    Sound: Sound,
+    Sphere: Sphere,
+    Text: Text,
+    Videosphere: Videosphere
+});
+
+/**
+ * The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @summary The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe
+ * @memberof molecule.render
+ */
+var aframe = Object.assign({
+  components: components$1,
+  display: display$2
+});
+
+function Anchor() {
+    Node$1.call(this, null, 'a');
+}
+Anchor.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Anchor, writable: true },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    class: {
+        get: function get() {
+            return this.element.classList;
+        },
+        set: function set(value) {
+            if (!this.element.classList.contains(value)) {
+                this.element.classList.add(value);
+            }
+        }
+    },
+    href: {
+        get: function get() {
+            return this.element.href;
+        },
+        set: function set(value) {
+            this.element.href = value;
+        }
+    }
+});
+
+function Stage$1() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Node$1.call(this, init, tag);
+    Object.defineProperties(this, {
+        activated: { value: new Signal() },
+        desactivated: { value: new Signal() },
+        fullScreen: { value: new Signal() },
+        orientationChange: { value: new Signal() },
+        resize: { value: new Signal() },
+        _allowFullScreen: { writable: true, value: false },
+        _aspectRatio: { writable: true, value: StageAspectRatio.ANY },
+        _displayState: { writable: true, value: StageDisplayState.NORMAL },
+        _fullScreenChange: { writable: true, value: null },
+        _fullScreenElement: { writable: true, value: null },
+        _fullScreenExit: { writable: true, value: null },
+        _fullScreenHeight: { writable: true, value: null },
+        _fullScreenInteractive: { writable: true, value: false },
+        _fullScreenRequest: { writable: true, value: null },
+        _fullScreenWidth: { writable: true, value: null },
+        _height: { writable: true, value: null },
+        __isStage: { value: true },
+        _launchedFromHomeScreen: { writable: true, value: false },
+        _orientation: { writable: true, value: StageOrientation.UNKNOWN },
+        _pixelRatio: { writable: true, value: 1 },
+        _supportedOrientations: { writable: true, value: null },
+        _supportsOrientationChange: { writable: true, value: false },
+        _width: { writable: true, value: null }
+    });
+    this.__initialize__();
+}
+Stage$1.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Stage$1, writable: true },
+    allowFullScreen: { get: function get() {
+            return this._allowFullScreen;
+        } },
+    allowFullScreenInteractive: { get: function get() {
+            return this._fullScreenInteractive;
+        } },
+    aspectRatio: { get: function get() {
+            return this._aspectRatio;
+        } },
+    displayState: {
+        get: function get() {
+            return this._displayState;
+        },
+        set: function set(state) {
+            if (this._displayState !== state) {
+                this._displayState = state;
+                switch (this._displayState) {
+                    case StageDisplayState.FULL_SCREEN:
+                        {
+                            document.documentElement[this._fullScreenRequest]();
+                            break;
+                        }
+                    case StageDisplayState.FULL_SCREEN_INTERACTIVE:
+                        {
+                            document.documentElement[this._fullScreenRequest](Element.ALLOW_KEYBOARD_INPUT);
+                            break;
+                        }
+                    case StageDisplayState.NORMAL:
+                    default:
+                        {
+                            document[this._fullScreenExit]();
+                            break;
+                        }
+                }
+            }
+        }
+    },
+    fullScreenHeight: { get: function get() {
+            return this._fullScreenHeight;
+        } },
+    fullScreenWidth: { get: function get() {
+            return this._fullScreenWidth;
+        } },
+    height: { get: function get() {
+            return this._height;
+        } },
+    launchedFromHomeScreen: { get: function get() {
+            return this._launchedFromHomeScreen;
+        } },
+    orientation: { get: function get() {
+            return this._orientation;
+        } },
+    pixelRatio: { get: function get() {
+            return this._pixelRatio;
+        } },
+    width: { get: function get() {
+            return this._width;
+        } },
+    dispose: { value: function value() {
+            if (this._notifyFullScreen instanceof Function) {
+                window.removeEventListener(this._fullScreenChange, this._notifyFullScreen, false);
+                this._notifyFullScreen = null;
+            }
+            if (this._notifyOrientationChange instanceof Function) {
+                window.removeEventListener("orientationchange", this._notifyOrientationChange, false);
+                this._notifyOrientationChange = null;
+            }
+        } },
+    getDeviceOrientation: { writable: true, value: function value() {
+            if (window.screen.orientation && window.screen.orientation.type) {
+                switch (window.screen.orientation.type) {
+                    case 'portrait-secondary':
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                    case 'landscape-primary':
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 'landscape-secondary':
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 'portrait-primary':
+                    default:
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                }
+            } else if (window.orientation !== undefined) {
+                switch (window.orientation) {
+                    case 180:
+                        {
+                            this._orientation = StageOrientation.UPSIDE_DOWN;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                            break;
+                        }
+                    case 90:
+                        {
+                            this._orientation = StageOrientation.ROTATED_LEFT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case -90:
+                        {
+                            this._orientation = StageOrientation.ROTATED_RIGHT;
+                            this._aspectRatio = StageAspectRatio.LANDSCAPE;
+                            break;
+                        }
+                    case 0:
+                    default:
+                        {
+                            this._orientation = StageOrientation.DEFAULT;
+                            this._aspectRatio = StageAspectRatio.PORTRAIT;
+                        }
+                }
+            }
+        } },
+    getViewportSize: { writable: true, value: function value() {
+            this._width = Math.min(document.documentElement.clientWidth, window.innerWidth || 0);
+            this._height = Math.min(document.documentElement.clientHeight, window.innerHeight || 0);
+            return { width: this._width, height: this._height };
+        } },
+    notifyActivated: { writable: true, value: function value() {
+            this.activated.emit(this);
+        } },
+    notifyDesactivated: { writable: true, value: function value() {
+            this.desactivated.emit(this);
+        } },
+    notifyFullScreen: { writable: true, value: function value() {
+            if (document[this._fullScreenElement] === null) {
+                this.displayState = StageDisplayState.NORMAL;
+            }
+            this.fullScreen.emit(this._displayState, this);
+        } },
+    notifyOrientationChange: { writable: true, value: function value() {
+            this.getDeviceOrientation();
+            this.orientationChange.emit(this._orientation, this);
+        } },
+    notifyResized: { writable: true, value: function value() {
+            this.getViewportSize();
+            this.resize.emit(this);
+        } },
+    toString: { writable: true, value: function value() {
+            return '[Stage]';
+        } },
+    __initialize__: { writable: true, value: function value() {
+            if (navigator.standalone === true || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches) {
+                this._launchedFromHomeScreen = true;
+            }
+            this._pixelRatio = window.devicePixelRatio || 1;
+            this.getViewportSize();
+            this._fullScreenWidth = window.screen.width;
+            this._fullScreenHeight = window.screen.height;
+            if (window.orientation !== undefined || window.screen.orientation !== undefined) {
+                this._supportsOrientationChange = true;
+                this.getDeviceOrientation();
+            } else {
+                this._supportsOrientationChange = false;
+            }
+            var fullscreen = ['requestFullscreen', 'requestFullScreen', 'webkitRequestFullscreen', 'webkitRequestFullScreen', 'msRequestFullscreen', 'msRequestFullScreen', 'mozRequestFullScreen', 'mozRequestFullscreen'];
+            var cancel = ['cancelFullScreen', 'exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'msCancelFullScreen', 'msExitFullscreen', 'mozCancelFullScreen', 'mozExitFullscreen'];
+            var change = ['fullscreenchange', 'fullscreenchange', 'webkitfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange', 'msfullscreenchange', 'mozfullscreenchange', 'mozfullscreenchange'];
+            var element = ['fullscreenElement', 'fullscreenElement', 'webkitFullscreenElement', 'webkitFullscreenElement', 'msFullScreenElement', 'msFullscreenElement', 'mozFullScreenElement', 'mozFullscreenElement'];
+            var len = fullscreen.length;
+            for (var i = 0; i < len; i++) {
+                if (document.documentElement[fullscreen[i]] && document[cancel[i]]) {
+                    this._allowFullScreen = true;
+                    this._fullScreenRequest = fullscreen[i];
+                    this._fullScreenExit = cancel[i];
+                    this._fullScreenChange = change[i];
+                    this._fullScreenElement = element[i];
+                    break;
+                }
+            }
+            if (window.Element && Element.ALLOW_KEYBOARD_INPUT) {
+                this._fullScreenInteractive = true;
+            }
+            if (this._allowFullScreen === true) {
+                this._notifyFullScreen = this.notifyFullScreen.bind(this);
+                window.addEventListener(this._fullScreenChange, this._notifyFullScreen, false);
+            }
+            if (this._supportsOrientationChange === true) {
+                this._notifyOrientationChange = this.notifyOrientationChange.bind(this);
+                window.addEventListener("orientationchange", this._notifyOrientationChange, false);
+            }
+            window.addEventListener("resize", this.notifyResized.bind(this), false);
+            window.addEventListener("focus", this.notifyActivated.bind(this), false);
+            window.addEventListener("blur", this.notifyDesactivated.bind(this), false);
+        } }
+});
+
+function Body() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Stage$1.call(this, init, document.body || document.createElement('body'));
+}
+Body.prototype = Object.create(Stage$1.prototype, {
+    constructor: { value: Body, writable: true },
+    toString: { writable: true, value: function value() {
+            return '[Body]';
+        } }
+});
+
+function Button$1() {
+    Node$1.call(this, null, 'button');
+}
+Button$1.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Button$1, writable: true },
+    text: {
+        get: function get() {
+            return this._element.innerHTML;
+        },
+        set: function set(value) {
+            this._element.innerHTML = value;
+        }
+    },
+    type: {
+        get: function get() {
+            return this.getAttribute('type');
+        },
+        set: function set(value) {
+            this.setAttribute('type', value);
+        }
+    },
+    value: {
+        get: function get() {
+            return this.getAttribute('value');
+        },
+        set: function set(value) {
+            this.setAttribute('value', value);
+        }
+    }
+});
+
+function Canvas() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Node$1.call(this, init, tag instanceof HTMLCanvasElement || isString(tag) ? tag : null);
+}
+Canvas.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Canvas, writable: true },
+    toString: { writable: true, value: function value() {
+            return '[Canvas]';
+        } }
+});
+
+function Div() {
+    Node$1.call(this, null, 'div');
+}
+Div.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Div, writable: true }
+});
+
+function Svg() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'svg';
+    var xmlns = "http://www.w3.org/2000/svg";
+    var el = null;
+    if (isSVGElement(tag)) {
+        el = tag;
+    } else if (isString(tag)) {
+        el = document.createElementNS(xmlns, tag);
+    }
+    Object.defineProperties(this, {
+        _element: { value: el, writable: true }
+    });
+    DisplayObjectContainer.call(this, init);
+}
+Svg.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Svg, writable: true },
+    enableBackground: {
+        get: function get() {
+            return this.getAttribute('enable-background');
+        },
+        set: function set(value) {
+            this.setAttribute('enable-background', value);
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    viewBox: {
+        get: function get() {
+            return this._element.getAttribute('viewBox');
+        },
+        set: function set(value) {
+            this._element.setAttribute('viewBox', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    },
+    x: {
+        get: function get() {
+            return this.getAttribute('x');
+        },
+        set: function set(value) {
+            this.setAttribute('x', value);
+        }
+    },
+    y: {
+        get: function get() {
+            return this.getAttribute('y');
+        },
+        set: function set(value) {
+            this.setAttribute('y', value);
+        }
+    }
+});
+
+function G() {
+    Svg.call(this, null, "g");
+}
+G.prototype = Object.create(Svg.prototype, {
+    constructor: { value: G, writable: true }
+});
+
+function Img() {
+    Node$1.call(this, null, 'img');
+}
+Img.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Img, writable: true },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    height: {
+        get: function get() {
+            return this.getAttribute('height');
+        },
+        set: function set(value) {
+            this.setAttribute('height', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    width: {
+        get: function get() {
+            return this.getAttribute('width');
+        },
+        set: function set(value) {
+            this.setAttribute('width', value);
+        }
+    }
+});
+
+function Paragraph() {
+    Node$1.call(this, null, 'p');
+}
+Paragraph.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Paragraph, writable: true },
+    text: {
+        get: function get() {
+            return this._element.innerHTML;
+        },
+        set: function set(value) {
+            this._element.innerHTML = value;
+        }
+    }
+});
+
+function Path() {
+    Svg.call(this, null, "path");
+}
+Path.prototype = Object.create(Svg.prototype, {
+    constructor: { value: Path, writable: true },
+    d: {
+        get: function get() {
+            return this.getAttribute("d");
+        },
+        set: function set(value) {
+            this.setAttribute("d", value);
+        }
+    }
+});
+
+var createEntity = function createEntity() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'a-entity';
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var el = null;
+    if (name instanceof String || typeof name === 'string') {
+        el = document.createElement(name);
+    } else {
+        el = document.createElement('a-entity');
+        if (name !== null) {
+            init = name;
+        }
+    }
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+var createImg = function createImg() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var el = document.createElement('img');
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+var createVideo = function createVideo() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var el = document.createElement('video');
+    el.setAttribute('crossorigin', 'anonymous');
+    el.setAttribute('webkit-playsinline', 'true');
+    el.setAttribute('autoplay', '');
+    el.setAttribute('controls', '');
+    if (init) {
+        for (var attr in init) {
+            if (attr in init) {
+                el.setAttribute(attr, init[attr]);
+            }
+        }
+    }
+    return el;
+};
+
+function Audio() {
+    Node$1.call(this, null, 'audio');
+}
+Audio.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Audio, writable: true },
+    autoplay: {
+        get: function get() {
+            return this.getAttribute('autoplay');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('autoplay', '');
+            } else {
+                this.removeAttribute('autoplay');
+            }
+        }
+    },
+    controls: {
+        get: function get() {
+            return this.getAttribute('controls');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('controls', '');
+            } else {
+                this.removeAttribute('controls');
+            }
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('loop');
+        },
+        set: function set(value) {
+            this.setAttribute('loop', value);
+        }
+    },
+    muted: {
+        get: function get() {
+            return this.getAttribute('muted');
+        },
+        set: function set(value) {
+            this.setAttribute('muted', value);
+        }
+    },
+    preload: {
+        get: function get() {
+            return this.getAttribute('preload');
+        },
+        set: function set(value) {
+            this.setAttribute('preload', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('volume');
+        },
+        set: function set(value) {
+            this.setAttribute('volume', clamp(value, 0, 1));
+        }
+    }
+});
+
+function Video() {
+    Node$1.call(this, null, 'video');
+}
+Video.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Video, writable: true },
+    autoplay: {
+        get: function get() {
+            return this.getAttribute('autoplay');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('autoplay', '');
+            } else {
+                this.removeAttribute('autoplay');
+            }
+        }
+    },
+    controls: {
+        get: function get() {
+            return this.getAttribute('controls');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.setAttribute('controls', '');
+            } else {
+                this.removeAttribute('controls');
+            }
+        }
+    },
+    crossorigin: {
+        get: function get() {
+            return this.getAttribute('crossOrigin');
+        },
+        set: function set(value) {
+            this.setAttribute('crossOrigin', value);
+        }
+    },
+    id: {
+        get: function get() {
+            return this.element.id;
+        },
+        set: function set(value) {
+            this.element.id = value;
+        }
+    },
+    loop: {
+        get: function get() {
+            return this.getAttribute('loop');
+        },
+        set: function set(value) {
+            this.setAttribute('loop', value);
+        }
+    },
+    muted: {
+        get: function get() {
+            return this.getAttribute('muted');
+        },
+        set: function set(value) {
+            this.setAttribute('muted', value);
+        }
+    },
+    poster: {
+        get: function get() {
+            return this.getAttribute('poster');
+        },
+        set: function set(value) {
+            this.setAttribute('poster', value);
+        }
+    },
+    preload: {
+        get: function get() {
+            return this.getAttribute('preload');
+        },
+        set: function set(value) {
+            this.setAttribute('preload', value);
+        }
+    },
+    src: {
+        get: function get() {
+            return this.getAttribute('src');
+        },
+        set: function set(value) {
+            this.setAttribute('src', value);
+        }
+    },
+    volume: {
+        get: function get() {
+            return this.getAttribute('volume');
+        },
+        set: function set(value) {
+            this.setAttribute('volume', clamp(value, 0, 1));
+        }
+    }
+});
+
+/**
+ * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom
+ * @memberof molecule.render
+ */
+var dom$1 = Object.assign({
+  display: {
+    Anchor: Anchor,
+    Body: Body,
+    Button: Button$1,
+    Canvas: Canvas,
+    Div: Div,
+    G: G,
+    Img: Img,
+    Node: Node$1,
+    Paragraph: Paragraph,
+    Path: Path,
+    Stage: Stage$1,
+    Svg: Svg
+  },
+  entities: {
+    createEntity: createEntity,
+    createImg: createImg,
+    createVideo: createVideo
+  },
+  medias: {
+    Audio: Audio,
+    Video: Video
+  }
+});
+
+function MOB() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        changed: { value: new Signal() },
+        renderer: { value: new Signal() },
+        resized: { value: new Signal() },
+        updater: { value: new Signal() },
+        altered: { writable: true, value: false },
+        _align: { writable: true, value: 10 },
+        _enabled: { writable: true, value: true },
+        _h: { writable: true, value: 0 },
+        _layout: { writable: true, value: null },
+        _locked: { writable: true, value: 0 },
+        _maxHeight: { writable: true, value: NaN },
+        _maxWidth: { writable: true, value: NaN },
+        _minHeight: { writable: true, value: NaN },
+        _minWidth: { writable: true, value: NaN },
+        _real: { writable: false, value: new Rectangle() },
+        _scope: { writable: true, value: !this._scope ? this : this._scope },
+        _w: { writable: true, value: 0 }
+    });
+    PIXI.Sprite.call(this, texture);
+    if (locked) {
+        this.lock();
+    }
+    this.initialize(init);
+    if (locked) {
+        this.unlock();
+    }
+}
+MOB.prototype = Object.create(PIXI.Sprite.prototype, {
+    constructor: { value: MOB, writable: true },
+    align: {
+        get: function get() {
+            return this._align;
+        },
+        set: function set(value) {
+            this._align = value;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    enabled: {
+        get: function get() {
+            return this._enabled;
+        },
+        set: function set(value) {
+            this._enabled = value === true;
+            if (this._locked === 0) {
+                this.viewEnabled();
+            }
+        }
+    },
+    h: {
+        get: function get() {
+            return this._h;
+        },
+        set: function set(value) {
+            this._h = clamp(value, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        }
+    },
+    layout: {
+        get: function get() {
+            return this._layout;
+        },
+        set: function set(layout) {
+            if (this._layout) {
+                this._layout.renderer.disconnect(this.renderLayout);
+                this._layout.updater.disconnect(this.updateLayout);
+                this._layout.unlock();
+            }
+            this._layout = layout instanceof Layout ? layout : null;
+            if (this._layout) {
+                this._layout.renderer.connect(this.renderLayout);
+                this._layout.updater.connect(this.updateLayout);
+                this._layout.container = this._scope;
+                if (this.isLocked()) {
+                    this._layout.lock();
+                } else {
+                    this._layout.unlock();
+                }
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    maxHeight: {
+        get: function get() {
+            return this._maxHeight;
+        },
+        set: function set(value) {
+            this._maxHeight = value;
+            if (this._maxHeight < this._minHeight) {
+                this._maxHeight = this._minHeight;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    maxWidth: {
+        get: function get() {
+            return this._maxWidth;
+        },
+        set: function set(value) {
+            this._maxWidth = value;
+            if (this._maxWidth < this._minWidth) {
+                this._maxWidth = this._minWidth;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    minHeight: {
+        get: function get() {
+            return this._minHeight;
+        },
+        set: function set(value) {
+            this._minHeight = value > 0 ? value : 0;
+            if (this._minHeight > this._maxHeight) {
+                this._minHeight = this._maxHeight;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    minWidth: {
+        get: function get() {
+            return this._minWidth;
+        },
+        set: function set(value) {
+            this._minWidth = value > 0 ? value : 0;
+            if (this._minWidth > this._maxWidth) {
+                this._minWidth = this._maxWidth;
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    numChildren: { get: function get() {
+            return this.children.length;
+        } },
+    scope: {
+        get: function get() {
+            return this._scope;
+        },
+        set: function set(target) {
+            this.preScope();
+            this._scope = this.checkScope(target);
+            if (this._layout) {
+                this._layout.container = this._scope;
+            }
+            this.postScope();
+        }
+    },
+    w: {
+        get: function get() {
+            return this._w;
+        },
+        set: function set(value) {
+            this._w = clamp(value, this._minWidth, this._maxWidth);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        }
+    },
+    contains: { value: function value(child) {
+            if (this.children && child instanceof PIXI.DisplayObject) {
+                return this.children.indexOf(child) > -1;
+            }
+            return false;
+        } },
+    draw: { writable: true, value: function value() {
+        } },
+    fixArea: { value: function value() {
+            this._real.width = this.w;
+            this._real.height = this.h;
+            this._real.x = 0;
+            this._real.y = 0;
+            if (this._align === Align.BOTTOM) {
+                this._real.x -= this._real.width / 2;
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.BOTTOM_LEFT) {
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.BOTTOM_RIGHT) {
+                this._real.x -= this._real.width;
+                this._real.y -= this._real.height;
+            } else if (this._align === Align.CENTER) {
+                this._real.x -= this._real.width / 2;
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.LEFT) {
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.RIGHT) {
+                this._real.x -= this._real.width;
+                this._real.y -= this._real.height / 2;
+            } else if (this._align === Align.TOP) {
+                this._real.x -= this._real.width / 2;
+            } else if (this._align === Align.TOP_RIGHT) {
+                this._real.x -= this._real.width;
+            }
+            return this._real;
+        } },
+    initialize: { value: function value() {
+            var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            if (init) {
+                this.lock();
+                for (var prop in init) {
+                    if (prop in init) {
+                        this[prop] = init[prop];
+                    }
+                }
+                this.unlock();
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        } },
+    isLocked: { value: function value() {
+            return this._locked > 0;
+        } },
+    lock: { value: function value() {
+            this._locked++;
+            if (this._layout) {
+                this._layout.lock();
+            }
+        } },
+    move: { value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+            if (!isNaN(x)) {
+                this.x = x;
+            }
+            if (!isNaN(y)) {
+                this.y = y;
+            }
+        } },
+    notifyChanged: { value: function value() {
+            if (this.changed.connected()) {
+                this.changed.emit(this);
+            }
+        } },
+    notifyResized: { writable: true, value: function value() {
+            this.viewResize();
+            if (this.resized.connected()) {
+                this.resized.emit(this);
+            }
+        } },
+    renderLayout: { writable: true, value: function value() /* layout = null */{
+        } },
+    resetLock: { value: function value() {
+            this._locked = 0;
+            if (this._layout) {
+                this._layout.unlock();
+            }
+        } },
+    setPreferredSize: { value: function value(w, h) {
+            this._w = isNaN(w) ? 0 : clamp(w, this._minWidth, this._maxWidth);
+            this._h = isNaN(h) ? 0 : clamp(h, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        } },
+    setSize: { value: function value(w, h) {
+            this.width = isNaN(w) ? 0 : clamp(w, this._minWidth, this._maxWidth);
+            this.height = isNaN(h) ? 0 : clamp(h, this._minHeight, this._maxHeight);
+            if (this._locked === 0) {
+                this.update();
+            }
+            this.notifyResized();
+        } },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } },
+    unlock: { value: function value() {
+            this._locked = --this._locked > 0 ? this._locked : 0;
+            if (this._layout && this._locked === 0) {
+                this._layout.unlock();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            if (this._locked > 0) {
+                return;
+            }
+            var cached = this.cacheAsBitmap === true;
+            if (cached) {
+                this.cacheAsBitmap = false;
+            }
+            this.renderer.emit(this);
+            if (this._layout) {
+                this._layout.run();
+            }
+            this.draw();
+            this.viewChanged();
+            this.altered = false;
+            if (cached) {
+                this.cacheAsBitmap = true;
+            }
+            this.updater.emit(this);
+        } },
+    updateLayout: { writable: true, value: function value() /* layout = null */{
+        } },
+    viewChanged: { writable: true, value: function value() {
+        } },
+    viewEnabled: { writable: true, value: function value() {
+        } },
+    viewResize: { writable: true, value: function value() {
+        } },
+    checkScope: { writable: true, value: function value(target) {
+            return target || this;
+        } },
+    postScope: { writable: true, value: function value() {} },
+    preScope: { writable: true, value: function value() {} }
+});
+
+function Element$1() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        _border: { writable: false, value: new EdgeMetrics() },
+        _builder: { writable: true, value: null },
+        _direction: { writable: true, value: null },
+        _group: { writable: true, value: false },
+        _groupName: { writable: true, value: null },
+        _invalides: { writable: false, value: {} },
+        _oldGroupName: { writable: true, value: null },
+        _padding: { writable: false, value: new EdgeMetrics() },
+        _margin: { writable: false, value: new EdgeMetrics() },
+        _style: { writable: true, value: null },
+        _viewStyleChanged: { writable: true, value: null }
+    });
+    this._builder = this.getBuilderRenderer();
+    if (this._builder instanceof Builder) {
+        this._builder.target = this;
+        this._builder.run();
+    }
+    this._style = this.getStyleRenderer();
+    if (this._style instanceof Style) {
+        this._viewStyleChanged = this.viewStyleChanged.bind(this);
+        this._style.changed.connect(this._viewStyleChanged);
+    }
+    MOB.call(this, texture, init, locked);
+}
+Object.defineProperties(Element$1, {
+    BUILDER: { value: "builder" },
+    DRAW: { value: "draw" },
+    LAYOUT: { value: "draw" },
+    VIEW_CHANGED: { value: "view_changed" }
+});
+Element$1.prototype = Object.create(MOB.prototype, {
+    constructor: { value: Element$1, writable: true },
+    border: {
+        get: function get() {
+            return this._border;
+        },
+        set: function set(em) {
+            var isEM = em instanceof EdgeMetrics;
+            this._border.bottom = isEM ? em.bottom : 0;
+            this._border.left = isEM ? em.left : 0;
+            this._border.right = isEM ? em.right : 0;
+            this._border.top = isEM ? em.top : 0;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    builder: {
+        get: function get() {
+            return this._builder;
+        },
+        set: function set(builder) {
+            if (this._builder) {
+                this._builder.clear();
+            }
+            this._builder = builder instanceof Builder || this.getBuilderRenderer();
+            if (this._builder instanceof Builder) {
+                this._builder.target = this;
+                this._builder.run();
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    direction: {
+        get: function get() {
+            return this._direction;
+        },
+        set: function set(value) {
+            this._direction = value === Direction.VERTICAL || value === Direction.HORIZONTAL ? value : null;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    group: {
+        get: function get() {
+            return this._group;
+        },
+        set: function set(value) {
+            this._group = value === true;
+            this.groupPolicyChanged();
+        }
+    },
+    groupName: {
+        get: function get() {
+            return this._groupName;
+        },
+        set: function set(value) {
+            this._oldGroupName = this._groupName;
+            this._groupName = isString(value) ? value : null;
+            this._group = isString(value) && value.length > 0;
+            this.groupPolicyChanged();
+            this._oldGroupName = null;
+        }
+    },
+    margin: {
+        get: function get() {
+            return this._margin;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._margin.left = em ? replaceNaN(em.left) : 0;
+                this._margin.top = em ? replaceNaN(em.top) : 0;
+                this._margin.right = em ? replaceNaN(em.right) : 0;
+                this._margin.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    padding: {
+        get: function get() {
+            return this._padding;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._padding.left = em ? replaceNaN(em.left) : 0;
+                this._padding.top = em ? replaceNaN(em.top) : 0;
+                this._padding.right = em ? replaceNaN(em.right) : 0;
+                this._padding.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    style: {
+        get: function get() {
+            return this._style;
+        },
+        set: function set(style) {
+            if (this._style) {
+                this._style.changed.disconnect(this._viewStyleChanged);
+                this._viewStyleChanged = null;
+            }
+            this._style = style instanceof Style || this.getStyleRenderer();
+            if (this._style instanceof Style) {
+                this._viewStyleChanged = this.viewStyleChanged.bind(this);
+                this._style.changed.connect(this._viewStyleChanged);
+            }
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    getBuilderRenderer: { writable: true, value: function value() {
+            return null;
+        } },
+    getStyleRenderer: { writable: true, value: function value() {
+            return null;
+        } },
+    groupPolicyChanged: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+            if (this._locked > 0) {
+                return;
+            }
+            var cached = this.cacheAsBitmap === true;
+            if (cached) {
+                this.cacheAsBitmap = false;
+            }
+            this.renderer.emit(this);
+            if (this._invalides[Element$1.LAYOUT]) {
+                this._invalides[Element$1.LAYOUT] = undefined;
+            } else if (this._layout) {
+                this._layout.run();
+            }
+            if (this._invalides[Element$1.BUILDER]) {
+                this._invalides[Element$1.BUILDER] = undefined;
+            } else if (this._builder) {
+                this._builder.update();
+            }
+            if (this._invalides[Element$1.DRAW]) {
+                this._invalides[Element$1.DRAW] = undefined;
+            } else {
+                this.draw();
+            }
+            if (this._invalides[Element$1.VIEW_CHANGED]) {
+                this._invalides[Element$1.VIEW_CHANGED] = undefined;
+            } else {
+                this.viewChanged();
+            }
+            this.altered = false;
+            if (cached) {
+                this.cacheAsBitmap = true;
+            }
+            this.updater.emit(this);
+        } },
+    viewStyleChanged: { writable: true, value: function value() /* style = null */{
+            this.update();
+        } },
+    invalidate: { value: function value(type) {
+            if (isString(type) && type !== "") {
+                this._invalides[type] = true;
+            }
+        } },
+    invalidateBuilder: { value: function value() {
+            this._invalides[Element$1.BUILDER] = true;
+        } },
+    invalidateDraw: { value: function value() {
+            this._invalides[Element$1.DRAW] = true;
+        } },
+    invalidateLayout: { value: function value() {
+            this._invalides[Element$1.LAYOUT] = true;
+        } },
+    invalidateViewChanged: { value: function value() {
+            this._invalides[Element$1.VIEW_CHANGED] = true;
+        } },
+    validate: { value: function value() {
+            for (var prop in this._invalides) {
+                if (prop in this._invalides) {
+                    delete this._invalides[prop];
+                }
+            }
+        } }
+});
+
+function CoreProgress() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        autoResetPosition: { writable: true, value: false },
+        _max: { value: 100, configurable: true, writable: true },
+        _min: { value: 0, configurable: true, writable: true },
+        _position: { value: 0, configurable: true, writable: true }
+    });
+    Element$1.call(this, texture, init, locked);
+}
+CoreProgress.prototype = Object.create(Element$1.prototype, {
+    constructor: { writable: true, value: CoreProgress },
+    maximum: {
+        get: function get() {
+            return this._max;
+        },
+        set: function set(value) {
+            var tmp = this._max;
+            this._max = value;
+            this.setPosition(map(this._position, this._min, tmp, this._min, this._max));
+        }
+    },
+    minimum: {
+        get: function get() {
+            return this._min;
+        },
+        set: function set(value) {
+            var tmp = this._min;
+            this._min = value;
+            this.setPosition(map(this._position, this._max, tmp, this._min, this._max));
+        }
+    },
+    position: {
+        get: function get() {
+            return isNaN(this._position) ? 0 : this._position;
+        },
+        set: function set(value) {
+            this.setPosition(value);
+        }
+    },
+    setPosition: { value: function value(_value) {
+            var noEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var flag = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var old = this._position;
+            this._position = clamp(isNaN(_value) ? 0 : _value, this._min, this._max);
+            this.viewPositionChanged(flag);
+            if (this._position !== old && !noEvent) {
+                this.notifyChanged();
+            }
+        } },
+    viewChanged: { writable: true, value: function value() {
+            this.setPosition(this.autoResetPosition ? 0 : this.position, true, true);
+        } },
+    viewPositionChanged: { writable: true, value: function value() /* flag = false */{
+        } }
+});
+
+function CoreScrollbar() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var locked = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Object.defineProperties(this, {
+        _background: { writable: true, value: null },
+        _invert: { writable: true, value: false },
+        _lockPosition: { writable: true, value: false },
+        _lineScrollSize: { writable: true, value: 1 },
+        _pageSize: { writable: true, value: 0 },
+        _thumb: { writable: true, value: null },
+        _thumbSize: { writable: true, value: null }
+    });
+    CoreProgress.call(this, texture, init, locked);
+}
+CoreScrollbar.prototype = Object.create(CoreProgress.prototype, {
+    constructor: { writable: true, value: CoreScrollbar },
+    background: { get: function get() {
+            return this._background;
+        } },
+    invert: {
+        get: function get() {
+            return this._invert;
+        },
+        set: function set(value) {
+            this._invert = value === true;
+            this.update();
+        }
+    },
+    lineScrollSize: {
+        get: function get() {
+            return this._lineScrollSize;
+        },
+        set: function set(value) {
+            this._lineScrollSize = value > 1 ? value : 1;
+        }
+    },
+    pageSize: {
+        get: function get() {
+            return this._pageSize > 0 ? this._pageSize : this._lineScrollSize;
+        },
+        set: function set(value) {
+            this._pageSize = value > 0 ? value : 0;
+        }
+    },
+    thumb: { get: function get() {
+            return this._thumb;
+        } },
+    thumbSize: {
+        get: function get() {
+            if (this._thumbSize === null || isNaN(this._thumbSize)) {
+                return this._direction === Direction.HORIZONTAL ? this.h - this._padding.vertical : this.w - this._padding.horizontal;
+            } else {
+                return this._direction === Direction.HORIZONTAL ? Math.min(this._thumbSize, this.w) : Math.min(this._thumbSize, this.h);
+            }
+        },
+        set: function set(value) {
+            this._thumbSize = value === null || isNaN(value) ? null : value;
+        }
+    },
+    viewPositionChanged: { writable: true, value: function value() /* flag = false */{
+            this._fixPosition();
+            if (this._thumb && !this._lockPosition) {
+                this._thumb.x = this._real.x;
+                this._thumb.y = this._real.y;
+                var $hor = this._padding.horizontal;
+                var $ver = this._padding.vertical;
+                var $b = this._padding.bottom;
+                var $l = this._padding.left;
+                var $r = this._padding.right;
+                var $t = this._padding.top;
+                var $w = this.w;
+                var $h = this.h;
+                var current = (this._position - this._min) / (this._max - this._min);
+                switch (this._direction) {
+                    case Direction.VERTICAL:
+                        {
+                            current *= $h - this.thumbSize - $ver;
+                            this._thumb.x += $l;
+                            if (this._invert) {
+                                this._thumb.y += $h - $b - (current + this._thumb.height);
+                            } else {
+                                this._thumb.y += $t + current;
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            current *= $w - this.thumbSize - $hor;
+                            this._thumb.y += $t;
+                            if (this._invert) {
+                                this._thumb.x += $w - $r - (current + this._thumb.width);
+                            } else {
+                                this._thumb.x += $l + current;
+                            }
+                        }
+                }
+            }
+        } },
+    _fixPosition: { value: function value() {
+            if (this._max > this._min) {
+                this._position = Math.min(this._position, this._max);
+                this._position = Math.max(this._position, this._min);
+            } else {
+                this._position = Math.max(this._position, this._max);
+                this._position = Math.min(this._position, this._min);
+            }
+        } }
+});
+
+function ScrollIndicator() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    Object.defineProperties(this, {
+        _fill: { writable: true, value: new FillStyle(0x333333) },
+        _line: { writable: true, value: null },
+        _thumbFill: { writable: true, value: new FillStyle(0xFF0000) },
+        _thumbLine: { writable: true, value: null }
+    });
+    if (init === null) {
+        init = { w: 200, h: 10 };
+    }
+    CoreScrollbar.call(this, texture, init, true);
+    Object.defineProperties(this, {
+        _background: { writable: true, value: new PIXI.Graphics() },
+        _thumb: { writable: true, value: new PIXI.Graphics() }
+    });
+    this.addChild(this._background);
+    this.addChild(this._thumb);
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
+}
+ScrollIndicator.prototype = Object.create(CoreScrollbar.prototype, {
+    constructor: { writable: true, value: ScrollIndicator },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    thumbLine: {
+        get: function get() {
+            return this._thumbLine;
+        },
+        set: function set(value) {
+            this._thumbLine = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    thumbFill: {
+        get: function get() {
+            return this._thumbFill;
+        },
+        set: function set(value) {
+            this._thumbFill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    draw: { writable: true, value: function value() {
+            this.fixArea();
+            if (this._background) {
+                this._background.clear();
+                if (this._fill instanceof FillStyle) {
+                    this._background.beginFill(this._fill._color, this._fill._alpha);
+                }
+                if (this._line instanceof LineStyle) {
+                    this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+                }
+                this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+            }
+            if (this._thumb) {
+                this._thumb.clear();
+                if (this._thumbFill instanceof FillStyle) {
+                    this._thumb.beginFill(this._thumbFill._color, this._thumbFill._alpha);
+                }
+                if (this._thumbLine instanceof LineStyle) {
+                    this._thumb.lineStyle(this._thumbLine._thickness, this._thumbLine._color, this._thumbLine._alpha);
+                }
+                var isHor = this._direction === Direction.HORIZONTAL;
+                this._thumb.drawRect(0, 0, isHor ? this.thumbSize : this._real.width - this._padding.horizontal, isHor ? this._real.height - this._padding.vertical : this.thumbSize);
+                this._thumb.x = this._real.x + this._padding.left;
+                this._thumb.y = this._real.y + this._padding.top;
+            }
+        } }
+});
+
+function SimpleProgressbar() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var texture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    Object.defineProperties(this, {
+        _background: { value: new PIXI.Graphics() },
+        _bar: { value: new PIXI.Graphics() },
+        _barAlign: { writable: true, value: null },
+        _barFill: { writable: true, value: new FillStyle(0xFF0000) },
+        _barLine: { writable: true, value: null },
+        _fill: { writable: true, value: new FillStyle(0x333333) },
+        _line: { writable: true, value: null }
+    });
+    if (init === null) {
+        init = { w: 200, h: 10 };
+    }
+    CoreProgress.call(this, texture, init, true);
+    this.addChild(this._background);
+    this.addChild(this._bar);
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
+}
+SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
+    constructor: { writable: true, value: SimpleProgressbar },
+    background: { get: function get() {
+            return this._background;
+        } },
+    bar: { get: function get() {
+            return this._bar;
+        } },
+    barAlign: {
+        get: function get() {
+            return this._barAlign;
+        },
+        set: function set(value) {
+            this._barAlign = value;
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    barLine: {
+        get: function get() {
+            return this._barLine;
+        },
+        set: function set(value) {
+            this._barLine = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    barFill: {
+        get: function get() {
+            return this._barFill;
+        },
+        set: function set(value) {
+            this._barFill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    draw: { writable: true, value: function value() {
+            this.fixArea();
+            this._background.clear();
+            if (this._fill instanceof FillStyle) {
+                this._background.beginFill(this._fill._color, this._fill._alpha);
+            }
+            if (this._line instanceof LineStyle) {
+                this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+            }
+            this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+        } },
+    viewPositionChanged: { writable: true, value: function value() {
+            var isVertical = this.direction === Direction.VERTICAL;
+            var horizontal = replaceNaN(this._padding.horizontal);
+            var vertical = replaceNaN(this._padding.vertical);
+            var margin = isVertical ? vertical : horizontal;
+            var max = isVertical ? this.h : this.w;
+            var size = map(this.position, this.minimum, this.maximum, 0, max - margin);
+            var $b = replaceNaN(this._padding.bottom);
+            var $l = replaceNaN(this._padding.left);
+            var $r = replaceNaN(this._padding.right);
+            var $t = replaceNaN(this._padding.top);
+            var $x = this._real.x;
+            var $y = this._real.y;
+            var $w = isVertical ? this._w - horizontal : size;
+            var $h = isVertical ? size : this._h - vertical;
+            if (isVertical) {
+                $x += $l;
+                if (this._barAlign === Align.BOTTOM) {
+                    $y += this.h - $h - $b;
+                } else if (this._barAlign === Align.CENTER) {
+                    $y += (this.h - $h) * 0.5;
+                } else {
+                    $y += $t;
+                }
+            } else {
+                $y += $t;
+                if (this._barAlign === Align.RIGHT) {
+                    $x += this.w - $w - $r;
+                } else if (this._barAlign === Align.CENTER) {
+                    $x += (this.w - $w) * 0.5;
+                } else {
+                    $x += $l;
+                }
+            }
+            this._bar.clear();
+            if (this._barFill instanceof FillStyle) {
+                this._bar.beginFill(this._barFill._color, this._barFill._alpha);
+            }
+            if (this._barLine instanceof LineStyle) {
+                this._bar.lineStyle(this._barLine._thickness, this._barLine._color, this._barLine._alpha);
+            }
+            this._bar.drawRect($x, $y, $w, $h);
+            this._bar.visible = this.position > 0;
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components.bars} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.bars
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var bars = Object.assign({
+  ScrollIndicator: ScrollIndicator,
+  SimpleProgressbar: SimpleProgressbar
+});
+
+/**
+ * The RadioButtonGroup singleton.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @memberof molecule.render.pixi.components.buttons
+ * @static
+ * @private
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var radio = new RadioButtonGroup();
+
+function CoreButton() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        data: { writable: true, value: null },
+        deselect: { value: new Signal() },
+        disable: { value: new Signal() },
+        down: { value: new Signal() },
+        out: { value: new Signal() },
+        over: { value: new Signal() },
+        phase: { get: function get() {
+                return this._phase;
+            } },
+        pressed: { value: new Signal() },
+        release: { value: new Signal() },
+        releaseOutside: { value: new Signal() },
+        rollOut: { value: new Signal() },
+        rollOver: { value: new Signal() },
+        select: { value: new Signal() },
+        unselect: { value: new Signal() },
+        up: { value: new Signal() },
+        _isOver: { value: false, writable: true },
+        _isPress: { value: false, writable: true },
+        _phase: { value: ButtonPhase.UP, writable: true },
+        _selected: { value: false, writable: true },
+        _toggle: { value: false, writable: true },
+        _useHandCursor: { value: true, writable: true }
+    });
+    Element$1.call(this, texture);
+    this.interactive = true;
+    this.buttonMode = this._useHandCursor && this._enabled;
+    this.postScope();
+}
+CoreButton.prototype = Object.create(Element$1.prototype, {
+    constructor: { writable: true, value: CoreButton },
+    selected: {
+        get: function get() {
+            return this._selected;
+        },
+        set: function set(value) {
+            this.setSelected(value === true);
+        }
+    },
+    toggle: {
+        get: function get() {
+            return this._toggle;
+        },
+        set: function set(value) {
+            this._toggle = value === true;
+            this.setSelected(false, true);
+        }
+    },
+    useHandCursor: {
+        get: function get() {
+            return this._useHandCursor;
+        },
+        set: function set(value) {
+            this._useHandCursor = value === true;
+            this.buttonMode = this._useHandCursor && this._enabled;
+        }
+    },
+    groupPolicyChanged: { writable: true, value: function value() {
+            if (this._group === true) {
+                this.down.connect(radio);
+            } else {
+                this.down.disconnect(radio);
+            }
+        } },
+    setSelected: { value: function value(_value) {
+            var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            this._selected = this._toggle && _value === true;
+            if (this._enabled) {
+                if (this._selected) {
+                    this._phase = ButtonPhase.DOWN;
+                    if (this.down.connected()) {
+                        this.down.emit(this);
+                    }
+                } else {
+                    this._phase = ButtonPhase.UP;
+                    if (this.up.connected()) {
+                        this.up.emit(this);
+                    }
+                }
+            }
+            if (options === null) {
+                if (this._selected) {
+                    if (this.select.connected()) {
+                        this.select.emit(this);
+                    }
+                } else {
+                    if (this.unselect.connected()) {
+                        this.unselect.emit(this);
+                    }
+                }
+            } else if (options === "deselect") {
+                if (this.deselect.connected()) {
+                    this.deselect.emit(this);
+                }
+            }
+        } },
+    viewEnabled: { writable: true, value: function value() {
+            this.buttonMode = this._useHandCursor && this._enabled;
+            if (this._enabled) {
+                this.interactive = true;
+                if (this._toggle && this._selected) {
+                    this._phase = ButtonPhase.DOWN;
+                    if (this.down.connected()) {
+                        this.down.emit(this);
+                    }
+                } else {
+                    this._phase = ButtonPhase.UP;
+                    if (this.up.connected()) {
+                        this.up.emit(this);
+                    }
+                }
+            } else {
+                this.interactive = false;
+                if (this._isOver) {
+                    this._isOver = false;
+                }
+                this._isPress = false;
+                this._phase = ButtonPhase.DISABLE;
+                if (this.disable.connected()) {
+                    this.disable.emit(this);
+                }
+            }
+        } },
+    checkScope: { writable: true, value: function value(target) {
+            return target || this;
+        } },
+    postScope: { writable: true, value: function value() {
+            if (this._scope) {
+                this._scope.mousedown = this.____down.bind(this);
+                this._scope.mouseout = this.____out.bind(this);
+                this._scope.mouseover = this.____over.bind(this);
+                this._scope.mouseup = this.____up.bind(this);
+                this._scope.mouseupoutside = this.____upOutside.bind(this);
+            }
+        } },
+    preScope: { writable: true, value: function value() {
+            if (this._scope) {
+                this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
+            }
+        } },
+    ____down: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = true;
+            if (this._toggle) {
+                this.selected = !this._selected;
+            } else {
+                this._phase = ButtonPhase.DOWN;
+                if (this.down.connected()) {
+                    this.down.emit(this);
+                }
+            }
+            if (this.pressed.connected()) {
+                this.pressed.emit(this);
+            }
+        } },
+    ____out: { value: function value() {
+            this._isOver = false;
+            this._phase = this._toggle && this._selected ? ButtonPhase.DOWN : ButtonPhase.UP;
+            if (this.out.connected()) {
+                this.out.emit(this);
+            }
+            if (this.rollOut.connected()) {
+                this.rollOut.emit(this);
+            }
+        } },
+    ____over: { value: function value() {
+            if (!this._isPress && !this._isOver) {
+                this._isOver = true;
+                if (!this._toggle || !this._selected) {
+                    this._phase = ButtonPhase.OVER;
+                    if (this.over.connected()) {
+                        this.over.emit(this);
+                    }
+                    if (this.rollOver.connected()) {
+                        this.rollOver.emit(this);
+                    }
+                }
+            }
+        } },
+    ____up: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = false;
+            if (!this._toggle && this._enabled) {
+                this._phase = ButtonPhase.UP;
+                if (this.up.connected()) {
+                    this.up.emit(this);
+                }
+            }
+            if (this.release.connected()) {
+                this.release.emit(this);
+            }
+        } },
+    ____upOutside: { value: function value() {
+            if (this._isOver) {
+                this._isOver = false;
+            }
+            this._isPress = false;
+            if (!this._toggle && this.enabled) {
+                this._phase = ButtonPhase.UP;
+                if (this.up.connected()) {
+                    this.up.emit(this);
+                }
+            }
+            if (this.releaseOutside.connected()) {
+                this.releaseOutside.emit(this);
+            }
+        } }
+});
+
+function SimpleButton() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _downState: { writable: true, value: null },
+        _disabledState: { writable: true, value: null },
+        _overState: { writable: true, value: null },
+        _upState: { writable: true, value: null }
+    });
+    CoreButton.call(this, texture);
+    this.__update = this.update.bind(this);
+    this.disable.connect(this.__update);
+    this.down.connect(this.__update);
+    this.out.connect(this.__update);
+    this.over.connect(this.__update);
+    this.up.connect(this.__update);
+    this.update();
+}
+SimpleButton.prototype = Object.create(CoreButton.prototype, {
+    constructor: { value: SimpleButton },
+    disabledState: {
+        get: function get() {
+            return this._disabledState;
+        },
+        set: function set(texture) {
+            this._disabledState = texture instanceof PIXI.Texture ? texture : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    downState: {
+        get: function get() {
+            return this._downState;
+        },
+        set: function set(texture) {
+            this._downState = texture instanceof PIXI.Texture ? texture : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    overState: {
+        get: function get() {
+            return this._overState;
+        },
+        set: function set(texture) {
+            this._overState = texture instanceof PIXI.Texture ? texture : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    upState: {
+        get: function get() {
+            return this._upState;
+        },
+        set: function set(texture) {
+            this._upState = texture instanceof PIXI.Texture ? texture : null;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    set: { value: function value() {
+            var up = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var over = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var down = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            var disable = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+            this.lock();
+            this.upState = up;
+            this.overState = over;
+            this.downState = down;
+            this.disabledState = disable;
+            this.unlock();
+            this.update();
+        } },
+    viewChanged: { writable: true, value: function value() {
+            switch (this._phase) {
+                case ButtonPhase.DISABLE:
+                    {
+                        this.texture = this._disabledState || PIXI.Texture.EMPTY;
+                        break;
+                    }
+                case ButtonPhase.DOWN:
+                    {
+                        this.texture = this._downState || PIXI.Texture.EMPTY;
+                        break;
+                    }
+                case ButtonPhase.OVER:
+                    {
+                        this.texture = this._overState || PIXI.Texture.EMPTY;
+                        break;
+                    }
+                default:
+                case ButtonPhase.UP:
+                    {
+                        this.texture = this._upState || PIXI.Texture.EMPTY;
+                        break;
+                    }
+            }
+            this._w = clamp(this.texture.orig.width, this._minWidth, this._maxWidth);
+            this._h = clamp(this.texture.orig.height, this._minHeight, this._maxHeight);
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components.buttons} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.buttons
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var buttons = Object.assign({
+  CoreButton: CoreButton,
+  SimpleButton: SimpleButton
+});
+
+/**
+ * The {@link molecule.render.pixi.components} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var components$2 = Object.assign({
+  CoreProgress: CoreProgress,
+  CoreScrollbar: CoreScrollbar,
+  bars: bars,
+  buttons: buttons
+});
+
+function Background() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    Object.defineProperties(this, {
+        _background: { value: new PIXI.Graphics() },
+        _fill: { writable: true, value: null },
+        _line: { writable: true, value: null }
+    });
+    Element$1.call(this, PIXI.Texture.EMPTY, init, true);
+    this.registerViews();
+    if (locked) {
+        this.lock();
+    }
+    this.update();
+    if (locked) {
+        this.unlock();
+    }
+}
+Background.prototype = Object.create(Element$1.prototype, {
+    constructor: { value: Background },
+    background: { get: function get() {
+            return this._background;
+        } },
+    line: {
+        get: function get() {
+            return this._line;
+        },
+        set: function set(value) {
+            this._line = value instanceof LineStyle ? value : null;
+            this.update();
+        }
+    },
+    fill: {
+        get: function get() {
+            return this._fill;
+        },
+        set: function set(value) {
+            this._fill = value instanceof FillStyle ? value : null;
+            this.update();
+        }
+    },
+    draw: { writable: true, value: function value() {
+            this.fixArea();
+            this._background.clear();
+            if (this._fill instanceof FillStyle) {
+                this._background.beginFill(this._fill._color, this._fill._alpha);
+            }
+            if (this._line instanceof LineStyle) {
+                this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
+            }
+            this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+        } },
+    registerViews: { writable: true, value: function value() {
+            if (this.children.length > 0) {
+                this.removeChildren();
+            }
+            this.addChild(this._background);
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.display} package.
+ * @summary The {@link molecule.render.pixi.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.display
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$3 = Object.assign({
+  Background: Background,
+  Element: Element$1,
+  MOB: MOB
+});
+
+function LayoutContainer() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Layout.call(this);
+    Object.defineProperties(this, {
+        usePreferredSize: { writable: true, value: true },
+        _children: { writable: false, value: [] }
+    });
+    this.container = container;
+    if (init) {
+        this.lock();
+        if (init) {
+            for (var prop in init) {
+                if (prop in this) {
+                    this[prop] = init[prop];
+                }
+            }
+        }
+        this.unlock();
+    }
+}
+LayoutContainer.prototype = Object.create(Layout.prototype, {
+    constructor: { writable: true, value: LayoutContainer },
+    children: { get: function get() {
+            var result = [];
+            this._children.forEach(function (entry) {
+                return result.push(entry.child);
+            });
+            return result;
+        } },
+    numChildren: { get: function get() {
+            return this._children.length;
+        } },
+    addChild: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                this._children.splice(index, 1);
+            }
+            this._children.push(new LayoutEntry(child));
+            return child;
+        } },
+    addChildAt: { value: function value(child, index) {
+            if (index < 0 || index > this._children.length) {
+                throw new RangeError(this + " addChildAt failed, the index position does not exist in the child list.");
+            }
+            var who = this.indexOf(child);
+            if (who > -1) {
+                this._children.splice(who, 1);
+            }
+            this._children.splice(index, 0, new LayoutEntry(child));
+            return child;
+        } },
+    contains: { value: function value(child) {
+            return this.indexOf(child) > -1;
+        } },
+    getChildAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " getChildAt failed, the index does not exist in the child list.");
+            }
+            return this._children[index].child;
+        } },
+    getChildIndex: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                return index;
+            } else {
+                throw new ReferenceError(this + " getChildIndex failed, the child parameter is not a child of this object.");
+            }
+        } },
+    indexOf: { value: function value(child) {
+            var i = 0;
+            this._children.forEach(function (entry) {
+                if (entry.child === child) {
+                    return i;
+                }
+                i++;
+            });
+            return -1;
+        } },
+    initialize: { writable: true, value: function value() {
+            var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var children = this._children;
+            children.length = 0;
+            if (elements instanceof Array) {
+                elements.forEach(function (child) {
+                    if (child instanceof PIXI.DisplayObject) {
+                        children.push(new LayoutEntry(child));
+                    }
+                });
+            } else if (elements instanceof PIXI.Container) {
+                var len = elements.children.length;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        children.push(new LayoutEntry(elements.getChildAt(i)));
+                    }
+                }
+            }
+        } },
+    removeChild: { value: function value(child) {
+            var index = this.indexOf(child);
+            if (index > -1) {
+                this._children.splice(index, 1);
+                return child;
+            } else {
+                throw new ReferenceError(this + " removeChild failed, the child parameter is not a child of this object.");
+            }
+        } },
+    removeChildAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " removeChildAt failed, the index does not exist in the child list.");
+            }
+            var child = this._children[index].child;
+            this._children.splice(index, 1);
+            return child;
+        } },
+    removeChildren: { value: function value() {
+            var beginIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var endIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x7FFFFFFF;
+            this._children.splice(beginIndex, endIndex - beginIndex + 1);
+        } },
+    setChildIndex: { value: function value(child, index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " setChildIndex failed, the index does not exist in the child list.");
+            }
+            var who = this.indexOf(child);
+            if (who > -1) {
+                var entry = this._children[index];
+                this._children[who] = this._children[index];
+                this._children[index] = entry;
+            } else {
+                throw new ReferenceError(this + " setChildIndex failed, the child parameter is not a child of this object.");
+            }
+        } },
+    swapChildren: { value: function value(child1, child2) {
+            var index1 = this.indexOf(child1);
+            var index2 = this.indexOf(child2);
+            if (index1 > -1 && index2 > -1) {
+                var entry = this._children[index1];
+                this._children[index1] = this._children[index2];
+                this._children[index2] = entry;
+            } else {
+                throw new ReferenceError(this + " swapChildren failed, either child parameter is not a child of this object.");
+            }
+        } },
+    swapChildrenAt: { value: function value(index1, index2) {
+            if (index1 < 0 || index1 >= this._children.length || index2 < 0 || index2 >= this._children.length) {
+                throw new RangeError(this + " swapChildrenAt failed, either index does not exist in the child list.");
+            }
+            var entry = this._children[index1];
+            this._children[index1] = this._children[index2];
+            this._children[index2] = entry;
+        } }
+});
+
+function BoxLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        propHeight: { writable: true, value: 'height' },
+        propX: { writable: true, value: 'x' },
+        propY: { writable: true, value: 'y' },
+        propWidth: { writable: true, value: 'width' },
+        _childCount: { writable: true, value: -1 },
+        _direction: { writable: true, value: Direction.VERTICAL },
+        _horizontalGap: { writable: true, value: 0 },
+        _index: { writable: true, value: 0 },
+        _order: { writable: true, value: DirectionOrder.NORMAL },
+        _padding: { writable: false, value: new EdgeMetrics() },
+        _verticalGap: { writable: true, value: 0 }
+    });
+    LayoutContainer.call(this, container, init);
+}
+BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
+    constructor: { writable: true, value: BoxLayout },
+    childCount: {
+        get: function get() {
+            return this._childCount;
+        },
+        set: function set(value) {
+            this._childCount = value > -1 ? value : -1;
+        }
+    },
+    direction: {
+        get: function get() {
+            return this._direction;
+        },
+        set: function set(value) {
+            this._direction = value === Direction.HORIZONTAL ? Direction.HORIZONTAL : Direction.VERTICAL;
+        }
+    },
+    horizontalGap: {
+        get: function get() {
+            return this._horizontalGap;
+        },
+        set: function set(value) {
+            this._horizontalGap = isNaN(value) ? 0 : value;
+        }
+    },
+    order: {
+        get: function get() {
+            return this._order;
+        },
+        set: function set(value) {
+            this._order = value === DirectionOrder.REVERSE ? DirectionOrder.REVERSE : DirectionOrder.NORMAL;
+        }
+    },
+    padding: {
+        get: function get() {
+            return this._padding;
+        },
+        set: function set(em) {
+            if (em instanceof EdgeMetrics) {
+                this._padding.left = em ? replaceNaN(em.left) : 0;
+                this._padding.top = em ? replaceNaN(em.top) : 0;
+                this._padding.right = em ? replaceNaN(em.right) : 0;
+                this._padding.bottom = em ? replaceNaN(em.bottom) : 0;
+            }
+        }
+    },
+    verticalGap: {
+        get: function get() {
+            return this._verticalGap;
+        },
+        set: function set(value) {
+            this._verticalGap = isNaN(value) ? 0 : value;
+        }
+    },
+    getChildPositionAt: { value: function value(index) {
+            if (index < 0 || index >= this._children.length) {
+                throw new RangeError(this + " getChildPositionAt failed, the index does not exist in the child list.");
+            }
+            var child = this.getChildAt(index);
+            return new Point(child.x, child.y);
+        } },
+    getCoordinateProperty: { value: function value() {
+            return this._direction === Direction.VERTICAL ? this.propY : this.propX;
+        } },
+    getSizeProperty: { value: function value() {
+            var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            if (target && isMeasurable(target) && this.usePreferredSize) {
+                return this._direction === Direction.HORIZONTAL ? "w" : "h";
+            } else {
+                return this._direction === Direction.HORIZONTAL ? this.propWidth : this.propHeight;
+            }
+        } },
+    isHorizontal: { value: function value() {
+            return this._direction === Direction.HORIZONTAL;
+        } },
+    isVertical: { value: function value() {
+            return this._direction === Direction.VERTICAL;
+        } },
+    measure: { value: function value() {
+            this._bounds.setTo();
+            var len = this._children.length;
+            if (len > 0) {
+                var i = 0;
+                var n = 0;
+                var n1 = 0;
+                var n2 = 0;
+                var hor = this.direction === Direction.HORIZONTAL;
+                var gap = hor ? this._horizontalGap : this._verticalGap;
+                var siz = hor ? this.propWidth : this.propHeight;
+                var sim = hor ? "w" : "h";
+                var isiz = hor ? this.propHeight : this.propWidth;
+                var isim = hor ? "h" : "w";
+                var child = void 0;
+                var prop = void 0;
+                n = this._childCount > -1 ? Math.min(this._childCount, len) : len;
+                for (i = 0; i < n; i++) {
+                    child = this._children[i].child;
+                    prop = isMeasurable(child) && this.usePreferredSize ? sim : siz;
+                    n1 += child[prop] + gap;
+                }
+                n1 -= gap;
+                n = len;
+                for (i = 0; i < n; i++) {
+                    child = this._children[i].child;
+                    prop = isMeasurable(child) && this.usePreferredSize ? isim : isiz;
+                    n2 = Math.max(child[prop], n2);
+                }
+                this._bounds.width = (hor ? n1 : n2) + this._padding.horizontal;
+                this._bounds.height = (hor ? n2 : n1) + this._padding.vertical;
+                if (this._align === Align.CENTER) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.BOTTOM) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_LEFT) {
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.LEFT) {
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.TOP) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                } else if (this._align === Align.TOP_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                }
+            }
+        } },
+    render: { writable: true, value: function value() {
+            var _this = this;
+            if (this._children.length > 0) {
+                (function () {
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
+                    }
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var gap = hor ? _this._horizontalGap : _this._verticalGap;
+                    var left = _this._padding.left;
+                    var top = _this._padding.top;
+                    var pro = hor ? _this.propX : _this.propY;
+                    var siz = hor ? _this.propWidth : _this.propHeight;
+                    var sim = hor ? "w" : "h";
+                    var inv = pro === _this.propY ? _this.propX : _this.propY;
+                    var tpr = "t" + pro;
+                    var tin = "t" + inv;
+                    var child = void 0;
+                    var prev = void 0;
+                    var size = void 0;
+                    _this._children.forEach(function (entry) {
+                        if (prev) {
+                            child = prev.child;
+                            size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
+                        }
+                        entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
+                        entry[tin] = hor ? top : left;
+                        prev = entry;
+                    });
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
+                    }
+                    _this.arrange();
+                    _this.renderer.emit(_this);
+                })();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            var _this2 = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var child = void 0;
+                    _this2._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = entry.x = entry.tx;
+                        child.y = entry.y = entry.ty;
+                    });
+                    _this2.updater.emit(_this2);
+                })();
+            }
+            this.notifyFinished();
+        } },
+    arrange: { value: function value() {
+            var _this3 = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var align = _this3._align;
+                    var bounds = _this3._bounds;
+                    _this3._children.forEach(function (entry) {
+                        if (align === Align.CENTER) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.BOTTOM) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_LEFT) {
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.LEFT) {
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.TOP) {
+                            entry.tx -= bounds.width * 0.5;
+                        } else if (align === Align.TOP_RIGHT) {
+                            entry.tx -= bounds.width;
+                        }
+                    });
+                })();
+            }
+        } }
+});
+
+function radiansToDegrees(angle /*Number*/)
+{
+  return angle * RAD2DEG;
+}
+
+function CircleLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _childAngle: { writable: true, value: 0 },
+        _childCount: { writable: true, value: 10 },
+        _childOrientation: { writable: true, value: false },
+        _radius: { writable: true, value: 100 },
+        _startAngle: { writable: true, value: 0 },
+        _pi1: { writable: false, value: Math.PI * 0.5 },
+        _pi2: { writable: false, value: Math.PI * 2 }
+    });
+    LayoutContainer.call(this, container, init);
+}
+CircleLayout.prototype = Object.create(LayoutContainer.prototype, {
+    constructor: { writable: true, value: CircleLayout },
+    childAngle: {
+        get: function get() {
+            return this._childAngle;
+        },
+        set: function set(value) {
+            this._childAngle = isNaN(value) ? 0 : value;
+        }
+    },
+    childCount: {
+        get: function get() {
+            return this._childCount;
+        },
+        set: function set(value) {
+            this._childCount = value > 1 ? value : 1;
+        }
+    },
+    childOrientation: {
+        get: function get() {
+            return this._childOrientation;
+        },
+        set: function set(value) {
+            this._childOrientation = value === true;
+        }
+    },
+    radius: {
+        get: function get() {
+            return this._radius;
+        },
+        set: function set(value) {
+            this._radius = isNaN(value) ? 0 : value;
+        }
+    },
+    startAngle: {
+        get: function get() {
+            return radiansToDegrees(this._startAngle);
+        },
+        set: function set(value) {
+            this._startAngle = degreesToRadians(isNaN(value) ? 0 : value % 360);
+        }
+    },
+    measure: { value: function value() {
+            this._bounds.width = this._bounds.height = 2 * this._radius;
+            if (this._align === Align.BOTTOM) {
+                this._bounds.x = -this._radius;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.BOTTOM_LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.BOTTOM_RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = -2 * this._radius;
+            } else if (this._align === Align.LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = -this._radius;
+            } else if (this._align === Align.RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = -this._radius;
+            } else if (this._align === Align.TOP) {
+                this._bounds.x = -this._radius;
+                this._bounds.y = 0;
+            } else if (this._align === Align.TOP_LEFT) {
+                this._bounds.x = 0;
+                this._bounds.y = 0;
+            } else if (this._align === Align.TOP_RIGHT) {
+                this._bounds.x = -2 * this._radius;
+                this._bounds.y = 0;
+            } else
+                {
+                    this._bounds.x = -this._radius;
+                    this._bounds.y = -this._radius;
+                }
+        } },
+    render: { writable: true, value: function value() {
+            var _this = this;
+            if (this._children.length > 0) {
+                (function () {
+                    var i = 0;
+                    var child = void 0;
+                    _this._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
+                        child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
+                        if (_this._childOrientation) {
+                            child.rotation = atan2D(child.y, child.x) + _this._childAngle;
+                        } else {
+                            var flag = isMeasurable(child) && _this.usePreferredSize;
+                            child.rotation = 0;
+                            child.x -= (flag ? child.w : child.width) * 0.5;
+                            child.y -= (flag ? child.h : child.height) * 0.5;
+                        }
+                        child.x += _this._bounds.x + _this._radius;
+                        child.y += _this._bounds.y + _this._radius;
+                        i++;
+                    });
+                })();
+            }
+        } },
+    update: { writable: true, value: function value() {
+            this.updater.emit(this);
+            this.notifyFinished();
+        } }
+});
+
+function GridLayout() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _columns: { writable: true, value: 1 },
+        _lines: { writable: true, value: 1 },
+        _orientation: { writable: true, value: Orientation.NONE }
+    });
+    BoxLayout.call(this, container, init);
+}
+GridLayout.prototype = Object.create(BoxLayout.prototype, {
+    constructor: { writable: true, value: GridLayout },
+    columns: {
+        get: function get() {
+            return this._columns;
+        },
+        set: function set(value) {
+            this._columns = value > 1 ? value : 1;
+        }
+    },
+    lines: {
+        get: function get() {
+            return this._lines;
+        },
+        set: function set(value) {
+            this._lines = value > 1 ? value : 1;
+        }
+    },
+    orientation: {
+        get: function get() {
+            return this._orientation;
+        },
+        set: function set(value) {
+            this._orientation = Orientation.validate(value) ? value : Orientation.NONE;
+        }
+    },
+    isBottomToTop: { value: function value() {
+            return this._orientation === Orientation.BOTTOM_TO_TOP || this._orientation === Orientation.LEFT_TO_RIGHT_BOTTOM_TO_TOP || this._orientation === Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP;
+        } },
+    isRightToLeft: { value: function value() {
+            return this._orientation === Orientation.RIGHT_TO_LEFT || this._orientation === Orientation.RIGHT_TO_LEFT_BOTTOM_TO_TOP || this._orientation === Orientation.RIGHT_TO_LEFT_TOP_TO_BOTTOM;
+        } },
+    measure: { value: function value() {
+            var _this = this;
+            this._bounds.setTo();
+            if (this._children.length > 0) {
+                (function () {
+                    var i = 0;
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var w = 0;
+                    var h = 0;
+                    var c = hor ? _this._columns : 0;
+                    var l = hor ? 0 : _this._lines;
+                    _this._children.forEach(function (entry) {
+                        var child = entry.child;
+                        var flag = isMeasurable(child) && _this.usePreferredSize;
+                        w = Math.max(child[flag ? "w" : _this.propWidth], w);
+                        h = Math.max(child[flag ? "h" : _this.propHeight], h);
+                        if (hor) {
+                            if (i % _this._columns === 0) {
+                                l++;
+                            }
+                        } else {
+                            if (i % _this._lines === 0) {
+                                c++;
+                            }
+                        }
+                        i++;
+                    });
+                    _this._bounds.width += c * (w + _this._horizontalGap);
+                    _this._bounds.height += l * (h + _this._verticalGap);
+                    _this._bounds.width -= _this._horizontalGap;
+                    _this._bounds.height -= _this._verticalGap;
+                    _this._bounds.width += _this._padding.horizontal;
+                    _this._bounds.height += _this._padding.vertical;
+                    if (_this._align === Align.CENTER) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.BOTTOM) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_LEFT) {
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.LEFT) {
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.TOP) {
+                        _this._bounds.x -= _this._bounds.width / 2;
+                    } else if (_this._align === Align.TOP_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                    }
+                })();
+            }
+        } },
+    render: { writable: true, value: function value() {
+            var _this2 = this;
+            if (this._children.length > 0) {
+                if (this._lines > 1 && this._direction === Direction.VERTICAL || this._columns > 1 && this._direction === Direction.HORIZONTAL) {
+                    var i;
+                    var c;
+                    var l;
+                    var pw;
+                    var ph;
+                    (function () {
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
+                        }
+                        var left = _this2._padding.left;
+                        var top = _this2._padding.top;
+                        var hor = _this2._direction === Direction.HORIZONTAL;
+                        i = 0;
+                        _this2._children.forEach(function (entry) {
+                            var child = entry.child;
+                            var flag = isMeasurable(child) && _this2.usePreferredSize;
+                            pw = flag ? "w" : _this2.propWidth;
+                            ph = flag ? "h" : _this2.propHeight;
+                            c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
+                            l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
+                            entry.tx = left + c * (child[pw] + _this2._horizontalGap);
+                            entry.ty = top + l * (child[ph] + _this2._verticalGap);
+                            if (_this2.isRightToLeft()) {
+                                entry.tx *= -1;
+                                entry.tx += _this2._bounds.width - child[pw];
+                            }
+                            if (_this2.isBottomToTop()) {
+                                entry.ty *= -1;
+                                entry.ty += _this2._bounds.height - child[ph];
+                            }
+                            i++;
+                        });
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
+                        }
+                        _this2.arrange();
+                        _this2.renderer.emit(_this2);
+                    })();
+                } else {
+                    BoxLayout.prototype.render.call(this);
+                }
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.layouts} package.
+ * @summary The {@link molecule.render.pixi.layouts} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.layouts
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var layouts = Object.assign({
+  BoxLayout: BoxLayout,
+  CircleLayout: CircleLayout,
+  GridLayout: GridLayout,
+  LayoutContainer: LayoutContainer
+});
+
+function warn(message) {
+    var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    if (enableErrorChecking === true) {
+        throw new Error(message);
+    } else if (verbose === true) {
+        logger$1.warn(message);
+    }
+}
+
+function AddChild() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+AddChild.prototype = Object.create(Task.prototype, {
+  constructor: { value: AddChild },
+  clone: { writable: true, value: function value() {
+      return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.addChild(this.child);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function AddChildAt() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    AddChild.call(this, container, child, enableErrorChecking, verbose);
+    Object.defineProperties(this, {
+        index: { writable: true, value: index > 0 ? index : 0 }
+    });
+}
+AddChildAt.prototype = Object.create(AddChild.prototype, {
+    constructor: { value: AddChildAt },
+    clone: { writable: true, value: function value() {
+            return new AddChildAt(this.container, this.child, this.index, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChildAt(this.child, this.index);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + " at the position: " + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+function Hide() {
+  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+Hide.prototype = Object.create(Task.prototype, {
+  constructor: { value: Hide },
+  clone: { writable: true, value: function value() {
+      return new Hide(this.display, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.display.visible = false;
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function Contains() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null }
+    });
+}
+Contains.prototype = Object.create(Rule.prototype, {
+    constructor: { value: Contains },
+    eval: { writable: true, value: function value() {
+            if (this.container instanceof PIXI.Container && this.child instanceof PIXI.DisplayObject) {
+                return Boolean(this.container.children.indexOf(this.child) > -1);
+            }
+            return false;
+        } }
+});
+
+function IfContains()
+{
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    IfTask.call(this, new Contains(container, child), thenTask, elseTask);
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+IfContains.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfContains }
+});
+
+function NotContains() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null }
+    });
+}
+NotContains.prototype = Object.create(Rule.prototype, {
+    constructor: { value: NotContains },
+    eval: { writable: true, value: function value() {
+            if (this.container instanceof PIXI.Container && this.child instanceof PIXI.DisplayObject) {
+                return Boolean(this.container.children.indexOf(this.child) < 0);
+            }
+            return false;
+        } }
+});
+
+function IfNotContains()
+{
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var elseTask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    IfTask.call(this, new NotContains(container, child), thenTask, elseTask);
+    for (var _len = arguments.length, elseIfTasks = Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+        elseIfTasks[_key - 4] = arguments[_key];
+    }
+    if (elseIfTasks.length > 0) {
+        this.addElseIf.apply(this, elseIfTasks);
+    }
+}
+IfNotContains.prototype = Object.create(IfTask.prototype, {
+    constructor: { writable: true, value: IfNotContains }
+});
+
+function MoveTo() {
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+    var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NaN;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose },
+        x: { writable: true, value: x },
+        y: { writable: true, value: y }
+    });
+}
+MoveTo.prototype = Object.create(Task.prototype, {
+    constructor: { value: MoveTo },
+    clone: { writable: true, value: function value() {
+            return new MoveTo(this.display, this.x, this.y, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                if (!(isNaN(this.x) || this.x === null)) {
+                    this.display.x = this.x;
+                }
+                if (!(isNaN(this.y) || this.y === null)) {
+                    this.display.y = this.y;
+                }
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+function RemoveChild() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChild.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChild },
+  clone: { writable: true, value: function value() {
+      return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChild(this.child);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function RemoveChildAt() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    index: { writable: true, value: index > 0 ? index : 0 },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChildAt.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChildAt },
+  clone: { writable: true, value: function value() {
+      return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChildAt(this.index);
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function RemoveChildren() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+RemoveChildren.prototype = Object.create(Task.prototype, {
+  constructor: { value: RemoveChildren },
+  clone: { writable: true, value: function value() {
+      return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.removeChildren();
+      } catch (er) {
+        warn(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function Show() {
+  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+Show.prototype = Object.create(Task.prototype, {
+  constructor: { value: Show },
+  clone: { writable: true, value: function value() {
+      return new Show(this.display, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.display.visible = true;
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+function SwapChildren() {
+  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  Task.call(this);
+  Object.defineProperties(this, {
+    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+    child1: { writable: true, value: child1 },
+    child2: { writable: true, value: child2 },
+    enableErrorChecking: { writable: true, value: enableErrorChecking },
+    verbose: { writable: true, value: verbose }
+  });
+}
+SwapChildren.prototype = Object.create(Task.prototype, {
+  constructor: { value: SwapChildren },
+  clone: { writable: true, value: function value() {
+      return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
+    } },
+  run: { writable: true, value: function value() {
+      this.notifyStarted();
+      try {
+        this.container.swapChildren(this.child1, this.child2);
+      } catch (er) {
+        warn(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+      }
+      this.notifyFinished();
+    } }
+});
+
+/**
+ * The {@link molecule.render.pixi.process.display} package.
+ * @summary The {@link molecule.render.pixi.process.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process.display
+ * @memberof molecule.render.pixi.process
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$4 = Object.assign({
+    AddChild: AddChild,
+    AddChildAt: AddChildAt,
+    Hide: Hide,
+    IfContains: IfContains,
+    IfNotContains: IfNotContains,
+    MoveTo: MoveTo,
+    RemoveChild: RemoveChild,
+    RemoveChildAt: RemoveChildAt,
+    RemoveChildren: RemoveChildren,
+    Show: Show,
+    SwapChildren: SwapChildren
+});
+
+/**
+ * The {@link molecule.render.pixi.process} package.
+ * @summary The {@link molecule.render.pixi.process} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var process$1 = Object.assign({
+  display: display$4
+});
+
+/**
+ * The {@link molecule.render.pixi.rules} package.
+ * @summary The {@link molecule.render.pixi.rules} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.rules
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var rules$1 = Object.assign({
+  Contains: Contains,
+  NotContains: NotContains
+});
+
+/**
+ * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi
+ * @memberof molecule.render
+ */
+var pixi = Object.assign({
+  components: components$2,
+  display: display$3,
+  layouts: layouts,
+  process: process$1,
+  rules: rules$1
+});
+
+/**
+ * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render
+ * @memberof molecule
+ */
+var render$1 = Object.assign({
+  aframe: aframe,
+  dom: dom$1,
+  pixi: pixi
+});
+
+function State() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    owner: { value: null, writable: true },
+    view: { value: null, writable: true }
+  });
+  ValueObject.call(this, init);
+}
+State.prototype = Object.create(ValueObject.prototype, {
+  constructor: { writable: true, value: State },
+  toString: { writable: true, value: function value() {
+      return this.formatToString(null, "id");
+    } }
+});
+
+function StateModel() {
+    MapModel.call(this);
+}
+StateModel.prototype = Object.create(MapModel.prototype, {
+    constructor: { writable: true, value: StateModel },
+    supports: { writable: true, value: function value(_value) {
+            return _value instanceof State;
+        } }
+});
+
+function View() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _closeAfter: { writable: true, value: null },
+        _closeBefore: { writable: true, value: null },
+        _openAfter: { writable: true, value: null },
+        _openBefore: { writable: true, value: null }
+    });
+    ValueObject.call(this, init);
+}
+View.prototype = Object.create(ValueObject.prototype, {
+    constructor: { value: View, writable: true },
+    closeAfter: {
+        get: function get() {
+            return this._closeAfter;
+        },
+        set: function set(action) {
+            this._closeAfter = action instanceof Action ? action : null;
+        }
+    },
+    closeBefore: {
+        get: function get() {
+            return this._closeBefore;
+        },
+        set: function set(action) {
+            this._closeBefore = action instanceof Action ? action : null;
+        }
+    },
+    openAfter: {
+        get: function get() {
+            return this._openAfter;
+        },
+        set: function set(action) {
+            this._openAfter = action instanceof Action ? action : null;
+        }
+    },
+    openBefore: {
+        get: function get() {
+            return this._openBefore;
+        },
+        set: function set(action) {
+            this._openBefore = action instanceof Action ? action : null;
+        }
+    },
+    attach: { writable: true, value: function value() {
+        } },
+    close: { writable: true, value: function value() {
+        } },
+    detach: { writable: true, value: function value() {
+        } },
+    dispose: { writable: true, value: function value() {
+        } },
+    initialize: { writable: true, value: function value() {
+        } },
+    open: { writable: true, value: function value() {
+        } },
+    update: { writable: true, value: function value() {
+        } }
+});
+
+function AddState() {}
+AddState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: AddState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function StateTask() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  Object.defineProperties(this, {
+    factory: { writable: true, value: factory },
+    state: { writable: true, value: state }
+  });
+  Task.call(this);
+}
+StateTask.prototype = Object.create(Task.prototype, {
+  constructor: { writable: true, value: StateTask }
+});
+
+function CloseState() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    StateTask.call(this, state, factory);
+    Object.defineProperties(this, {
+        _chain: { value: new Chain() }
+    });
+    this._chain.mode = TaskGroup.TRANSIENT;
+    this._chain.finishIt.connect(this.notifyFinished.bind(this));
+}
+CloseState.prototype = Object.create(StateTask.prototype, {
+    constructor: { writable: true, value: CloseState },
+    run: { value: function value() {
+            logger$1.debug(this + " run " + this.state);
+            this.notifyStarted();
+            if (!(this.state instanceof State)) {
+                logger$1.warn(this + " failed, the State reference of this process not must be 'null'.");
+                this.notifyFinished();
+                return;
+            }
+            var view = this.state.view;
+            if (view instanceof String || typeof view === 'string' && this.factory instanceof ObjectFactory) {
+                view = this.factory.getObject(view);
+            } else {
+                logger$1.warn(this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view);
+            }
+            if (view instanceof View) {
+                if (view.closeBefore) {
+                    this._chain.add(view.closeBefore);
+                }
+                this._chain.add(new Call(view.close, view));
+                if (view.closeAfter) {
+                    this._chain.add(view.closeAfter);
+                }
+            } else {
+                logger$1.warn(this + " failed, we can't find no View with the State : " + this.state);
+            }
+            if (this._chain.length > 0 && !this._chain.running) {
+                this._chain.run();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+function BeforeChangeState() {
+    var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        chain: { writable: true, value: chain instanceof Chain ? chain : null },
+        factory: { writable: true, value: factory }
+    });
+}
+BeforeChangeState.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: BeforeChangeState },
+    receive: { value: function value(state, model) {
+            logger$1.info(this + " receive " + state);
+            if (this.chain && state) {
+                this.chain.add(new CloseState(state, this.factory), 0, true);
+                if (model && model.current === null && !this.chain.running) {
+                    this.chain.run();
+                }
+            } else {
+                logger$1.warn(this + " failed with the state:" + state + " and the chain:" + this.chain);
+            }
+        } }
+});
+
+function OpenState() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        _chain: { value: new Chain() }
+    });
+    StateTask.call(this, state, factory);
+    this._chain.mode = TaskGroup.TRANSIENT;
+    this._chain.finishIt.connect(this.notifyFinished.bind(this));
+}
+OpenState.prototype = Object.create(StateTask.prototype, {
+    constructor: { writable: true, value: OpenState },
+    run: { value: function value() {
+            logger$1.debug(this + " run " + this.state);
+            this.notifyStarted();
+            if (!(this.state instanceof State)) {
+                logger$1.warn(this + " failed, the State reference of this process not must be 'null'.");
+                this.notifyFinished();
+                return;
+            }
+            var view = this.state.view;
+            if (view instanceof String || typeof view === 'string' && this.factory instanceof ObjectFactory) {
+                view = this.factory.getObject(view);
+            } else {
+                logger$1.warn(this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view);
+            }
+            if (view instanceof View) {
+                if (view.openBefore) {
+                    this._chain.add(view.openBefore);
+                }
+                this._chain.add(new Call(view.open, view));
+                if (view.openAfter) {
+                    this._chain.add(view.openAfter);
+                }
+            } else {
+                logger$1.warn(this + " failed, we can't find no View in the State : " + this.state);
+            }
+            if (this._chain.length > 0 && !this._chain.running) {
+                this._chain.run();
+            } else {
+                this.notifyFinished();
+            }
+        } }
+});
+
+function ChangeState() {
+    var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        chain: { writable: true, value: chain instanceof Chain ? chain : null },
+        factory: { writable: true, value: factory }
+    });
+}
+ChangeState.prototype = Object.create(Receiver.prototype, {
+    constructor: { value: ChangeState },
+    receive: { value: function value(state) {
+            logger$1.info(this + " receive " + state);
+            if (this.chain && state) {
+                this.chain.add(new OpenState(state, this.factory), 0, true);
+                if (!this.chain.running) {
+                    this.chain.run();
+                }
+            } else {
+                logger$1.warn(this + " failed with the state:" + state + " and the chain:" + this.chain);
+            }
+        } }
+});
+
+function ClearState() {}
+ClearState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: ClearState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function RemoveState() {}
+RemoveState.prototype = Object.create(Receiver.prototype, {
+  constructor: { value: RemoveState },
+  receive: { value: function value(state) {
+      logger$1.debug(this + " receive : " + state);
+    } }
+});
+
+function InitStates() {
+    var model = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var autoClear = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var autoSelect = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var autoDequeue = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var cleanFirst = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+    InitMapModel.call(this, model, datas, autoClear, autoSelect, autoDequeue, cleanFirst);
+}
+InitStates.prototype = Object.create(InitMapModel.prototype, {
+    constructor: { writable: true, value: InitStates },
+    filterEntry: { value: function value(_value) {
+            return _value instanceof State ? _value : null;
+        } }
+});
+
+/**
+ * The {@link molecule.states} library contains the core classes of the application state engine.
+ * @summary The {@link molecule.render} library contains the core classes of the application state engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.states
+ * @memberof molecule
+ */
+var states = Object.assign({
+  State: State,
+  StateModel: StateModel,
+  View: View,
+  controllers: {
+    AddState: AddState,
+    BeforeChangeState: BeforeChangeState,
+    ChangeState: ChangeState,
+    ClearState: ClearState,
+    RemoveState: RemoveState
+  },
+  process: {
+    CloseState: CloseState,
+    InitStates: InitStates,
+    OpenState: OpenState,
+    StateTask: StateTask
+  }
+});
+
+/**
+ * The {@link molecule} package is a library for develop crossplatform Rich Internet Applications and Games.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var molecule = Object.assign({
+    logger: logger$1,
+    Builder: Builder,
+    Deployment: Deployment,
+    Focusable: Focusable,
+    Groupable: Groupable,
+    Iconifiable: Iconifiable,
+    LabelPolicy: LabelPolicy,
+    ScrollPolicy: ScrollPolicy,
+    Style: Style,
+    components: components,
+    display: display$1,
+    groups: groups,
+    render: render$1,
+    states: states
+});
+
 var Device = Object.defineProperties({}, {
   DESKTOP: { enumerable: true, value: "desktop" },
   MOBILE: { enumerable: true, value: "mobile" },
@@ -13533,6 +19169,7 @@ exports.trace = trace;
 exports.core = core;
 exports.system = system;
 exports.graphics = graphics;
+exports.molecule = molecule;
 exports.screens = screens;
 
 Object.defineProperty(exports, '__esModule', { value: true });

@@ -16,5 +16,7 @@ export var doc = ( done ) =>
     ] , done );
 };
 
-// Themes : Cerulean, Cosmo, Cyborg, Flatly, Journal, Lumen, Paper, Readable, Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
+// Themes : Cerulean, Cosmo, Cyborg, Flatly,
+//          Journal, Lumen, Paper, Readable,
+//          Sandstone, Simplex, Slate, Spacelab, Superhero, United, Yeti
 
