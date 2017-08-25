@@ -14,7 +14,7 @@ This project contains a set of libraries writing in **Javascript** and based on 
 
  * Author : Marc ALCARAZ (aka eKameleon)
  * Mail : ekameleon[at]gmail.com
- * Link : [https://www.ekameleon.net](https://www.ekameleon.net)
+ * LinkedIn : [https://www.linkedin.com/in/ekameleon/](https://www.linkedin.com/in/ekameleon/)
 
 ### License
 
