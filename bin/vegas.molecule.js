@@ -13269,7 +13269,7 @@ function Builder() {
     });
 }
 Builder.prototype = Object.create(Runnable.prototype, {
-    constructor: { value: Builder, writable: true },
+    constructor: { writable: true, value: Builder },
     target: {
         get: function get() {
             return this._target;
@@ -16092,6 +16092,17 @@ function MOB() {
         this.unlock();
     }
 }
+Object.defineProperties(PIXI.Container.prototype, {
+    numChildren: { get: function get() {
+            return this.children.length;
+        } },
+    contains: { value: function value(child) {
+            if (this.children && child instanceof PIXI.DisplayObject) {
+                return this.children.indexOf(child) > -1;
+            }
+            return false;
+        } }
+});
 MOB.prototype = Object.create(PIXI.Sprite.prototype, {
     constructor: { value: MOB, writable: true },
     align: {
@@ -16210,9 +16221,6 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             }
         }
     },
-    numChildren: { get: function get() {
-            return this.children.length;
-        } },
     scope: {
         get: function get() {
             return this._scope;
@@ -16238,12 +16246,6 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             this.notifyResized();
         }
     },
-    contains: { value: function value(child) {
-            if (this.children && child instanceof PIXI.DisplayObject) {
-                return this.children.indexOf(child) > -1;
-            }
-            return false;
-        } },
     draw: { writable: true, value: function value() {
         } },
     fixArea: { value: function value() {

@@ -125,6 +125,9 @@ window.onload = function()
             container.addChild( button ) ;
         }
 
+        trace( "numChildren: " + container.numChildren ) ;
+        trace( "contains(button): " + container.contains(button) ) ;
+
         container.update() ;
     };
 

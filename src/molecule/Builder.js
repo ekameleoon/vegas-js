@@ -25,7 +25,7 @@ export function Builder( target = null )
 
 Builder.prototype = Object.create( Runnable.prototype ,
 {
-    constructor : { value : Builder , writable : true } ,
+    constructor : { writable : true , value : Builder } ,
 
     /**
      * Determinates the target reference of the component or custom display container to build.
