@@ -17373,6 +17373,729 @@ var buttons = Object.assign({
   SimpleButton: SimpleButton
 });
 
+function ScrollPaneBuilder() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _area: { writable: false, value: new Rectangle() },
+        _container: { writable: true, value: null },
+        _content: { writable: true, value: null },
+        _hScrollbar: { writable: true, value: null },
+        _scrolling: { writable: true, value: false },
+        _time: { writable: true, value: null },
+        _vScrollbar: { writable: true, value: null }
+    });
+    Builder.call(this, target);
+}
+ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
+    constructor: { writable: true, value: ScrollPaneBuilder },
+    hScrollbar: { get: function get() {
+            return this._hScrollbar;
+        } },
+    scrolling: { get: function get() {
+            return this._scrolling;
+        } },
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(value) {
+            this._target = value;
+        }
+    },
+    vScrollbar: { get: function get() {
+            return this._vScrollbar;
+        } },
+    clear: { writable: true, value: function value() {
+            if (!this._area.isEmpty()) {
+                this._area.setTo();
+            }
+            this.initializeContent(null);
+            if (this._container) {
+                this._container.mask = null;
+                this._container = null;
+            }
+            var comp = this._target;
+            if (comp) {
+                comp.lock();
+                if (this._hScrollbar) {
+                    if (comp.contains(this._hScrollbar)) {
+                        comp.removeChild(this._hScrollbar);
+                    }
+                    this._hScrollbar = null;
+                }
+                if (this._vScrollbar) {
+                    if (this._target.contains(this._vScrollbar)) {
+                        this._target.removeChild(this._vScrollbar);
+                    }
+                    this._vScrollbar = null;
+                }
+                if (comp.content) {
+                    comp.content = null;
+                }
+                comp.unlock();
+            }
+        } },
+    initializeContent: { value: function value() {
+            var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var comp = this._target;
+            if (!comp || !this._container) {
+                return null;
+            }
+            if (this._content) {
+                if (comp.contains(this._container)) {
+                    comp.removeChild(this._container);
+                }
+                if (this._container.contains(this._content)) {
+                    this._container.removeChild(this._content);
+                }
+                comp._content = null;
+            }
+            this._content = display;
+            if (this._content) {
+                comp.addChildAt(this._container, 0);
+                this._container.addChild(this._content);
+            }
+            return this._content;
+        } },
+    run: { writable: true, value: function value() {
+            this._container = new PIXI.Container();
+            this._hScrollbar = new ScrollIndicator();
+            this._vScrollbar = new ScrollIndicator();
+            this._hScrollbar.direction = Direction.HORIZONTAL;
+            this._vScrollbar.direction = Direction.VERTICAL;
+        } },
+    scroll: { value: function value() {
+            this.scrollStart();
+            this.scrollChange();
+            this.scrollFinish();
+        } },
+    scrollChange: { value: function value() {
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+            var comp = this._target;
+            if (comp) {
+                var content = comp._content;
+                var scroller = comp._scroller;
+                var style = comp._style;
+                if (!isNaN(x)) {
+                    scroller.x = x;
+                }
+                if (!isNaN(y)) {
+                    scroller.y = y;
+                }
+                scroller.x = Math.max(Math.min(scroller.x, comp.maxScrollH), 0);
+                scroller.y = Math.max(Math.min(scroller.y, comp.maxScrollV), 0);
+                if (content) {
+                    if (style.isHorizontal()) {
+                        content.x = -scroller.x;
+                    } else if (style.position === Position.STATIC) {
+                        content.x = 0;
+                    }
+                    if (style.isVertical()) {
+                        content.y = -scroller.y;
+                    } else if (style.position === Position.STATIC) {
+                        content.y = 0;
+                    }
+                }
+                this.updateScrollbars();
+                comp.notifyScroll();
+            }
+        } },
+    scrollFinish: { value: function value() {
+            if (this._scrolling) {
+                this._scrolling = false;
+                if (this._target) {
+                    this._target.notifyScrollFinished();
+                }
+            }
+        } },
+    scrollStart: { value: function value() {
+            if (this._scrolling) {
+                this._scrolling = false;
+                if (this._target) {
+                    this._target.notifyScrollStarted();
+                }
+            }
+        } },
+    update: { writable: true, value: function value() {
+            var comp = this._target;
+            var style = comp.style;
+            if (comp && comp.w > 0 && comp.h > 0) {
+                var content = comp._content;
+                var manager = comp._manager;
+                var padding = style.padding;
+                var $w = comp.w;
+                var $h = comp.h;
+                this._area.x = 0;
+                this._area.y = 0;
+                this._area.width = $w - padding.horizontal;
+                this._area.height = $h - padding.vertical;
+                if (this._container) {
+                    this._container.x = padding.left;
+                    this._container.y = padding.top;
+                    if (style.useScrollRect)
+                        {
+                            this._container.mask = null;
+                        } else {
+                        this._container.mask = null;
+                    }
+                }
+                if (manager) {
+                    manager.stop();
+                    manager.horizontalStrength = style.horizontalStrength;
+                    manager.verticalStrength = style.verticalStrength;
+                    manager.scrollDuration = style.scrollDuration;
+                    manager.scrollEasing = style.scrollEasing;
+                    manager.scrollRatio = style.scrollRatio;
+                    manager.smoothing = style.smoothing;
+                }
+                this.hideScrollbar();
+                this._hScrollbar.lock();
+                this._hScrollbar.w = $w - 2 * style.hScrollBarOffset - style.vScrollBarSize - style.vScrollBarOffset;
+                this._hScrollbar.h = style.hScrollBarSize;
+                this._hScrollbar.style = style.hScrollBarStyle;
+                if (content) {
+                    this._hScrollbar.thumbSize = clamp($w / content.width * this._hScrollbar.h, style.scrollDragMinSize, style.scrollDragMaxSize);
+                } else {
+                    this._hScrollbar.thumbSize = this._hScrollbar.h;
+                }
+                this._hScrollbar.x = style.hScrollBarOffset;
+                this._hScrollbar.y = style.hScrollbarOnTop ? style.hScrollBarOffset : $h - this._hScrollbar.h - style.hScrollBarOffset;
+                if (style.vScrollbarOnLeft) {
+                    this._hScrollbar.x += style.vScrollBarSize + style.vScrollBarOffset;
+                }
+                this._hScrollbar.unlock();
+                this._vScrollbar.lock();
+                this._vScrollbar.w = style.vScrollBarSize;
+                this._vScrollbar.h = $h - 2 * style.vScrollBarOffset - style.hScrollBarSize - style.hScrollBarOffset;
+                this._vScrollbar.style = style.vScrollBarStyle;
+                if (content) {
+                    this._vScrollbar.thumbSize = clamp($h / content.height * this._vScrollbar.h, style.scrollDragMinSize, style.scrollDragMaxSize);
+                } else {
+                    this._vScrollbar.thumbSize = this._vScrollbar.h;
+                }
+                this._vScrollbar.x = style.vScrollbarOnLeft ? style.vScrollBarOffset + padding.left : $w - this._vScrollbar.w - style.vScrollBarOffset;
+                this._vScrollbar.y = style.vScrollBarOffset + padding.top;
+                if (style.hScrollbarOnTop) {
+                    this._vScrollbar.y += style.hScrollBarSize;
+                }
+                this._vScrollbar.unlock();
+                this._hScrollbar.update();
+                this._vScrollbar.update();
+                var scroller = comp.scroller;
+                if (style.maintainPosition) {
+                    scroller.x = scroller.x >= comp.maxScrollH ? comp.maxScrollH : scroller.x;
+                    scroller.y = scroller.y >= comp.maxScrollV ? comp.maxScrollV : scroller.y;
+                } else {
+                    scroller.x = 0;
+                    scroller.y = 0;
+                }
+                if (content) {
+                    if (style.isHorizontal()) {
+                        content.x = -scroller.x;
+                    } else if (style.position === Position.STATIC) {
+                        content.x = 0;
+                    }
+                    if (style.isVertical()) {
+                        content.y = -scroller.y;
+                    } else if (style.position === Position.STATIC) {
+                        content.y = 0;
+                    }
+                }
+            } else if (!this._area.isEmpty()) {
+                this._area.setTo();
+            }
+        } },
+    hideScrollbar: { value: function value() {
+            var comp = this._target;
+            if (comp) {
+                var style = comp.style;
+                var hPolicy = style.hScrollbarPolicy;
+                var vPolicy = style.vScrollbarPolicy;
+                if ((vPolicy === ScrollPolicy.OFF || vPolicy === ScrollPolicy.AUTO) && comp.contains(this._vScrollbar)) {
+                    comp.removeChild(this._vScrollbar);
+                }
+                if ((hPolicy === ScrollPolicy.OFF || hPolicy === ScrollPolicy.AUTO) && comp.contains(this._hScrollbar)) {
+                    comp.removeChild(this._hScrollbar);
+                }
+            }
+        } },
+    updateScrollbars: { value: function value() {
+            clearTimeout(this._time);
+            var comp = this._target;
+            if (comp) {
+                var style = comp.style;
+                if (style) {
+                    var hPolicy = style.hScrollbarPolicy;
+                    var vPolicy = style.vScrollbarPolicy;
+                    var hFlag = hPolicy === ScrollPolicy.ON || style.isHorizontal() && hPolicy === ScrollPolicy.AUTO && comp.maxScrollH > 0;
+                    var vFlag = vPolicy === ScrollPolicy.ON || style.isVertical() && vPolicy === ScrollPolicy.AUTO && comp.maxScrollV > 0;
+                    if (hFlag) {
+                        this._hScrollbar.maximum = comp.maxScrollH;
+                        this._hScrollbar.position = comp.scroller.x;
+                        if (!comp.contains(this._hScrollbar)) {
+                            comp.addChild(this._hScrollbar);
+                        }
+                    } else if (comp.contains(this._hScrollbar)) {
+                        comp.removeChild(this._hScrollbar);
+                    }
+                    if (vFlag) {
+                        this._vScrollbar.maximum = comp.maxScrollV;
+                        this._vScrollbar.position = comp.scroller.y;
+                        if (!comp.contains(this._vScrollbar)) {
+                            comp.addChild(this._vScrollbar);
+                        }
+                    } else if (comp.contains(this._vScrollbar)) {
+                        comp.removeChild(this._vScrollbar);
+                    }
+                    if ((vPolicy === ScrollPolicy.AUTO || hPolicy === ScrollPolicy.AUTO) && (comp.contains(this._hScrollbar) || comp.contains(this._vScrollbar))) {
+                        this._time = setTimeout(this.hideScrollbar.bind(this), style.scrollBarDelay);
+                    }
+                }
+            }
+        } }
+});
+
+function ScrollPaneManager() {
+    var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        scrollRatio: { writable: true, value: 10 },
+        _currentX: { writable: true, value: 0 },
+        _currentY: { writable: true, value: 0 },
+        _diffX: { writable: true, value: 0 },
+        _diffY: { writable: true, value: 0 },
+        _horizontalStrength: { writable: true, value: 1 },
+        _inertiaX: { writable: true, value: 0 },
+        _inertiaY: { writable: true, value: 0 },
+        _lastX: { writable: true, value: 0 },
+        _lastY: { writable: true, value: 0 },
+        _pos: { writable: false, value: new Point() },
+        _startH: { writable: true, value: 0 },
+        _startV: { writable: true, value: 0 },
+        _startX: { writable: true, value: 0 },
+        _startY: { writable: true, value: 0 },
+        _smoothing: { writable: true, value: true },
+        _target: { writable: true, value: null },
+        _touching: { writable: true, value: false },
+        _tween: { writable: false, value: new Tween({ easing: expoOut, duration: 24 }) },
+        _useNaturalScrolling: { writable: true, value: true },
+        _verticalStrength: { writable: true, value: 1 }
+    });
+    this._tween.changeIt.connect(this.scrollChange);
+    this._tween.finishIt.connect(this.scrollFinish);
+    this._tween.stopIt.connect(this.scrollFinish);
+    this.target = target;
+}
+ScrollPaneManager.prototype = Object.create(Object.prototype, {
+    constructor: { writable: true, value: ScrollPaneManager },
+    horizontalStrength: {
+        get: function get() {
+            return this._horizontalStrength;
+        },
+        set: function set(value) {
+            this._horizontalStrength = value;
+        }
+    },
+    scrollDuration: {
+        get: function get() {
+            return this._tween.duration;
+        },
+        set: function set(value) {
+            this._tween.duration = value;
+        }
+    },
+    scrollEasing: {
+        get: function get() {
+            return this._tween.easing;
+        },
+        set: function set(value) {
+            this._tween.easing = value instanceof Function ? value : expoOut;
+        }
+    },
+    smoothing: {
+        get: function get() {
+            return this._smoothing;
+        },
+        set: function set(value) {
+            if (this._smoothing === value) {
+                return;
+            }
+            this._smoothing = value === true;
+            if (!this._smoothing) {
+                this.stop();
+            }
+        }
+    },
+    target: {
+        get: function get() {
+            return this._target;
+        },
+        set: function set(target) {
+            if (this._target) {
+                this.unregisterMouse();
+            }
+            this._target = target instanceof ScrollPane ? target : null;
+            if (this._target) {
+                this.registerMouse();
+            }
+        }
+    },
+    touching: { value: function value() {
+            return this._touching;
+        } },
+    verticalStrength: {
+        get: function get() {
+            return this._verticalStrength;
+        },
+        set: function set(value) {
+            this._verticalStrength = value;
+        }
+    },
+    stop: { value: function value() {
+            if (this._tween.running) {
+                this._tween.stop();
+            }
+            this._touching = false;
+            this._inertiaX = this._inertiaY = 0;
+            this._diffX = this._diffY = 0;
+            this._lastX = this._lastY = 0;
+        } },
+    contains: { value: function value(x, y) {
+            var bounds = this._target instanceof MOB ? this._target.fixArea() : this._target.getBounds();
+            return x >= bounds.x && x <= bounds.x + bounds.width && y >= bounds.y && y <= bounds.y + bounds.height;
+        } },
+    registerDisplay: { value: function value() {
+        } },
+    registerMouse: { value: function value() {
+            if (this._target) {
+                this._target.mousedown = this.____down.bind(this);
+                this._target.mousemove = this.____move.bind(this);
+                this._target.mouseup = this.____up.bind(this);
+                this._target.mouseupoutside = this.____upOutside.bind(this);
+            }
+        } },
+    unregisterDisplay: { value: function value() {
+        } },
+    unregisterMouse: { value: function value() {
+            if (this._target) {
+                this._target.mousedown = null;
+                this._target.mousemove = null;
+                this._target.mouseup = null;
+                this._target.mouseupoutside = null;
+            }
+        } },
+    scrollChange: { value: function value(action) {
+            if (this._target && this._target._builder) {
+                this._target._builder.scrollChange();
+            }
+        } },
+    scrollFinish: { value: function value(action) {
+            this._inertiaX = 0;
+            this._inertiaY = 0;
+            if (this._target && this._target._builder) {
+                this._target._builder.scrollFinish();
+            }
+        } },
+    ____down: { value: function value(event) {
+            if (!this._target || !this._target.enabled) {
+                return;
+            }
+            var pos = event.data.getLocalPosition(this._target);
+            this._pos.x = pos.x;
+            this._pos.y = pos.y;
+            this._touching = false;
+            this._inertiaX = 0;
+            this._inertiaY = 0;
+            if (this._tween.running) {
+                this._tween.stop();
+            }
+            if (this._target) {
+                if (this.contains(this._pos.x, this._pos.y)) {
+                    this._startH = this._target.scroller.x;
+                    this._startV = this._target.scroller.y;
+                    this._lastX = this._startX = this._pos.x;
+                    this._lastY = this._startY = this._pos.y;
+                    if (this._target._builder) {
+                        this._target._builder.scrollStart();
+                    }
+                    this._useNaturalScrolling = this._target._style.useNaturalScrolling;
+                }
+            }
+        } },
+    ____move: { value: function value(event) {
+            if (!this._target || !this._target.enabled) {
+                return;
+            }
+            var pos = event.data.getLocalPosition(this._target);
+            this._pos.x = pos.x;
+            this._pos.y = pos.y;
+            if (this._target && this.contains(this._pos.x, this._pos.y)) {
+                this._currentX = this._pos.x - this._startX;
+                this._currentY = this._pos.y - this._startY;
+                this._touching = Math.abs(this._currentX) > this.scrollRatio || Math.abs(this._currentY) > this.scrollRatio;
+                if (this._touching) {
+                    this._diffX = this._useNaturalScrolling ? this._lastX - this._pos.x : this._pos.x - this._lastX;
+                    this._lastX = this._pos.x;
+                    this._diffY = this._useNaturalScrolling ? this._lastY - this._pos.y : this._pos.y - this._lastY;
+                    this._lastY = this._pos.y;
+                    this._currentX = this._useNaturalScrolling ? this._startH - this._currentX : this._startH + this._currentX;
+                    this._currentY = this._useNaturalScrolling ? this._startV - this._currentY : this._startV + this._currentY;
+                    if (this._target._builder) {
+                        this._target._builder.scrollChange(this._currentX, this._currentY);
+                    }
+                }
+            }
+        } },
+    ____up: { value: function value(event) {
+            if (!this._target || !this._target.enabled) {
+                return;
+            }
+            var pos = event.data.getLocalPosition(this._target);
+            this._pos.x = pos.x;
+            this._pos.y = pos.y;
+            if (this._touching && this._target.content) {
+                if (this._smoothing) {
+                    this._inertiaX = this._diffX;
+                    this._inertiaY = this._diffY;
+                    if (this._inertiaX !== 0 || this._inertiaY !== 0) {
+                        this._tween.target = this._target.scroller;
+                        this._tween.to = {};
+                        if (this._inertiaX !== 0) {
+                            this._tween.to.x = this._target.scroller.x + this._inertiaX * this._horizontalStrength * this._target.content.width / this._target.w;
+                        }
+                        if (this._inertiaY !== 0) {
+                            this._tween.to.y = this._target.scroller.y + this._inertiaY * this._verticalStrength * this._target.content.height / this._target.h;
+                        }
+                        this._tween.run();
+                        return;
+                    }
+                }
+            }
+            if (this._target._builder) {
+                this._target._builder.scrollFinish();
+            }
+            this._diffX = this._diffY = 0;
+            this._lastX = this._lastY = 0;
+        } }
+});
+
+function ScrollPaneStyle() {
+  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  Object.defineProperties(this, {
+    horizontalStrength: { writable: true, value: 1 },
+    hScrollBarOffset: { writable: true, value: 4 },
+    hScrollbarOnTop: { writable: true, value: false },
+    maintainPosition: { writable: true, value: true },
+    hScrollBarSize: { writable: true, value: 4 },
+    scrollBarDelay: { writable: true, value: 500 },
+    scrollDragMinSize: { writable: true, value: 20 },
+    scrollDragMaxSize: { writable: true, value: 99999 },
+    scrollDuration: { writable: true, value: 24 },
+    scrollEasing: { writable: true, value: expoOut },
+    scrollRatio: { writable: true, value: 20 },
+    smoothing: { writable: true, value: true },
+    useNaturalScrolling: { writable: true, value: true },
+    useScrollRect: { writable: true, value: true },
+    verticalStrength: { writable: true, value: 1 },
+    vScrollBarOffset: { writable: true, value: 4 },
+    vScrollbarOnLeft: { writable: true, value: false },
+    vScrollBarSize: { writable: true, value: 4 },
+    _hScrollbarPolicy: { writable: true, value: ScrollPolicy.AUTO },
+    _padding: { writable: false, value: new EdgeMetrics() },
+    _position: { writable: true, value: Position.STATIC },
+    _positions: { writable: false, value: [Position.FIXED, Position.STATIC] },
+    _scrollDirection: { writable: true, value: Direction.VERTICAL },
+    _scrollDirections: { writable: false, value: [Direction.VERTICAL, Direction.HORIZONTAL, Direction.BOTH, Direction.NONE] },
+    _vScrollbarPolicy: { writable: true, value: ScrollPolicy.AUTO }
+  });
+  Style.call(this, init);
+}
+ScrollPaneStyle.prototype = Object.create(Object.prototype, {
+  constructor: { writable: true, value: ScrollPaneStyle },
+  hScrollbarPolicy: {
+    get: function get() {
+      return this._hScrollbarPolicy._padding;
+    },
+    set: function set(value) {
+      this._hScrollbarPolicy = value === ScrollPolicy.OFF || value === ScrollPolicy.ON ? value : ScrollPolicy.AUTO;
+    }
+  },
+  padding: {
+    get: function get() {
+      return this._padding;
+    },
+    set: function set(em) {
+      if (em instanceof EdgeMetrics) {
+        this._padding.left = em ? replaceNaN(em.left) : 0;
+        this._padding.top = em ? replaceNaN(em.top) : 0;
+        this._padding.right = em ? replaceNaN(em.right) : 0;
+        this._padding.bottom = em ? replaceNaN(em.bottom) : 0;
+      }
+    }
+  },
+  position: {
+    get: function get() {
+      return this._position;
+    },
+    set: function set(value) {
+      this._position = this._positions.indexOf(value) > -1 ? value : Position.STATIC;
+    }
+  },
+  scrollDirection: {
+    get: function get() {
+      return this._scrollDirection;
+    },
+    set: function set(value) {
+      this._scrollDirection = this._scrollDirections.indexOf(value) > -1 ? value : Direction.NONE;
+    }
+  },
+  vScrollbarPolicy: {
+    get: function get() {
+      return this._vScrollbarPolicy._padding;
+    },
+    set: function set(value) {
+      this._vScrollbarPolicy = value === ScrollPolicy.OFF || value === ScrollPolicy.ON ? value : ScrollPolicy.AUTO;
+    }
+  },
+  isHorizontal: { value: function value() {
+      return this._scrollDirection === Direction.BOTH || this._scrollDirection === Direction.HORIZONTAL;
+    } },
+  isVertical: { value: function value() {
+      return this._scrollDirection === Direction.BOTH || this._scrollDirection === Direction.VERTICAL;
+    } }
+});
+
+function ScrollPane() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    Object.defineProperties(this, {
+        scroll: { writable: true, value: new Signal() },
+        scrollFinished: { writable: true, value: new Signal() },
+        scrollStarted: { writable: true, value: new Signal() },
+        _content: { writable: true, value: null },
+        _manager: { writable: false, value: new ScrollPaneManager(this) },
+        _scroller: { writable: false, value: new Point() }
+    });
+    this._manager.target = this;
+    Element$1.call(this, null, init, locked);
+}
+ScrollPane.prototype = Object.create(Element$1.prototype, {
+    constructor: { writable: true, value: ScrollPane },
+    content: {
+        get: function get() {
+            return this._content;
+        },
+        set: function set(display) {
+            this._content = this._builder.initializeContent(display);
+            if (this._locked === 0) {
+                this.update();
+            }
+        }
+    },
+    hScrollbar: { get: function get() {
+            return this._builder._hScrollbar;
+        } },
+    maxScrollH: { get: function get() {
+            if (this._content) {
+                return Math.max(this._content.getBounds(null).width * this._content.scale.x + this._style.padding.horizontal - this.w, 0);
+            } else {
+                return 0;
+            }
+        } },
+    maxScrollV: { get: function get() {
+            if (this._content) {
+                return Math.max(this._content.getBounds(null).height * this._content.scale.y + this._style.padding.vertical - this.h, 0);
+            } else {
+                return 0;
+            }
+        } },
+    position: {
+        get: function get() {
+            return this._scroller;
+        },
+        set: function set(position) {
+            this._scroller.x = position.x;
+            this._scroller.y = position.y;
+            if (this._builder) {
+                this._builder.scroll();
+            }
+        }
+    },
+    scrollH: {
+        get: function get() {
+            return this._scroller.x;
+        },
+        set: function set(value) {
+            this._scroller.x = value;
+            if (this._builder) {
+                this._builder.scroll();
+            }
+        }
+    },
+    scrollV: {
+        get: function get() {
+            return this._scroller.y;
+        },
+        set: function set(value) {
+            this._scroller.y = value;
+            if (this._builder) {
+                this._builder.scroll();
+            }
+        }
+    },
+    touching: { get: function get() {
+            return this._manager.touching;
+        } },
+    vScrollbar: { get: function get() {
+            return this._builder._vScrollbar;
+        } },
+    getBuilderRenderer: { writable: true, value: function value() {
+            return new ScrollPaneBuilder(this);
+        } },
+    getStyleRenderer: { writable: true, value: function value() {
+            return new ScrollPaneStyle();
+        } },
+    notifyScroll: { writable: true, value: function value() {
+            if (this._locked === 0 && this.scroll.connected()) {
+                this.scroll.emit(this);
+            }
+        } },
+    notifyScrollFinished: { writable: true, value: function value() {
+            if (this._locked === 0 && this.scrollFinished.connected()) {
+                this.scrollFinished.emit(this);
+            }
+        } },
+    notifyScrollStarted: { writable: true, value: function value() {
+            if (this._locked === 0 && this.scrollStarted.connected()) {
+                this.scrollStarted.emit(this);
+            }
+        } },
+    setPosition: { value: function value(x, y) {
+            this._scroller.x = x;
+            this._scroller.y = y;
+            if (this._locked === 0 && this._builder) {
+                this._builder.scroll();
+            }
+        } }
+});
+
+/**
+ * The {@link molecule.render.pixi.components.panes} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.panes
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var panes = Object.assign({
+  ScrollPane: ScrollPane,
+  ScrollPaneBuilder: ScrollPaneBuilder,
+  ScrollPaneManager: ScrollPaneManager,
+  ScrollPaneStyle: ScrollPaneStyle
+});
+
 /**
  * The {@link molecule.render.pixi.components} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -17387,7 +18110,8 @@ var components$2 = Object.assign({
   CoreProgress: CoreProgress,
   CoreScrollbar: CoreScrollbar,
   bars: bars,
-  buttons: buttons
+  buttons: buttons,
+  panes: panes
 });
 
 function Background() {

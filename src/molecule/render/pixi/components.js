@@ -5,6 +5,7 @@ import { CoreScrollbar } from './components/CoreScrollbar.js' ;
 
 import { bars } from './components/bars.js' ;
 import { buttons } from './components/buttons.js' ;
+import { panes } from './components/panes.js' ;
 
 /**
  * The {@link molecule.render.pixi.components} package.
@@ -24,5 +25,6 @@ export var components = Object.assign
 
     // packages
     bars,
-    buttons
+    buttons,
+    panes
 });

@@ -2,6 +2,7 @@
 "use strict" ;
 
 import { expoOut } from './core/easings/expoOut.js' ;
+import { MOB } from './molecule/render/pixi/display/MOB.js' ;
 import { Point } from './graphics/geom/Point.js' ;
 import { ScrollPane } from './ScrollPane.js' ;
 import { Tween } from './system/transitions/Tween.js' ;
@@ -147,17 +148,14 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             if( this._target )
             {
-                this.unregisterDisplay() ;
-                // this.unregisterMouse() ;
+                // TODO this.unregisterDisplay() ;
+                this.unregisterMouse() ;
             }
             this._target = target instanceof ScrollPane ? target : null ;
             if( this._target )
             {
-                this.registerDisplay() ;
-                // if( this._target.stage )
-                // {
-                //     this.registerMouse() ;
-                // }
+                // TODO this.registerDisplay() ;
+                this.registerMouse() ;
             }
         }
     },
@@ -207,6 +205,68 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     // ------------
 
     /**
+     * Determines whether the specified point is contained within the bounds of the tap target.
+     * @private
+     */
+    contains : { value : function( x, y )
+    {
+        const bounds = (this._target instanceof MOB) ? this._target.fixArea() : this._target.getBounds() ;
+        return ( x >= bounds.x && x <= bounds.x + bounds.width ) && ( y >= bounds.y && y <= bounds.y + bounds.height );
+    }},
+
+    /**
+     * @private
+     */
+    registerDisplay : { value : function()
+    {
+        // if( this._target )
+        // {
+        //     _target.addEventListener( Event.ADDED_TO_STAGE     , addedToStage     );
+        //     _target.addEventListener( Event.REMOVED_FROM_STAGE , removedFromStage );
+        // }
+    }},
+
+    /**
+     * @private
+     */
+    registerMouse: { value : function()
+    {
+        if( this._target )
+        {
+            this._target.mousedown      = this.____down.bind(this) ;
+            this._target.mousemove      = this.____move.bind(this) ;
+            this._target.mouseup        = this.____up.bind(this) ;
+            this._target.mouseupoutside = this.____upOutside.bind(this) ;
+        }
+    }},
+
+    /**
+     * @private
+     */
+    unregisterDisplay : { value : function()
+    {
+        // if( this._target )
+        // {
+        //     this._target.removeEventListener( Event.ADDED_TO_STAGE     , addedToStage     ) ;
+        //     this._target.removeEventListener( Event.REMOVED_FROM_STAGE , removedFromStage );
+        // }
+    }},
+
+    /**
+     * @private
+     */
+    unregisterMouse : { value : function()
+    {
+        if( this._target )
+        {
+            this._target.mousedown      =
+            this._target.mousemove      =
+            this._target.mouseup        =
+            this._target.mouseupoutside = null ;
+        }
+    }},
+
+    /**
      * Invoked when the scroll with the tween change.
      * @private
      */
@@ -230,6 +290,148 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             this._target._builder.scrollFinish() ;
         }
-    }}
+    }},
 
+    // ----- behaviors
+
+    /**
+     * @private
+     */
+    ____down : { value : function( event )
+    {
+        if( !this._target || !this._target.enabled )
+        {
+            return ;
+        }
+
+        let pos = event.data.getLocalPosition( this._target ) ; // TODO can use a property to register the position and not create a new Point
+
+        this._pos.x = pos.x ;
+        this._pos.y = pos.y ;
+
+        this._touching = false ;
+        this._inertiaX = 0 ;
+        this._inertiaY = 0 ;
+
+        if( this._tween.running )
+        {
+            this._tween.stop() ;
+        }
+
+        if( this._target  )
+        {
+            if( this.contains( this._pos.x , this._pos.y ) )
+            {
+                this._startH = this._target.scroller.x ;
+                this._startV = this._target.scroller.y ;
+
+                this._lastX = this._startX = this._pos.x ;
+                this._lastY = this._startY = this._pos.y ;
+
+                if( this._target._builder )
+                {
+                    this._target._builder.scrollStart() ;
+                }
+
+                this._useNaturalScrolling = this._target._style.useNaturalScrolling ;
+            }
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____move : { value : function( event )
+    {
+        if( !this._target || !this._target.enabled )
+        {
+            return ;
+        }
+
+        let pos = event.data.getLocalPosition( this._target ) ; // TODO can use a property to register the position and not create a new Point
+
+        this._pos.x = pos.x ;
+        this._pos.y = pos.y ;
+
+        if( this._target && this.contains( this._pos.x , this._pos.y ) )
+        {
+            this._currentX = this._pos.x - this._startX ;
+            this._currentY = this._pos.y - this._startY ;
+
+            this._touching = (Math.abs(this._currentX) > this.scrollRatio) || (Math.abs(this._currentY) > this.scrollRatio) ;
+
+            if( this._touching )
+            {
+                this._diffX = this._useNaturalScrolling ? (this._lastX - this._pos.x) : (this._pos.x - this._lastX) ;
+                this._lastX = this._pos.x ;
+
+                this._diffY = this._useNaturalScrolling ? (this._lastY - this._pos.y) : (this._pos.y - this._lastY) ;
+                this._lastY = this._pos.y ;
+
+                this._currentX = this._useNaturalScrolling ? this._startH - this._currentX : this._startH + this._currentX ;
+                this._currentY = this._useNaturalScrolling ? this._startV - this._currentY : this._startV + this._currentY ;
+
+                if( this._target._builder )
+                {
+                    this._target._builder.scrollChange( this._currentX , this._currentY ) ;
+                }
+            }
+        }
+    }},
+
+    /**
+     * @private
+     */
+    ____up : { value : function( event )
+    {
+        if( !this._target || !this._target.enabled )
+        {
+            return ;
+        }
+
+        let pos = event.data.getLocalPosition( this._target ) ; // TODO can use a property to register the position and not create a new Point
+
+        this._pos.x = pos.x ;
+        this._pos.y = pos.y ;
+
+        if( this._touching && this._target.content )
+        {
+            if( this._smoothing )
+            {
+                this._inertiaX = this._diffX ;
+                this._inertiaY = this._diffY ;
+
+                if( this._inertiaX !== 0 || this._inertiaY !== 0 )
+                {
+                    this._tween.target = this._target.scroller ;
+                    this._tween.to     = {} ;
+
+                    if( this._inertiaX !== 0 )
+                    {
+                        this._tween.to.x = this._target.scroller.x +
+                                       ( ( this._inertiaX * this._horizontalStrength ) * this._target.content.width / this._target.w ) ; // TODO try the getBounds() method of the content
+                    }
+
+                    if( this._inertiaY !== 0 )
+                    {
+                        this._tween.to.y = this._target.scroller.y +
+                                       ( ( this._inertiaY * this._verticalStrength ) * this._target.content.height / this._target.h ) ;
+                    }
+
+                    this._tween.run() ;
+
+                    return ;
+                }
+            }
+        }
+
+        //_target.mode = ScrollPane.NORMAL ;
+        if( this._target._builder )
+        {
+            this._target._builder.scrollFinish() ;
+        }
+
+        this._diffX = this._diffY = 0 ;
+        this._lastX = this._lastY = 0 ;
+    }}
 });

@@ -54,7 +54,7 @@ export function ScrollPane( init = null , locked = false )
          * @private
          */
         _content  : { writable : true  , value : null } ,
-        _manager  : { writable : false , value : new ScrollPaneManager() } ,
+        _manager  : { writable : false , value : new ScrollPaneManager(this) } ,
         _scroller : { writable : false , value : new Point() }
     }) ;
 
