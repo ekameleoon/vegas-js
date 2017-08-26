@@ -130,7 +130,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
             this._smoothing = value === true ;
             if( !this._smoothing )
             {
-                stop() ;
+                this.stop() ;
             }
         }
     },
