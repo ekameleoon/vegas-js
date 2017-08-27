@@ -1,6 +1,8 @@
 /*jshint unused: false*/
 "use strict" ;
 
+import { dump } from './core/dump.js' ;
+
 import { expoOut } from './core/easings/expoOut.js' ;
 import { MOB } from './molecule/render/pixi/display/MOB.js' ;
 import { Point } from './graphics/geom/Point.js' ;
@@ -38,6 +40,7 @@ export function ScrollPaneManager( target = null )
         _horizontalStrength  : { writable : true  , value : 1 } ,
         _inertiaX            : { writable : true  , value : 0 } ,
         _inertiaY            : { writable : true  , value : 0 } ,
+        _isDown              : { writable : true  , value : false } ,
         _lastX               : { writable : true  , value : 0 } ,
         _lastY               : { writable : true  , value : 0 } ,
         _pos                 : { writable : false , value : new Point() } ,
@@ -233,10 +236,11 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     {
         if( this._target )
         {
+            this._target.interactive    = true ;
             this._target.mousedown      = this.____down.bind(this) ;
             this._target.mousemove      = this.____move.bind(this) ;
-            this._target.mouseup        = this.____up.bind(this) ;
-            this._target.mouseupoutside = this.____upOutside.bind(this) ;
+            this._target.mouseup        =
+            this._target.mouseupoutside = this.____up.bind(this) ;
         }
     }},
 
@@ -259,6 +263,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     {
         if( this._target )
         {
+            this._target.interactive    = false ;
             this._target.mousedown      =
             this._target.mousemove      =
             this._target.mouseup        =
@@ -299,12 +304,15 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     ____down : { value : function( event )
     {
+        this._isDown = true ;
+
         if( !this._target || !this._target.enabled )
         {
             return ;
         }
 
-        let pos = event.data.getLocalPosition( this._target ) ; // TODO can use a property to register the position and not create a new Point
+        // TODO can use a property to register the position and not create a new Point
+        let pos = event.data.getLocalPosition( this._target ) ;
 
         this._pos.x = pos.x ;
         this._pos.y = pos.y ;
@@ -322,8 +330,8 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             if( this.contains( this._pos.x , this._pos.y ) )
             {
-                this._startH = this._target.scroller.x ;
-                this._startV = this._target.scroller.y ;
+                this._startH = this._target._scroller.x ;
+                this._startV = this._target._scroller.y ;
 
                 this._lastX = this._startX = this._pos.x ;
                 this._lastY = this._startY = this._pos.y ;
@@ -343,7 +351,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     ____move : { value : function( event )
     {
-        if( !this._target || !this._target.enabled )
+        if( !this._isDown || !this._target || !this._target.enabled )
         {
             return ;
         }
@@ -384,44 +392,46 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     ____up : { value : function( event )
     {
+        this._isDown = false ;
+
         if( !this._target || !this._target.enabled )
         {
             return ;
         }
 
-        let pos = event.data.getLocalPosition( this._target ) ; // TODO can use a property to register the position and not create a new Point
+        // TODO can use a property to register the position and not create a new Point
+        let pos = event.data.getLocalPosition( this._target ) ;
 
         this._pos.x = pos.x ;
         this._pos.y = pos.y ;
 
-        if( this._touching && this._target.content )
+        if( this._smoothing && this._touching && this._target._content )
         {
-            if( this._smoothing )
+            this._inertiaX = this._diffX ;
+            this._inertiaY = this._diffY ;
+
+            if( this._inertiaX !== 0 || this._inertiaY !== 0 )
             {
-                this._inertiaX = this._diffX ;
-                this._inertiaY = this._diffY ;
+                this._tween.target = this._target._scroller ;
 
-                if( this._inertiaX !== 0 || this._inertiaY !== 0 )
+                let to = {} ;
+
+                if( this._inertiaX !== 0 )
                 {
-                    this._tween.target = this._target.scroller ;
-                    this._tween.to     = {} ;
-
-                    if( this._inertiaX !== 0 )
-                    {
-                        this._tween.to.x = this._target.scroller.x +
-                                       ( ( this._inertiaX * this._horizontalStrength ) * this._target.content.width / this._target.w ) ; // TODO try the getBounds() method of the content
-                    }
-
-                    if( this._inertiaY !== 0 )
-                    {
-                        this._tween.to.y = this._target.scroller.y +
-                                       ( ( this._inertiaY * this._verticalStrength ) * this._target.content.height / this._target.h ) ;
-                    }
-
-                    this._tween.run() ;
-
-                    return ;
+                    to.x = this._target._scroller.x +
+                       ( ( this._inertiaX * this._horizontalStrength ) * this._target._content.width / this._target.w ) ;
                 }
+
+                if( this._inertiaY !== 0 )
+                {
+                    to.y = this._target._scroller.y +
+                       ( ( this._inertiaY * this._verticalStrength ) * this._target._content.height / this._target.h ) ;
+                }
+
+                this._tween.to = to ;
+                this._tween.run() ;
+
+                return ;
             }
         }
 

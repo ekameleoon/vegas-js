@@ -92,6 +92,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
      * @memberof molecule.render.pixi.components.panes.ScrollPane
      * @instance
      * @readonly
+     * @type {molecule.render.pixi.components.bars.ScrollIndicator}
      */
     hScrollbar : { get : function() { return this._builder._hScrollbar ; } } ,
 
@@ -105,7 +106,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
     {
         if( this._content )
         {
-            return Math.max( this._content.getBounds(null).width * this._content.scale.x + this._style.padding.horizontal - this.w , 0 ) ;
+            return Math.max( this._content.getBounds().width * this._content.scale.x + this._style.padding.horizontal - this.w , 0 ) ;
         }
         else
         {
@@ -123,7 +124,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
     {
         if( this._content )
         {
-            return Math.max( this._content.getBounds(null).height * this._content.scale.y + this._style.padding.vertical - this.h , 0 ) ;
+            return Math.max( this._content.getBounds().height * this._content.scale.y + this._style.padding.vertical - this.h , 0 ) ;
         }
         else
         {
@@ -202,6 +203,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
      * Returns the vertical scrollbar display reference.
      * @name vScrollbar
      * @memberof molecule.render.pixi.components.panes.ScrollPane
+     * @type {molecule.render.pixi.components.bars.ScrollIndicator}
      * @instance
      * @readonly
      */

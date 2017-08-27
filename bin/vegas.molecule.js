@@ -17380,6 +17380,7 @@ function ScrollPaneBuilder() {
         _container: { writable: true, value: null },
         _content: { writable: true, value: null },
         _hScrollbar: { writable: true, value: null },
+        _mask: { writable: true, value: null },
         _scrolling: { writable: true, value: false },
         _time: { writable: true, value: null },
         _vScrollbar: { writable: true, value: null }
@@ -17459,6 +17460,7 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
         } },
     run: { writable: true, value: function value() {
             this._container = new PIXI.Container();
+            this._mask = new PIXI.Graphics();
             this._hScrollbar = new ScrollIndicator();
             this._vScrollbar = new ScrollIndicator();
             this._hScrollbar.direction = Direction.HORIZONTAL;
@@ -17470,17 +17472,17 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
             this.scrollFinish();
         } },
     scrollChange: { value: function value() {
-            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
-            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
+            var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             var comp = this._target;
             if (comp) {
                 var content = comp._content;
                 var scroller = comp._scroller;
                 var style = comp._style;
-                if (!isNaN(x)) {
+                if (x !== null && !isNaN(x)) {
                     scroller.x = x;
                 }
-                if (!isNaN(y)) {
+                if (y !== null && !isNaN(y)) {
                     scroller.y = y;
                 }
                 scroller.x = Math.max(Math.min(scroller.x, comp.maxScrollH), 0);
@@ -17521,6 +17523,7 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
             var comp = this._target;
             var style = comp.style;
             if (comp && comp.w > 0 && comp.h > 0) {
+                comp.buttonMode = style.useHandCursor;
                 var content = comp._content;
                 var manager = comp._manager;
                 var padding = style.padding;
@@ -17533,11 +17536,16 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                 if (this._container) {
                     this._container.x = padding.left;
                     this._container.y = padding.top;
-                    if (style.useScrollRect)
-                        {
-                            this._container.mask = null;
-                        } else {
+                    if (style.useScrollRect) {
+                        this._mask.clear();
+                        this._mask.beginFill(0);
+                        this._mask.drawRect(padding.x, padding.y, this._area.width, this._area.height);
+                        this._mask.endFill();
+                        comp.addChild(this._mask);
+                        this._container.mask = this._mask;
+                    } else if (this._mask) {
                         this._container.mask = null;
+                        comp.removeChild(this._mask);
                     }
                 }
                 if (manager) {
@@ -17555,9 +17563,9 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                 this._hScrollbar.h = style.hScrollBarSize;
                 this._hScrollbar.style = style.hScrollBarStyle;
                 if (content) {
-                    this._hScrollbar.thumbSize = clamp($w / content.width * this._hScrollbar.h, style.scrollDragMinSize, style.scrollDragMaxSize);
+                    this._hScrollbar.thumbSize = clamp($w / content.width * this._hScrollbar.w, style.scrollDragMinSize, style.scrollDragMaxSize);
                 } else {
-                    this._hScrollbar.thumbSize = this._hScrollbar.h;
+                    this._hScrollbar.thumbSize = this._hScrollbar.w;
                 }
                 this._hScrollbar.x = style.hScrollBarOffset;
                 this._hScrollbar.y = style.hScrollbarOnTop ? style.hScrollBarOffset : $h - this._hScrollbar.h - style.hScrollBarOffset;
@@ -17582,7 +17590,7 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                 this._vScrollbar.unlock();
                 this._hScrollbar.update();
                 this._vScrollbar.update();
-                var scroller = comp.scroller;
+                var scroller = comp._scroller;
                 if (style.maintainPosition) {
                     scroller.x = scroller.x >= comp.maxScrollH ? comp.maxScrollH : scroller.x;
                     scroller.y = scroller.y >= comp.maxScrollV ? comp.maxScrollV : scroller.y;
@@ -17624,15 +17632,15 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
             clearTimeout(this._time);
             var comp = this._target;
             if (comp) {
-                var style = comp.style;
+                var style = comp._style;
                 if (style) {
-                    var hPolicy = style.hScrollbarPolicy;
-                    var vPolicy = style.vScrollbarPolicy;
+                    var hPolicy = style._hScrollbarPolicy;
+                    var vPolicy = style._vScrollbarPolicy;
                     var hFlag = hPolicy === ScrollPolicy.ON || style.isHorizontal() && hPolicy === ScrollPolicy.AUTO && comp.maxScrollH > 0;
                     var vFlag = vPolicy === ScrollPolicy.ON || style.isVertical() && vPolicy === ScrollPolicy.AUTO && comp.maxScrollV > 0;
                     if (hFlag) {
                         this._hScrollbar.maximum = comp.maxScrollH;
-                        this._hScrollbar.position = comp.scroller.x;
+                        this._hScrollbar.position = comp._scroller.x;
                         if (!comp.contains(this._hScrollbar)) {
                             comp.addChild(this._hScrollbar);
                         }
@@ -17641,7 +17649,7 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                     }
                     if (vFlag) {
                         this._vScrollbar.maximum = comp.maxScrollV;
-                        this._vScrollbar.position = comp.scroller.y;
+                        this._vScrollbar.position = comp._scroller.y;
                         if (!comp.contains(this._vScrollbar)) {
                             comp.addChild(this._vScrollbar);
                         }
@@ -17667,6 +17675,7 @@ function ScrollPaneManager() {
         _horizontalStrength: { writable: true, value: 1 },
         _inertiaX: { writable: true, value: 0 },
         _inertiaY: { writable: true, value: 0 },
+        _isDown: { writable: true, value: false },
         _lastX: { writable: true, value: 0 },
         _lastY: { writable: true, value: 0 },
         _pos: { writable: false, value: new Point() },
@@ -17768,20 +17777,18 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
         } },
     registerMouse: { value: function value() {
             if (this._target) {
+                this._target.interactive = true;
                 this._target.mousedown = this.____down.bind(this);
                 this._target.mousemove = this.____move.bind(this);
-                this._target.mouseup = this.____up.bind(this);
-                this._target.mouseupoutside = this.____upOutside.bind(this);
+                this._target.mouseup = this._target.mouseupoutside = this.____up.bind(this);
             }
         } },
     unregisterDisplay: { value: function value() {
         } },
     unregisterMouse: { value: function value() {
             if (this._target) {
-                this._target.mousedown = null;
-                this._target.mousemove = null;
-                this._target.mouseup = null;
-                this._target.mouseupoutside = null;
+                this._target.interactive = false;
+                this._target.mousedown = this._target.mousemove = this._target.mouseup = this._target.mouseupoutside = null;
             }
         } },
     scrollChange: { value: function value(action) {
@@ -17797,6 +17804,7 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             }
         } },
     ____down: { value: function value(event) {
+            this._isDown = true;
             if (!this._target || !this._target.enabled) {
                 return;
             }
@@ -17811,8 +17819,8 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             }
             if (this._target) {
                 if (this.contains(this._pos.x, this._pos.y)) {
-                    this._startH = this._target.scroller.x;
-                    this._startV = this._target.scroller.y;
+                    this._startH = this._target._scroller.x;
+                    this._startV = this._target._scroller.y;
                     this._lastX = this._startX = this._pos.x;
                     this._lastY = this._startY = this._pos.y;
                     if (this._target._builder) {
@@ -17823,7 +17831,7 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             }
         } },
     ____move: { value: function value(event) {
-            if (!this._target || !this._target.enabled) {
+            if (!this._isDown || !this._target || !this._target.enabled) {
                 return;
             }
             var pos = event.data.getLocalPosition(this._target);
@@ -17847,28 +17855,28 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             }
         } },
     ____up: { value: function value(event) {
+            this._isDown = false;
             if (!this._target || !this._target.enabled) {
                 return;
             }
             var pos = event.data.getLocalPosition(this._target);
             this._pos.x = pos.x;
             this._pos.y = pos.y;
-            if (this._touching && this._target.content) {
-                if (this._smoothing) {
-                    this._inertiaX = this._diffX;
-                    this._inertiaY = this._diffY;
-                    if (this._inertiaX !== 0 || this._inertiaY !== 0) {
-                        this._tween.target = this._target.scroller;
-                        this._tween.to = {};
-                        if (this._inertiaX !== 0) {
-                            this._tween.to.x = this._target.scroller.x + this._inertiaX * this._horizontalStrength * this._target.content.width / this._target.w;
-                        }
-                        if (this._inertiaY !== 0) {
-                            this._tween.to.y = this._target.scroller.y + this._inertiaY * this._verticalStrength * this._target.content.height / this._target.h;
-                        }
-                        this._tween.run();
-                        return;
+            if (this._smoothing && this._touching && this._target._content) {
+                this._inertiaX = this._diffX;
+                this._inertiaY = this._diffY;
+                if (this._inertiaX !== 0 || this._inertiaY !== 0) {
+                    this._tween.target = this._target._scroller;
+                    var to = {};
+                    if (this._inertiaX !== 0) {
+                        to.x = this._target._scroller.x + this._inertiaX * this._horizontalStrength * this._target._content.width / this._target.w;
                     }
+                    if (this._inertiaY !== 0) {
+                        to.y = this._target._scroller.y + this._inertiaY * this._verticalStrength * this._target._content.height / this._target.h;
+                    }
+                    this._tween.to = to;
+                    this._tween.run();
+                    return;
                 }
             }
             if (this._target._builder) {
@@ -17894,6 +17902,7 @@ function ScrollPaneStyle() {
     scrollEasing: { writable: true, value: expoOut },
     scrollRatio: { writable: true, value: 20 },
     smoothing: { writable: true, value: true },
+    useHandCursor: { writable: true, value: false },
     useNaturalScrolling: { writable: true, value: true },
     useScrollRect: { writable: true, value: true },
     verticalStrength: { writable: true, value: 1 },
@@ -17910,11 +17919,11 @@ function ScrollPaneStyle() {
   });
   Style.call(this, init);
 }
-ScrollPaneStyle.prototype = Object.create(Object.prototype, {
+ScrollPaneStyle.prototype = Object.create(Style.prototype, {
   constructor: { writable: true, value: ScrollPaneStyle },
   hScrollbarPolicy: {
     get: function get() {
-      return this._hScrollbarPolicy._padding;
+      return this._hScrollbarPolicy;
     },
     set: function set(value) {
       this._hScrollbarPolicy = value === ScrollPolicy.OFF || value === ScrollPolicy.ON ? value : ScrollPolicy.AUTO;
@@ -17951,7 +17960,7 @@ ScrollPaneStyle.prototype = Object.create(Object.prototype, {
   },
   vScrollbarPolicy: {
     get: function get() {
-      return this._vScrollbarPolicy._padding;
+      return this._vScrollbarPolicy;
     },
     set: function set(value) {
       this._vScrollbarPolicy = value === ScrollPolicy.OFF || value === ScrollPolicy.ON ? value : ScrollPolicy.AUTO;
@@ -17997,14 +18006,14 @@ ScrollPane.prototype = Object.create(Element$1.prototype, {
         } },
     maxScrollH: { get: function get() {
             if (this._content) {
-                return Math.max(this._content.getBounds(null).width * this._content.scale.x + this._style.padding.horizontal - this.w, 0);
+                return Math.max(this._content.getBounds().width * this._content.scale.x + this._style.padding.horizontal - this.w, 0);
             } else {
                 return 0;
             }
         } },
     maxScrollV: { get: function get() {
             if (this._content) {
-                return Math.max(this._content.getBounds(null).height * this._content.scale.y + this._style.padding.vertical - this.h, 0);
+                return Math.max(this._content.getBounds().height * this._content.scale.y + this._style.padding.vertical - this.h, 0);
             } else {
                 return 0;
             }

@@ -30,6 +30,7 @@ export function ScrollPaneBuilder( target = null )
         _container  : { writable : true  , value : null } ,
         _content    : { writable : true  , value : null } ,
         _hScrollbar : { writable : true  , value : null } ,
+        _mask       : { writable : true  , value : null } ,
         _scrolling  : { writable : true  , value : false } ,
         _time       : { writable : true  , value : null  } ,
         _vScrollbar : { writable : true  , value : null }
@@ -181,6 +182,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
     run : { writable : true , value : function()
     {
         this._container  = new PIXI.Container() ;
+        this._mask       = new PIXI.Graphics() ;
 
         this._hScrollbar = new ScrollIndicator();
         this._vScrollbar = new ScrollIndicator();
@@ -210,7 +212,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
      * @instance
      * @function
      */
-    scrollChange : { value : function( x = NaN , y = NaN )
+    scrollChange : { value : function( x = null , y = null )
     {
         let comp = this._target ;
         if( comp )
@@ -219,12 +221,12 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
             let scroller = comp._scroller ;
             let style    = comp._style ;
 
-            if( !isNaN(x) )
+            if( x !== null && !isNaN(x) )
             {
                 scroller.x = x ;
             }
 
-            if( !isNaN(y) )
+            if( y !== null &&!isNaN(y) )
             {
                 scroller.y = y ;
             }
@@ -313,6 +315,10 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
         {
             /////////
 
+            comp.buttonMode = style.useHandCursor ;
+
+            /////////
+
             let content = comp._content ;
             let manager = comp._manager ;
             let padding = style.padding ;
@@ -334,13 +340,19 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
                 this._container.x = padding.left ;
                 this._container.y = padding.top ;
 
-                if( style.useScrollRect ) // FIXME
+                if( style.useScrollRect )
                 {
-                    this._container.mask = null ; //style.useScrollRect ? _area.clone() : null ;
+                    this._mask.clear() ;
+                    this._mask.beginFill(0);
+                    this._mask.drawRect(padding.x,padding.y,this._area.width,this._area.height) ;
+                    this._mask.endFill() ;
+                    comp.addChild( this._mask ) ;
+                    this._container.mask = this._mask ;
                 }
-                else
+                else if( this._mask )
                 {
                     this._container.mask = null ;
+                    comp.removeChild( this._mask ) ;
                 }
             }
 
@@ -371,11 +383,11 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
 
             if( content )
             {
-                this._hScrollbar.thumbSize = clamp( $w / content.width * this._hScrollbar.h , style.scrollDragMinSize , style.scrollDragMaxSize ) ;
+                this._hScrollbar.thumbSize = clamp( $w / content.width * this._hScrollbar.w , style.scrollDragMinSize , style.scrollDragMaxSize ) ;
             }
             else
             {
-                this._hScrollbar.thumbSize = this._hScrollbar.h ;
+                this._hScrollbar.thumbSize = this._hScrollbar.w ;
             }
 
             this._hScrollbar.x = style.hScrollBarOffset ;
@@ -422,7 +434,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
 
             ////////
 
-            let scroller = comp.scroller ;
+            let scroller = comp._scroller ;
 
             if( style.maintainPosition )
             {
@@ -496,18 +508,19 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
         let comp = this._target ;
         if( comp )
         {
-            let style = comp.style ;
+            let style = comp._style ;
             if( style )
             {
-                let hPolicy = style.hScrollbarPolicy ;
-                let vPolicy = style.vScrollbarPolicy ;
-                let hFlag   = (hPolicy === ScrollPolicy.ON) || ( style.isHorizontal() && hPolicy === ScrollPolicy.AUTO && comp.maxScrollH > 0 ) ;
-                let vFlag   = (vPolicy === ScrollPolicy.ON) || ( style.isVertical() && vPolicy === ScrollPolicy.AUTO && comp.maxScrollV > 0 ) ;
+                let hPolicy = style._hScrollbarPolicy ;
+                let vPolicy = style._vScrollbarPolicy ;
+
+                let hFlag = (hPolicy === ScrollPolicy.ON) || ( style.isHorizontal() && hPolicy === ScrollPolicy.AUTO && comp.maxScrollH > 0 ) ;
+                let vFlag = (vPolicy === ScrollPolicy.ON) || ( style.isVertical() && vPolicy === ScrollPolicy.AUTO && comp.maxScrollV > 0 ) ;
 
                 if( hFlag )
                 {
                     this._hScrollbar.maximum  = comp.maxScrollH ;
-                    this._hScrollbar.position = comp.scroller.x ;
+                    this._hScrollbar.position = comp._scroller.x ;
                     if( !comp.contains( this._hScrollbar ) )
                     {
                         comp.addChild( this._hScrollbar ) ;
@@ -521,7 +534,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
                 if( vFlag )
                 {
                     this._vScrollbar.maximum  = comp.maxScrollV ;
-                    this._vScrollbar.position = comp.scroller.y ;
+                    this._vScrollbar.position = comp._scroller.y ;
                     if( !comp.contains(this._vScrollbar) )
                     {
                         comp.addChild( this._vScrollbar ) ;

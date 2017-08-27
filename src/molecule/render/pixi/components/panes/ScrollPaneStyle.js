@@ -25,9 +25,10 @@ export function ScrollPaneStyle( init = null )
     Object.defineProperties( this ,
     {
         /**
-         * The horizontal strength ratio (default 1).
+         * The horizontal strength ratio.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
+         * @default 1
          */
         horizontalStrength : { writable : true , value : 1 } ,
 
@@ -125,6 +126,15 @@ export function ScrollPaneStyle( init = null )
         smoothing : { writable : true , value : true } ,
 
         /**
+         * Indicates if the scrollpane use a mouse cursor when the mouse is down.
+         * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
+         * @instance
+         * @default false
+         * @type boolean
+         */
+        useHandCursor : { writable : true , value : false } ,
+
+        /**
          * Indicates if the scrollpane use natural scrolling or reverse scrolling (by default is natural).
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
@@ -143,11 +153,11 @@ export function ScrollPaneStyle( init = null )
         useScrollRect : { writable : true , value : true } ,
 
         /**
-         * The vertical strength ratio (default 1).
+         * The vertical strength ratio.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
-         * @default 1
          * @type number
+         * @default 1
          */
         verticalStrength : { writable : true , value : 1 } ,
 
@@ -185,10 +195,11 @@ export function ScrollPaneStyle( init = null )
         _scrollDirections  : { writable : false , value : [ Direction.VERTICAL , Direction.HORIZONTAL , Direction.BOTH , Direction.NONE ] },
         _vScrollbarPolicy  : { writable : true  , value : ScrollPolicy.AUTO }
     }) ;
+
     Style.call( this , init ) ;
 }
 
-ScrollPaneStyle.prototype = Object.create( Object.prototype ,
+ScrollPaneStyle.prototype = Object.create( Style.prototype ,
 {
     constructor : { writable : true , value : ScrollPaneStyle } ,
 
@@ -200,7 +211,7 @@ ScrollPaneStyle.prototype = Object.create( Object.prototype ,
      */
     hScrollbarPolicy :
     {
-        get : function() { return this._hScrollbarPolicy._padding ; } ,
+        get : function() { return this._hScrollbarPolicy ; } ,
         set : function( value )
         {
             this._hScrollbarPolicy = ( value === ScrollPolicy.OFF || value === ScrollPolicy.ON ) ? value : ScrollPolicy.AUTO ;
@@ -272,7 +283,7 @@ ScrollPaneStyle.prototype = Object.create( Object.prototype ,
      */
     vScrollbarPolicy :
     {
-        get : function() { return this._vScrollbarPolicy._padding ; } ,
+        get : function() { return this._vScrollbarPolicy ; } ,
         set : function( value )
         {
             this._vScrollbarPolicy = ( value === ScrollPolicy.OFF || value === ScrollPolicy.ON ) ? value : ScrollPolicy.AUTO ;
