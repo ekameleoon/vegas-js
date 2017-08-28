@@ -214,10 +214,7 @@ Stage.prototype = Object.create( Node.prototype ,
      */
     displayState :
     {
-        get : function()
-        {
-            return this._displayState ;
-        },
+        get : function() { return this._displayState ; },
         set : function( state )
         {
             if( this._displayState !== state )
@@ -426,7 +423,10 @@ Stage.prototype = Object.create( Node.prototype ,
      */
     notifyActivated : { writable : true , value : function()
     {
-        this.activated.emit( this ) ;
+        if( this.activated.connected() )
+        {
+            this.activated.emit( this ) ;
+        }
     }},
 
     /**
@@ -438,7 +438,10 @@ Stage.prototype = Object.create( Node.prototype ,
      */
     notifyDesactivated : { writable : true , value : function()
     {
-        this.desactivated.emit( this ) ;
+        if( this.desactivated.connected() )
+        {
+            this.desactivated.emit( this ) ;
+        }
     }},
 
     /**
@@ -454,7 +457,10 @@ Stage.prototype = Object.create( Node.prototype ,
         {
             this.displayState = StageDisplayState.NORMAL ;
         }
-        this.fullScreen.emit( this._displayState , this ) ;
+        if( this.fullScreen.connected() )
+        {
+            this.fullScreen.emit( this._displayState , this ) ;
+        }
     }},
 
     /**
@@ -467,7 +473,10 @@ Stage.prototype = Object.create( Node.prototype ,
     notifyOrientationChange : { writable : true , value : function()
     {
         this.getDeviceOrientation();
-        this.orientationChange.emit( this._orientation , this ) ;
+        if( this.orientationChange.connected() )
+        {
+            this.orientationChange.emit( this._orientation , this ) ;
+        }
     }},
 
     /**
@@ -480,7 +489,10 @@ Stage.prototype = Object.create( Node.prototype ,
     notifyResized : { writable : true , value : function()
     {
         this.getViewportSize();
-        this.resize.emit( this ) ;
+        if( this.resize.connected() )
+        {
+            this.resize.emit( this ) ;
+        }
     }},
 
     /**

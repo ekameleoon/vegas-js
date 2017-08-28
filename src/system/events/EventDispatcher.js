@@ -243,7 +243,7 @@ EventDispatcher.prototype = Object.create( IEventDispatcher.prototype ,
      */
     toString : { writable : true , value : function ()
     {
-        var exp = '[' + this.constructor.name ;
+        let exp = '[' + this.constructor.name ;
         if( this.target )
         {
             exp += ' target:' + this.target ;

@@ -15520,24 +15520,34 @@ Stage$1.prototype = Object.create(Node$1.prototype, {
             return { width: this._width, height: this._height };
         } },
     notifyActivated: { writable: true, value: function value() {
-            this.activated.emit(this);
+            if (this.activated.connected()) {
+                this.activated.emit(this);
+            }
         } },
     notifyDesactivated: { writable: true, value: function value() {
-            this.desactivated.emit(this);
+            if (this.desactivated.connected()) {
+                this.desactivated.emit(this);
+            }
         } },
     notifyFullScreen: { writable: true, value: function value() {
             if (document[this._fullScreenElement] === null) {
                 this.displayState = StageDisplayState.NORMAL;
             }
-            this.fullScreen.emit(this._displayState, this);
+            if (this.fullScreen.connected()) {
+                this.fullScreen.emit(this._displayState, this);
+            }
         } },
     notifyOrientationChange: { writable: true, value: function value() {
             this.getDeviceOrientation();
-            this.orientationChange.emit(this._orientation, this);
+            if (this.orientationChange.connected()) {
+                this.orientationChange.emit(this._orientation, this);
+            }
         } },
     notifyResized: { writable: true, value: function value() {
             this.getViewportSize();
-            this.resize.emit(this);
+            if (this.resize.connected()) {
+                this.resize.emit(this);
+            }
         } },
     toString: { writable: true, value: function value() {
             return '[Stage]';
