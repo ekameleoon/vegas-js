@@ -168,6 +168,8 @@ Background.prototype = Object.create( Element.prototype ,
             this._real.width,
             this._real.height
         ) ;
+
+        this._background.endFill() ;
     }},
 
     /**
