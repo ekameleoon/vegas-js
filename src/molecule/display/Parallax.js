@@ -127,7 +127,7 @@ Parallax.prototype = Object.create( Object.prototype ,
      * @memberof molecule.display.Parallax
      * @instance
      */
-    length : { get : function() { return this._layer.length ; } },
+    length : { get : function() { return this._layers.length ; } },
 
     /**
      * Indicates the main DisplayObject of the parallaxe, this DisplayObject must be registered in the model.
