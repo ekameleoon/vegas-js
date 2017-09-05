@@ -24,7 +24,7 @@ export function AlignPivot( display = null , alignment = Align.TOP_LEFT , enable
     Object.defineProperties( this ,
     {
         /**
-         * The DisplayObject reference to hide.
+         * The DisplayObject reference to change.
          * @memberof molecule.render.pixi.process.display.AlignPivot
          * @instance
          */
