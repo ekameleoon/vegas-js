@@ -19,7 +19,7 @@ Paragraph.prototype = Object.create( Node.prototype ,
     constructor : { value : Paragraph , writable : true } ,
 
     /**
-     * The text of the button.
+     * The text content of the paragraph.
      * @name text
      * @memberof molecule.render.dom.display.Paragraph
      * @instance

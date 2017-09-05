@@ -16,6 +16,7 @@ window.onload = function()
     var global   = vegas.global ; // jshint ignore:line
     var trace    = vegas.trace  ; // jshint ignore:line
     var core     = vegas.core   ; // jshint ignore:line
+    var graphics = vegas.graphics ; // jshint ignore:line
     var system   = vegas.system ; // jshint ignore:line
     var molecule = vegas.molecule ; // jshint ignore:line
 
@@ -59,13 +60,20 @@ window.onload = function()
 
         texture = resources.bunny.texture ;
 
+
+
         bunny = new MOB( texture ) ;
 
         bunny.x = app.renderer.width  * 0.5 ;
         bunny.y = app.renderer.height * 0.5 ;
 
-        bunny.anchor.x = 0.5;
-        bunny.anchor.y = 0.5;
+        //bunny.anchor.x = 0.5;
+        //bunny.anchor.y = 0.5;
+
+        var Align = graphics.Align
+        var AlignPivot = molecule.render.pixi.process.display.AlignPivot ;
+        var pivot = new AlignPivot(bunny,Align.RIGHT);
+        pivot.run() ;
 
         stage.addChild( bunny ) ;
 

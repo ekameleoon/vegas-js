@@ -18184,6 +18184,7 @@ Background.prototype = Object.create(Element$1.prototype, {
                 this._background.lineStyle(this._line._thickness, this._line._color, this._line._alpha);
             }
             this._background.drawRect(this._real.x, this._real.y, this._real.width, this._real.height);
+            this._background.endFill();
         } },
     registerViews: { writable: true, value: function value() {
             if (this.children.length > 0) {
@@ -18955,6 +18956,94 @@ AddChildAt.prototype = Object.create(AddChild.prototype, {
         } }
 });
 
+function AlignPivot() {
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var alignment = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Align.TOP_LEFT;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose },
+        _alignment: { writable: true, value: Align.validate(alignment) ? alignment : Align.TOP_LEFT }
+    });
+}
+AlignPivot.prototype = Object.create(Task.prototype, {
+    constructor: { value: AlignPivot },
+    alignement: {
+        get: function get() {
+            return this._alignment;
+        },
+        set: function set(value) {
+            this._alignment = Align.validate(value) ? value : Align.TOP_LEFT;
+        }
+    },
+    clone: { writable: true, value: function value() {
+            return new AlignPivot(this.display, this._alignment, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                var x = 0;
+                var y = 0;
+                var d = this.display;
+                switch (this._alignment) {
+                    case Align.BOTTOM:
+                        {
+                            x = d.width * 0.5;
+                            y = d.height;
+                            break;
+                        }
+                    case Align.BOTTOM_LEFT:
+                        {
+                            y = d.height;
+                            break;
+                        }
+                    case Align.BOTTOM_RIGHT:
+                        {
+                            x = d.width;
+                            y = d.height;
+                            break;
+                        }
+                    case Align.CENTER:
+                        {
+                            x = d.width * 0.5;
+                            y = d.height * 0.5;
+                            break;
+                        }
+                    case Align.CENTER_LEFT:
+                    case Align.LEFT:
+                        {
+                            y = d.height * 0.5;
+                            break;
+                        }
+                    case Align.CENTER_RIGHT:
+                    case Align.RIGHT:
+                        {
+                            x = d.width;
+                            y = d.height * 0.5;
+                            break;
+                        }
+                    case Align.TOP:
+                        {
+                            x = this.display.width * 0.5;
+                            break;
+                        }
+                    case Align.TOP_RIGHT:
+                        {
+                            x = this.display.width;
+                            break;
+                        }
+                }
+                d.pivot.set(x, y);
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
 function Hide() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -19246,6 +19335,7 @@ SwapChildren.prototype = Object.create(Task.prototype, {
 var display$4 = Object.assign({
     AddChild: AddChild,
     AddChildAt: AddChildAt,
+    AlignPivot: AlignPivot,
     Hide: Hide,
     IfContains: IfContains,
     IfNotContains: IfNotContains,

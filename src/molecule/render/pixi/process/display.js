@@ -2,6 +2,7 @@
 
 import { AddChild } from './display/AddChild.js' ;
 import { AddChildAt } from './display/AddChildAt.js' ;
+import { AlignPivot } from './display/AlignPivot.js' ;
 import { Hide } from './display/Hide.js' ;
 import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
@@ -26,6 +27,7 @@ export var display = Object.assign
 ({
     AddChild : AddChild,
     AddChildAt : AddChildAt,
+    AlignPivot : AlignPivot,
     Hide : Hide,
     IfContains : IfContains,
     IfNotContains : IfNotContains,
