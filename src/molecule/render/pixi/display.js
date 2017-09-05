@@ -3,6 +3,7 @@
 import { Background } from './display/Background.js' ;
 import { Element } from './display/Element.js' ;
 import { MOB } from './display/MOB.js' ;
+import { MovieClip } from './display/MovieClip.js' ;
 
 /**
  * The {@link molecule.render.pixi.display} package.
@@ -18,5 +19,6 @@ export var display = Object.assign
 ({
     Background : Background ,
     Element : Element ,
-    MOB : MOB
+    MOB : MOB ,
+    MovieClip : MovieClip
 });

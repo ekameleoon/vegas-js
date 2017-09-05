@@ -18194,6 +18194,21 @@ Background.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+function MovieClip() {
+    var frameName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var frameCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+    var suffix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    var autoUpdate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var frames = [];
+    for (var i = 0; i < frameCount; i++) {
+        frames.push(PIXI.Texture.fromFrame(frameName + pad(i + '', 4, '0') + suffix));
+    }
+    PIXI.extras.AnimatedSprite.call(this, frames, autoUpdate);
+}
+MovieClip.prototype = Object.create(PIXI.extras.AnimatedSprite.prototype, {
+    constructor: { value: MovieClip }
+});
+
 /**
  * The {@link molecule.render.pixi.display} package.
  * @summary The {@link molecule.render.pixi.display} package.
@@ -18207,7 +18222,8 @@ Background.prototype = Object.create(Element$1.prototype, {
 var display$3 = Object.assign({
   Background: Background,
   Element: Element$1,
-  MOB: MOB
+  MOB: MOB,
+  MovieClip: MovieClip
 });
 
 function LayoutContainer() {
