@@ -7,6 +7,7 @@ import { Deployment } from './molecule/Deployment.js' ;
 import { Focusable } from './molecule/Focusable.js' ;
 import { Groupable } from './molecule/Groupable.js' ;
 import { Iconifiable } from './molecule/Iconifiable.js' ;
+import { IconPolicy } from './molecule/IconPolicy.js' ;
 import { LabelPolicy } from './molecule/LabelPolicy.js' ;
 import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 import { Style } from './molecule/Style.js' ;
@@ -39,6 +40,7 @@ export var molecule = Object.assign
     Focusable    : Focusable ,
     Groupable    : Groupable ,
     Iconifiable  : Iconifiable ,
+    IconPolicy   : IconPolicy ,
     LabelPolicy  : LabelPolicy ,
     ScrollPolicy : ScrollPolicy,
     Style        : Style,

@@ -13331,6 +13331,11 @@ Iconifiable.prototype = Object.create(Object.prototype, {
     constructor: { value: Iconifiable, writable: true }
 });
 
+var IconPolicy = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  NORMAL: { enumerable: true, value: 'normal' }
+});
+
 var LabelPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
@@ -17411,6 +17416,188 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+function IconButton() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        autoSize: { writable: true, value: true },
+        iconKeepAspectRatio: { writable: true, value: true },
+        _icon: { writable: true, value: null },
+        _iconAlign: { writable: true, value: Align.NONE },
+        _iconAlignments: {
+            writable: false, value: [Align.NONE, Align.CENTER, Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.LEFT, Align.RIGHT, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT]
+        },
+        _iconHPolicy: { writable: true, value: IconPolicy.NORMAL },
+        _iconVPolicy: { writable: true, value: IconPolicy.NORMAL }
+    });
+    CoreButton.call(this, texture);
+    this.update();
+}
+Object.defineProperties(IconButton, {
+    iconAlignments: {
+        writable: false,
+        value: [Align.CENTER, Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.LEFT, Align.RIGHT, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT]
+    }
+});
+IconButton.prototype = Object.create(CoreButton.prototype, {
+    constructor: { value: IconButton },
+    icon: {
+        get: function get() {
+            return this._icon;
+        },
+        set: function set(display) {
+            if (this._icon) {
+                if (this._icon.parent) {
+                    this._icon.parent.removeChild(this._icon);
+                }
+            }
+            this._icon = null;
+            switch (true) {
+                case display instanceof PIXI.DisplayObject:
+                    {
+                        this._icon = display;
+                        break;
+                    }
+                case display instanceof PIXI.Texture:
+                    {
+                        this._icon = new PIXI.Sprite(display);
+                        break;
+                    }
+                default:
+                    {
+                        this._icon = null;
+                    }
+            }
+            if (this._icon) {
+                this.addChild(this._icon);
+                if (this._icon.interactive) {
+                    this._icon.buttonMode = false;
+                    this._icon.interactive = false;
+                }
+            }
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    iconAlign: {
+        get: function get() {
+            return this._iconAlign;
+        },
+        set: function set(value) {
+            this._iconAlign = IconButton.iconAlignments.indexOf(value) > -1 ? value : Align.NONE;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    iconHorizontalPolicy: {
+        get: function get() {
+            return this._iconHPolicy;
+        },
+        set: function set(value) {
+            this._iconHPolicy = value === IconPolicy.AUTO ? IconPolicy.AUTO : IconPolicy.NORMAL;
+            if (this._iconHPolicy === IconPolicy.AUTO && this._iconVPolicy === IconPolicy.AUTO) {
+                this._iconVPolicy = IconPolicy.NORMAL;
+            }
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    iconVerticalPolicy: {
+        get: function get() {
+            return this._iconVPolicy;
+        },
+        set: function set(value) {
+            this._iconVPolicy = value === IconPolicy.AUTO ? IconPolicy.AUTO : IconPolicy.NORMAL;
+            if (this._iconHPolicy === IconPolicy.AUTO && this._iconVPolicy === IconPolicy.AUTO) {
+                this._iconHPolicy = IconPolicy.NORMAL;
+            }
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    viewChanged: { writable: true, value: function value() {
+            if (this.autoSize === true && this.texture) {
+                this._w = clamp(this.texture.orig.width, this._minWidth, this._maxWidth);
+                this._h = clamp(this.texture.orig.height, this._minHeight, this._maxHeight);
+            }
+            if (this._icon) {
+                var area = this.fixArea();
+                if (this._iconHPolicy === IconPolicy.AUTO) {
+                    this._icon.width = area.width - this._padding.horizontal;
+                    if (this.iconKeepAspectRatio === true) {
+                        this._icon.scale.y = this._icon.scale.x;
+                    }
+                } else if (this._iconVPolicy === IconPolicy.AUTO) {
+                    this._icon.height = area.height - this._padding.vertical;
+                    if (this.iconKeepAspectRatio === true) {
+                        this._icon.scale.x = this._icon.scale.y;
+                    }
+                }
+                this._icon.x = area.x;
+                this._icon.y = area.y;
+                switch (this._iconAlign) {
+                    case Align.CENTER:
+                        {
+                            this._icon.x += (area.width - this._icon.width) / 2;
+                            this._icon.y += (area.height - this._icon.height) / 2;
+                            break;
+                        }
+                    case Align.LEFT:
+                        {
+                            this._icon.x += this._padding.left;
+                            this._icon.y += (area.height - this._icon.height) / 2;
+                            break;
+                        }
+                    case Align.RIGHT:
+                        {
+                            this._icon.x += area.height - this._padding.right;
+                            this._icon.y += (area.height - this._icon.height) / 2;
+                            break;
+                        }
+                    case Align.TOP:
+                        {
+                            this._icon.x += (area.width - this._icon.width) / 2;
+                            this._icon.y += this._padding.top;
+                            break;
+                        }
+                    case Align.TOP_LEFT:
+                        {
+                            this._icon.x += this._padding.left;
+                            this._icon.y += this._padding.top;
+                            break;
+                        }
+                    case Align.TOP_RIGHT:
+                        {
+                            this._icon.x += area.height - this._padding.right;
+                            this._icon.y += this._padding.top;
+                            break;
+                        }
+                    case Align.BOTTOM:
+                        {
+                            this._icon.x += (area.width - this._icon.width) / 2;
+                            this._icon.y += area.height - this._padding.bottom;
+                            break;
+                        }
+                    case Align.BOTTOM_LEFT:
+                        {
+                            this._icon.x += this._padding.left;
+                            this._icon.y += area.height - this._padding.bottom;
+                            break;
+                        }
+                    case Align.BOTTOM_RIGHT:
+                        {
+                            this._icon.x += area.width - this._padding.right;
+                            this._icon.y += area.height - this._padding.bottom;
+                            break;
+                        }
+                }
+            }
+        } }
+});
+
 function SimpleButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -17528,6 +17715,7 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
  */
 var buttons = Object.assign({
   CoreButton: CoreButton,
+  IconButton: IconButton,
   SimpleButton: SimpleButton
 });
 
@@ -19886,6 +20074,7 @@ var molecule = Object.assign({
     Focusable: Focusable,
     Groupable: Groupable,
     Iconifiable: Iconifiable,
+    IconPolicy: IconPolicy,
     LabelPolicy: LabelPolicy,
     ScrollPolicy: ScrollPolicy,
     Style: Style,

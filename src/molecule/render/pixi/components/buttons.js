@@ -1,6 +1,7 @@
 "use strict" ;
 
 import { CoreButton } from './buttons/CoreButton.js' ;
+import { IconButton } from './buttons/IconButton.js' ;
 import { SimpleButton } from './buttons/SimpleButton.js' ;
 
 /**
@@ -16,5 +17,6 @@ import { SimpleButton } from './buttons/SimpleButton.js' ;
 export var buttons = Object.assign
 ({
     CoreButton : CoreButton,
+    IconButton : IconButton,
     SimpleButton : SimpleButton
 });
