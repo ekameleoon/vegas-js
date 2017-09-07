@@ -17,7 +17,7 @@ export function LineFormattedTarget( init = null )
 
     Object.defineProperties( this ,
     {
-        _lineNumber : { value : 1 , writable : true } ,
+        _lineNumber : { value : 1 , writable : true }
     }) ;
 
     /**

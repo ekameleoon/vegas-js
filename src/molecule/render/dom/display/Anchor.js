@@ -19,21 +19,6 @@ Anchor.prototype = Object.create( Node.prototype ,
     constructor : { value : Anchor , writable : true } ,
 
     /**
-     * The id of the element.
-     * @name id
-     * @memberof molecule.render.aframe.display.Anchor
-     * @instance
-     */
-    id :
-    {
-        get : function() { return this.element.id ; },
-        set : function( value )
-        {
-            this.element.id = value;
-        }
-    },
-
-    /**
      * The class of the element.
      * @name class
      * @memberof molecule.render.aframe.display.Anchor

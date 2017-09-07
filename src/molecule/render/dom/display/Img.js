@@ -19,21 +19,6 @@ Img.prototype = Object.create( Node.prototype ,
     constructor : { value : Img , writable : true } ,
 
     /**
-     * The id of the element.
-     * @name id
-     * @memberof molecule.render.aframe.display.Img
-     * @instance
-     */
-    id :
-    {
-        get : function() { return this.element.id ; },
-        set : function( value )
-        {
-            this.element.id = value;
-        }
-    },
-
-    /**
      * The height of the image.
      * @name height
      * @memberof molecule.render.aframe.display.Img

@@ -5866,6 +5866,7 @@ function Task() {
   Object.defineProperties(this, {
     changeIt: { value: new Signal() },
     clearIt: { value: new Signal() },
+    errorIt: { value: new Signal() },
     infoIt: { value: new Signal() },
     looping: { value: false, writable: true },
     loopIt: { value: new Signal() },
@@ -5889,6 +5890,11 @@ Task.prototype = Object.create(Action.prototype, {
   notifyCleared: { writable: true, value: function value() {
       if (!this.__lock__) {
         this.clearIt.emit(this);
+      }
+    } },
+  notifyError: { writable: true, value: function value() {
+      if (!this.__lock__) {
+        this.errorIt.emit(this);
       }
     } },
   notifyInfo: { writable: true, value: function value(info) {

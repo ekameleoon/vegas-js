@@ -42,6 +42,15 @@ export function Task()
         clearIt : { value : new Signal() },
 
         /**
+         * The signal emit when the task failed.
+         * @memberof system.process.Task
+         * @type {system.signals.Signal}
+         * @instance
+         * @const
+         */
+        errorIt : { value : new Signal() },
+
+        /**
          * The signal emit when the task emit a message.
          * @memberof system.process.Task
          * @type {system.signals.Signal}
@@ -159,6 +168,21 @@ Task.prototype = Object.create( Action.prototype ,
         if ( !this.__lock__ )
         {
             this.clearIt.emit( this ) ;
+        }
+    }},
+
+    /**
+     * Notify an error.
+     * @name notifyError
+     * @memberof system.process.Task
+     * @function
+     * @instance
+     */
+    notifyError : { writable : true , value : function()
+    {
+        if ( !this.__lock__ )
+        {
+            this.errorIt.emit( this ) ;
         }
     }},
 
