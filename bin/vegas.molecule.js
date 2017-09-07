@@ -5866,6 +5866,7 @@ function Task() {
   Object.defineProperties(this, {
     changeIt: { value: new Signal() },
     clearIt: { value: new Signal() },
+    errorIt: { value: new Signal() },
     infoIt: { value: new Signal() },
     looping: { value: false, writable: true },
     loopIt: { value: new Signal() },
@@ -5889,6 +5890,11 @@ Task.prototype = Object.create(Action.prototype, {
   notifyCleared: { writable: true, value: function value() {
       if (!this.__lock__) {
         this.clearIt.emit(this);
+      }
+    } },
+  notifyError: { writable: true, value: function value() {
+      if (!this.__lock__) {
+        this.errorIt.emit(this);
       }
     } },
   notifyInfo: { writable: true, value: function value(info) {
@@ -15327,14 +15333,6 @@ function Anchor() {
 }
 Anchor.prototype = Object.create(Node$1.prototype, {
     constructor: { value: Anchor, writable: true },
-    id: {
-        get: function get() {
-            return this.element.id;
-        },
-        set: function set(value) {
-            this.element.id = value;
-        }
-    },
     class: {
         get: function get() {
             return this.element.classList;
@@ -15733,19 +15731,22 @@ G.prototype = Object.create(Svg.prototype, {
     constructor: { value: G, writable: true }
 });
 
+function Head() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Node$1.call(this, init, document.head || document.createElement('head'));
+}
+Head.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Head, writable: true },
+    toString: { writable: true, value: function value() {
+            return '[Head]';
+        } }
+});
+
 function Img() {
     Node$1.call(this, null, 'img');
 }
 Img.prototype = Object.create(Node$1.prototype, {
     constructor: { value: Img, writable: true },
-    id: {
-        get: function get() {
-            return this.element.id;
-        },
-        set: function set(value) {
-            this.element.id = value;
-        }
-    },
     height: {
         get: function get() {
             return this.getAttribute('height');
@@ -15798,6 +15799,62 @@ Path.prototype = Object.create(Svg.prototype, {
         },
         set: function set(value) {
             this.setAttribute("d", value);
+        }
+    }
+});
+
+function Script() {
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Node$1.call(this, init, 'script');
+}
+Script.prototype = Object.create(Node$1.prototype, {
+    constructor: { value: Script, writable: true },
+    async: {
+        get: function get() {
+            return this.element.getAttribute('async');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.element.setAttribute('async', '');
+            } else {
+                this.element.removeAttribute('async');
+            }
+        }
+    },
+    charset: {
+        get: function get() {
+            return this.element.charset;
+        },
+        set: function set(value) {
+            this.element.charset = value;
+        }
+    },
+    defer: {
+        get: function get() {
+            return this.element.getAttribute('defer');
+        },
+        set: function set(value) {
+            if (value === true) {
+                this.element.setAttribute('defer', '');
+            } else {
+                this.element.removeAttribute('defer');
+            }
+        }
+    },
+    src: {
+        get: function get() {
+            return this.element.src;
+        },
+        set: function set(value) {
+            this.element.src = value;
+        }
+    },
+    type: {
+        get: function get() {
+            return this.element.type;
+        },
+        set: function set(value) {
+            this.element.type = value;
         }
     }
 });
@@ -16036,6 +16093,92 @@ Video.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+function LoadScript() {
+    var script = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        verbose: { writable: true, value: verbose === true },
+        _done: { writable: true, value: false },
+        _error: { writable: true, value: this.____error.bind(this) },
+        _load: { writable: true, value: this.____load.bind(this) },
+        _location: { writable: true, value: null },
+        _script: { writable: true, value: null }
+    });
+    this.location = location;
+    this.script = script;
+}
+LoadScript.prototype = Object.create(Task.prototype, {
+    constructor: { value: LoadScript },
+    done: {
+        get: function get() {
+            return this._done;
+        }
+    },
+    location: {
+        get: function get() {
+            return this._location;
+        },
+        set: function set(value) {
+            this._location = value instanceof Node$1 ? value : null;
+        }
+    },
+    script: {
+        get: function get() {
+            return this._script;
+        },
+        set: function set(value) {
+            this._script = value instanceof Script ? value : null;
+        }
+    },
+    run: { value: function value() {
+            this._done = false;
+            this.notifyStarted();
+            try {
+                if (!this._location) throw new Error('location');
+                if (!this._script) throw new Error('script');
+            } catch (er) {
+                if (this.verbose === true) {
+                    logger$1.warning(fastformat(this + " run failed, the {0} reference not must be null.", er.message));
+                }
+                this.notifyFinished();
+                return;
+            }
+            if (this.verbose === true) {
+                logger$1.debug(this + " run " + this._script.src);
+            }
+            this._registerScript();
+            this._location.addChild(this._script);
+        } },
+    _registerScript: { value: function value() {
+            if (this._script) {
+                this._script.element.onerror = this._error;
+                this._script.element.onload = this._load;
+            }
+        } },
+    _unregisterScript: { value: function value() {
+            if (this._script) {
+                this._script.element.onerror = null;
+                this._script.element.onload = null;
+                if (this._script.parent) {
+                    this._script.parent.removeChild(this._script);
+                }
+            }
+        } },
+    ____error: { value: function value() {
+            this._done = false;
+            this.notifyError();
+            this._unregisterScript();
+            this.notifyFinished();
+        } },
+    ____load: { value: function value() {
+            this._unregisterScript();
+            this._done = true;
+            this.notifyFinished();
+        } }
+});
+
 /**
  * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
  * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
@@ -16052,10 +16195,12 @@ var dom$1 = Object.assign({
     Canvas: Canvas,
     Div: Div,
     G: G,
+    Head: Head,
     Img: Img,
     Node: Node$1,
     Paragraph: Paragraph,
     Path: Path,
+    Script: Script,
     Stage: Stage$1,
     Svg: Svg
   },
@@ -16067,6 +16212,9 @@ var dom$1 = Object.assign({
   medias: {
     Audio: Audio,
     Video: Video
+  },
+  net: {
+    LoadScript: LoadScript
   }
 });
 

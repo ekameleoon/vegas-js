@@ -8,10 +8,12 @@ import { Button } from './dom/display/Button.js' ;
 import { Canvas } from './dom/display/Canvas.js' ;
 import { Div } from './dom/display/Div.js' ;
 import { G } from './dom/display/G.js' ;
+import { Head } from './dom/display/Head.js' ;
 import { Img } from './dom/display/Img.js' ;
 import { Node } from './dom/display/Node.js' ;
 import { Paragraph } from './dom/display/Paragraph.js' ;
 import { Path } from './dom/display/Path.js' ;
+import { Script } from './dom/display/Script.js' ;
 import { Stage } from './dom/display/Stage.js' ;
 import { Svg } from './dom/display/Svg.js' ;
 
@@ -21,6 +23,8 @@ import { createVideo } from './dom/entities/createVideo.js' ;
 
 import { Audio } from './dom/medias/Audio.js' ;
 import { Video } from './dom/medias/Video.js' ;
+
+import { LoadScript } from './dom/net/LoadScript.js' ;
 
 /**
  * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
@@ -46,10 +50,12 @@ export var dom = Object.assign
         Canvas : Canvas,
         Div : Div,
         G : G,
+        Head : Head,
         Img : Img,
         Node : Node,
         Paragraph : Paragraph,
         Path : Path,
+        Script : Script,
         Stage : Stage,
         Svg : Svg
     },
@@ -78,4 +84,15 @@ export var dom = Object.assign
         Audio : Audio,
         Video : Video
     },
+
+    /**
+     * This package contains a DOM net helper library.
+     * @summary This package contains a DOM net helper library.
+     * @namespace molecule.render.dom.net
+     * @memberof molecule.render.dom
+     */
+    net :
+    {
+        LoadScript : LoadScript
+    }
 }) ;
