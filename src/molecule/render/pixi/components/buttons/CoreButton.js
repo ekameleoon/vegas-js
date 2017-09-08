@@ -6,6 +6,11 @@ import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
 import { Element } from '../../display/Element.js' ;
 import { radio } from './radio.js' ;
 
+import { InteractiveMode } from './molecule/InteractiveMode.js' ;
+
+import { supportsPointerEvents } from './molecule/render/dom/events/supportsPointerEvents.js' ;
+import { supportsTouchEvents } from './molecule/render/dom/events/supportsTouchEvents.js' ;
+
 /**
  * This class provides a skeletal implementation of the <code>Button</code> interface,
  * to minimize the effort required to implement this interface.
@@ -407,11 +412,28 @@ CoreButton.prototype = Object.create( Element.prototype ,
     {
         if( this._scope )
         {
-            this._scope.mousedown      = this.____down.bind(this) ;
-            this._scope.mouseout       = this.____out.bind(this) ;
-            this._scope.mouseover      = this.____over.bind(this) ;
-            this._scope.mouseup        = this.____up.bind(this) ;
-            this._scope.mouseupoutside = this.____upOutside.bind(this) ;
+            if( supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER ) )
+            {
+                this._scope.pointerdown    = this.____down.bind(this) ;
+                this._scope.pointerout     = this.____out.bind(this) ;
+                this._scope.pointerover    = this.____over.bind(this) ;
+                this._scope.pointerup      = this.____up.bind(this) ;
+                this._scope.pointeroutside = this.____upOutside.bind(this) ;
+            }
+            else if( (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE ) )
+            {
+                this._scope.mousedown      = this.____down.bind(this) ;
+                this._scope.mouseout       = this.____out.bind(this) ;
+                this._scope.mouseover      = this.____over.bind(this) ;
+                this._scope.mouseup        = this.____up.bind(this) ;
+                this._scope.mouseupoutside = this.____upOutside.bind(this) ;
+            }
+            if( supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH) )
+            {
+                this._scope.touchstart      = this.____down.bind(this) ;
+                this._scope.touchend        = this.____up.bind(this) ;
+                this._scope.touchendoutside = this.____upOutside.bind(this) ;
+            }
         }
     }} ,
 
@@ -419,7 +441,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
      * Invoked before the scope of the element is changed.
      * @private
      */
-    preScope  : { writable : true , value : function()
+    preScope : { writable : true , value : function()
     {
         if( this._scope )
         {
@@ -428,7 +450,28 @@ CoreButton.prototype = Object.create( Element.prototype ,
             this._scope.mouseover =
             this._scope.mouseup =
             this._scope.mouseupoutside = null ;
+
+            this._scope.pointercancel =
+            this._scope.pointerdown =
+            this._scope.pointerout =
+            this._scope.pointerover =
+            this._scope.pointerup =
+            this._scope.pointeroutside = null ;
+
+            this._scope.touchstart =
+            this._scope.touchcancel =
+            this._scope.touchendoutside =
+            this._scope.touchendoutside = null ;
         }
+    }},
+
+    /**
+     * @private
+     */
+    updateInteractiveMode : { writable : true , value : function()
+    {
+        this.preScope() ;
+        this.postScope() ;
     }},
 
     // ----- behaviors

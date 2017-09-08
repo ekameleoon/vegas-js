@@ -30,6 +30,16 @@ export var InteractiveMode = Object.defineProperties( {} ,
     MOUSE : { enumerable : true , value : 'mouse' },
 
     /**
+     * This mode try to unregister all mouse, pointer or touch events in the component.
+     * @name AUTO
+     * @memberof molecule.InteractiveMode
+     * @static
+     * @type {string}
+     * @default 'auto'
+     */
+    NONE : { enumerable : true , value : 'none' } ,
+
+    /**
      * Register only the pointer events.
      * @name POINTER
      * @memberof molecule.InteractiveMode

@@ -2,6 +2,7 @@
 
 import { clamp } from './core/maths/clamp.js' ;
 import { Align } from './graphics/Align.js' ;
+import { InteractiveMode } from './molecule/InteractiveMode.js' ;
 import { Layout } from './graphics/Layout.js' ;
 import { Rectangle } from './graphics/geom/Rectangle.js' ;
 import { Signal } from './system/signals/Signal.js' ;
@@ -59,19 +60,20 @@ export function MOB( texture = null , init = null , locked = false )
         /**
          * @private
          */
-         altered   : { writable :  true , value : false } ,
-         _align    : { writable :  true , value :    10 } , // top left
-         _enabled  : { writable :  true , value :  true } ,
-        _h         : { writable :  true , value :     0 } ,
-        _layout    : { writable :  true , value :  null } ,
-        _locked    : { writable :  true , value :     0 } ,
-        _maxHeight : { writable :  true , value :   NaN } ,
-        _maxWidth  : { writable :  true , value :   NaN } ,
-        _minHeight : { writable :  true , value :   NaN } ,
-        _minWidth  : { writable :  true , value :   NaN } ,
-        _real      : { writable : false , value : new Rectangle() } ,
-        _scope     : { writable :  true , value : !(this._scope) ? this : this._scope } ,
-        _w         : { writable :  true , value :     0 }
+        altered          : { writable :  true , value : false } ,
+        _align           : { writable :  true , value :    10 } , // top left
+        _enabled         : { writable :  true , value :  true } ,
+        _h               : { writable :  true , value :     0 } ,
+        _interactiveMode : { writable :  true , value : InteractiveMode.AUTO } ,
+        _layout          : { writable :  true , value :  null } ,
+        _locked          : { writable :  true , value :     0 } ,
+        _maxHeight       : { writable :  true , value :   NaN } ,
+        _maxWidth        : { writable :  true , value :   NaN } ,
+        _minHeight       : { writable :  true , value :   NaN } ,
+        _minWidth        : { writable :  true , value :   NaN } ,
+        _real            : { writable : false , value : new Rectangle() } ,
+        _scope           : { writable :  true , value : !(this._scope) ? this : this._scope } ,
+        _w               : { writable :  true , value :     0 }
     });
 
     PIXI.Sprite.call( this , texture ) ;
@@ -184,6 +186,42 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
                 this.update() ;
             }
             this.notifyResized() ;
+        }
+    },
+
+    /**
+     * Sets the interactive mode of the element;
+     * @name interactiveMode
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     * @type string
+     * @see {molecule.interactiveMode}
+     * @example
+     * var display = new MOB() ;
+     * display.interactiveMode = InteractiveMode.TOUCH ;
+     * @default 'auto'
+     */
+    interactiveMode :
+    {
+        get : function() { return this._interactiveMode ; },
+        set : function ( value )
+        {
+            switch( value )
+            {
+                case InteractiveMode.AUTO  :
+                case InteractiveMode.MOUSE :
+                case InteractiveMode.POINTER :
+                case InteractiveMode.TOUCH  :
+                {
+                    this._interactiveMode = value ;
+                    break ;
+                }
+                default :
+                {
+                    this._interactiveMode = InteractiveMode.NONE ;
+                }
+            }
+            this.updateInteractiveMode() ;
         }
     },
 
@@ -667,6 +705,14 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
         }
 
         this.updater.emit(this) ;
+    }},
+
+    /**
+     * @private
+     */
+    updateInteractiveMode : { writable : true , value : function()
+    {
+
     }},
 
     /**

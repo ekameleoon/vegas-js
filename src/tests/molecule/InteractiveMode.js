@@ -18,6 +18,11 @@ describe( 'molecule.InteractiveMode' , () =>
         assert.equal( InteractiveMode.MOUSE , 'mouse' );
     });
 
+    it('InteractiveMode.NONE === "none"', () =>
+    {
+        assert.equal( InteractiveMode.NONE , 'none' );
+    });
+
     it('InteractiveMode.POINTER === "pointer"', () =>
     {
         assert.equal( InteractiveMode.POINTER , 'pointer' );
