@@ -21,6 +21,9 @@ import { createEntity } from './dom/entities/createEntity.js' ;
 import { createImg } from './dom/entities/createImg.js' ;
 import { createVideo } from './dom/entities/createVideo.js' ;
 
+import { supportsPointerEvents } from './dom/events/supportsPointerEvents.js' ;
+import { supportsTouchEvents } from './dom/events/supportsTouchEvents.js' ;
+
 import { Audio } from './dom/medias/Audio.js' ;
 import { Video } from './dom/medias/Video.js' ;
 
@@ -71,6 +74,18 @@ export var dom = Object.assign
         createEntity : createEntity,
         createImg    : createImg,
         createVideo  : createVideo
+    },
+
+    /**
+     * This package contains helpers to manage the DOM events.
+     * @summary This package contains helpers to create DOM elements.
+     * @namespace molecule.render.dom.events
+     * @memberof molecule.render.dom
+     */
+    events :
+    {
+        supportsPointerEvents : supportsPointerEvents,
+        supportsTouchEvents : supportsTouchEvents
     },
 
     /**
