@@ -5874,6 +5874,7 @@ function Task() {
     progressIt: { value: new Signal() },
     resumeIt: { value: new Signal() },
     stopIt: { value: new Signal() },
+    throwError: { value: false, writable: true },
     timeoutIt: { value: new Signal() }
   });
 }
@@ -5893,8 +5894,14 @@ Task.prototype = Object.create(Action.prototype, {
       }
     } },
   notifyError: { writable: true, value: function value() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this._running = false;
+      this._phase = TaskPhase.ERROR;
       if (!this.__lock__) {
-        this.errorIt.emit(this);
+        this.errorIt.emit(this, message);
+      }
+      if (this.throwError) {
+        throw new Error(message);
       }
     } },
   notifyInfo: { writable: true, value: function value(info) {
@@ -13336,6 +13343,14 @@ var IconPolicy = Object.defineProperties({}, {
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
+var InteractiveMode = Object.defineProperties({}, {
+  AUTO: { enumerable: true, value: 'auto' },
+  MOUSE: { enumerable: true, value: 'mouse' },
+  NONE: { enumerable: true, value: 'none' },
+  POINTER: { enumerable: true, value: 'pointer' },
+  TOUCH: { enumerable: true, value: 'touch' }
+});
+
 var LabelPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
@@ -15916,6 +15931,10 @@ var createVideo = function createVideo() {
     return el;
 };
 
+var supportsPointerEvents = !!window.PointerEvent;
+
+var supportsTouchEvents = 'ontouchstart' in window;
+
 function Audio() {
     Node$1.call(this, null, 'audio');
 }
@@ -16173,8 +16192,8 @@ LoadScript.prototype = Object.create(Task.prototype, {
         } },
     ____error: { value: function value() {
             this._done = false;
-            this.notifyError();
             this._unregisterScript();
+            this.notifyError(this + " loading failed with the script: " + this._script.src);
             this.notifyFinished();
         } },
     ____load: { value: function value() {
@@ -16214,6 +16233,10 @@ var dom$1 = Object.assign({
     createImg: createImg,
     createVideo: createVideo
   },
+  events: {
+    supportsPointerEvents: supportsPointerEvents,
+    supportsTouchEvents: supportsTouchEvents
+  },
   medias: {
     Audio: Audio,
     Video: Video
@@ -16236,6 +16259,7 @@ function MOB() {
         _align: { writable: true, value: 10 },
         _enabled: { writable: true, value: true },
         _h: { writable: true, value: 0 },
+        _interactiveMode: { writable: true, value: InteractiveMode.AUTO },
         _layout: { writable: true, value: null },
         _locked: { writable: true, value: 0 },
         _maxHeight: { writable: true, value: NaN },
@@ -16300,6 +16324,28 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
                 this.update();
             }
             this.notifyResized();
+        }
+    },
+    interactiveMode: {
+        get: function get() {
+            return this._interactiveMode;
+        },
+        set: function set(value) {
+            switch (value) {
+                case InteractiveMode.AUTO:
+                case InteractiveMode.MOUSE:
+                case InteractiveMode.POINTER:
+                case InteractiveMode.TOUCH:
+                    {
+                        this._interactiveMode = value;
+                        break;
+                    }
+                default:
+                    {
+                        this._interactiveMode = InteractiveMode.NONE;
+                    }
+            }
+            this.updateInteractiveMode();
         }
     },
     layout: {
@@ -16537,6 +16583,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             }
             this.updater.emit(this);
         } },
+    updateInteractiveMode: { writable: true, value: function value() {} },
     updateLayout: { writable: true, value: function value() /* layout = null */{
         } },
     viewChanged: { writable: true, value: function value() {
@@ -17331,17 +17378,36 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } },
     postScope: { writable: true, value: function value() {
             if (this._scope) {
-                this._scope.mousedown = this.____down.bind(this);
-                this._scope.mouseout = this.____out.bind(this);
-                this._scope.mouseover = this.____over.bind(this);
-                this._scope.mouseup = this.____up.bind(this);
-                this._scope.mouseupoutside = this.____upOutside.bind(this);
+                if (supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER)) {
+                    this._scope.pointerdown = this.____down.bind(this);
+                    this._scope.pointerout = this.____out.bind(this);
+                    this._scope.pointerover = this.____over.bind(this);
+                    this._scope.pointerup = this.____up.bind(this);
+                    this._scope.pointeroutside = this.____upOutside.bind(this);
+                } else if (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE) {
+                    this._scope.mousedown = this.____down.bind(this);
+                    this._scope.mouseout = this.____out.bind(this);
+                    this._scope.mouseover = this.____over.bind(this);
+                    this._scope.mouseup = this.____up.bind(this);
+                    this._scope.mouseupoutside = this.____upOutside.bind(this);
+                }
+                if (supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH)) {
+                    this._scope.touchstart = this.____down.bind(this);
+                    this._scope.touchend = this.____up.bind(this);
+                    this._scope.touchendoutside = this.____upOutside.bind(this);
+                }
             }
         } },
     preScope: { writable: true, value: function value() {
             if (this._scope) {
                 this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
+                this._scope.pointercancel = this._scope.pointerdown = this._scope.pointerout = this._scope.pointerover = this._scope.pointerup = this._scope.pointeroutside = null;
+                this._scope.touchstart = this._scope.touchcancel = this._scope.touchendoutside = this._scope.touchendoutside = null;
             }
+        } },
+    updateInteractiveMode: { writable: true, value: function value() {
+            this.preScope();
+            this.postScope();
         } },
     ____down: { value: function value() {
             if (this._isOver) {
@@ -18087,11 +18153,11 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
         },
         set: function set(target) {
             if (this._target) {
-                this.unregisterMouse();
+                this.unregisterTarget(this._target);
             }
             this._target = target instanceof ScrollPane ? target : null;
             if (this._target) {
-                this.registerMouse();
+                this.registerTarget(this._target);
             }
         }
     },
@@ -18119,23 +18185,36 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             var bounds = this._target instanceof MOB ? this._target.fixArea() : this._target.getBounds();
             return x >= bounds.x && x <= bounds.x + bounds.width && y >= bounds.y && y <= bounds.y + bounds.height;
         } },
-    registerDisplay: { value: function value() {
-        } },
-    registerMouse: { value: function value() {
-            if (this._target) {
-                this._target.interactive = true;
-                this._target.mousedown = this.____down.bind(this);
-                this._target.mousemove = this.____move.bind(this);
-                this._target.mouseup = this._target.mouseupoutside = this.____up.bind(this);
+    registerTarget: { value: function value(target) {
+            if (target) {
+                target.interactive = true;
+                if (supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER)) {
+                    target.pointerdown = this.____down.bind(this);
+                    target.pointermove = this.____move.bind(this);
+                    target.pointerup = target.pointeroutside = this.____upOutside.bind(this);
+                } else if (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE) {
+                    target.mousedown = this.____down.bind(this);
+                    target.mousemove = this.____move.bind(this);
+                    target.mouseup = target.mouseupoutside = this.____upOutside.bind(this);
+                }
+                if (supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH)) {
+                    target.touchstart = this.____down.bind(this);
+                    target.touchmove = this.____move.bind(this);
+                    target.touchend = target.touchendoutside = this.____upOutside.bind(this);
+                }
             }
         } },
-    unregisterDisplay: { value: function value() {
-        } },
-    unregisterMouse: { value: function value() {
-            if (this._target) {
-                this._target.interactive = false;
-                this._target.mousedown = this._target.mousemove = this._target.mouseup = this._target.mouseupoutside = null;
+    unregisterTarget: { value: function value(target) {
+            if (target) {
+                target.interactive = false;
+                target.mousedown = target.mousemove = target.mouseup = target.mouseupoutside = null;
+                target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null;
+                target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null;
             }
+        } },
+    updateInteractiveMode: { writable: true, value: function value() {
+            this.unregisterTarget(this._target);
+            this.registerTarget(this._target);
         } },
     scrollChange: { value: function value(action) {
             if (this._target && this._target._builder) {
@@ -18220,8 +18299,11 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
                     if (this._inertiaY !== 0) {
                         to.y = this._target._scroller.y + this._inertiaY * this._verticalStrength * this._target._content.height / this._target.h;
                     }
+                    this._tween.from = { x: this._target._scroller.x, y: this._target._scroller.y };
                     this._tween.to = to;
-                    this._tween.run();
+                    if (!this._tween.running) {
+                        this._tween.run();
+                    }
                     return;
                 }
             }
@@ -20075,6 +20157,7 @@ var molecule = Object.assign({
     Groupable: Groupable,
     Iconifiable: Iconifiable,
     IconPolicy: IconPolicy,
+    InteractiveMode: InteractiveMode,
     LabelPolicy: LabelPolicy,
     ScrollPolicy: ScrollPolicy,
     Style: Style,

@@ -204,8 +204,8 @@ LoadScript.prototype = Object.create( Task.prototype ,
     ____error : { value : function()
     {
         this._done = false ;
-        this.notifyError() ;
         this._unregisterScript() ;
+        this.notifyError( this + " loading failed with the script: " + this._script.src ) ;
         this.notifyFinished() ;
     }},
 

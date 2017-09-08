@@ -4,6 +4,10 @@
 import { dump } from './core/dump.js' ;
 
 import { expoOut } from './core/easings/expoOut.js' ;
+import { supportsPointerEvents } from './molecule/render/dom/events/supportsPointerEvents.js' ;
+import { supportsTouchEvents } from './molecule/render/dom/events/supportsTouchEvents.js' ;
+
+import { InteractiveMode } from './molecule/InteractiveMode.js' ;
 import { MOB } from './molecule/render/pixi/display/MOB.js' ;
 import { Point } from './graphics/geom/Point.js' ;
 import { ScrollPane } from './ScrollPane.js' ;
@@ -151,14 +155,12 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             if( this._target )
             {
-                // TODO this.unregisterDisplay() ;
-                this.unregisterMouse() ;
+                this.unregisterTarget(this._target) ;
             }
             this._target = target instanceof ScrollPane ? target : null ;
             if( this._target )
             {
-                // TODO this.registerDisplay() ;
-                this.registerMouse() ;
+                this.registerTarget(this._target) ;
             }
         }
     },
@@ -220,55 +222,53 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     /**
      * @private
      */
-    registerDisplay : { value : function()
+    registerTarget: { value : function( target )
     {
-        // if( this._target )
-        // {
-        //     _target.addEventListener( Event.ADDED_TO_STAGE     , addedToStage     );
-        //     _target.addEventListener( Event.REMOVED_FROM_STAGE , removedFromStage );
-        // }
-    }},
-
-    /**
-     * @private
-     */
-    registerMouse: { value : function()
-    {
-        if( this._target )
+        if( target )
         {
-            this._target.interactive    = true ;
-            this._target.mousedown      = this.____down.bind(this) ;
-            this._target.mousemove      = this.____move.bind(this) ;
-            this._target.mouseup        =
-            this._target.mouseupoutside = this.____up.bind(this) ;
+            target.interactive = true ;
+            if( supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER ) )
+            {
+                target.pointerdown = this.____down.bind(this) ;
+                target.pointermove = this.____move.bind(this) ;
+                target.pointerup = target.pointeroutside = this.____upOutside.bind(this) ;
+            }
+            else if( (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE ) )
+            {
+                target.mousedown = this.____down.bind(this) ;
+                target.mousemove = this.____move.bind(this) ;
+                target.mouseup = target.mouseupoutside = this.____upOutside.bind(this) ;
+            }
+            if( supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH) )
+            {
+                target.touchstart = this.____down.bind(this) ;
+                target.touchmove = this.____move.bind(this) ;
+                target.touchend = target.touchendoutside = this.____upOutside.bind(this) ;
+            }
         }
     }},
 
     /**
      * @private
      */
-    unregisterDisplay : { value : function()
+    unregisterTarget : { value : function( target )
     {
-        // if( this._target )
-        // {
-        //     this._target.removeEventListener( Event.ADDED_TO_STAGE     , addedToStage     ) ;
-        //     this._target.removeEventListener( Event.REMOVED_FROM_STAGE , removedFromStage );
-        // }
+        if( target )
+        {
+            target.interactive = false ;
+            target.mousedown = target.mousemove = target.mouseup = target.mouseupoutside = null ;
+            target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null ;
+            target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null ;
+        }
     }},
 
     /**
      * @private
      */
-    unregisterMouse : { value : function()
+    updateInteractiveMode : { writable : true , value : function()
     {
-        if( this._target )
-        {
-            this._target.interactive    = false ;
-            this._target.mousedown      =
-            this._target.mousemove      =
-            this._target.mouseup        =
-            this._target.mouseupoutside = null ;
-        }
+        this.unregisterTarget( this._target ) ;
+        this.registerTarget( this._target ) ;
     }},
 
     /**
@@ -428,8 +428,13 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
                        ( ( this._inertiaY * this._verticalStrength ) * this._target._content.height / this._target.h ) ;
                 }
 
+                this._tween.from = { x : this._target._scroller.x , y : this._target._scroller.y };
                 this._tween.to = to ;
-                this._tween.run() ;
+
+                if( !this._tween.running )
+                {
+                    this._tween.run() ;
+                }
 
                 return ;
             }

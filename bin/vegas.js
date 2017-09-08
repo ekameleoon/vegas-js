@@ -5874,6 +5874,7 @@ function Task() {
     progressIt: { value: new Signal() },
     resumeIt: { value: new Signal() },
     stopIt: { value: new Signal() },
+    throwError: { value: false, writable: true },
     timeoutIt: { value: new Signal() }
   });
 }
@@ -5893,8 +5894,14 @@ Task.prototype = Object.create(Action.prototype, {
       }
     } },
   notifyError: { writable: true, value: function value() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this._running = false;
+      this._phase = TaskPhase.ERROR;
       if (!this.__lock__) {
-        this.errorIt.emit(this);
+        this.errorIt.emit(this, message);
+      }
+      if (this.throwError) {
+        throw new Error(message);
       }
     } },
   notifyInfo: { writable: true, value: function value(info) {

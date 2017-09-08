@@ -114,6 +114,15 @@ export function Task()
         stopIt : { value : new Signal() },
 
         /**
+         * Indicates if the class throws errors or notify a finished event when the task failed.
+         * @memberof system.process.Task
+         * @type {boolean}
+         * @default false
+         * @instance
+         */
+        throwError : { value : false , writable : true } ,
+
+        /**
          * The signal emit when the task is out of time.
          * @memberof system.process.Task
          * @type {system.signals.Signal}
@@ -178,11 +187,17 @@ Task.prototype = Object.create( Action.prototype ,
      * @function
      * @instance
      */
-    notifyError : { writable : true , value : function()
+    notifyError : { writable : true , value : function( message = null )
     {
+        this._running = false ;
+        this._phase = TaskPhase.ERROR ;
         if ( !this.__lock__ )
         {
-            this.errorIt.emit( this ) ;
+            this.errorIt.emit( this , message ) ;
+        }
+        if( this.throwError )
+        {
+            throw new Error( message ) ;
         }
     }},
 
