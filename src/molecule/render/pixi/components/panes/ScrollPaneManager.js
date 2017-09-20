@@ -19,7 +19,7 @@ import { Tween } from './system/transitions/Tween.js' ;
  * @memberof molecule.renders.pixi.components.panes
  * @class
  * @constructor
- * @param {Object} [target=null] - The target reference of the builder.
+ * @param {Object} [target=null] - The target reference of the manager.
  */
 export function ScrollPaneManager( target = null )
 {
@@ -155,12 +155,12 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             if( this._target )
             {
-                this.unregisterTarget(this._target) ;
+                this.unregisterTarget() ;
             }
             this._target = target instanceof ScrollPane ? target : null ;
             if( this._target )
             {
-                this.registerTarget(this._target) ;
+                this.registerTarget() ;
             }
         }
     },
@@ -222,28 +222,30 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     /**
      * @private
      */
-    registerTarget: { value : function( target )
+    registerTarget : { value : function()
     {
+        let target = this._target ;
         if( target )
         {
             target.interactive = true ;
-            if( supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER ) )
+
+            if( supportsPointerEvents && (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.POINTER ) )
             {
                 target.pointerdown = this.____down.bind(this) ;
                 target.pointermove = this.____move.bind(this) ;
-                target.pointerup = target.pointeroutside = this.____upOutside.bind(this) ;
+                target.pointerup = target.pointeroutside = this.____up.bind(this) ;
             }
-            else if( (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE ) )
+            else if( (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.MOUSE ) )
             {
                 target.mousedown = this.____down.bind(this) ;
                 target.mousemove = this.____move.bind(this) ;
-                target.mouseup = target.mouseupoutside = this.____upOutside.bind(this) ;
+                target.mouseup = target.mouseupoutside = this.____up.bind(this) ;
             }
-            if( supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH) )
+            if( supportsTouchEvents && (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.TOUCH) )
             {
                 target.touchstart = this.____down.bind(this) ;
                 target.touchmove = this.____move.bind(this) ;
-                target.touchend = target.touchendoutside = this.____upOutside.bind(this) ;
+                target.touchend = target.touchendoutside = this.____up.bind(this) ;
             }
         }
     }},
@@ -251,8 +253,9 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     /**
      * @private
      */
-    unregisterTarget : { value : function( target )
+    unregisterTarget : { value : function()
     {
+        let target = this._target ;
         if( target )
         {
             target.interactive = false ;
@@ -260,15 +263,6 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
             target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null ;
             target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null ;
         }
-    }},
-
-    /**
-     * @private
-     */
-    updateInteractiveMode : { writable : true , value : function()
-    {
-        this.unregisterTarget( this._target ) ;
-        this.registerTarget( this._target ) ;
     }},
 
     /**

@@ -379,7 +379,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
             this._hScrollbar.w = $w - 2 * style.hScrollBarOffset - style.vScrollBarSize - style.vScrollBarOffset ;
             this._hScrollbar.h = style.hScrollBarSize ;
 
-            this._hScrollbar.style = style.hScrollBarStyle ;
+            //this._hScrollbar.style = style.hScrollBarStyle ; // FIXME
 
             if( content )
             {
@@ -407,7 +407,7 @@ ScrollPaneBuilder.prototype = Object.create( Builder.prototype ,
             this._vScrollbar.w = style.vScrollBarSize ;
             this._vScrollbar.h = $h - 2 * style.vScrollBarOffset - style.hScrollBarSize - style.hScrollBarOffset ;
 
-            this._vScrollbar.style = style.vScrollBarStyle ;
+            //this._vScrollbar.style = style.vScrollBarStyle ; // FIXME
 
             if( content )
             {

@@ -58,9 +58,9 @@ export function ScrollPane( init = null , locked = false )
         _scroller : { writable : false , value : new Point() }
     }) ;
 
-    this._manager.target = this ;
-
     Element.call( this , null , init , locked ) ;
+
+    this._manager.target = this ;
 }
 
 ScrollPane.prototype = Object.create( Element.prototype ,
@@ -290,6 +290,18 @@ ScrollPane.prototype = Object.create( Element.prototype ,
         if( this._locked === 0 && this._builder )
         {
             this._builder.scroll() ;
+        }
+    }},
+
+    /**
+     * @private
+     */
+    updateInteractiveMode : { writable : true , value : function()
+    {
+        if( this._manager )
+        {
+            this._manager.unregisterTarget() ;
+            this._manager.registerTarget() ;
         }
     }}
 });

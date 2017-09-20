@@ -17973,7 +17973,6 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                 this._hScrollbar.lock();
                 this._hScrollbar.w = $w - 2 * style.hScrollBarOffset - style.vScrollBarSize - style.vScrollBarOffset;
                 this._hScrollbar.h = style.hScrollBarSize;
-                this._hScrollbar.style = style.hScrollBarStyle;
                 if (content) {
                     this._hScrollbar.thumbSize = clamp($w / content.width * this._hScrollbar.w, style.scrollDragMinSize, style.scrollDragMaxSize);
                 } else {
@@ -17988,7 +17987,6 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
                 this._vScrollbar.lock();
                 this._vScrollbar.w = style.vScrollBarSize;
                 this._vScrollbar.h = $h - 2 * style.vScrollBarOffset - style.hScrollBarSize - style.hScrollBarOffset;
-                this._vScrollbar.style = style.vScrollBarStyle;
                 if (content) {
                     this._vScrollbar.thumbSize = clamp($h / content.height * this._vScrollbar.h, style.scrollDragMinSize, style.scrollDragMaxSize);
                 } else {
@@ -18153,11 +18151,11 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
         },
         set: function set(target) {
             if (this._target) {
-                this.unregisterTarget(this._target);
+                this.unregisterTarget();
             }
             this._target = target instanceof ScrollPane ? target : null;
             if (this._target) {
-                this.registerTarget(this._target);
+                this.registerTarget();
             }
         }
     },
@@ -18185,36 +18183,34 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             var bounds = this._target instanceof MOB ? this._target.fixArea() : this._target.getBounds();
             return x >= bounds.x && x <= bounds.x + bounds.width && y >= bounds.y && y <= bounds.y + bounds.height;
         } },
-    registerTarget: { value: function value(target) {
+    registerTarget: { value: function value() {
+            var target = this._target;
             if (target) {
                 target.interactive = true;
-                if (supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER)) {
+                if (supportsPointerEvents && (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.POINTER)) {
                     target.pointerdown = this.____down.bind(this);
                     target.pointermove = this.____move.bind(this);
-                    target.pointerup = target.pointeroutside = this.____upOutside.bind(this);
-                } else if (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE) {
+                    target.pointerup = target.pointeroutside = this.____up.bind(this);
+                } else if (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.MOUSE) {
                     target.mousedown = this.____down.bind(this);
                     target.mousemove = this.____move.bind(this);
-                    target.mouseup = target.mouseupoutside = this.____upOutside.bind(this);
+                    target.mouseup = target.mouseupoutside = this.____up.bind(this);
                 }
-                if (supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH)) {
+                if (supportsTouchEvents && (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.TOUCH)) {
                     target.touchstart = this.____down.bind(this);
                     target.touchmove = this.____move.bind(this);
-                    target.touchend = target.touchendoutside = this.____upOutside.bind(this);
+                    target.touchend = target.touchendoutside = this.____up.bind(this);
                 }
             }
         } },
-    unregisterTarget: { value: function value(target) {
+    unregisterTarget: { value: function value() {
+            var target = this._target;
             if (target) {
                 target.interactive = false;
                 target.mousedown = target.mousemove = target.mouseup = target.mouseupoutside = null;
                 target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null;
                 target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null;
             }
-        } },
-    updateInteractiveMode: { writable: true, value: function value() {
-            this.unregisterTarget(this._target);
-            this.registerTarget(this._target);
         } },
     scrollChange: { value: function value(action) {
             if (this._target && this._target._builder) {
@@ -18413,8 +18409,8 @@ function ScrollPane() {
         _manager: { writable: false, value: new ScrollPaneManager(this) },
         _scroller: { writable: false, value: new Point() }
     });
-    this._manager.target = this;
     Element$1.call(this, null, init, locked);
+    this._manager.target = this;
 }
 ScrollPane.prototype = Object.create(Element$1.prototype, {
     constructor: { writable: true, value: ScrollPane },
@@ -18512,6 +18508,12 @@ ScrollPane.prototype = Object.create(Element$1.prototype, {
             this._scroller.y = y;
             if (this._locked === 0 && this._builder) {
                 this._builder.scroll();
+            }
+        } },
+    updateInteractiveMode: { writable: true, value: function value() {
+            if (this._manager) {
+                this._manager.unregisterTarget();
+                this._manager.registerTarget();
             }
         } }
 });
