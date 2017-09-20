@@ -165,118 +165,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -1147,12 +1036,12 @@ var littleEndian = isLittleEndian();
 
 var max = 0xFF;
 var fromARGB = function fromARGB(a, r, g, b) {
-  r = Math.min(Math.max(r, 0), max);
-  g = Math.min(Math.max(g, 0), max);
-  b = Math.min(Math.max(b, 0), max);
-  a = isNaN(a) ? 0 : a;
-  a = 0xFF * Math.max(Math.min(a, 1), 0);
-  return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+    r = Math.min(Math.max(r, 0), max);
+    g = Math.min(Math.max(g, 0), max);
+    b = Math.min(Math.max(b, 0), max);
+    a = isNaN(a) ? 0 : a;
+    a = 0xFF * Math.max(Math.min(a, 1), 0);
+    return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
 };
 
 var getAlpha = function getAlpha(color) {
@@ -1302,12 +1191,12 @@ var yesterday = function yesterday() {
  * @memberof core
  */
 var date = Object.assign({
-  ONE_DAY_MS: ONE_DAY_MS,
-  after: after,
-  before: before,
-  daysInMonth: daysInMonth,
-  leapYear: leapYear,
-  yesterday: yesterday
+    ONE_DAY_MS: ONE_DAY_MS,
+    after: after,
+    before: before,
+    daysInMonth: daysInMonth,
+    leapYear: leapYear,
+    yesterday: yesterday
 });
 
 var isDOMElement = function isDOMElement(value) {
@@ -1752,12 +1641,12 @@ var atanH = function atanH(x) {
 var DEG2RAD = Math.PI / 180;
 
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
 };
 
 var clamp = function clamp(value, min, max) {
@@ -1875,12 +1764,12 @@ var fibonacci = function fibonacci(value) {
 };
 
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
 };
 
 function fixAngle(angle) {
@@ -3071,10 +2960,10 @@ Enum.prototype.valueOf = function () {
 };
 
 function isEquatable(target) {
-  if (target) {
-    return target.equals && target.equals instanceof Function || target instanceof Equatable;
-  }
-  return false;
+    if (target) {
+        return target.equals && target.equals instanceof Function || target instanceof Equatable;
+    }
+    return false;
 }
 function Equatable() {}
 Equatable.prototype = Object.create(Object.prototype);
@@ -3083,25 +2972,25 @@ Equatable.prototype.equals = function (object) {
 };
 
 function isEvaluable(target) {
-  if (target) {
-    return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
+    }
+    return false;
 }
 function Evaluable() {}
 Evaluable.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Evaluable },
-  eval: { writable: true, value: function value(_value) {} },
-  toString: { writable: true, value: function value() {
-      return '[' + this.constructor.name + ']';
-    } }
+    constructor: { writable: true, value: Evaluable },
+    eval: { writable: true, value: function value(_value) {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
 });
 
 function isFormattable(target) {
-  if (target) {
-    return target instanceof Formattable || 'format' in target && target.format instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Formattable || 'format' in target && target.format instanceof Function;
+    }
+    return false;
 }
 function Formattable() {}
 Formattable.prototype = Object.create(Object.prototype);
@@ -3367,19 +3256,19 @@ MapIterator.prototype = Object.create(Iterator.prototype, {
 });
 
 function MapEntry(key, value) {
-  Object.defineProperties(this, {
-    key: { value: key, writable: true },
-    value: { value: value, writable: true }
-  });
+    Object.defineProperties(this, {
+        key: { value: key, writable: true },
+        value: { value: value, writable: true }
+    });
 }
 MapEntry.prototype = Object.create(Object.prototype, {
-  constructor: { value: MapEntry },
-  clone: { value: function value() {
-      return new MapEntry(this.key, this.value);
-    } },
-  toString: { value: function value() {
-      return "[MapEntry key:" + this.key + " value:" + this.value + "]";
-    } }
+    constructor: { value: MapEntry },
+    clone: { value: function value() {
+            return new MapEntry(this.key, this.value);
+        } },
+    toString: { value: function value() {
+            return "[MapEntry key:" + this.key + " value:" + this.value + "]";
+        } }
 });
 
 function MapFormatter() {}
@@ -3580,26 +3469,26 @@ ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
  * @memberof system
  */
 var data = Object.assign({
-  isIdentifiable: isIdentifiable,
-  isIterator: isIterator,
-  isOrderedIterator: isOrderedIterator,
-  isValidator: isValidator,
-  Identifiable: Identifiable,
-  Iterator: Iterator,
-  KeyValuePair: KeyValuePair,
-  OrderedIterator: OrderedIterator,
-  Property: Property,
-  Validator: Validator,
-  Attribute: Attribute,
-  Method: Method,
-  ValueObject: ValueObject,
-  iterators: {
-    ArrayIterator: ArrayIterator,
-    MapIterator: MapIterator
-  },
-  maps: {
-    ArrayMap: ArrayMap
-  }
+    isIdentifiable: isIdentifiable,
+    isIterator: isIterator,
+    isOrderedIterator: isOrderedIterator,
+    isValidator: isValidator,
+    Identifiable: Identifiable,
+    Iterator: Iterator,
+    KeyValuePair: KeyValuePair,
+    OrderedIterator: OrderedIterator,
+    Property: Property,
+    Validator: Validator,
+    Attribute: Attribute,
+    Method: Method,
+    ValueObject: ValueObject,
+    iterators: {
+        ArrayIterator: ArrayIterator,
+        MapIterator: MapIterator
+    },
+    maps: {
+        ArrayMap: ArrayMap
+    }
 });
 
 function ConcurrencyError(message, fileName, lineNumber) {
@@ -4403,11 +4292,11 @@ var formatters = Object.assign({
 
 function Receiver() {}
 Receiver.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Receiver },
-  receive: { writable: true, value: function value() {} },
-  toString: { writable: true, value: function value() {
-      return '[' + this.constructor.name + ']';
-    } }
+    constructor: { writable: true, value: Receiver },
+    receive: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
 });
 
 function Signaler() {}
@@ -4587,41 +4476,41 @@ Signal.prototype = Object.create(Signaler.prototype, {
 });
 
 function LoggerLevel(value, name) {
-  Enum.call(this, value, name);
+    Enum.call(this, value, name);
 }
 LoggerLevel.prototype = Object.create(Enum.prototype);
 LoggerLevel.prototype.constructor = LoggerLevel;
 Object.defineProperties(LoggerLevel, {
-  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
-  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
-  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
-  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
-  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
-  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
-  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
-  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
-  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
-  get: { value: function value(_value) {
-      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      var l = levels.length;
-      while (--l > -1) {
-        if (levels[l]._value === _value) {
-          return levels[l];
-        }
-      }
-      return null;
-    } },
-  getLevelString: { value: function value(_value2) {
-      if (LoggerLevel.validate(_value2)) {
-        return _value2.toString();
-      } else {
-        return LoggerLevel.DEFAULT_LEVEL_STRING;
-      }
-    } },
-  validate: { value: function value(level) {
-      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      return levels.indexOf(level) > -1;
-    } }
+    ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+    CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+    DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+    DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+    ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+    INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+    NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+    WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+    WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+    get: { value: function value(_value) {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            var l = levels.length;
+            while (--l > -1) {
+                if (levels[l]._value === _value) {
+                    return levels[l];
+                }
+            }
+            return null;
+        } },
+    getLevelString: { value: function value(_value2) {
+            if (LoggerLevel.validate(_value2)) {
+                return _value2.toString();
+            } else {
+                return LoggerLevel.DEFAULT_LEVEL_STRING;
+            }
+        } },
+    validate: { value: function value(level) {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            return levels.indexOf(level) > -1;
+        } }
 });
 
 function LoggerEntry(message, level, channel) {
@@ -4705,15 +4594,15 @@ Logger.prototype = Object.create(Signal.prototype, {
 });
 
 var strings$1 = Object.defineProperties({}, {
-  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
-  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
-  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
-  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
-  DEFAULT_CHANNEL: { value: "", enumerable: true },
-  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
-  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+    CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+    CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+    EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+    ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+    DEFAULT_CHANNEL: { value: "", enumerable: true },
+    ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+    INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
 });
 
 function LoggerTarget() {
@@ -5255,42 +5144,42 @@ ObjectStrategy.prototype = Object.create(Object.prototype, {
 });
 
 function ObjectProperty(name, value) {
-  var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
-  var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  Object.defineProperties(this, {
-    args: { value: null, writable: true },
-    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
-    name: { value: name, writable: true },
-    scope: { value: null, writable: true },
-    value: { value: value, writable: true },
-    _policy: { value: null, writable: true }
-  });
-  this.policy = policy;
+    var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
+    var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    Object.defineProperties(this, {
+        args: { value: null, writable: true },
+        evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+        name: { value: name, writable: true },
+        scope: { value: null, writable: true },
+        value: { value: value, writable: true },
+        _policy: { value: null, writable: true }
+    });
+    this.policy = policy;
 }
 ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-  constructor: { writable: true, value: ObjectProperty },
-  policy: {
-    get: function get() {
-      return this._policy;
-    },
-    set: function set(str) {
-      switch (str) {
-        case ObjectAttribute.ARGUMENTS:
-        case ObjectAttribute.CALLBACK:
-        case ObjectAttribute.CONFIG:
-        case ObjectAttribute.LOCALE:
-        case ObjectAttribute.REFERENCE:
-          {
-            this._policy = str;
-            break;
-          }
-        default:
-          {
-            this._policy = ObjectAttribute.VALUE;
-          }
-      }
+    constructor: { writable: true, value: ObjectProperty },
+    policy: {
+        get: function get() {
+            return this._policy;
+        },
+        set: function set(str) {
+            switch (str) {
+                case ObjectAttribute.ARGUMENTS:
+                case ObjectAttribute.CALLBACK:
+                case ObjectAttribute.CONFIG:
+                case ObjectAttribute.LOCALE:
+                case ObjectAttribute.REFERENCE:
+                    {
+                        this._policy = str;
+                        break;
+                    }
+                default:
+                    {
+                        this._policy = ObjectAttribute.VALUE;
+                    }
+            }
+        }
     }
-  }
 });
 
 function createProperties(factory) {
@@ -5820,139 +5709,139 @@ var TaskPhase = Object.defineProperties({}, {
 });
 
 function Action() {
-  Object.defineProperties(this, {
-    finishIt: { value: new Signal() },
-    startIt: { value: new Signal() },
-    __lock__: { writable: true, value: false },
-    _phase: { writable: true, value: TaskPhase.INACTIVE },
-    _running: { writable: true, value: false }
-  });
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        __lock__: { writable: true, value: false },
+        _phase: { writable: true, value: TaskPhase.INACTIVE },
+        _running: { writable: true, value: false }
+    });
 }
 Action.prototype = Object.create(Runnable.prototype, {
-  constructor: { writable: true, value: Action },
-  phase: { get: function get() {
-      return this._phase;
-    } },
-  running: { get: function get() {
-      return this._running;
-    } },
-  clone: { writable: true, value: function value() {
-      return new Action();
-    } },
-  isLocked: { writable: true, value: function value() {
-      return this.__lock__;
-    } },
-  lock: { writable: true, value: function value() {
-      this.__lock__ = true;
-    } },
-  notifyFinished: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.FINISHED;
-      this.finishIt.emit(this);
-      this._phase = TaskPhase.INACTIVE;
-    } },
-  notifyStarted: { writable: true, value: function value() {
-      this._running = true;
-      this._phase = TaskPhase.RUNNING;
-      this.startIt.emit(this);
-    } },
-  unlock: { writable: true, value: function value() {
-      this.__lock__ = false;
-    } }
+    constructor: { writable: true, value: Action },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Action();
+        } },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.FINISHED;
+            this.finishIt.emit(this);
+            this._phase = TaskPhase.INACTIVE;
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this._phase = TaskPhase.RUNNING;
+            this.startIt.emit(this);
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } }
 });
 
 function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    changeIt: { value: new Signal() },
-    clearIt: { value: new Signal() },
-    errorIt: { value: new Signal() },
-    infoIt: { value: new Signal() },
-    looping: { value: false, writable: true },
-    loopIt: { value: new Signal() },
-    pauseIt: { value: new Signal() },
-    progressIt: { value: new Signal() },
-    resumeIt: { value: new Signal() },
-    stopIt: { value: new Signal() },
-    throwError: { value: false, writable: true },
-    timeoutIt: { value: new Signal() }
-  });
+    Action.call(this);
+    Object.defineProperties(this, {
+        changeIt: { value: new Signal() },
+        clearIt: { value: new Signal() },
+        errorIt: { value: new Signal() },
+        infoIt: { value: new Signal() },
+        looping: { value: false, writable: true },
+        loopIt: { value: new Signal() },
+        pauseIt: { value: new Signal() },
+        progressIt: { value: new Signal() },
+        resumeIt: { value: new Signal() },
+        stopIt: { value: new Signal() },
+        throwError: { value: false, writable: true },
+        timeoutIt: { value: new Signal() }
+    });
 }
 Task.prototype = Object.create(Action.prototype, {
-  constructor: { writable: true, value: Task },
-  clone: { writable: true, value: function value() {
-      return new Task();
-    } },
-  notifyChanged: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.changeIt.emit(this);
-      }
-    } },
-  notifyCleared: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.clearIt.emit(this);
-      }
-    } },
-  notifyError: { writable: true, value: function value() {
-      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      this._running = false;
-      this._phase = TaskPhase.ERROR;
-      if (!this.__lock__) {
-        this.errorIt.emit(this, message);
-      }
-      if (this.throwError) {
-        throw new Error(message);
-      }
-    } },
-  notifyInfo: { writable: true, value: function value(info) {
-      if (!this.__lock__) {
-        this.infoIt.emit(this, info);
-      }
-    } },
-  notifyLooped: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.loopIt.emit(this);
-      }
-    } },
-  notifyPaused: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.pauseIt.emit(this);
-      }
-    } },
-  notifyProgress: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.progressIt.emit(this);
-      }
-    } },
-  notifyResumed: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.resumeIt.emit(this);
-      }
-    } },
-  notifyStopped: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.stopIt.emit(this);
-      }
-    } },
-  notifyTimeout: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.TIMEOUT;
-      if (!this.__lock__) {
-        this.timeoutIt.emit(this);
-      }
-    } },
-  resume: { writable: true, value: function value() {} },
-  reset: { writable: true, value: function value() {} },
-  start: { writable: true, value: function value() {
-      this.run();
-    } },
-  stop: { writable: true, value: function value() {} }
+    constructor: { writable: true, value: Task },
+    clone: { writable: true, value: function value() {
+            return new Task();
+        } },
+    notifyChanged: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.changeIt.emit(this);
+            }
+        } },
+    notifyCleared: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.clearIt.emit(this);
+            }
+        } },
+    notifyError: { writable: true, value: function value() {
+            var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            this._running = false;
+            this._phase = TaskPhase.ERROR;
+            if (!this.__lock__) {
+                this.errorIt.emit(this, message);
+            }
+            if (this.throwError) {
+                throw new Error(message);
+            }
+        } },
+    notifyInfo: { writable: true, value: function value(info) {
+            if (!this.__lock__) {
+                this.infoIt.emit(this, info);
+            }
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.loopIt.emit(this);
+            }
+        } },
+    notifyPaused: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.pauseIt.emit(this);
+            }
+        } },
+    notifyProgress: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.progressIt.emit(this);
+            }
+        } },
+    notifyResumed: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.resumeIt.emit(this);
+            }
+        } },
+    notifyStopped: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.stopIt.emit(this);
+            }
+        } },
+    notifyTimeout: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.TIMEOUT;
+            if (!this.__lock__) {
+                this.timeoutIt.emit(this);
+            }
+        } },
+    resume: { writable: true, value: function value() {} },
+    reset: { writable: true, value: function value() {} },
+    start: { writable: true, value: function value() {
+            this.run();
+        } },
+    stop: { writable: true, value: function value() {} }
 });
 
 function ObjectDefinitionContainer() {
@@ -6968,22 +6857,22 @@ Parameters.prototype = Object.create(Object.prototype, {
  * trace( factory.getObject('position') ) ;
  */
 var ioc = Object.assign({
-  logger: logger,
-  MagicReference: MagicReference,
-  ObjectArgument: ObjectArgument,
-  ObjectAttribute: ObjectAttribute,
-  ObjectConfig: ObjectConfig,
-  ObjectDefinition: ObjectDefinition,
-  ObjectDefinitionContainer: ObjectDefinitionContainer,
-  ObjectFactory: ObjectFactory,
-  ObjectListener: ObjectListener,
-  ObjectMethod: ObjectMethod,
-  ObjectOrder: ObjectOrder,
-  ObjectProperty: ObjectProperty,
-  ObjectReceiver: ObjectReceiver,
-  ObjectScope: ObjectScope,
-  Parameters: Parameters,
-  TypePolicy: TypePolicy
+    logger: logger,
+    MagicReference: MagicReference,
+    ObjectArgument: ObjectArgument,
+    ObjectAttribute: ObjectAttribute,
+    ObjectConfig: ObjectConfig,
+    ObjectDefinition: ObjectDefinition,
+    ObjectDefinitionContainer: ObjectDefinitionContainer,
+    ObjectFactory: ObjectFactory,
+    ObjectListener: ObjectListener,
+    ObjectMethod: ObjectMethod,
+    ObjectOrder: ObjectOrder,
+    ObjectProperty: ObjectProperty,
+    ObjectReceiver: ObjectReceiver,
+    ObjectScope: ObjectScope,
+    Parameters: Parameters,
+    TypePolicy: TypePolicy
 });
 
 function isLoggable(target) {
@@ -7194,19 +7083,19 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 var logging = Object.assign({
-  isLoggable: isLoggable,
-  Log: Log,
-  Loggable: Loggable,
-  Logger: Logger,
-  LoggerEntry: LoggerEntry,
-  LoggerFactory: LoggerFactory,
-  LoggerLevel: LoggerLevel,
-  LoggerTarget: LoggerTarget,
-  targets: Object.assign({
-    ConsoleTarget: ConsoleTarget,
-    LineFormattedTarget: LineFormattedTarget,
-    TraceTarget: TraceTarget
-  })
+    isLoggable: isLoggable,
+    Log: Log,
+    Loggable: Loggable,
+    Logger: Logger,
+    LoggerEntry: LoggerEntry,
+    LoggerFactory: LoggerFactory,
+    LoggerLevel: LoggerLevel,
+    LoggerTarget: LoggerTarget,
+    targets: Object.assign({
+        ConsoleTarget: ConsoleTarget,
+        LineFormattedTarget: LineFormattedTarget,
+        TraceTarget: TraceTarget
+    })
 });
 
 function isRule(target) {
@@ -7319,19 +7208,19 @@ ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
 });
 
 function Null() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
 Null.prototype.eval = function () {
-  if (this.strict) {
-    return this.value === null;
-  } else {
-    return this.value == null;
-  }
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
 };
 
 function ElseIfNull(value) {
@@ -7816,22 +7705,22 @@ IfZero.prototype = Object.create(IfTask.prototype, {
  * task.run() ;
  */
 var logics = Object.assign({
-  ElseIf: ElseIf,
-  ElseIfEmptyString: ElseIfEmptyString,
-  ElseIfEquals: ElseIfEquals,
-  ElseIfFalse: ElseIfFalse,
-  ElseIfNull: ElseIfNull,
-  ElseIfTrue: ElseIfTrue,
-  ElseIfUndefined: ElseIfUndefined,
-  ElseIfZero: ElseIfZero,
-  IfEmptyString: IfEmptyString,
-  IfEquals: IfEquals,
-  IfFalse: IfFalse,
-  IfNull: IfNull,
-  IfTask: IfTask,
-  IfTrue: IfTrue,
-  IfUndefined: IfUndefined,
-  IfZero: IfZero
+    ElseIf: ElseIf,
+    ElseIfEmptyString: ElseIfEmptyString,
+    ElseIfEquals: ElseIfEquals,
+    ElseIfFalse: ElseIfFalse,
+    ElseIfNull: ElseIfNull,
+    ElseIfTrue: ElseIfTrue,
+    ElseIfUndefined: ElseIfUndefined,
+    ElseIfZero: ElseIfZero,
+    IfEmptyString: IfEmptyString,
+    IfEquals: IfEquals,
+    IfFalse: IfFalse,
+    IfNull: IfNull,
+    IfTask: IfTask,
+    IfTrue: IfTrue,
+    IfUndefined: IfUndefined,
+    IfZero: IfZero
 });
 
 function Model() {
@@ -8459,16 +8348,16 @@ InitMapModel.prototype = Object.create(Action.prototype, {
  * model.current = null ;
  */
 var models = Object.assign({
-  ChangeModel: ChangeModel,
-  MemoryModel: MemoryModel,
-  Model: Model,
-  arrays: Object.assign({
-    ArrayModel: ArrayModel
-  }),
-  maps: Object.assign({
-    InitMapModel: InitMapModel,
-    MapModel: MapModel
-  })
+    ChangeModel: ChangeModel,
+    MemoryModel: MemoryModel,
+    Model: Model,
+    arrays: Object.assign({
+        ArrayModel: ArrayModel
+    }),
+    maps: Object.assign({
+        InitMapModel: InitMapModel,
+        MapModel: MapModel
+    })
 });
 
 function PRNG() {
@@ -8648,17 +8537,17 @@ var numeric = Object.assign({
 });
 
 function ActionEntry(action) {
-  var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  this.action = action;
-  this.auto = Boolean(auto);
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+    var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    this.action = action;
+    this.auto = Boolean(auto);
+    this.priority = priority > 0 ? Math.ceil(priority) : 0;
 }
 ActionEntry.prototype = Object.create(Object.prototype, {
-  constructor: { value: ActionEntry },
-  toString: { value: function value() {
-      return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
-    } }
+    constructor: { value: ActionEntry },
+    toString: { value: function value() {
+            return "[ActionEntry action:" + this.action + " priority:" + this.priority + " auto:" + this.auto + "]";
+        } }
 });
 
 function Apply() {
@@ -9909,19 +9798,19 @@ IsBoolean.prototype.eval = function () {
 };
 
 function IsNaN() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 IsNaN.prototype = Object.create(Rule.prototype);
 IsNaN.prototype.constructor = IsNaN;
 IsNaN.prototype.eval = function () {
-  if (this.strict) {
-    return isNaN(this.value);
-  } else {
-    return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
-  }
+    if (this.strict) {
+        return isNaN(this.value);
+    } else {
+        return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
+    }
 };
 
 function IsNumber() {
@@ -14454,193 +14343,193 @@ Text.prototype = Object.create(AEntity.prototype, {
 });
 
 function Button() {
-  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    backgroundColor: { writable: true, value: "#00FFFF" },
-    height: { writable: true, value: 1 },
-    radius: { writable: true, value: 0 },
-    width: { writable: true, value: 1 },
-    _geometry: { writable: true, value: null },
-    _loaded: { writable: true, value: null },
-    _material: { writable: true, value: null },
-    _mesh: { writable: true, value: null },
-    _text: { writable: true, value: null }
-  });
-  Material.call(this, init, 'a-entity');
-  this._text = new Text();
-  this.addChild(this._text);
-  this._loaded = this.loaded.bind(this);
-  this._element.addEventListener("loaded", this._loaded);
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        backgroundColor: { writable: true, value: "#00FFFF" },
+        height: { writable: true, value: 1 },
+        radius: { writable: true, value: 0 },
+        width: { writable: true, value: 1 },
+        _geometry: { writable: true, value: null },
+        _loaded: { writable: true, value: null },
+        _material: { writable: true, value: null },
+        _mesh: { writable: true, value: null },
+        _text: { writable: true, value: null }
+    });
+    Material.call(this, init, 'a-entity');
+    this._text = new Text();
+    this.addChild(this._text);
+    this._loaded = this.loaded.bind(this);
+    this._element.addEventListener("loaded", this._loaded);
 }
 Button.prototype = Object.create(Material.prototype, {
-  constructor: { value: Button, writable: true },
-  align: {
-    get: function get() {
-      return this._text.align;
+    constructor: { value: Button, writable: true },
+    align: {
+        get: function get() {
+            return this._text.align;
+        },
+        set: function set(value) {
+            this._text.align = value;
+        }
     },
-    set: function set(value) {
-      this._text.align = value;
-    }
-  },
-  alphaTest: {
-    get: function get() {
-      return this._text.alphaTest;
+    alphaTest: {
+        get: function get() {
+            return this._text.alphaTest;
+        },
+        set: function set(value) {
+            this._text.alphaTest = value;
+        }
     },
-    set: function set(value) {
-      this._text.alphaTest = value;
-    }
-  },
-  anchor: {
-    get: function get() {
-      return this._text.anchor;
+    anchor: {
+        get: function get() {
+            return this._text.anchor;
+        },
+        set: function set(value) {
+            this._text.anchor = value;
+        }
     },
-    set: function set(value) {
-      this._text.anchor = value;
-    }
-  },
-  baseline: {
-    get: function get() {
-      return this._text.baseline;
+    baseline: {
+        get: function get() {
+            return this._text.baseline;
+        },
+        set: function set(value) {
+            this._text.baseline = value;
+        }
     },
-    set: function set(value) {
-      this._text.baseline = value;
-    }
-  },
-  color: {
-    get: function get() {
-      return this._text.color;
+    color: {
+        get: function get() {
+            return this._text.color;
+        },
+        set: function set(value) {
+            this._text.color = value;
+        }
     },
-    set: function set(value) {
-      this._text.color = value;
-    }
-  },
-  font: {
-    get: function get() {
-      return this._text.font;
+    font: {
+        get: function get() {
+            return this._text.font;
+        },
+        set: function set(value) {
+            this._text.font = value;
+        }
     },
-    set: function set(value) {
-      this._text.font = value;
-    }
-  },
-  fontImage: {
-    get: function get() {
-      return this._text.fontImage;
+    fontImage: {
+        get: function get() {
+            return this._text.fontImage;
+        },
+        set: function set(value) {
+            this._text.fontImage = value;
+        }
     },
-    set: function set(value) {
-      this._text.fontImage = value;
-    }
-  },
-  letterSpacing: {
-    get: function get() {
-      return this._text.letterSpacing;
+    letterSpacing: {
+        get: function get() {
+            return this._text.letterSpacing;
+        },
+        set: function set(value) {
+            this._text.letterSpacing = value;
+        }
     },
-    set: function set(value) {
-      this._text.letterSpacing = value;
-    }
-  },
-  letterHeight: {
-    get: function get() {
-      return this._text.letterHeight;
+    letterHeight: {
+        get: function get() {
+            return this._text.letterHeight;
+        },
+        set: function set(value) {
+            this._text.letterHeight = value;
+        }
     },
-    set: function set(value) {
-      this._text.letterHeight = value;
-    }
-  },
-  shader: {
-    get: function get() {
-      return this.getAttribute('shader');
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
     },
-    set: function set(value) {
-      this.setAttribute('shader', value);
-    }
-  },
-  side: {
-    get: function get() {
-      return this.getAttribute('side');
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
     },
-    set: function set(value) {
-      this.setAttribute('side', value);
-    }
-  },
-  tabSize: {
-    get: function get() {
-      return this._text.tabSize;
+    tabSize: {
+        get: function get() {
+            return this._text.tabSize;
+        },
+        set: function set(value) {
+            this._text.tabSize = value;
+        }
     },
-    set: function set(value) {
-      this._text.tabSize = value;
-    }
-  },
-  value: {
-    get: function get() {
-      return this._text.value;
+    value: {
+        get: function get() {
+            return this._text.value;
+        },
+        set: function set(value) {
+            this._text.value = value;
+        }
     },
-    set: function set(value) {
-      this._text.value = value;
-    }
-  },
-  whitespace: {
-    get: function get() {
-      return this._text.whitespace;
+    whitespace: {
+        get: function get() {
+            return this._text.whitespace;
+        },
+        set: function set(value) {
+            this._text.whitespace = value;
+        }
     },
-    set: function set(value) {
-      this._text.whitespace = value;
-    }
-  },
-  wrapCount: {
-    get: function get() {
-      return this._text.wrapCount;
+    wrapCount: {
+        get: function get() {
+            return this._text.wrapCount;
+        },
+        set: function set(value) {
+            this._text.wrapCount = value;
+        }
     },
-    set: function set(value) {
-      this._text.wrapCount = value;
-    }
-  },
-  wrapPixels: {
-    get: function get() {
-      return this._text.wrapPixels;
+    wrapPixels: {
+        get: function get() {
+            return this._text.wrapPixels;
+        },
+        set: function set(value) {
+            this._text.wrapPixels = value;
+        }
     },
-    set: function set(value) {
-      this._text.wrapPixels = value;
-    }
-  },
-  zOffset: {
-    get: function get() {
-      return this._text.zOffset;
+    zOffset: {
+        get: function get() {
+            return this._text.zOffset;
+        },
+        set: function set(value) {
+            this._text.zOffset = value;
+        }
     },
-    set: function set(value) {
-      this._text.zOffset = value;
-    }
-  },
-  loaded: { value: function value() {
-      this._element.removeEventListener('loaded', this._loaded);
-      this._loaded = null;
-      this.render();
-    } },
-  render: { value: function value() {
-      var h = this.height;
-      var radius = this.radius;
-      var w = this.width;
-      var x = 0;
-      var y = 0;
-      var round = new THREE.Shape();
-      round.moveTo(x, y + radius);
-      round.lineTo(x, y + h - radius);
-      round.quadraticCurveTo(x, y + h, x + radius, y + h);
-      round.lineTo(x + w - radius, y + h);
-      round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
-      round.lineTo(x + w, y + radius);
-      round.quadraticCurveTo(x + w, y, x + w - radius, y);
-      round.lineTo(x + radius, y);
-      round.quadraticCurveTo(x, y, x, y + radius);
-      this._geometry = new THREE.ShapeGeometry(round);
-      this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
-      this._mesh = new THREE.Mesh(this._geometry, this._material);
-      this._mesh.position.x = -(w / 2);
-      this._mesh.position.y = -(h / 2);
-      this._element.setObject3D('mesh', this._mesh);
-      this._geometry = null;
-      this._material = null;
-      this._mesh = null;
-    } }
+    loaded: { value: function value() {
+            this._element.removeEventListener('loaded', this._loaded);
+            this._loaded = null;
+            this.render();
+        } },
+    render: { value: function value() {
+            var h = this.height;
+            var radius = this.radius;
+            var w = this.width;
+            var x = 0;
+            var y = 0;
+            var round = new THREE.Shape();
+            round.moveTo(x, y + radius);
+            round.lineTo(x, y + h - radius);
+            round.quadraticCurveTo(x, y + h, x + radius, y + h);
+            round.lineTo(x + w - radius, y + h);
+            round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
+            round.lineTo(x + w, y + radius);
+            round.quadraticCurveTo(x + w, y, x + w - radius, y);
+            round.lineTo(x + radius, y);
+            round.quadraticCurveTo(x, y, x, y + radius);
+            this._geometry = new THREE.ShapeGeometry(round);
+            this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
+            this._mesh = new THREE.Mesh(this._geometry, this._material);
+            this._mesh.position.x = -(w / 2);
+            this._mesh.position.y = -(h / 2);
+            this._element.setObject3D('mesh', this._mesh);
+            this._geometry = null;
+            this._material = null;
+            this._mesh = null;
+        } }
 });
 
 function Circle$1() {
@@ -15344,8 +15233,8 @@ var display$2 = Object.assign({
  * @memberof molecule.render
  */
 var aframe = Object.assign({
-  components: components$1,
-  display: display$2
+    components: components$1,
+    display: display$2
 });
 
 function Anchor() {
@@ -16212,38 +16101,38 @@ LoadScript.prototype = Object.create(Task.prototype, {
  * @memberof molecule.render
  */
 var dom$1 = Object.assign({
-  display: {
-    Anchor: Anchor,
-    Body: Body,
-    Button: Button$1,
-    Canvas: Canvas,
-    Div: Div,
-    G: G,
-    Head: Head,
-    Img: Img,
-    Node: Node$1,
-    Paragraph: Paragraph,
-    Path: Path,
-    Script: Script,
-    Stage: Stage$1,
-    Svg: Svg
-  },
-  entities: {
-    createEntity: createEntity,
-    createImg: createImg,
-    createVideo: createVideo
-  },
-  events: {
-    supportsPointerEvents: supportsPointerEvents,
-    supportsTouchEvents: supportsTouchEvents
-  },
-  medias: {
-    Audio: Audio,
-    Video: Video
-  },
-  net: {
-    LoadScript: LoadScript
-  }
+    display: {
+        Anchor: Anchor,
+        Body: Body,
+        Button: Button$1,
+        Canvas: Canvas,
+        Div: Div,
+        G: G,
+        Head: Head,
+        Img: Img,
+        Node: Node$1,
+        Paragraph: Paragraph,
+        Path: Path,
+        Script: Script,
+        Stage: Stage$1,
+        Svg: Svg
+    },
+    entities: {
+        createEntity: createEntity,
+        createImg: createImg,
+        createVideo: createVideo
+    },
+    events: {
+        supportsPointerEvents: supportsPointerEvents,
+        supportsTouchEvents: supportsTouchEvents
+    },
+    medias: {
+        Audio: Audio,
+        Video: Video
+    },
+    net: {
+        LoadScript: LoadScript
+    }
 });
 
 function MOB() {
@@ -16659,7 +16548,7 @@ Element$1.prototype = Object.create(MOB.prototype, {
             if (this._builder) {
                 this._builder.clear();
             }
-            this._builder = builder instanceof Builder || this.getBuilderRenderer();
+            this._builder = builder instanceof Builder ? builder : this.getBuilderRenderer();
             if (this._builder instanceof Builder) {
                 this._builder.target = this;
                 this._builder.run();
@@ -16736,7 +16625,7 @@ Element$1.prototype = Object.create(MOB.prototype, {
                 this._style.changed.disconnect(this._viewStyleChanged);
                 this._viewStyleChanged = null;
             }
-            this._style = style instanceof Style || this.getStyleRenderer();
+            this._style = style instanceof Style ? style : this.getStyleRenderer();
             if (this._style instanceof Style) {
                 this._viewStyleChanged = this.viewStyleChanged.bind(this);
                 this._style.changed.connect(this._viewStyleChanged);
@@ -18546,11 +18435,11 @@ var panes = Object.assign({
  * @since 1.0.8
  */
 var components$2 = Object.assign({
-  CoreProgress: CoreProgress,
-  CoreScrollbar: CoreScrollbar,
-  bars: bars,
-  buttons: buttons,
-  panes: panes
+    CoreProgress: CoreProgress,
+    CoreScrollbar: CoreScrollbar,
+    bars: bars,
+    buttons: buttons,
+    panes: panes
 });
 
 function Background() {
@@ -19337,32 +19226,32 @@ function warn(message) {
 }
 
 function AddChild() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 AddChild.prototype = Object.create(Task.prototype, {
-  constructor: { value: AddChild },
-  clone: { writable: true, value: function value() {
-      return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.addChild(this.child);
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: AddChild },
+    clone: { writable: true, value: function value() {
+            return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function AddChildAt() {
@@ -19481,30 +19370,30 @@ AlignPivot.prototype = Object.create(Task.prototype, {
 });
 
 function Hide() {
-  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 Hide.prototype = Object.create(Task.prototype, {
-  constructor: { value: Hide },
-  clone: { writable: true, value: function value() {
-      return new Hide(this.display, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.display.visible = false;
-      } catch (er) {
-        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: Hide },
+    clone: { writable: true, value: function value() {
+            return new Hide(this.display, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.display.visible = false;
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function Contains() {
@@ -19616,146 +19505,146 @@ MoveTo.prototype = Object.create(Task.prototype, {
 });
 
 function RemoveChild() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChild.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChild },
-  clone: { writable: true, value: function value() {
-      return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChild(this.child);
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChild },
+    clone: { writable: true, value: function value() {
+            return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function RemoveChildAt() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    index: { writable: true, value: index > 0 ? index : 0 },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        index: { writable: true, value: index > 0 ? index : 0 },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChildAt.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChildAt },
-  clone: { writable: true, value: function value() {
-      return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChildAt(this.index);
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChildAt },
+    clone: { writable: true, value: function value() {
+            return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChildAt(this.index);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function RemoveChildren() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChildren.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChildren },
-  clone: { writable: true, value: function value() {
-      return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChildren();
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChildren },
+    clone: { writable: true, value: function value() {
+            return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChildren();
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function Show() {
-  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 Show.prototype = Object.create(Task.prototype, {
-  constructor: { value: Show },
-  clone: { writable: true, value: function value() {
-      return new Show(this.display, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.display.visible = true;
-      } catch (er) {
-        warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: Show },
+    clone: { writable: true, value: function value() {
+            return new Show(this.display, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.display.visible = true;
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 function SwapChildren() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    child1: { writable: true, value: child1 },
-    child2: { writable: true, value: child2 },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        child1: { writable: true, value: child1 },
+        child2: { writable: true, value: child2 },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 SwapChildren.prototype = Object.create(Task.prototype, {
-  constructor: { value: SwapChildren },
-  clone: { writable: true, value: function value() {
-      return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.swapChildren(this.child1, this.child2);
-      } catch (er) {
-        warn(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: SwapChildren },
+    clone: { writable: true, value: function value() {
+            return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.swapChildren(this.child1, this.child2);
+            } catch (er) {
+                warn(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 /**
@@ -19837,24 +19726,24 @@ var pixi = Object.assign({
  * @memberof molecule
  */
 var render$1 = Object.assign({
-  aframe: aframe,
-  dom: dom$1,
-  pixi: pixi
+    aframe: aframe,
+    dom: dom$1,
+    pixi: pixi
 });
 
 function State() {
-  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    owner: { value: null, writable: true },
-    view: { value: null, writable: true }
-  });
-  ValueObject.call(this, init);
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        owner: { value: null, writable: true },
+        view: { value: null, writable: true }
+    });
+    ValueObject.call(this, init);
 }
 State.prototype = Object.create(ValueObject.prototype, {
-  constructor: { writable: true, value: State },
-  toString: { writable: true, value: function value() {
-      return this.formatToString(null, "id");
-    } }
+    constructor: { writable: true, value: State },
+    toString: { writable: true, value: function value() {
+            return this.formatToString(null, "id");
+        } }
 });
 
 function StateModel() {
@@ -19929,23 +19818,23 @@ View.prototype = Object.create(ValueObject.prototype, {
 
 function AddState() {}
 AddState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: AddState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: AddState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 function StateTask() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  Object.defineProperties(this, {
-    factory: { writable: true, value: factory },
-    state: { writable: true, value: state }
-  });
-  Task.call(this);
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        factory: { writable: true, value: factory },
+        state: { writable: true, value: state }
+    });
+    Task.call(this);
 }
 StateTask.prototype = Object.create(Task.prototype, {
-  constructor: { writable: true, value: StateTask }
+    constructor: { writable: true, value: StateTask }
 });
 
 function CloseState() {
@@ -20086,18 +19975,18 @@ ChangeState.prototype = Object.create(Receiver.prototype, {
 
 function ClearState() {}
 ClearState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: ClearState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: ClearState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 function RemoveState() {}
 RemoveState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: RemoveState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: RemoveState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 function InitStates() {
@@ -20125,22 +20014,22 @@ InitStates.prototype = Object.create(InitMapModel.prototype, {
  * @memberof molecule
  */
 var states = Object.assign({
-  State: State,
-  StateModel: StateModel,
-  View: View,
-  controllers: {
-    AddState: AddState,
-    BeforeChangeState: BeforeChangeState,
-    ChangeState: ChangeState,
-    ClearState: ClearState,
-    RemoveState: RemoveState
-  },
-  process: {
-    CloseState: CloseState,
-    InitStates: InitStates,
-    OpenState: OpenState,
-    StateTask: StateTask
-  }
+    State: State,
+    StateModel: StateModel,
+    View: View,
+    controllers: {
+        AddState: AddState,
+        BeforeChangeState: BeforeChangeState,
+        ChangeState: ChangeState,
+        ClearState: ClearState,
+        RemoveState: RemoveState
+    },
+    process: {
+        CloseState: CloseState,
+        InitStates: InitStates,
+        OpenState: OpenState,
+        StateTask: StateTask
+    }
 });
 
 /**
@@ -20343,49 +20232,49 @@ Object.defineProperties(Browser, {
 });
 
 function Accelerometer() {
-  Object.defineProperties(this, {
-    timer: { value: new Timer() },
-    update: { value: new Signal() },
-    _event: { writable: true, value: null },
-    _isSupported: { writable: true, value: false },
-    _interval: { writable: true, value: 20 }
-  });
-  this.__initialize__();
+    Object.defineProperties(this, {
+        timer: { value: new Timer() },
+        update: { value: new Signal() },
+        _event: { writable: true, value: null },
+        _isSupported: { writable: true, value: false },
+        _interval: { writable: true, value: 20 }
+    });
+    this.__initialize__();
 }
 Accelerometer.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Accelerometer },
-  isSupported: { get: function get() {
-      return this._isSupported;
-    } },
-  notifyUpdate: { writable: true, value: function value() {
-      if (this._isSupported && this.update.connected() && this._event !== null) {
-        this.update.emit(this._event, this);
-      }
-    } },
-  setRequestedUpdateInterval: { set: function set(value) {
-      this._interval = value;
-      if (this._isSupported === true) {
-        this.__launchTimer__();
-      }
-    } },
-  __initialize__: { writable: true, value: function value() {
-      if (window !== undefined && window.DeviceMotionEvent !== undefined) {
-        this._isSupported = true;
-      }
-      if (this._isSupported === true) {
-        window.addEventListener("devicemotion", this.__update__.bind(this), false);
-        this.__launchTimer__();
-      }
-    } },
-  __launchTimer__: { writable: true, value: function value() {
-      this.timer.stop();
-      this.timer.delay = this._interval;
-      this.timer.progressIt.connect(this.notifyUpdate.bind(this));
-      this.timer.run();
-    } },
-  __update__: { writable: true, value: function value(event) {
-      this._event = event;
-    } }
+    constructor: { writable: true, value: Accelerometer },
+    isSupported: { get: function get() {
+            return this._isSupported;
+        } },
+    notifyUpdate: { writable: true, value: function value() {
+            if (this._isSupported && this.update.connected() && this._event !== null) {
+                this.update.emit(this._event, this);
+            }
+        } },
+    setRequestedUpdateInterval: { set: function set(value) {
+            this._interval = value;
+            if (this._isSupported === true) {
+                this.__launchTimer__();
+            }
+        } },
+    __initialize__: { writable: true, value: function value() {
+            if (window !== undefined && window.DeviceMotionEvent !== undefined) {
+                this._isSupported = true;
+            }
+            if (this._isSupported === true) {
+                window.addEventListener("devicemotion", this.__update__.bind(this), false);
+                this.__launchTimer__();
+            }
+        } },
+    __launchTimer__: { writable: true, value: function value() {
+            this.timer.stop();
+            this.timer.delay = this._interval;
+            this.timer.progressIt.connect(this.notifyUpdate.bind(this));
+            this.timer.run();
+        } },
+    __update__: { writable: true, value: function value(event) {
+            this._event = event;
+        } }
 });
 
 /**
@@ -20410,10 +20299,10 @@ var sensors = Object.assign({
  * @since 1.0.7
  */
 var screens = Object.assign({
-  Browser: Browser,
-  Device: Device,
-  Os: Os,
-  sensors: sensors
+    Browser: Browser,
+    Device: Device,
+    Os: Os,
+    sensors: sensors
 });
 
 var version = '1.0.8';

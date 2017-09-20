@@ -150,7 +150,7 @@ Element.prototype = Object.create( MOB.prototype ,
                 this._builder.clear() ;
             }
 
-            this._builder = ( builder instanceof Builder ) || this.getBuilderRenderer() ;
+            this._builder = ( builder instanceof Builder ) ? builder : this.getBuilderRenderer() ;
 
             if( this._builder instanceof Builder )
             {
@@ -280,7 +280,7 @@ Element.prototype = Object.create( MOB.prototype ,
                 this._viewStyleChanged = null ;
             }
 
-            this._style = ( style instanceof Style ) || this.getStyleRenderer() ;
+            this._style = ( style instanceof Style ) ? style : this.getStyleRenderer() ;
 
             if( this._style instanceof Style )
             {
