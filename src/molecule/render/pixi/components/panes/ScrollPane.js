@@ -106,7 +106,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
     {
         if( this._content )
         {
-            return Math.max( this._content.getBounds().width * this._content.scale.x + this._style.padding.horizontal - this.w , 0 ) ;
+            return Math.max( this._content.getLocalBounds().width * this._content.scale.x + this._style.padding.horizontal - this.w , 0 ) ;
         }
         else
         {
@@ -124,7 +124,7 @@ ScrollPane.prototype = Object.create( Element.prototype ,
     {
         if( this._content )
         {
-            return Math.max( this._content.getBounds().height * this._content.scale.y + this._style.padding.vertical - this.h , 0 ) ;
+            return Math.max( this._content.getLocalBounds().height * this._content.scale.y + this._style.padding.vertical - this.h , 0 ) ;
         }
         else
         {
