@@ -16092,6 +16092,103 @@ LoadScript.prototype = Object.create(Task.prototype, {
         } }
 });
 
+function warn(message) {
+    var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    if (enableErrorChecking === true) {
+        throw new Error(message);
+    } else if (verbose === true) {
+        logger$1.warn(message);
+    }
+}
+
+function AddChild() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof Node$1 ? child : null },
+        container: { writable: true, value: container instanceof Node$1 ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
+}
+AddChild.prototype = Object.create(Task.prototype, {
+    constructor: { value: AddChild },
+    clone: { writable: true, value: function value() {
+            return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+function RemoveChild() {
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof Node$1 ? child : null },
+        container: { writable: true, value: container instanceof Node$1 ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
+}
+RemoveChild.prototype = Object.create(Task.prototype, {
+    constructor: { value: RemoveChild },
+    clone: { writable: true, value: function value() {
+            return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
+});
+
+/**
+ * The {@link molecule.render.dom.process.display} package.
+ * @summary The {@link molecule.render.dom.process.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom.process.display
+ * @memberof molecule.render.dom.process
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var display$3 = Object.assign({
+  AddChild: AddChild,
+  RemoveChild: RemoveChild
+});
+
+/**
+ * The {@link molecule.render.dom.process} package.
+ * @summary The {@link molecule.render.dom.process} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom.process
+ * @memberof molecule.render.dom
+ * @version 1.0.8
+ * @since 1.0.8
+ */
+var process$1 = Object.assign({
+  display: display$3
+});
+
 /**
  * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
  * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
@@ -16132,7 +16229,8 @@ var dom$1 = Object.assign({
     },
     net: {
         LoadScript: LoadScript
-    }
+    },
+    process: process$1
 });
 
 function MOB() {
@@ -18528,7 +18626,7 @@ MovieClip.prototype = Object.create(PIXI.extras.AnimatedSprite.prototype, {
  * @version 1.0.8
  * @since 1.0.8
  */
-var display$3 = Object.assign({
+var display$4 = Object.assign({
   Background: Background,
   Element: Element$1,
   MOB: MOB,
@@ -19215,7 +19313,7 @@ var layouts = Object.assign({
   LayoutContainer: LayoutContainer
 });
 
-function warn(message) {
+function warn$1(message) {
     var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     if (enableErrorChecking === true) {
@@ -19225,7 +19323,7 @@ function warn(message) {
     }
 }
 
-function AddChild() {
+function AddChild$1() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -19238,17 +19336,17 @@ function AddChild() {
         verbose: { writable: true, value: verbose }
     });
 }
-AddChild.prototype = Object.create(Task.prototype, {
-    constructor: { value: AddChild },
+AddChild$1.prototype = Object.create(Task.prototype, {
+    constructor: { value: AddChild$1 },
     clone: { writable: true, value: function value() {
-            return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+            return new AddChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
         } },
     run: { writable: true, value: function value() {
             this.notifyStarted();
             try {
                 this.container.addChild(this.child);
             } catch (er) {
-                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19260,12 +19358,12 @@ function AddChildAt() {
     var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
     var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    AddChild.call(this, container, child, enableErrorChecking, verbose);
+    AddChild$1.call(this, container, child, enableErrorChecking, verbose);
     Object.defineProperties(this, {
         index: { writable: true, value: index > 0 ? index : 0 }
     });
 }
-AddChildAt.prototype = Object.create(AddChild.prototype, {
+AddChildAt.prototype = Object.create(AddChild$1.prototype, {
     constructor: { value: AddChildAt },
     clone: { writable: true, value: function value() {
             return new AddChildAt(this.container, this.child, this.index, this.enableErrorChecking, this.verbose);
@@ -19275,7 +19373,7 @@ AddChildAt.prototype = Object.create(AddChild.prototype, {
             try {
                 this.container.addChildAt(this.child, this.index);
             } catch (er) {
-                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + " at the position: " + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + " at the position: " + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19363,7 +19461,7 @@ AlignPivot.prototype = Object.create(Task.prototype, {
                 }
                 d.pivot.set(x, y);
             } catch (er) {
-                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19390,7 +19488,7 @@ Hide.prototype = Object.create(Task.prototype, {
             try {
                 this.display.visible = false;
             } catch (er) {
-                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19498,13 +19596,13 @@ MoveTo.prototype = Object.create(Task.prototype, {
                     this.display.y = this.y;
                 }
             } catch (er) {
-                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
 });
 
-function RemoveChild() {
+function RemoveChild$1() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -19517,17 +19615,17 @@ function RemoveChild() {
         verbose: { writable: true, value: verbose }
     });
 }
-RemoveChild.prototype = Object.create(Task.prototype, {
-    constructor: { value: RemoveChild },
+RemoveChild$1.prototype = Object.create(Task.prototype, {
+    constructor: { value: RemoveChild$1 },
     clone: { writable: true, value: function value() {
-            return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+            return new RemoveChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
         } },
     run: { writable: true, value: function value() {
             this.notifyStarted();
             try {
                 this.container.removeChild(this.child);
             } catch (er) {
-                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19556,7 +19654,7 @@ RemoveChildAt.prototype = Object.create(Task.prototype, {
             try {
                 this.container.removeChildAt(this.index);
             } catch (er) {
-                warn(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19583,7 +19681,7 @@ RemoveChildren.prototype = Object.create(Task.prototype, {
             try {
                 this.container.removeChildren();
             } catch (er) {
-                warn(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19610,7 +19708,7 @@ Show.prototype = Object.create(Task.prototype, {
             try {
                 this.display.visible = true;
             } catch (er) {
-                warn(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19641,7 +19739,7 @@ SwapChildren.prototype = Object.create(Task.prototype, {
             try {
                 this.container.swapChildren(this.child1, this.child2);
             } catch (er) {
-                warn(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
@@ -19657,15 +19755,15 @@ SwapChildren.prototype = Object.create(Task.prototype, {
  * @version 1.0.8
  * @since 1.0.8
  */
-var display$4 = Object.assign({
-    AddChild: AddChild,
+var display$5 = Object.assign({
+    AddChild: AddChild$1,
     AddChildAt: AddChildAt,
     AlignPivot: AlignPivot,
     Hide: Hide,
     IfContains: IfContains,
     IfNotContains: IfNotContains,
     MoveTo: MoveTo,
-    RemoveChild: RemoveChild,
+    RemoveChild: RemoveChild$1,
     RemoveChildAt: RemoveChildAt,
     RemoveChildren: RemoveChildren,
     Show: Show,
@@ -19682,8 +19780,8 @@ var display$4 = Object.assign({
  * @version 1.0.8
  * @since 1.0.8
  */
-var process$1 = Object.assign({
-  display: display$4
+var process$2 = Object.assign({
+  display: display$5
 });
 
 /**
@@ -19711,9 +19809,9 @@ var rules$1 = Object.assign({
  */
 var pixi = Object.assign({
   components: components$2,
-  display: display$3,
+  display: display$4,
   layouts: layouts,
-  process: process$1,
+  process: process$2,
   rules: rules$1
 });
 

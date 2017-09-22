@@ -29,6 +29,8 @@ import { Video } from './dom/medias/Video.js' ;
 
 import { LoadScript } from './dom/net/LoadScript.js' ;
 
+import { process } from './dom/process.js' ;
+
 /**
  * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
  * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
@@ -109,5 +111,7 @@ export var dom = Object.assign
     net :
     {
         LoadScript : LoadScript
-    }
+    },
+
+    process : process
 }) ;
