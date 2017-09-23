@@ -19572,7 +19572,7 @@ AlignPivot.prototype = Object.create(Task.prototype, {
                 }
                 d.pivot.set(x, y);
             } catch (er) {
-                warn$1(this + " run failed with the display:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+                warn$1(this + " run failed with the display:" + this.display + ", " + er.toString(), this.verbose, this.enableErrorChecking);
             }
             this.notifyFinished();
         } }
