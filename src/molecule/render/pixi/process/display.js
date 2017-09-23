@@ -6,6 +6,7 @@ import { AlignPivot } from './display/AlignPivot.js' ;
 import { Hide } from './display/Hide.js' ;
 import { IfContains } from './display/IfContains.js' ;
 import { IfNotContains } from './display/IfNotContains.js' ;
+import { InteractiveChildren } from './display/InteractiveChildren.js' ;
 import { MoveTo } from './display/MoveTo.js' ;
 import { RemoveChild } from './display/RemoveChild.js' ;
 import { RemoveChildAt } from './display/RemoveChildAt.js' ;
@@ -31,6 +32,7 @@ export var display = Object.assign
     Hide : Hide,
     IfContains : IfContains,
     IfNotContains : IfNotContains,
+    InteractiveChildren : InteractiveChildren,
     MoveTo : MoveTo,
     RemoveChild : RemoveChild,
     RemoveChildAt : RemoveChildAt,

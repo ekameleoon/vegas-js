@@ -112,7 +112,7 @@ MoveTo.prototype = Object.create( Task.prototype ,
         }
         catch( er )
         {
-            warn( this + " run failed with the display:" + this.child + ", " + er.toString() , this.verbose , this.enableErrorChecking ) ;
+            warn( this + " run failed with the display:" + this.display + ", " + er.toString() , this.verbose , this.enableErrorChecking ) ;
         }
         this.notifyFinished() ;
     }}
