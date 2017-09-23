@@ -54,7 +54,7 @@ CloseState.prototype = Object.create( StateTask.prototype ,
 
         if ( !(this.state instanceof State) )
         {
-            logger.warn(this + " failed, the State reference of this process not must be 'null'.") ;
+            logger.warning(this + " failed, the State reference of this process not must be 'null'.") ;
             this.notifyFinished() ;
             return ;
         }
@@ -67,7 +67,7 @@ CloseState.prototype = Object.create( StateTask.prototype ,
         }
         else
         {
-            logger.warn( this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view ) ;
+            logger.warning( this + " run failed, the display of the state:" + this.state + " isn't register in the ioc factory with the view id : " + view ) ;
         }
 
         if ( view instanceof View )
@@ -86,7 +86,7 @@ CloseState.prototype = Object.create( StateTask.prototype ,
         }
         else
         {
-            logger.warn( this + " failed, we can't find no View with the State : " + this.state ) ;
+            logger.warning( this + " failed, we can't find no View with the State : " + this.state ) ;
         }
 
         if ( ( this._chain.length > 0 ) && !this._chain.running )

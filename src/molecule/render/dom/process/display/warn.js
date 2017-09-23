@@ -14,6 +14,6 @@ export function warn( message , verbose = false , enableErrorChecking = false )
     }
     else if ( verbose === true )
     {
-        logger.warn( message ) ;
+        logger.warning( message ) ;
     }
 }

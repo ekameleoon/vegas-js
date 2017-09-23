@@ -111,6 +111,3 @@ ChainNext.prototype = Object.create( Receiver.prototype ,
         }
     }}
 }) ;
-
-
-

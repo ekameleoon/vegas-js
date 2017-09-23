@@ -60,7 +60,7 @@ BeforeChangeState.prototype = Object.create( Receiver.prototype ,
         }
         else
         {
-            logger.warn( this + " failed with the state:" + state + " and the chain:" + this.chain ) ;
+            logger.warning( this + " failed with the state:" + state + " and the chain:" + this.chain ) ;
         }
     }}
 });
