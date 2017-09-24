@@ -13,34 +13,37 @@
  */
 export function ActionEntry( action , priority = 0 , auto = false )
 {
-    /**
-     * The Action reference register in this entry.
-     * @memberof system.process.ActionEntry
-     * @type {system.process.Action}
-     * @instance
-     */
-    this.action = action ;
+    Object.defineProperties( this ,
+    {
+        /**
+         * The Action reference register in this entry.
+         * @memberof system.process.ActionEntry
+         * @type {system.process.Action}
+         * @instance
+         */
+        action : { writable : true , value : action } ,
 
-    /**
-     * This flag indicates if the receiver must be disconnected when handle the first time a signal.
-     * @memberof system.process.ActionEntry
-     * @type {boolean}
-     * @instance
-     */
-    this.auto = Boolean( auto ) ;
+        /**
+         * This flag indicates if the receiver must be disconnected when handle the first time a signal.
+         * @memberof system.process.ActionEntry
+         * @type {boolean}
+         * @instance
+         */
+        auto : { writable : true , value : auto === true } ,
 
-    /**
-     * The priority value of the entry.
-     * @memberof system.process.ActionEntry
-     * @type {number}
-     * @instance
-     */
-    this.priority = priority > 0 ? Math.ceil( priority ) : 0 ;
+        /**
+         * The priority value of the entry.
+         * @memberof system.process.ActionEntry
+         * @type {number}
+         * @instance
+         */
+        priority : { writable : true , value : (priority > 0) ? Math.ceil( priority ) : 0 }
+    });
 }
 
 ActionEntry.prototype = Object.create( Object.prototype ,
 {
-    constructor : { value : ActionEntry },
+    constructor : { value : ActionEntry } ,
 
     /**
      * Returns the String representation of the object.

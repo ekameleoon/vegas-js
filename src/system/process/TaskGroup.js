@@ -153,10 +153,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      */
     length :
     {
-        get : function()
-        {
-            return this._actions.length ;
-        },
+        get : function() { return this._actions.length ; },
         set : function( value )
         {
             if ( this._running )
@@ -169,19 +166,18 @@ TaskGroup.prototype = Object.create( Task.prototype ,
             var l  = this._actions.length ;
             if ( l > 0 )
             {
-                var e /*ActionEntry*/ ;
                 while( --l > -1 )
                 {
-                    e = this._actions[l] ;
-                    if ( e && e.action && this._next )
+                    let entry = this._actions[l] ;
+                    if ( entry && entry.action && this._next )
                     {
-                        e.action.finishIt.connect( this._next ) ;
+                        entry.action.finishIt.connect( this._next ) ;
                     }
                 }
             }
             else if ( old > 0 )
             {
-                this.notifyCleared() ; // clear notification
+                this.notifyCleared() ;
             }
         }
     },
@@ -195,10 +191,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      */
     mode :
     {
-        get : function()
-        {
-            return this._mode ;
-        },
+        get : function() { return this._mode ; },
         set : function( value )
         {
             this._mode = ( value === TaskGroup.TRANSIENT || value === TaskGroup.EVERLASTING ) ? value : TaskGroup.NORMAL ;
@@ -212,13 +205,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      * @instance
      * @readonly
      */
-    stopped :
-    {
-        get : function()
-        {
-            return this._stopped ;
-        }
-    },
+    stopped : { get : function() { return this._stopped ; } },
 
     /**
      * Adds an action in the chain.
@@ -240,9 +227,8 @@ TaskGroup.prototype = Object.create( Task.prototype ,
 
         if ( action && ( action instanceof Action ) )
         {
-            autoRemove = Boolean( autoRemove ) ;
-
-            priority   = ( priority > 0 ) ? Math.round(priority) : 0 ;
+            autoRemove = autoRemove === true ;
+            priority = ( priority > 0 ) ? Math.round(priority) : 0 ;
 
             if( this._next )
             {
@@ -253,12 +239,12 @@ TaskGroup.prototype = Object.create( Task.prototype ,
 
             /////// bubble sorting
 
-            var i ;
-            var j ;
+            let i ;
+            let j ;
 
-            var a = this._actions ;
+            let a = this._actions ;
 
-            var swap = ( j , k ) =>
+            let swap = ( j , k ) =>
             {
                 var temp = a[j] ;
                 a[j]     = a[k] ;
@@ -266,9 +252,9 @@ TaskGroup.prototype = Object.create( Task.prototype ,
                 return true ;
             }
 
-            var swapped = false;
+            let swapped = false;
 
-            var l = a.length ;
+            let l = a.length ;
 
             for( i = 1 ; i < l ; i++ )
             {
@@ -364,7 +350,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
      * @param {number} index - The index of the action element in the collection.
      * @return the action register in the chain at the specified index value or <code>null</code>.
      */
-    get : { writable : true , value : function( index /*uint*/ )
+    get : { writable : true , value : function( index )
     {
         if ( this._actions.length > 0 && index < this._actions.length )
         {
@@ -423,8 +409,8 @@ TaskGroup.prototype = Object.create( Task.prototype ,
         {
             if ( action && action instanceof Action )
             {
-                var e /*ActionEntry*/ ;
-                var l  = this._actions.length ;
+                let e ;
+                let l = this._actions.length ;
 
                 this._actions.forEach( ( element ) =>
                 {
@@ -492,7 +478,7 @@ TaskGroup.prototype = Object.create( Task.prototype ,
     toString : { writable : true , value : function()
     {
         let s  = "[" + this.constructor.name ;
-        if ( Boolean(this.verbose) )
+        if ( this.verbose === true )
         {
             if ( this._actions.length > 0 )
             {

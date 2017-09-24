@@ -49,7 +49,7 @@ ChainNext.prototype = Object.create( Receiver.prototype ,
         {
             if ( mode !== TaskGroup.EVERLASTING )
             {
-                if ( mode === TaskGroup.TRANSIENT || ( chain._current.auto && mode === TaskGroup.NORMAL) )
+                if ( mode === TaskGroup.TRANSIENT || ( mode === TaskGroup.NORMAL && chain._current.auto ) )
                 {
                     chain._current.action.finishIt.disconnect( this ) ;
                     chain._position-- ;

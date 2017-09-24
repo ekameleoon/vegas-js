@@ -8650,9 +8650,11 @@ var numeric = Object.assign({
 function ActionEntry(action) {
   var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  this.action = action;
-  this.auto = Boolean(auto);
-  this.priority = priority > 0 ? Math.ceil(priority) : 0;
+  Object.defineProperties(this, {
+    action: { writable: true, value: action },
+    auto: { writable: true, value: auto === true },
+    priority: { writable: true, value: priority > 0 ? Math.ceil(priority) : 0 }
+  });
 }
 ActionEntry.prototype = Object.create(Object.prototype, {
   constructor: { value: ActionEntry },
@@ -8860,11 +8862,10 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             this._actions.length = value;
             var l = this._actions.length;
             if (l > 0) {
-                var e;
                 while (--l > -1) {
-                    e = this._actions[l];
-                    if (e && e.action && this._next) {
-                        e.action.finishIt.connect(this._next);
+                    var entry = this._actions[l];
+                    if (entry && entry.action && this._next) {
+                        entry.action.finishIt.connect(this._next);
                     }
                 }
             } else if (old > 0) {
@@ -8880,46 +8881,50 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             this._mode = value === TaskGroup.TRANSIENT || value === TaskGroup.EVERLASTING ? value : TaskGroup.NORMAL;
         }
     },
-    stopped: {
-        get: function get() {
+    stopped: { get: function get() {
             return this._stopped;
-        }
-    },
+        } },
     add: { value: function value(action) {
+            var _this2 = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoRemove = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (this._running) {
                 throw new Error(this + " add failed, the process is in progress.");
             }
             if (action && action instanceof Action) {
-                autoRemove = Boolean(autoRemove);
-                priority = priority > 0 ? Math.round(priority) : 0;
-                if (this._next) {
-                    action.finishIt.connect(this._next);
-                }
-                this._actions.push(new ActionEntry(action, priority, autoRemove));
-                var i;
-                var j;
-                var a = this._actions;
-                var swap = function swap(j, k) {
-                    var temp = a[j];
-                    a[j] = a[k];
-                    a[k] = temp;
-                    return true;
-                };
-                var swapped = false;
-                var l = a.length;
-                for (i = 1; i < l; i++) {
-                    for (j = 0; j < l - i; j++) {
-                        if (a[j + 1].priority > a[j].priority) {
-                            swapped = swap(j, j + 1);
+                var _ret = function () {
+                    autoRemove = autoRemove === true;
+                    priority = priority > 0 ? Math.round(priority) : 0;
+                    if (_this2._next) {
+                        action.finishIt.connect(_this2._next);
+                    }
+                    _this2._actions.push(new ActionEntry(action, priority, autoRemove));
+                    var i = void 0;
+                    var j = void 0;
+                    var a = _this2._actions;
+                    var swap = function swap(j, k) {
+                        var temp = a[j];
+                        a[j] = a[k];
+                        a[k] = temp;
+                        return true;
+                    };
+                    var swapped = false;
+                    var l = a.length;
+                    for (i = 1; i < l; i++) {
+                        for (j = 0; j < l - i; j++) {
+                            if (a[j + 1].priority > a[j].priority) {
+                                swapped = swap(j, j + 1);
+                            }
+                        }
+                        if (!swapped) {
+                            break;
                         }
                     }
-                    if (!swapped) {
-                        break;
-                    }
-                }
-                return true;
+                    return {
+                        v: true
+                    };
+                }();
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
             }
             return false;
         } },
@@ -8942,16 +8947,16 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             return false;
         } },
     dispose: { writable: true, value: function value() {
-            var _this2 = this;
+            var _this3 = this;
             if (this._actions.length > 0) {
                 this._actions.forEach(function (entry) {
                     if (entry instanceof ActionEntry) {
-                        entry.action.finishIt.disconnect(_this2._next);
+                        entry.action.finishIt.disconnect(_this3._next);
                     }
                 });
             }
         } },
-    get: { writable: true, value: function value(index /*uint*/) {
+    get: { writable: true, value: function value(index) {
             if (this._actions.length > 0 && index < this._actions.length) {
                 var entry = this._actions[index];
                 if (entry) {
@@ -8966,24 +8971,26 @@ TaskGroup.prototype = Object.create(Task.prototype, {
     next: { writable: true, value: function value(action /*Action*/) {
         } },
     remove: { writable: true, value: function value(action) {
-            var _this3 = this;
+            var _this4 = this;
             if (this._running) {
                 throw new Error(this + " remove failed, the process is in progress.");
             }
             this.stop();
             if (this._actions.length > 0) {
                 if (action && action instanceof Action) {
-                    var e;
-                    var l = this._actions.length;
-                    this._actions.forEach(function (element) {
-                        if (element && element instanceof ActionEntry && element.action === action) {
-                            if (_this3._next) {
-                                e.action.finishIt.disconnect(_this3._next);
+                    (function () {
+                        var e = void 0;
+                        var l = _this4._actions.length;
+                        _this4._actions.forEach(function (element) {
+                            if (element && element instanceof ActionEntry && element.action === action) {
+                                if (_this4._next) {
+                                    e.action.finishIt.disconnect(_this4._next);
+                                }
+                                _this4._actions.splice(l, 1);
+                                return true;
                             }
-                            _this3._actions.splice(l, 1);
-                            return true;
-                        }
-                    });
+                        });
+                    })();
                 } else {
                     this.dispose();
                     this._actions.length = 0;
@@ -9010,7 +9017,7 @@ TaskGroup.prototype = Object.create(Task.prototype, {
         } },
     toString: { writable: true, value: function value() {
             var s = "[" + this.constructor.name;
-            if (Boolean(this.verbose)) {
+            if (this.verbose === true) {
                 if (this._actions.length > 0) {
                     s += "[";
                     var i = void 0;
@@ -9302,7 +9309,7 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
             var mode = chain._mode;
             if (chain._current) {
                 if (mode !== TaskGroup.EVERLASTING) {
-                    if (mode === TaskGroup.TRANSIENT || chain._current.auto && mode === TaskGroup.NORMAL) {
+                    if (mode === TaskGroup.TRANSIENT || mode === TaskGroup.NORMAL && chain._current.auto) {
                         chain._current.action.finishIt.disconnect(this);
                         chain._position--;
                         chain._actions.splice(this._position, 1);
