@@ -61,24 +61,8 @@ export function IconButton( texture = null )
         /**
          * @private
          */
-        _icon      : { writable : true , value : null } ,
-        _iconAlign : { writable : true , value : Align.NONE } ,
-        _iconAlignments :
-        {
-            writable : false , value :
-            [
-                Align.NONE,
-                Align.CENTER,
-                Align.BOTTOM,
-                Align.BOTTOM_LEFT,
-                Align.BOTTOM_RIGHT,
-                Align.LEFT,
-                Align.RIGHT,
-                Align.TOP,
-                Align.TOP_LEFT,
-                Align.TOP_RIGHT
-            ]
-        },
+        _icon        : { writable : true , value : null } ,
+        _iconAlign   : { writable : true , value : Align.NONE } ,
         _iconHPolicy : { writable : true , value : IconPolicy.NORMAL } ,
         _iconVPolicy : { writable : true , value : IconPolicy.NORMAL }
     });
@@ -116,7 +100,7 @@ Object.defineProperties( IconButton ,
 
 IconButton.prototype = Object.create( CoreButton.prototype ,
 {
-    constructor : { value : IconButton } ,
+    constructor : { value : IconButton , writable : true } ,
 
     /**
      * Indicates the icon reference of this display.
