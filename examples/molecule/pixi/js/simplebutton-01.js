@@ -108,10 +108,20 @@ window.onload = function()
             texture.disable
         ) ;
 
+        button.down.connect( function()
+        {
+            console.log( "down" ) ;
+        });
+
+        button.up.connect( function()
+        {
+            console.log( "up" ) ;
+        });
+
         button.pressed.connect( function()
         {
             console.log( "pressed" ) ;
-            tween.run() ;
+            //tween.run() ;
         });
 
         button.select.connect( function()

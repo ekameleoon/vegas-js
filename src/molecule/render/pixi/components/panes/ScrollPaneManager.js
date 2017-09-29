@@ -201,6 +201,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
         {
             this._tween.stop() ;
         }
+        this._isDown   = false ;
         this._touching = false ;
         this._inertiaX = this._inertiaY = 0 ;
         this._diffX    = this._diffY = 0 ;
@@ -224,7 +225,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     registerTarget : { value : function()
     {
-        let target = this._target ;
+        let target = this._target._scope ;
         if( target )
         {
             target.interactive = true ;
@@ -234,6 +235,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
                 target.pointerdown = this.____down.bind(this) ;
                 target.pointermove = this.____move.bind(this) ;
                 target.pointerup = target.pointeroutside = this.____up.bind(this) ;
+                target.pointercancel = this.____cancel.bind( this ) ;
             }
             else if( (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.MOUSE ) )
             {
@@ -246,6 +248,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
                 target.touchstart = this.____down.bind(this) ;
                 target.touchmove = this.____move.bind(this) ;
                 target.touchend = target.touchendoutside = this.____up.bind(this) ;
+                target.touchcancel = this.____cancel.bind( this ) ;
             }
         }
     }},
@@ -255,13 +258,15 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     unregisterTarget : { value : function()
     {
+        this.stop() ;
         let target = this._target ;
         if( target )
         {
+            target = target._scope ;
             target.interactive = false ;
             target.mousedown = target.mousemove = target.mouseup = target.mouseupoutside = null ;
-            target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null ;
-            target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null ;
+            target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = target.pointercancel = null ;
+            target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = target.touchcancel = null ;
         }
     }},
 
@@ -296,6 +301,21 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
     /**
      * @private
      */
+    ____cancel : { value : function( event )
+    {
+        let flag = this._isDown ;
+
+        this.stop() ;
+
+        if( flag && this._target._builder )
+        {
+            this._target._builder.scrollFinish() ;
+        }
+    }},
+
+    /**
+     * @private
+     */
     ____down : { value : function( event )
     {
         this._isDown = true ;
@@ -320,7 +340,7 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
             this._tween.stop() ;
         }
 
-        if( this._target  )
+        if( this._target )
         {
             if( this.contains( this._pos.x , this._pos.y ) )
             {
@@ -386,6 +406,11 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
      */
     ____up : { value : function( event )
     {
+        if( !this._isDown )
+        {
+            return ;
+        }
+
         this._isDown = false ;
 
         if( !this._target || !this._target.enabled )
@@ -430,17 +455,20 @@ ScrollPaneManager.prototype = Object.create( Object.prototype ,
                     this._tween.run() ;
                 }
 
+                this._touching = false ;
+
                 return ;
             }
         }
+
+        this._touching = false ;
+        this._diffX = this._diffY = 0 ;
+        this._lastX = this._lastY = 0 ;
 
         //_target.mode = ScrollPane.NORMAL ;
         if( this._target._builder )
         {
             this._target._builder.scrollFinish() ;
         }
-
-        this._diffX = this._diffY = 0 ;
-        this._lastX = this._lastY = 0 ;
     }}
 });

@@ -121,7 +121,7 @@ Object.defineProperties( PIXI.Container.prototype ,
             return this.children.indexOf( child ) > -1 ;
         }
         return false ;
-    }},
+    }}
 })
 
 //////// END HACK
@@ -771,7 +771,7 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
      */
     checkScope : { writable : true , value : function( target )
     {
-        return target || this
+        return target || this ;
     }} ,
 
     /**

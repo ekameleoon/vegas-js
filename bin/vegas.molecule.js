@@ -165,118 +165,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -17484,12 +17373,14 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
     postScope: { writable: true, value: function value() {
             if (this._scope) {
                 if (supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER)) {
+                    this._scope.pointertap = this.____click.bind(this);
                     this._scope.pointerdown = this.____down.bind(this);
                     this._scope.pointerout = this.____out.bind(this);
                     this._scope.pointerover = this.____over.bind(this);
                     this._scope.pointerup = this.____up.bind(this);
                     this._scope.pointeroutside = this.____upOutside.bind(this);
                 } else if (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE) {
+                    this._scope.click = this.____click.bind(this);
                     this._scope.mousedown = this.____down.bind(this);
                     this._scope.mouseout = this.____out.bind(this);
                     this._scope.mouseover = this.____over.bind(this);
@@ -17497,6 +17388,7 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                     this._scope.mouseupoutside = this.____upOutside.bind(this);
                 }
                 if (supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH)) {
+                    this._scope.tap = this.____click.bind(this);
                     this._scope.touchstart = this.____down.bind(this);
                     this._scope.touchend = this.____up.bind(this);
                     this._scope.touchendoutside = this.____upOutside.bind(this);
@@ -17505,14 +17397,22 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } },
     preScope: { writable: true, value: function value() {
             if (this._scope) {
-                this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
-                this._scope.pointercancel = this._scope.pointerdown = this._scope.pointerout = this._scope.pointerover = this._scope.pointerup = this._scope.pointeroutside = null;
-                this._scope.touchstart = this._scope.touchcancel = this._scope.touchendoutside = this._scope.touchendoutside = null;
+                this._scope.click = this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
+                this._scope.pointercancel = this._scope.pointerdown = this._scope.pointerout = this._scope.pointerover = this._scope.pointertap = this._scope.pointerup = this._scope.pointeroutside = null;
+                this._scope.tap = this._scope.touchstart = this._scope.touchcancel = this._scope.touchendoutside = this._scope.touchendoutside = null;
             }
         } },
     updateInteractiveMode: { writable: true, value: function value() {
             this.preScope();
             this.postScope();
+        } },
+    ____click: { value: function value() {
+            this._isOver = false;
+            this._isPress = true;
+            this._phase = ButtonPhase.UP;
+            if (this.pressed.connected()) {
+                this.pressed.emit(this);
+            }
         } },
     ____down: { value: function value() {
             if (this._isOver) {
@@ -17526,9 +17426,6 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                 if (this.down.connected()) {
                     this.down.emit(this);
                 }
-            }
-            if (this.pressed.connected()) {
-                this.pressed.emit(this);
             }
         } },
     ____out: { value: function value() {
@@ -18276,6 +18173,7 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             if (this._tween.running) {
                 this._tween.stop();
             }
+            this._isDown = false;
             this._touching = false;
             this._inertiaX = this._inertiaY = 0;
             this._diffX = this._diffY = 0;
@@ -18286,13 +18184,14 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             return x >= bounds.x && x <= bounds.x + bounds.width && y >= bounds.y && y <= bounds.y + bounds.height;
         } },
     registerTarget: { value: function value() {
-            var target = this._target;
+            var target = this._target._scope;
             if (target) {
                 target.interactive = true;
                 if (supportsPointerEvents && (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.POINTER)) {
                     target.pointerdown = this.____down.bind(this);
                     target.pointermove = this.____move.bind(this);
                     target.pointerup = target.pointeroutside = this.____up.bind(this);
+                    target.pointercancel = this.____cancel.bind(this);
                 } else if (target._interactiveMode === InteractiveMode.AUTO || target._interactiveMode === InteractiveMode.MOUSE) {
                     target.mousedown = this.____down.bind(this);
                     target.mousemove = this.____move.bind(this);
@@ -18302,16 +18201,19 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
                     target.touchstart = this.____down.bind(this);
                     target.touchmove = this.____move.bind(this);
                     target.touchend = target.touchendoutside = this.____up.bind(this);
+                    target.touchcancel = this.____cancel.bind(this);
                 }
             }
         } },
     unregisterTarget: { value: function value() {
+            this.stop();
             var target = this._target;
             if (target) {
+                target = target._scope;
                 target.interactive = false;
                 target.mousedown = target.mousemove = target.mouseup = target.mouseupoutside = null;
-                target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = null;
-                target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = null;
+                target.pointerdown = target.pointermove = target.pointerup = target.pointeroutside = target.pointercancel = null;
+                target.touchstart = target.touchmove = target.touchendoutside = target.touchendoutside = target.touchcancel = null;
             }
         } },
     scrollChange: { value: function value(action) {
@@ -18323,6 +18225,13 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             this._inertiaX = 0;
             this._inertiaY = 0;
             if (this._target && this._target._builder) {
+                this._target._builder.scrollFinish();
+            }
+        } },
+    ____cancel: { value: function value(event) {
+            var flag = this._isDown;
+            this.stop();
+            if (flag && this._target._builder) {
                 this._target._builder.scrollFinish();
             }
         } },
@@ -18378,6 +18287,9 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
             }
         } },
     ____up: { value: function value(event) {
+            if (!this._isDown) {
+                return;
+            }
             this._isDown = false;
             if (!this._target || !this._target.enabled) {
                 return;
@@ -18402,14 +18314,16 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
                     if (!this._tween.running) {
                         this._tween.run();
                     }
+                    this._touching = false;
                     return;
                 }
             }
+            this._touching = false;
+            this._diffX = this._diffY = 0;
+            this._lastX = this._lastY = 0;
             if (this._target._builder) {
                 this._target._builder.scrollFinish();
             }
-            this._diffX = this._diffY = 0;
-            this._lastX = this._lastY = 0;
         } }
 });
 
@@ -18612,10 +18526,20 @@ ScrollPane.prototype = Object.create(Element$1.prototype, {
                 this._builder.scroll();
             }
         } },
+    stopScroll: { writable: true, value: function value() {
+            if (this._manager) {
+                this._manager.stop();
+            }
+        } },
     updateInteractiveMode: { writable: true, value: function value() {
             if (this._manager) {
                 this._manager.unregisterTarget();
                 this._manager.registerTarget();
+            }
+        } },
+    viewEnabled: { writable: true, value: function value() {
+            if (this._manager) {
+                this._manager.stop();
             }
         } }
 });

@@ -294,6 +294,21 @@ ScrollPane.prototype = Object.create( Element.prototype ,
     }},
 
     /**
+     * Stop the current scroll behavior.
+     * @name stopScroll
+     * @memberof molecule.render.pixi.components.panes.ScrollPane
+     * @function
+     * @instance
+     */
+    stopScroll : { writable : true , value : function()
+    {
+        if( this._manager )
+        {
+            this._manager.stop() ;
+        }
+    }},
+
+    /**
      * @private
      */
     updateInteractiveMode : { writable : true , value : function()
@@ -302,6 +317,21 @@ ScrollPane.prototype = Object.create( Element.prototype ,
         {
             this._manager.unregisterTarget() ;
             this._manager.registerTarget() ;
+        }
+    }},
+
+    /**
+     * Invoked when the enabled property of the component change.
+     * @name viewEnabled
+     * @memberof molecule.render.pixi.components.panes.ScrollPane
+     * @function
+     * @instance
+     */
+    viewEnabled : { writable : true , value : function()
+    {
+        if( this._manager )
+        {
+            this._manager.stop() ;
         }
     }}
 });

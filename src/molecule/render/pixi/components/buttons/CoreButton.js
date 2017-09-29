@@ -414,6 +414,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
         {
             if( supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER ) )
             {
+                this._scope.pointertap     = this.____click.bind(this) ;
                 this._scope.pointerdown    = this.____down.bind(this) ;
                 this._scope.pointerout     = this.____out.bind(this) ;
                 this._scope.pointerover    = this.____over.bind(this) ;
@@ -422,6 +423,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
             }
             else if( (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE ) )
             {
+                this._scope.click          = this.____click.bind(this) ;
                 this._scope.mousedown      = this.____down.bind(this) ;
                 this._scope.mouseout       = this.____out.bind(this) ;
                 this._scope.mouseover      = this.____over.bind(this) ;
@@ -430,6 +432,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
             }
             if( supportsTouchEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.TOUCH) )
             {
+                this._scope.tap             = this.____click.bind(this) ;
                 this._scope.touchstart      = this.____down.bind(this) ;
                 this._scope.touchend        = this.____up.bind(this) ;
                 this._scope.touchendoutside = this.____upOutside.bind(this) ;
@@ -445,6 +448,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
     {
         if( this._scope )
         {
+            this._scope.click =
             this._scope.mousedown =
             this._scope.mouseout =
             this._scope.mouseover =
@@ -455,9 +459,11 @@ CoreButton.prototype = Object.create( Element.prototype ,
             this._scope.pointerdown =
             this._scope.pointerout =
             this._scope.pointerover =
+            this._scope.pointertap =
             this._scope.pointerup =
             this._scope.pointeroutside = null ;
 
+            this._scope.tap =
             this._scope.touchstart =
             this._scope.touchcancel =
             this._scope.touchendoutside =
@@ -475,6 +481,22 @@ CoreButton.prototype = Object.create( Element.prototype ,
     }},
 
     // ----- behaviors
+
+    /**
+     * @private
+     */
+    ____click : { value : function()
+    {
+        this._isOver  = false ;
+        this._isPress = true ;
+
+        this._phase = ButtonPhase.UP ;
+
+        if( this.pressed.connected() )
+        {
+            this.pressed.emit( this ) ;
+        }
+    }},
 
     /**
      * @private
@@ -500,11 +522,10 @@ CoreButton.prototype = Object.create( Element.prototype ,
                 this.down.emit( this ) ;
             }
         }
-
-        if( this.pressed.connected() )
-        {
-            this.pressed.emit( this ) ;
-        }
+        // if( this.pressed.connected() )
+        // {
+        //     this.pressed.emit( this ) ;
+        // }
     }},
 
     /**
