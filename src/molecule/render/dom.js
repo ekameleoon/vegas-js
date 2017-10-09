@@ -2,6 +2,8 @@
 
 import './polyfill/Object.js' ;
 
+import { Cookie } from './dom/data/Cookie.js' ;
+
 import { Anchor } from './dom/display/Anchor.js' ;
 import { Body } from './dom/display/Body.js' ;
 import { Button } from './dom/display/Button.js' ;
@@ -41,6 +43,18 @@ import { process } from './dom/process.js' ;
  */
 export var dom = Object.assign
 ({
+
+    /**
+     * This package contains helpers to manage the datas into a DOM.
+     * @summary This package contains helpers to manage the datas into a DOM.
+     * @namespace molecule.render.dom.data
+     * @memberof molecule.render.dom
+     */
+    data :
+    {
+        Cookie : Cookie
+    },
+
     /**
      * This package contains a set of display elements based on the DOM API.
      * @summary This package contains a set of display elements based on the DOM API.

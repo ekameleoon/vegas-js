@@ -143,7 +143,7 @@ Config.prototype = Object.create( Object.prototype ,
 {
     load :
     {
-        value : function( config ) 
+        value : function( config )
         {
             for( var member in config )
             {

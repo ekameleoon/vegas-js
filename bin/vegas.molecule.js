@@ -2,9 +2,10 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.vegas = global.vegas || {})));
+	(factory((global.vegas = {})));
 }(this, (function (exports) { 'use strict';
 
+"use strict";
 var skip = false;
 function sayHello() {
     var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
@@ -27,6 +28,7 @@ function skipHello() {
     skip = true;
 }
 
+"use strict";
 function ucFirst(str) {
     if (!(str instanceof String || typeof str === 'string') || str === "") {
         return '';
@@ -34,12 +36,14 @@ function ucFirst(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
+"use strict";
 if (!(Date.now && Date.prototype.getTime)) {
     Date.now = function now() {
         return new Date().getTime();
     };
 }
 
+"use strict";
 if (!Function.prototype.bind) {
     Function.prototype.bind = function (oThis) {
         if (typeof this !== "function") {
@@ -66,12 +70,14 @@ if (Function.prototype.name === undefined) {
     });
 }
 
+"use strict";
 if (Math.sign === undefined) {
     Math.sign = function (x) {
         return x < 0 ? -1 : x > 0 ? 1 : +x;
     };
 }
 
+"use strict";
 if (Object.assign === undefined) {
     (function () {
         Object.assign = function (target) {
@@ -94,6 +100,7 @@ if (Object.assign === undefined) {
     })();
 }
 
+"use strict";
 exports.global = exports.global || null;
 if (!exports.global) {
     try {
@@ -109,6 +116,7 @@ if (!exports.global) {
     exports.global = {};
 }
 
+"use strict";
 var performance$1 = exports.global.performance || {};
 Object.defineProperty(exports.global, 'performance', { value: performance$1, configurable: true, writable: true });
 performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow;
@@ -119,6 +127,7 @@ if (!(exports.global.performance && exports.global.performance.now)) {
                   };
 }
 
+"use strict";
 var ONE_FRAME_TIME = 16;
 var lastTime = Date.now();
 var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -159,6 +168,124 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
+
+
+
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+"use strict";
 if (exports.global && typeof exports.global.Uint32Array !== "function" && _typeof(exports.global.Uint32Array) !== "object") {
     var CheapArray = function CheapArray(type) {
         var proto = [];
@@ -188,12 +315,16 @@ if (exports.global && typeof exports.global.Uint32Array !== "function" && _typeo
     CheapArray('ArrayBuffer');
 }
 
+"use strict";
+
+'use strict';
 function trace(context) {
     if (console) {
         console.log(context);
     }
 }
 
+"use strict";
 function dumpArray(value) {
     var prettyprint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var indent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -235,6 +366,7 @@ function dumpArray(value) {
     }
 }
 
+"use strict";
 function dumpDate(date /*Date*/) {
     var timestamp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     timestamp = Boolean(timestamp);
@@ -258,6 +390,7 @@ function dumpDate(date /*Date*/) {
     }
 }
 
+"use strict";
 function dumpObject(value) {
     var prettyprint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var indent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -300,6 +433,7 @@ function dumpObject(value) {
     }
 }
 
+"use strict";
 function toUnicodeNotation(num) {
     var hex = num.toString(16);
     while (hex.length < 4) {
@@ -308,6 +442,7 @@ function toUnicodeNotation(num) {
     return hex;
 }
 
+"use strict";
 function dumpString(value) {
     var code;
     var quote = "\"";
@@ -379,6 +514,7 @@ function dumpString(value) {
     return quote + str + quote;
 }
 
+"use strict";
 function dump(o, prettyprint, indent, indentor) {
     indent = isNaN(indent) ? 0 : indent;
     prettyprint = Boolean(prettyprint);
@@ -408,34 +544,46 @@ function dump(o, prettyprint, indent, indentor) {
     }
 }
 
+"use strict";
+
+"use strict";
+
+"use strict";
 function isBoolean(object) {
   return typeof object === 'boolean' || object instanceof Boolean;
 }
 
+"use strict";
 var isFloat = function isFloat(value) {
   return Number(value) === value && value % 1 !== 0;
 };
 
+"use strict";
 var isInt = function isInt(value) {
   return Number(value) === value && value % 1 === 0;
 };
 
+"use strict";
 function isNumber(object) {
   return typeof object === 'number' || object instanceof Number;
 }
 
+"use strict";
 var isUint = function isUint(value) {
   return Number(value) === value && value % 1 === 0 && value >= 0;
 };
 
+"use strict";
 function isString(object) {
   return typeof object === 'string' || object instanceof String;
 }
 
+"use strict";
 var contains = function contains(array, value) {
   return array instanceof Array ? array.indexOf(value) > -1 : false;
 };
 
+"use strict";
 function initialize() {
     var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -449,6 +597,7 @@ function initialize() {
     return ar;
 }
 
+"use strict";
 function pierce(ar, index /*uint*/, flag) {
   index = index > 0 ? Math.abs(index) : 0;
   flag = Boolean(flag);
@@ -457,6 +606,7 @@ function pierce(ar, index /*uint*/, flag) {
   return flag ? ar : item;
 }
 
+"use strict";
 function repeat(ar, count /*uint*/) {
     var result = null;
     if (ar instanceof Array) {
@@ -473,6 +623,7 @@ function repeat(ar, count /*uint*/) {
     return result;
 }
 
+"use strict";
 function rotate(ar) {
     var amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
     if (ar instanceof Array && ar.length > 0) {
@@ -488,6 +639,7 @@ function rotate(ar) {
     return ar;
 }
 
+"use strict";
 function shuffle(ar) {
     if (ar instanceof Array) {
         var item = void 0;
@@ -511,6 +663,7 @@ function shuffle(ar) {
     return ar;
 }
 
+"use strict";
 function sortOn(ar, propName, options) {
     var sort = function sort(o1, o2) {
         var v1 = propName in o1 ? o1[propName] : '';
@@ -604,6 +757,7 @@ Array.NUMERIC = 16;
 Array.RETURNINDEXEDARRAY = 8;
 Array.UNIQUESORT = 4;
 
+"use strict";
 function spliceInto(inserted, container, position /*Number*/, count /*Number*/) {
     inserted.unshift(position, count);
     try {
@@ -613,6 +767,7 @@ function spliceInto(inserted, container, position /*Number*/, count /*Number*/) 
     }
 }
 
+"use strict";
 function swap(ar) {
     var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var to = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -629,6 +784,7 @@ function swap(ar) {
     return null;
 }
 
+"use strict";
 /**
  * The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
  * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
@@ -649,6 +805,7 @@ var arrays = Object.assign({
     swap: swap
 });
 
+"use strict";
 function compare(charA, charB) {
     var a = charA.charAt(0);
     var b = charB.charAt(0);
@@ -670,6 +827,7 @@ function caseValue(str) {
     return str.toLowerCase().valueOf() === str.valueOf() ? 0 : 1;
 }
 
+"use strict";
 function isAlpha(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -678,6 +836,7 @@ function isAlpha(c) {
     return "A" <= c && c <= "Z" || "a" <= c && c <= "z";
 }
 
+"use strict";
 function isAlphaOrDigit(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -686,6 +845,7 @@ function isAlphaOrDigit(c) {
     return "A" <= c && c <= "Z" || "a" <= c && c <= "z" || "0" <= c && c <= "9";
 }
 
+"use strict";
 function isASCII(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -694,6 +854,7 @@ function isASCII(c) {
     return c.charCodeAt(0) <= 255;
 }
 
+"use strict";
 function isContained(c, charset) {
     var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
     if (index > 0) {
@@ -708,6 +869,7 @@ function isContained(c, charset) {
     return false;
 }
 
+"use strict";
 function isDigit(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -716,6 +878,7 @@ function isDigit(c) {
     return "0" <= c && c <= "9";
 }
 
+"use strict";
 function isHexDigit(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -724,6 +887,7 @@ function isHexDigit(c) {
     return "0" <= c && c <= "9" || "A" <= c && c <= "F" || "a" <= c && c <= "f";
 }
 
+"use strict";
 function isIdentifierStart(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -732,11 +896,13 @@ function isIdentifierStart(c) {
     return "A" <= c && c <= "Z" || "a" <= c && c <= "z" || c === "_" || c === "$";
 }
 
+"use strict";
 var lineTerminators = ["\n",
 "\r",
 "\u2028",
 "\u2929"];
 
+"use strict";
 function isLineTerminator(c) {
     var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -751,6 +917,7 @@ function isLineTerminator(c) {
     return false;
 }
 
+"use strict";
 function isLower(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -759,6 +926,7 @@ function isLower(c) {
     return "a" <= c && c <= "z";
 }
 
+"use strict";
 function isOctalDigit(c) {
     var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -767,8 +935,10 @@ function isOctalDigit(c) {
     return "0" <= c && c <= "7";
 }
 
+"use strict";
 var operators = ["*", "/", "%", "+", "-", "«", "»", ">", "<", "›", "&", "^", "|"];
 
+"use strict";
 function isOperator(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -777,6 +947,7 @@ function isOperator(c) {
     return operators.indexOf(c) > -1;
 }
 
+"use strict";
 var symbols = [" ",
 "!",
 "\"",
@@ -811,6 +982,7 @@ var symbols = [" ",
 "}",
 "~"];
 
+"use strict";
 function isSymbol(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -819,6 +991,7 @@ function isSymbol(c) {
     return symbols.indexOf(c) > -1;
 }
 
+"use strict";
 function isUnicode(c) {
     var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -827,6 +1000,7 @@ function isUnicode(c) {
     return c.charCodeAt(0) > 255;
 }
 
+"use strict";
 function isUpper(c) {
     var index /*uint*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -835,6 +1009,7 @@ function isUpper(c) {
     return "A" <= c && c <= "Z";
 }
 
+"use strict";
 var whiteSpaces = ["\t",
 "\n",
 "\x0B",
@@ -862,6 +1037,7 @@ var whiteSpaces = ["\t",
 "\u205F",
 "\u3000"];
 
+"use strict";
 function isWhiteSpace(c) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (index > 0) {
@@ -870,6 +1046,7 @@ function isWhiteSpace(c) {
     return whiteSpaces.indexOf(c) > -1;
 }
 
+"use strict";
 /**
  * The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform the basic characters.
  * <p>You can use this library for example to parse a string (JSON, csv, etc.).</p>
@@ -902,16 +1079,19 @@ var chars = Object.assign({
     whiteSpaces: whiteSpaces
 });
 
+"use strict";
 var distance = function distance(color1, color2) {
   return Math.pow((color1 >> 16 & 0xFF) - (color2 >> 16 & 0xFF), 2) + Math.pow((color1 >> 8 & 0xFF) - (color2 >> 8 & 0xFF), 2) + Math.pow((color1 & 0xFF) - (color2 & 0xFF), 2);
 };
 
+"use strict";
 var equals = function equals(color1, color2) {
   var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
   var dist = Math.pow((color1 >> 16 & 0xFF) - (color2 >> 16 & 0xFF), 2) + Math.pow((color1 >> 8 & 0xFF) - (color2 >> 8 & 0xFF), 2) + Math.pow((color1 & 0xFF) - (color2 & 0xFF), 2);
   return dist <= tolerance * (255 * 255 * 3) << 0;
 };
 
+"use strict";
 var fade = function fade() {
     var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
@@ -930,6 +1110,7 @@ var fade = function fade() {
     return r << 16 | g << 8 | b;
 };
 
+"use strict";
 var isLittleEndian = function isLittleEndian() {
     var a = new ArrayBuffer(4);
     var b = new Uint8Array(a);
@@ -949,6 +1130,7 @@ var isLittleEndian = function isLittleEndian() {
 };
 var littleEndian = isLittleEndian();
 
+"use strict";
 var max = 0xFF;
 var fromARGB = function fromARGB(a, r, g, b) {
   r = Math.min(Math.max(r, 0), max);
@@ -959,22 +1141,27 @@ var fromARGB = function fromARGB(a, r, g, b) {
   return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
 };
 
+"use strict";
 var getAlpha = function getAlpha(color) {
   return color >> 24 & 0xFF;
 };
 
+"use strict";
 var getBlue = function getBlue(color) {
   return color & 0xFF;
 };
 
+"use strict";
 var getGreen = function getGreen(color) {
   return color >> 8 & 0xFF;
 };
 
+"use strict";
 var getRed = function getRed(color) {
   return color >> 16 & 0xFF;
 };
 
+"use strict";
 var isUnique = function isUnique(color, colors) {
     var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
     if (!(colors instanceof Array) || colors.length === 0) {
@@ -994,6 +1181,7 @@ var isUnique = function isUnique(color, colors) {
     return true;
 };
 
+"use strict";
 var toHex = function toHex(value) {
     var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#';
     var upper = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -1015,6 +1203,7 @@ function hex(value) {
     return upper ? hex.toUpperCase() : hex;
 }
 
+"use strict";
 var uniques = function uniques(colors) {
     var maximum = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xFFFFFF;
     var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.01;
@@ -1027,6 +1216,7 @@ var uniques = function uniques(colors) {
     return result;
 };
 
+"use strict";
 /**
  * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
  * @summary The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
@@ -1049,8 +1239,10 @@ var colors = Object.assign({
     uniques: uniques
 });
 
+"use strict";
 var ONE_DAY_MS = 86400000;
 
+"use strict";
 var after = function after(date1, date2) {
     if (!(date1 instanceof Date && date2 instanceof Date)) {
         throw new TypeError('after() failed, the passed-in date arguments must be valid Date objects.');
@@ -1058,6 +1250,7 @@ var after = function after(date1, date2) {
     return date1.valueOf() > date2.valueOf();
 };
 
+"use strict";
 var before = function before(date1, date2) {
     if (!(date1 instanceof Date && date2 instanceof Date)) {
         throw new TypeError('after() failed, the passed-in date arguments must be valid Date objects.');
@@ -1065,6 +1258,7 @@ var before = function before(date1, date2) {
     return date1.valueOf() < date2.valueOf();
 };
 
+"use strict";
 var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 var daysInMonth = function daysInMonth() {
     var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -1079,6 +1273,7 @@ var daysInMonth = function daysInMonth() {
     return monthDays[m];
 };
 
+"use strict";
 var leapYear = function leapYear(date) {
     var year = void 0;
     if (date instanceof Date) {
@@ -1091,12 +1286,14 @@ var leapYear = function leapYear(date) {
     return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
 };
 
+"use strict";
 var yesterday = function yesterday() {
   var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   date = date instanceof Date ? date : new Date();
   return new Date(date.valueOf() - ONE_DAY_MS);
 };
 
+"use strict";
 /**
  * The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
  * @summary The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
@@ -1114,6 +1311,7 @@ var date = Object.assign({
   yesterday: yesterday
 });
 
+"use strict";
 var isDOMElement = function isDOMElement(value) {
     if (!value) {
         return false;
@@ -1125,6 +1323,7 @@ var isDOMElement = function isDOMElement(value) {
     }
 };
 
+"use strict";
 var isDOMObject = function isDOMObject(value) {
     if (!value) {
         return false;
@@ -1136,6 +1335,7 @@ var isDOMObject = function isDOMObject(value) {
     }
 };
 
+"use strict";
 var isElement = function isElement(value) {
     if (!value) {
         return false;
@@ -1147,6 +1347,7 @@ var isElement = function isElement(value) {
     }
 };
 
+"use strict";
 var isHTMLElement = function isHTMLElement(value) {
     if (!value) {
         return false;
@@ -1157,6 +1358,7 @@ var isHTMLElement = function isHTMLElement(value) {
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName);
 };
 
+"use strict";
 var isListObject = function isListObject(value) {
     if (!value) {
         return false;
@@ -1168,6 +1370,7 @@ var isListObject = function isListObject(value) {
     }
 };
 
+"use strict";
 var isSVGElement = function isSVGElement(value) {
     if (!value) {
         return false;
@@ -1178,6 +1381,7 @@ var isSVGElement = function isSVGElement(value) {
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName && value.xmlbase);
 };
 
+"use strict";
 /**
  * The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
  * @summary The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
@@ -1195,6 +1399,7 @@ var dom = Object.assign({
   isSVGElement: isSVGElement
 });
 
+"use strict";
 var backIn = function backIn(t, b, c, d) {
     var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
     if (isNaN(s)) {
@@ -1203,6 +1408,7 @@ var backIn = function backIn(t, b, c, d) {
     return c * (t /= d) * t * ((s + 1) * t - s) + b;
 };
 
+"use strict";
 var backInOut = function backInOut(t, b, c, d) {
     var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
     if (isNaN(s)) {
@@ -1214,6 +1420,7 @@ var backInOut = function backInOut(t, b, c, d) {
     return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
 };
 
+"use strict";
 var backOut = function backOut(t, b, c, d) {
     var s = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.70158;
     if (isNaN(s)) {
@@ -1222,6 +1429,7 @@ var backOut = function backOut(t, b, c, d) {
     return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
 };
 
+"use strict";
 var bounceOut = function bounceOut(t, b, c, d) {
     if ((t /= d) < 1 / 2.75) {
         return c * (7.5625 * t * t) + b;
@@ -1234,18 +1442,22 @@ var bounceOut = function bounceOut(t, b, c, d) {
     }
 };
 
+"use strict";
 var bounceIn = function bounceIn(t, b, c, d) {
   return c - bounceOut(d - t, 0, c, d) + b;
 };
 
+"use strict";
 var bounceInOut = function bounceInOut(t, b, c, d) {
   return t < d / 2 ? bounceIn(t * 2, 0, c, d) * 0.5 + b : bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
 };
 
+"use strict";
 var circularIn = function circularIn(t, b, c, d) {
   return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
 };
 
+"use strict";
 var circularInOut = function circularInOut(t, b, c, d) {
     if ((t /= d / 2) < 1) {
         return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
@@ -1253,14 +1465,17 @@ var circularInOut = function circularInOut(t, b, c, d) {
     return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
 };
 
+"use strict";
 var circularOut = function circularOut(t, b, c, d) {
   return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
 };
 
+"use strict";
 var cubicIn = function cubicIn(t, b, c, d) {
   return c * (t /= d) * t * t + b;
 };
 
+"use strict";
 var cubicInOut = function cubicInOut(t, b, c, d) {
     if ((t /= d / 2) < 1) {
         return c / 2 * t * t * t + b;
@@ -1268,10 +1483,12 @@ var cubicInOut = function cubicInOut(t, b, c, d) {
     return c / 2 * ((t -= 2) * t * t + 2) + b;
 };
 
+"use strict";
 var cubicOut = function cubicOut(t, b, c, d) {
   return c * ((t = t / d - 1) * t * t + 1) + b;
 };
 
+"use strict";
 var elasticIn = function elasticIn(t, b, c, d) {
     var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
     var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
@@ -1294,6 +1511,7 @@ var elasticIn = function elasticIn(t, b, c, d) {
     return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
 };
 
+"use strict";
 var elasticInOut = function elasticInOut(t, b, c, d) {
     var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
     var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
@@ -1319,6 +1537,7 @@ var elasticInOut = function elasticInOut(t, b, c, d) {
     return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
 };
 
+"use strict";
 var elasticOut = function elasticOut(t, b, c, d) {
     var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
     var p = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
@@ -1341,10 +1560,12 @@ var elasticOut = function elasticOut(t, b, c, d) {
     return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
 };
 
+"use strict";
 var expoIn = function expoIn(t, b, c, d) {
   return t === 0 ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
 };
 
+"use strict";
 var expoInOut = function expoInOut(t, b, c, d) {
     if (t === 0) {
         return b;
@@ -1358,18 +1579,22 @@ var expoInOut = function expoInOut(t, b, c, d) {
     return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
 };
 
+"use strict";
 var expoOut = function expoOut(t, b, c, d) {
   return t === d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
 };
 
+"use strict";
 var linear = function linear(t, b, c, d) {
   return c * t / d + b;
 };
 
+"use strict";
 var quarticIn = function quarticIn(t, b, c, d) {
   return c * (t /= d) * t * t * t + b;
 };
 
+"use strict";
 var quarticInOut = function quarticInOut(t, b, c, d) {
     if ((t /= d / 2) < 1) {
         return c / 2 * t * t * t * t + b;
@@ -1377,14 +1602,17 @@ var quarticInOut = function quarticInOut(t, b, c, d) {
     return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
 };
 
+"use strict";
 var quarticOut = function quarticOut(t, b, c, d) {
   return -c * ((t = t / d - 1) * t * t * t - 1) + b;
 };
 
+"use strict";
 var quinticIn = function quinticIn(t, b, c, d) {
   return c * (t /= d) * t * t * t * t + b;
 };
 
+"use strict";
 var quinticInOut = function quinticInOut(t, b, c, d) {
     if ((t /= d / 2) < 1) {
         return c / 2 * t * t * t * t * t + b;
@@ -1392,14 +1620,17 @@ var quinticInOut = function quinticInOut(t, b, c, d) {
     return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
 };
 
+"use strict";
 var quinticOut = function quinticOut(t, b, c, d) {
   return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
 };
 
+"use strict";
 var regularIn = function regularIn(t, b, c, d) {
   return c * (t /= d) * t + b;
 };
 
+"use strict";
 var regularInOut = function regularInOut(t, b, c, d) {
     if ((t /= d / 2) < 1) {
         return c / 2 * t * t + b;
@@ -1407,22 +1638,27 @@ var regularInOut = function regularInOut(t, b, c, d) {
     return -c / 2 * (--t * (t - 2) - 1) + b;
 };
 
+"use strict";
 var regularOut = function regularOut(t, b, c, d) {
   return -c * (t /= d) * (t - 2) + b;
 };
 
+"use strict";
 var sineIn = function sineIn(t, b, c, d) {
   return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
 };
 
+"use strict";
 var sineInOut = function sineInOut(t, b, c, d) {
   return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
 };
 
+"use strict";
 var sineOut = function sineOut(t, b, c, d) {
   return c * Math.sin(t / d * (Math.PI / 2)) + b;
 };
 
+"use strict";
 /**
  * The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific <b>tweening</b> effects.
  * <p>These easings functions provide different flavors of math-based motion under a consistent API.</p>
@@ -1482,6 +1718,7 @@ var easings = Object.assign({
     sineOut: sineOut
 });
 
+"use strict";
 var aop = function aop(func) {
     var begin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -1503,6 +1740,7 @@ var aop = function aop(func) {
     };
 };
 
+"use strict";
 /**
  * The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
  * @summary The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
@@ -1515,46 +1753,58 @@ var functors = Object.assign({
   aop: aop
 });
 
+"use strict";
 var RAD2DEG = 180 / Math.PI;
 
+"use strict";
 var acosD = function acosD(ratio) {
   return Math.acos(ratio) * RAD2DEG;
 };
 
+"use strict";
 var acosHm = function acosHm(x) {
   return Math.log(x - Math.sqrt(x * x - 1));
 };
 
+"use strict";
 var acosHp = function acosHp(x) {
   return Math.log(x + Math.sqrt(x * x - 1));
 };
 
+"use strict";
 var angleOfLine = function angleOfLine(x1, y1, x2, y2) {
   return Math.atan2(y2 - y1, x2 - x1) * RAD2DEG;
 };
 
+"use strict";
 var asinD = function asinD(ratio) {
   return Math.asin(ratio) * RAD2DEG;
 };
 
+"use strict";
 var asinH = function asinH(x) {
   return Math.log(x + Math.sqrt(x * x + 1));
 };
 
+"use strict";
 var atan2D = function atan2D(y, x) {
   return Math.atan2(y, x) * RAD2DEG;
 };
 
+"use strict";
 var atanD = function atanD(angle) {
   return Math.atan(angle) * RAD2DEG;
 };
 
+"use strict";
 var atanH = function atanH(x) {
   return Math.log((1 + x) / (1 - x)) / 2;
 };
 
+"use strict";
 var DEG2RAD = Math.PI / 180;
 
+"use strict";
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
   latitude1 = latitude1 * DEG2RAD;
   latitude2 = latitude2 * DEG2RAD;
@@ -1564,6 +1814,7 @@ var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
   return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
 };
 
+"use strict";
 var clamp = function clamp(value, min, max) {
     if (isNaN(value)) {
         return NaN;
@@ -1577,6 +1828,7 @@ var clamp = function clamp(value, min, max) {
     return Math.max(Math.min(value, max), min);
 };
 
+"use strict";
 var berp = function berp(start, end, amount) {
     if (start === end) {
         return start;
@@ -1586,14 +1838,17 @@ var berp = function berp(start, end, amount) {
     return start + (end - start) * amount;
 };
 
+"use strict";
 var bounce = function bounce(amount) {
   return Math.abs(Math.sin(6.28 * (amount + 1) * (amount + 1)) * (1 - amount));
 };
 
+"use strict";
 var cartesianToPolar = function cartesianToPolar(vector, degrees) {
   return { angle: Math.atan2(vector.y, vector.x) * (Boolean(degrees) ? RAD2DEG : 1), radius: Math.sqrt(vector.x * vector.x + vector.y * vector.y) };
 };
 
+"use strict";
 function ceil(n) {
     var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (isNaN(n)) {
@@ -1607,6 +1862,7 @@ function ceil(n) {
     return Math.ceil(n * r) / r;
 }
 
+"use strict";
 var clerp = function clerp(start, end, amount) {
     var max = 360;
     var half = 180;
@@ -1620,10 +1876,12 @@ var clerp = function clerp(start, end, amount) {
     }
 };
 
+"use strict";
 var cosD = function cosD(angle) {
   return Math.cos(angle * DEG2RAD);
 };
 
+"use strict";
 var coserp = function coserp(start, end, amount) {
     if (start === end) {
         return start;
@@ -1632,30 +1890,37 @@ var coserp = function coserp(start, end, amount) {
     return (1 - amount) * start + amount * end;
 };
 
+"use strict";
 var cosH = function cosH(x) {
   return (Math.exp(x) + Math.exp(-x)) / 2;
 };
 
+"use strict";
 var degreesToRadians = function degreesToRadians(angle) {
   return angle * DEG2RAD;
 };
 
+"use strict";
 var distance$1 = function distance(x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   return Math.sqrt(dx * dx + dy * dy);
 };
 
+"use strict";
 function distanceByObject(p1, p2) {
   var dx = p2.x - p1.x;
   var dy = p2.y - p1.y;
   return Math.sqrt(dx * dx + dy * dy);
 }
 
+"use strict";
 var EARTH_RADIUS_IN_METERS = 6371000;
 
+"use strict";
 var EPSILON = 0.000000001;
 
+"use strict";
 var factorial = function factorial(value) {
     if (value === 0) {
         return 1;
@@ -1667,6 +1932,7 @@ var factorial = function factorial(value) {
     return result;
 };
 
+"use strict";
 var fibonacci = function fibonacci(value) {
     var i = 1;
     var j = 0;
@@ -1678,6 +1944,7 @@ var fibonacci = function fibonacci(value) {
     return j;
 };
 
+"use strict";
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
   latitude1 = latitude1 * DEG2RAD;
   latitude2 = latitude2 * DEG2RAD;
@@ -1687,6 +1954,7 @@ var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longi
   return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
 };
 
+"use strict";
 function fixAngle(angle) {
     if (isNaN(angle)) {
         angle = 0;
@@ -1695,6 +1963,7 @@ function fixAngle(angle) {
     return angle < 0 ? angle + 360 : angle;
 }
 
+"use strict";
 var floor = function floor(n) {
     var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (isNaN(n)) {
@@ -1708,6 +1977,7 @@ var floor = function floor(n) {
     return Math.floor(n * r) / r;
 };
 
+"use strict";
 var gcd = function gcd(i1, i2) {
     if (i2 === 0) {
         return i1;
@@ -1724,6 +1994,7 @@ var gcd = function gcd(i1, i2) {
     }
 };
 
+"use strict";
 var haversine = function haversine(latitude1, longitude1, latitude2, longitude2) {
     var radius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : EARTH_RADIUS_IN_METERS;
     if (isNaN(radius)) {
@@ -1736,6 +2007,7 @@ var haversine = function haversine(latitude1, longitude1, latitude2, longitude2)
     return c === c ? c : 0;
 };
 
+"use strict";
 var hermite = function hermite(start, end, amount) {
     if (start === end) {
         return start;
@@ -1744,24 +2016,30 @@ var hermite = function hermite(start, end, amount) {
     return (1 - amount) * start + amount * end;
 };
 
+"use strict";
 var hypothenuse = function hypothenuse(x, y) {
   return Math.sqrt(x * x + y * y);
 };
 
+"use strict";
 var interpolate = function interpolate(value, min, max) {
   return min + (max - min) * value;
 };
 
+"use strict";
 var isEven = function isEven(value) {
   return value % 2 === 0;
 };
 
+"use strict";
 var isOdd = function isOdd(value) {
   return value % 2 !== 0;
 };
 
+"use strict";
 var LAMBDA = 0.57721566490143;
 
+"use strict";
 var lerp = function lerp(start, end, amount) {
     if (start === end) {
         return start;
@@ -1769,22 +2047,27 @@ var lerp = function lerp(start, end, amount) {
     return (1 - amount) * start + amount * end;
 };
 
+"use strict";
 function log10(value) {
   return Math.log(value) / Math.LN10;
 }
 
+"use strict";
 function logN(value, base) {
   return Math.log(value) / Math.log(base);
 }
 
+"use strict";
 var normalize = function normalize(value, minimum, maximum) {
   return (value - minimum) / (maximum - minimum);
 };
 
+"use strict";
 var map = function map(value, min1, max1, min2, max2) {
   return interpolate(normalize(value, min1, max1), min2, max2);
 };
 
+"use strict";
 var midPoint = function midPoint(latitude1, longitude1, latitude2, longitude2) {
     var dLng = (longitude2 - longitude1) * DEG2RAD;
     latitude1 = latitude1 * DEG2RAD;
@@ -1799,13 +2082,16 @@ var midPoint = function midPoint(latitude1, longitude1, latitude2, longitude2) {
     return point;
 };
 
+"use strict";
 var MILE_TO_METER = 1609;
 
+"use strict";
 function modulo(a, b) {
   var r = a % b;
   return r * b < 0 ? r + b : r;
 }
 
+"use strict";
 var nearlyEquals = function nearlyEquals(value1, value2) {
     var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.000001;
     if (isNaN(tolerance)) {
@@ -1816,15 +2102,19 @@ var nearlyEquals = function nearlyEquals(value1, value2) {
     return Math.abs(value1 - value2) <= tolerance;
 };
 
+"use strict";
 var percentage = function percentage(value, maximum) {
   var p = value / maximum * 100;
   return isNaN(p) || !isFinite(p) ? NaN : p;
 };
 
+"use strict";
 var PHI = 1.61803398874989;
 
+"use strict";
 var PI2 = Math.PI * 2;
 
+"use strict";
 var polarToCartesian = function polarToCartesian(vector, degrees) {
     var angle = vector.angle;
     var radius = vector.radius;
@@ -1834,11 +2124,13 @@ var polarToCartesian = function polarToCartesian(vector, degrees) {
     return { x: radius * Math.cos(angle), y: radius * Math.sin(angle) };
 };
 
+"use strict";
 var replaceNaN = function replaceNaN(value) {
   var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   return isNaN(value) ? defaultValue : value;
 };
 
+"use strict";
 var round = function round(n) {
     var floatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     if (isNaN(n)) {
@@ -1852,6 +2144,7 @@ var round = function round(n) {
     return Math.round(n * r) / r;
 };
 
+"use strict";
 var sign = function sign(n) {
     if (isNaN(n)) {
         throw new TypeError("sign failed, the passed-in value not must be NaN.");
@@ -1859,10 +2152,12 @@ var sign = function sign(n) {
     return n < 0 ? -1 : 1;
 };
 
+"use strict";
 var sinD = function sinD(angle) {
   return Math.sin(angle * DEG2RAD);
 };
 
+"use strict";
 var sinerp = function sinerp(start, end, amount) {
     if (start === end) {
         return start;
@@ -1871,18 +2166,22 @@ var sinerp = function sinerp(start, end, amount) {
     return (1 - amount) * start + amount * end;
 };
 
+"use strict";
 var sinH = function sinH(x) {
   return (Math.exp(x) - Math.exp(-x)) * 0.5;
 };
 
+"use strict";
 var tanD = function tanD(angle) {
   return Math.tan(angle * DEG2RAD);
 };
 
+"use strict";
 var tanH = function tanH(x) {
   return sinH(x) / cosH(x);
 };
 
+"use strict";
 function vincenty(latitude1, longitude1, latitude2, longitude2)
 {
     var a = 6378137;
@@ -1938,6 +2237,7 @@ function vincenty(latitude1, longitude1, latitude2, longitude2)
     return s;
 }
 
+"use strict";
 function wrap(angle) {
     var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var max = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 360;
@@ -1952,6 +2252,7 @@ function wrap(angle) {
     return result + min;
 }
 
+"use strict";
 /**
  * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
  * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
@@ -2026,15 +2327,18 @@ var maths = Object.assign({
     wrap: wrap
 });
 
+"use strict";
 function toInt(num) {
   return num - num % 1;
 }
 
+"use strict";
 function toUint(num) {
   num -= num % 1;
   return num < 0 ? -num : num;
 }
 
+"use strict";
 /**
  * The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
  * @summary The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
@@ -2049,6 +2353,7 @@ var numbers = Object.assign({
   toUnicodeNotation: toUnicodeNotation
 });
 
+"use strict";
 function forEach(object, callback) {
     var context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var breaker = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -2072,6 +2377,7 @@ function forEach(object, callback) {
     }
 }
 
+"use strict";
 function fuse(src, srcPos, dest, destPos, length) {
     if (!src) {
         throw new ReferenceError("fuse failed, if either src is null.");
@@ -2090,6 +2396,7 @@ function fuse(src, srcPos, dest, destPos, length) {
     }
 }
 
+"use strict";
 function members(o) {
     var byValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     byValue = Boolean(byValue === true);
@@ -2110,6 +2417,7 @@ function members(o) {
     return members.length > 0 ? members : null;
 }
 
+"use strict";
 function merge(target, source) {
     var overwrite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
     if (overwrite === null || overwrite === undefined) {
@@ -2126,6 +2434,7 @@ function merge(target, source) {
     return target;
 }
 
+"use strict";
 /**
  * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
  * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
@@ -2141,6 +2450,7 @@ var objects = Object.assign({
   merge: merge
 });
 
+"use strict";
 function generateUUID() {
   var d = new Date().getTime();
   return pattern.replace(/[xy]/g, function (c) {
@@ -2151,6 +2461,7 @@ function generateUUID() {
 }
 var pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
+"use strict";
 /**
  * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
  * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
@@ -2163,6 +2474,7 @@ var random = Object.assign({
   generateUUID: generateUUID
 });
 
+"use strict";
 function getDefinitionByName(name) {
     var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (name instanceof String || typeof name === 'string') {
@@ -2185,6 +2497,7 @@ function getDefinitionByName(name) {
     return undefined;
 }
 
+"use strict";
 function invoke(c) {
         var a = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
         if (!(c instanceof Function)) {
@@ -2265,6 +2578,7 @@ function invoke(c) {
         }
 }
 
+"use strict";
 /**
  * The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
  * @summary The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
@@ -2278,6 +2592,7 @@ var reflect = Object.assign({
   invoke: invoke
 });
 
+"use strict";
 function between(source, left, right) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
@@ -2293,6 +2608,7 @@ function between(source, left, right) {
     return source.slice(start + left.length, end);
 }
 
+"use strict";
 function camelCase(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
@@ -2302,6 +2618,7 @@ function camelCase(source) {
     });
 }
 
+"use strict";
 function capitalize(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
@@ -2311,6 +2628,7 @@ function capitalize(source) {
     });
 }
 
+"use strict";
 function center(source) {
     var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ";
@@ -2339,6 +2657,7 @@ function center(source) {
     }
 }
 
+"use strict";
 function trim(source) {
     var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!(source instanceof String || typeof source === 'string') || source === "") {
@@ -2358,6 +2677,7 @@ function trim(source) {
     return source;
 }
 
+"use strict";
 function clean(source) {
     if (source === null || !(source instanceof String || typeof source === 'string')) {
         return "";
@@ -2365,6 +2685,7 @@ function clean(source) {
     return trim(source.replace(/\s+/g, ' '));
 }
 
+"use strict";
 function compare$1(str1, str2) {
     var strict = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     if (!(typeof str1 === 'string' || str1 instanceof String)) {
@@ -2396,6 +2717,7 @@ function compare$1(str1, str2) {
     }
 }
 
+"use strict";
 function endsWith(source, value) {
     if (!(source instanceof String || typeof source === 'string') || !(value instanceof String || typeof value === 'string') || source.length < value.length) {
         return false;
@@ -2406,6 +2728,7 @@ function endsWith(source, value) {
     return source.lastIndexOf(value) === source.length - value.length;
 }
 
+"use strict";
 function fastformat(pattern) {
     for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
@@ -2423,6 +2746,7 @@ function fastformat(pattern) {
     return pattern;
 }
 
+"use strict";
 function fastformatDate() {
     var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '-';
@@ -2443,6 +2767,7 @@ function fastformatDate() {
     return exp;
 }
 
+"use strict";
 function pad(source) {
     var amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var ch = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ";
@@ -2469,6 +2794,7 @@ function pad(source) {
     return source;
 }
 
+"use strict";
 function format(pattern) {
     for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
@@ -2534,6 +2860,7 @@ function format(pattern) {
     return formatted;
 }
 
+"use strict";
 function hyphenate(source) {
     if (!(source instanceof String || typeof source === 'string') || source === "") {
         return '';
@@ -2543,6 +2870,7 @@ function hyphenate(source) {
     });
 }
 
+"use strict";
 function indexOfAny(source, anyOf) {
     var startIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
     var count = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : -1;
@@ -2569,6 +2897,7 @@ function indexOfAny(source, anyOf) {
     return -1;
 }
 
+"use strict";
 function insert(source) {
     var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
@@ -2592,6 +2921,7 @@ function insert(source) {
     return strA + value + strB;
 }
 
+"use strict";
 function lastIndexOfAny(source, anyOf) {
     var startIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;
     var count = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Infinity;
@@ -2619,6 +2949,7 @@ function lastIndexOfAny(source, anyOf) {
     return -1;
 }
 
+"use strict";
 function repeat$1(source) {
     var count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
     if (!(source instanceof String || typeof source === 'string') || source === "") {
@@ -2652,6 +2983,7 @@ function repeat$1(source) {
     return result;
 }
 
+"use strict";
 function startsWith(source, value) {
     if (!(source instanceof String || typeof source === 'string') || !(value instanceof String || typeof value === 'string') || source.length < value.length) {
         return false;
@@ -2665,6 +2997,7 @@ function startsWith(source, value) {
     return source.indexOf(value) === 0;
 }
 
+"use strict";
 function trimEnd(source) {
     var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!(source instanceof String || typeof source === 'string') || source === "") {
@@ -2674,11 +3007,11 @@ function trimEnd(source) {
         chars = whiteSpaces;
     }
     var i;
-    var l = source.length;
     for (i = source.length - 1; i >= 0 && chars.indexOf(source.charAt(i)) > -1; i--) {}
     return source.substring(0, i + 1);
 }
 
+"use strict";
 function trimStart(source) {
     var chars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!(source instanceof String || typeof source === 'string') || source === "") {
@@ -2693,6 +3026,7 @@ function trimStart(source) {
     return source.substring(i);
 }
 
+"use strict";
 function truncate(source) {
     var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var prune = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "...";
@@ -2717,6 +3051,7 @@ function truncate(source) {
     return (template + prune).length > source.length ? source : source.slice(0, template.length) + prune;
 }
 
+"use strict";
 function ucWords(str) {
     var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : " ";
     if (!(str instanceof String || typeof str === 'string') || str === "") {
@@ -2730,10 +3065,12 @@ function ucWords(str) {
     return ar.join(separator);
 }
 
+"use strict";
 var versionUUID = function versionUUID(uuid) {
   return uuid.charAt(14) | 0;
 };
 
+"use strict";
 function validateUUID(source) {
     var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!(source instanceof String || typeof source === 'string') || source === "") {
@@ -2767,6 +3104,7 @@ function validateUUID(source) {
 }
 var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+"use strict";
 /**
  * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
  * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
@@ -2803,6 +3141,7 @@ var strings = Object.assign({
     versionUUID: versionUUID
 });
 
+"use strict";
 /**
  * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, colors, etc.
  * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
@@ -2840,6 +3179,7 @@ var core = Object.assign({
     strings: strings
 });
 
+"use strict";
 function Enum(value, name) {
     Object.defineProperties(this, {
         _name: {
@@ -2874,6 +3214,7 @@ Enum.prototype.valueOf = function () {
     return this._value;
 };
 
+"use strict";
 function isEquatable(target) {
   if (target) {
     return target.equals && target.equals instanceof Function || target instanceof Equatable;
@@ -2886,6 +3227,7 @@ Equatable.prototype.constructor = Equatable;
 Equatable.prototype.equals = function (object) {
 };
 
+"use strict";
 function isEvaluable(target) {
   if (target) {
     return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
@@ -2901,6 +3243,7 @@ Evaluable.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function isFormattable(target) {
   if (target) {
     return target instanceof Formattable || 'format' in target && target.format instanceof Function;
@@ -2913,6 +3256,7 @@ Formattable.prototype.constructor = Formattable;
 Formattable.prototype.format = function (value) {
 };
 
+"use strict";
 function isIdentifiable(target) {
     if (target) {
         return target instanceof Identifiable || 'id' in target;
@@ -2928,6 +3272,7 @@ Identifiable.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: Identifiable }
 });
 
+"use strict";
 function isIterator(target) {
   if (target) {
     return target instanceof Iterator ||
@@ -2955,6 +3300,7 @@ Iterator.prototype = Object.create(Object.prototype, {
   }
 });
 
+"use strict";
 function isOrderedIterator(target) {
   var bool = false;
   if (target) {
@@ -2971,6 +3317,7 @@ OrderedIterator.prototype.toString = function () {
   return '[OrderedIterator]';
 };
 
+"use strict";
 function isValidator(target) {
   if (target) {
     if (target instanceof Validator) {
@@ -2986,6 +3333,7 @@ Validator.prototype.constructor = Validator;
 Validator.prototype.supports = function (value) {};
 Validator.prototype.validate = function (value) /*void*/{};
 
+"use strict";
 function KeyValuePair() {}
 KeyValuePair.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: KeyValuePair },
@@ -2999,7 +3347,7 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   copyFrom: { value: function value(map) {}, writable: true },
   delete: { value: function value(key) {}, writable: true },
   forEach: { value: function value(callback) {
-      var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      
     }, writable: true },
   get: { value: function value(key) {
       return null;
@@ -3029,10 +3377,12 @@ KeyValuePair.prototype = Object.create(Object.prototype, {
   values: { value: function value() {}, writable: true }
 });
 
+"use strict";
 function Property() {}
 Property.prototype = Object.create(Object.prototype);
 Property.prototype.constructor = Property;
 
+"use strict";
 function Attribute() {
   var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
@@ -3045,6 +3395,7 @@ Attribute.prototype.toString = function () {
   return "[Attribute]";
 };
 
+"use strict";
 function Method() {
   var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -3057,6 +3408,7 @@ Method.prototype.toString = function () {
   return "[Method]";
 };
 
+"use strict";
 function ValueObject() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -3103,6 +3455,7 @@ ValueObject.prototype = Object.create(Identifiable.prototype, {
         } }
 });
 
+"use strict";
 function ArrayIterator(array) {
     if (!(array instanceof Array)) {
         throw new ReferenceError(this + " constructor failed, the passed-in Array argument not must be 'null'.");
@@ -3135,6 +3488,7 @@ ArrayIterator.prototype = Object.create(Iterator.prototype, {
         } }
 });
 
+"use strict";
 function MapIterator(map) {
     if (map && map instanceof KeyValuePair) {
         Object.defineProperties(this, {
@@ -3170,6 +3524,7 @@ MapIterator.prototype = Object.create(Iterator.prototype, {
         } }
 });
 
+"use strict";
 function MapEntry(key, value) {
   Object.defineProperties(this, {
     key: { value: key, writable: true },
@@ -3186,6 +3541,7 @@ MapEntry.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function MapFormatter() {}
 MapFormatter.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: MapFormatter },
@@ -3212,6 +3568,7 @@ MapFormatter.prototype = Object.create(Object.prototype, {
 });
 var formatter = new MapFormatter();
 
+"use strict";
 function ArrayMap() {
     var keys = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var values = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -3370,6 +3727,7 @@ ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
  * <p>It reduces programming effort while increasing performance. It enables interoperability among unrelated APIs, reduces effort in designing and learning new APIs, and fosters software reuse.</p>
@@ -3406,6 +3764,7 @@ var data = Object.assign({
   }
 });
 
+"use strict";
 function ConcurrencyError(message, fileName, lineNumber) {
   this.name = 'ConcurrencyError';
   this.message = message || 'concurrency error';
@@ -3416,6 +3775,7 @@ function ConcurrencyError(message, fileName, lineNumber) {
 ConcurrencyError.prototype = Object.create(Error.prototype);
 ConcurrencyError.prototype.constructor = ConcurrencyError;
 
+"use strict";
 function InvalidChannelError(message, fileName, lineNumber) {
   this.name = 'InvalidChannelError';
   this.message = message || 'invalid channel error';
@@ -3426,6 +3786,7 @@ function InvalidChannelError(message, fileName, lineNumber) {
 InvalidChannelError.prototype = Object.create(Error.prototype);
 InvalidChannelError.prototype.constructor = InvalidChannelError;
 
+"use strict";
 function InvalidFilterError(message, fileName, lineNumber) {
   this.name = 'InvalidFilterError';
   this.message = message || 'invalid filter error';
@@ -3436,6 +3797,7 @@ function InvalidFilterError(message, fileName, lineNumber) {
 InvalidFilterError.prototype = Object.create(Error.prototype);
 InvalidFilterError.prototype.constructor = InvalidFilterError;
 
+"use strict";
 function NonUniqueKeyError(key, pattern, fileName, lineNumber) {
   this.name = 'NonUniqueKeyError';
   this.key = key;
@@ -3449,6 +3811,7 @@ NonUniqueKeyError.PATTERN = "attempting to insert the key '{0}'";
 NonUniqueKeyError.prototype = Object.create(Error.prototype);
 NonUniqueKeyError.prototype.constructor = NonUniqueKeyError;
 
+"use strict";
 function NoSuchElementError(message, fileName, lineNumber) {
   this.name = 'NoSuchElementError';
   this.message = message || 'no such element error';
@@ -3459,6 +3822,7 @@ function NoSuchElementError(message, fileName, lineNumber) {
 NoSuchElementError.prototype = Object.create(Error.prototype);
 NoSuchElementError.prototype.constructor = NoSuchElementError;
 
+"use strict";
 /**
  * The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>), rather than part of the Javascript core language. The <strong>Javascript</strong> core language is the part of the language that complies with the <strong>ECMAScript</strong> standard.
  * @summary The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>).
@@ -3475,6 +3839,7 @@ var errors = Object.assign({
   NoSuchElementError: NoSuchElementError
 });
 
+"use strict";
 function MultiEvaluator() {
     var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -3544,6 +3909,7 @@ MultiEvaluator.prototype.toString = function () {
     return "[MultiEvaluator]";
 };
 
+"use strict";
 function PropertyEvaluator(target) {
     Object.defineProperties(this, {
         separator: { value: ".", writable: true },
@@ -3580,6 +3946,7 @@ PropertyEvaluator.prototype.toString = function () {
     return "[PropertyEvaluator]";
 };
 
+"use strict";
 function RomanNumber() {
     var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     Object.defineProperties(this, {
@@ -3701,6 +4068,7 @@ RomanNumber.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function RomanEvaluator() {}
 RomanEvaluator.prototype = Object.create(Evaluable.prototype);
 RomanEvaluator.prototype.constructor = RomanEvaluator;
@@ -3717,6 +4085,7 @@ RomanEvaluator.prototype.toString = function () {
   return "[RomanEvaluator]";
 };
 
+"use strict";
 /**
  * The {@link system.evaluators} library contains classes to evaluates some objects with a collection of specific strategies.
  * @summary The {@link system.evaluators} library contains classes to evaluates some objects.
@@ -3731,6 +4100,7 @@ var evaluators = Object.assign({
   RomanEvaluator: RomanEvaluator
 });
 
+"use strict";
 function Event$1(type) {
   var bubbles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var cancelable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -3831,6 +4201,7 @@ Object.defineProperties(Event$1, {
   UNLOAD: { value: "unload" }
 });
 
+"use strict";
 function EventListener() {}
 EventListener.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: EventListener },
@@ -3840,6 +4211,7 @@ EventListener.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 var EventPhase = Object.defineProperties({}, {
   AT_TARGET: { value: 2, enumerable: true },
   BUBBLING_PHASE: { value: 3, enumerable: true },
@@ -3847,21 +4219,22 @@ var EventPhase = Object.defineProperties({}, {
   NONE: { value: 0, enumerable: true }
 });
 
+"use strict";
 function IEventDispatcher() {}
 IEventDispatcher.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: IEventDispatcher },
   addEventListener: { writable: true, value: function value(type, listener) {
-      var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var priority = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      
     } },
   dispatchEvent: { writable: true, value: function value(event) {} },
   hasEventListener: { writable: true, value: function value(type) {} },
   removeEventListener: { writable: true, value: function value(type, listener) {
-      var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      
     } },
   willTrigger: { writable: true, value: function value(type) {} }
 });
 
+"use strict";
 function EventDispatcher(target) {
     Object.defineProperties(this, {
         target: { writable: true, value: target instanceof IEventDispatcher ? target : null },
@@ -4044,6 +4417,7 @@ Object.defineProperties(EventDispatcher, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.events} package provides a W3C Event Model implementation.
  * @summary The {@link system.events} package provides an W3C Event Model library.
@@ -4098,6 +4472,7 @@ var events = Object.assign({
   IEventDispatcher: IEventDispatcher
 });
 
+"use strict";
 function ExpressionFormatter() {
     Object.defineProperties(this, {
         expressions: { value: new ArrayMap() },
@@ -4193,6 +4568,7 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.formatters} library contains classes to format objects to a specific string expression.
  * @summary The {@link system.formatters} library contains classes to format objects to a specific string expression.
@@ -4205,6 +4581,7 @@ var formatters = Object.assign({
   ExpressionFormatter: ExpressionFormatter
 });
 
+"use strict";
 function Receiver() {}
 Receiver.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: Receiver },
@@ -4214,6 +4591,7 @@ Receiver.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function Signaler() {}
 Signaler.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: Signaler },
@@ -4221,8 +4599,7 @@ Signaler.prototype = Object.create(Object.prototype, {
       return 0;
     } },
   connect: { writable: true, value: function value(receiver) {
-      var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      
     } },
   connected: { writable: true, value: function value() {} },
   disconnect: { writable: true, value: function value(receiver) {} },
@@ -4230,6 +4607,7 @@ Signaler.prototype = Object.create(Object.prototype, {
   hasReceiver: { writable: true, value: function value(receiver) {} }
 });
 
+"use strict";
 function SignalEntry(receiver) {
   var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -4243,6 +4621,7 @@ SignalEntry.prototype.toString = function () {
   return '[SignalEntry]';
 };
 
+"use strict";
 function Signal() {
     Object.defineProperties(this, {
         proxy: { value: null, configurable: true, writable: true },
@@ -4382,6 +4761,7 @@ Signal.prototype = Object.create(Signaler.prototype, {
         } }
 });
 
+"use strict";
 function LoggerLevel(value, name) {
   Enum.call(this, value, name);
 }
@@ -4420,6 +4800,7 @@ Object.defineProperties(LoggerLevel, {
     } }
 });
 
+"use strict";
 function LoggerEntry(message, level, channel) {
   this.channel = channel;
   this.level = level instanceof LoggerLevel ? level : LoggerLevel.ALL;
@@ -4428,6 +4809,7 @@ function LoggerEntry(message, level, channel) {
 LoggerEntry.prototype = Object.create(Object.prototype);
 LoggerEntry.prototype.constructor = LoggerEntry;
 
+"use strict";
 function Logger(channel) {
     Signal.call(this);
     Object.defineProperties(this, {
@@ -4500,6 +4882,7 @@ Logger.prototype = Object.create(Signal.prototype, {
         } }
 });
 
+"use strict";
 var strings$1 = Object.defineProperties({}, {
   CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
   CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
@@ -4512,6 +4895,7 @@ var strings$1 = Object.defineProperties({}, {
   INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
 });
 
+"use strict";
 function LoggerTarget() {
     Object.defineProperties(this, {
         _count: { value: 0, writable: true },
@@ -4633,6 +5017,7 @@ LoggerTarget.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function LoggerFactory() {
     Object.defineProperties(this, {
         _loggers: { value: new ArrayMap(), writable: true },
@@ -4779,10 +5164,13 @@ LoggerFactory.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 var Log = new LoggerFactory();
 
+"use strict";
 var logger = Log.getLogger("system.ioc.logger");
 
+"use strict";
 var MagicReference = Object.defineProperties({}, {
   CONFIG: { value: "#config", enumerable: true },
   INIT: { value: "#init", enumerable: true },
@@ -4793,6 +5181,7 @@ var MagicReference = Object.defineProperties({}, {
   THIS: { value: "#this", enumerable: true }
 });
 
+'use strict';
 var ObjectAttribute = Object.defineProperties({}, {
   ARGUMENTS: { value: 'args', enumerable: true },
   CALLBACK: { value: 'callback', enumerable: true },
@@ -4820,6 +5209,7 @@ var ObjectAttribute = Object.defineProperties({}, {
   VALUE: { value: 'value', enumerable: true }
 });
 
+"use strict";
 function ObjectArgument(value) {
     var policy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "value";
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -4860,6 +5250,7 @@ ObjectArgument.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function ConfigEvaluator(config) {
     PropertyEvaluator.call(this);
     this.config = config instanceof ObjectConfig ? config : null;
@@ -4873,6 +5264,7 @@ ConfigEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
     constructor: { value: ConfigEvaluator }
 });
 
+"use strict";
 function LocaleEvaluator(config) {
     PropertyEvaluator.call(this);
     this.config = config instanceof ObjectConfig ? config : null;
@@ -4888,6 +5280,7 @@ LocaleEvaluator.prototype = Object.create(PropertyEvaluator.prototype, {
     constructor: { value: LocaleEvaluator }
 });
 
+"use strict";
 function isLockable(target) {
     if (target) {
         if (target instanceof Lockable) {
@@ -4919,6 +5312,7 @@ Lockable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function createArguments(a) {
     if (!(a instanceof Array) || a.length === 0) {
         return null;
@@ -4958,6 +5352,7 @@ function createArguments(a) {
     }
 }
 
+"use strict";
 var ObjectOrder = Object.defineProperties({}, {
   AFTER: { value: "after", enumerable: true },
   BEFORE: { value: "before", enumerable: true },
@@ -4965,6 +5360,7 @@ var ObjectOrder = Object.defineProperties({}, {
   NOW: { value: "now", enumerable: true }
 });
 
+"use strict";
 function ObjectListener(dispatcher, type) {
   var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var useCapture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
@@ -5002,6 +5398,7 @@ Object.defineProperties(ObjectListener, {
   TYPE: { value: "type", enumerable: true }
 });
 
+"use strict";
 function createListeners(factory) {
     if (!factory) {
         return null;
@@ -5042,6 +5439,7 @@ function createListeners(factory) {
     return listeners.length > 0 ? listeners : null;
 }
 
+"use strict";
 function ObjectStrategy() {}
 ObjectStrategy.prototype = Object.create(Object.prototype, {
   constructor: { writable: true, value: ObjectStrategy },
@@ -5050,6 +5448,7 @@ ObjectStrategy.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function ObjectProperty(name, value) {
   var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
   var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -5089,6 +5488,7 @@ ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
   }
 });
 
+"use strict";
 function createProperties(factory) {
     if (!factory) {
         return null;
@@ -5172,6 +5572,7 @@ function createProperties(factory) {
     return properties.length > 0 ? properties : null;
 }
 
+"use strict";
 function ObjectReceiver(signal) {
   var slot = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
   var priority = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -5207,6 +5608,7 @@ Object.defineProperties(ObjectReceiver, {
   SLOT: { value: "slot", enumerable: true }
 });
 
+"use strict";
 function createReceivers(factory) {
     if (!factory) {
         return null;
@@ -5240,6 +5642,7 @@ function createReceivers(factory) {
     return receivers.length > 0 ? receivers : null;
 }
 
+'use strict';
 var ObjectStrategies = Object.defineProperties({}, {
   FACTORY_METHOD: { value: 'factoryMethod', enumerable: true },
   FACTORY_PROPERTY: { value: 'factoryProperty', enumerable: true },
@@ -5249,6 +5652,7 @@ var ObjectStrategies = Object.defineProperties({}, {
   STATIC_FACTORY_PROPERTY: { value: 'staticFactoryProperty', enumerable: true }
 });
 
+"use strict";
 function ObjectMethod(name, args) {
   Object.defineProperties(this, {
     args: { value: args, writable: true },
@@ -5259,6 +5663,7 @@ ObjectMethod.prototype = Object.create(ObjectStrategy.prototype, {
   constructor: { writable: true, value: ObjectMethod }
 });
 
+"use strict";
 function ObjectFactoryMethod(factory, name, args) {
     ObjectMethod.call(this, name, args);
     Object.defineProperties(this, {
@@ -5281,6 +5686,7 @@ Object.defineProperties(ObjectFactoryMethod, {
         } }
 });
 
+"use strict";
 function ObjectFactoryProperty(factory, name) {
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     ObjectProperty.call(this, name, null, null, evaluators);
@@ -5306,6 +5712,7 @@ Object.defineProperties(ObjectFactoryProperty, {
     }
 });
 
+"use strict";
 function ObjectReference(ref) {
     Object.defineProperties(this, {
         ref: { value: ref instanceof String || typeof ref === 'string' ? ref : null, writable: true }
@@ -5315,6 +5722,7 @@ ObjectReference.prototype = Object.create(ObjectStrategy.prototype, {
     constructor: { value: ObjectReference }
 });
 
+"use strict";
 function ObjectStaticFactoryMethod(type, name, args) {
     ObjectMethod.call(this, name, args);
     Object.defineProperties(this, {
@@ -5338,6 +5746,7 @@ Object.defineProperties(ObjectStaticFactoryMethod, {
         } }
 });
 
+"use strict";
 function ObjectStaticFactoryProperty(name, type) {
     var evaluators = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     ObjectProperty.call(this, name, null, null, evaluators);
@@ -5361,6 +5770,7 @@ Object.defineProperties(ObjectStaticFactoryProperty, {
         } }
 });
 
+"use strict";
 function ObjectValue(value) {
     Object.defineProperties(this, {
         value: { writable: true, value: value }
@@ -5370,6 +5780,7 @@ ObjectValue.prototype = Object.create(ObjectStrategy.prototype, {
     constructor: { writable: true, value: ObjectValue }
 });
 
+"use strict";
 function createStrategy(o) {
     if (ObjectStrategies.FACTORY_METHOD in o) {
         return ObjectFactoryMethod.build(o[ObjectStrategies.FACTORY_METHOD]);
@@ -5388,6 +5799,7 @@ function createStrategy(o) {
     }
 }
 
+"use strict";
 var ObjectScope = Object.defineProperties({}, {
   PROTOTYPE: { value: "prototype", enumerable: true },
   SINGLETON: { value: "singleton", enumerable: true },
@@ -5397,6 +5809,7 @@ var ObjectScope = Object.defineProperties({}, {
     } }
 });
 
+"use strict";
 function ObjectDefinition(id, type) {
     var singleton = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var lazyInit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
@@ -5541,6 +5954,7 @@ ObjectDefinition.prototype = Object.create(Identifiable.prototype, {
         } }
 });
 
+"use strict";
 function createObjectDefinition(o) {
     var definition = new ObjectDefinition(o[ObjectAttribute.ID] || null, o[ObjectAttribute.TYPE] || null, o[ObjectAttribute.SINGLETON] || false, o[ObjectAttribute.LAZY_INIT] || false, o[ObjectAttribute.LAZY_TYPE] || false);
     if (ObjectAttribute.IDENTIFY in o && (o[ObjectAttribute.IDENTIFY] instanceof Boolean || typeof o[ObjectAttribute.IDENTIFY] === 'boolean')) {
@@ -5586,6 +6000,7 @@ function createObjectDefinition(o) {
     return definition;
 }
 
+"use strict";
 function isRunnable(target) {
     if (target) {
         if (target instanceof Runnable) {
@@ -5605,6 +6020,7 @@ Runnable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 var TaskPhase = Object.defineProperties({}, {
   ERROR: { value: 'error', enumerable: true },
   DELAYED: { value: 'delayed', enumerable: true },
@@ -5615,6 +6031,7 @@ var TaskPhase = Object.defineProperties({}, {
   TIMEOUT: { value: 'timeout', enumerable: true }
 });
 
+"use strict";
 function Action() {
   Object.defineProperties(this, {
     finishIt: { value: new Signal() },
@@ -5657,6 +6074,7 @@ Action.prototype = Object.create(Runnable.prototype, {
     } }
 });
 
+"use strict";
 function Task() {
   Action.call(this);
   Object.defineProperties(this, {
@@ -5751,6 +6169,7 @@ Task.prototype = Object.create(Action.prototype, {
   stop: { writable: true, value: function value() {} }
 });
 
+"use strict";
 function ObjectDefinitionContainer() {
     Task.call(this);
     Object.defineProperties(this, {
@@ -5794,6 +6213,7 @@ ObjectDefinitionContainer.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function ObjectFactory() {
     var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var objects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -6347,6 +6767,7 @@ ObjectFactory.prototype = Object.create(ObjectDefinitionContainer.prototype, {
         } }
 });
 
+"use strict";
 function ReferenceEvaluator(factory) {
     Object.defineProperties(this, {
         factory: { value: factory instanceof ObjectFactory ? factory : null, writable: true },
@@ -6428,6 +6849,7 @@ ReferenceEvaluator.prototype = Object.create(Evaluable.prototype, {
         } }
 });
 
+"use strict";
 var TypePolicy = Object.defineProperties({}, {
   ALIAS: { value: "alias", enumerable: true },
   ALL: { value: "all", enumerable: true },
@@ -6435,6 +6857,7 @@ var TypePolicy = Object.defineProperties({}, {
   NONE: { value: "none", enumerable: true }
 });
 
+"use strict";
 function TypeEvaluator() {
     var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -6481,6 +6904,7 @@ TypeEvaluator.prototype = Object.create(Evaluable.prototype, {
         } }
 });
 
+"use strict";
 function ObjectConfig() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -6658,6 +7082,7 @@ ObjectConfig.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Parameters(parameters) {
     Object.defineProperties(this, {
         parameters: { value: parameters, writable: true },
@@ -6690,6 +7115,7 @@ Parameters.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.ioc} library provides a simple and strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
  * <p><b>IoC</b> is also known as <b>dependency injection</b> (DI). It is a process whereby objects define their dependencies, that is, the other objects they work with, only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.</p>
@@ -6782,6 +7208,7 @@ var ioc = Object.assign({
   TypePolicy: TypePolicy
 });
 
+"use strict";
 function isLoggable(target) {
     if (target) {
         return target instanceof Loggable || 'logger' in target && (target.logger === null || target.logger instanceof Logger);
@@ -6805,6 +7232,7 @@ Loggable.prototype = Object.create(Object.prototype, {
     }
 });
 
+"use strict";
 function LineFormattedTarget() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     LoggerTarget.call(this);
@@ -6895,6 +7323,7 @@ LineFormattedTarget.prototype = Object.create(LoggerTarget.prototype, {
         } }
 });
 
+"use strict";
 function ConsoleTarget() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     LineFormattedTarget.call(this, init);
@@ -6947,6 +7376,7 @@ ConsoleTarget.prototype = Object.create(LineFormattedTarget.prototype, {
         } }
 });
 
+"use strict";
 function TraceTarget() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     LineFormattedTarget.call(this, init);
@@ -6959,6 +7389,7 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
  * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
@@ -7005,6 +7436,7 @@ var logging = Object.assign({
   })
 });
 
+"use strict";
 function isRule(target) {
     if (target) {
         return target instanceof Rule || 'eval' in target && target.eval instanceof Function;
@@ -7021,6 +7453,7 @@ Rule.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function BooleanRule(condition) {
   Object.defineProperties(this, {
     condition: { value: condition, enumerable: true, writable: true }
@@ -7032,6 +7465,7 @@ BooleanRule.prototype.eval = function () {
   return this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition);
 };
 
+"use strict";
 function ElseIf() {
     var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7049,6 +7483,7 @@ ElseIf.prototype = Object.create(Rule.prototype, {
         } }
 });
 
+"use strict";
 function EmptyString() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   this.value = value;
@@ -7059,6 +7494,7 @@ EmptyString.prototype.eval = function () {
   return this.value === "";
 };
 
+"use strict";
 function ElseIfEmptyString() {
     var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7068,6 +7504,7 @@ ElseIfEmptyString.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfEmptyString }
 });
 
+"use strict";
 function Equals() {
     var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7088,6 +7525,7 @@ Equals.prototype.eval = function () {
     }
 };
 
+"use strict";
 function ElseIfEquals(value1, value2) {
     var then = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     ElseIf.call(this, new Equals(value1, value2), then);
@@ -7096,6 +7534,7 @@ ElseIfEquals.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfEquals }
 });
 
+"use strict";
 function False() {
   var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   this.condition = condition;
@@ -7106,6 +7545,7 @@ False.prototype.eval = function () {
   return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === false;
 };
 
+"use strict";
 function ElseIfFalse(value) {
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     ElseIf.call(this, new False(value), then);
@@ -7114,6 +7554,7 @@ ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfFalse }
 });
 
+"use strict";
 function Null() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
   var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -7130,6 +7571,7 @@ Null.prototype.eval = function () {
   }
 };
 
+"use strict";
 function ElseIfNull(value) {
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var strict = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -7139,6 +7581,7 @@ ElseIfNull.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfNull }
 });
 
+"use strict";
 function True() {
   var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   this.condition = condition;
@@ -7149,6 +7592,7 @@ True.prototype.eval = function () {
   return (this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition)) === true;
 };
 
+"use strict";
 function ElseIfTrue(condition) {
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     ElseIf.call(this, new True(condition), then);
@@ -7157,6 +7601,7 @@ ElseIfTrue.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfTrue }
 });
 
+"use strict";
 function Undefined() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
   this.value = value;
@@ -7167,6 +7612,7 @@ Undefined.prototype.eval = function () {
   return this.value === undefined;
 };
 
+"use strict";
 function ElseIfUndefined(value) {
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     ElseIf.call(this, new Undefined(value), then);
@@ -7175,6 +7621,7 @@ ElseIfUndefined.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfUndefined }
 });
 
+"use strict";
 function Zero() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   this.value = value;
@@ -7185,6 +7632,7 @@ Zero.prototype.eval = function () {
   return this.value === 0;
 };
 
+"use strict";
 function ElseIfZero(value) {
     var then = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     ElseIf.call(this, new Zero(value), then);
@@ -7193,6 +7641,7 @@ ElseIfZero.prototype = Object.create(ElseIf.prototype, {
     constructor: { writable: true, value: ElseIfZero }
 });
 
+"use strict";
 function IfTask()
 {
     var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -7380,6 +7829,7 @@ IfTask.prototype = Object.create(Action.prototype, {
     }
 });
 
+"use strict";
 function IfEmptyString(value)
 {
     var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7396,6 +7846,7 @@ IfEmptyString.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfEmptyString }
 });
 
+"use strict";
 function IfEquals(value1, value2)
 {
     var thenTask = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -7412,6 +7863,7 @@ IfEquals.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfEquals }
 });
 
+"use strict";
 function IfFalse(condition)
 {
     var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7428,6 +7880,7 @@ IfFalse.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfFalse }
 });
 
+"use strict";
 function IfNull(value)
 {
     var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -7445,6 +7898,7 @@ IfNull.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfNull }
 });
 
+"use strict";
 function IfTrue(condition)
 {
     var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7461,6 +7915,7 @@ IfTrue.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfTrue }
 });
 
+"use strict";
 function IfUndefined(value)
 {
     var thenTask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7477,6 +7932,7 @@ IfUndefined.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfUndefined }
 });
 
+"use strict";
 function IfZero(value)
 {
     var thenTask /*Action*/ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -7493,6 +7949,7 @@ IfZero.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfZero }
 });
 
+"use strict";
 /**
  * The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
  * <p>This task is heavily based on the Condition framework that can be found in the {@link system.rules} library.</p>
@@ -7630,6 +8087,7 @@ var logics = Object.assign({
   IfZero: IfZero
 });
 
+"use strict";
 function Model() {
     Lockable.call(this);
 }
@@ -7649,6 +8107,7 @@ Model.prototype = Object.create(Lockable.prototype, {
         } }
 });
 
+"use strict";
 function ChangeModel() {
     Model.call(this);
     Object.defineProperties(this, {
@@ -7702,6 +8161,7 @@ ChangeModel.prototype = Object.create(Model.prototype, {
         } }
 });
 
+"use strict";
 function MemoryModel() {
     ChangeModel.call(this);
     Object.defineProperties(this, {
@@ -7894,6 +8354,7 @@ function MemoryEntry() {
     this.previous = previous;
 }
 
+"use strict";
 function ArrayModel() {
     var factory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     ChangeModel.call(this);
@@ -7994,6 +8455,7 @@ ArrayModel.prototype = Object.create(ChangeModel.prototype, {
         } }
 });
 
+"use strict";
 function MapModel() {
     var factory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "id";
@@ -8150,6 +8612,7 @@ MapModel.prototype = Object.create(ChangeModel.prototype, {
         } }
 });
 
+"use strict";
 function InitMapModel() {
     var model = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -8221,6 +8684,7 @@ InitMapModel.prototype = Object.create(Action.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
  * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
@@ -8267,6 +8731,7 @@ var models = Object.assign({
   })
 });
 
+"use strict";
 function PRNG() {
     var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     Object.defineProperties(this, {
@@ -8338,6 +8803,7 @@ PRNG.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Range() {
     var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -8429,6 +8895,7 @@ Object.defineProperties(Range, {
     UNITY: { value: new Range(0, 1, false), enumerable: true }
 });
 
+"use strict";
 /**
  * The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
  * @summary The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
@@ -8443,6 +8910,7 @@ var numeric = Object.assign({
   RomanNumber: RomanNumber
 });
 
+"use strict";
 function ActionEntry(action) {
   var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var auto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -8459,6 +8927,7 @@ ActionEntry.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function Apply() {
     var func = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -8490,6 +8959,7 @@ Apply.prototype = Object.create(Action.prototype, {
         } }
 });
 
+"use strict";
 function Batch() {
     var _this = this;
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -8615,6 +9085,7 @@ Batch.prototype = Object.create(Runnable.prototype, {
         } }
 });
 
+"use strict";
 function TaskGroup() {
     var _this = this;
     var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'normal';
@@ -8825,6 +9296,7 @@ TaskGroup.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function BatchTaskNext(batch) {
     this.batch = batch;
 }
@@ -8865,6 +9337,7 @@ BatchTaskNext.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function BatchTask() {
     var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'normal';
     var actions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -8961,6 +9434,7 @@ BatchTask.prototype.stop = function ()
     }
 };
 
+"use strict";
 function Cache() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -9051,6 +9525,7 @@ Cache.prototype.run = function () {
     this.notifyFinished();
 };
 
+"use strict";
 function Call() {
     var func = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -9083,6 +9558,7 @@ Call.prototype = Object.create(Action.prototype, {
         } }
 });
 
+"use strict";
 function ChainNext() {
     var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     this.chain = chain;
@@ -9140,6 +9616,7 @@ ChainNext.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function Chain() {
     var looping = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     var numLoop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -9218,6 +9695,7 @@ Chain.prototype = Object.create(TaskGroup.prototype, {
         } }
 });
 
+"use strict";
 function Do() {
     Action.call(this);
 }
@@ -9237,6 +9715,7 @@ Do.prototype = Object.create(Action.prototype, {
         } }
 });
 
+"use strict";
 function FrameTimer() {
     Task.call(this);
     Object.defineProperties(this, {
@@ -9324,6 +9803,7 @@ FrameTimer.prototype = Object.create(Task.prototype, {
 });
 var FPMS = 0.06;
 
+"use strict";
 function Lock(target) {
     Action.call(this);
     this.target = target;
@@ -9341,6 +9821,8 @@ Lock.prototype = Object.create(Action.prototype, {
             this.notifyFinished();
         } }
 });
+
+"use strict";
 
 function Priority() {
     Object.defineProperties(this, {
@@ -9362,6 +9844,7 @@ Priority.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function isResetable(target) {
     if (target) {
         if (target instanceof Resetable) {
@@ -9380,6 +9863,7 @@ Resetable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function isResumable(target) {
     if (target) {
         if (target instanceof Resumable) {
@@ -9398,6 +9882,7 @@ Resumable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function isStartable(target) {
     if (target) {
         if (target instanceof Startable) {
@@ -9416,6 +9901,7 @@ Startable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function isStoppable(target) {
     if (target) {
         if (target instanceof Stoppable) {
@@ -9434,6 +9920,7 @@ Stoppable.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function TimeoutPolicy(value, name) {
   Enum.call(this, value, name);
 }
@@ -9444,6 +9931,7 @@ Object.defineProperties(TimeoutPolicy, {
   LIMIT: { value: new TimeoutPolicy(1, 'limit'), enumerable: true }
 });
 
+"use strict";
 function Timer() {
     var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var repeatCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -9539,6 +10027,7 @@ Timer.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function Unlock(target) {
     Action.call(this);
     this.target = target;
@@ -9557,6 +10046,7 @@ Unlock.prototype = Object.create(Action.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
  * @summary The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
@@ -9598,6 +10088,7 @@ var process = Object.assign({
     Unlock: Unlock
 });
 
+"use strict";
 function And(rule1 /*Rule*/, rule2 /*Rule*/) {
     Object.defineProperties(this, {
         rules: { value: [], enumerable: true },
@@ -9647,6 +10138,7 @@ And.prototype.eval = function () {
     }
 };
 
+"use strict";
 function DivBy() {
   var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -9659,6 +10151,7 @@ DivBy.prototype.eval = function () {
   return this.value1 % this.value2 === 0;
 };
 
+"use strict";
 function Even() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   this.value = value;
@@ -9669,6 +10162,7 @@ Even.prototype.eval = function () {
   return this.value % 2 === 0;
 };
 
+"use strict";
 function GreaterOrEqualsThan() {
   var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -9681,6 +10175,7 @@ GreaterOrEqualsThan.prototype.eval = function () {
   return this.value1 >= this.value2;
 };
 
+"use strict";
 function GreaterThan() {
   var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -9693,6 +10188,7 @@ GreaterThan.prototype.eval = function () {
   return this.value1 > this.value2;
 };
 
+"use strict";
 function IsBoolean() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   this.value = value;
@@ -9703,6 +10199,7 @@ IsBoolean.prototype.eval = function () {
   return typeof this.value === 'boolean' || this.value instanceof Boolean;
 };
 
+"use strict";
 function IsNaN() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -9719,6 +10216,7 @@ IsNaN.prototype.eval = function () {
   }
 };
 
+"use strict";
 function IsNumber() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   this.value = value;
@@ -9729,6 +10227,7 @@ IsNumber.prototype.eval = function () {
   return typeof this.value === 'number' || this.value instanceof Number;
 };
 
+"use strict";
 function IsString() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   this.value = value;
@@ -9739,6 +10238,7 @@ IsString.prototype.eval = function () {
   return typeof this.value === 'string' || this.value instanceof String;
 };
 
+"use strict";
 function LessOrEqualsThan() {
   var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -9751,6 +10251,7 @@ LessOrEqualsThan.prototype.eval = function () {
   return this.value1 <= this.value2;
 };
 
+"use strict";
 function LessThan() {
   var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -9763,6 +10264,7 @@ LessThan.prototype.eval = function () {
   return this.value1 < this.value2;
 };
 
+"use strict";
 function Not() {
   var condition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   this.condition = condition;
@@ -9773,6 +10275,7 @@ Not.prototype.eval = function () {
   return !(this.condition instanceof Rule ? this.condition.eval() : Boolean(this.condition));
 };
 
+"use strict";
 function NotEquals() {
     var value1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var value2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -9793,6 +10296,7 @@ NotEquals.prototype.eval = function () {
     }
 };
 
+"use strict";
 function Odd() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
   this.value = value;
@@ -9803,6 +10307,7 @@ Odd.prototype.eval = function () {
   return this.value % 2 !== 0;
 };
 
+"use strict";
 function Or(rule1 /*Rule*/, rule2 /*Rule*/) {
     Object.defineProperties(this, {
         rules: { value: [], enumerable: true },
@@ -9852,6 +10357,7 @@ Or.prototype.eval = function () {
     }
 };
 
+"use strict";
 /**
  * The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
  * @summary The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
@@ -9888,6 +10394,7 @@ var rules = Object.assign({
     Zero: Zero
 });
 
+"use strict";
 /**
  * The {@link system.signals} library is light-weight, strongly-typed messaging tools. Wire your application with better APIs and less boilerplate than W3C DOMEvents..
  * <p><b>Concept: </b>
@@ -9945,6 +10452,7 @@ var signals = Object.assign({
   Signal: Signal
 });
 
+"use strict";
 function MotionNextFrame(motion) {
     this.motion = motion instanceof Motion ? motion : null;
 }
@@ -9957,6 +10465,7 @@ MotionNextFrame.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function Transition() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Task.call(this);
@@ -9991,6 +10500,7 @@ Transition.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function Motion() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Transition.call(this, id);
@@ -10146,6 +10656,7 @@ Motion.prototype = Object.create(Transition.prototype, {
         } }
 });
 
+"use strict";
 function TweenUnit() {
     var easing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -10194,6 +10705,7 @@ TweenUnit.prototype = Object.create(Motion.prototype, {
         } }
 });
 
+"use strict";
 function Tween(init) {
     TweenUnit.call(this);
     this.position = null;
@@ -10314,6 +10826,7 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
  * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
@@ -10437,6 +10950,7 @@ var transitions = Object.assign({
   TweenUnit: TweenUnit
 });
 
+"use strict";
 /**
  * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure : signals, data, IoC, logger, tasks, transitions, logics, rules, models, etc.
  * <p><b>Dependencies :</b> The {@link system} framework reuse the module and building blocks of the {@link core} library.</p>
@@ -10470,6 +10984,7 @@ var system = Object.assign({
     transitions: transitions
 });
 
+"use strict";
 function isDirectionable(target) {
   if (target) {
     return target instanceof Directionable || 'direction' in target;
@@ -10482,6 +10997,7 @@ function Directionable() {
 Directionable.prototype = Object.create(Object.prototype);
 Directionable.prototype.constructor = Directionable;
 
+"use strict";
 var Align = Object.defineProperties({}, {
     NONE: { enumerable: true, value: 0 },
     CENTER: { enumerable: true, value: 1 },
@@ -10570,12 +11086,14 @@ Object.defineProperty(Align, 'stringToNumber', { value: {
         "tr": Align.TOP_RIGHT
     } });
 
+"use strict";
 var ArcType = Object.defineProperties({}, {
   CHORD: { enumerable: true, value: 'chord' },
   NONE: { enumerable: true, value: 'none' },
   PIE: { enumerable: true, value: 'pie' }
 });
 
+"use strict";
 function Border() {
     var side = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 30;
     Object.defineProperties(this, {
@@ -10618,6 +11136,7 @@ Border.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function CardinalDirection() {
     var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
@@ -10669,6 +11188,7 @@ Object.defineProperties(CardinalDirection, {
         } }
 });
 
+"use strict";
 function Corner() {
     var tl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     var tr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -10699,6 +11219,7 @@ Corner.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 var Direction = Object.defineProperties({}, {
   BACKWARD: { enumerable: true, value: 'backward' },
   BOTH: { enumerable: true, value: 'both' },
@@ -10712,11 +11233,13 @@ var Direction = Object.defineProperties({}, {
   VERTICAL: { enumerable: true, value: 'vertical' }
 });
 
+"use strict";
 var DirectionOrder = Object.defineProperties({}, {
   NORMAL: { enumerable: true, value: 'normal' },
   REVERSE: { enumerable: true, value: 'reverse' }
 });
 
+"use strict";
 function FillStyle() {
     var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -10778,6 +11301,7 @@ Object.defineProperties(FillStyle, {
     EMPTY: { value: new FillStyle(0, 0) }
 });
 
+"use strict";
 function isMeasurable(target) {
     if (target) {
         return 'h' in target && isNumber(target.h) && 'w' in target && isNumber(target.w) && 'maxHeight' in target && isNumber(target.maxHeight) && 'maxWidth' in target && isNumber(target.maxWidth) && 'minHeight' in target && isNumber(target.minHeight) && 'minWidth' in target && isNumber(target.minWidth) && 'setPreferredSize' in target && target.setPreferredSize instanceof Function && 'setSize' in target && target.setSize instanceof Function;
@@ -10785,11 +11309,13 @@ function isMeasurable(target) {
     return false;
 }
 
+"use strict";
 var LayoutBufferMode = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
+"use strict";
 function Dimension() {
     var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -10847,6 +11373,7 @@ Dimension.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Vector2D() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -10889,6 +11416,7 @@ Vector2D.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Point() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11037,6 +11565,7 @@ Object.defineProperties(Point, {
         } }
 });
 
+"use strict";
 function Rectangle() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11320,6 +11849,7 @@ Object.defineProperties(Rectangle, {
         } }
 });
 
+"use strict";
 function Layout() {
     Object.defineProperties(this, {
         renderer: { value: new Signal() },
@@ -11372,7 +11902,7 @@ Layout.prototype = Object.create(Task.prototype, {
             return this._bounds.width;
         } },
     initialize: { writable: true, value: function value() {
-            var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            
         } },
     measure: { writable: true, value: function value() {} },
     render: { writable: true, value: function value() {} },
@@ -11391,6 +11921,7 @@ Layout.prototype = Object.create(Task.prototype, {
     update: { writable: true, value: function value() {} }
 });
 
+"use strict";
 function LayoutEntry() {
   var child = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   Object.defineProperties(this, {
@@ -11408,6 +11939,7 @@ LayoutEntry.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 function LineStyle() {
     var thickness = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11482,6 +12014,7 @@ Object.defineProperties(LineStyle, {
     EMPTY: { value: new LineStyle(0, 0, 0) }
 });
 
+"use strict";
 var Orientation = Object.defineProperties({}, {
     BOTTOM_TO_TOP: { enumerable: true, value: 4 },
     NONE: { enumerable: true, value: 0 },
@@ -11525,6 +12058,7 @@ Object.defineProperties(Orientation, {
         } }
 });
 
+"use strict";
 var Position = Object.defineProperties({}, {
   ABSOLUTE: { enumerable: true, value: 'absolute' },
   FIXED: { enumerable: true, value: 'fixed' },
@@ -11533,11 +12067,13 @@ var Position = Object.defineProperties({}, {
   STATIC: { enumerable: true, value: 'static' }
 });
 
+"use strict";
 var ZOrder = Object.defineProperties({}, {
   BACK: { enumerable: true, value: 0 },
   FRONT: { enumerable: true, value: 1 }
 });
 
+"use strict";
 function RGB() {
     var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11659,6 +12195,7 @@ RGB.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function RGBA() {
     var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var g = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -11748,6 +12285,7 @@ RGBA.prototype = Object.create(RGB.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link graphics.colors} library is a set of classes and utilities for color operations.
  * @summary The {@link graphics.colors} library is a set of classes and utilities for colors operations.
@@ -11761,18 +12299,21 @@ var colors$1 = Object.assign({
   RGBA: RGBA
 });
 
+"use strict";
 var StageAspectRatio = Object.defineProperties({}, {
   ANY: { enumerable: true, value: 'any' },
   LANDSCAPE: { enumerable: true, value: 'landscape' },
   PORTRAIT: { enumerable: true, value: 'portrait' }
 });
 
+"use strict";
 var StageDisplayState = Object.defineProperties({}, {
   FULL_SCREEN: { enumerable: true, value: 'fullScreen' },
   FULL_SCREEN_INTERACTIVE: { enumerable: true, value: 'fullScreenInteractive' },
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
+"use strict";
 var StageOrientation = Object.defineProperties({}, {
   DEFAULT: { enumerable: true, value: 'default' },
   ROTATED_LEFT: { enumerable: true, value: 'rotatedLeft' },
@@ -11781,6 +12322,7 @@ var StageOrientation = Object.defineProperties({}, {
   UPSIDE_DOWN: { enumerable: true, value: 'upsideDown' }
 });
 
+"use strict";
 function Stage() {
     Object.defineProperties(this, {
         fullScreen: { value: new Signal() },
@@ -11977,6 +12519,7 @@ Stage.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link graphics.display} library is a set of classes and utilities for display Operations.
  * @summary The {@link graphics.display} library is a set of classes and utilities for Geometry Operations.
@@ -11992,6 +12535,7 @@ var display = Object.assign({
   StageOrientation: StageOrientation
 });
 
+"use strict";
 function AspectRatio() {
     var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12077,6 +12621,7 @@ AspectRatio.prototype = Object.create(Dimension.prototype, {
         } }
 });
 
+"use strict";
 function Circle() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12223,6 +12768,7 @@ Circle.prototype = Object.create(Vector2D.prototype, {
         } }
 });
 
+"use strict";
 function ColorTransform() {
     var redMultiplier = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var greenMultiplier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -12355,6 +12901,7 @@ ColorTransform.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function EdgeMetrics() {
     var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12414,6 +12961,7 @@ EdgeMetrics.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Ellipse() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12545,6 +13093,7 @@ Ellipse.prototype = Object.create(Dimension.prototype, {
         } }
 });
 
+"use strict";
 function Matrix() {
     var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -12712,6 +13261,7 @@ Matrix.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Polygon() {
     Object.defineProperties(this, {
         _area: { writable: true, value: 0 },
@@ -12907,6 +13457,7 @@ Polygon.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function Vector3D() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -13014,6 +13565,7 @@ Object.defineProperties(Vector3D, {
         } }
 });
 
+"use strict";
 /**
  * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
  * @summary The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
@@ -13037,6 +13589,7 @@ var geom = Object.assign({
     Vector3D: Vector3D
 });
 
+"use strict";
 /**
  * The {@link graphics} package is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -13069,6 +13622,7 @@ var graphics = Object.assign({
     geom: geom
 });
 
+"use strict";
 function Builder() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Runnable.call(this);
@@ -13092,12 +13646,14 @@ Builder.prototype = Object.create(Runnable.prototype, {
         } }
 });
 
+"use strict";
 var Deployment = Object.defineProperties({}, {
   CLOSE: { enumerable: true, value: 'close' },
   OPEN: { enumerable: true, value: 'open' },
   PROTECTED: { enumerable: true, value: 'protected' }
 });
 
+"use strict";
 function isGroupable(target) {
     if (target) {
         return target instanceof Groupable || 'group' in target && 'groupName' in target;
@@ -13114,6 +13670,8 @@ Groupable.prototype = Object.create(Object.prototype, {
     constructor: { value: Groupable, writable: true }
 });
 
+"use strict";
+
 function Focusable() {
     Groupable.call(this);
     Object.defineProperties(this, {
@@ -13124,6 +13682,8 @@ Focusable.prototype = Object.create(Groupable.prototype, {
     constructor: { value: Focusable, writable: true }
 });
 
+"use strict";
+
 function Iconifiable() {
     Object.defineProperties(this, {
         icon: { value: null, configurable: true, writable: true }
@@ -13133,11 +13693,13 @@ Iconifiable.prototype = Object.create(Object.prototype, {
     constructor: { value: Iconifiable, writable: true }
 });
 
+"use strict";
 var IconPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
+"use strict";
 var InteractiveMode = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   MOUSE: { enumerable: true, value: 'mouse' },
@@ -13146,17 +13708,20 @@ var InteractiveMode = Object.defineProperties({}, {
   TOUCH: { enumerable: true, value: 'touch' }
 });
 
+"use strict";
 var LabelPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   NORMAL: { enumerable: true, value: 'normal' }
 });
 
+"use strict";
 var ScrollPolicy = Object.defineProperties({}, {
   AUTO: { enumerable: true, value: 'auto' },
   OFF: { enumerable: true, value: 'off' },
   ON: { enumerable: true, value: 'on' }
 });
 
+"use strict";
 function Style() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -13201,6 +13766,7 @@ Style.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 var ButtonPhase = Object.defineProperties({}, {
   DISABLE: { enumerable: true, value: 'disable' },
   DOWN: { enumerable: true, value: 'down' },
@@ -13208,6 +13774,7 @@ var ButtonPhase = Object.defineProperties({}, {
   UP: { enumerable: true, value: 'up' }
 });
 
+"use strict";
 function isButton(target) {
     if (target) {
         return 'group' in target && isBoolean(target.group) && 'groupName' in target && 'selected' in target && isBoolean(target.selected) && 'toggle' in target && isBoolean(target.toggle) && 'setSelected' in target && target.setSelected instanceof Function;
@@ -13215,6 +13782,7 @@ function isButton(target) {
     return false;
 }
 
+"use strict";
 /**
  * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
  * @summary The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
@@ -13228,6 +13796,7 @@ var components = Object.assign({
   isButton: isButton
 });
 
+"use strict";
 function DisplayObject() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     EventDispatcher.call(this);
@@ -13319,6 +13888,7 @@ DisplayObject.prototype = Object.create(EventDispatcher.prototype, {
         } }
 });
 
+"use strict";
 function DisplayObjectContainer() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -13503,6 +14073,7 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
         }
     } });
 
+"use strict";
 /**
  * The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
  * @summary The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
@@ -13516,6 +14087,7 @@ var display$1 = Object.assign({
   DisplayObjectContainer: DisplayObjectContainer
 });
 
+"use strict";
 function CoreGroup() {
     Object.defineProperties(this, {
         groups: { writable: true, value: new ArrayMap() }
@@ -13544,6 +14116,7 @@ CoreGroup.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function RadioButtonGroup() {
     CoreGroup.call(this);
 }
@@ -13580,6 +14153,7 @@ RadioButtonGroup.prototype = Object.create(CoreGroup.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.groups} library contains the core groups helpers.
  * @summary The {@link molecule.groups} library contains the groups helpers.
@@ -13593,8 +14167,10 @@ var groups = Object.assign({
   RadioButtonGroup: RadioButtonGroup
 });
 
+"use strict";
 var logger$1 = Log.getLogger('molecule.logging.logger');
 
+"use strict";
 var draw = {
     schema: {
         width: { default: 256 },
@@ -13652,6 +14228,7 @@ var draw = {
     }
 };
 
+"use strict";
 var label = {
     schema: {
         color: { default: "#FF0000" },
@@ -13674,8 +14251,10 @@ var label = {
     }
 };
 
+"use strict";
 var components$1 = [].concat({ name: "draw", value: draw }, { name: "label", value: label });
 
+"use strict";
 function Node$1() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -13759,6 +14338,7 @@ Node$1.prototype = Object.create(DisplayObjectContainer.prototype, {
         } }
 });
 
+"use strict";
 function AEntity() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
@@ -13997,6 +14577,7 @@ AEntity.prototype = Object.create(Node$1.prototype, {
         } }
 });
 
+"use strict";
 function Assets() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Node$1.call(this, init, 'a-assets');
@@ -14015,6 +14596,7 @@ Assets.prototype = Object.create(Node$1.prototype, {
         } }
 });
 
+"use strict";
 function Material() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'a-entity';
@@ -14056,6 +14638,7 @@ Material.prototype = Object.create(AEntity.prototype, {
     }
 });
 
+"use strict";
 function Box() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-box');
@@ -14088,6 +14671,7 @@ Box.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Text() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     AEntity.call(this, init, 'a-text');
@@ -14248,6 +14832,7 @@ Text.prototype = Object.create(AEntity.prototype, {
     }
 });
 
+"use strict";
 function Button() {
   var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   Object.defineProperties(this, {
@@ -14438,6 +15023,7 @@ Button.prototype = Object.create(Material.prototype, {
     } }
 });
 
+"use strict";
 function Circle$1() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-circle');
@@ -14470,6 +15056,7 @@ Circle$1.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Cursor() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -14651,6 +15238,7 @@ Cursor.prototype = Object.create(AEntity.prototype, {
         } }
 });
 
+"use strict";
 function Cylinder() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-cylinder');
@@ -14675,6 +15263,7 @@ Cylinder.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Image() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-image');
@@ -14699,6 +15288,7 @@ Image.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Plane() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-plane');
@@ -14723,6 +15313,7 @@ Plane.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Ring() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-ring');
@@ -14763,6 +15354,7 @@ Ring.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Scene() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     AEntity.call(this, init, 'a-scene');
@@ -14829,6 +15421,7 @@ Scene.prototype = Object.create(AEntity.prototype, {
         } }
 });
 
+"use strict";
 function Sky() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-sky');
@@ -14845,6 +15438,7 @@ Sky.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Sound() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -14962,6 +15556,7 @@ Sound.prototype = Object.create(AEntity.prototype, {
         } }
 });
 
+"use strict";
 function Sphere() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Material.call(this, init, 'a-sphere');
@@ -14978,6 +15573,7 @@ Sphere.prototype = Object.create(Material.prototype, {
     }
 });
 
+"use strict";
 function Videosphere() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -15101,6 +15697,7 @@ Videosphere.prototype = Object.create(Material.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.aframe.display} package.
  * @summary The {@link molecule.render.aframe.display} package.
@@ -15130,6 +15727,7 @@ var display$2 = Object.assign({
     Videosphere: Videosphere
 });
 
+"use strict";
 /**
  * The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
  * @summary The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
@@ -15143,6 +15741,72 @@ var aframe = Object.assign({
   display: display$2
 });
 
+'use strict';
+function Cookie() {}
+Cookie.prototype = Object.create(Object.prototype, {
+    constructor: { value: Cookie },
+    get: { value: function value(key) {
+            if (!key) {
+                return null;
+            }
+            return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+        } },
+    has: { value: function value(key) {
+            if (!key || /^(?:expires|max\-age|path|domain|secure)$/i.test(key)) {
+                return false;
+            }
+            return new RegExp("(?:^|;\\s*)" + encodeURIComponent(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=").test(document.cookie);
+        } },
+    keys: { value: function value() {
+            var keys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+            for (var len = keys.length, id = 0; id < len; id++) {
+                keys[id] = decodeURIComponent(keys[id]);
+            }
+            return keys;
+        } },
+    remove: { value: function value(key) {
+            var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var domain = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            if (!this.has(key)) {
+                return false;
+            }
+            document.cookie = encodeURIComponent(key) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (domain ? "; domain=" + domain : "") + (path ? "; path=" + path : "");
+            return true;
+        } },
+    set: { value: function value(key, _value) {
+            var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;
+            var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+            var domain = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
+            var secure = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+            if (!key || /^(?:expires|max\-age|path|domain|secure)$/i.test(key)) {
+                return false;
+            }
+            var expires = "";
+            if (end) {
+                switch (end.constructor) {
+                    case Number:
+                        {
+                            expires = end === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + end;
+                            break;
+                        }
+                    case String:
+                        {
+                            expires = "; expires=" + end;
+                            break;
+                        }
+                    case Date:
+                        {
+                            expires = "; expires=" + end.toUTCString();
+                            break;
+                        }
+                }
+            }
+            document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(_value) + expires + (domain ? "; domain=" + domain : "") + (path ? "; path=" + path : "") + (secure ? "; secure" : "");
+            return true;
+        } }
+});
+
+"use strict";
 function Anchor() {
     Node$1.call(this, null, 'a');
 }
@@ -15168,6 +15832,7 @@ Anchor.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function Stage$1() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -15411,6 +16076,7 @@ Stage$1.prototype = Object.create(Node$1.prototype, {
         } }
 });
 
+"use strict";
 function Body() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Stage$1.call(this, init, document.body || document.createElement('body'));
@@ -15422,6 +16088,7 @@ Body.prototype = Object.create(Stage$1.prototype, {
         } }
 });
 
+"use strict";
 function Button$1() {
     Node$1.call(this, null, 'button');
 }
@@ -15453,6 +16120,7 @@ Button$1.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function Canvas() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -15465,6 +16133,7 @@ Canvas.prototype = Object.create(Node$1.prototype, {
         } }
 });
 
+"use strict";
 function Div() {
     Node$1.call(this, null, 'div');
 }
@@ -15472,6 +16141,7 @@ Div.prototype = Object.create(Node$1.prototype, {
     constructor: { value: Div, writable: true }
 });
 
+"use strict";
 function Svg() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'svg';
@@ -15539,6 +16209,7 @@ Svg.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function G() {
     Svg.call(this, null, "g");
 }
@@ -15546,6 +16217,7 @@ G.prototype = Object.create(Svg.prototype, {
     constructor: { value: G, writable: true }
 });
 
+"use strict";
 function Head() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Node$1.call(this, init, document.head || document.createElement('head'));
@@ -15557,6 +16229,7 @@ Head.prototype = Object.create(Node$1.prototype, {
         } }
 });
 
+"use strict";
 function Img() {
     Node$1.call(this, null, 'img');
 }
@@ -15588,6 +16261,7 @@ Img.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function Paragraph() {
     Node$1.call(this, null, 'p');
 }
@@ -15603,6 +16277,7 @@ Paragraph.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function Path() {
     Svg.call(this, null, "path");
 }
@@ -15618,6 +16293,7 @@ Path.prototype = Object.create(Svg.prototype, {
     }
 });
 
+"use strict";
 function Script() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Node$1.call(this, init, 'script');
@@ -15674,6 +16350,7 @@ Script.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 var createEntity = function createEntity() {
     var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'a-entity';
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -15696,6 +16373,7 @@ var createEntity = function createEntity() {
     return el;
 };
 
+"use strict";
 var createImg = function createImg() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var el = document.createElement('img');
@@ -15709,6 +16387,7 @@ var createImg = function createImg() {
     return el;
 };
 
+"use strict";
 var createVideo = function createVideo() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var el = document.createElement('video');
@@ -15726,10 +16405,13 @@ var createVideo = function createVideo() {
     return el;
 };
 
+"use strict";
 var supportsPointerEvents = !!window.PointerEvent;
 
+"use strict";
 var supportsTouchEvents = 'ontouchstart' in window;
 
+"use strict";
 function Audio() {
     Node$1.call(this, null, 'audio');
 }
@@ -15817,6 +16499,7 @@ Audio.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function Video() {
     Node$1.call(this, null, 'video');
 }
@@ -15912,6 +16595,7 @@ Video.prototype = Object.create(Node$1.prototype, {
     }
 });
 
+"use strict";
 function LoadScript() {
     var script = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -15998,6 +16682,7 @@ LoadScript.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function warn(message) {
     var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -16008,6 +16693,7 @@ function warn(message) {
     }
 }
 
+"use strict";
 function AddChild() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16037,6 +16723,7 @@ AddChild.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function RemoveChild() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16066,6 +16753,7 @@ RemoveChild.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.dom.process.display} package.
  * @summary The {@link molecule.render.dom.process.display} package.
@@ -16081,6 +16769,7 @@ var display$3 = Object.assign({
   RemoveChild: RemoveChild
 });
 
+"use strict";
 /**
  * The {@link molecule.render.dom.process} package.
  * @summary The {@link molecule.render.dom.process} package.
@@ -16095,6 +16784,7 @@ var process$1 = Object.assign({
   display: display$3
 });
 
+"use strict";
 /**
  * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
  * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
@@ -16104,6 +16794,9 @@ var process$1 = Object.assign({
  * @memberof molecule.render
  */
 var dom$1 = Object.assign({
+  data: {
+    Cookie: Cookie
+  },
   display: {
     Anchor: Anchor,
     Body: Body,
@@ -16139,6 +16832,7 @@ var dom$1 = Object.assign({
   process: process$1
 });
 
+"use strict";
 function MOB() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16492,6 +17186,7 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
     preScope: { writable: true, value: function value() {} }
 });
 
+"use strict";
 function Element$1() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16711,6 +17406,7 @@ Element$1.prototype = Object.create(MOB.prototype, {
         } }
 });
 
+"use strict";
 function CoreProgress() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16770,6 +17466,7 @@ CoreProgress.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+"use strict";
 function CoreScrollbar() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -16880,6 +17577,7 @@ CoreScrollbar.prototype = Object.create(CoreProgress.prototype, {
         } }
 });
 
+"use strict";
 function ScrollIndicator() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -16974,6 +17672,7 @@ ScrollIndicator.prototype = Object.create(CoreScrollbar.prototype, {
         } }
 });
 
+"use strict";
 function SimpleProgressbar() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -17113,6 +17812,7 @@ SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.components.bars} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -17128,6 +17828,7 @@ var bars = Object.assign({
   SimpleProgressbar: SimpleProgressbar
 });
 
+"use strict";
 /**
  * The RadioButtonGroup singleton.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -17140,6 +17841,7 @@ var bars = Object.assign({
  */
 var radio = new RadioButtonGroup();
 
+"use strict";
 function CoreButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -17383,6 +18085,7 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+"use strict";
 function IconButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -17562,6 +18265,7 @@ IconButton.prototype = Object.create(CoreButton.prototype, {
         } }
 });
 
+"use strict";
 function SimpleButton() {
     var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -17667,6 +18371,7 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.components.buttons} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -17683,6 +18388,7 @@ var buttons = Object.assign({
   SimpleButton: SimpleButton
 });
 
+"use strict";
 function ScrollPaneBuilder() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -17972,6 +18678,7 @@ ScrollPaneBuilder.prototype = Object.create(Builder.prototype, {
         } }
 });
 
+"use strict";
 function ScrollPaneManager() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -18226,6 +18933,7 @@ ScrollPaneManager.prototype = Object.create(Object.prototype, {
         } }
 });
 
+"use strict";
 function ScrollPaneStyle() {
   var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   Object.defineProperties(this, {
@@ -18313,6 +19021,7 @@ ScrollPaneStyle.prototype = Object.create(Style.prototype, {
     } }
 });
 
+"use strict";
 function ScrollPane() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -18443,6 +19152,7 @@ ScrollPane.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.components.panes} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -18460,6 +19170,7 @@ var panes = Object.assign({
   ScrollPaneStyle: ScrollPaneStyle
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.components} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -18478,6 +19189,7 @@ var components$2 = Object.assign({
   panes: panes
 });
 
+"use strict";
 function Background() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var locked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -18539,6 +19251,7 @@ Background.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+"use strict";
 function MovieClip() {
     var frameName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var frameCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -18554,6 +19267,7 @@ MovieClip.prototype = Object.create(PIXI.extras.AnimatedSprite.prototype, {
     constructor: { value: MovieClip }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.display} package.
  * @summary The {@link molecule.render.pixi.display} package.
@@ -18571,6 +19285,7 @@ var display$4 = Object.assign({
   MovieClip: MovieClip
 });
 
+"use strict";
 function LayoutContainer() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -18725,6 +19440,7 @@ LayoutContainer.prototype = Object.create(Layout.prototype, {
         } }
 });
 
+"use strict";
 function BoxLayout() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -18954,11 +19670,13 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
         } }
 });
 
+"use strict";
 function radiansToDegrees(angle /*Number*/)
 {
   return angle * RAD2DEG;
 }
 
+"use strict";
 function CircleLayout() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19076,6 +19794,7 @@ CircleLayout.prototype = Object.create(LayoutContainer.prototype, {
         } }
 });
 
+"use strict";
 function GridLayout() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19219,6 +19938,7 @@ GridLayout.prototype = Object.create(BoxLayout.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.layouts} package.
  * @summary The {@link molecule.render.pixi.layouts} package.
@@ -19236,6 +19956,7 @@ var layouts = Object.assign({
   LayoutContainer: LayoutContainer
 });
 
+"use strict";
 function warn$1(message) {
     var verbose = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -19246,6 +19967,7 @@ function warn$1(message) {
     }
 }
 
+"use strict";
 function AddChild$1() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19275,6 +19997,7 @@ AddChild$1.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function AddChildAt() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19302,6 +20025,7 @@ AddChildAt.prototype = Object.create(AddChild$1.prototype, {
         } }
 });
 
+"use strict";
 function AlignPivot() {
     var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var alignment = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Align.TOP_LEFT;
@@ -19390,6 +20114,7 @@ AlignPivot.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function Hide() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -19417,6 +20142,7 @@ Hide.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function Contains() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19435,6 +20161,7 @@ Contains.prototype = Object.create(Rule.prototype, {
         } }
 });
 
+"use strict";
 function IfContains()
 {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -19453,6 +20180,7 @@ IfContains.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfContains }
 });
 
+"use strict";
 function NotContains() {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19471,6 +20199,7 @@ NotContains.prototype = Object.create(Rule.prototype, {
         } }
 });
 
+"use strict";
 function IfNotContains()
 {
     var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -19489,6 +20218,7 @@ IfNotContains.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfNotContains }
 });
 
+"use strict";
 function InteractiveChildren() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -19518,6 +20248,7 @@ InteractiveChildren.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function MoveTo() {
     var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : NaN;
@@ -19554,6 +20285,7 @@ MoveTo.prototype = Object.create(Task.prototype, {
         } }
 });
 
+"use strict";
 function RemoveChild$1() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19583,6 +20315,7 @@ RemoveChild$1.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function RemoveChildAt() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19612,6 +20345,7 @@ RemoveChildAt.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function RemoveChildren() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -19639,6 +20373,7 @@ RemoveChildren.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function Show() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -19666,6 +20401,7 @@ Show.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 function SwapChildren() {
   var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19697,6 +20433,7 @@ SwapChildren.prototype = Object.create(Task.prototype, {
     } }
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.process.display} package.
  * @summary The {@link molecule.render.pixi.process.display} package.
@@ -19723,6 +20460,7 @@ var display$5 = Object.assign({
     SwapChildren: SwapChildren
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.process} package.
  * @summary The {@link molecule.render.pixi.process} package.
@@ -19737,6 +20475,7 @@ var process$2 = Object.assign({
   display: display$5
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi.rules} package.
  * @summary The {@link molecule.render.pixi.rules} package.
@@ -19752,6 +20491,7 @@ var rules$1 = Object.assign({
   NotContains: NotContains
 });
 
+"use strict";
 /**
  * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
  * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
@@ -19768,6 +20508,7 @@ var pixi = Object.assign({
   rules: rules$1
 });
 
+"use strict";
 /**
  * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
  * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
@@ -19782,6 +20523,7 @@ var render = Object.assign({
   pixi: pixi
 });
 
+"use strict";
 function State() {
   var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   Object.defineProperties(this, {
@@ -19797,6 +20539,7 @@ State.prototype = Object.create(ValueObject.prototype, {
     } }
 });
 
+"use strict";
 function StateModel() {
     MapModel.call(this);
 }
@@ -19807,6 +20550,7 @@ StateModel.prototype = Object.create(MapModel.prototype, {
         } }
 });
 
+"use strict";
 function View() {
     var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     Object.defineProperties(this, {
@@ -19867,6 +20611,7 @@ View.prototype = Object.create(ValueObject.prototype, {
         } }
 });
 
+"use strict";
 function AddState() {}
 AddState.prototype = Object.create(Receiver.prototype, {
   constructor: { value: AddState },
@@ -19875,6 +20620,7 @@ AddState.prototype = Object.create(Receiver.prototype, {
     } }
 });
 
+"use strict";
 function StateTask() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19888,6 +20634,7 @@ StateTask.prototype = Object.create(Task.prototype, {
   constructor: { writable: true, value: StateTask }
 });
 
+"use strict";
 function CloseState() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19933,6 +20680,7 @@ CloseState.prototype = Object.create(StateTask.prototype, {
         } }
 });
 
+"use strict";
 function BeforeChangeState() {
     var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -19956,6 +20704,7 @@ BeforeChangeState.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function OpenState() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -20001,6 +20750,7 @@ OpenState.prototype = Object.create(StateTask.prototype, {
         } }
 });
 
+"use strict";
 function ChangeState() {
     var chain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -20024,6 +20774,7 @@ ChangeState.prototype = Object.create(Receiver.prototype, {
         } }
 });
 
+"use strict";
 function ClearState() {}
 ClearState.prototype = Object.create(Receiver.prototype, {
   constructor: { value: ClearState },
@@ -20032,6 +20783,7 @@ ClearState.prototype = Object.create(Receiver.prototype, {
     } }
 });
 
+"use strict";
 function RemoveState() {}
 RemoveState.prototype = Object.create(Receiver.prototype, {
   constructor: { value: RemoveState },
@@ -20040,6 +20792,7 @@ RemoveState.prototype = Object.create(Receiver.prototype, {
     } }
 });
 
+"use strict";
 function InitStates() {
     var model = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var datas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -20056,6 +20809,7 @@ InitStates.prototype = Object.create(InitMapModel.prototype, {
         } }
 });
 
+"use strict";
 /**
  * The {@link molecule.states} library contains the core classes of the application state engine.
  * @summary The {@link molecule.render} library contains the core classes of the application state engine.
@@ -20083,6 +20837,7 @@ var states = Object.assign({
   }
 });
 
+"use strict";
 /**
  * The {@link molecule} package is a library for develop crossplatform Rich Internet Applications and Games.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -20110,12 +20865,14 @@ var molecule = Object.assign({
     states: states
 });
 
+'use strict';
 var Device = Object.defineProperties({}, {
   DESKTOP: { enumerable: true, value: "desktop" },
   MOBILE: { enumerable: true, value: "mobile" },
   TV: { enumerable: true, value: "tv" }
 });
 
+'use strict';
 function Os() {
     Object.defineProperties(this, {
         _name: { writable: true, value: null },
@@ -20196,6 +20953,7 @@ Object.defineProperties(Os, {
     WINDOWS_PHONE: { value: 'Windows Phone', enumerable: true }
 });
 
+'use strict';
 function Browser() {
     Object.defineProperties(this, {
         _name: { writable: true, value: null },
@@ -20282,6 +21040,7 @@ Object.defineProperties(Browser, {
     SILK: { value: 'Silk', enumerable: true }
 });
 
+"use strict";
 function Accelerometer() {
   Object.defineProperties(this, {
     timer: { value: new Timer() },
@@ -20328,6 +21087,7 @@ Accelerometer.prototype = Object.create(Object.prototype, {
     } }
 });
 
+"use strict";
 /**
  * The {@link screens.sensors} package contains classes for working mobile devices that support GPS and respond to motion.
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -20341,6 +21101,7 @@ var sensors = Object.assign({
   Accelerometer: Accelerometer
 });
 
+"use strict";
 /**
  * The {@link screens} package is .
  * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
@@ -20356,6 +21117,7 @@ var screens = Object.assign({
   sensors: sensors
 });
 
+"use strict";
 var version = '1.0.8';
 var metas = Object.defineProperties({}, {
     name: { enumerable: true, value: ucFirst('vegas-js') },
