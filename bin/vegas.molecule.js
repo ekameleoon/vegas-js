@@ -1,8 +1,8 @@
-/* VEGAS - Molecule JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
+/* VEGAS - Molecule JS - version ${version} - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
-                  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-                  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-                  (factory((global.vegas = global.vegas || {})));
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.vegas = global.vegas || {})));
 }(this, (function (exports) { 'use strict';
 
 var skip = false;
@@ -113,12 +113,10 @@ var performance$1 = exports.global.performance || {};
 Object.defineProperty(exports.global, 'performance', { value: performance$1, configurable: true, writable: true });
 performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow;
 if (!(exports.global.performance && exports.global.performance.now)) {
-                  (function () {
-                                    var startTime = Date.now();
-                                    exports.global.performance.now = function () {
-                                                      return Date.now() - startTime;
-                                    };
-                  })();
+                  var startTime = Date.now();
+                  exports.global.performance.now = function () {
+                                    return Date.now() - startTime;
+                  };
 }
 
 var ONE_FRAME_TIME = 16;
@@ -159,89 +157,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return typeof obj;
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var get$1 = function get$1(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get$1(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var set$1 = function set$1(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set$1(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
 };
 
 if (exports.global && typeof exports.global.Uint32Array !== "function" && _typeof(exports.global.Uint32Array) !== "object") {
@@ -1725,7 +1640,7 @@ var degreesToRadians = function degreesToRadians(angle) {
   return angle * DEG2RAD;
 };
 
-var distance$1 = function distance$1(x1, y1, x2, y2) {
+var distance$1 = function distance(x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   return Math.sqrt(dx * dx + dy * dy);
@@ -4340,7 +4255,6 @@ Signal.prototype = Object.create(Signaler.prototype, {
             return this.receivers.length;
         } },
     connect: { value: function value(receiver) {
-            var _this = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (receiver === null) {
@@ -4349,39 +4263,32 @@ Signal.prototype = Object.create(Signaler.prototype, {
             autoDisconnect = autoDisconnect === true;
             priority = priority > 0 ? priority - priority % 1 : 0;
             if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-                var _ret = function () {
-                    if (_this.hasReceiver(receiver)) {
-                        return {
-                            v: false
-                        };
-                    }
-                    _this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
-                    var i = void 0;
-                    var j = void 0;
-                    var a = _this.receivers;
-                    var swap = function swap(j, k) {
-                        var temp = a[j];
-                        a[j] = a[k];
-                        a[k] = temp;
-                        return true;
-                    };
-                    var swapped = false;
-                    var l = a.length;
-                    for (i = 1; i < l; i++) {
-                        for (j = 0; j < l - i; j++) {
-                            if (a[j + 1].priority > a[j].priority) {
-                                swapped = swap(j, j + 1);
-                            }
-                        }
-                        if (!swapped) {
-                            break;
+                if (this.hasReceiver(receiver)) {
+                    return false;
+                }
+                this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+                var i = void 0;
+                var j = void 0;
+                var a = this.receivers;
+                var swap = function swap(j, k) {
+                    var temp = a[j];
+                    a[j] = a[k];
+                    a[k] = temp;
+                    return true;
+                };
+                var swapped = false;
+                var l = a.length;
+                for (i = 1; i < l; i++) {
+                    for (j = 0; j < l - i; j++) {
+                        if (a[j + 1].priority > a[j].priority) {
+                            swapped = swap(j, j + 1);
                         }
                     }
-                    return {
-                        v: true
-                    };
-                }();
-                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+                    if (!swapped) {
+                        break;
+                    }
+                }
+                return true;
             }
             return false;
         } },
@@ -8774,46 +8681,40 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             return this._stopped;
         } },
     add: { value: function value(action) {
-            var _this2 = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoRemove = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (this._running) {
                 throw new Error(this + " add failed, the process is in progress.");
             }
             if (action && action instanceof Action) {
-                var _ret = function () {
-                    autoRemove = autoRemove === true;
-                    priority = priority > 0 ? Math.round(priority) : 0;
-                    if (_this2._next) {
-                        action.finishIt.connect(_this2._next);
-                    }
-                    _this2._actions.push(new ActionEntry(action, priority, autoRemove));
-                    var i = void 0;
-                    var j = void 0;
-                    var a = _this2._actions;
-                    var swap = function swap(j, k) {
-                        var temp = a[j];
-                        a[j] = a[k];
-                        a[k] = temp;
-                        return true;
-                    };
-                    var swapped = false;
-                    var l = a.length;
-                    for (i = 1; i < l; i++) {
-                        for (j = 0; j < l - i; j++) {
-                            if (a[j + 1].priority > a[j].priority) {
-                                swapped = swap(j, j + 1);
-                            }
-                        }
-                        if (!swapped) {
-                            break;
+                autoRemove = autoRemove === true;
+                priority = priority > 0 ? Math.round(priority) : 0;
+                if (this._next) {
+                    action.finishIt.connect(this._next);
+                }
+                this._actions.push(new ActionEntry(action, priority, autoRemove));
+                var i = void 0;
+                var j = void 0;
+                var a = this._actions;
+                var swap = function swap(j, k) {
+                    var temp = a[j];
+                    a[j] = a[k];
+                    a[k] = temp;
+                    return true;
+                };
+                var swapped = false;
+                var l = a.length;
+                for (i = 1; i < l; i++) {
+                    for (j = 0; j < l - i; j++) {
+                        if (a[j + 1].priority > a[j].priority) {
+                            swapped = swap(j, j + 1);
                         }
                     }
-                    return {
-                        v: true
-                    };
-                }();
-                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+                    if (!swapped) {
+                        break;
+                    }
+                }
+                return true;
             }
             return false;
         } },
@@ -8836,11 +8737,11 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             return false;
         } },
     dispose: { writable: true, value: function value() {
-            var _this3 = this;
+            var _this2 = this;
             if (this._actions.length > 0) {
                 this._actions.forEach(function (entry) {
                     if (entry instanceof ActionEntry) {
-                        entry.action.finishIt.disconnect(_this3._next);
+                        entry.action.finishIt.disconnect(_this2._next);
                     }
                 });
             }
@@ -8860,26 +8761,24 @@ TaskGroup.prototype = Object.create(Task.prototype, {
     next: { writable: true, value: function value(action /*Action*/) {
         } },
     remove: { writable: true, value: function value(action) {
-            var _this4 = this;
+            var _this3 = this;
             if (this._running) {
                 throw new Error(this + " remove failed, the process is in progress.");
             }
             this.stop();
             if (this._actions.length > 0) {
                 if (action && action instanceof Action) {
-                    (function () {
-                        var e = void 0;
-                        var l = _this4._actions.length;
-                        _this4._actions.forEach(function (element) {
-                            if (element && element instanceof ActionEntry && element.action === action) {
-                                if (_this4._next) {
-                                    e.action.finishIt.disconnect(_this4._next);
-                                }
-                                _this4._actions.splice(l, 1);
-                                return true;
+                    var e = void 0;
+                    var l = this._actions.length;
+                    this._actions.forEach(function (element) {
+                        if (element && element instanceof ActionEntry && element.action === action) {
+                            if (_this3._next) {
+                                e.action.finishIt.disconnect(_this3._next);
                             }
-                        });
-                    })();
+                            _this3._actions.splice(l, 1);
+                            return true;
+                        }
+                    });
                 } else {
                     this.dispose();
                     this._actions.length = 0;
@@ -12663,8 +12562,8 @@ function Matrix() {
     });
 }
 Object.defineProperties(Matrix, {
-    MAGIC_GRADIENT_FACTOR: { value: 1638.4 }
-});
+    MAGIC_GRADIENT_FACTOR: { value: 1638.4
+    } });
 Matrix.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: Matrix },
     clone: { writable: true, value: function value() {
@@ -13601,8 +13500,8 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
     _insertChildAt: { writable: true, value: function value(child, index) {
         } },
     _removeChild: { writable: true, value: function value(child) {
-        } }
-});
+        }
+    } });
 
 /**
  * The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
@@ -18980,85 +18879,77 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
     render: { writable: true, value: function value() {
             var _this = this;
             if (this._children.length > 0) {
-                (function () {
-                    if (_this._order === DirectionOrder.REVERSE) {
-                        _this._children.reverse();
+                if (this._order === DirectionOrder.REVERSE) {
+                    this._children.reverse();
+                }
+                var hor = this._direction === Direction.HORIZONTAL;
+                var gap = hor ? this._horizontalGap : this._verticalGap;
+                var left = this._padding.left;
+                var top = this._padding.top;
+                var pro = hor ? this.propX : this.propY;
+                var siz = hor ? this.propWidth : this.propHeight;
+                var sim = hor ? "w" : "h";
+                var inv = pro === this.propY ? this.propX : this.propY;
+                var tpr = "t" + pro;
+                var tin = "t" + inv;
+                var child = void 0;
+                var prev = void 0;
+                var size = void 0;
+                this._children.forEach(function (entry) {
+                    if (prev) {
+                        child = prev.child;
+                        size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
                     }
-                    var hor = _this._direction === Direction.HORIZONTAL;
-                    var gap = hor ? _this._horizontalGap : _this._verticalGap;
-                    var left = _this._padding.left;
-                    var top = _this._padding.top;
-                    var pro = hor ? _this.propX : _this.propY;
-                    var siz = hor ? _this.propWidth : _this.propHeight;
-                    var sim = hor ? "w" : "h";
-                    var inv = pro === _this.propY ? _this.propX : _this.propY;
-                    var tpr = "t" + pro;
-                    var tin = "t" + inv;
-                    var child = void 0;
-                    var prev = void 0;
-                    var size = void 0;
-                    _this._children.forEach(function (entry) {
-                        if (prev) {
-                            child = prev.child;
-                            size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
-                        }
-                        entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
-                        entry[tin] = hor ? top : left;
-                        prev = entry;
-                    });
-                    if (_this._order === DirectionOrder.REVERSE) {
-                        _this._children.reverse();
-                    }
-                    _this.arrange();
-                    _this.renderer.emit(_this);
-                })();
+                    entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
+                    entry[tin] = hor ? top : left;
+                    prev = entry;
+                });
+                if (this._order === DirectionOrder.REVERSE) {
+                    this._children.reverse();
+                }
+                this.arrange();
+                this.renderer.emit(this);
             }
         } },
     update: { writable: true, value: function value() {
-            var _this2 = this;
             if (this._children.length > 0) {
-                (function () {
-                    var child = void 0;
-                    _this2._children.forEach(function (entry) {
-                        child = entry.child;
-                        child.x = entry.x = entry.tx;
-                        child.y = entry.y = entry.ty;
-                    });
-                    _this2.updater.emit(_this2);
-                })();
+                var child = void 0;
+                this._children.forEach(function (entry) {
+                    child = entry.child;
+                    child.x = entry.x = entry.tx;
+                    child.y = entry.y = entry.ty;
+                });
+                this.updater.emit(this);
             }
             this.notifyFinished();
         } },
     arrange: { value: function value() {
-            var _this3 = this;
             if (this._children.length > 0) {
-                (function () {
-                    var align = _this3._align;
-                    var bounds = _this3._bounds;
-                    _this3._children.forEach(function (entry) {
-                        if (align === Align.CENTER) {
-                            entry.tx -= bounds.width * 0.5;
-                            entry.ty -= bounds.height * 0.5;
-                        } else if (align === Align.BOTTOM) {
-                            entry.tx -= bounds.width * 0.5;
-                            entry.ty -= bounds.height;
-                        } else if (align === Align.BOTTOM_LEFT) {
-                            entry.ty -= bounds.height;
-                        } else if (align === Align.BOTTOM_RIGHT) {
-                            entry.tx -= bounds.width;
-                            entry.ty -= bounds.height;
-                        } else if (align === Align.LEFT) {
-                            entry.ty -= bounds.height * 0.5;
-                        } else if (align === Align.RIGHT) {
-                            entry.tx -= bounds.width;
-                            entry.ty -= bounds.height * 0.5;
-                        } else if (align === Align.TOP) {
-                            entry.tx -= bounds.width * 0.5;
-                        } else if (align === Align.TOP_RIGHT) {
-                            entry.tx -= bounds.width;
-                        }
-                    });
-                })();
+                var align = this._align;
+                var bounds = this._bounds;
+                this._children.forEach(function (entry) {
+                    if (align === Align.CENTER) {
+                        entry.tx -= bounds.width * 0.5;
+                        entry.ty -= bounds.height * 0.5;
+                    } else if (align === Align.BOTTOM) {
+                        entry.tx -= bounds.width * 0.5;
+                        entry.ty -= bounds.height;
+                    } else if (align === Align.BOTTOM_LEFT) {
+                        entry.ty -= bounds.height;
+                    } else if (align === Align.BOTTOM_RIGHT) {
+                        entry.tx -= bounds.width;
+                        entry.ty -= bounds.height;
+                    } else if (align === Align.LEFT) {
+                        entry.ty -= bounds.height * 0.5;
+                    } else if (align === Align.RIGHT) {
+                        entry.tx -= bounds.width;
+                        entry.ty -= bounds.height * 0.5;
+                    } else if (align === Align.TOP) {
+                        entry.tx -= bounds.width * 0.5;
+                    } else if (align === Align.TOP_RIGHT) {
+                        entry.tx -= bounds.width;
+                    }
+                });
             }
         } }
 });
@@ -19159,26 +19050,24 @@ CircleLayout.prototype = Object.create(LayoutContainer.prototype, {
     render: { writable: true, value: function value() {
             var _this = this;
             if (this._children.length > 0) {
-                (function () {
-                    var i = 0;
-                    var child = void 0;
-                    _this._children.forEach(function (entry) {
-                        child = entry.child;
-                        child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
-                        child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
-                        if (_this._childOrientation) {
-                            child.rotation = atan2D(child.y, child.x) + _this._childAngle;
-                        } else {
-                            var flag = isMeasurable(child) && _this.usePreferredSize;
-                            child.rotation = 0;
-                            child.x -= (flag ? child.w : child.width) * 0.5;
-                            child.y -= (flag ? child.h : child.height) * 0.5;
-                        }
-                        child.x += _this._bounds.x + _this._radius;
-                        child.y += _this._bounds.y + _this._radius;
-                        i++;
-                    });
-                })();
+                var i = 0;
+                var child = void 0;
+                this._children.forEach(function (entry) {
+                    child = entry.child;
+                    child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
+                    child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
+                    if (_this._childOrientation) {
+                        child.rotation = atan2D(child.y, child.x) + _this._childAngle;
+                    } else {
+                        var flag = isMeasurable(child) && _this.usePreferredSize;
+                        child.rotation = 0;
+                        child.x -= (flag ? child.w : child.width) * 0.5;
+                        child.y -= (flag ? child.h : child.height) * 0.5;
+                    }
+                    child.x += _this._bounds.x + _this._radius;
+                    child.y += _this._bounds.y + _this._radius;
+                    i++;
+                });
             }
         } },
     update: { writable: true, value: function value() {
@@ -19233,101 +19122,96 @@ GridLayout.prototype = Object.create(BoxLayout.prototype, {
             var _this = this;
             this._bounds.setTo();
             if (this._children.length > 0) {
-                (function () {
-                    var i = 0;
-                    var hor = _this._direction === Direction.HORIZONTAL;
-                    var w = 0;
-                    var h = 0;
-                    var c = hor ? _this._columns : 0;
-                    var l = hor ? 0 : _this._lines;
-                    _this._children.forEach(function (entry) {
-                        var child = entry.child;
-                        var flag = isMeasurable(child) && _this.usePreferredSize;
-                        w = Math.max(child[flag ? "w" : _this.propWidth], w);
-                        h = Math.max(child[flag ? "h" : _this.propHeight], h);
-                        if (hor) {
-                            if (i % _this._columns === 0) {
-                                l++;
-                            }
-                        } else {
-                            if (i % _this._lines === 0) {
-                                c++;
-                            }
+                var i = 0;
+                var hor = this._direction === Direction.HORIZONTAL;
+                var w = 0;
+                var h = 0;
+                var c = hor ? this._columns : 0;
+                var l = hor ? 0 : this._lines;
+                this._children.forEach(function (entry) {
+                    var child = entry.child;
+                    var flag = isMeasurable(child) && _this.usePreferredSize;
+                    w = Math.max(child[flag ? "w" : _this.propWidth], w);
+                    h = Math.max(child[flag ? "h" : _this.propHeight], h);
+                    if (hor) {
+                        if (i % _this._columns === 0) {
+                            l++;
                         }
-                        i++;
-                    });
-                    _this._bounds.width += c * (w + _this._horizontalGap);
-                    _this._bounds.height += l * (h + _this._verticalGap);
-                    _this._bounds.width -= _this._horizontalGap;
-                    _this._bounds.height -= _this._verticalGap;
-                    _this._bounds.width += _this._padding.horizontal;
-                    _this._bounds.height += _this._padding.vertical;
-                    if (_this._align === Align.CENTER) {
-                        _this._bounds.x -= _this._bounds.width * 0.5;
-                        _this._bounds.y -= _this._bounds.height * 0.5;
-                    } else if (_this._align === Align.BOTTOM) {
-                        _this._bounds.x -= _this._bounds.width * 0.5;
-                        _this._bounds.y -= _this._bounds.height;
-                    } else if (_this._align === Align.BOTTOM_LEFT) {
-                        _this._bounds.y -= _this._bounds.height;
-                    } else if (_this._align === Align.BOTTOM_RIGHT) {
-                        _this._bounds.x -= _this._bounds.width;
-                        _this._bounds.y -= _this._bounds.height;
-                    } else if (_this._align === Align.LEFT) {
-                        _this._bounds.y -= _this._bounds.height * 0.5;
-                    } else if (_this._align === Align.RIGHT) {
-                        _this._bounds.x -= _this._bounds.width;
-                        _this._bounds.y -= _this._bounds.height * 0.5;
-                    } else if (_this._align === Align.TOP) {
-                        _this._bounds.x -= _this._bounds.width / 2;
-                    } else if (_this._align === Align.TOP_RIGHT) {
-                        _this._bounds.x -= _this._bounds.width;
+                    } else {
+                        if (i % _this._lines === 0) {
+                            c++;
+                        }
                     }
-                })();
+                    i++;
+                });
+                this._bounds.width += c * (w + this._horizontalGap);
+                this._bounds.height += l * (h + this._verticalGap);
+                this._bounds.width -= this._horizontalGap;
+                this._bounds.height -= this._verticalGap;
+                this._bounds.width += this._padding.horizontal;
+                this._bounds.height += this._padding.vertical;
+                if (this._align === Align.CENTER) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.BOTTOM) {
+                    this._bounds.x -= this._bounds.width * 0.5;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_LEFT) {
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.BOTTOM_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height;
+                } else if (this._align === Align.LEFT) {
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                    this._bounds.y -= this._bounds.height * 0.5;
+                } else if (this._align === Align.TOP) {
+                    this._bounds.x -= this._bounds.width / 2;
+                } else if (this._align === Align.TOP_RIGHT) {
+                    this._bounds.x -= this._bounds.width;
+                }
             }
         } },
     render: { writable: true, value: function value() {
             var _this2 = this;
             if (this._children.length > 0) {
                 if (this._lines > 1 && this._direction === Direction.VERTICAL || this._columns > 1 && this._direction === Direction.HORIZONTAL) {
-                    var i;
+                    if (this._order === DirectionOrder.REVERSE) {
+                        this._children.reverse();
+                    }
+                    var left = this._padding.left;
+                    var top = this._padding.top;
+                    var hor = this._direction === Direction.HORIZONTAL;
+                    var i = 0;
                     var c;
                     var l;
                     var pw;
                     var ph;
-                    (function () {
-                        if (_this2._order === DirectionOrder.REVERSE) {
-                            _this2._children.reverse();
+                    this._children.forEach(function (entry) {
+                        var child = entry.child;
+                        var flag = isMeasurable(child) && _this2.usePreferredSize;
+                        pw = flag ? "w" : _this2.propWidth;
+                        ph = flag ? "h" : _this2.propHeight;
+                        c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
+                        l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
+                        entry.tx = left + c * (child[pw] + _this2._horizontalGap);
+                        entry.ty = top + l * (child[ph] + _this2._verticalGap);
+                        if (_this2.isRightToLeft()) {
+                            entry.tx *= -1;
+                            entry.tx += _this2._bounds.width - child[pw];
                         }
-                        var left = _this2._padding.left;
-                        var top = _this2._padding.top;
-                        var hor = _this2._direction === Direction.HORIZONTAL;
-                        i = 0;
-                        _this2._children.forEach(function (entry) {
-                            var child = entry.child;
-                            var flag = isMeasurable(child) && _this2.usePreferredSize;
-                            pw = flag ? "w" : _this2.propWidth;
-                            ph = flag ? "h" : _this2.propHeight;
-                            c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
-                            l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
-                            entry.tx = left + c * (child[pw] + _this2._horizontalGap);
-                            entry.ty = top + l * (child[ph] + _this2._verticalGap);
-                            if (_this2.isRightToLeft()) {
-                                entry.tx *= -1;
-                                entry.tx += _this2._bounds.width - child[pw];
-                            }
-                            if (_this2.isBottomToTop()) {
-                                entry.ty *= -1;
-                                entry.ty += _this2._bounds.height - child[ph];
-                            }
-                            i++;
-                        });
-                        if (_this2._order === DirectionOrder.REVERSE) {
-                            _this2._children.reverse();
+                        if (_this2.isBottomToTop()) {
+                            entry.ty *= -1;
+                            entry.ty += _this2._bounds.height - child[ph];
                         }
-                        _this2.arrange();
-                        _this2.renderer.emit(_this2);
-                    })();
+                        i++;
+                    });
+                    if (this._order === DirectionOrder.REVERSE) {
+                        this._children.reverse();
+                    }
+                    this.arrange();
+                    this.renderer.emit(this);
                 } else {
                     BoxLayout.prototype.render.call(this);
                 }
@@ -19892,7 +19776,7 @@ var pixi = Object.assign({
  * @namespace molecule.render
  * @memberof molecule
  */
-var render$1 = Object.assign({
+var render = Object.assign({
   aframe: aframe,
   dom: dom$1,
   pixi: pixi
@@ -20222,7 +20106,7 @@ var molecule = Object.assign({
     components: components,
     display: display$1,
     groups: groups,
-    render: render$1,
+    render: render,
     states: states
 });
 

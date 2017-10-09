@@ -162,7 +162,7 @@ IconButton.prototype = Object.create( CoreButton.prototype ,
      * @name iconAlign
      * @memberof molecule.render.pixi.components.buttons.IconButton
      * @instance
-     * @see {graphics.Align|Align}
+     * @see {graphics.Align}
      */
     iconAlign :
     {
@@ -183,7 +183,7 @@ IconButton.prototype = Object.create( CoreButton.prototype ,
      * @name iconHorizontalPolicy
      * @memberof molecule.render.pixi.components.buttons.IconButton
      * @instance
-     * @see {graphics.Align|Align}
+     * @see {graphics.Align}
      * @default 'normal'
      */
     iconHorizontalPolicy :
@@ -209,7 +209,7 @@ IconButton.prototype = Object.create( CoreButton.prototype ,
      * @name iconHorizontalPolicy
      * @memberof molecule.render.pixi.components.buttons.IconButton
      * @instance
-     * @see {graphics.Align|Align}
+     * @see {graphics.Align}
      * @default 'normal'
      */
     iconVerticalPolicy :

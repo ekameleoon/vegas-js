@@ -36,6 +36,8 @@ export function ScrollPaneStyle( init = null )
          * Indicates the x or y postion of the horizontal scrollbar, in pixels.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
+         * @type number
+         * @default 4
          */
         hScrollBarOffset : { writable : true , value : 4 } ,
 
@@ -43,7 +45,7 @@ export function ScrollPaneStyle( init = null )
          * Whether the horizontal scrollbar should appear on the left hand side of the panes content.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
-         * @type
+         * @type boolean
          * @default false
          */
         hScrollbarOnTop : { writable : true , value : false } ,
@@ -52,7 +54,7 @@ export function ScrollPaneStyle( init = null )
          * Whether you want the contents of the scroll pane to maintain it's position when you re-initialise it - so it doesn't scroll as you add more content.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
-         * @type
+         * @type boolean
          * @default true
          */
         maintainPosition : { writable : true , value : true } ,
@@ -61,6 +63,8 @@ export function ScrollPaneStyle( init = null )
          * Indicates the size of the horizontal scrollbar.
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
+         * @type number
+         * @default 4
          */
         hScrollBarSize : { writable : true , value : 4 } ,
 
@@ -68,6 +72,8 @@ export function ScrollPaneStyle( init = null )
          * The delay to see the scrollbars when the scroll of the component is changed (in milliseconds).
          * @memberof molecule.render.pixi.components.panes.ScrollPaneStyle
          * @instance
+         * @type number
+         * @default 500
          */
         scrollBarDelay : { writable : true , value : 500 } ,
 

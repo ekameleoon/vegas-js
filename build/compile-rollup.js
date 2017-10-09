@@ -36,14 +36,14 @@ export var roll = ( done ) =>
 {
     return rollup
     ({
-        moduleName : build.name ,
-        entry      : build.entry ,
-        format     : 'umd' ,
-        sourceMap  : false ,
-        useStrict  : true ,
-        cache      : cache ,
-        globals    : {},
-        plugins    :
+        name      : build.name ,
+        input     : build.entry ,
+        format    : 'umd' ,
+        sourcemap : false ,
+        strict    : true ,
+        cache     : cache ,
+        globals   : {},
+        plugins   :
         [
             replace
             ({
