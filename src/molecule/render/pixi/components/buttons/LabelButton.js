@@ -2,7 +2,7 @@
 
 import { Align } from './graphics/Align.js' ;
 import { isString } from './core/isString.js' ;
-import { SimpleButton }  from '../../../../../../libs/vegas-js/src/molecule/render/pixi/components/buttons/SimpleButton.js' ;
+import { SimpleButton } from './SimpleButton.js' ;
 
 /**
  * The LabelButton class lets you control all basic instances of button with a label.

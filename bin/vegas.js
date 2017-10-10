@@ -1,4 +1,4 @@
-/* VEGAS JS - version ${version} - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
+/* VEGAS JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :

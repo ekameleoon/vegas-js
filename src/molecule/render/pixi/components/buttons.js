@@ -2,6 +2,7 @@
 
 import { CoreButton } from './buttons/CoreButton.js' ;
 import { IconButton } from './buttons/IconButton.js' ;
+import { LabelButton } from './buttons/LabelButton.js' ;
 import { SimpleButton } from './buttons/SimpleButton.js' ;
 
 /**
@@ -18,5 +19,6 @@ export var buttons = Object.assign
 ({
     CoreButton : CoreButton,
     IconButton : IconButton,
+    LabelButton : LabelButton,
     SimpleButton : SimpleButton
 });

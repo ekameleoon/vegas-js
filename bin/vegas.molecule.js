@@ -1,4 +1,4 @@
-/* VEGAS - Molecule JS - version ${version} - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
+/* VEGAS - Molecule JS - version 1.0.8 - Opensource Licences : MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -18372,6 +18372,148 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
 });
 
 "use strict";
+function LabelButton() {
+    var texture = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        _labelAlign: { writable: true, value: Align.CENTER },
+        _labelChanging: { writable: true, value: false },
+        _labelStyle: { writable: true, value: false },
+        _labelText: { writable: true, value: null }
+    });
+    SimpleButton.call(this, texture);
+}
+Object.defineProperties(LabelButton, {
+    labelAlignments: {
+        writable: false,
+        value: [Align.CENTER, Align.BOTTOM, Align.BOTTOM_LEFT, Align.BOTTOM_RIGHT, Align.LEFT, Align.RIGHT, Align.TOP, Align.TOP_LEFT, Align.TOP_RIGHT]
+    }
+});
+LabelButton.prototype = Object.create(SimpleButton.prototype, {
+    constructor: { writable: true, value: LabelButton },
+    label: {
+        get: function get() {
+            return this._label;
+        },
+        set: function set(label) {
+            if (label === this._label) {
+                return;
+            }
+            this._label = isString(label) && label.length > 0 ? label : null;
+            this._labelChanging = true;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    labelAlign: {
+        get: function get() {
+            return this._labelAlign;
+        },
+        set: function set(value) {
+            this._labelAlign = LabelButton.labelAlignments.indexOf(value) > -1 ? value : Align.NONE;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    labelStyle: {
+        get: function get() {
+            return this._labelStyle;
+        },
+        set: function set(style) {
+            this._labelStyle = style;
+            this._labelChanging = true;
+            if (!this.isLocked()) {
+                this.update();
+            }
+        }
+    },
+    labelText: { get: function get() {
+            return this._labelText;
+        } },
+    viewChanged: { writable: true, value: function value() {
+            SimpleButton.prototype.viewChanged.call(this);
+            if (this._labelChanging) {
+                this._labelChanging = false;
+                if (this._labelText) {
+                    if (this._labelText.parent) {
+                        this._labelText.parent.removeChild(this._labelText);
+                    }
+                    this._labelText.destroy();
+                    this._labelText = null;
+                }
+                if (isString(this._label) && this._label.length > 0) {
+                    this._labelText = new PIXI.Text(this._label, this._labelStyle);
+                }
+            }
+            if (this._labelText && this._labelText instanceof PIXI.Text) {
+                var area = this.fixArea();
+                this.addChild(this._labelText);
+                if (this._labelAlign !== Align.NONE) {
+                    this._labelText.x = area.x;
+                    this._labelText.y = area.y;
+                }
+                switch (this._labelAlign) {
+                    case Align.BOTTOM:
+                        {
+                            this._labelText.x += (area.width - this._labelText.width) * 0.5;
+                            this._labelText.y += area.height - this._padding.bottom - this._labelText.height;
+                            break;
+                        }
+                    case Align.BOTTOM_LEFT:
+                        {
+                            this._labelText.x += this._padding.left;
+                            this._labelText.y += area.height - this._padding.bottom - this._labelText.height;
+                            break;
+                        }
+                    case Align.BOTTOM_RIGHT:
+                        {
+                            this._labelText.x += area.width - this._padding.right - this._labelText.width;
+                            this._labelText.y += area.height - this._padding.bottom - this._labelText.height;
+                            break;
+                        }
+                    case Align.CENTER:
+                        {
+                            this._labelText.x += (area.width - this._labelText.width) * 0.5;
+                            this._labelText.y += (area.height - this._labelText.height) * 0.5;
+                            break;
+                        }
+                    case Align.LEFT:
+                        {
+                            this._labelText.x += this._padding.left;
+                            this._labelText.y += (area.height - this._labelText.height) * 0.5;
+                            break;
+                        }
+                    case Align.RIGHT:
+                        {
+                            this._labelText.x += area.width - this._padding.right - this._labelText.width;
+                            this._labelText.y += (area.height - this._labelText.height) * 0.5;
+                            break;
+                        }
+                    case Align.TOP:
+                        {
+                            this._labelText.x += (area.width - this._labelText.width) * 0.5;
+                            this._labelText.y += this._padding.top;
+                            break;
+                        }
+                    case Align.TOP_LEFT:
+                        {
+                            this._labelText.x += this._padding.left;
+                            this._labelText.y += this._padding.top;
+                            break;
+                        }
+                    case Align.TOP_RIGHT:
+                        {
+                            this._labelText.x += area.width - this._padding.right - this._labelText.width;
+                            this._labelText.y += this._padding.top;
+                            break;
+                        }
+                }
+            }
+        } }
+});
+
+"use strict";
 /**
  * The {@link molecule.render.pixi.components.buttons} package.
  * @summary The {@link molecule.render.pixi.components} package.
@@ -18385,6 +18527,7 @@ SimpleButton.prototype = Object.create(CoreButton.prototype, {
 var buttons = Object.assign({
   CoreButton: CoreButton,
   IconButton: IconButton,
+  LabelButton: LabelButton,
   SimpleButton: SimpleButton
 });
 
