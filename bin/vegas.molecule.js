@@ -18106,7 +18106,7 @@ Object.defineProperties(IconButton, {
     }
 });
 IconButton.prototype = Object.create(CoreButton.prototype, {
-    constructor: { value: IconButton, writable: true },
+    constructor: { writable: true, value: IconButton },
     icon: {
         get: function get() {
             return this._icon;
@@ -18284,7 +18284,7 @@ function SimpleButton() {
     this.update();
 }
 SimpleButton.prototype = Object.create(CoreButton.prototype, {
-    constructor: { value: SimpleButton },
+    constructor: { value: SimpleButton, writable: true },
     disabledState: {
         get: function get() {
             return this._disabledState;

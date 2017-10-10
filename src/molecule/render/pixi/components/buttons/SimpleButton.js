@@ -88,7 +88,7 @@ export function SimpleButton( texture = null )
 
 SimpleButton.prototype = Object.create( CoreButton.prototype ,
 {
-    constructor : { value : SimpleButton } ,
+    constructor : { value : SimpleButton , writable : true } ,
 
     /**
      * Specifies a display object that is used as the visual object for the "disabled" state.

@@ -100,7 +100,7 @@ Object.defineProperties( IconButton ,
 
 IconButton.prototype = Object.create( CoreButton.prototype ,
 {
-    constructor : { value : IconButton , writable : true } ,
+    constructor : { writable : true , value : IconButton } ,
 
     /**
      * Indicates the icon reference of this display.
