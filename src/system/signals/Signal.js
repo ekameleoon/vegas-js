@@ -61,7 +61,7 @@ export function Signal()
         /**
          * @private
          */
-        receivers : { value : [] }
+        receivers : { writable : true , value : [] }
     }) ;
 }
 
@@ -171,7 +171,7 @@ Signal.prototype = Object.create( Signaler.prototype ,
      * @instance
      * @function
      */
-    disconnect : { value : function ( receiver )
+    disconnect : { value : function ( receiver = null )
     {
         if ( receiver === null )
         {
