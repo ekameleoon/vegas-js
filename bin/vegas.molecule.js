@@ -121,10 +121,12 @@ var performance$1 = exports.global.performance || {};
 Object.defineProperty(exports.global, 'performance', { value: performance$1, configurable: true, writable: true });
 performance$1.now = performance$1.now || performance$1.mozNow || performance$1.msNow || performance$1.oNow || performance$1.webkitNow;
 if (!(exports.global.performance && exports.global.performance.now)) {
-                  var startTime = Date.now();
-                  exports.global.performance.now = function () {
-                                    return Date.now() - startTime;
-                  };
+                  (function () {
+                                    var startTime = Date.now();
+                                    exports.global.performance.now = function () {
+                                                      return Date.now() - startTime;
+                                    };
+                  })();
 }
 
 "use strict";
@@ -1133,12 +1135,12 @@ var littleEndian = isLittleEndian();
 "use strict";
 var max = 0xFF;
 var fromARGB = function fromARGB(a, r, g, b) {
-  r = Math.min(Math.max(r, 0), max);
-  g = Math.min(Math.max(g, 0), max);
-  b = Math.min(Math.max(b, 0), max);
-  a = isNaN(a) ? 0 : a;
-  a = 0xFF * Math.max(Math.min(a, 1), 0);
-  return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
+    r = Math.min(Math.max(r, 0), max);
+    g = Math.min(Math.max(g, 0), max);
+    b = Math.min(Math.max(b, 0), max);
+    a = isNaN(a) ? 0 : a;
+    a = 0xFF * Math.max(Math.min(a, 1), 0);
+    return littleEndian ? (a << 24 | b << 16 | g << 8 | r) >>> 0 : (r << 24 | g << 16 | b << 8 | a) >>> 0;
 };
 
 "use strict";
@@ -1303,12 +1305,12 @@ var yesterday = function yesterday() {
  * @memberof core
  */
 var date = Object.assign({
-  ONE_DAY_MS: ONE_DAY_MS,
-  after: after,
-  before: before,
-  daysInMonth: daysInMonth,
-  leapYear: leapYear,
-  yesterday: yesterday
+    ONE_DAY_MS: ONE_DAY_MS,
+    after: after,
+    before: before,
+    daysInMonth: daysInMonth,
+    leapYear: leapYear,
+    yesterday: yesterday
 });
 
 "use strict";
@@ -1806,12 +1808,12 @@ var DEG2RAD = Math.PI / 180;
 
 "use strict";
 var bearing = function bearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 360) % 360;
 };
 
 "use strict";
@@ -1946,12 +1948,12 @@ var fibonacci = function fibonacci(value) {
 
 "use strict";
 var finalBearing = function finalBearing(latitude1, longitude1, latitude2, longitude2) {
-  latitude1 = latitude1 * DEG2RAD;
-  latitude2 = latitude2 * DEG2RAD;
-  var dLng = (longitude2 - longitude1) * DEG2RAD;
-  var y = Math.sin(dLng) * Math.cos(latitude2);
-  var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
-  return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
+    latitude1 = latitude1 * DEG2RAD;
+    latitude2 = latitude2 * DEG2RAD;
+    var dLng = (longitude2 - longitude1) * DEG2RAD;
+    var y = Math.sin(dLng) * Math.cos(latitude2);
+    var x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * RAD2DEG + 180) % 360;
 };
 
 "use strict";
@@ -3216,10 +3218,10 @@ Enum.prototype.valueOf = function () {
 
 "use strict";
 function isEquatable(target) {
-  if (target) {
-    return target.equals && target.equals instanceof Function || target instanceof Equatable;
-  }
-  return false;
+    if (target) {
+        return target.equals && target.equals instanceof Function || target instanceof Equatable;
+    }
+    return false;
 }
 function Equatable() {}
 Equatable.prototype = Object.create(Object.prototype);
@@ -3229,26 +3231,26 @@ Equatable.prototype.equals = function (object) {
 
 "use strict";
 function isEvaluable(target) {
-  if (target) {
-    return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Evaluable || 'eval' in target && target.eval instanceof Function;
+    }
+    return false;
 }
 function Evaluable() {}
 Evaluable.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Evaluable },
-  eval: { writable: true, value: function value(_value) {} },
-  toString: { writable: true, value: function value() {
-      return '[' + this.constructor.name + ']';
-    } }
+    constructor: { writable: true, value: Evaluable },
+    eval: { writable: true, value: function value(_value) {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
 });
 
 "use strict";
 function isFormattable(target) {
-  if (target) {
-    return target instanceof Formattable || 'format' in target && target.format instanceof Function;
-  }
-  return false;
+    if (target) {
+        return target instanceof Formattable || 'format' in target && target.format instanceof Function;
+    }
+    return false;
 }
 function Formattable() {}
 Formattable.prototype = Object.create(Object.prototype);
@@ -3526,19 +3528,19 @@ MapIterator.prototype = Object.create(Iterator.prototype, {
 
 "use strict";
 function MapEntry(key, value) {
-  Object.defineProperties(this, {
-    key: { value: key, writable: true },
-    value: { value: value, writable: true }
-  });
+    Object.defineProperties(this, {
+        key: { value: key, writable: true },
+        value: { value: value, writable: true }
+    });
 }
 MapEntry.prototype = Object.create(Object.prototype, {
-  constructor: { value: MapEntry },
-  clone: { value: function value() {
-      return new MapEntry(this.key, this.value);
-    } },
-  toString: { value: function value() {
-      return "[MapEntry key:" + this.key + " value:" + this.value + "]";
-    } }
+    constructor: { value: MapEntry },
+    clone: { value: function value() {
+            return new MapEntry(this.key, this.value);
+        } },
+    toString: { value: function value() {
+            return "[MapEntry key:" + this.key + " value:" + this.value + "]";
+        } }
 });
 
 "use strict";
@@ -3742,26 +3744,26 @@ ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
  * @memberof system
  */
 var data = Object.assign({
-  isIdentifiable: isIdentifiable,
-  isIterator: isIterator,
-  isOrderedIterator: isOrderedIterator,
-  isValidator: isValidator,
-  Identifiable: Identifiable,
-  Iterator: Iterator,
-  KeyValuePair: KeyValuePair,
-  OrderedIterator: OrderedIterator,
-  Property: Property,
-  Validator: Validator,
-  Attribute: Attribute,
-  Method: Method,
-  ValueObject: ValueObject,
-  iterators: {
-    ArrayIterator: ArrayIterator,
-    MapIterator: MapIterator
-  },
-  maps: {
-    ArrayMap: ArrayMap
-  }
+    isIdentifiable: isIdentifiable,
+    isIterator: isIterator,
+    isOrderedIterator: isOrderedIterator,
+    isValidator: isValidator,
+    Identifiable: Identifiable,
+    Iterator: Iterator,
+    KeyValuePair: KeyValuePair,
+    OrderedIterator: OrderedIterator,
+    Property: Property,
+    Validator: Validator,
+    Attribute: Attribute,
+    Method: Method,
+    ValueObject: ValueObject,
+    iterators: {
+        ArrayIterator: ArrayIterator,
+        MapIterator: MapIterator
+    },
+    maps: {
+        ArrayMap: ArrayMap
+    }
 });
 
 "use strict";
@@ -4584,11 +4586,11 @@ var formatters = Object.assign({
 "use strict";
 function Receiver() {}
 Receiver.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Receiver },
-  receive: { writable: true, value: function value() {} },
-  toString: { writable: true, value: function value() {
-      return '[' + this.constructor.name + ']';
-    } }
+    constructor: { writable: true, value: Receiver },
+    receive: { writable: true, value: function value() {} },
+    toString: { writable: true, value: function value() {
+            return '[' + this.constructor.name + ']';
+        } }
 });
 
 "use strict";
@@ -4625,15 +4627,16 @@ SignalEntry.prototype.toString = function () {
 function Signal() {
     Object.defineProperties(this, {
         proxy: { value: null, configurable: true, writable: true },
-        receivers: { value: [] }
+        receivers: { writable: true, value: [] }
     });
 }
 Signal.prototype = Object.create(Signaler.prototype, {
     constructor: { value: Signal, writable: true },
-    length: { get: function get() {
+    length: { get: function get$$1() {
             return this.receivers.length;
         } },
     connect: { value: function value(receiver) {
+            var _this = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoDisconnect = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (receiver === null) {
@@ -4642,39 +4645,47 @@ Signal.prototype = Object.create(Signaler.prototype, {
             autoDisconnect = autoDisconnect === true;
             priority = priority > 0 ? priority - priority % 1 : 0;
             if (typeof receiver === "function" || receiver instanceof Function || receiver instanceof Receiver || "receive" in receiver) {
-                if (this.hasReceiver(receiver)) {
-                    return false;
-                }
-                this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
-                var i = void 0;
-                var j = void 0;
-                var a = this.receivers;
-                var swap = function swap(j, k) {
-                    var temp = a[j];
-                    a[j] = a[k];
-                    a[k] = temp;
-                    return true;
-                };
-                var swapped = false;
-                var l = a.length;
-                for (i = 1; i < l; i++) {
-                    for (j = 0; j < l - i; j++) {
-                        if (a[j + 1].priority > a[j].priority) {
-                            swapped = swap(j, j + 1);
+                var _ret = function () {
+                    if (_this.hasReceiver(receiver)) {
+                        return {
+                            v: false
+                        };
+                    }
+                    _this.receivers.push(new SignalEntry(receiver, priority, autoDisconnect));
+                    var i = void 0;
+                    var j = void 0;
+                    var a = _this.receivers;
+                    var swap = function swap(j, k) {
+                        var temp = a[j];
+                        a[j] = a[k];
+                        a[k] = temp;
+                        return true;
+                    };
+                    var swapped = false;
+                    var l = a.length;
+                    for (i = 1; i < l; i++) {
+                        for (j = 0; j < l - i; j++) {
+                            if (a[j + 1].priority > a[j].priority) {
+                                swapped = swap(j, j + 1);
+                            }
+                        }
+                        if (!swapped) {
+                            break;
                         }
                     }
-                    if (!swapped) {
-                        break;
-                    }
-                }
-                return true;
+                    return {
+                        v: true
+                    };
+                }();
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
             }
             return false;
         } },
     connected: { value: function value() {
             return this.receivers.length > 0;
         } },
-    disconnect: { value: function value(receiver) {
+    disconnect: { value: function value() {
+            var receiver = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
             if (receiver === null) {
                 if (this.receivers.length > 0) {
                     this.receivers = [];
@@ -4763,41 +4774,41 @@ Signal.prototype = Object.create(Signaler.prototype, {
 
 "use strict";
 function LoggerLevel(value, name) {
-  Enum.call(this, value, name);
+    Enum.call(this, value, name);
 }
 LoggerLevel.prototype = Object.create(Enum.prototype);
 LoggerLevel.prototype.constructor = LoggerLevel;
 Object.defineProperties(LoggerLevel, {
-  ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
-  CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
-  DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
-  DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
-  ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
-  INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
-  NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
-  WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
-  WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
-  get: { value: function value(_value) {
-      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      var l = levels.length;
-      while (--l > -1) {
-        if (levels[l]._value === _value) {
-          return levels[l];
-        }
-      }
-      return null;
-    } },
-  getLevelString: { value: function value(_value2) {
-      if (LoggerLevel.validate(_value2)) {
-        return _value2.toString();
-      } else {
-        return LoggerLevel.DEFAULT_LEVEL_STRING;
-      }
-    } },
-  validate: { value: function value(level) {
-      var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
-      return levels.indexOf(level) > -1;
-    } }
+    ALL: { value: new LoggerLevel(1, 'ALL'), enumerable: true },
+    CRITICAL: { value: new LoggerLevel(16, 'CRITICAL'), enumerable: true },
+    DEBUG: { value: new LoggerLevel(2, 'DEBUG'), enumerable: true },
+    DEFAULT_LEVEL_STRING: { value: 'UNKNOWN', enumerable: true },
+    ERROR: { value: new LoggerLevel(8, 'ERROR'), enumerable: true },
+    INFO: { value: new LoggerLevel(4, 'INFO'), enumerable: true },
+    NONE: { value: new LoggerLevel(0, 'NONE'), enumerable: true },
+    WARNING: { value: new LoggerLevel(6, 'WARNING'), enumerable: true },
+    WTF: { value: new LoggerLevel(32, 'WTF'), enumerable: true },
+    get: { value: function value(_value) {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            var l = levels.length;
+            while (--l > -1) {
+                if (levels[l]._value === _value) {
+                    return levels[l];
+                }
+            }
+            return null;
+        } },
+    getLevelString: { value: function value(_value2) {
+            if (LoggerLevel.validate(_value2)) {
+                return _value2.toString();
+            } else {
+                return LoggerLevel.DEFAULT_LEVEL_STRING;
+            }
+        } },
+    validate: { value: function value(level) {
+            var levels = [LoggerLevel.ALL, LoggerLevel.CRITICAL, LoggerLevel.DEBUG, LoggerLevel.ERROR, LoggerLevel.INFO, LoggerLevel.NONE, LoggerLevel.WARNING, LoggerLevel.WTF];
+            return levels.indexOf(level) > -1;
+        } }
 });
 
 "use strict";
@@ -4884,15 +4895,15 @@ Logger.prototype = Object.create(Signal.prototype, {
 
 "use strict";
 var strings$1 = Object.defineProperties({}, {
-  CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
-  CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
-  EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
-  ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
-  DEFAULT_CHANNEL: { value: "", enumerable: true },
-  ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
-  INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
-  INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
+    CHARS_INVALID: { value: "The following characters are not valid\: []~$^&\/(){}<>+\=_-`!@#%?,\:;'\\", enumerable: true },
+    CHAR_PLACEMENT: { value: "'*' must be the right most character.", enumerable: true },
+    EMPTY_FILTER: { value: "filter must not be null or empty.", enumerable: true },
+    ERROR_FILTER: { value: "Error for filter '{0}'.", enumerable: true },
+    DEFAULT_CHANNEL: { value: "", enumerable: true },
+    ILLEGALCHARACTERS: { value: "[]~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_CHARS: { value: "Channels can not contain any of the following characters : []~$^&/\\(){}<>+=`!#%?,:;'\"@", enumerable: true },
+    INVALID_LENGTH: { value: "Channels must be at least one character in length.", enumerable: true },
+    INVALID_TARGET: { value: "Log, Invalid target specified.", enumerable: true }
 });
 
 "use strict";
@@ -5450,42 +5461,42 @@ ObjectStrategy.prototype = Object.create(Object.prototype, {
 
 "use strict";
 function ObjectProperty(name, value) {
-  var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
-  var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  Object.defineProperties(this, {
-    args: { value: null, writable: true },
-    evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
-    name: { value: name, writable: true },
-    scope: { value: null, writable: true },
-    value: { value: value, writable: true },
-    _policy: { value: null, writable: true }
-  });
-  this.policy = policy;
+    var policy = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "value";
+    var evaluators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    Object.defineProperties(this, {
+        args: { value: null, writable: true },
+        evaluators: { value: evaluators instanceof Array ? evaluators : null, writable: true },
+        name: { value: name, writable: true },
+        scope: { value: null, writable: true },
+        value: { value: value, writable: true },
+        _policy: { value: null, writable: true }
+    });
+    this.policy = policy;
 }
 ObjectProperty.prototype = Object.create(ObjectStrategy.prototype, {
-  constructor: { writable: true, value: ObjectProperty },
-  policy: {
-    get: function get() {
-      return this._policy;
-    },
-    set: function set(str) {
-      switch (str) {
-        case ObjectAttribute.ARGUMENTS:
-        case ObjectAttribute.CALLBACK:
-        case ObjectAttribute.CONFIG:
-        case ObjectAttribute.LOCALE:
-        case ObjectAttribute.REFERENCE:
-          {
-            this._policy = str;
-            break;
-          }
-        default:
-          {
-            this._policy = ObjectAttribute.VALUE;
-          }
-      }
+    constructor: { writable: true, value: ObjectProperty },
+    policy: {
+        get: function get() {
+            return this._policy;
+        },
+        set: function set(str) {
+            switch (str) {
+                case ObjectAttribute.ARGUMENTS:
+                case ObjectAttribute.CALLBACK:
+                case ObjectAttribute.CONFIG:
+                case ObjectAttribute.LOCALE:
+                case ObjectAttribute.REFERENCE:
+                    {
+                        this._policy = str;
+                        break;
+                    }
+                default:
+                    {
+                        this._policy = ObjectAttribute.VALUE;
+                    }
+            }
+        }
     }
-  }
 });
 
 "use strict";
@@ -6033,140 +6044,140 @@ var TaskPhase = Object.defineProperties({}, {
 
 "use strict";
 function Action() {
-  Object.defineProperties(this, {
-    finishIt: { value: new Signal() },
-    startIt: { value: new Signal() },
-    __lock__: { writable: true, value: false },
-    _phase: { writable: true, value: TaskPhase.INACTIVE },
-    _running: { writable: true, value: false }
-  });
+    Object.defineProperties(this, {
+        finishIt: { value: new Signal() },
+        startIt: { value: new Signal() },
+        __lock__: { writable: true, value: false },
+        _phase: { writable: true, value: TaskPhase.INACTIVE },
+        _running: { writable: true, value: false }
+    });
 }
 Action.prototype = Object.create(Runnable.prototype, {
-  constructor: { writable: true, value: Action },
-  phase: { get: function get() {
-      return this._phase;
-    } },
-  running: { get: function get() {
-      return this._running;
-    } },
-  clone: { writable: true, value: function value() {
-      return new Action();
-    } },
-  isLocked: { writable: true, value: function value() {
-      return this.__lock__;
-    } },
-  lock: { writable: true, value: function value() {
-      this.__lock__ = true;
-    } },
-  notifyFinished: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.FINISHED;
-      this.finishIt.emit(this);
-      this._phase = TaskPhase.INACTIVE;
-    } },
-  notifyStarted: { writable: true, value: function value() {
-      this._running = true;
-      this._phase = TaskPhase.RUNNING;
-      this.startIt.emit(this);
-    } },
-  unlock: { writable: true, value: function value() {
-      this.__lock__ = false;
-    } }
+    constructor: { writable: true, value: Action },
+    phase: { get: function get() {
+            return this._phase;
+        } },
+    running: { get: function get() {
+            return this._running;
+        } },
+    clone: { writable: true, value: function value() {
+            return new Action();
+        } },
+    isLocked: { writable: true, value: function value() {
+            return this.__lock__;
+        } },
+    lock: { writable: true, value: function value() {
+            this.__lock__ = true;
+        } },
+    notifyFinished: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.FINISHED;
+            this.finishIt.emit(this);
+            this._phase = TaskPhase.INACTIVE;
+        } },
+    notifyStarted: { writable: true, value: function value() {
+            this._running = true;
+            this._phase = TaskPhase.RUNNING;
+            this.startIt.emit(this);
+        } },
+    unlock: { writable: true, value: function value() {
+            this.__lock__ = false;
+        } }
 });
 
 "use strict";
 function Task() {
-  Action.call(this);
-  Object.defineProperties(this, {
-    changeIt: { value: new Signal() },
-    clearIt: { value: new Signal() },
-    errorIt: { value: new Signal() },
-    infoIt: { value: new Signal() },
-    looping: { value: false, writable: true },
-    loopIt: { value: new Signal() },
-    pauseIt: { value: new Signal() },
-    progressIt: { value: new Signal() },
-    resumeIt: { value: new Signal() },
-    stopIt: { value: new Signal() },
-    throwError: { value: false, writable: true },
-    timeoutIt: { value: new Signal() }
-  });
+    Action.call(this);
+    Object.defineProperties(this, {
+        changeIt: { value: new Signal() },
+        clearIt: { value: new Signal() },
+        errorIt: { value: new Signal() },
+        infoIt: { value: new Signal() },
+        looping: { value: false, writable: true },
+        loopIt: { value: new Signal() },
+        pauseIt: { value: new Signal() },
+        progressIt: { value: new Signal() },
+        resumeIt: { value: new Signal() },
+        stopIt: { value: new Signal() },
+        throwError: { value: false, writable: true },
+        timeoutIt: { value: new Signal() }
+    });
 }
 Task.prototype = Object.create(Action.prototype, {
-  constructor: { writable: true, value: Task },
-  clone: { writable: true, value: function value() {
-      return new Task();
-    } },
-  notifyChanged: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.changeIt.emit(this);
-      }
-    } },
-  notifyCleared: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.clearIt.emit(this);
-      }
-    } },
-  notifyError: { writable: true, value: function value() {
-      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      this._running = false;
-      this._phase = TaskPhase.ERROR;
-      if (!this.__lock__) {
-        this.errorIt.emit(this, message);
-      }
-      if (this.throwError) {
-        throw new Error(message);
-      }
-    } },
-  notifyInfo: { writable: true, value: function value(info) {
-      if (!this.__lock__) {
-        this.infoIt.emit(this, info);
-      }
-    } },
-  notifyLooped: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.loopIt.emit(this);
-      }
-    } },
-  notifyPaused: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.pauseIt.emit(this);
-      }
-    } },
-  notifyProgress: { writable: true, value: function value() {
-      if (!this.__lock__) {
-        this.progressIt.emit(this);
-      }
-    } },
-  notifyResumed: { writable: true, value: function value() {
-      this._phase = TaskPhase.RUNNING;
-      if (!this.__lock__) {
-        this.resumeIt.emit(this);
-      }
-    } },
-  notifyStopped: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.STOPPED;
-      if (!this.__lock__) {
-        this.stopIt.emit(this);
-      }
-    } },
-  notifyTimeout: { writable: true, value: function value() {
-      this._running = false;
-      this._phase = TaskPhase.TIMEOUT;
-      if (!this.__lock__) {
-        this.timeoutIt.emit(this);
-      }
-    } },
-  resume: { writable: true, value: function value() {} },
-  reset: { writable: true, value: function value() {} },
-  start: { writable: true, value: function value() {
-      this.run();
-    } },
-  stop: { writable: true, value: function value() {} }
+    constructor: { writable: true, value: Task },
+    clone: { writable: true, value: function value() {
+            return new Task();
+        } },
+    notifyChanged: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.changeIt.emit(this);
+            }
+        } },
+    notifyCleared: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.clearIt.emit(this);
+            }
+        } },
+    notifyError: { writable: true, value: function value() {
+            var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            this._running = false;
+            this._phase = TaskPhase.ERROR;
+            if (!this.__lock__) {
+                this.errorIt.emit(this, message);
+            }
+            if (this.throwError) {
+                throw new Error(message);
+            }
+        } },
+    notifyInfo: { writable: true, value: function value(info) {
+            if (!this.__lock__) {
+                this.infoIt.emit(this, info);
+            }
+        } },
+    notifyLooped: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.loopIt.emit(this);
+            }
+        } },
+    notifyPaused: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.pauseIt.emit(this);
+            }
+        } },
+    notifyProgress: { writable: true, value: function value() {
+            if (!this.__lock__) {
+                this.progressIt.emit(this);
+            }
+        } },
+    notifyResumed: { writable: true, value: function value() {
+            this._phase = TaskPhase.RUNNING;
+            if (!this.__lock__) {
+                this.resumeIt.emit(this);
+            }
+        } },
+    notifyStopped: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.STOPPED;
+            if (!this.__lock__) {
+                this.stopIt.emit(this);
+            }
+        } },
+    notifyTimeout: { writable: true, value: function value() {
+            this._running = false;
+            this._phase = TaskPhase.TIMEOUT;
+            if (!this.__lock__) {
+                this.timeoutIt.emit(this);
+            }
+        } },
+    resume: { writable: true, value: function value() {} },
+    reset: { writable: true, value: function value() {} },
+    start: { writable: true, value: function value() {
+            this.run();
+        } },
+    stop: { writable: true, value: function value() {} }
 });
 
 "use strict";
@@ -7190,22 +7201,22 @@ Parameters.prototype = Object.create(Object.prototype, {
  * trace( factory.getObject('position') ) ;
  */
 var ioc = Object.assign({
-  logger: logger,
-  MagicReference: MagicReference,
-  ObjectArgument: ObjectArgument,
-  ObjectAttribute: ObjectAttribute,
-  ObjectConfig: ObjectConfig,
-  ObjectDefinition: ObjectDefinition,
-  ObjectDefinitionContainer: ObjectDefinitionContainer,
-  ObjectFactory: ObjectFactory,
-  ObjectListener: ObjectListener,
-  ObjectMethod: ObjectMethod,
-  ObjectOrder: ObjectOrder,
-  ObjectProperty: ObjectProperty,
-  ObjectReceiver: ObjectReceiver,
-  ObjectScope: ObjectScope,
-  Parameters: Parameters,
-  TypePolicy: TypePolicy
+    logger: logger,
+    MagicReference: MagicReference,
+    ObjectArgument: ObjectArgument,
+    ObjectAttribute: ObjectAttribute,
+    ObjectConfig: ObjectConfig,
+    ObjectDefinition: ObjectDefinition,
+    ObjectDefinitionContainer: ObjectDefinitionContainer,
+    ObjectFactory: ObjectFactory,
+    ObjectListener: ObjectListener,
+    ObjectMethod: ObjectMethod,
+    ObjectOrder: ObjectOrder,
+    ObjectProperty: ObjectProperty,
+    ObjectReceiver: ObjectReceiver,
+    ObjectScope: ObjectScope,
+    Parameters: Parameters,
+    TypePolicy: TypePolicy
 });
 
 "use strict";
@@ -7421,19 +7432,19 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
  * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
  */
 var logging = Object.assign({
-  isLoggable: isLoggable,
-  Log: Log,
-  Loggable: Loggable,
-  Logger: Logger,
-  LoggerEntry: LoggerEntry,
-  LoggerFactory: LoggerFactory,
-  LoggerLevel: LoggerLevel,
-  LoggerTarget: LoggerTarget,
-  targets: Object.assign({
-    ConsoleTarget: ConsoleTarget,
-    LineFormattedTarget: LineFormattedTarget,
-    TraceTarget: TraceTarget
-  })
+    isLoggable: isLoggable,
+    Log: Log,
+    Loggable: Loggable,
+    Logger: Logger,
+    LoggerEntry: LoggerEntry,
+    LoggerFactory: LoggerFactory,
+    LoggerLevel: LoggerLevel,
+    LoggerTarget: LoggerTarget,
+    targets: Object.assign({
+        ConsoleTarget: ConsoleTarget,
+        LineFormattedTarget: LineFormattedTarget,
+        TraceTarget: TraceTarget
+    })
 });
 
 "use strict";
@@ -7556,19 +7567,19 @@ ElseIfFalse.prototype = Object.create(ElseIf.prototype, {
 
 "use strict";
 function Null() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 Null.prototype = Object.create(Rule.prototype);
 Null.prototype.constructor = Null;
 Null.prototype.eval = function () {
-  if (this.strict) {
-    return this.value === null;
-  } else {
-    return this.value == null;
-  }
+    if (this.strict) {
+        return this.value === null;
+    } else {
+        return this.value == null;
+    }
 };
 
 "use strict";
@@ -8069,22 +8080,22 @@ IfZero.prototype = Object.create(IfTask.prototype, {
  * task.run() ;
  */
 var logics = Object.assign({
-  ElseIf: ElseIf,
-  ElseIfEmptyString: ElseIfEmptyString,
-  ElseIfEquals: ElseIfEquals,
-  ElseIfFalse: ElseIfFalse,
-  ElseIfNull: ElseIfNull,
-  ElseIfTrue: ElseIfTrue,
-  ElseIfUndefined: ElseIfUndefined,
-  ElseIfZero: ElseIfZero,
-  IfEmptyString: IfEmptyString,
-  IfEquals: IfEquals,
-  IfFalse: IfFalse,
-  IfNull: IfNull,
-  IfTask: IfTask,
-  IfTrue: IfTrue,
-  IfUndefined: IfUndefined,
-  IfZero: IfZero
+    ElseIf: ElseIf,
+    ElseIfEmptyString: ElseIfEmptyString,
+    ElseIfEquals: ElseIfEquals,
+    ElseIfFalse: ElseIfFalse,
+    ElseIfNull: ElseIfNull,
+    ElseIfTrue: ElseIfTrue,
+    ElseIfUndefined: ElseIfUndefined,
+    ElseIfZero: ElseIfZero,
+    IfEmptyString: IfEmptyString,
+    IfEquals: IfEquals,
+    IfFalse: IfFalse,
+    IfNull: IfNull,
+    IfTask: IfTask,
+    IfTrue: IfTrue,
+    IfUndefined: IfUndefined,
+    IfZero: IfZero
 });
 
 "use strict";
@@ -8719,16 +8730,16 @@ InitMapModel.prototype = Object.create(Action.prototype, {
  * model.current = null ;
  */
 var models = Object.assign({
-  ChangeModel: ChangeModel,
-  MemoryModel: MemoryModel,
-  Model: Model,
-  arrays: Object.assign({
-    ArrayModel: ArrayModel
-  }),
-  maps: Object.assign({
-    InitMapModel: InitMapModel,
-    MapModel: MapModel
-  })
+    ChangeModel: ChangeModel,
+    MemoryModel: MemoryModel,
+    Model: Model,
+    arrays: Object.assign({
+        ArrayModel: ArrayModel
+    }),
+    maps: Object.assign({
+        InitMapModel: InitMapModel,
+        MapModel: MapModel
+    })
 });
 
 "use strict";
@@ -9117,10 +9128,10 @@ Object.defineProperties(TaskGroup, {
 TaskGroup.prototype = Object.create(Task.prototype, {
     constructor: { writable: true, value: TaskGroup },
     length: {
-        get: function get() {
+        get: function get$$1() {
             return this._actions.length;
         },
-        set: function set(value) {
+        set: function set$$1(value) {
             if (this._running) {
                 throw new Error(this + " length property can't be changed, the batch process is in progress.");
             }
@@ -9141,51 +9152,57 @@ TaskGroup.prototype = Object.create(Task.prototype, {
         }
     },
     mode: {
-        get: function get() {
+        get: function get$$1() {
             return this._mode;
         },
-        set: function set(value) {
+        set: function set$$1(value) {
             this._mode = value === TaskGroup.TRANSIENT || value === TaskGroup.EVERLASTING ? value : TaskGroup.NORMAL;
         }
     },
-    stopped: { get: function get() {
+    stopped: { get: function get$$1() {
             return this._stopped;
         } },
     add: { value: function value(action) {
+            var _this2 = this;
             var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
             var autoRemove = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (this._running) {
                 throw new Error(this + " add failed, the process is in progress.");
             }
             if (action && action instanceof Action) {
-                autoRemove = autoRemove === true;
-                priority = priority > 0 ? Math.round(priority) : 0;
-                if (this._next) {
-                    action.finishIt.connect(this._next);
-                }
-                this._actions.push(new ActionEntry(action, priority, autoRemove));
-                var i = void 0;
-                var j = void 0;
-                var a = this._actions;
-                var swap = function swap(j, k) {
-                    var temp = a[j];
-                    a[j] = a[k];
-                    a[k] = temp;
-                    return true;
-                };
-                var swapped = false;
-                var l = a.length;
-                for (i = 1; i < l; i++) {
-                    for (j = 0; j < l - i; j++) {
-                        if (a[j + 1].priority > a[j].priority) {
-                            swapped = swap(j, j + 1);
+                var _ret = function () {
+                    autoRemove = autoRemove === true;
+                    priority = priority > 0 ? Math.round(priority) : 0;
+                    if (_this2._next) {
+                        action.finishIt.connect(_this2._next);
+                    }
+                    _this2._actions.push(new ActionEntry(action, priority, autoRemove));
+                    var i = void 0;
+                    var j = void 0;
+                    var a = _this2._actions;
+                    var swap = function swap(j, k) {
+                        var temp = a[j];
+                        a[j] = a[k];
+                        a[k] = temp;
+                        return true;
+                    };
+                    var swapped = false;
+                    var l = a.length;
+                    for (i = 1; i < l; i++) {
+                        for (j = 0; j < l - i; j++) {
+                            if (a[j + 1].priority > a[j].priority) {
+                                swapped = swap(j, j + 1);
+                            }
+                        }
+                        if (!swapped) {
+                            break;
                         }
                     }
-                    if (!swapped) {
-                        break;
-                    }
-                }
-                return true;
+                    return {
+                        v: true
+                    };
+                }();
+                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
             }
             return false;
         } },
@@ -9208,11 +9225,11 @@ TaskGroup.prototype = Object.create(Task.prototype, {
             return false;
         } },
     dispose: { writable: true, value: function value() {
-            var _this2 = this;
+            var _this3 = this;
             if (this._actions.length > 0) {
                 this._actions.forEach(function (entry) {
                     if (entry instanceof ActionEntry) {
-                        entry.action.finishIt.disconnect(_this2._next);
+                        entry.action.finishIt.disconnect(_this3._next);
                     }
                 });
             }
@@ -9232,24 +9249,26 @@ TaskGroup.prototype = Object.create(Task.prototype, {
     next: { writable: true, value: function value(action /*Action*/) {
         } },
     remove: { writable: true, value: function value(action) {
-            var _this3 = this;
+            var _this4 = this;
             if (this._running) {
                 throw new Error(this + " remove failed, the process is in progress.");
             }
             this.stop();
             if (this._actions.length > 0) {
                 if (action && action instanceof Action) {
-                    var e = void 0;
-                    var l = this._actions.length;
-                    this._actions.forEach(function (element) {
-                        if (element && element instanceof ActionEntry && element.action === action) {
-                            if (_this3._next) {
-                                e.action.finishIt.disconnect(_this3._next);
+                    (function () {
+                        var e = void 0;
+                        var l = _this4._actions.length;
+                        _this4._actions.forEach(function (element) {
+                            if (element && element instanceof ActionEntry && element.action === action) {
+                                if (_this4._next) {
+                                    e.action.finishIt.disconnect(_this4._next);
+                                }
+                                _this4._actions.splice(l, 1);
+                                return true;
                             }
-                            _this3._actions.splice(l, 1);
-                            return true;
-                        }
-                    });
+                        });
+                    })();
                 } else {
                     this.dispose();
                     this._actions.length = 0;
@@ -10201,19 +10220,19 @@ IsBoolean.prototype.eval = function () {
 
 "use strict";
 function IsNaN() {
-  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
-  var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  this.value = value;
-  this.strict = Boolean(strict);
+    var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : NaN;
+    var strict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    this.value = value;
+    this.strict = Boolean(strict);
 }
 IsNaN.prototype = Object.create(Rule.prototype);
 IsNaN.prototype.constructor = IsNaN;
 IsNaN.prototype.eval = function () {
-  if (this.strict) {
-    return isNaN(this.value);
-  } else {
-    return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
-  }
+    if (this.strict) {
+        return isNaN(this.value);
+    } else {
+        return !(this.value instanceof Number || typeof this.value === 'number') || isNaN(this.value);
+    }
 };
 
 "use strict";
@@ -13111,8 +13130,8 @@ function Matrix() {
     });
 }
 Object.defineProperties(Matrix, {
-    MAGIC_GRADIENT_FACTOR: { value: 1638.4
-    } });
+    MAGIC_GRADIENT_FACTOR: { value: 1638.4 }
+});
 Matrix.prototype = Object.create(Object.prototype, {
     constructor: { writable: true, value: Matrix },
     clone: { writable: true, value: function value() {
@@ -14070,8 +14089,8 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
     _insertChildAt: { writable: true, value: function value(child, index) {
         } },
     _removeChild: { writable: true, value: function value(child) {
-        }
-    } });
+        } }
+});
 
 "use strict";
 /**
@@ -14834,193 +14853,193 @@ Text.prototype = Object.create(AEntity.prototype, {
 
 "use strict";
 function Button() {
-  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    backgroundColor: { writable: true, value: "#00FFFF" },
-    height: { writable: true, value: 1 },
-    radius: { writable: true, value: 0 },
-    width: { writable: true, value: 1 },
-    _geometry: { writable: true, value: null },
-    _loaded: { writable: true, value: null },
-    _material: { writable: true, value: null },
-    _mesh: { writable: true, value: null },
-    _text: { writable: true, value: null }
-  });
-  Material.call(this, init, 'a-entity');
-  this._text = new Text();
-  this.addChild(this._text);
-  this._loaded = this.loaded.bind(this);
-  this._element.addEventListener("loaded", this._loaded);
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        backgroundColor: { writable: true, value: "#00FFFF" },
+        height: { writable: true, value: 1 },
+        radius: { writable: true, value: 0 },
+        width: { writable: true, value: 1 },
+        _geometry: { writable: true, value: null },
+        _loaded: { writable: true, value: null },
+        _material: { writable: true, value: null },
+        _mesh: { writable: true, value: null },
+        _text: { writable: true, value: null }
+    });
+    Material.call(this, init, 'a-entity');
+    this._text = new Text();
+    this.addChild(this._text);
+    this._loaded = this.loaded.bind(this);
+    this._element.addEventListener("loaded", this._loaded);
 }
 Button.prototype = Object.create(Material.prototype, {
-  constructor: { value: Button, writable: true },
-  align: {
-    get: function get() {
-      return this._text.align;
+    constructor: { value: Button, writable: true },
+    align: {
+        get: function get() {
+            return this._text.align;
+        },
+        set: function set(value) {
+            this._text.align = value;
+        }
     },
-    set: function set(value) {
-      this._text.align = value;
-    }
-  },
-  alphaTest: {
-    get: function get() {
-      return this._text.alphaTest;
+    alphaTest: {
+        get: function get() {
+            return this._text.alphaTest;
+        },
+        set: function set(value) {
+            this._text.alphaTest = value;
+        }
     },
-    set: function set(value) {
-      this._text.alphaTest = value;
-    }
-  },
-  anchor: {
-    get: function get() {
-      return this._text.anchor;
+    anchor: {
+        get: function get() {
+            return this._text.anchor;
+        },
+        set: function set(value) {
+            this._text.anchor = value;
+        }
     },
-    set: function set(value) {
-      this._text.anchor = value;
-    }
-  },
-  baseline: {
-    get: function get() {
-      return this._text.baseline;
+    baseline: {
+        get: function get() {
+            return this._text.baseline;
+        },
+        set: function set(value) {
+            this._text.baseline = value;
+        }
     },
-    set: function set(value) {
-      this._text.baseline = value;
-    }
-  },
-  color: {
-    get: function get() {
-      return this._text.color;
+    color: {
+        get: function get() {
+            return this._text.color;
+        },
+        set: function set(value) {
+            this._text.color = value;
+        }
     },
-    set: function set(value) {
-      this._text.color = value;
-    }
-  },
-  font: {
-    get: function get() {
-      return this._text.font;
+    font: {
+        get: function get() {
+            return this._text.font;
+        },
+        set: function set(value) {
+            this._text.font = value;
+        }
     },
-    set: function set(value) {
-      this._text.font = value;
-    }
-  },
-  fontImage: {
-    get: function get() {
-      return this._text.fontImage;
+    fontImage: {
+        get: function get() {
+            return this._text.fontImage;
+        },
+        set: function set(value) {
+            this._text.fontImage = value;
+        }
     },
-    set: function set(value) {
-      this._text.fontImage = value;
-    }
-  },
-  letterSpacing: {
-    get: function get() {
-      return this._text.letterSpacing;
+    letterSpacing: {
+        get: function get() {
+            return this._text.letterSpacing;
+        },
+        set: function set(value) {
+            this._text.letterSpacing = value;
+        }
     },
-    set: function set(value) {
-      this._text.letterSpacing = value;
-    }
-  },
-  letterHeight: {
-    get: function get() {
-      return this._text.letterHeight;
+    letterHeight: {
+        get: function get() {
+            return this._text.letterHeight;
+        },
+        set: function set(value) {
+            this._text.letterHeight = value;
+        }
     },
-    set: function set(value) {
-      this._text.letterHeight = value;
-    }
-  },
-  shader: {
-    get: function get() {
-      return this.getAttribute('shader');
+    shader: {
+        get: function get() {
+            return this.getAttribute('shader');
+        },
+        set: function set(value) {
+            this.setAttribute('shader', value);
+        }
     },
-    set: function set(value) {
-      this.setAttribute('shader', value);
-    }
-  },
-  side: {
-    get: function get() {
-      return this.getAttribute('side');
+    side: {
+        get: function get() {
+            return this.getAttribute('side');
+        },
+        set: function set(value) {
+            this.setAttribute('side', value);
+        }
     },
-    set: function set(value) {
-      this.setAttribute('side', value);
-    }
-  },
-  tabSize: {
-    get: function get() {
-      return this._text.tabSize;
+    tabSize: {
+        get: function get() {
+            return this._text.tabSize;
+        },
+        set: function set(value) {
+            this._text.tabSize = value;
+        }
     },
-    set: function set(value) {
-      this._text.tabSize = value;
-    }
-  },
-  value: {
-    get: function get() {
-      return this._text.value;
+    value: {
+        get: function get() {
+            return this._text.value;
+        },
+        set: function set(value) {
+            this._text.value = value;
+        }
     },
-    set: function set(value) {
-      this._text.value = value;
-    }
-  },
-  whitespace: {
-    get: function get() {
-      return this._text.whitespace;
+    whitespace: {
+        get: function get() {
+            return this._text.whitespace;
+        },
+        set: function set(value) {
+            this._text.whitespace = value;
+        }
     },
-    set: function set(value) {
-      this._text.whitespace = value;
-    }
-  },
-  wrapCount: {
-    get: function get() {
-      return this._text.wrapCount;
+    wrapCount: {
+        get: function get() {
+            return this._text.wrapCount;
+        },
+        set: function set(value) {
+            this._text.wrapCount = value;
+        }
     },
-    set: function set(value) {
-      this._text.wrapCount = value;
-    }
-  },
-  wrapPixels: {
-    get: function get() {
-      return this._text.wrapPixels;
+    wrapPixels: {
+        get: function get() {
+            return this._text.wrapPixels;
+        },
+        set: function set(value) {
+            this._text.wrapPixels = value;
+        }
     },
-    set: function set(value) {
-      this._text.wrapPixels = value;
-    }
-  },
-  zOffset: {
-    get: function get() {
-      return this._text.zOffset;
+    zOffset: {
+        get: function get() {
+            return this._text.zOffset;
+        },
+        set: function set(value) {
+            this._text.zOffset = value;
+        }
     },
-    set: function set(value) {
-      this._text.zOffset = value;
-    }
-  },
-  loaded: { value: function value() {
-      this._element.removeEventListener('loaded', this._loaded);
-      this._loaded = null;
-      this.render();
-    } },
-  render: { value: function value() {
-      var h = this.height;
-      var radius = this.radius;
-      var w = this.width;
-      var x = 0;
-      var y = 0;
-      var round = new THREE.Shape();
-      round.moveTo(x, y + radius);
-      round.lineTo(x, y + h - radius);
-      round.quadraticCurveTo(x, y + h, x + radius, y + h);
-      round.lineTo(x + w - radius, y + h);
-      round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
-      round.lineTo(x + w, y + radius);
-      round.quadraticCurveTo(x + w, y, x + w - radius, y);
-      round.lineTo(x + radius, y);
-      round.quadraticCurveTo(x, y, x, y + radius);
-      this._geometry = new THREE.ShapeGeometry(round);
-      this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
-      this._mesh = new THREE.Mesh(this._geometry, this._material);
-      this._mesh.position.x = -(w / 2);
-      this._mesh.position.y = -(h / 2);
-      this._element.setObject3D('mesh', this._mesh);
-      this._geometry = null;
-      this._material = null;
-      this._mesh = null;
-    } }
+    loaded: { value: function value() {
+            this._element.removeEventListener('loaded', this._loaded);
+            this._loaded = null;
+            this.render();
+        } },
+    render: { value: function value() {
+            var h = this.height;
+            var radius = this.radius;
+            var w = this.width;
+            var x = 0;
+            var y = 0;
+            var round = new THREE.Shape();
+            round.moveTo(x, y + radius);
+            round.lineTo(x, y + h - radius);
+            round.quadraticCurveTo(x, y + h, x + radius, y + h);
+            round.lineTo(x + w - radius, y + h);
+            round.quadraticCurveTo(x + w, y + h, x + w, y + h - radius);
+            round.lineTo(x + w, y + radius);
+            round.quadraticCurveTo(x + w, y, x + w - radius, y);
+            round.lineTo(x + radius, y);
+            round.quadraticCurveTo(x, y, x, y + radius);
+            this._geometry = new THREE.ShapeGeometry(round);
+            this._material = new THREE.MeshBasicMaterial({ color: this.backgroundColor, shading: THREE.FlatShading });
+            this._mesh = new THREE.Mesh(this._geometry, this._material);
+            this._mesh.position.x = -(w / 2);
+            this._mesh.position.y = -(h / 2);
+            this._element.setObject3D('mesh', this._mesh);
+            this._geometry = null;
+            this._material = null;
+            this._mesh = null;
+        } }
 });
 
 "use strict";
@@ -15737,8 +15756,8 @@ var display$2 = Object.assign({
  * @memberof molecule.render
  */
 var aframe = Object.assign({
-  components: components$1,
-  display: display$2
+    components: components$1,
+    display: display$2
 });
 
 'use strict';
@@ -16695,62 +16714,62 @@ function warn(message) {
 
 "use strict";
 function AddChild() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof Node$1 ? child : null },
-    container: { writable: true, value: container instanceof Node$1 ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof Node$1 ? child : null },
+        container: { writable: true, value: container instanceof Node$1 ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 AddChild.prototype = Object.create(Task.prototype, {
-  constructor: { value: AddChild },
-  clone: { writable: true, value: function value() {
-      return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.addChild(this.child);
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: AddChild },
+    clone: { writable: true, value: function value() {
+            return new AddChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
 function RemoveChild() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof Node$1 ? child : null },
-    container: { writable: true, value: container instanceof Node$1 ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof Node$1 ? child : null },
+        container: { writable: true, value: container instanceof Node$1 ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChild.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChild },
-  clone: { writable: true, value: function value() {
-      return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChild(this.child);
-      } catch (er) {
-        warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChild },
+    clone: { writable: true, value: function value() {
+            return new RemoveChild(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChild(this.child);
+            } catch (er) {
+                warn(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
@@ -16794,42 +16813,42 @@ var process$1 = Object.assign({
  * @memberof molecule.render
  */
 var dom$1 = Object.assign({
-  data: {
-    Cookie: Cookie
-  },
-  display: {
-    Anchor: Anchor,
-    Body: Body,
-    Button: Button$1,
-    Canvas: Canvas,
-    Div: Div,
-    G: G,
-    Head: Head,
-    Img: Img,
-    Node: Node$1,
-    Paragraph: Paragraph,
-    Path: Path,
-    Script: Script,
-    Stage: Stage$1,
-    Svg: Svg
-  },
-  entities: {
-    createEntity: createEntity,
-    createImg: createImg,
-    createVideo: createVideo
-  },
-  events: {
-    supportsPointerEvents: supportsPointerEvents,
-    supportsTouchEvents: supportsTouchEvents
-  },
-  medias: {
-    Audio: Audio,
-    Video: Video
-  },
-  net: {
-    LoadScript: LoadScript
-  },
-  process: process$1
+    data: {
+        Cookie: Cookie
+    },
+    display: {
+        Anchor: Anchor,
+        Body: Body,
+        Button: Button$1,
+        Canvas: Canvas,
+        Div: Div,
+        G: G,
+        Head: Head,
+        Img: Img,
+        Node: Node$1,
+        Paragraph: Paragraph,
+        Path: Path,
+        Script: Script,
+        Stage: Stage$1,
+        Svg: Svg
+    },
+    entities: {
+        createEntity: createEntity,
+        createImg: createImg,
+        createVideo: createVideo
+    },
+    events: {
+        supportsPointerEvents: supportsPointerEvents,
+        supportsTouchEvents: supportsTouchEvents
+    },
+    medias: {
+        Audio: Audio,
+        Video: Video
+    },
+    net: {
+        LoadScript: LoadScript
+    },
+    process: process$1
 });
 
 "use strict";
@@ -17015,6 +17034,22 @@ MOB.prototype = Object.create(PIXI.Sprite.prototype, {
             if (this._locked === 0) {
                 this.update();
             }
+        }
+    },
+    scaleX: {
+        get: function get() {
+            return this.scale.x;
+        },
+        set: function set(value) {
+            this.scale.x = value;
+        }
+    },
+    scaleY: {
+        get: function get() {
+            return this.scale.y;
+        },
+        set: function set(value) {
+            this.scale.y = value;
         }
     },
     scope: {
@@ -19325,11 +19360,11 @@ var panes = Object.assign({
  * @since 1.0.8
  */
 var components$2 = Object.assign({
-  CoreProgress: CoreProgress,
-  CoreScrollbar: CoreScrollbar,
-  bars: bars,
-  buttons: buttons,
-  panes: panes
+    CoreProgress: CoreProgress,
+    CoreScrollbar: CoreScrollbar,
+    bars: bars,
+    buttons: buttons,
+    panes: panes
 });
 
 "use strict";
@@ -19738,77 +19773,85 @@ BoxLayout.prototype = Object.create(LayoutContainer.prototype, {
     render: { writable: true, value: function value() {
             var _this = this;
             if (this._children.length > 0) {
-                if (this._order === DirectionOrder.REVERSE) {
-                    this._children.reverse();
-                }
-                var hor = this._direction === Direction.HORIZONTAL;
-                var gap = hor ? this._horizontalGap : this._verticalGap;
-                var left = this._padding.left;
-                var top = this._padding.top;
-                var pro = hor ? this.propX : this.propY;
-                var siz = hor ? this.propWidth : this.propHeight;
-                var sim = hor ? "w" : "h";
-                var inv = pro === this.propY ? this.propX : this.propY;
-                var tpr = "t" + pro;
-                var tin = "t" + inv;
-                var child = void 0;
-                var prev = void 0;
-                var size = void 0;
-                this._children.forEach(function (entry) {
-                    if (prev) {
-                        child = prev.child;
-                        size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
+                (function () {
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
                     }
-                    entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
-                    entry[tin] = hor ? top : left;
-                    prev = entry;
-                });
-                if (this._order === DirectionOrder.REVERSE) {
-                    this._children.reverse();
-                }
-                this.arrange();
-                this.renderer.emit(this);
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var gap = hor ? _this._horizontalGap : _this._verticalGap;
+                    var left = _this._padding.left;
+                    var top = _this._padding.top;
+                    var pro = hor ? _this.propX : _this.propY;
+                    var siz = hor ? _this.propWidth : _this.propHeight;
+                    var sim = hor ? "w" : "h";
+                    var inv = pro === _this.propY ? _this.propX : _this.propY;
+                    var tpr = "t" + pro;
+                    var tin = "t" + inv;
+                    var child = void 0;
+                    var prev = void 0;
+                    var size = void 0;
+                    _this._children.forEach(function (entry) {
+                        if (prev) {
+                            child = prev.child;
+                            size = _this.usePreferredSize === true && isMeasurable(child) ? sim : siz;
+                        }
+                        entry[tpr] = prev ? prev[tpr] + child[size] + gap : hor ? left : top;
+                        entry[tin] = hor ? top : left;
+                        prev = entry;
+                    });
+                    if (_this._order === DirectionOrder.REVERSE) {
+                        _this._children.reverse();
+                    }
+                    _this.arrange();
+                    _this.renderer.emit(_this);
+                })();
             }
         } },
     update: { writable: true, value: function value() {
+            var _this2 = this;
             if (this._children.length > 0) {
-                var child = void 0;
-                this._children.forEach(function (entry) {
-                    child = entry.child;
-                    child.x = entry.x = entry.tx;
-                    child.y = entry.y = entry.ty;
-                });
-                this.updater.emit(this);
+                (function () {
+                    var child = void 0;
+                    _this2._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = entry.x = entry.tx;
+                        child.y = entry.y = entry.ty;
+                    });
+                    _this2.updater.emit(_this2);
+                })();
             }
             this.notifyFinished();
         } },
     arrange: { value: function value() {
+            var _this3 = this;
             if (this._children.length > 0) {
-                var align = this._align;
-                var bounds = this._bounds;
-                this._children.forEach(function (entry) {
-                    if (align === Align.CENTER) {
-                        entry.tx -= bounds.width * 0.5;
-                        entry.ty -= bounds.height * 0.5;
-                    } else if (align === Align.BOTTOM) {
-                        entry.tx -= bounds.width * 0.5;
-                        entry.ty -= bounds.height;
-                    } else if (align === Align.BOTTOM_LEFT) {
-                        entry.ty -= bounds.height;
-                    } else if (align === Align.BOTTOM_RIGHT) {
-                        entry.tx -= bounds.width;
-                        entry.ty -= bounds.height;
-                    } else if (align === Align.LEFT) {
-                        entry.ty -= bounds.height * 0.5;
-                    } else if (align === Align.RIGHT) {
-                        entry.tx -= bounds.width;
-                        entry.ty -= bounds.height * 0.5;
-                    } else if (align === Align.TOP) {
-                        entry.tx -= bounds.width * 0.5;
-                    } else if (align === Align.TOP_RIGHT) {
-                        entry.tx -= bounds.width;
-                    }
-                });
+                (function () {
+                    var align = _this3._align;
+                    var bounds = _this3._bounds;
+                    _this3._children.forEach(function (entry) {
+                        if (align === Align.CENTER) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.BOTTOM) {
+                            entry.tx -= bounds.width * 0.5;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_LEFT) {
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.BOTTOM_RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height;
+                        } else if (align === Align.LEFT) {
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.RIGHT) {
+                            entry.tx -= bounds.width;
+                            entry.ty -= bounds.height * 0.5;
+                        } else if (align === Align.TOP) {
+                            entry.tx -= bounds.width * 0.5;
+                        } else if (align === Align.TOP_RIGHT) {
+                            entry.tx -= bounds.width;
+                        }
+                    });
+                })();
             }
         } }
 });
@@ -19911,24 +19954,26 @@ CircleLayout.prototype = Object.create(LayoutContainer.prototype, {
     render: { writable: true, value: function value() {
             var _this = this;
             if (this._children.length > 0) {
-                var i = 0;
-                var child = void 0;
-                this._children.forEach(function (entry) {
-                    child = entry.child;
-                    child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
-                    child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
-                    if (_this._childOrientation) {
-                        child.rotation = atan2D(child.y, child.x) + _this._childAngle;
-                    } else {
-                        var flag = isMeasurable(child) && _this.usePreferredSize;
-                        child.rotation = 0;
-                        child.x -= (flag ? child.w : child.width) * 0.5;
-                        child.y -= (flag ? child.h : child.height) * 0.5;
-                    }
-                    child.x += _this._bounds.x + _this._radius;
-                    child.y += _this._bounds.y + _this._radius;
-                    i++;
-                });
+                (function () {
+                    var i = 0;
+                    var child = void 0;
+                    _this._children.forEach(function (entry) {
+                        child = entry.child;
+                        child.x = _this._radius * Math.cos(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount) + _this._bounds.x + _this._radius;
+                        child.y = _this._radius * Math.sin(_this._startAngle - _this._pi1 + i * _this._pi2 / _this._childCount);
+                        if (_this._childOrientation) {
+                            child.rotation = atan2D(child.y, child.x) + _this._childAngle;
+                        } else {
+                            var flag = isMeasurable(child) && _this.usePreferredSize;
+                            child.rotation = 0;
+                            child.x -= (flag ? child.w : child.width) * 0.5;
+                            child.y -= (flag ? child.h : child.height) * 0.5;
+                        }
+                        child.x += _this._bounds.x + _this._radius;
+                        child.y += _this._bounds.y + _this._radius;
+                        i++;
+                    });
+                })();
             }
         } },
     update: { writable: true, value: function value() {
@@ -19984,96 +20029,101 @@ GridLayout.prototype = Object.create(BoxLayout.prototype, {
             var _this = this;
             this._bounds.setTo();
             if (this._children.length > 0) {
-                var i = 0;
-                var hor = this._direction === Direction.HORIZONTAL;
-                var w = 0;
-                var h = 0;
-                var c = hor ? this._columns : 0;
-                var l = hor ? 0 : this._lines;
-                this._children.forEach(function (entry) {
-                    var child = entry.child;
-                    var flag = isMeasurable(child) && _this.usePreferredSize;
-                    w = Math.max(child[flag ? "w" : _this.propWidth], w);
-                    h = Math.max(child[flag ? "h" : _this.propHeight], h);
-                    if (hor) {
-                        if (i % _this._columns === 0) {
-                            l++;
+                (function () {
+                    var i = 0;
+                    var hor = _this._direction === Direction.HORIZONTAL;
+                    var w = 0;
+                    var h = 0;
+                    var c = hor ? _this._columns : 0;
+                    var l = hor ? 0 : _this._lines;
+                    _this._children.forEach(function (entry) {
+                        var child = entry.child;
+                        var flag = isMeasurable(child) && _this.usePreferredSize;
+                        w = Math.max(child[flag ? "w" : _this.propWidth], w);
+                        h = Math.max(child[flag ? "h" : _this.propHeight], h);
+                        if (hor) {
+                            if (i % _this._columns === 0) {
+                                l++;
+                            }
+                        } else {
+                            if (i % _this._lines === 0) {
+                                c++;
+                            }
                         }
-                    } else {
-                        if (i % _this._lines === 0) {
-                            c++;
-                        }
+                        i++;
+                    });
+                    _this._bounds.width += c * (w + _this._horizontalGap);
+                    _this._bounds.height += l * (h + _this._verticalGap);
+                    _this._bounds.width -= _this._horizontalGap;
+                    _this._bounds.height -= _this._verticalGap;
+                    _this._bounds.width += _this._padding.horizontal;
+                    _this._bounds.height += _this._padding.vertical;
+                    if (_this._align === Align.CENTER) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.BOTTOM) {
+                        _this._bounds.x -= _this._bounds.width * 0.5;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_LEFT) {
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.BOTTOM_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height;
+                    } else if (_this._align === Align.LEFT) {
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
+                        _this._bounds.y -= _this._bounds.height * 0.5;
+                    } else if (_this._align === Align.TOP) {
+                        _this._bounds.x -= _this._bounds.width / 2;
+                    } else if (_this._align === Align.TOP_RIGHT) {
+                        _this._bounds.x -= _this._bounds.width;
                     }
-                    i++;
-                });
-                this._bounds.width += c * (w + this._horizontalGap);
-                this._bounds.height += l * (h + this._verticalGap);
-                this._bounds.width -= this._horizontalGap;
-                this._bounds.height -= this._verticalGap;
-                this._bounds.width += this._padding.horizontal;
-                this._bounds.height += this._padding.vertical;
-                if (this._align === Align.CENTER) {
-                    this._bounds.x -= this._bounds.width * 0.5;
-                    this._bounds.y -= this._bounds.height * 0.5;
-                } else if (this._align === Align.BOTTOM) {
-                    this._bounds.x -= this._bounds.width * 0.5;
-                    this._bounds.y -= this._bounds.height;
-                } else if (this._align === Align.BOTTOM_LEFT) {
-                    this._bounds.y -= this._bounds.height;
-                } else if (this._align === Align.BOTTOM_RIGHT) {
-                    this._bounds.x -= this._bounds.width;
-                    this._bounds.y -= this._bounds.height;
-                } else if (this._align === Align.LEFT) {
-                    this._bounds.y -= this._bounds.height * 0.5;
-                } else if (this._align === Align.RIGHT) {
-                    this._bounds.x -= this._bounds.width;
-                    this._bounds.y -= this._bounds.height * 0.5;
-                } else if (this._align === Align.TOP) {
-                    this._bounds.x -= this._bounds.width / 2;
-                } else if (this._align === Align.TOP_RIGHT) {
-                    this._bounds.x -= this._bounds.width;
-                }
+                })();
             }
         } },
     render: { writable: true, value: function value() {
             var _this2 = this;
             if (this._children.length > 0) {
                 if (this._lines > 1 && this._direction === Direction.VERTICAL || this._columns > 1 && this._direction === Direction.HORIZONTAL) {
-                    if (this._order === DirectionOrder.REVERSE) {
-                        this._children.reverse();
-                    }
-                    var left = this._padding.left;
-                    var top = this._padding.top;
-                    var hor = this._direction === Direction.HORIZONTAL;
-                    var i = 0;
+                    var i;
                     var c;
                     var l;
                     var pw;
                     var ph;
-                    this._children.forEach(function (entry) {
-                        var child = entry.child;
-                        var flag = isMeasurable(child) && _this2.usePreferredSize;
-                        pw = flag ? "w" : _this2.propWidth;
-                        ph = flag ? "h" : _this2.propHeight;
-                        c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
-                        l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
-                        entry.tx = left + c * (child[pw] + _this2._horizontalGap);
-                        entry.ty = top + l * (child[ph] + _this2._verticalGap);
-                        if (_this2.isRightToLeft()) {
-                            entry.tx *= -1;
-                            entry.tx += _this2._bounds.width - child[pw];
+                    (function () {
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
                         }
-                        if (_this2.isBottomToTop()) {
-                            entry.ty *= -1;
-                            entry.ty += _this2._bounds.height - child[ph];
+                        var left = _this2._padding.left;
+                        var top = _this2._padding.top;
+                        var hor = _this2._direction === Direction.HORIZONTAL;
+                        i = 0;
+                        _this2._children.forEach(function (entry) {
+                            var child = entry.child;
+                            var flag = isMeasurable(child) && _this2.usePreferredSize;
+                            pw = flag ? "w" : _this2.propWidth;
+                            ph = flag ? "h" : _this2.propHeight;
+                            c = hor ? i % _this2._columns : Math.floor(i / _this2._lines);
+                            l = hor ? Math.floor(i / _this2._columns) : i % _this2._lines;
+                            entry.tx = left + c * (child[pw] + _this2._horizontalGap);
+                            entry.ty = top + l * (child[ph] + _this2._verticalGap);
+                            if (_this2.isRightToLeft()) {
+                                entry.tx *= -1;
+                                entry.tx += _this2._bounds.width - child[pw];
+                            }
+                            if (_this2.isBottomToTop()) {
+                                entry.ty *= -1;
+                                entry.ty += _this2._bounds.height - child[ph];
+                            }
+                            i++;
+                        });
+                        if (_this2._order === DirectionOrder.REVERSE) {
+                            _this2._children.reverse();
                         }
-                        i++;
-                    });
-                    if (this._order === DirectionOrder.REVERSE) {
-                        this._children.reverse();
-                    }
-                    this.arrange();
-                    this.renderer.emit(this);
+                        _this2.arrange();
+                        _this2.renderer.emit(_this2);
+                    })();
                 } else {
                     BoxLayout.prototype.render.call(this);
                 }
@@ -20112,32 +20162,32 @@ function warn$1(message) {
 
 "use strict";
 function AddChild$1() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 AddChild$1.prototype = Object.create(Task.prototype, {
-  constructor: { value: AddChild$1 },
-  clone: { writable: true, value: function value() {
-      return new AddChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.addChild(this.child);
-      } catch (er) {
-        warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: AddChild$1 },
+    clone: { writable: true, value: function value() {
+            return new AddChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.addChild(this.child);
+            } catch (er) {
+                warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
@@ -20259,30 +20309,30 @@ AlignPivot.prototype = Object.create(Task.prototype, {
 
 "use strict";
 function Hide() {
-  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 Hide.prototype = Object.create(Task.prototype, {
-  constructor: { value: Hide },
-  clone: { writable: true, value: function value() {
-      return new Hide(this.display, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.display.visible = false;
-      } catch (er) {
-        warn$1(this + " run failed with the display:" + this.display + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: Hide },
+    clone: { writable: true, value: function value() {
+            return new Hide(this.display, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.display.visible = false;
+            } catch (er) {
+                warn$1(this + " run failed with the display:" + this.display + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
@@ -20363,32 +20413,32 @@ IfNotContains.prototype = Object.create(IfTask.prototype, {
 
 "use strict";
 function InteractiveChildren() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    value: { writable: true, value: value === true },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        value: { writable: true, value: value === true },
+        verbose: { writable: true, value: verbose }
+    });
 }
 InteractiveChildren.prototype = Object.create(Task.prototype, {
-  constructor: { value: InteractiveChildren },
-  clone: { writable: true, value: function value() {
-      return new InteractiveChildren(this.container, this.value, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.interactiveChildren = this.value === true;
-      } catch (er) {
-        warn$1(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: InteractiveChildren },
+    clone: { writable: true, value: function value() {
+            return new InteractiveChildren(this.container, this.value, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.interactiveChildren = this.value === true;
+            } catch (er) {
+                warn$1(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
@@ -20430,150 +20480,150 @@ MoveTo.prototype = Object.create(Task.prototype, {
 
 "use strict";
 function RemoveChild$1() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        child: { writable: true, value: child instanceof PIXI.DisplayObject ? child : null },
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChild$1.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChild$1 },
-  clone: { writable: true, value: function value() {
-      return new RemoveChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChild(this.child);
-      } catch (er) {
-        warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChild$1 },
+    clone: { writable: true, value: function value() {
+            return new RemoveChild$1(this.container, this.child, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChild(this.child);
+            } catch (er) {
+                warn$1(this + " run failed with the container:" + this.container + " and the child:" + this.child + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
 function RemoveChildAt() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    index: { writable: true, value: index > 0 ? index : 0 },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var enableErrorChecking = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var verbose = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        index: { writable: true, value: index > 0 ? index : 0 },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChildAt.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChildAt },
-  clone: { writable: true, value: function value() {
-      return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChildAt(this.index);
-      } catch (er) {
-        warn$1(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChildAt },
+    clone: { writable: true, value: function value() {
+            return new RemoveChildAt(this.container, this.index, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChildAt(this.index);
+            } catch (er) {
+                warn$1(this + " run failed with the container:" + this.container + " at the index:" + this.index + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
 function RemoveChildren() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 RemoveChildren.prototype = Object.create(Task.prototype, {
-  constructor: { value: RemoveChildren },
-  clone: { writable: true, value: function value() {
-      return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.removeChildren();
-      } catch (er) {
-        warn$1(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: RemoveChildren },
+    clone: { writable: true, value: function value() {
+            return new RemoveChildren(this.container, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.removeChildren();
+            } catch (er) {
+                warn$1(this + " run failed with the container:" + this.container + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
 function Show() {
-  var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var enableErrorChecking = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var verbose = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        display: { writable: true, value: display instanceof PIXI.DisplayObject ? display : null },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 Show.prototype = Object.create(Task.prototype, {
-  constructor: { value: Show },
-  clone: { writable: true, value: function value() {
-      return new Show(this.display, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.display.visible = true;
-      } catch (er) {
-        warn$1(this + " run failed with the display:" + this.display + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: Show },
+    clone: { writable: true, value: function value() {
+            return new Show(this.display, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.display.visible = true;
+            } catch (er) {
+                warn$1(this + " run failed with the display:" + this.display + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
 function SwapChildren() {
-  var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-  Task.call(this);
-  Object.defineProperties(this, {
-    container: { writable: true, value: container instanceof PIXI.Container ? container : null },
-    child1: { writable: true, value: child1 },
-    child2: { writable: true, value: child2 },
-    enableErrorChecking: { writable: true, value: enableErrorChecking },
-    verbose: { writable: true, value: verbose }
-  });
+    var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var child1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var child2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var enableErrorChecking = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var verbose = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    Task.call(this);
+    Object.defineProperties(this, {
+        container: { writable: true, value: container instanceof PIXI.Container ? container : null },
+        child1: { writable: true, value: child1 },
+        child2: { writable: true, value: child2 },
+        enableErrorChecking: { writable: true, value: enableErrorChecking },
+        verbose: { writable: true, value: verbose }
+    });
 }
 SwapChildren.prototype = Object.create(Task.prototype, {
-  constructor: { value: SwapChildren },
-  clone: { writable: true, value: function value() {
-      return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
-    } },
-  run: { writable: true, value: function value() {
-      this.notifyStarted();
-      try {
-        this.container.swapChildren(this.child1, this.child2);
-      } catch (er) {
-        warn$1(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
-      }
-      this.notifyFinished();
-    } }
+    constructor: { value: SwapChildren },
+    clone: { writable: true, value: function value() {
+            return new SwapChildren(this.container, this.child1, this.child2, this.enableErrorChecking, this.verbose);
+        } },
+    run: { writable: true, value: function value() {
+            this.notifyStarted();
+            try {
+                this.container.swapChildren(this.child1, this.child2);
+            } catch (er) {
+                warn$1(this + " run failed with the display:" + this.container + " and to swap the children first:" + this.child1 + " and the second:" + this.child2 + ", " + er.toString(), this.verbose, this.enableErrorChecking);
+            }
+            this.notifyFinished();
+        } }
 });
 
 "use strict";
@@ -20661,25 +20711,25 @@ var pixi = Object.assign({
  * @memberof molecule
  */
 var render = Object.assign({
-  aframe: aframe,
-  dom: dom$1,
-  pixi: pixi
+    aframe: aframe,
+    dom: dom$1,
+    pixi: pixi
 });
 
 "use strict";
 function State() {
-  var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  Object.defineProperties(this, {
-    owner: { value: null, writable: true },
-    view: { value: null, writable: true }
-  });
-  ValueObject.call(this, init);
+    var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    Object.defineProperties(this, {
+        owner: { value: null, writable: true },
+        view: { value: null, writable: true }
+    });
+    ValueObject.call(this, init);
 }
 State.prototype = Object.create(ValueObject.prototype, {
-  constructor: { writable: true, value: State },
-  toString: { writable: true, value: function value() {
-      return this.formatToString(null, "id");
-    } }
+    constructor: { writable: true, value: State },
+    toString: { writable: true, value: function value() {
+            return this.formatToString(null, "id");
+        } }
 });
 
 "use strict";
@@ -20757,24 +20807,24 @@ View.prototype = Object.create(ValueObject.prototype, {
 "use strict";
 function AddState() {}
 AddState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: AddState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: AddState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 "use strict";
 function StateTask() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  Object.defineProperties(this, {
-    factory: { writable: true, value: factory },
-    state: { writable: true, value: state }
-  });
-  Task.call(this);
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var factory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    Object.defineProperties(this, {
+        factory: { writable: true, value: factory },
+        state: { writable: true, value: state }
+    });
+    Task.call(this);
 }
 StateTask.prototype = Object.create(Task.prototype, {
-  constructor: { writable: true, value: StateTask }
+    constructor: { writable: true, value: StateTask }
 });
 
 "use strict";
@@ -20920,19 +20970,19 @@ ChangeState.prototype = Object.create(Receiver.prototype, {
 "use strict";
 function ClearState() {}
 ClearState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: ClearState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: ClearState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 "use strict";
 function RemoveState() {}
 RemoveState.prototype = Object.create(Receiver.prototype, {
-  constructor: { value: RemoveState },
-  receive: { value: function value(state) {
-      logger$1.debug(this + " receive : " + state);
-    } }
+    constructor: { value: RemoveState },
+    receive: { value: function value(state) {
+            logger$1.debug(this + " receive : " + state);
+        } }
 });
 
 "use strict";
@@ -20962,22 +21012,22 @@ InitStates.prototype = Object.create(InitMapModel.prototype, {
  * @memberof molecule
  */
 var states = Object.assign({
-  State: State,
-  StateModel: StateModel,
-  View: View,
-  controllers: {
-    AddState: AddState,
-    BeforeChangeState: BeforeChangeState,
-    ChangeState: ChangeState,
-    ClearState: ClearState,
-    RemoveState: RemoveState
-  },
-  process: {
-    CloseState: CloseState,
-    InitStates: InitStates,
-    OpenState: OpenState,
-    StateTask: StateTask
-  }
+    State: State,
+    StateModel: StateModel,
+    View: View,
+    controllers: {
+        AddState: AddState,
+        BeforeChangeState: BeforeChangeState,
+        ChangeState: ChangeState,
+        ClearState: ClearState,
+        RemoveState: RemoveState
+    },
+    process: {
+        CloseState: CloseState,
+        InitStates: InitStates,
+        OpenState: OpenState,
+        StateTask: StateTask
+    }
 });
 
 "use strict";
@@ -21185,49 +21235,49 @@ Object.defineProperties(Browser, {
 
 "use strict";
 function Accelerometer() {
-  Object.defineProperties(this, {
-    timer: { value: new Timer() },
-    update: { value: new Signal() },
-    _event: { writable: true, value: null },
-    _isSupported: { writable: true, value: false },
-    _interval: { writable: true, value: 20 }
-  });
-  this.__initialize__();
+    Object.defineProperties(this, {
+        timer: { value: new Timer() },
+        update: { value: new Signal() },
+        _event: { writable: true, value: null },
+        _isSupported: { writable: true, value: false },
+        _interval: { writable: true, value: 20 }
+    });
+    this.__initialize__();
 }
 Accelerometer.prototype = Object.create(Object.prototype, {
-  constructor: { writable: true, value: Accelerometer },
-  isSupported: { get: function get() {
-      return this._isSupported;
-    } },
-  notifyUpdate: { writable: true, value: function value() {
-      if (this._isSupported && this.update.connected() && this._event !== null) {
-        this.update.emit(this._event, this);
-      }
-    } },
-  setRequestedUpdateInterval: { set: function set(value) {
-      this._interval = value;
-      if (this._isSupported === true) {
-        this.__launchTimer__();
-      }
-    } },
-  __initialize__: { writable: true, value: function value() {
-      if (window !== undefined && window.DeviceMotionEvent !== undefined) {
-        this._isSupported = true;
-      }
-      if (this._isSupported === true) {
-        window.addEventListener("devicemotion", this.__update__.bind(this), false);
-        this.__launchTimer__();
-      }
-    } },
-  __launchTimer__: { writable: true, value: function value() {
-      this.timer.stop();
-      this.timer.delay = this._interval;
-      this.timer.progressIt.connect(this.notifyUpdate.bind(this));
-      this.timer.run();
-    } },
-  __update__: { writable: true, value: function value(event) {
-      this._event = event;
-    } }
+    constructor: { writable: true, value: Accelerometer },
+    isSupported: { get: function get() {
+            return this._isSupported;
+        } },
+    notifyUpdate: { writable: true, value: function value() {
+            if (this._isSupported && this.update.connected() && this._event !== null) {
+                this.update.emit(this._event, this);
+            }
+        } },
+    setRequestedUpdateInterval: { set: function set(value) {
+            this._interval = value;
+            if (this._isSupported === true) {
+                this.__launchTimer__();
+            }
+        } },
+    __initialize__: { writable: true, value: function value() {
+            if (window !== undefined && window.DeviceMotionEvent !== undefined) {
+                this._isSupported = true;
+            }
+            if (this._isSupported === true) {
+                window.addEventListener("devicemotion", this.__update__.bind(this), false);
+                this.__launchTimer__();
+            }
+        } },
+    __launchTimer__: { writable: true, value: function value() {
+            this.timer.stop();
+            this.timer.delay = this._interval;
+            this.timer.progressIt.connect(this.notifyUpdate.bind(this));
+            this.timer.run();
+        } },
+    __update__: { writable: true, value: function value(event) {
+            this._event = event;
+        } }
 });
 
 "use strict";
@@ -21254,10 +21304,10 @@ var sensors = Object.assign({
  * @since 1.0.7
  */
 var screens = Object.assign({
-  Browser: Browser,
-  Device: Device,
-  Os: Os,
-  sensors: sensors
+    Browser: Browser,
+    Device: Device,
+    Os: Os,
+    sensors: sensors
 });
 
 "use strict";

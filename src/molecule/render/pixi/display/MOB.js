@@ -357,6 +357,30 @@ MOB.prototype = Object.create( PIXI.Sprite.prototype ,
     },
 
     /**
+     * This property defined the width scale of this display.
+     * @name scaleX
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     */
+    scaleX:
+    {
+        get : function () { return this.scale.x ; },
+        set : function (value) { this.scale.x = value ; }
+    },
+
+    /**
+     * This property defined the height scale of this display.
+     * @name scaleY
+     * @memberof molecule.render.pixi.display.MOB
+     * @instance
+     */
+    scaleY:
+    {
+        get : function () { return this.scale.y ; },
+        set : function (value) { this.scale.y = value ; }
+    },
+
+    /**
      * Determinates the scope of the container. By default the scope is the container itself but can target any other DisplayObject reference.
      * @name scope
      * @memberof molecule.render.pixi.display.MOB
