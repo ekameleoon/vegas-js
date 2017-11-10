@@ -18014,7 +18014,8 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                     this._scope.pointerout = this.____out.bind(this);
                     this._scope.pointerover = this.____over.bind(this);
                     this._scope.pointerup = this.____up.bind(this);
-                    this._scope.pointeroutside = this.____upOutside.bind(this);
+                    this._scope.pointercancel = this.____upOutside.bind(this);
+                    this._scope.pointerupoutside = this.____upOutside.bind(this);
                 } else if (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE) {
                     this._scope.click = this.____click.bind(this);
                     this._scope.mousedown = this.____down.bind(this);
@@ -18027,6 +18028,7 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
                     this._scope.tap = this.____click.bind(this);
                     this._scope.touchstart = this.____down.bind(this);
                     this._scope.touchend = this.____up.bind(this);
+                    this._scope.touchcancel = this.____upOutside.bind(this);
                     this._scope.touchendoutside = this.____upOutside.bind(this);
                 }
             }
@@ -18034,8 +18036,8 @@ CoreButton.prototype = Object.create(Element$1.prototype, {
     preScope: { writable: true, value: function value() {
             if (this._scope) {
                 this._scope.click = this._scope.mousedown = this._scope.mouseout = this._scope.mouseover = this._scope.mouseup = this._scope.mouseupoutside = null;
-                this._scope.pointercancel = this._scope.pointerdown = this._scope.pointerout = this._scope.pointerover = this._scope.pointertap = this._scope.pointerup = this._scope.pointeroutside = null;
-                this._scope.tap = this._scope.touchstart = this._scope.touchcancel = this._scope.touchendoutside = this._scope.touchendoutside = null;
+                this._scope.pointercancel = this._scope.pointerdown = this._scope.pointerout = this._scope.pointerover = this._scope.pointertap = this._scope.pointerup = this._scope.pointerupoutside = null;
+                this._scope.tap = this._scope.touchstart = this._scope.touchcancel = this._scope.touchend = this._scope.touchendoutside = null;
             }
         } },
     updateInteractiveMode: { writable: true, value: function value() {

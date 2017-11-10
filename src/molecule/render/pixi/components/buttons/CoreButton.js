@@ -410,16 +410,19 @@ CoreButton.prototype = Object.create( Element.prototype ,
      */
     postScope : { writable : true , value : function()
     {
+        //// Events from PIXI InteractionManager http://pixijs.download/dev/docs/PIXI.interaction.InteractionManager.html#event:click
+
         if( this._scope )
         {
             if( supportsPointerEvents && (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.POINTER ) )
             {
-                this._scope.pointertap     = this.____click.bind(this) ;
-                this._scope.pointerdown    = this.____down.bind(this) ;
-                this._scope.pointerout     = this.____out.bind(this) ;
-                this._scope.pointerover    = this.____over.bind(this) ;
-                this._scope.pointerup      = this.____up.bind(this) ;
-                this._scope.pointeroutside = this.____upOutside.bind(this) ;
+                this._scope.pointertap       = this.____click.bind(this) ;
+                this._scope.pointerdown      = this.____down.bind(this) ;
+                this._scope.pointerout       = this.____out.bind(this) ;
+                this._scope.pointerover      = this.____over.bind(this) ;
+                this._scope.pointerup        = this.____up.bind(this) ;
+                this._scope.pointercancel    = this.____upOutside.bind(this) ;
+                this._scope.pointerupoutside = this.____upOutside.bind(this) ;
             }
             else if( (this._interactiveMode === InteractiveMode.AUTO || this._interactiveMode === InteractiveMode.MOUSE ) )
             {
@@ -435,6 +438,7 @@ CoreButton.prototype = Object.create( Element.prototype ,
                 this._scope.tap             = this.____click.bind(this) ;
                 this._scope.touchstart      = this.____down.bind(this) ;
                 this._scope.touchend        = this.____up.bind(this) ;
+                this._scope.touchcancel     = this.____upOutside.bind(this) ;
                 this._scope.touchendoutside = this.____upOutside.bind(this) ;
             }
         }
@@ -461,12 +465,12 @@ CoreButton.prototype = Object.create( Element.prototype ,
             this._scope.pointerover =
             this._scope.pointertap =
             this._scope.pointerup =
-            this._scope.pointeroutside = null ;
+            this._scope.pointerupoutside = null ;
 
             this._scope.tap =
             this._scope.touchstart =
             this._scope.touchcancel =
-            this._scope.touchendoutside =
+            this._scope.touchend =
             this._scope.touchendoutside = null ;
         }
     }},
