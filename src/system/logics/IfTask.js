@@ -552,6 +552,7 @@ IfTask.prototype = Object.create( Action.prototype ,
     {
         if ( action instanceof Action )
         {
+            this._done = true ;
             action.finishIt.connect( this._finishTask.bind(this) , 1 , true ) ;
             action.run() ;
         }
@@ -567,7 +568,6 @@ IfTask.prototype = Object.create( Action.prototype ,
     {
         value : function()
         {
-            this._done = true ;
             this.notifyFinished() ;
         }
     }

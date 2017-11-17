@@ -7828,13 +7828,13 @@ IfTask.prototype = Object.create(Action.prototype, {
         } },
     _execute: { value: function value(action /*Action*/) {
             if (action instanceof Action) {
+                this._done = true;
                 action.finishIt.connect(this._finishTask.bind(this), 1, true);
                 action.run();
             }
         } },
     _finishTask: {
         value: function value() {
-            this._done = true;
             this.notifyFinished();
         }
     }
