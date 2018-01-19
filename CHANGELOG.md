@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.0.8] - 2018-01-19
 ### Added
 * Adds the --match and --reporter arguments in the 'gulp test' and 'gulp ut' tasks.
 * Adds the JSDoc task : gulp doc.
