@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Receiver } from './system/signals/Receiver.js' ;
+import { Receiver } from '../../../system/signals/Receiver.js' ;
 import { logger } from '../../logging/logger.js' ;
 
 /**

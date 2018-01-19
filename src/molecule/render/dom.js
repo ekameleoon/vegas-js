@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../../polyfill/Object.js' ;
 
 import { Cookie } from './dom/data/Cookie.js' ;
 

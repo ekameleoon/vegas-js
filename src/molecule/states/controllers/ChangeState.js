@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { Chain }     from './system/process/Chain.js' ;
+import { Chain }     from '../../../system/process/Chain.js' ;
 import { OpenState } from '../process/OpenState.js' ;
-import { Receiver }  from './system/signals/Receiver.js' ;
+import { Receiver }  from '../../../system/signals/Receiver.js' ;
 import { logger }    from '../../logging/logger.js' ;
 
 /**

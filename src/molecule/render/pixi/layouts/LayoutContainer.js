@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Layout } from './graphics/Layout.js' ;
-import { LayoutEntry } from './graphics/LayoutEntry.js' ;
+import { Layout } from 'graphics/Layout.js' ;
+import { LayoutEntry } from 'graphics/LayoutEntry.js' ;
 
 /**
  * The basic implementation of the layouts.

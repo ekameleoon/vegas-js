@@ -2,13 +2,9 @@
   "name": "vegas.js",
   "version": "master",
   "description": "VEGAS the opensource Framework",
-  "main": "bin/vegas.js",
+  "main": "dist/vegas.js",
   "private": false,
-  "license": [
-    "Licence MPL 1.1",
-    "Licence GPL 2",
-    "GPL-3.0+"
-  ],
+  "license": "MPL-2.0 OR GPL-2.0+ OR LGPL-2.1+",
   "keywords": [
     "vegas-js",
     "es6",
@@ -21,13 +17,12 @@
   "ignore": [
     "**/.*",
     "docs",
-    "gulp",
     "node_modules",
     "bower_components",
-    "tests",
+    "test",
     "bower.json",
-    "gulpfile.js",
-    "gulpfile.babel.js",
+    "bitbucket-docs.json",
+    "rollup.config.js",
     "package.json"
   ],
   "dependencies": {},

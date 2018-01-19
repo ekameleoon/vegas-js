@@ -1,9 +1,11 @@
 "use strict"
 
-import { clamp } from './core/maths/clamp.js' ;
-import { Event as EventType } from './system/events/Event.js' ;
-import { Signal } from './system/signals/Signal.js' ;
-import { Node }  from './molecule/render/dom/display/Node.js' ;
+import { clamp } from 'core/maths/clamp.js' ;
+
+import { Event as EventType } from 'system/events/Event.js' ;
+import { Signal } from 'system/signals/Signal.js' ;
+
+import { Node }  from 'molecule/render/dom/display/Node.js' ;
 
 /**
  * Creates a new AEntity instance.

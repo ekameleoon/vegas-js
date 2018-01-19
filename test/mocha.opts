@@ -1,0 +1,3 @@
+--colors
+--reporter spec
+--require babel-core/register

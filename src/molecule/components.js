@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../polyfill/Object.js' ;
 
 import { ButtonPhase } from './components/ButtonPhase.js' ;
 import { isButton }    from './components/isButton.js' ;

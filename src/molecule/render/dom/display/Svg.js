@@ -1,11 +1,11 @@
 "use strict" ;
 
-import { isString }  from './core/isString.js' ;
-import { isSVGElement } from './core/dom/isSVGElement.js' ;
+import { isString } from 'core/isString.js' ;
+import { isSVGElement } from 'core/dom/isSVGElement.js' ;
+
+import { DisplayObjectContainer } from 'molecule/display/DisplayObjectContainer.js' ;
 
 import { Node } from './Node.js' ;
-
-import { DisplayObjectContainer } from './molecule/display/DisplayObjectContainer.js' ;
 
 /**
  * Creates a new Svg instance.

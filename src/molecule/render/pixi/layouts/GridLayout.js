@@ -1,11 +1,12 @@
 "use strict" ;
 
-import { Align } from './graphics/Align.js' ;
+import { Align } from 'graphics/Align.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { DirectionOrder } from 'graphics/DirectionOrder.js' ;
+import { isMeasurable } from 'graphics/isMeasurable.js' ;
+import { Orientation } from 'graphics/Orientation.js' ;
+
 import { BoxLayout } from './BoxLayout.js' ;
-import { Direction } from './graphics/Direction.js' ;
-import { DirectionOrder } from './graphics/DirectionOrder.js' ;
-import { isMeasurable } from './graphics/isMeasurable.js' ;
-import { Orientation } from './graphics/Orientation.js' ;
 
 /**
  * The Grid layout lays out a container's children in a rectangular grid. The container is divided into equal-sized rectangles, and one child is placed in each rectangle.

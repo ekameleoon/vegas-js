@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../polyfill/Object.js' ;
 
 import { aframe } from './render/aframe.js' ;
 import { dom }    from './render/dom.js' ;

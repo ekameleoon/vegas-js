@@ -1,17 +1,20 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { dump } from './core/dump.js' ;
+import { dump } from 'core/dump.js' ;
+import { expoOut } from 'core/easings/expoOut.js' ;
 
-import { expoOut } from './core/easings/expoOut.js' ;
-import { supportsPointerEvents } from './molecule/render/dom/events/supportsPointerEvents.js' ;
-import { supportsTouchEvents } from './molecule/render/dom/events/supportsTouchEvents.js' ;
+import { Tween } from 'system/transitions/Tween.js' ;
 
-import { InteractiveMode } from './molecule/InteractiveMode.js' ;
-import { MOB } from './molecule/render/pixi/display/MOB.js' ;
-import { Point } from './graphics/geom/Point.js' ;
+import { Point } from 'graphics/geom/Point.js' ;
+
+import { supportsPointerEvents } from 'molecule/render/dom/events/supportsPointerEvents.js' ;
+import { supportsTouchEvents } from 'molecule/render/dom/events/supportsTouchEvents.js' ;
+
+import { InteractiveMode } from 'molecule/InteractiveMode.js' ;
+import { MOB } from 'molecule/render/pixi/display/MOB.js' ;
+
 import { ScrollPane } from './ScrollPane.js' ;
-import { Tween } from './system/transitions/Tween.js' ;
 
 /**
  * The Builder interface.

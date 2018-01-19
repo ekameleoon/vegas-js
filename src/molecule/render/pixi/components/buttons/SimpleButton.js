@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { clamp }       from './core/maths/clamp.js' ;
-import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
+import { clamp }       from 'core/maths/clamp.js' ;
+import { ButtonPhase } from 'molecule/components/ButtonPhase.js' ;
 import { CoreButton }  from './CoreButton.js' ;
 
 /**

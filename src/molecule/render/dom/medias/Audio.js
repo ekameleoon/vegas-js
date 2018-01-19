@@ -1,6 +1,7 @@
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
+import { clamp } from 'core/maths/clamp.js' ;
+
 import { Node } from '../display/Node.js' ;
 
 /**

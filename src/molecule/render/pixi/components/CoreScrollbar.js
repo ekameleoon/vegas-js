@@ -1,8 +1,8 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { Direction } from './graphics/Direction.js' ;
-import { isMeasurable } from './graphics/isMeasurable.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { isMeasurable } from 'graphics/isMeasurable.js' ;
 
 import { CoreProgress } from './CoreProgress.js' ;
 

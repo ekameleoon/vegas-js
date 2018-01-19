@@ -1,10 +1,11 @@
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
-import { Align } from './graphics/Align.js' ;
+import { clamp } from 'core/maths/clamp.js' ;
 
-import { IconPolicy } from './molecule/IconPolicy.js' ;
-import { CoreButton } from './molecule/render/pixi/components/buttons/CoreButton.js' ;
+import { Align } from 'graphics/Align.js' ;
+
+import { IconPolicy } from 'molecule/IconPolicy.js' ;
+import { CoreButton } from 'molecule/render/pixi/components/buttons/CoreButton.js' ;
 
 /**
  * The IconButton class lets you control all basic instances of button in the framework.

@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { Direction } from './graphics/Direction.js' ;
-import { FillStyle } from './graphics/FillStyle.js' ;
-import { LineStyle } from './graphics/LineStyle.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { FillStyle } from 'graphics/FillStyle.js' ;
+import { LineStyle } from 'graphics/LineStyle.js' ;
 
 import { CoreScrollbar } from '../CoreScrollbar.js' ;
 

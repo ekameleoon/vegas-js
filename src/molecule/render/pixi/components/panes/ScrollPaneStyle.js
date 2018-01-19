@@ -1,15 +1,15 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { expoOut } from './core/easings/expoOut.js' ;
-import { replaceNaN } from './core/maths/replaceNaN.js' ;
+import { expoOut } from 'core/easings/expoOut.js' ;
+import { replaceNaN } from 'core/maths/replaceNaN.js' ;
 
-import { Direction } from './graphics/Direction.js' ;
-import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
-import { Position } from './graphics/Position.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { EdgeMetrics } from 'graphics/geom/EdgeMetrics.js' ;
+import { Position } from 'graphics/Position.js' ;
 
-import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
-import { Style } from './molecule/Style.js' ;
+import { ScrollPolicy } from 'molecule/ScrollPolicy.js' ;
+import { Style } from 'molecule/Style.js' ;
 
 /**
  * The Style interface defines a setting object in all component elements.

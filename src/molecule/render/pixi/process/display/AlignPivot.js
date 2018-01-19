@@ -1,7 +1,7 @@
 "use strict" ;
 
-import { Align } from './graphics/Align.js' ;
-import { Task } from './system/process/Task.js' ;
+import { Align } from 'graphics/Align.js' ;
+import { Task } from 'system/process/Task.js' ;
 import { warn } from './warn.js' ;
 
 /**

@@ -2,7 +2,7 @@
 
 import { Contains } from '../../rules/Contains.js' ;
 
-import { IfTask } from './system/logics/IfTask.js' ;
+import { IfTask } from 'system/logics/IfTask.js' ;
 
 /**
  * Perform some tasks based on whether a DisplayObjectContainer reference contains a specific display.

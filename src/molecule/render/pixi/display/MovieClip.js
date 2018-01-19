@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { pad } from './core/strings/pad.js' ;
+import { pad } from 'core/strings/pad.js' ;
 
 /**
  * The MovieClip class to display spritesheet animations.

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { logger } from './molecule/logging/logger.js' ;
+import { logger } from 'molecule/logging/logger.js' ;
 
 /**
  * The internal warning method.

@@ -2,8 +2,8 @@
 "use strict" ;
 
 import { Element } from '../../display/Element.js' ;
-import { Point }   from './graphics/geom/Point.js' ;
-import { Signal }  from './system/signals/Signal.js' ;
+import { Point }   from 'graphics/geom/Point.js' ;
+import { Signal }  from 'system/signals/Signal.js' ;
 
 import { ScrollPaneBuilder } from './ScrollPaneBuilder.js' ;
 import { ScrollPaneManager } from './ScrollPaneManager.js' ;

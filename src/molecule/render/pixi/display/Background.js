@@ -1,8 +1,9 @@
 "use strict" ;
 
-import { Element } from './molecule/render/pixi/display/Element.js' ;
-import { FillStyle } from './graphics/FillStyle.js' ;
-import { LineStyle } from './graphics/LineStyle.js' ;
+import { FillStyle } from 'graphics/FillStyle.js' ;
+import { LineStyle } from 'graphics/LineStyle.js' ;
+
+import { Element } from 'molecule/render/pixi/display/Element.js' ;
 
 /**
  * This display is used to create a background in your application or in an other display of the application.

@@ -2,7 +2,7 @@
 /* jshint -W098*/
 "use strict" ;
 
-import { Event } from './system/events/Event.js' ;
+import { Event } from '../../system/events/Event.js' ;
 import { DisplayObject } from './DisplayObject.js' ;
 
 /**

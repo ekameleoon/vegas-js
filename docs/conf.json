@@ -1,0 +1,43 @@
+{
+    "tags" :
+    {
+        "allowUnknownTags" : true
+    } ,
+    "source" :
+    {
+        "include": [ "README.md", "./src/" ],
+        "includePattern" : ".+\\.js(doc)?$",
+        "excludePattern" : "(^|\\/|\\\\)_"
+    },
+    "opts" :
+    {
+        "recurse"     : true,
+        "destination" : "./docs/bin" ,
+        "tutorials"   : "./docs/tutorials"
+    },
+    "plugins" :
+    [
+        "plugins/markdown"
+    ],
+    "templates" :
+    {
+        "footer"          : "<p align='center'>VEGAS JS - by <strong><a href='https://www.ooopener.com'>Ooopener</a></strong></p>",
+        "systemName"      : "VEGAS JS",
+        "cleverLinks"     : true,
+        "monospaceLinks"  : true,
+        "analytics"       :
+        {
+            "ua"     : "UA-87950715-1" ,
+            "domain" : "auto"
+        } ,
+        "default"         : { "outputSourceFiles" : true },
+        "path"            : "ink-docstrap",
+        "theme"           : "simplex",
+        "navType"         : "vertical",
+        "inverseNav"      : true,
+        "linenums"        : true,
+        "collapseSymbols" : false ,
+        "dateFormat"      : "YYYY Do MMMM, h:mm:ss a",
+        "syntaxTheme"     : "default"
+    }
+}

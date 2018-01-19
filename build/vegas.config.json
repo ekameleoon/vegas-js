@@ -1,0 +1,7 @@
+{
+    "bundle" : "vegas" ,
+    "file"   : "vegas" ,
+    "header" : "<%= pkg.description %> - version: <%= pkg.version %> - license: MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon" ,
+    "entry"  : "./src/vegas.js" ,
+    "output" : "./dist/"
+}

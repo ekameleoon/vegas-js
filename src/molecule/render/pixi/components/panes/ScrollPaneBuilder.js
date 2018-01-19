@@ -1,14 +1,16 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
+import { clamp } from 'core/maths/clamp.js' ;
 
-import { Builder } from './molecule/Builder.js' ;
-import { Direction } from './graphics/Direction.js' ;
-import { Position } from './graphics/Position.js' ;
-import { Rectangle } from './graphics/geom/Rectangle.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { Position } from 'graphics/Position.js' ;
+import { Rectangle } from 'graphics/geom/Rectangle.js' ;
+
+import { Builder } from 'molecule/Builder.js' ;
+import { ScrollPolicy } from 'molecule/ScrollPolicy.js' ;
+
 import { ScrollIndicator } from '../bars/ScrollIndicator.js' ;
-import { ScrollPolicy } from './molecule/ScrollPolicy.js' ;
 
 /**
  * The Builder interface.

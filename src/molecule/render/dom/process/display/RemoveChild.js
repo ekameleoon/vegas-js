@@ -1,9 +1,9 @@
 "use strict" ;
 
-import { Task } from './system/process/Task.js' ;
+import { Task } from 'system/process/Task.js' ;
 import { warn } from './warn.js' ;
 
-import { Node } from './molecule/render/dom/display/Node.js' ;
+import { Node } from 'molecule/render/dom/display/Node.js' ;
 
 /**
  * Removes a specific {Node} object in a {Node} reference

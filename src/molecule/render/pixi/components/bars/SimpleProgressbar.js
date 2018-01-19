@@ -1,12 +1,12 @@
 "use strict" ;
 
-import { map } from './core/maths/map.js' ;
-import { replaceNaN } from './core/maths/replaceNaN.js' ;
+import { map } from 'core/maths/map.js' ;
+import { replaceNaN } from 'core/maths/replaceNaN.js' ;
 
-import { Align } from './graphics/Align.js' ;
-import { Direction } from './graphics/Direction.js' ;
-import { FillStyle } from './graphics/FillStyle.js' ;
-import { LineStyle } from './graphics/LineStyle.js' ;
+import { Align } from 'graphics/Align.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { FillStyle } from 'graphics/FillStyle.js' ;
+import { LineStyle } from 'graphics/LineStyle.js' ;
 
 import { CoreProgress } from '../CoreProgress.js' ;
 

@@ -1,8 +1,8 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import 'polyfill/Object.js' ;
 
-import { RadioButtonGroup } from '../../../../groups/RadioButtonGroup.js' ;
+import { RadioButtonGroup } from 'molecule/groups/RadioButtonGroup.js' ;
 
 /**
  * The RadioButtonGroup singleton.

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Point } from '../../../../graphics/geom/Point.js' ;
+import { Point } from 'graphics/geom/Point.js' ;
 import { ParallaxLayer } from './ParallaxLayer.js' ;
 
 /**

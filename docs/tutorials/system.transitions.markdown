@@ -21,7 +21,7 @@ The <code>Tween.html</code> file :
 </head>
 <body>
     <canvas id="canvas" width="100%" height="100%"></canvas>
-    <script src="../../../bin/vegas.js"></script>
+    <script src="../../../dist/vegas.js"></script>
     <script src="./js/Tween.js"></script>
 </body>
 </html>

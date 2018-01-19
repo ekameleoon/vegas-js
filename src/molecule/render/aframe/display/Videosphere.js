@@ -1,7 +1,6 @@
 "use strict"
 
-//import { Event }  from './system/events/Event.js' ;
-import { Signal } from './system/signals/Signal.js' ;
+import { Signal } from 'system/signals/Signal.js' ;
 
 import { Material } from './Material.js' ;
 

@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../../polyfill/Object.js' ;
 
 import { components } from './pixi/components.js' ;
 import { display } from './pixi/display.js' ;

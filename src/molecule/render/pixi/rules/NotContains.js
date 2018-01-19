@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Rule } from './system/rules/Rule.js' ;
+import { Rule } from 'system/rules/Rule.js' ;
 
 /**
  * Indicates if a specific {Pixi.Container} not contains a specific {Pixi.DisplayObject} child.

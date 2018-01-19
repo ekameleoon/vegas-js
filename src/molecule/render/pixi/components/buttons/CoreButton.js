@@ -1,15 +1,14 @@
 "use strict" ;
 
-import { Signal } from './system/signals/Signal.js' ;
+import { Signal } from 'system/signals/Signal.js' ;
 
-import { ButtonPhase } from '../../../../components/ButtonPhase.js' ;
+import { ButtonPhase } from 'molecule/components/ButtonPhase.js' ;
+import { InteractiveMode } from 'molecule/InteractiveMode.js' ;
+import { supportsPointerEvents } from 'molecule/render/dom/events/supportsPointerEvents.js' ;
+import { supportsTouchEvents } from 'molecule/render/dom/events/supportsTouchEvents.js' ;
+
 import { Element } from '../../display/Element.js' ;
 import { radio } from './radio.js' ;
-
-import { InteractiveMode } from './molecule/InteractiveMode.js' ;
-
-import { supportsPointerEvents } from './molecule/render/dom/events/supportsPointerEvents.js' ;
-import { supportsTouchEvents } from './molecule/render/dom/events/supportsTouchEvents.js' ;
 
 /**
  * This class provides a skeletal implementation of the <code>Button</code> interface,

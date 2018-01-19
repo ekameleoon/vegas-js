@@ -57,114 +57,103 @@ Send us your email to join the **VEGAS** community on Slack !
 You can install VEGAS JS with [NPM](https://www.npmjs.com/package/vegas-js) or [Yarn](https://yarnpkg.com/).
 
 ```
-yarn add vegas-js --dev
+$ yarn add vegas-js --dev
 ```
 
 or
 
 ```
-npm install vegas-js --save-dev
+$ npm install vegas-js --save-dev
 ```
 
 #### ⌜ Bower
 
 ```
-bower install vegas-js
+$ bower install vegas-js
 ```
 
-## Builds
+## Building the libraries
 
-**VEGAS JS** use [Gulp](http://gulpjs.com/) and [Yarn](https://yarnpkg.com/) with a serie of powerful packages (Babel, Mocha, etc.) to build.
-
+**VEGAS JS** use [Yarn](https://yarnpkg.com/) with a serie of powerful packages (Babel, Mocha, etc.) to compile and build this library.
 
 #### ⌜ Simple Build
 
 1 - The first time, clone the **VEGAS JS** repository
 
-2 - Initialize the project
+2 - Initialize the project :
 ```
-yarn
-```
-
-**Note:** See the <code>gulpfile.babel.js</code> file at the top of the project folder.
-
-3 - Build the binaries (vegas.js and vegas.min.js), the unit tests and the documentation.
-```
-gulp
+$ yarn
 ```
 
-4 - Build only the vegas.js and vegas.min.js, without the unit tests and the documentation.
+3 - Build the **./dist/vegas.min.js** library :
 ```
-gulp build
+$ yarn build
 ```
 
+4 - Build the **./dist/vegas.js** (not minified but without comments)
+```
+$ yarn dev
+```
 
 #### ⌜ Molecule
 
 Molecule is an advanced extension of VEGAS JS to develop rich applications based on the standard DOM UI, AFrame or PIXI...
 
-To compile the full VEGAS library use the command :
+1 - Publish the full **./dist/vegas.molecule.min.js** library :
 
 ```
-gulp build --library molecule
+$ yarn build-molecule
 ```
 
-This command generates the vegas.molecule.js and vegas.molecule.min.js files ! 
+This library merges all VEGAS modules (molecule including) and is full minified.
 
-See all the examples of the **molecule** library in the examples/ folder of the project.
+2 - Publish the developer **./dist/vegas.molecule.js** library :
+
+```
+$ yarn dev-molecule
+```
+
+This library merges all VEGAS modules (molecule including) but contains no comments.
+
+**Note :** See all the examples of the **molecule** library in the examples/ folder of the project.
 
 #### ⌜ Unit tests
 
-We use the [Mocha](https://mochajs.org) and Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
+We use the [Mocha](https://mochajs.org) and the Chai (http://chaijs.com/) tools to run the unit tests of the VEGAS JS libraries.
 
+1 - Run all unit tests
 ```
-gulp ut
-```
-
-or watch your modifications with :
-
-```
-gulp watch:ut
+$ yarn test
 ```
 
-**Note** : You can use the two options **--entry**, **--match** and **--reporter** in the unit tests gulp task.
-
-The **--entry** option trigger the a specific unit test entry. By default the unit tests engine target the **./tests/main.js** file, you can for example target a specific with the command :
+2 - Run a specific library, use one of this command :
 
 ```
-gulp ut --entry core.maths
+$ yarn test-core
+$ yarn test-system
+$ yarn test-graphics
+$ yarn test-molecule
 ```
-or
-```
-gulp ut --entry core.maths.wrap
-```
-
 
 The **--match** option trigger the unit test engine (based on **[Mocha](https://mochajs.org/)**) to only run tests matching the given pattern which is internally compiled to a RegExp, for examples :
 
 ```
-gulp ut --match graphics
+$ yarn test -g graphics
 ```
 Run all the graphics package unit tests.
 
 ```
-gulp ut --match graphics.CardinalDimension
+$ yarn test -g graphics.CardinalDirection
+$ yarn test -g core.arrays.contains
 ```
-Run only the graphics.CardinalDimension unit tests.
-
+Run only the graphics.CardinalDimension unit tests or the core.arrays.contains module unit tests.
 
 The **--reporter** option define the unit test result rendering in the terminal with the values : 'spec', 'dot', 'landing', 'dot', 'nyan', 'list', 'mochawesome'. By default the 'spec' value is used.
 
 ```
-gulp ut --reporter nyan
+$ yarn test --reporter nyan
 ```
 ![nyan.png](https://bitbucket.org/repo/E9RjA6/images/3930502565-nyan.png)
-
-If you use the 'mochawesome' reporter, gulp generate in the './bin/tests' folder an HTML page who contains all the unit tests. For more informations, read the official documentation of [Mochawesome](https://github.com/adamgruber/mochawesome).
-
-```
-gulp ut --reporter mochawesome
-```
 
 #### ⌜ Generates the documentation
 
@@ -172,7 +161,7 @@ The documentation of the framework is based on [JSDoc](http://usejsdoc.org/).
 
 Run the documentation build with gulp :
 ```
-gulp doc
+$ yarn doc
 ```
 
 The documentation is generated in the main project folder : **./docs**

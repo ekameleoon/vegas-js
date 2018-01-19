@@ -2,7 +2,7 @@
 
 import { NotContains } from '../../rules/NotContains.js' ;
 
-import { IfTask } from './system/logics/IfTask.js' ;
+import { IfTask } from 'system/logics/IfTask.js' ;
 
 /**
  * Perform some tasks based on whether a DisplayObjectContainer reference not contains a specific display.

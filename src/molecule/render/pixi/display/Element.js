@@ -1,10 +1,10 @@
 "use strict" ;
 
-import { isString } from './core/isString.js' ;
-import { replaceNaN } from './core/maths/replaceNaN.js' ;
+import { isString } from 'core/isString.js' ;
+import { replaceNaN } from 'core/maths/replaceNaN.js' ;
 
-import { Direction }   from './graphics/Direction.js' ;
-import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
+import { Direction }   from 'graphics/Direction.js' ;
+import { EdgeMetrics } from 'graphics/geom/EdgeMetrics.js' ;
 
 import { Builder } from '../../../Builder.js' ;
 import { Style }   from '../../../Style.js' ;

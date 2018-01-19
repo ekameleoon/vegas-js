@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../polyfill/Object.js' ;
 
 import { State }      from './states/State.js' ;
 import { StateModel } from './states/StateModel.js' ;

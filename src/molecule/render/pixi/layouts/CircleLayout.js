@@ -1,11 +1,13 @@
 "use strict" ;
 
-import { atan2D } from './core/maths/atan2D.js' ;
-import { Align } from './graphics/Align.js' ;
-import { degreesToRadians } from './core/maths/degreesToRadians.js' ;
-import { isMeasurable } from './graphics/isMeasurable.js' ;
+import { atan2D } from 'core/maths/atan2D.js' ;
+import { degreesToRadians } from 'core/maths/degreesToRadians.js' ;
+import { radiansToDegrees } from 'core/maths/radiansToDegrees.js' ;
+
+import { Align } from 'graphics/Align.js' ;
+import { isMeasurable } from 'graphics/isMeasurable.js' ;
+
 import { LayoutContainer } from './LayoutContainer.js' ;
-import { radiansToDegrees } from './core/maths/radiansToDegrees.js' ;
 
 /**
  * The Grid layout lays out a container's children in a rectangular grid. The container is divided into equal-sized rectangles, and one child is placed in each rectangle.

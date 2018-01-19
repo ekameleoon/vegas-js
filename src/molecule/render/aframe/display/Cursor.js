@@ -2,9 +2,9 @@
 
 import { AEntity } from './AEntity.js' ;
 
-import { isString } from './core/isString.js' ;
-import { Timer }    from './system/process/Timer.js' ;
-import { Signal }   from './system/signals/Signal.js' ;
+import { isString } from 'core/isString.js' ;
+import { Timer }    from 'system/process/Timer.js' ;
+import { Signal }   from 'system/signals/Signal.js' ;
 
 /**
  * Creates a new Cursor instance.

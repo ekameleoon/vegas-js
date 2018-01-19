@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { isString }  from './core/isString.js' ;
+import { isString }  from 'core/isString.js' ;
 import { Node } from './Node.js' ;
 
 /**

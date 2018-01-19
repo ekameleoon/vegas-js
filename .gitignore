@@ -1,7 +1,8 @@
 .DS_Store
 
-bin/tests/*
+dist/tests/*
 docs/bin/*
+
 node_modules/*
 npm-debug.log
 yarn.lock

@@ -1,8 +1,8 @@
 "use strict" ;
 
-import { fastformat } from './core/strings/fastformat.js' ;
+import { fastformat } from 'core/strings/fastformat.js' ;
 
-import { Task } from './system/process/Task.js' ;
+import { Task } from 'system/process/Task.js' ;
 
 import { logger } from '../../../logging/logger.js' ;
 import { Node } from '../display/Node.js' ;

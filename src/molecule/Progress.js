@@ -1,8 +1,8 @@
 /*jshint unused: false*/
 "use strict" ;
 
-import { clamp } from './core/maths/clamp.js' ;
-import { map } from './core/maths/map.js' ;
+import { clamp } from '../core/maths/clamp.js' ;
+import { map } from '../core/maths/map.js' ;
 
 /**
  * This interface defined the methods to implement a progress display component.

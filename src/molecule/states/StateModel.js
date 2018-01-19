@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { MapModel } from './system/models/maps/MapModel.js' ;
+import { MapModel } from '../../system/models/maps/MapModel.js' ;
 import { State }    from './State.js' ;
 
 /**

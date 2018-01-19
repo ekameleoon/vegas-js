@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../polyfill/Object.js' ;
 
 import { DisplayObject }          from './display/DisplayObject.js' ;
 import { DisplayObjectContainer } from './display/DisplayObjectContainer.js' ;

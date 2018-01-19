@@ -1,13 +1,14 @@
 "use strict" ;
 
-import { Align } from './graphics/Align.js' ;
-import { Direction } from './graphics/Direction.js' ;
-import { DirectionOrder } from './graphics/DirectionOrder.js' ;
-import { EdgeMetrics } from './graphics/geom/EdgeMetrics.js' ;
-import { isMeasurable } from './graphics/isMeasurable.js' ;
+import { replaceNaN } from 'core/maths/replaceNaN.js' ;
+
+import { Align } from 'graphics/Align.js' ;
+import { Direction } from 'graphics/Direction.js' ;
+import { DirectionOrder } from 'graphics/DirectionOrder.js' ;
+import { EdgeMetrics } from 'graphics/geom/EdgeMetrics.js' ;
+import { isMeasurable } from 'graphics/isMeasurable.js' ;
 import { LayoutContainer } from './LayoutContainer.js' ;
-import { Point } from './graphics/geom/Point.js' ;
-import { replaceNaN } from './core/maths/replaceNaN.js' ;
+import { Point } from 'graphics/geom/Point.js' ;
 
 /**
  * A Box layout lays out all children of a specific DisplayObjectContainer in a single vertical column or a single horizontal row.

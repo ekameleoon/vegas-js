@@ -1,6 +1,6 @@
 "use strict" ;
 
-import { Task } from './system/process/Task.js' ;
+import { Task } from 'system/process/Task.js' ;
 import { warn } from './warn.js' ;
 
 /**

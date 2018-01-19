@@ -1,6 +1,6 @@
 "use strict" ;
 
-import './polyfill/Object.js' ;
+import '../polyfill/Object.js' ;
 
 import { CoreGroup } from './groups/CoreGroup.js' ;
 import { RadioButtonGroup } from './groups/RadioButtonGroup.js' ;

@@ -1,7 +1,9 @@
 "use strict" ;
 
-import { Align } from './graphics/Align.js' ;
-import { isString } from './core/isString.js' ;
+import { isString } from 'core/isString.js' ;
+
+import { Align } from 'graphics/Align.js' ;
+
 import { SimpleButton } from './SimpleButton.js' ;
 
 /**
