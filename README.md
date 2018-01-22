@@ -1,4 +1,4 @@
-# VEGAS JS#
+# VEGAS JS
 
 **Vegas JS** - **version 1.0** is an *Opensource* Framework based on **ECMAScript** for develop crossplatform **Rich Internet Applications** and **Games**.
 
@@ -116,6 +116,15 @@ $ yarn dev-molecule
 This library merges all VEGAS modules (molecule including) but contains no comments.
 
 **Note :** See all the examples of the **molecule** library in the examples/ folder of the project.
+
+#### ⌜ Examples
+
+To launch the VEGAS HTML examples, use the command :
+```
+$ yarn example ./examples/molecule/pixi/basic.html
+```
+
+This command launch with the **BrowserSync** tool the html page of the example in your browser.
 
 #### ⌜ Unit tests
 

@@ -42,6 +42,7 @@
     "dev": "rollup -c --watch",
     "dev-molecule": "rollup -c --environment molecule --watch",
     "doc": "jsdoc -r -c ./docs/conf.json -t ./node_modules/ink-docstrap/template",
+    "example" : "browser-sync start --server . --startPath " ,
     "test": "mocha ./test/tests.js",
     "test-core": "mocha ./test/core.js",
     "test-graphics": "mocha ./test/graphics.js",
