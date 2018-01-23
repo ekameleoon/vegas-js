@@ -1,5 +1,5 @@
 /**
- * VEGAS JS - Opensource Framework with MOLECULE - version: 1.0.10 - license: MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon
+ * VEGAS JS - Opensource Framework with MOLECULE - version: 1.0.11 - license: MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon
  */
 
 (function (global, factory) {
@@ -20585,7 +20585,7 @@ var screens = Object.assign({
   sensors: sensors
 });
 
-var version = '1.0.10';
+var version = '1.0.11';
 var metas = Object.defineProperties({}, {
     name: { enumerable: true, value: ucFirst('vegas-js') },
     description: { enumerable: true, value: "VEGAS JS - Opensource Framework" },

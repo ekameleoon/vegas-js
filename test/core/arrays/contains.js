@@ -10,7 +10,9 @@ describe( 'core.arrays.contains' , () =>
 {
     it('contains([1,2,3],1) === true', () =>
     {
-        assert.isTrue( contains( [1,2,3] ,1 ) );
+        assert.isTrue( contains( [1,2,3] , 1 ) );
+        assert.isTrue( contains( [1,2,3] , 2 ) );
+        assert.isTrue( contains( [1,2,3] , 3 ) );
     })
 
     it('contains([1,2,3],5) === false', () =>

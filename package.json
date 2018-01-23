@@ -1,7 +1,7 @@
 {
   "name": "vegas-js",
   "description": "VEGAS JS - Opensource Framework",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "license": "MPL-2.0 OR GPL-2.0+ OR LGPL-2.1+",
   "homepage": "https://bitbucket.org/ekameleon/vegas-js",
   "author": "Marc Alcaraz <ekameleon@gmail.com>",
@@ -32,29 +32,24 @@
     "lib": "src",
     "example": "test"
   },
-  "scripts":
-  {
-    "build": "yarn test && yarn dev && yarn prod && yarn molecule-dev && yarn molecule-prod",
-
-    "vegas": "yarn dev && yarn prod" ,
+  "scripts": {
+    "build": "yarn test && yarn inject-readme && yarn dev && yarn prod && yarn molecule-dev && yarn molecule-prod",
+    "vegas": "yarn inject-readme && yarn dev && yarn prod",
     "dev": "rollup -c --environment MODE:dev,LIB:vegas",
     "prod": "rollup -c --environment MODE:prod,LIB:vegas",
-    "watch": "yarn dev --watch" ,
-
-    "molecule": "yarn molecule-dev && yarn molecule-prod" ,
+    "watch": "yarn dev --watch",
+    "molecule": "yarn inject-readme && yarn molecule-dev && yarn molecule-prod",
     "molecule-dev": "rollup -c --environment MODE:dev,LIB:molecule",
     "molecule-prod": "rollup -c --environment MODE:prod,LIB:molecule",
     "molecule-watch": "yarn molecule-dev --watch",
-
     "doc": "jsdoc -r -c ./docs/conf.json -t ./node_modules/ink-docstrap/template",
-
     "example": "browser-sync start --server . --startPath ",
-
     "test": "mocha ./test/tests.js",
     "test-core": "mocha ./test/core.js",
     "test-graphics": "mocha ./test/graphics.js",
     "test-molecule": "mocha ./test/molecule.js",
-    "test-system": "mocha ./test/system.js"
+    "test-system": "mocha ./test/system.js",
+    "inject-readme" : "mustache package.json build/README.md > README.md"
   },
   "private": false,
   "devDependencies": {
@@ -68,6 +63,7 @@
     "jsdoc": "^3.5.5",
     "mocha": "^4.1.0",
     "mochawesome": "^3.0.1",
+    "mustache": "^2.3.0",
     "rollup": "^0.54.0",
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-babel": "^3.0.3",
