@@ -66,54 +66,67 @@ or
 $ npm install vegas-js --save-dev
 ```
 
-#### ⌜ Bower
-
-```
-$ bower install vegas-js
-```
-
-## Building the libraries
+## Building and test the libraries
 
 **VEGAS JS** use [Yarn](https://yarnpkg.com/) with a serie of powerful packages (Babel, Mocha, etc.) to compile and build this library.
 
 #### ⌜ Simple Build
 
-1 - The first time, clone the **VEGAS JS** repository
-
-2 - Initialize the project :
+1 - The first time, initialize the project and run yarn :
 ```
 $ yarn
-```
+``
 
-3 - Build the **./dist/vegas.min.js** library :
+2 - Test + compile all the libraries :
 ```
 $ yarn build
 ```
 
-4 - Build the **./dist/vegas.js** (not minified but without comments)
+#### ⌜ VEGAS (only) Build
+
+1 - Build the **./dist/vegas.js** : not minified + no comments + sourcemap.
 ```
 $ yarn dev
 ```
 
+2 - Build the **./dist/vegas.js** and watch the changing into the **./src** folder.
+```
+$ yarn watch
+```
+
+3 - Build the **./dist/vegas.min.js** : minified + no comments.
+```
+$ yarn prod
+```
+
+4 - Build the **./dist/vegas.min.js** and the **./dist/vegas.js** libraries only.
+```
+$ yarn vegas
+```
+
 #### ⌜ Molecule
 
-Molecule is an advanced extension of VEGAS JS to develop rich applications based on the standard DOM UI, AFrame or PIXI...
+Molecule is an advanced extension of VEGAS JS to develop rich applications based on the standard DOM UI, [A-Frame](https://aframe.io/) or [PIXI JS](http://www.pixijs.com/).
 
-1 - Publish the full **./dist/vegas.molecule.min.js** library :
-
+1 - Build the **./dist/vegas.molecule.js** : not minified + no comments + sourcemap.
 ```
-$ yarn build-molecule
-```
-
-This library merges all VEGAS modules (molecule including) and is full minified.
-
-2 - Publish the developer **./dist/vegas.molecule.js** library :
-
-```
-$ yarn dev-molecule
+$ yarn molecule-dev
 ```
 
-This library merges all VEGAS modules (molecule including) but contains no comments.
+2 - Build the **./dist/vegas.molecule.js** and watch the changing into the **./src** folder.
+```
+$ yarn molecule-watch
+```
+
+3 - Build the **./dist/vegas.molecule.min.js** : vegas + molecule + minified + no comments.
+```
+$ yarn molecule-prod
+```
+
+4 - Build all the vegas+molecule libraries only.
+```
+$ yarn molecule
+```
 
 **Note :** See all the examples of the **molecule** library in the examples/ folder of the project.
 
@@ -173,7 +186,7 @@ Run the documentation build with gulp :
 $ yarn doc
 ```
 
-The documentation is generated in the main project folder : **./docs**
+The documentation is generated in the folder : **./docs/bin**
 
 ## History
 

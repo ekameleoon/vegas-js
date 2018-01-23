@@ -1,1 +1,4 @@
-dist
+dist/vegas.js
+dist/vegas.min.js
+dist/vegas.molecule.js
+dist/vegas.molecule.min.js

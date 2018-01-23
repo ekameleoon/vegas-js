@@ -1,5 +1,5 @@
 /**
- * VEGAS JS - Opensource Framework with MOLECULE - version: 1.0.9 - license: MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon
+ * VEGAS JS - Opensource Framework with MOLECULE - version: 1.0.10 - license: MPL 2.0/GPL 2.0+/LGPL 2.1+ - Follow me on Twitter! @ekameleon
  */
 
 (function (global, factory) {
@@ -632,6 +632,14 @@ function swap(ar) {
     return null;
 }
 
+/**
+ * The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
+ * @summary The {@link core.arrays} package is a modular <b>JavaScript</b> library that provides extra <code>Array</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.arrays
+ * @memberof core
+ */
 var arrays = Object.assign({
     contains: contains,
     initialize: initialize,
@@ -865,6 +873,15 @@ function isWhiteSpace(c) {
     return whiteSpaces.indexOf(c) > -1;
 }
 
+/**
+ * The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform the basic characters.
+ * <p>You can use this library for example to parse a string (JSON, csv, etc.).</p>
+ * @summary The {@link core.chars} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods to validate and transform a basic character.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.chars
+ * @memberof core
+ */
 var chars = Object.assign({
     compare: compare,
     isAlpha: isAlpha,
@@ -1013,6 +1030,14 @@ var uniques = function uniques(colors) {
     return result;
 };
 
+/**
+ * The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
+ * @summary The {@link core.colors} package is a modular <b>JavaScript</b> library that provides extra <b>rgb color</b> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.colors
+ * @memberof core
+ */
 var colors = Object.assign({
     distance: distance,
     equals: equals,
@@ -1075,6 +1100,14 @@ var yesterday = function yesterday() {
   return new Date(date.valueOf() - ONE_DAY_MS);
 };
 
+/**
+ * The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
+ * @summary The {@link core.date} package is a modular <b>JavaScript</b> library that provides extra <code>Date</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.date
+ * @memberof core
+ */
 var date = Object.assign({
   ONE_DAY_MS: ONE_DAY_MS,
   after: after,
@@ -1148,6 +1181,14 @@ var isSVGElement = function isSVGElement(value) {
     return !!(value && (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object" && 'nodeType' in value && value.nodeType === 1 && value.nodeName && value.xmlbase);
 };
 
+/**
+ * The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
+ * @summary The {@link core.dom} package is a modular <b>JavaScript</b> library that provides extra <code>W3C DOM</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.dom
+ * @memberof core
+ */
 var dom = Object.assign({
   isDOMElement: isDOMElement,
   isDOMObject: isDOMObject,
@@ -1385,6 +1426,31 @@ var sineOut = function sineOut(t, b, c, d) {
   return c * Math.sin(t / d * (Math.PI / 2)) + b;
 };
 
+/**
+ * The {@link system.transitions} package use the {@link core.easings} library who contains all the easing functions to create the specific <b>tweening</b> effects.
+ * <p>These easings functions provide different flavors of math-based motion under a consistent API.</p>
+ *
+ * |  easing   |                         description                         |  in  | out  | inout  |
+ * |:--------: |:----------------------------------------------------------: |:---: |:---: |:-----: |
+ * |  linear   | simple linear tweening : no easing, no acceleration         |  -   |  -   |   -    |
+ * |   back    | back easing : overshooting cubic easing: (s+1)*t^3 - s*t^2  | yes  | yes  |  yes   |
+ * |  bounce   | bounce easing : exponentially decaying parabolic bounce     | yes  | yes  |  yes   |
+ * | circular  | circular easing : sqrt(1-t^2)                               | yes  | yes  |  yes   |
+ * |   cubic   | cubic easing : t^3                                          | yes  | yes  |  yes   |
+ * |  elastic  | elastic easing : exponentially decaying sine wave           | yes  | yes  |  yes   |
+ * |   expo    | exponential easing : 2^t                                    | yes  | yes  |  yes   |
+ * |   quad    | quadratic easing : t^2                                      | yes  | yes  | yes    |
+ * |  quartic  | quartic easing : t^4                                        | yes  | yes  |  yes   |
+ * |  quintic  | quintic easing : t^5                                        | yes  | yes  |  yes   |
+ * |  regular  | regular easing                                              | yes  | yes  |  yes   |
+ * |   sine    | sinusoidal easing : sin(t)                                  | yes  | yes  |  yes   |
+ * @summary The {@link core.easings} library contains all the easing functions to create the specific tweening effects.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @namespace core.easings
+ * @memberof core
+ * @tutorial system.transitions
+ * @see {@link system.transitions|system.transition library}
+ */
 var easings = Object.assign({
     backIn: backIn,
     backInOut: backInOut,
@@ -1440,6 +1506,14 @@ var aop = function aop(func) {
     };
 };
 
+/**
+ * The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
+ * @summary The {@link core.functors} package is a modular <b>JavaScript</b> library that provides extra <code>Function</code> methods.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.functors
+ * @memberof core
+ */
 var functors = Object.assign({
   aop: aop
 });
@@ -1881,6 +1955,14 @@ function wrap(angle) {
     return result + min;
 }
 
+/**
+ * The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
+ * @summary The {@link core.maths} package is a modular <b>JavaScript</b> library that provides extra <code>mathematics</code> methods and implementations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.maths
+ * @memberof core
+ */
 var maths = Object.assign({
     acosD: acosD,
     acosHm: acosHm,
@@ -1956,6 +2038,14 @@ function toUint(num) {
   return num < 0 ? -num : num;
 }
 
+/**
+ * The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
+ * @summary The {@link core.numbers} package is a modular <b>JavaScript</b> library that provides extra <code>Number</code> methods and implementations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.numbers
+ * @memberof core
+ */
 var numbers = Object.assign({
   toInt: toInt,
   toUint: toUint,
@@ -2039,6 +2129,14 @@ function merge(target, source) {
     return target;
 }
 
+/**
+ * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
+ * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra <code>Object</code> methods and implementations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.objects
+ * @memberof core
+ */
 var objects = Object.assign({
   forEach: forEach,
   fuse: fuse,
@@ -2056,6 +2154,14 @@ function generateUUID() {
 }
 var pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
+/**
+ * The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
+ * @summary The {@link core.objects} package is a modular <b>JavaScript</b> library that provides extra methods to generates a random number.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.random
+ * @memberof core
+ */
 var random = Object.assign({
   generateUUID: generateUUID
 });
@@ -2162,6 +2268,14 @@ function invoke(c) {
         }
 }
 
+/**
+ * The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
+ * @summary The {@link core.reflect} package is a modular <b>JavaScript</b> library that provides extra methods to to obtain information about loaded objects or generate it.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core.reflect
+ * @memberof core
+ */
 var reflect = Object.assign({
   getDefinitionByName: getDefinitionByName,
   invoke: invoke
@@ -2656,6 +2770,14 @@ function validateUUID(source) {
 }
 var pattern$1 = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/**
+ * The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
+ * @summary The {@link core.strings} package is a modular <b>JavaScript</b> library that provides extra <code>String</code> methods.
+ * @namespace core.strings
+ * @memberof core
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
 var strings = Object.assign({
     between: between,
     camelCase: camelCase,
@@ -2684,6 +2806,17 @@ var strings = Object.assign({
     versionUUID: versionUUID
 });
 
+/**
+ * The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies : arrays, strings, chars, objects, numbers, maths, date, colors, etc.
+ * <p>You can consider a library as a set of functions organized into classes, here with a <strong>"core"</strong> library in some cases we organize the functions in the package definitions without assembling them into a class.</p>
+ * <p>Those functions are allowed to reuse the builtin types (Object, Array, Date, etc.), the Javascript API classes and packages, but nothing else.</p>
+ * @summary The {@link core} package is specialized in functions utilities that are highly reusable without creating any dependencies.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace core
+ * @version 1.0.7
+ * @since 1.0.0
+ */
 var core = Object.assign({
     global: exports.global,
     dump: dump,
@@ -3240,6 +3373,19 @@ ArrayMap.prototype = Object.create(KeyValuePair.prototype, {
         } }
 });
 
+/**
+ * The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>, enabling them to be manipulated independently of the details of their representation.
+ * <p>It reduces programming effort while increasing performance. It enables interoperability among unrelated APIs, reduces effort in designing and learning new APIs, and fosters software reuse.</p>
+ * <p>The framework is based on a serie of interfaces. It includes implementations of these interfaces and algorithms to manipulate them.</p></br>
+ * <p>An <strong>abstract data type</strong> (<b>ADT</b>) is a model for a certain class of data structures that have similar behavior; or for certain data types of one or more programming languages that have similar semantics. The collections framework is a unified architecture for representing and manipulating collections, allowing them to be manipulated independently of the details of their representation. It reduces programming effort while increasing performance.</p>
+ * <p>Originaly the {@link system.data} collection framework is loosely inspired on the <b>JAVA Collections Framework</b> and the <b>Jakarta Collections Framework</b> but with the new ES6 standard we change the basic implementation of the new <b>VEGAS</b> framework in the JS version of the library.</p>
+ * <p>This framework is inspired on interfaces to defines the different types of collections : * Map * Bag * Collections * Iterator * Set * Queue & Stack... </p>
+ * @summary The {@link system.data} library provides a framework unified for representing and manipulating <b>collections</b>.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.data
+ * @memberof system
+ */
 var data = Object.assign({
   isIdentifiable: isIdentifiable,
   isIterator: isIterator,
@@ -3316,6 +3462,14 @@ function NoSuchElementError(message, fileName, lineNumber) {
 NoSuchElementError.prototype = Object.create(Error.prototype);
 NoSuchElementError.prototype.constructor = NoSuchElementError;
 
+/**
+ * The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>), rather than part of the Javascript core language. The <strong>Javascript</strong> core language is the part of the language that complies with the <strong>ECMAScript</strong> standard.
+ * @summary The {@link system.errors} package contains error classes that are part of the <strong>VEGAS JS</strong> Application Programming Interface (<strong>API</strong>).
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.errors
+ * @memberof system
+ */
 var errors = Object.assign({
   ConcurrencyError: ConcurrencyError,
   InvalidChannelError: InvalidChannelError,
@@ -3566,6 +3720,14 @@ RomanEvaluator.prototype.toString = function () {
   return "[RomanEvaluator]";
 };
 
+/**
+ * The {@link system.evaluators} library contains classes to evaluates some objects with a collection of specific strategies.
+ * @summary The {@link system.evaluators} library contains classes to evaluates some objects.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.evaluators
+ * @memberof system
+ */
 var evaluators = Object.assign({
   MultiEvaluator: MultiEvaluator,
   PropertyEvaluator: PropertyEvaluator,
@@ -3884,6 +4046,52 @@ Object.defineProperties(EventDispatcher, {
         } }
 });
 
+/**
+ * The {@link system.events} package provides a W3C Event Model implementation.
+ * @summary The {@link system.events} package provides an W3C Event Model library.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.events
+ * @memberof system
+ * @example <caption>Basic usage with a <code>callback</code> function</caption>
+ * var click = function( event )
+ * {
+ *     trace( "click: " + event ) ;
+ * };
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ * @example <caption>Use the W3C DOM {@link system.events.EventListener|EventListener} interface</caption>
+ * var Click = function( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Click.prototype = Object.create( EventListener.prototype ,
+ * {
+ *     constructor : { value : Click } ,
+ *     handleEvent : { value : function( event )
+ *     {
+ *         trace( this + ' ' + this.name + ' event:' + event ) ;
+ *     }}
+ * });
+ *
+ * var click1 = new Click( '#1') ;
+ * var click2 = new Click( '#2') ;
+ *
+ * var dispatcher = new EventDispatcher() ;
+ *
+ * dispatcher.addEventListener( Event.CLICK , click1 ) ;
+ * dispatcher.addEventListener( Event.CLICK , click2 ) ;
+ *
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ *
+ * dispatcher.removeEventListener( Event.CLICK , click2 ) ;
+ * dispatcher.dispatchEvent( new Event( Event.CLICK ) ) ;
+ */
 var events = Object.assign({
   Event: Event$1,
   EventDispatcher: EventDispatcher,
@@ -3987,6 +4195,14 @@ ExpressionFormatter.prototype = Object.create(Formattable.prototype, {
         } }
 });
 
+/**
+ * The {@link system.formatters} library contains classes to format objects to a specific string expression.
+ * @summary The {@link system.formatters} library contains classes to format objects to a specific string expression.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.formatters
+ * @memberof system
+ */
 var formatters = Object.assign({
   ExpressionFormatter: ExpressionFormatter
 });
@@ -6476,6 +6692,79 @@ Parameters.prototype = Object.create(Object.prototype, {
         } }
 });
 
+/**
+ * The {@link system.ioc} library provides a simple and strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
+ * <p><b>IoC</b> is also known as <b>dependency injection</b> (DI). It is a process whereby objects define their dependencies, that is, the other objects they work with, only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.</p>
+ * <p> The container then injects those dependencies when it creates the <b>object definitions</b>. This process is fundamentally the inverse, hence the name Inversion of Control (IoC), of the <b>object definition</b> itself controlling the instantiation or location of its dependencies by using direct construction of classes, or a more complex mechanism.</p>
+ * @summary The {@link system.ioc} library provides a simple et strong implementation of the <strong>Inversion of Control</strong> (<b>{@link https://en.wikipedia.org/wiki/Inversion_of_control|IoC}</b>) principle.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.ioc
+ * @memberof system
+ * @example
+ * var Point = function( x , y )
+ * {
+ *     this.x = x ;
+ *     this.y = y ;
+ *     console.log("constructor:" + this.toString() ) ;
+ * };
+ *
+ * Point.prototype.test = function( message = null )
+ * {
+ *     console.log( 'test:' + this.toString() + " message:" + message ) ;
+ * }
+ *
+ * Point.prototype.toString = function()
+ * {
+ *     return "[Point x:" + this.x + " y:" + this.y + "]" ;
+ * } ;
+ *
+ * var ObjectFactory = system.ioc.ObjectFactory ;
+ *
+ * var factory = new ObjectFactory();
+ * var config  = factory.config ;
+ *
+ * config.setConfigTarget
+ * ({
+ *     origin : { x : 10 , y : 20 }
+ * })
+ *
+ * config.setLocaleTarget
+ * ({
+ *     messages :
+ *     {
+ *         test : 'test'
+ *     }
+ * })
+ *
+ * var objects =
+ * [
+ *     {
+ *         id   : "position" ,
+ *         type : "Point" ,
+ *         args : [ { value : 2 } , { ref : 'origin.y' }],
+ *         properties :
+ *         [
+ *             { name : "x" , ref   :'origin.x' } ,
+ *             { name : "y" , value : 100       }
+ *         ]
+ *     },
+ *     {
+ *         id         : "origin" ,
+ *         type       : "Point" ,
+ *         singleton  : true ,
+ *         args       : [ { config : 'origin.x' } , { value : 20 }] ,
+ *         properties :
+ *         [
+ *             { name : 'test' , args : [ { locale : 'messages.test' } ] }
+ *         ]
+ *     }
+ * ];
+ *
+ * factory.run( objects );
+ *
+ * trace( factory.getObject('position') ) ;
+ */
 var ioc = Object.assign({
   logger: logger,
   MagicReference: MagicReference,
@@ -6672,6 +6961,36 @@ TraceTarget.prototype = Object.create(LineFormattedTarget.prototype, {
         } }
 });
 
+/**
+ * The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
+ * @summary The {@link system.logging} library defines functions and classes which implement a flexible event logging system for applications and libraries.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logging
+ * @memberof system
+ * @example
+ * var logger = Log.getLogger('channel') ;
+ *
+ * var target = new ConsoleTarget
+ * ({
+ *     includeChannel      : true  ,
+ *     includeDate         : false ,
+ *     includeLevel        : true  ,
+ *     includeLines        : true  ,
+ *     includeMilliseconds : true  ,
+ *     includeTime         : true
+ * }) ;
+ *
+ * target.filters = ['*'] ;
+ * target.level   = LoggerLevel.ALL ;
+ *
+ * logger.debug( 'hello {0}, love it.' , 'VEGAS' ) ;
+ * logger.critical( 'hello {0}, it\'s critical.' , 'VEGAS' ) ;
+ * logger.info( 'hello, my name is {0}' , 'VEGAS' ) ;
+ * logger.error( 'hello {0}, an error is invoked.' , 'VEGAS' ) ;
+ * logger.warning( 'hello {0}, don\'t forget me.' , 'VEGAS' ) ;
+ * logger.wtf( 'hello {0} ! WHAT ??' , 'VEGAS' ) ;
+ */
 var logging = Object.assign({
   isLoggable: isLoggable,
   Log: Log,
@@ -7176,6 +7495,124 @@ IfZero.prototype = Object.create(IfTask.prototype, {
     constructor: { writable: true, value: IfZero }
 });
 
+/**
+ * The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
+ * <p>This task is heavily based on the Condition framework that can be found in the {@link system.rules} library.</p>
+ * <p>In addition to the {@link system.rules.Rule|Rule} condition, you can specify three different child actions based on the {@link system.process.Action|Action} :  <code>elseif</code>, <code>then</code> and <code>else</code>. All three subelements are optional. Both <code>then</code> and <code>else</code> must not be used more than once inside the if task. Both are containers for tasks, just like {@link system.process.BatchTask|BatchTask} and {@link system.process.Chain|Chain} tasks.</p>
+ * @summary The {@link system.logics} library perform some tasks based on whether a given condition holds <code>true</code> or not.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.logics
+ * @memberof system
+ * @example
+ * // -------- Imports
+ *
+ * var IfTask      = system.logics.IfTask ;
+ * var Do          = system.process.Do ;
+ * var ElseIf      = system.logics.ElseIf ;
+ * var EmptyString = system.rules.EmptyString ;
+ * var Equals      = system.rules.Equals ;
+ *
+ * // -------- init
+ *
+ * var task ;
+ *
+ * var do1 = new Do() ;
+ * var do2 = new Do() ;
+ * var do3 = new Do() ;
+ * var do4 = new Do() ;
+ *
+ * do1.something = function() { trace("do1 ###") } ;
+ * do2.something = function() { trace("do2 ###") } ;
+ * do3.something = function() { trace("do3 ###") } ;
+ * do4.something = function() { trace("do4 ###") } ;
+ *
+ * // -------- behaviors
+ *
+ * var error = function( message , action  )
+ * {
+ *     trace( "error:" + action + " message:" + message ) ;
+ * };
+ *
+ * var finish = function( action )
+ * {
+ *     trace( "finish: " + action ) ;
+ * };
+ *
+ * var start = function( action )
+ * {
+ *     trace( "start: " + action ) ;
+ * };
+ *
+ * trace(' -------- test 1');
+ *
+ * task = new IfTask( new EmptyString('') , do1 , do2 ) ;
+ *
+ * task.finishIt.connect(finish) ;
+ * task.errorIt.connect(error) ;
+ * task.startIt.connect(start) ;
+ *
+ * task.run() ;
+ *
+ * task.clear() ;
+ *
+ * trace(' -------- test 2');
+ *
+ * task.clear() ;
+ *
+ * task.rule = new Equals(1,2) ;
+ *
+ * task.addThen( do1 )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 3 : <elseIf>');
+ *
+ * task.clear() ;
+ *
+ * task.addRule( new Equals(1,2) )
+ *     .addThen( do1 )
+ *     .addElseIf
+ *     (
+ *         new ElseIf( new Equals(2,1) , do3 ) ,
+ *         new ElseIf( new Equals(2,2) , do4 )
+ *     )
+ *     .addElse( do2 )
+ *     .run() ;
+ *
+ * trace(' -------- test 4 : <then> is already register');
+ *
+ * task.clear() ;
+ * task.throwError = true ;
+ *
+ * try
+ * {
+ *     task.addThen( do1 )
+ *         .addElse( do2 )
+ *         .addThen( do3 )
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 5 : <rule> is not defined');
+ *
+ * try
+ * {
+ *     task.run() ;
+ * }
+ * catch (e)
+ * {
+ *     trace( e ) ;
+ * }
+ *
+ * trace(' -------- test 6 : <rule> is not defined and throwError = false');
+ *
+ * task.throwError = false ;
+ *
+ * task.run() ;
+ */
 var logics = Object.assign({
   ElseIf: ElseIf,
   ElseIfEmptyString: ElseIfEmptyString,
@@ -7786,6 +8223,39 @@ InitMapModel.prototype = Object.create(Action.prototype, {
         } }
 });
 
+/**
+ * The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
+ * @summary The {@link system.models} library provides a simple <b>MVC</b> implementation with a collection of <code>Model</code> classes to manage your applications.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.models
+ * @memberof system
+ * @example
+ * var beforeChanged = function( value , model )
+ * {
+ *     trace( "before:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var changed = function( value , model )
+ * {
+ *     trace( "change:" + value + " current:" + model.current ) ;
+ * }
+ *
+ * var cleared = function( model )
+ * {
+ *     trace( "clear current:" + model.current ) ;
+ * }
+ *
+ * var model = new ChangeModel() ;
+ *
+ * model.beforeChanged.connect( beforeChanged ) ;
+ * model.changed.connect( changed ) ;
+ * model.cleared.connect( cleared ) ;
+ *
+ * model.current = "hello" ;
+ * model.current = "world" ;
+ * model.current = null ;
+ */
 var models = Object.assign({
   ChangeModel: ChangeModel,
   MemoryModel: MemoryModel,
@@ -7961,6 +8431,14 @@ Object.defineProperties(Range, {
     UNITY: { value: new Range(0, 1, false), enumerable: true }
 });
 
+/**
+ * The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
+ * @summary The {@link system.numeric} library contains classes and tools that provides extra <code>numeric</code> methods and implementations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.numeric
+ * @memberof system
+ */
 var numeric = Object.assign({
   PRNG: PRNG,
   Range: Range,
@@ -9081,6 +9559,14 @@ Unlock.prototype = Object.create(Action.prototype, {
         } }
 });
 
+/**
+ * The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
+ * @summary The {@link system.process} library allow you to create and manage asynchronous operations in your applications.
+ * @namespace system.process
+ * @memberof system
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ */
 var process = Object.assign({
     isLockable: isLockable,
     isResetable: isResetable,
@@ -9368,6 +9854,14 @@ Or.prototype.eval = function () {
     }
 };
 
+/**
+ * The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
+ * @summary The {@link system.rules} library defines a set of functions and classes to evaluate some basic or complex conditions in your applications.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.rules
+ * @memberof system
+ */
 var rules = Object.assign({
     isRule: isRule,
     And: And,
@@ -9396,6 +9890,56 @@ var rules = Object.assign({
     Zero: Zero
 });
 
+/**
+ * The {@link system.signals} library is light-weight, strongly-typed messaging tools. Wire your application with better APIs and less boilerplate than W3C DOMEvents..
+ * <p><b>Concept: </b>
+ * <ul>
+ * <li>A Signal is essentially a minimal emiter specific to one event, with its own <code>array</code> of receivers/slots ({@link system.signals.Receiver|Receiver} or <code>Function</code>).</li>
+ * <li>A Signal gives an event a concrete membership in a class.</li>
+ * <li>Receivers subscribe to real objects, not to string-based channels.</li>
+ * <li>Event string constants are no longer needed.</li>
+ * <li>Signals are inspired by {@link https://en.wikipedia.org/wiki/Signals_and_slots|signals/slots in Qt}.</li>
+ * <ul>
+ * @summary The {@link system.signals} library is light-weight, strongly-typed messaging tools.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system.signals
+ * @memberof system
+ * @example
+ * function Slot( name )
+ * {
+ *     this.name = name ;
+ * }
+ *
+ * Slot.prototype = Object.create( system.signals.Receiver.prototype );
+ * Slot.prototype.constructor = Slot;
+ *
+ * Slot.prototype.receive = function ( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * Slot.prototype.toString = function ()
+ * {
+ *     return "[Slot name:" + this.name + "]" ;
+ * }
+ *
+ * var slot1 = new Slot("slot1") ;
+ *
+ * var slot2 = function( message )
+ * {
+ *     trace( this + " : " + message ) ;
+ * }
+ *
+ * var signal = new system.signals.Signal() ;
+ *
+ * //signal.proxy = slot1 ;
+ *
+ * signal.connect( slot1 , 0 ) ;
+ * signal.connect( slot2 , 2 ) ;
+ *
+ * signal.emit( "hello world" ) ;
+ */
 var signals = Object.assign({
   Receiver: Receiver,
   SignalEntry: SignalEntry,
@@ -9772,6 +10316,122 @@ Tween.prototype = Object.create(TweenUnit.prototype, {
         } }
 });
 
+/**
+ * The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
+ * @summary The {@link system.transitions} library is a simple animations toolkit to use in your projects, your games, your websites.
+ * @namespace system.transitions
+ * @memberof system
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @see For more usage, read the {@tutorial system.transitions} tutorial.
+ * @example <caption>Javascript script</caption>
+ * "use strict" ;
+ *
+ * window.onload = function()
+ * {
+ *     if( !vegas )
+ *     {
+ *         throw new Error( "The VEGAS library is not found." ) ;
+ *     }
+ *
+ *     // ----- imports
+ *
+ *     var global   = vegas.global ; // jshint ignore:line
+ *     var trace    = vegas.trace  ; // jshint ignore:line
+ *     var core     = vegas.core   ; // jshint ignore:line
+ *     var system   = vegas.system ; // jshint ignore:line
+ *
+ *     var Tween = system.transitions.Tween ;
+ *
+ *     // ----- behaviors
+ *
+ *     var change = function( tween )
+ *     {
+ *         trace( 'progress ' + core.dump(tween.target) ) ;
+ *         render() ;
+ *     }
+ *
+ *     var finish = function()
+ *     {
+ *         trace( 'finish' ) ;
+ *         // tween.duration = 120 ;
+ *         // tween.from = null ;
+ *         // tween.to   = tween.to === to ? from : to ;
+ *         // tween.run() ;
+ *     }
+ *
+ *     var start = function()
+ *     {
+ *         trace( 'start' ) ;
+ *     }
+ *
+ *     // ----- initialize
+ *
+ *     var canvas  = document.getElementById('canvas') ;
+ *     var context = canvas.getContext('2d');
+ *
+ *     canvas.width  = 800;
+ *     canvas.height = 600;
+ *
+ *     var color   = '#FF0000' ;
+ *     var radius  = 25;
+ *
+ *     var from    = { x : 100 , y : 100 } ;
+ *     var to      = { x : 500 , y : 400 } ;
+ *     var target  = { x : 0   , y : 0 } ;
+ *
+ *     var easings = null ;
+ *
+ *     easings = { x : core.easings.backOut , y : core.easings.sineOut } ;
+ *
+ *     var tween = new Tween
+ *     ({
+ *         auto       : false,
+ *         duration   : 48 ,
+ *         useSeconds : false ,
+ *         easing     : core.easings.backOut,
+ *         easings    : easings,
+ *         from       : from ,
+ *         target     : target ,
+ *         to         : to
+ *     }) ;
+ *
+ *     //tween.easing = core.easings.cubicOut ;
+ *     //tween.easing = core.easings.elasticOut ;
+ *     //tween.easing = core.easings.sineOut ;
+ *
+ *     // tween.fps = 60  ; // use an internal Timer instance or a FrameTimer instance if fps is NaN
+ *
+ *     tween.looping = true ;
+ *
+ *     tween.finishIt.connect( finish ) ;
+ *     tween.changeIt.connect( change ) ;
+ *     tween.startIt.connect( start ) ;
+ *
+ *     // ----- render
+ *
+ *     var render = function()
+ *     {
+ *         var width  = canvas.width ;
+ *         var height = canvas.height ;
+ *
+ *         context.clearRect(0, 0, width, height);
+ *
+ *         context.fillStyle = '#333333' ;
+ *         context.fillRect(0, 0, width, height );
+ *
+ *         context.beginPath();
+ *         context.arc( target.x, target.y, radius, 0, Math.PI * 2, false );
+ *         context.closePath();
+ *         context.fillStyle = color ;
+ *         context.fill();
+ *     }
+ *
+ *     render() ;
+ *
+ *     tween.run() ;
+ * }
+ */
 var transitions = Object.assign({
   Motion: Motion,
   Transition: Transition,
@@ -9779,6 +10439,16 @@ var transitions = Object.assign({
   TweenUnit: TweenUnit
 });
 
+/**
+ * The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework. It is the starting point of our RIA framework structure : signals, data, IoC, logger, tasks, transitions, logics, rules, models, etc.
+ * <p><b>Dependencies :</b> The {@link system} framework reuse the module and building blocks of the {@link core} library.</p>
+ * @summary The {@link system} library is the root package for the <strong>VEGAS JS</strong> framework.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace system
+ * @version 1.0.7
+ * @since 1.0.0
+ */
 var system = Object.assign({
     Enum: Enum,
     Equatable: Equatable,
@@ -11080,6 +11750,14 @@ RGBA.prototype = Object.create(RGB.prototype, {
         } }
 });
 
+/**
+ * The {@link graphics.colors} library is a set of classes and utilities for color operations.
+ * @summary The {@link graphics.colors} library is a set of classes and utilities for colors operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics.colors
+ * @memberof graphics
+ */
 var colors$1 = Object.assign({
   RGB: RGB,
   RGBA: RGBA
@@ -11301,6 +11979,14 @@ Stage.prototype = Object.create(Object.prototype, {
         } }
 });
 
+/**
+ * The {@link graphics.display} library is a set of classes and utilities for display Operations.
+ * @summary The {@link graphics.display} library is a set of classes and utilities for Geometry Operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics.display
+ * @memberof graphics
+ */
 var display = Object.assign({
   Stage: Stage,
   StageAspectRatio: StageAspectRatio,
@@ -12330,6 +13016,14 @@ Object.defineProperties(Vector3D, {
         } }
 });
 
+/**
+ * The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @summary The {@link graphics.geom} library is a set of classes and utilities for Geometry Operations.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics.geom
+ * @memberof graphics
+ */
 var geom = Object.assign({
     AspectRatio: AspectRatio,
     Circle: Circle,
@@ -12345,6 +13039,14 @@ var geom = Object.assign({
     Vector3D: Vector3D
 });
 
+/**
+ * The {@link graphics} package is an intuitive graphics API to manipulate all display objects in your applications. Offers a lot of powerful functionality to create and work with graphics, colors and geometrics objects, all neatly wrapped up in a well designed, consistent and clean programming interface.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace graphics
+ * @version 1.0.7
+ * @since 1.0.7
+ */
 var graphics = Object.assign({
     isDirectionable: isDirectionable,
     Align: Align,
@@ -12515,6 +13217,14 @@ function isButton(target) {
     return false;
 }
 
+/**
+ * The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @summary The {@link molecule.components} library contains the core components classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.components
+ * @memberof molecule
+ */
 var components = Object.assign({
   ButtonPhase: ButtonPhase,
   isButton: isButton
@@ -12795,6 +13505,14 @@ DisplayObjectContainer.prototype = Object.create(DisplayObject.prototype, {
         }
     } });
 
+/**
+ * The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @summary The {@link molecule.display} library contains the core classes that the application uses to build visual displays.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.display
+ * @memberof molecule
+ */
 var display$1 = Object.assign({
   DisplayObject: DisplayObject,
   DisplayObjectContainer: DisplayObjectContainer
@@ -12864,6 +13582,14 @@ RadioButtonGroup.prototype = Object.create(CoreGroup.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.groups} library contains the core groups helpers.
+ * @summary The {@link molecule.groups} library contains the groups helpers.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.groups
+ * @memberof molecule
+ */
 var groups = Object.assign({
   CoreGroup: CoreGroup,
   RadioButtonGroup: RadioButtonGroup
@@ -14377,6 +15103,15 @@ Videosphere.prototype = Object.create(Material.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.render.aframe.display} package.
+ * @summary The {@link molecule.render.aframe.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe.display
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var display$2 = Object.assign({
     AEntity: AEntity,
     Assets: Assets,
@@ -14397,6 +15132,14 @@ var display$2 = Object.assign({
     Videosphere: Videosphere
 });
 
+/**
+ * The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @summary The {@link molecule.render.aframe} library contains the rendering classes that the application uses to AFRAME library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.aframe
+ * @memberof molecule.render
+ */
 var aframe = Object.assign({
   components: components$1,
   display: display$2
@@ -15389,15 +16132,43 @@ RemoveChild.prototype = Object.create(Task.prototype, {
     } }
 });
 
+/**
+ * The {@link molecule.render.dom.process.display} package.
+ * @summary The {@link molecule.render.dom.process.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom.process.display
+ * @memberof molecule.render.dom.process
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var display$3 = Object.assign({
   AddChild: AddChild,
   RemoveChild: RemoveChild
 });
 
+/**
+ * The {@link molecule.render.dom.process} package.
+ * @summary The {@link molecule.render.dom.process} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom.process
+ * @memberof molecule.render.dom
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var process$1 = Object.assign({
   display: display$3
 });
 
+/**
+ * The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @summary The {@link molecule.render.dom} library contains the rendering classes that the application uses to build DOM elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.dom
+ * @memberof molecule.render
+ */
 var dom$1 = Object.assign({
   data: {
     Cookie: Cookie
@@ -16427,11 +17198,31 @@ SimpleProgressbar.prototype = Object.create(CoreProgress.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.render.pixi.components.bars} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.bars
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var bars = Object.assign({
   ScrollIndicator: ScrollIndicator,
   SimpleProgressbar: SimpleProgressbar
 });
 
+/**
+ * The RadioButtonGroup singleton.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @memberof molecule.render.pixi.components.buttons
+ * @static
+ * @private
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var radio = new RadioButtonGroup();
 
 function CoreButton() {
@@ -17104,6 +17895,16 @@ LabelButton.prototype = Object.create(SimpleButton.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.render.pixi.components.buttons} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.buttons
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var buttons = Object.assign({
   CoreButton: CoreButton,
   IconButton: IconButton,
@@ -17871,6 +18672,16 @@ ScrollPane.prototype = Object.create(Element$1.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.render.pixi.components.panes} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components.panes
+ * @memberof molecule.render.pixi.components
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var panes = Object.assign({
   ScrollPane: ScrollPane,
   ScrollPaneBuilder: ScrollPaneBuilder,
@@ -17878,6 +18689,16 @@ var panes = Object.assign({
   ScrollPaneStyle: ScrollPaneStyle
 });
 
+/**
+ * The {@link molecule.render.pixi.components} package.
+ * @summary The {@link molecule.render.pixi.components} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.components
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var components$2 = Object.assign({
   CoreProgress: CoreProgress,
   CoreScrollbar: CoreScrollbar,
@@ -17962,6 +18783,16 @@ MovieClip.prototype = Object.create(PIXI.extras.AnimatedSprite.prototype, {
     constructor: { value: MovieClip }
 });
 
+/**
+ * The {@link molecule.render.pixi.display} package.
+ * @summary The {@link molecule.render.pixi.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.display
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var display$4 = Object.assign({
   Background: Background,
   Element: Element$1,
@@ -18617,6 +19448,16 @@ GridLayout.prototype = Object.create(BoxLayout.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.render.pixi.layouts} package.
+ * @summary The {@link molecule.render.pixi.layouts} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.layouts
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var layouts = Object.assign({
   BoxLayout: BoxLayout,
   CircleLayout: CircleLayout,
@@ -19085,6 +19926,16 @@ SwapChildren.prototype = Object.create(Task.prototype, {
     } }
 });
 
+/**
+ * The {@link molecule.render.pixi.process.display} package.
+ * @summary The {@link molecule.render.pixi.process.display} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process.display
+ * @memberof molecule.render.pixi.process
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var display$5 = Object.assign({
     AddChild: AddChild$1,
     AddChildAt: AddChildAt,
@@ -19101,15 +19952,43 @@ var display$5 = Object.assign({
     SwapChildren: SwapChildren
 });
 
+/**
+ * The {@link molecule.render.pixi.process} package.
+ * @summary The {@link molecule.render.pixi.process} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.process
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var process$2 = Object.assign({
   display: display$5
 });
 
+/**
+ * The {@link molecule.render.pixi.rules} package.
+ * @summary The {@link molecule.render.pixi.rules} package.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/)|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi.rules
+ * @memberof molecule.render.pixi
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var rules$1 = Object.assign({
   Contains: Contains,
   NotContains: NotContains
 });
 
+/**
+ * The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @summary The {@link molecule.render.pixi} library contains the rendering classes that the application uses the PIXI JS library to display 3D/VR elements.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render.pixi
+ * @memberof molecule.render
+ */
 var pixi = Object.assign({
   components: components$2,
   display: display$4,
@@ -19118,6 +19997,14 @@ var pixi = Object.assign({
   rules: rules$1
 });
 
+/**
+ * The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @summary The {@link molecule.render} library contains the rendering classes that the application uses to build visual displays with a specific graphic 2D or 3D engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.render
+ * @memberof molecule
+ */
 var render = Object.assign({
   aframe: aframe,
   dom: dom$1,
@@ -19398,6 +20285,14 @@ InitStates.prototype = Object.create(InitMapModel.prototype, {
         } }
 });
 
+/**
+ * The {@link molecule.states} library contains the core classes of the application state engine.
+ * @summary The {@link molecule.render} library contains the core classes of the application state engine.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule.states
+ * @memberof molecule
+ */
 var states = Object.assign({
   State: State,
   StateModel: StateModel,
@@ -19417,6 +20312,14 @@ var states = Object.assign({
   }
 });
 
+/**
+ * The {@link molecule} package is a library for develop crossplatform Rich Internet Applications and Games.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace molecule
+ * @version 1.0.8
+ * @since 1.0.8
+ */
 var molecule = Object.assign({
     logger: logger$1,
     Builder: Builder,
@@ -19654,10 +20557,27 @@ Accelerometer.prototype = Object.create(Object.prototype, {
     } }
 });
 
+/**
+ * The {@link screens.sensors} package contains classes for working mobile devices that support GPS and respond to motion.
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @author Benoit Pouzet <bpouzet@gmail.com>
+ * @namespace screens.sensors
+ * @version 1.0.7
+ * @since 1.0.7
+ */
 var sensors = Object.assign({
   Accelerometer: Accelerometer
 });
 
+/**
+ * The {@link screens} package is .
+ * @license {@link https://www.mozilla.org/en-US/MPL/2.0/|MPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/gpl-2.0.fr.html|GPL 2.0} / {@link https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html|LGPL 2.1}
+ * @author Marc Alcaraz <ekameleon@gmail.com>
+ * @namespace screens
+ * @version 1.0.7
+ * @since 1.0.7
+ */
 var screens = Object.assign({
   Browser: Browser,
   Device: Device,
@@ -19665,7 +20585,7 @@ var screens = Object.assign({
   sensors: sensors
 });
 
-var version = '1.0.9';
+var version = '1.0.10';
 var metas = Object.defineProperties({}, {
     name: { enumerable: true, value: ucFirst('vegas-js') },
     description: { enumerable: true, value: "VEGAS JS - Opensource Framework" },
@@ -19697,3 +20617,4 @@ exports.screens = screens;
 Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
+//# sourceMappingURL=vegas.molecule.js.map

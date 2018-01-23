@@ -1,14 +1,10 @@
 {
   "name": "vegas-js",
   "description": "VEGAS JS - Opensource Framework",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "license": "MPL-2.0 OR GPL-2.0+ OR LGPL-2.1+",
   "homepage": "https://bitbucket.org/ekameleon/vegas-js",
-  "author": {
-    "name": "Marc Alcaraz",
-    "email": "ekameleon@gmail.com",
-    "url": "https://www.ooopener.com"
-  },
+  "author": "Marc Alcaraz <ekameleon@gmail.com>",
   "main": "./src/vegas.js",
   "repository": {
     "type": "git",
@@ -24,25 +20,36 @@
     "CHANGELOG.md",
     "README.md",
     "dist/vegas.js",
+    "dist/vegas.js.map",
     "dist/vegas.min.js",
     "dist/vegas.molecule.js",
+    "dist/vegas.molecule.js.map",
     "dist/vegas.molecule.min.js",
-    "src",
-    "bower.json"
+    "src"
   ],
-  "directories":
-  {
-    "bin": "dist",
+  "directories": {
+    "dist": "dist",
     "lib": "src",
     "example": "test"
   },
-  "scripts": {
-    "build": "rollup -c --environment prod",
-    "build-molecule": "rollup -c --environment molecule,prod",
-    "dev": "rollup -c --watch",
-    "dev-molecule": "rollup -c --environment molecule --watch",
+  "scripts":
+  {
+    "build": "yarn test && yarn dev && yarn prod && yarn molecule-dev && yarn molecule-prod",
+
+    "vegas": "yarn dev && yarn prod" ,
+    "dev": "rollup -c --environment MODE:dev,LIB:vegas",
+    "prod": "rollup -c --environment MODE:prod,LIB:vegas",
+    "watch": "yarn dev --watch" ,
+
+    "molecule": "yarn molecule-dev && yarn molecule-prod" ,
+    "molecule-dev": "rollup -c --environment MODE:dev,LIB:molecule",
+    "molecule-prod": "rollup -c --environment MODE:prod,LIB:molecule",
+    "molecule-watch": "yarn molecule-dev --watch",
+
     "doc": "jsdoc -r -c ./docs/conf.json -t ./node_modules/ink-docstrap/template",
-    "example" : "browser-sync start --server . --startPath " ,
+
+    "example": "browser-sync start --server . --startPath ",
+
     "test": "mocha ./test/tests.js",
     "test-core": "mocha ./test/core.js",
     "test-graphics": "mocha ./test/graphics.js",
@@ -55,6 +62,7 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-module-resolver": "^3.0.0",
     "babel-preset-env": "^1.6.1",
+    "banner-cli": "^0.11.1",
     "chai": "^4.1.2",
     "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.5.5",
