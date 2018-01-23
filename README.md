@@ -75,7 +75,7 @@ $ npm install vegas-js --save-dev
 1 - The first time, initialize the project and run yarn :
 ```
 $ yarn
-``
+```
 
 2 - Test + compile all the libraries :
 ```
